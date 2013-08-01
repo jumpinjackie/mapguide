@@ -60,8 +60,8 @@
     <String Id="IIS6ConfigDlg_Title">IIS 6.0 Configuration</String>
     <String Id="IIS6ConfigDlg_Description">Configure IIS 6.0 Settings</String>
     <String Id="IIS6ConfigDlg_InstallTo">Install Web Extensions to the following website</String>
-    <String Id="IIS6ConfigDlg_AppPool">Create an application pool</String>
-    <String Id="IIS6ConfigDlg_AppPoolDescription">An application pool allows MapGuide applications to be isolated from other applications running on the web server</String>
+    <String Id="IIS7ConfigDlg_AppPool">Create an application pool</String>
+    <String Id="IIS7ConfigDlg_AppPoolDescription">An application pool allows MapGuide applications to be isolated from other applications running on the web server</String>
 
     <String Id="NoIISDlg_Title">IIS not found</String>
     <String Id="NoIISDlg_Description">IIS not found</String>

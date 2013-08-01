@@ -56,7 +56,6 @@
     <Compile Include="FileIncludes\incTomcatFiles.wxs" />
     <Compile Include="FileIncludes\incWebInfFiles.wxs" />
     <Compile Include="FileIncludes\incWebRootFiles.wxs" />
-    <Compile Include="IIS.wxs" />
     <Compile Include="IIS7.wxs" />
     <Compile Include="MapGuideWebExtensions.wxs" />
     <Compile Include="Shortcuts.wxs" />

@@ -48,8 +48,8 @@
         <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
         <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.21" />
         <Property Id="PHP_VERSION" Secure="yes" Value="5.3.8" />
-        <Property Id="MG_VERSION_MAJOR_MINOR" Secure="yes" Value="2.5" />
-        <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuide25AppPool">
+        <Property Id="MG_VERSION_MAJOR_MINOR" Secure="yes" Value="2.6" />
+        <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuide26AppPool">
             <RegistrySearch
             Id="MgAppPoolNameRs"
             Type="raw"
@@ -63,12 +63,13 @@
         <Property Id="MG_CLIENT_PORT" Secure="yes" Value="2811" />
         <Property Id="MG_SITE_PORT" Secure="yes" Value="2812" />
         <!-- Used by FdoRegUtil.exe -->
-        <Property Id="FDO_VERSION_SMALL" Secure="yes" Value="3.8" />
-        <Property Id="FDO_VERSION" Secure="yes" Value="3.8.0.0" />
+        <Property Id="FDO_VERSION_SMALL" Secure="yes" Value="3.9" />
+        <Property Id="FDO_VERSION" Secure="yes" Value="3.9.0.0" />
         <!-- IIS vars -->
         <Property Id="ASPNETVERSION" Value="v4.0" />
-        <Property Id="PHP_FCGI_HANDLER_NAME" Value="MapGuide_2.5_PHP_via_FastCGI" />
-        <Property Id="MAPAGENT_ISAPI_NAME" Value="MapGuide 2.5 MapAgent ISAPI handler" />
+        <!-- Don't try to use MG_VERSION_MAJOR_MINOR here. I tried. Just accept it and hardcode the number -->
+        <Property Id="PHP_FCGI_HANDLER_NAME" Value="MapGuide_2.6_PHP_via_FastCGI" />
+        <Property Id="MAPAGENT_ISAPI_NAME" Value="MapGuide 2.6 MapAgent ISAPI handler" />
 
         <!-- 
         These are currently static, though there is opportunity in the future for these
@@ -395,33 +396,6 @@
                 <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
             </Dialog>
 
-            <!-- Dialog to configure IIS6 specific things: web-site installation and application pool (w/ Trac #361 enhancements) -->
-            <Dialog Id="IIS6ConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
-                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.IIS6ConfigDlg_Title)" />
-                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.IIS6ConfigDlg_Description)" />
-                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
-                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
-                <!-- 
-                
-                Install Web Extensions to the following website:
-                ________________________________________________|V|
-                Create an application pool: ___________________________
-                
-                It is recommended to create an application pool if you are running mixed 
-                ASP.net application environments on your web server.
-                
-                -->
-                <Control Id="LblWebSite" Type="Text" Text="!(loc.IIS6ConfigDlg_InstallTo)" X="20" Y="80" Width="240" Height="15" />
-                <Control Id="LstWebSite" Type="ListBox" Property="MG_WEBSITE" X="20" Y="100" Width="240" Height="60" />
-                <Control Id="LblAppPool" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPool)" X="20" Y="170" Width="240" Height="15" />
-                <Control Id="TxtAppPool" Type="Edit" Property="APP_POOL_NAME" X="20" Y="190" Width="140" Height="15" />
-                <Control Id="LblAppPoolDescription" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPoolDescription)" X="20" Y="210" Width="240" Height="30" />
-
-                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
-                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
-                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
-            </Dialog>
-
             <!-- Dialog to configure IIS7 specific things -->
             <Dialog Id="IIS7ConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
                 <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}IIS 7.0 Configuration" />
@@ -437,9 +411,9 @@
                   ASP.net application environments on your web server.
                   
                 -->
-                <Control Id="LblAppPool" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPool)" X="20" Y="80" Width="240" Height="15" />
+                <Control Id="LblAppPool" Type="Text" Text="!(loc.IIS7ConfigDlg_AppPool)" X="20" Y="80" Width="240" Height="15" />
                 <Control Id="TxtAppPool" Type="Edit" Property="APP_POOL_NAME" X="20" Y="100" Width="240" Height="15" />
-                <Control Id="LblAppPoolDescription" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPoolDescription)" X="20" Y="120" Width="240" Height="45" />
+                <Control Id="LblAppPoolDescription" Type="Text" Text="!(loc.IIS7ConfigDlg_AppPoolDescription)" X="20" Y="120" Width="240" Height="45" />
 
                 <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
                 <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
@@ -527,9 +501,7 @@
 
             <!-- Show the FastCGI warning before advancing to any IIS configuration dialog -->
             <Publish Dialog="FastCgiWarningDlg" Control="Next" Event="NewDialog" Value="IISLangConfigDlg" Order="1">MGWEB_CONFIG=&quot;IIS&quot; AND NETFRAMEWORK40FULL</Publish>
-            <Publish Dialog="FastCgiWarningDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="2">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK40FULL)</Publish>
-            <Publish Dialog="FastCgiWarningDlg" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="3">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND (NOT NETFRAMEWORK40FULL)</Publish>
-            <Publish Dialog="FastCgiWarningDlg" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="4">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR&gt;=&quot;#7&quot; AND (NOT NETFRAMEWORK40FULL)</Publish>
+            <Publish Dialog="FastCgiWarningDlg" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="2">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR&gt;=&quot;#7&quot; AND (NOT NETFRAMEWORK40FULL)</Publish>
             <Publish Dialog="FastCgiWarningDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS">1</Publish>
             <Publish Dialog="FastCgiWarningDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
@@ -601,9 +573,7 @@
             <Publish Dialog="ApacheConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="2">NOT IISVERSIONMAJOR=&quot;#0&quot;</Publish>
             <Publish Dialog="ApacheConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
-            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="2">IISVERSIONMAJOR=&quot;#5&quot;</Publish>
-            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="3">IISVERSIONMAJOR=&quot;#6&quot;</Publish>
-            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="4">IISVERSIONMAJOR&gt;=&quot;#7&quot;</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="1">IISVERSIONMAJOR&gt;=&quot;#7&quot;</Publish>
             <!-- Default feature settings for PHP API - AddLocal required in case user changes mind and comes back -->
             <Publish Dialog="IISLangConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature">IIS_API_TYPE=&quot;PHP&quot;</Publish>
             <Publish Dialog="IISLangConfigDlg" Control="Next" Event="Remove" Value="WebExtDotNetDevGuideSamplesFeature">IIS_API_TYPE=&quot;PHP&quot;</Publish>
@@ -619,12 +589,6 @@
             <Publish Dialog="IISLangConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="2">1</Publish>
             <Publish Dialog="IISLangConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
             
-            <Publish Dialog="IIS6ConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
-            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">NETFRAMEWORK40FULL</Publish>
-            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="2">NOT NETFRAMEWORK40FULL</Publish>
-            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="3">NOT NETFRAMEWORK40FULL</Publish>
-            <Publish Dialog="IIS6ConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
-
             <Publish Dialog="IIS7ConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
             <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">NETFRAMEWORK40FULL</Publish>
             <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="2">NOT NETFRAMEWORK40FULL</Publish>
@@ -632,14 +596,12 @@
             <Publish Dialog="IIS7ConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
             <Publish Dialog="IPConfigDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg">1</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND NETFRAMEWORK40FULL</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IIS6ConfigDlg" Order="2">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IIS7ConfigDlg" Order="3">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR&gt;=&quot;#7&quot;</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="ApacheConfigDlg" Order="4">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="5">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK40FULL)) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="6">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK40FULL) AND MGWEB_CONFIG=&quot;IIS&quot; ) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_NoIIS_CA" Order="7">IISVERSIONMAJOR=&quot;#0&quot;</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="8">IISVERSIONMAJOR=&quot;#0&quot; AND MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IIS7ConfigDlg" Order="1">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR&gt;=&quot;#7&quot;</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="ApacheConfigDlg" Order="2">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="3">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK40FULL)) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="4">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK40FULL) AND MGWEB_CONFIG=&quot;IIS&quot; ) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_NoIIS_CA" Order="5">IISVERSIONMAJOR=&quot;#0&quot;</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="6">IISVERSIONMAJOR=&quot;#0&quot; AND MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
             <Publish Dialog="IPConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
             <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="IPConfigDlg">1</Publish>
@@ -741,10 +703,7 @@
             <ProgressText Action="FdoUnRegSlt">!(loc.FdoUnRegSlt)</ProgressText>
         </UI>
 
-        <!-- Trac #361: Run our custom CA as part of the UI install sequence -->
-        <InstallUISequence>
-            <Custom Action="EnumerateIIS6WebSites" After="CostFinalize" Overridable="yes">NOT Installed AND IISVERSIONMAJOR=&quot;#6&quot;</Custom>
-        </InstallUISequence>
+        <InstallUISequence />
 
         <InstallExecuteSequence>
 
@@ -872,14 +831,6 @@
             <Custom Action="MapGuideIIS7_U_RemoveMapAgent" After="MapGuideIIS7_U_RemoveViewerNet">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR&gt;=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
             <Custom Action="MapGuideIIS7_U_RemoveMapGuide" After="MapGuideIIS7_U_RemoveMapAgent">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR&gt;=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
             <Custom Action="MapGuideIIS7_U_DeleteAppPool" After="MapGuideIIS7_U_RemoveMapGuide">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR&gt;=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
-
-          <!-- IIS6 properties for deferred actions -->
-            <Custom Action="AspNetRegIIS_Cmd" After="CostFinalize">NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
-
-          <!-- IIS6 deferred actions  ConfigureIIS is a WiX built-in action; I'm overriding and making the action conditional -->
-            <Custom Action="ConfigureIIs" After="InstallFiles">MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND (&amp;WebExtensionsFeature&gt;2 OR &amp;WebExtensionsFeature=2)</Custom>
-            <Custom Action="AspNetRegIIS" After="ConfigureIIs">NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
-
             
             <Custom Action="FdoRegCmd" After="InstallInitialize"></Custom>
             <!-- FDO Provider Registration Immediate Actions -->

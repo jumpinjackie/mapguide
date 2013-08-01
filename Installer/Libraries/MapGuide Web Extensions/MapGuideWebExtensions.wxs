@@ -238,7 +238,6 @@
             <Feature Id="WebStdIconsFeature" Title="!(loc.WebStdIconsFeature)" Display="hidden"  Level="1" Description="!(loc.WebStdIconsFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
                 <ComponentGroupRef Id="group_MAPVIEWERSTDICONFILES" />
             </Feature>
-            <FeatureRef Id="IISSetupFeature" />
             <Feature Id="SvnMetadataFeature" Title="!(loc.SvnMetadataFeature)" Level="1" Description="!(loc.SvnMetadataFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
                 <ComponentGroupRef Id="incDotNetDevGuideFiles_SVNMETADATA" />
                 <ComponentGroupRef Id="incDotNetViewerSampleFiles_SVNMETADATA" />

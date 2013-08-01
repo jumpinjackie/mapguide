@@ -15,7 +15,6 @@ rem Usage:
 rem
 rem build.bat [-h]
 rem           [-v]
-rem           [-c=BuildType]
 rem           [-a=Action]
 rem           [-lang=Culture]
 rem           [-srv=ServerDirectory]
@@ -24,9 +23,8 @@ rem	      	  [-version=MapGuideVersion]
 rem	      	  [-name=MapGuideInstallerFilename]
 rem	      	  [-title=MapGuideInstallerTitle]
 rem
-rem BuildType: Release(default), Debug
 rem Action: build(default), clean, regen, prepare, generate (only use generate when creating new GIDs)
-rem SourceDirectory: The directory that was used for MapGuide build ouput 
+rem SourceDirectory: The directory that was used for MapGuide build output 
 rem	MapGuideVersion: The version associated with the installer in the format 2.1.0.0
 rem	MapGuideInstallerFilename: File name of output .exe in the format MapGuideOpenSource-2.1.0-Something
 rem	MapGuideInstallerTitle: Title to appear in the installer.
@@ -37,25 +35,14 @@ rem ==================================================
 SET OLDPATH=%PATH%
 
 rem ==================================================
-rem Update solution suffix if using VC10 compiler.
-rem NOTE: VS10 solution files are suffixed with _VS2010
-rem which is why we can do it like this
-rem ==================================================
-
-SET VS_SLN_SUFFIX=
-IF "%VC_COMPILER_VERSION%" == "10" SET VS_SLN_SUFFIX=_VS2010
-
-rem ==================================================
 rem Command Line Option Defaults
 rem ==================================================
 
 SET TYPEACTION=build
-SET CPUTYPE=x86
-SET TYPEBUILD=Release
 SET CULTURE=en-US
-SET INSTALLER_VERSION_MAJOR_MINOR=2.5
+SET INSTALLER_VERSION_MAJOR_MINOR=2.6
 SET INSTALLER_VERSION_MAJOR_MINOR_REV=%INSTALLER_VERSION_MAJOR_MINOR%.0
-SET INSTALLER_NAME=MapGuideOpenSource-%INSTALLER_VERSION_MAJOR_MINOR_REV%-Trunk-%CULTURE%-%TYPEBUILD%-%CPUTYPE%
+SET INSTALLER_NAME=MapGuideOpenSource-%INSTALLER_VERSION_MAJOR_MINOR_REV%-Trunk-%CULTURE%-%TYPEBUILD%-%PLATFORM_CLR%
 SET INSTALLER_VERSION=%INSTALLER_VERSION_MAJOR_MINOR_REV%.0
 SET INSTALLER_TITLE="MapGuide Open Source %INSTALLER_VERSION_MAJOR_MINOR% Trunk (%TYPEBUILD%)"
 rem Default to no (omit the ArcSDE installer feature and don't look for ArcSDE provider dlls in staging area)
@@ -64,7 +51,7 @@ SET MG_WITH_ARCSDE=no
 SET MG_REG_KEY=Software\OSGeo\MapGuide\%INSTALLER_VERSION_MAJOR_MINOR_REV%
 SET MG_SOURCE=%CD%\..\MgDev\%TYPEBUILD%
 SET MG_SOURCE_WEB=%CD%\..\MgDev\Web
-SET MG_SOURCE_INC=
+SET MG_SOURCE_INC=%MG_SOURCE%
 rem Set to NO to build installers quicker (at the expense of file size)
 SET MAX_COMPRESSION=YES
 
@@ -96,28 +83,9 @@ rem ==================================================
 SET HTTPD_VERSION=2.2.21
 SET PHP_VERSION=5.3.8
 SET TOMCAT_VERSION=7.0.23
-SET HTTPD_PACKAGE=httpd-%HTTPD_VERSION%-x86-vc10.zip
-SET TOMCAT_PACKAGE=apache-tomcat-%TOMCAT_VERSION%-windows-x86.zip
-SET PHP_TS_PACKAGE=php-%PHP_VERSION%-x86-vc10.zip
-
-rem ==================================================
-rem MSBuild Settings
-rem ==================================================
-
-rem If the NUMBER_OF_PROCESSORS environment variable is wrong for any reason. Change this value.
-SET CPU_CORES=%NUMBER_OF_PROCESSORS%
-
-rem Uncomment the line below to enable msbuild logging
-rem SET MSBUILD_LOG=/l:FileLogger,Microsoft.Build.Engine;logfile=Build.log;verbosity=diagnostic
-SET MSBUILD_VERBOSITY=/v:n
-
-rem ==================================================
-rem Command aliases
-rem ==================================================
-rem SET XCOPY=xcopy /E /Y /I /F
-SET XCOPY=xcopy /E /Y /I /Q
-SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% %MSBUILD_VERBOSITY% %MSBUILD_LOG%
-SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /t:Clean %MSBUILD_VERBOSITY%
+SET HTTPD_PACKAGE=httpd-%HTTPD_VERSION%-%PLATFORM_CLR%-vc10.zip
+SET TOMCAT_PACKAGE=apache-tomcat-%TOMCAT_VERSION%-windows-%PLATFORM_CLR%.zip
+SET PHP_TS_PACKAGE=php-%PHP_VERSION%-%PLATFORM_CLR%-vc10.zip
 
 :study_params
 if (%1)==() goto start_build
@@ -125,15 +93,11 @@ if (%1)==() goto start_build
 if "%1"=="-help"    goto help_show
 if "%1"=="-h"       goto help_show
 
-if "%1"=="-c"       goto get_conf
-if "%1"=="-config"  goto get_conf
-
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
 
 if "%1"=="-lang"	goto get_language
 
-if "%1"=="-v"       goto get_verbose
 if "%1"=="-source"		 goto get_source
 
 if "%1"=="-version"       goto get_version
@@ -150,12 +114,6 @@ goto study_params
 :get_language
 SET CULTURE=%2
 SET INSTALLER_OUTPUT=%INSTALLER_DEV%\Output\%CULTURE%
-goto next_param
-
-:get_verbose
-SET MSBUILD_VERBOSITY=/v:d
-SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% %MSBUILD_VERBOSITY% %MSBUILD_LOG%
-SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /t:Clean %MSBUILD_VERBOSITY%
 goto next_param
 
 :get_source
@@ -175,19 +133,6 @@ goto next_param
 SET INSTALLER_TITLE=%2
 goto next_param
 
-:get_conf
-SET TYPEBUILD=%2
-REM SET INSTALLER_OUTPUT=%CD%\Installers\MapGuide\bin\%TYPEBUILD%
-SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /p:Platform=Win32 %MSBUILD_VERBOSITY% %MSBUILD_LOG%
-SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /p:Platform=Win32 /t:Clean %MSBUILD_VERBOSITY%
-SET MG_SOURCE=%CD%\..\MgDev\%TYPEBUILD%
-IF NOT ""=="%MG_SOURCE_INC%" SET MG_SOURCE_INC=%MG_SOURCE%
-
-if "%2"=="Release" goto next_param
-if "%2"=="Debug" goto next_param
-SET ERRORMSG=Unrecognised configuration: %2
-goto custom_error
-
 :get_action
 SET TYPEACTION=%2
 if "%2"=="build" goto next_param
@@ -201,7 +146,7 @@ goto custom_error
 :start_build
 echo ===================================================
 echo Configuration is [%TYPEBUILD%]
-echo CPU type is: [%CPUTYPE%]
+echo CPU type is: [%PLATFORM_CLR%]
 echo Action is [%TYPEACTION%]
 echo CPU cores: %CPU_CORES%
 echo Installer Output Directory: %INSTALLER_OUTPUT%
@@ -219,9 +164,9 @@ if "%TYPEACTION%"=="regen" goto regen
 
 :clean
 echo [clean]: Installer Pre-Reqs
-%MSBUILD_CLEAN% InstallerPreReq%VS_SLN_SUFFIX%.sln
+%MSBUILD_CLEAN% InstallerPreReq.sln
 echo [clean]: Installer
-%MSBUILD_CLEAN% InstallerWix%VS_SLN_SUFFIX%.sln
+%MSBUILD_CLEAN_CLR% InstallerWix.sln
 goto quit
 
 :prepare
@@ -230,42 +175,42 @@ if not exist "%MG_SOURCE%\Server" goto error_mg_server_not_found
 if not exist "%MG_SOURCE%\Web" goto error_mg_web_not_found
 if not exist "%MG_SOURCE%\CS-Map" goto error_mg_csmap_not_found
 echo [prepare] Installer Pre-Requisites
-%MSBUILD% InstallerPreReq%VS_SLN_SUFFIX%.sln
+%MSBUILD% InstallerPreReq.sln
 copy %INSTALLER_FDO_REG_UTIL%\%TYPEBUILD%\FdoRegUtil.exe %MG_SOURCE%\Server\FDO
 popd
 echo [prepare] Unpack Apache httpd
-pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
+pushd "%INSTALLER_DEV_SUPPORT%\Web\%PLATFORM_CLR%"
 7z x %HTTPD_PACKAGE% -y -o"%MG_SOURCE%\Web\Apache2"
 popd
 echo [prepare] Unpack Tomcat
-pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
+pushd "%INSTALLER_DEV_SUPPORT%\Web\%PLATFORM_CLR%"
 copy /Y mod_jk.so "%MG_SOURCE%\Web\Apache2\modules"
 REM we unpack to root because Tomcat is the root dir in the zip file
 7z x %TOMCAT_PACKAGE% -y -o"%MG_SOURCE%\Web"
 popd
 pushd "%MG_SOURCE%\Web"
 if exist Tomcat (
-xcopy /S /Y apache-tomcat-7.0.23\*.* Tomcat
-rd /S /Q apache-tomcat-7.0.23
+xcopy /S /Y apache-tomcat-%TOMCAT_VERSION%\*.* Tomcat
+rd /S /Q apache-tomcat-%TOMCAT_VERSION%
 ) else (
-rename apache-tomcat-7.0.23 Tomcat
+rename apache-tomcat-%TOMCAT_VERSION% Tomcat
 )
 popd
 echo [prepare] Unpack PHP (Thread Safe)
-pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
+pushd "%INSTALLER_DEV_SUPPORT%\Web\%PLATFORM_CLR%"
 7z x %PHP_TS_PACKAGE% -y -o"%MG_SOURCE%\Web\Php"
 popd
 rem copy template configs on top
 echo [prepare] Tomcat config
-%XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM_CLR%\configs\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
 echo [prepare] Php config
-%XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\Php" "%MG_SOURCE%\Web\Php" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM_CLR%\configs\Php" "%MG_SOURCE%\Web\Php" /EXCLUDE:svn_excludes.txt
 echo [prepare] Apache2 config
-%XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM_CLR%\configs\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
 echo [prepare] Apache2 mapagent so
-copy /Y "%MG_SOURCE_WEB%\src\mapagent\mod_mgmapagent.so" "%MG_SOURCE%\Web\Apache2\modules"
+copy /Y "%MG_BUILD_MAPAGENT%" "%MG_SOURCE%\Web\Apache2\modules"
 echo [prepare] FDO providers.xml
-copy /Y "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\FDO\providers.xml" "%MG_SOURCE%\Server\FDO\"
+copy /Y "%INSTALLER_DEV%\Support\Web\%PLATFORM_CLR%\configs\FDO\providers.xml" "%MG_SOURCE%\Server\FDO\"
 
 goto quit
 
@@ -273,6 +218,7 @@ goto quit
 echo [regen]: MapGuide Installer
 
 SET PARAFFIN=paraffin.exe -update 
+IF "%PLATFORM_CLR%" == "x64" SET PARAFFIN=paraffin.exe -update -Win64
 
 SET WIX_INC_SERVER="%INSTALLER_DEV%\Libraries\MapGuide Server\FileIncludes"
 SET WIX_INC_WEB="%INSTALLER_DEV%\Libraries\MapGuide Web Extensions\FileIncludes"
@@ -387,7 +333,8 @@ goto quit
 :generate
 echo [generate]: MapGuide Installer
 
-SET PARAFFIN=paraffin.exe -guids 
+SET PARAFFIN=paraffin.exe -guids
+IF "%PLATFORM_CLR%" == "x64" SET PARAFFIN=paraffin.exe -Win64 -guids
 
 SET WIX_INC_SERVER="%INSTALLER_DEV%\Libraries\MapGuide Server\FileIncludes"
 SET WIX_INC_WEB="%INSTALLER_DEV%\Libraries\MapGuide Web Extensions\FileIncludes"
@@ -471,15 +418,17 @@ echo [generate]: Web - misc web root
 goto quit
 
 :build
-SET RUN_BUILD=%MSBUILD% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%;MgRegKey=%MG_REG_KEY%;MgPlatform=%CPUTYPE%;Have_ArcSde=%MG_WITH_ARCSDE%
+SET RUN_BUILD=%MSBUILD_CLR% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%;MgRegKey=%MG_REG_KEY%;MgPlatform=%PLATFORM_CLR%;Have_ArcSde=%MG_WITH_ARCSDE%
 if not ""=="%MG_SOURCE_INC%" set RUN_BUILD=%RUN_BUILD%;MgSource=%MG_SOURCE_INC%
+
 echo [build]: Installer 
-%RUN_BUILD% InstallerWix%VS_SLN_SUFFIX%.sln
+%RUN_BUILD% InstallerWix.sln
 if "%errorlevel%"=="1" goto error
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Copying vcredist
-copy /Y vcredist_2008_x86.exe "%INSTALLER_OUTPUT%\vcredist_2008_x86.exe"
-copy /Y vcredist_2010_x86.exe "%INSTALLER_OUTPUT%\vcredist_2010_x86.exe"
+copy /Y vcredist_2008_x86.exe "%INSTALLER_OUTPUT%\vcredist_2008_%PLATFORM_CLR%.exe"
+copy /Y vcredist_2010_x86.exe "%INSTALLER_OUTPUT%\vcredist_2010_%PLATFORM_CLR%.exe"
+copy /Y vcredist_2012_x86.exe "%INSTALLER_OUTPUT%\vcredist_2012_%PLATFORM_CLR%.exe"
 popd
 if "%errorlevel%"=="1" goto error
 if "%MAX_COMPRESSION%"=="YES" goto build_max_compress
@@ -531,8 +480,6 @@ echo Please use the format:
 :help_show
 echo ************************************************************************
 echo build.bat [-h]
-echo           [-v]
-echo           [-c=BuildType]
 echo           [-a=Action]
 echo           [-lang=Culture]
 echo           [-source=SourceDirectory]
@@ -541,8 +488,6 @@ echo	         [-name=MapGuideInstallerFilename]
 echo	         [-title=MapGuideInstallerTitle]
 echo
 echo Help:	-h
-echo Verbose: -v
-echo BuildType: Release(default), Debug
 echo Action: build(default), clean, regen, prepare, generate (only use generate for creating new GIDs, or if not installing from ..\MgDev\Release)
 echo SourceDirectory: The directory that the MapGuide build process installed the source files into
 echo MapGuideVersion: The version associated with the installer in the format 2.1.0.0
@@ -551,11 +496,6 @@ echo MapGuideInstallerTitle: Title to appear in the installer.  Typically this w
 echo ************************************************************************
 :quit
 SET TYPEACTION=
-SET TYPEBUILD=
 SET INSTALLER_OUTPUT=
 SET INSTALLER_DEV=
-SET MSBUILD_LOG=
-SET MSBUILD_VERBOSITY=
-SET XCOPY=
-SET MSBUILD=
 SET PATH=%OLDPATH%

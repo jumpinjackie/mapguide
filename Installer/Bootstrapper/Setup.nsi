@@ -119,6 +119,18 @@ InstallVC2010Redist:
 	Banner::destroy
 
 BeginInstall:
+    ; Install VC 2012 redist. Not going to check here. I think we can trust the vcredist install to not trample over anything
+    Banner::show /NOUNLOAD "Installing Visual C++ 2012 Redistributable"
+	Banner::getWindow /NOUNLOAD
+!if ${CPU} = "x64"
+	File /r "${INSTALLER_OUTPUT}\vcredist_2012_x64.exe"
+	ExecWait '"$OUTDIR\vcredist_2012_x64.exe" /install /quiet /norestart'
+!else
+	File /r "${INSTALLER_OUTPUT}\vcredist_2012_x86.exe"
+	ExecWait '"$OUTDIR\vcredist_2012_x86.exe" /install /quiet /norestart'
+!endif
+	Banner::destroy
+
 	Banner::show /NOUNLOAD "Extracting files. Please Wait"
 	Banner::getWindow /NOUNLOAD
 	File "${INSTALLER_OUTPUT}\${OUTNAME}.msi"
@@ -128,11 +140,13 @@ BeginInstall:
 	; Delete the MGOS installer and any other extracted after completion
 	Delete "$OUTDIR\${OUTNAME}.msi"
 !if ${CPU} = "x64"
-	Delete "$OUTDIR\vcredist_2008_x64.exe"
+	;Delete "$OUTDIR\vcredist_2008_x64.exe"
     Delete "$OUTDIR\vcredist_2010_x64.exe"
+    Delete "$OUTDIR\vcredist_2012_x64.exe"
 !else
-	Delete "$OUTDIR\vcredist_2008_x86.exe"
+	;Delete "$OUTDIR\vcredist_2008_x86.exe"
     Delete "$OUTDIR\vcredist_2010_x86.exe"
+    Delete "$OUTDIR\vcredist_2012_x86.exe"
 !endif
 	
 SectionEnd

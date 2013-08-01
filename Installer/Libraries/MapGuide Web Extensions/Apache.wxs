@@ -4,19 +4,23 @@
         <!-- httpd.exe -->
         <?define HTTP_MAP = "file_APACHEFILES_19" ?>
         <!-- tomcat7.exe -->
-        <?define TOMCAT_MAP = "file_TOMCATFILES_39" ?>
+        <?define TOMCAT_MAP = "file_TOMCATFILES_40" ?>
         <!-- service.bat -->
-        <?define TOMCAT_BAT = "file_TOMCATFILES_29" ?>
+        <?define TOMCAT_BAT = "file_TOMCATFILES_30" ?>
+        <!-- apache_actions.dll path -->
+        <?define ACTION_DLL_PATH = "..\..\Custom\apache_actions\bin110_x64\apache_actions.dll" ?>
     <?else ?>
         <!-- httpd.exe -->
         <?define HTTP_MAP = "file_APACHEFILES_19" ?>
         <!-- tomcat7.exe -->
-        <?define TOMCAT_MAP = "file_TOMCATFILES_39" ?>
+        <?define TOMCAT_MAP = "file_TOMCATFILES_40" ?>
         <!-- service.bat -->
-        <?define TOMCAT_BAT = "file_TOMCATFILES_29" ?>
+        <?define TOMCAT_BAT = "file_TOMCATFILES_30" ?>
+        <!-- apache_actions.dll path -->
+        <?define ACTION_DLL_PATH = "..\..\Custom\apache_actions\bin110_Win32\apache_actions.dll" ?>
     <?endif ?>
     <Fragment>
-        <Binary Id="ApacheActions" SourceFile="..\..\Custom\bin\apache_actions.dll" />
+        <Binary Id="ApacheActions" SourceFile="$(var.ACTION_DLL_PATH)" />
         <CustomAction Id="UpdateApacheConfig.SetValues" Property="UpdateApacheConfig" Value="[WEBEXTENSIONSLOCATION];[APACHE_API_TYPE];[APACHE_PORT];[APACHELOCATION];[PHPLOCATION];[WEBROOTLOCATION];[VIRTUALDIR]" />
         <CustomAction Id="UpdateApacheConfig" Return="check" BinaryKey="ApacheActions" Execute="deferred"  DllEntry="UpdateApacheConfig" />
         <CustomAction Id="UpdatePhpIni.SetValues" Property="UpdatePhpIni" Value='[PHPLOCATION];2;[WEBTEMPLOCATION]' />
