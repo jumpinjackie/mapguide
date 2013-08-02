@@ -105,7 +105,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 *
 *****************************************************************************/
 
-UINT __declspec(dllexport) __stdcall
+UINT __stdcall
 GetApacheDir(MSIHANDLE hMSI)
 {
 	HRESULT hRes = 0;
@@ -148,7 +148,7 @@ GetApacheDir(MSIHANDLE hMSI)
 *
 *****************************************************************************/
 
-UINT __declspec(dllexport) __stdcall
+UINT __stdcall
 UpdatePhpIni(MSIHANDLE hMSI)
 {
 	// Method overview:
@@ -225,7 +225,7 @@ UpdatePhpIni(MSIHANDLE hMSI)
 *
 *****************************************************************************/
 
-UINT __declspec(dllexport) __stdcall
+UINT __stdcall
 UpdateApacheConfig(MSIHANDLE hMSI)
 {
 	// Method overview:

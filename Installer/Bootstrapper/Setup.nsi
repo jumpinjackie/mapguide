@@ -12,7 +12,7 @@ VIProductVersion "${MG_VERSION}"
 VIAddVersionKey "FileVersion" "1.0.0.0"
 VIAddVersionKey "CompanyName" "Open Source Geospatial Foundation"
 VIAddVersionKey "FileDescription" "Installer Bootstrapper package for MapGuide Open Source"
-VIAddVersionKey "LegalCopyright" "2010 Open Source Geospatial Foundation"
+VIAddVersionKey "LegalCopyright" "2013 Open Source Geospatial Foundation"
 
 !ifndef CULTURE
 !define CULTURE "en-us"
@@ -140,11 +140,11 @@ BeginInstall:
 	; Delete the MGOS installer and any other extracted after completion
 	Delete "$OUTDIR\${OUTNAME}.msi"
 !if ${CPU} = "x64"
-	;Delete "$OUTDIR\vcredist_2008_x64.exe"
+	Delete "$OUTDIR\vcredist_2008_x64.exe"
     Delete "$OUTDIR\vcredist_2010_x64.exe"
     Delete "$OUTDIR\vcredist_2012_x64.exe"
 !else
-	;Delete "$OUTDIR\vcredist_2008_x86.exe"
+	Delete "$OUTDIR\vcredist_2008_x86.exe"
     Delete "$OUTDIR\vcredist_2010_x86.exe"
     Delete "$OUTDIR\vcredist_2012_x86.exe"
 !endif

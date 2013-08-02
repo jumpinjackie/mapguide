@@ -33,8 +33,9 @@ const int MAX_BUFFER = 1024;
 
 #include "MSIQuery.h"
 
-__declspec(dllexport) UINT __stdcall GetApacheDir(MSIHANDLE theMSIHandle);
-__declspec(dllexport) UINT __stdcall UpdatePhpIni(MSIHANDLE theMSIHandle);
-__declspec(dllexport) UINT __stdcall UpdateApacheConfig(MSIHANDLE theMSIHandle);
+//Need to use C linkage because wix CA reference unmangled symbols
+extern "C" __declspec(dllexport) UINT __stdcall GetApacheDir(MSIHANDLE theMSIHandle);
+extern "C" __declspec(dllexport) UINT __stdcall UpdatePhpIni(MSIHANDLE theMSIHandle);
+extern "C" __declspec(dllexport) UINT __stdcall UpdateApacheConfig(MSIHANDLE theMSIHandle);
 
 bool FileExists (const char* szFile);

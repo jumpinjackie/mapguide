@@ -212,14 +212,14 @@
 
             <Dialog Id="FastCgiWarningDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
                 <!-- 
-                    MapGuide IIS Configuration requires FastCGI to be installed on this system
+                    MapGuide IIS Configuration requires FastCGI to be enabled on this system
                     
-                    You can download FastCGI from this link
+                    You can follow the link below for more information on how to enable FastCGI
                     
-                    http://www.iis.net/download/FastCGI
+                    http://www.iis.net/fastcgi/configuration
                     
-                    You can ignore this message if FastCGI for IIS is already installed. Otherwise 
-                    you must cancel this installation and install FastCGI first
+                    You can ignore this message if FastCGI for IIS is already enabled. Otherwise 
+                    you must cancel this installation and enable FastCGI first
                 -->
                 <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.FastCgiDialog_Title)" />
                 <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.FastCgiDialog_Description)" />

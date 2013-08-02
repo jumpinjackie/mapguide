@@ -426,9 +426,9 @@ echo [build]: Installer
 if "%errorlevel%"=="1" goto error
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Copying vcredist
-copy /Y vcredist_2008_x86.exe "%INSTALLER_OUTPUT%\vcredist_2008_%PLATFORM_CLR%.exe"
-copy /Y vcredist_2010_x86.exe "%INSTALLER_OUTPUT%\vcredist_2010_%PLATFORM_CLR%.exe"
-copy /Y vcredist_2012_x86.exe "%INSTALLER_OUTPUT%\vcredist_2012_%PLATFORM_CLR%.exe"
+copy /Y vcredist_2008_%PLATFORM_CLR%.exe "%INSTALLER_OUTPUT%\vcredist_2008_%PLATFORM_CLR%.exe"
+copy /Y vcredist_2010_%PLATFORM_CLR%.exe "%INSTALLER_OUTPUT%\vcredist_2010_%PLATFORM_CLR%.exe"
+copy /Y vcredist_2012_%PLATFORM_CLR%.exe "%INSTALLER_OUTPUT%\vcredist_2012_%PLATFORM_CLR%.exe"
 popd
 if "%errorlevel%"=="1" goto error
 if "%MAX_COMPRESSION%"=="YES" goto build_max_compress
@@ -437,7 +437,7 @@ goto build_min_compress
 :build_min_compress
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Create self-extracting package
-makensis /DCPU=x86 /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMG_VERSION=%INSTALLER_VERSION% Setup.nsi
+makensis /DCPU=%PLATFORM_CLR% /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMG_VERSION=%INSTALLER_VERSION% Setup.nsi
 popd
 if "%errorlevel%"=="1" goto error
 echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe
@@ -446,7 +446,7 @@ goto quit
 :build_max_compress
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Create self-extracting package (MAX compression)
-makensis /DCPU=x86 /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMAXCOMPRESSION /DMG_VERSION=%INSTALLER_VERSION% Setup.nsi
+makensis /DCPU=%PLATFORM_CLR% /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMAXCOMPRESSION /DMG_VERSION=%INSTALLER_VERSION% Setup.nsi
 popd
 if "%errorlevel%"=="1" goto error
 echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe
