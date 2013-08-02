@@ -187,7 +187,6 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
 
     map<STRING, MgLayerGroup*>::const_iterator itKg;
 
-    bool showInLegend;
     MapLayerGroupCollection* groups = mdef->GetLayerGroups();
     if(groups)
     {
@@ -200,12 +199,9 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
             Ptr<MgLayerGroup> rtGroup = new MgLayerGroup(groupName);
             rtGroup->SetVisible(group->IsVisible());
             rtGroup->SetLayerGroupType(MgLayerGroupType::Normal);
-            rtGroup->SetDisplayInLegend(showInLegend = group->IsShowInLegend());
-            if(showInLegend)
-            {
-                rtGroup->SetExpandInLegend(group->IsExpandInLegend());
-                rtGroup->SetLegendLabel(group->GetLegendLabel());
-            }
+            rtGroup->SetDisplayInLegend(group->IsShowInLegend());
+            rtGroup->SetExpandInLegend(group->IsExpandInLegend());
+            rtGroup->SetLegendLabel(group->GetLegendLabel());
 
             knownGroups[groupName] = rtGroup;
 
@@ -309,11 +305,8 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
             rtLayer->SetVisible(layer->IsVisible());
             rtLayer->SetLayerType(MgLayerType::Dynamic);
             rtLayer->SetDisplayInLegend(layer->IsShowInLegend());
-            if(layer->IsShowInLegend())
-            {
-                rtLayer->SetExpandInLegend(layer->IsExpandInLegend());
-                rtLayer->SetLegendLabel(layer->GetLegendLabel());
-            }
+            rtLayer->SetExpandInLegend(layer->IsExpandInLegend());
+            rtLayer->SetLegendLabel(layer->GetLegendLabel());
             rtLayer->SetSelectable(layer->IsSelectable());
             rtLayer->SetDisplayOrder(displayOrder);
 
@@ -348,12 +341,9 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
             Ptr<MgLayerGroup> rtGroup = new MgLayerGroup(groupName);
             rtGroup->SetVisible(baseGroup->IsVisible());
             rtGroup->SetLayerGroupType(MgLayerGroupType::BaseMap);
-            rtGroup->SetDisplayInLegend(showInLegend = baseGroup->IsShowInLegend());
-            if(showInLegend)
-            {
-                rtGroup->SetExpandInLegend(baseGroup->IsExpandInLegend());
-                rtGroup->SetLegendLabel(baseGroup->GetLegendLabel());
-            }
+            rtGroup->SetDisplayInLegend(baseGroup->IsShowInLegend());
+            rtGroup->SetExpandInLegend(baseGroup->IsExpandInLegend());
+            rtGroup->SetLegendLabel(baseGroup->GetLegendLabel());
 
             // NOTE: base groups do not have a parent group
 
@@ -379,11 +369,8 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
                         rtLayer->SetVisible(true);
                         rtLayer->SetLayerType(MgLayerType::BaseMap);
                         rtLayer->SetDisplayInLegend(baseLayer->IsShowInLegend());
-                        if(baseLayer->IsShowInLegend())
-                        {
-                            rtLayer->SetExpandInLegend(baseLayer->IsExpandInLegend());
-                            rtLayer->SetLegendLabel(baseLayer->GetLegendLabel());
-                        }
+                        rtLayer->SetExpandInLegend(baseLayer->IsExpandInLegend());
+                        rtLayer->SetLegendLabel(baseLayer->GetLegendLabel());
                         rtLayer->SetSelectable(baseLayer->IsSelectable());
                         rtLayer->SetDisplayOrder(displayOrder);
 
