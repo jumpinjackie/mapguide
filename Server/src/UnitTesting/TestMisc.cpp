@@ -103,6 +103,11 @@ void TestMisc::TestStart()
         Ptr<MgByteReader> mdfrdr = mdfsrc->GetReader();
         m_svcResource->SetResource(mapres, mdfrdr, NULL);
 
+        Ptr<MgResourceIdentifier> mapres2 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan_833.MapDefinition");
+        Ptr<MgByteSource> mdfsrc2 = new MgByteSource(L"../UnitTestFiles/UT_Sheboygan_833.mdf", false);
+        Ptr<MgByteReader> mdfrdr2 = mdfsrc2->GetReader();
+        m_svcResource->SetResource(mapres2, mdfrdr2, NULL);
+
         //publish the layer definitions
         Ptr<MgResourceIdentifier> ldfres1 = new MgResourceIdentifier(L"Library://UnitTests/Layers/HydrographicPolygons.LayerDefinition");
         Ptr<MgByteSource> ldfsrc1 = new MgByteSource(L"../UnitTestFiles/UT_HydrographicPolygons.ldf", false);
@@ -193,6 +198,9 @@ void TestMisc::TestEnd()
         //delete the map definition
         Ptr<MgResourceIdentifier> mapres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
         m_svcResource->DeleteResource(mapres);
+
+        Ptr<MgResourceIdentifier> mapres2 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan_833.MapDefinition");
+        m_svcResource->DeleteResource(mapres2);
 
         //delete the layer definitions
         Ptr<MgResourceIdentifier> ldfres1 = new MgResourceIdentifier(L"Library://UnitTests/Layers/HydrographicPolygons.LayerDefinition");
@@ -471,6 +479,36 @@ void TestMisc::TestCase_611()
         mapLayers->Insert(0, layer);
 
         CPPUNIT_ASSERT_THROW_MG(map1->Save(), MgGroupNotFoundException*);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestMisc::TestCase_833()
+{
+    try
+    {
+        Ptr<MgResourceIdentifier> mapRes1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan_833.MapDefinition");
+        Ptr<MgMap> map1 = new MgMap(m_siteConnection);
+        map1->Create(mapRes1, L"UnitTestSheboygan1");
+
+        Ptr<MgLayerGroupCollection> groups = map1->GetLayerGroups();
+        Ptr<MgLayerCollection> layers = map1->GetLayers();
+
+        //These are the ones initially hidden from the legend
+        Ptr<MgLayerGroup> group = groups->GetItem(L"Municipal");
+        Ptr<MgLayerBase> layer = layers->GetItem(L"HydrographicPolygons");
+
+        CPPUNIT_ASSERT(!group->GetLegendLabel().empty());
+        CPPUNIT_ASSERT(!layer->GetLegendLabel().empty());
     }
     catch (MgException* e)
     {
