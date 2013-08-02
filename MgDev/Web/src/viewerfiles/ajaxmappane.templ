@@ -884,7 +884,8 @@ function OnMouseDown(e)
         hidePopup(tbMenu);
         hidePopup(ctxMenu);
         hidePopup(infoMenu);
-        parent.ForwardMouseDown(document, e);
+        if (typeof(parent.ForwardMouseDown) == 'function') //May not be ready
+            parent.ForwardMouseDown(document, e);
     }
     else
         return false;
@@ -1285,7 +1286,7 @@ function OnMouseMove(e)
             hlData.url = "";
             if(!IsInSliderSpace(x, y, true))
             {
-                if(!parent.InMeasure())
+                if(typeof(parent.InMeasure) == 'function' && !parent.InMeasure())
                 {
                     if(x >= 0 && haveTooltip)
                     {
