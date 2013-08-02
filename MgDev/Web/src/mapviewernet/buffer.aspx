@@ -268,6 +268,11 @@ String dataSource = "";
 
                 do
                 {
+                    if (String.IsNullOrEmpty(geomPropName)) 
+                    {
+                        geomPropName = selLayer.GetFeatureGeometryName();
+                    }
+                
                     MgByteReader geomReader = features.GetGeometry(geomPropName);
                     MgGeometry geom = agfRW.Read(geomReader);
 
