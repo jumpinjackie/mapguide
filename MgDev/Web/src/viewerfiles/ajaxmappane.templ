@@ -2986,6 +2986,9 @@ function RequestCircleSelection(x, y, r, append)
 
 function RequestPolygonSelection(xs, ys, append)
 {
+    if (xs.length <= 3)
+        return;
+
     var wkt = "POLYGON((";
     for(var i=0; i < xs.length; i++)
     {
