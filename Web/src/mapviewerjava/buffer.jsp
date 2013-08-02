@@ -288,6 +288,9 @@ String locale;
 
                 do
                 {
+                    if (geomPropName == null || geomPropName.equals("")) {
+                        geomPropName = selLayer.GetFeatureGeometryName();
+                    }
                     MgByteReader geomReader = features.GetGeometry(geomPropName);
                     MgGeometry geom = agfRW.Read(geomReader);
 

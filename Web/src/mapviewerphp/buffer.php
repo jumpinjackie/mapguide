@@ -255,6 +255,9 @@
 
                 do
                 {
+                    if (strlen($geomPropName) == 0) {
+                        $geomPropName = $selLayer->GetFeatureGeometryName();
+                    }
                     $geomReader = $features->GetGeometry($geomPropName);
                     $geom = $agfRW->Read($geomReader);
 
