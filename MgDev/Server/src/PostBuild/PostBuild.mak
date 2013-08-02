@@ -182,6 +182,7 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
         ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
         ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
+        ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf \
@@ -442,6 +443,7 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
         ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
         ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
+        ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf \
@@ -702,6 +704,7 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
           ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
           ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
+          ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf \
@@ -962,6 +965,7 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
           ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
           ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
+          ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf \
@@ -1095,6 +1099,7 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf           del /F ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf
@@ -1223,6 +1228,7 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf           del /F ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf
@@ -1351,6 +1357,7 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf           del /F ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf
@@ -1477,6 +1484,7 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf           del /F ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf
@@ -1730,6 +1738,7 @@ debug(v100) : ..\..\bin\debug(v100)\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
         ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
         ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
+        ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf \
@@ -1989,6 +1998,7 @@ debug(v100)64 : ..\..\bin\debug(v100)64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
         ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
         ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
+        ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf \
@@ -2248,6 +2258,7 @@ release(v100) : ..\..\bin\release(v100)\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
           ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
           ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
+          ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf \
@@ -2507,6 +2518,7 @@ release(v100)64 : ..\..\bin\release(v100)64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
           ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
           ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
+          ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf \
@@ -2639,6 +2651,7 @@ cleandebug(v100):
     if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf           del /F ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf
@@ -2766,6 +2779,7 @@ cleandebug(v100)64:
     if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf           del /F ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf
@@ -2893,6 +2907,7 @@ cleanrelease(v100):
     if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf           del /F ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf
@@ -3018,6 +3033,7 @@ cleanrelease(v100)64:
     if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf           del /F ..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf
@@ -3115,6 +3131,7 @@ cleanrelease(v100)64:
 "..\..\..\UnitTest\TestData\MappingService\UT_SheboyganWithWatermark.mdf" :
 "..\..\..\UnitTest\TestData\MappingService\UT_PoweredByMapGuide.wdf" :
 "..\..\..\UnitTest\TestData\MappingService\UT_Sheboygan.mdf" :
+"..\..\..\UnitTest\TestData\MappingService\UT_Sheboygan_833.mdf" :
 "..\..\..\UnitTest\TestData\MappingService\UT_HydrographicPolygons.sdf" :
 "..\..\..\UnitTest\TestData\MappingService\UT_HydrographicPolygons.fs" :
 "..\..\..\UnitTest\TestData\MappingService\UT_HydrographicPolygons.ldf" :
@@ -3293,6 +3310,10 @@ cleanrelease(v100)64:
 ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf : "..\..\..\UnitTest\TestData\MappingService\UT_Sheboygan.mdf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_Sheboygan.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_Sheboygan.mdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_Sheboygan_833.mdf : "..\..\..\UnitTest\TestData\MappingService\UT_Sheboygan_833.mdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_Sheboygan_833.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_Sheboygan_833.mdf" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf : "..\..\..\UnitTest\TestData\MappingService\UT_HydrographicPolygons.sdf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
