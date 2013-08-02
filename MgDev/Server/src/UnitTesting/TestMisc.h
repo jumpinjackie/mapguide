@@ -27,6 +27,7 @@ class TestMisc : public CppUnit::TestFixture
 
     CPPUNIT_TEST(TestCase_CommonExceptionMessages);
     CPPUNIT_TEST(TestCase_611);
+    CPPUNIT_TEST(TestCase_833);
     CPPUNIT_TEST(TestCase_1304);
     CPPUNIT_TEST(TestCase_MapLayerCollections);
 
@@ -44,6 +45,7 @@ public:
 
     void TestCase_CommonExceptionMessages();
     void TestCase_611();
+    void TestCase_833();
     void TestCase_1304();
     void TestCase_MapLayerCollections();
 
