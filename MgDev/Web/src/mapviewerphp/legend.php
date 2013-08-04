@@ -354,7 +354,7 @@ function BuildLayerDefinitionData($layerData, $layerVarName, &$output)
                     if($showInLegend->item(0)->nodeValue == "false")
                         continue;   // This typestyle does not need to be shown in the legend
 
-                $rules = $typeStyle->item(0)->getElementsByTagName($ruleNames[$ts]);
+                $rules = $typeStyle->item($st)->getElementsByTagName($ruleNames[$ts]);
                 for($r = 0; $r < $rules->length; $r++)
                 {
                     $rule = $rules->item($r);
