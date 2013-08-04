@@ -116,8 +116,7 @@
       <AdditionalDependencies>msi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\apache_actions.def</ModuleDefinitionFile>
       <ProgramDatabaseFile>.\bin$(PlatformToolsetVersion)_$(Platform)\apache_actions.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -164,8 +163,7 @@
       <AdditionalDependencies>msi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\apache_actions.def</ModuleDefinitionFile>
       <ProgramDatabaseFile>.\bin$(PlatformToolsetVersion)_$(Platform)\apache_actions.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -211,8 +209,7 @@
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;msi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Debug$(PlatformToolsetVersion)_$(Platform)\apache_actions.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\apache_actions.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\Debug$(PlatformToolsetVersion)_$(Platform)\apache_actions.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -258,8 +255,7 @@
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;msi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Debug$(PlatformToolsetVersion)_$(Platform)\apache_actions.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\apache_actions.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\Debug$(PlatformToolsetVersion)_$(Platform)\apache_actions.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -295,6 +291,9 @@
     <ClInclude Include="apache_actions.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="StdAfx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="apache_actions.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

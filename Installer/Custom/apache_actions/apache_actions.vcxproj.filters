@@ -38,4 +38,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="apache_actions.def">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
