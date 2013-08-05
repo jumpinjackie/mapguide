@@ -79,8 +79,8 @@ const double bitmapDpi = STANDARD_DISPLAY_DPI;
 
 const double legendSpacing = bitmapPixelHeight / bitmapDpi + 0.005;
 const double defaultLegendMargin = 0.1; // inch
-const double legendFontHeightMeters = 0.002;
-const double legendTextVertAdjust = 0.07;  // inch
+const double legendFontHeightMeters = 0.003;
+const double legendTextVertAdjust = 0.06;  // inch
 
 
 // Static helper method to draw a PNG icon.  Calling Renderer::ProcessRaster
@@ -156,6 +156,9 @@ void MgLegendPlotUtil::AddLegendElement(double dMapScale, Renderer& dr, MgMap* m
     RS_LineStroke lineStroke;
     dr.ProcessPolyline(&lb, lineStroke);
 
+    //Pad left at the top-level
+    legendOffsetX += (defaultLegendMargin * convertUnits);
+
     //And then do the content.
     BuildLegendContent(map, dMapScale, legendSpec, legendOffsetX, legendOffsetY, dr, convertUnits);
 }
@@ -169,6 +172,10 @@ void MgLegendPlotUtil::BuildLegendContent(MgMap* map, double scale, MgPlotSpecif
     textDef.halign() = RS_HAlignment_Left;
     textDef.valign() = RS_VAlignment_Base;
 
+    //for convenience compute legend bitmap size in plot units (inches, mm, pixels, whatever)
+    double dIconWidth = ((double)bitmapPixelWidth / bitmapDpi)*convertUnits;
+    double dIconHeight = ((double)bitmapPixelHeight / bitmapDpi)*convertUnits;
+
     // Get the layer info
     double x = legendOffsetX + legendSpec->GetMarginLeft();
     double y = legendOffsetY + legendSpec->GetPaperHeight() - legendSpec->GetMarginTop() - legendFontHeightMeters*M_TO_IN*convertUnits;
@@ -179,57 +186,6 @@ void MgLegendPlotUtil::BuildLegendContent(MgMap* map, double scale, MgPlotSpecif
 
     // Add legend entries for layers that do not belong to a group
     ProcessLayersForLegend(map, scale, NULL, x, y, textDef, dr, legendSpec, legendOffsetY, convertUnits);
-
-    // do layer groups
-    Ptr<MgLayerGroupCollection> mggroups = map->GetLayerGroups();
-    Ptr<MgLayerCollection> layers = map->GetLayers();
-
-    // iterate over groups and draw each group's layers
-    for (int k = 0; k < mggroups->GetCount(); k++)
-    {
-        Ptr<MgLayerGroup> mggroup = mggroups->GetItem(k);
-
-        // Count number of visible layers in this group.
-        bool hasVisibleLayers = false;
-        for (int l = 0; l < layers->GetCount(); l++)
-        {
-            Ptr<MgLayerBase> layer = layers->GetItem(l);
-            Ptr<MgLayerGroup> layerGroup = layer->GetGroup();
-            if ((layer->IsVisible()) && (layerGroup.p == mggroup.p))
-            {
-                hasVisibleLayers = true;
-                break;
-            }
-        }
-        if (!hasVisibleLayers)
-            continue;
-
-        if (mggroup == NULL)
-        {
-            throw new MgNullReferenceException(L"MgLegendPlotUtil.AddLegendElement", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        Ptr<MgLayerGroup> mgparent = mggroup->GetGroup();
-
-        double indent = 0;
-        while (mgparent)
-        {
-            indent += MgPrintLayout::GroupIndent;
-            mgparent = mgparent->GetGroup();
-        }
-
-        x = legendOffsetX + (defaultLegendMargin + indent)*convertUnits;
-
-        RS_LabelInfo info(x, y + legendTextVertAdjust*convertUnits, textDef);
-        dr.ProcessLabelGroup(&info, 1, mggroup->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
-
-        y -= legendSpacing*convertUnits;
-
-        if (y < legendSpec->GetMarginBottom())
-            break;
-
-        // Process the layers
-        ProcessLayersForLegend(map, scale, mggroup, x, y, textDef, dr, legendSpec, legendOffsetY, convertUnits);
-    }
 }
 
 
@@ -254,6 +210,28 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
     //bottom of the legend -- where we stop drawing
     double bottomLimit = legendOffsetY + legendSpec->GetMarginBottom();
 
+    if (NULL != mggroup)
+    {
+        x = startX - initialMarginX;
+        // use group icon
+        RS_Bounds b2(x, y, x + dIconWidth, y + dIconHeight);
+        DrawPNG(&dr, (unsigned char*)LAYER_GROUP_ICON, sizeof(LAYER_GROUP_ICON), bitmapPixelWidth, bitmapPixelHeight, b2);
+
+        // Add the group legend label.
+        RS_LabelInfo info(x + dIconWidth + (defaultLegendMargin * convertUnits), y + legendTextVertAdjust*convertUnits, textDef);
+        dr.ProcessLabelGroup(&info, 1, mggroup->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
+
+        // Indent for children
+        x += initialMarginX;
+
+        //move y cursor down one line
+        y -= verticalDelta;
+
+        if (y < bottomLimit)
+        {
+            return;
+        }
+    }
     // build the list of layers that need to be processed
     Ptr<MgLayerCollection> layers = map->GetLayers();
     for (int i = 0; i < layers->GetCount(); i++)
@@ -408,6 +386,25 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
         if (y < bottomLimit)
         {
             break;
+        }
+    }
+    
+    //Process child groups of this legend
+    Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
+    for (int i = 0; i < groups->GetCount(); i++)
+    {
+        Ptr<MgLayerGroup> group = groups->GetItem(i);
+        if (!group->GetDisplayInLegend())
+            continue;
+
+        Ptr<MgLayerGroup> groupParent = group->GetGroup();
+        if (groupParent.p == mggroup)
+        {
+            ProcessLayersForLegend(map, mapScale, group, startX + initialMarginX, y, textDef, dr, legendSpec, legendOffsetY, convertUnits);
+            if (y < bottomLimit)
+            {
+                break;
+            }
         }
     }
 }
