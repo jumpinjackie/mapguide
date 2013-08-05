@@ -685,20 +685,44 @@ void TestRenderingService::TestCase_RenderLegend(CREFSTRING imageFormat, CREFSTR
         Ptr<MgLayerGroupCollection> layerGroups = map->GetLayerGroups();
         Ptr<MgLayerCollection> layers = map->GetLayers();
 
-        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Library://UnitTests/Layers/Parcels.LayerDefinition");
+        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Library://UnitTests/Layers/HydrographicPolygons.LayerDefinition");
+        Ptr<MgResourceIdentifier> ldfRail = new MgResourceIdentifier(L"Library://UnitTests/Layers/Rail.LayerDefinition");
 
-        Ptr<MgLayerGroup> group = new MgLayerGroup(L"Can't see me");
-        group->SetLegendLabel(L"Can't see me");
+        Ptr<MgLayerGroup> group = new MgLayerGroup(L"Test Group");
+        group->SetLegendLabel(L"Test Group");
         group->SetDisplayInLegend(true);
         layerGroups->Add(group);
 
+        Ptr<MgLayerGroup> group1 = new MgLayerGroup(L"Nest top level");
+        group1->SetLegendLabel(L"Nest top level");
+        group1->SetDisplayInLegend(true);
+        layerGroups->Add(group1);
+
+        Ptr<MgLayerGroup> group2 = new MgLayerGroup(L"Nest child");
+        group2->SetLegendLabel(L"Nest child (Nest top level)");
+        group2->SetDisplayInLegend(true);
+        group2->SetGroup(group1);
+        layerGroups->Add(group2);
+
+        Ptr<MgLayerGroup> group3 = new MgLayerGroup(L"Not visible in legend");
+        group3->SetLegendLabel(L"Not visible in legend");
+        group3->SetDisplayInLegend(false);
+        layerGroups->Add(group3);
+
         Ptr<MgLayer> layer = new MgLayer(resId, m_svcResource);
-        layer->SetName(L"MyParcels");
-        layer->SetLegendLabel(L"Parcels");
+        layer->SetName(L"HydroPolygons");
+        layer->SetLegendLabel(L"HydroPolygons (Test Group)");
         layer->SetGroup(group);
         layer->SetDisplayInLegend(true);
 
+        Ptr<MgLayer> layer2 = new MgLayer(ldfRail, m_svcResource);
+        layer2->SetName(L"RailUnderNestedGroup");
+        layer2->SetLegendLabel(L"Rail (Nest Child)");
+        layer2->SetGroup(group2);
+        layer2->SetDisplayInLegend(true);
+
         layers->Add(layer);
+        layers->Add(layer2);
 
         //Re-draw at 75k. Layer group should not be there because it has no visible layers
         map->SetViewScale(75000.0);
