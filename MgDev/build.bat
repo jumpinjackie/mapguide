@@ -278,7 +278,7 @@ echo [install]: Web Tier - localized
 echo [install]: Web Tier - mapadmin
 %XCOPY% "%MG_WEB_SRC%\mapadmin" "%MG_OUTPUT_WEB%\www\mapadmin" /EXCLUDE:%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapagent
-%XCOPY% "%MG_WEB_SRC%\mapagent" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:svn_excludes.txt+mapagent_excludes.txt+%TYPEBUILD%_excludes.txt+%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_BUILD_MAPAGENT_PATH%" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:svn_excludes.txt+mapagent_excludes.txt+%TYPEBUILD%_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - MapGuide API unmanaged binaries
 %XCOPY% "%MG_WEB_BIN%\%TYPEBUILD%" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:php_excludes.txt+dotnetapi_excludes.txt+dotnetxml_excludes.txt+java_excludes.txt+svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapagent test forms
