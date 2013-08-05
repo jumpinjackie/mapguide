@@ -23,6 +23,7 @@
 #include "SLDSymbols.h"
 #include "SE_StyleVisitor.h"
 #include "SE_BufferPool.h"
+#include <cmath>
 
 extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
 
