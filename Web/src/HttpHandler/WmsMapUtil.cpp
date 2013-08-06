@@ -132,8 +132,12 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
     if (NULL != layerDefIds && layerDefIds->GetCount() > 0)
     {
         Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
-        Ptr<MgCoordinateSystem> mapCs = factory->Create(sWKT);
         Ptr<MgCoordinateSystemTransform> csTrans;
+        Ptr<MgCoordinateSystem> mapCs = NULL;
+        if (sWKT.length() > 0)
+        {            
+            mapCs = factory->Create(sWKT);
+        }
 
         Ptr<MgLayerCollection> mapLayers = map->GetLayers();
 
@@ -153,26 +157,26 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
             if(layerDefs->Next())
             {
                 // Get user defined boundingbox 
+                STRING sMinX, sMinY, sMaxX, sMaxY;
+                sMinX = L"0";
+                sMinY = L"0";
+                sMaxX = L"0";
+                sMaxY = L"0";
                 MgUtilDictionary currentDef(NULL);
                 layerDefs->GenerateDefinitions(currentDef);
-                STRING layerBounds = currentDef[L"Layer.Bounds"];
-                Ptr<MgStringCollection> wmsLayerBoundingbox = GetWMSlayerBoundingbox(sSRS, layerBounds);
-                STRING sMinX, sMinY, sMaxX, sMaxY;
-               
-                ASSERT(4 == wmsLayerBoundingbox->GetCount());
-                if(4 == wmsLayerBoundingbox->GetCount())
+                //if remove bounds when publish WMS, this currentDef is NULL.
+                if (currentDef.FindName(L"Layer.Bounds") != -1)
                 {
-                    sMinX = wmsLayerBoundingbox->GetItem(0);
-                    sMinY = wmsLayerBoundingbox->GetItem(1);
-                    sMaxX = wmsLayerBoundingbox->GetItem(2);
-                    sMaxY = wmsLayerBoundingbox->GetItem(3);
-                }
-                else
-                {
-                    sMinX = L"0";
-                    sMinY = L"0";
-                    sMaxX = L"0";
-                    sMaxY = L"0";
+                    STRING layerBounds = currentDef[L"Layer.Bounds"];
+                    Ptr<MgStringCollection> wmsLayerBoundingbox = GetWMSlayerBoundingbox(sSRS, layerBounds);
+                    ASSERT(4 == wmsLayerBoundingbox->GetCount());
+                    if(4 == wmsLayerBoundingbox->GetCount())
+                    {
+                        sMinX = wmsLayerBoundingbox->GetItem(0);
+                        sMinY = wmsLayerBoundingbox->GetItem(1);
+                        sMaxX = wmsLayerBoundingbox->GetItem(2);
+                        sMaxY = wmsLayerBoundingbox->GetItem(3);
+                    }
                 }
 
                 // User defined Boundingbox under map CS
@@ -252,16 +256,20 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
                                 scReader->Close();
                             }
 
+                            Ptr<MgEnvelope> layerCsExtent;
                             Ptr<MgCoordinateSystem> layerCs = (layerCoordSysWkt.empty()) ? NULL : factory->Create(layerCoordSysWkt);
-                            if(layerCs != NULL)
+                            if(layerCs != NULL && mapCs != NULL)
                             {   
                                 csTrans = factory->GetTransform(mapCs,layerCs);
                                 csTrans->IgnoreDatumShiftWarning(true);
                                 csTrans->IgnoreOutsideDomainWarning(true);
+                                // Transform user defined boundingbox to layer CS
+                                layerCsExtent = csTrans->Transform(wmsLayerExtent);
                             }
-
-                            // Transform user defined boundingbox to layer CS
-                            Ptr<MgEnvelope> layerCsExtent = csTrans->Transform(wmsLayerExtent);
+                            else 
+                            {
+                                layerCsExtent = extents;
+                            }
                             Ptr<MgCoordinate> layerCsLowerLeftCoordinate = layerCsExtent->GetLowerLeftCoordinate();
                             Ptr<MgCoordinate> layerCsUpperRightCoordinate = layerCsExtent->GetUpperRightCoordinate();
                             MgUtil::DoubleToString(layerCsLowerLeftCoordinate->GetX(),sMinX);
@@ -401,7 +409,7 @@ bool MgWmsMapUtil::UserDefinedSrsToWktMapping(MgOgcServer& oWms,STRING sSrs,REFS
 
 void MgWmsMapUtil::ProcessBoundingBoxAxes(STRING sSrs,REFSTRING bbox)
 {
-    if(sSrs.empty() || bbox.empty() ||sSrs == _("CRS:84")) //Workaround
+    if(sSrs.empty() || bbox.empty() || sSrs == _("CRS:84") || SZ_EQI(sSrs.c_str(), L"EPSG:0")) //Workaround
         return;
 
     Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
