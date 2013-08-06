@@ -532,7 +532,7 @@ bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
                         {
                             parser.Next();
                             STRING sText = parser.Current().Contents();
-                            if(SZ_EQI(sText.c_str(), crs))
+                            if(SZ_EQI(sText.c_str(), crs) || SZ_EQI(crs, L"EPSG:0"))
                             {
                                 bGlobalMatch = true;
                                 break;
