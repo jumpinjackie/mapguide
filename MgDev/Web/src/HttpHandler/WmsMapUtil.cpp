@@ -196,115 +196,120 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
                     layerDef.reset(mgLayer->GetLayerDefinition(resourceService,resId));
                     MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(layerDef.get());
                     MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(layerDef.get());
+                    MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(layerDef.get());
 
-                    // Spatial filter
-                    STRING filter;
-
-                    // Vector Layer
-                    if(NULL != vl)
+                    // This layer filter business does not apply to drawing layers as a DrawingLayerDefinition does not
+                    // provide any filtering mechanism. Such layers will be added as-is
+                    if (NULL == dl)
                     {
-                        filter = vl->GetFilter();
-                    }
-                    // Grid Layer
-                    if(NULL != gl)
-                    {
-                        filter = gl->GetFilter();
-                    }
-
-                    Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(mgLayer->GetFeatureSourceId());
-
-                    STRING qualifiedName = mgLayer->GetFeatureClassName();
-
-                    int pos = qualifiedName.find(L":");
-                    STRING schemaName = qualifiedName.substr(0,pos);
-                    STRING className = qualifiedName.substr(pos+1,qualifiedName.length()-pos-1);
-
-                    Ptr<MgClassDefinition> classDef = featureService->GetClassDefinition(fsId,schemaName,className);
-                    Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
-
-                    // filter on every geometric properties
-                    for(int i =0; i<propDefCol->GetCount(); i++)
-                    {
-                        Ptr<MgPropertyDefinition> prop = propDefCol->GetItem(i);
-                        if(prop->GetPropertyType() == MgFeaturePropertyType::GeometricProperty)
+                        // Spatial filter
+                        STRING filter;
+                        // Vector Layer
+                        if(NULL != vl)
                         {
-                            STRING spatialContextAssociation = L"";
-                            STRING layerCoordSysWkt = L"";
-                            
-                            //Get the layer CS
-                            MgGeometricPropertyDefinition* geomProp = static_cast<MgGeometricPropertyDefinition*>(prop.p);
-                            spatialContextAssociation = geomProp->GetSpatialContextAssociation();
+                            filter = vl->GetFilter();
+                        }
+                        // Grid Layer
+                        if(NULL != gl)
+                        {
+                            filter = gl->GetFilter();
+                        }
 
-                            Ptr<MgSpatialContextReader> scReader = featureService->GetSpatialContexts(fsId, false);
-                            if(scReader.p != NULL)
+                        Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(mgLayer->GetFeatureSourceId());
+
+                        STRING qualifiedName = mgLayer->GetFeatureClassName();
+
+                        int pos = qualifiedName.find(L":");
+                        STRING schemaName = qualifiedName.substr(0,pos);
+                        STRING className = qualifiedName.substr(pos+1,qualifiedName.length()-pos-1);
+
+                        Ptr<MgClassDefinition> classDef = featureService->GetClassDefinition(fsId,schemaName,className);
+                        Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
+
+                        // filter on every geometric properties
+                        for(int i =0; i<propDefCol->GetCount(); i++)
+                        {
+                            Ptr<MgPropertyDefinition> prop = propDefCol->GetItem(i);
+                            if(prop->GetPropertyType() == MgFeaturePropertyType::GeometricProperty)
                             {
-                                while(scReader->ReadNext())
+                                STRING spatialContextAssociation = L"";
+                                STRING layerCoordSysWkt = L"";
+                            
+                                //Get the layer CS
+                                MgGeometricPropertyDefinition* geomProp = static_cast<MgGeometricPropertyDefinition*>(prop.p);
+                                spatialContextAssociation = geomProp->GetSpatialContextAssociation();
+
+                                Ptr<MgSpatialContextReader> scReader = featureService->GetSpatialContexts(fsId, false);
+                                if(scReader.p != NULL)
                                 {
-                                    STRING csrName = scReader->GetName();
-                                    if(!spatialContextAssociation.empty() &&  csrName == spatialContextAssociation)
+                                    while(scReader->ReadNext())
                                     {
-                                        layerCoordSysWkt = scReader->GetCoordinateSystemWkt();
-                                        break;
+                                        STRING csrName = scReader->GetName();
+                                        if(!spatialContextAssociation.empty() &&  csrName == spatialContextAssociation)
+                                        {
+                                            layerCoordSysWkt = scReader->GetCoordinateSystemWkt();
+                                            break;
+                                        }
+                                        else if(layerCoordSysWkt.empty())
+                                        {
+                                            // This is the 1st spatial context returned
+                                            // This will be overwritten if we find the association
+                                            layerCoordSysWkt = scReader->GetCoordinateSystemWkt();
+                                        }
                                     }
-                                    else if(layerCoordSysWkt.empty())
-                                    {
-                                        // This is the 1st spatial context returned
-                                        // This will be overwritten if we find the association
-                                        layerCoordSysWkt = scReader->GetCoordinateSystemWkt();
-                                    }
+                                    scReader->Close();
                                 }
-                                scReader->Close();
-                            }
 
-                            Ptr<MgEnvelope> layerCsExtent;
-                            Ptr<MgCoordinateSystem> layerCs = (layerCoordSysWkt.empty()) ? NULL : factory->Create(layerCoordSysWkt);
-                            if(layerCs != NULL && mapCs != NULL)
-                            {   
-                                csTrans = factory->GetTransform(mapCs,layerCs);
-                                csTrans->IgnoreDatumShiftWarning(true);
-                                csTrans->IgnoreOutsideDomainWarning(true);
-                                // Transform user defined boundingbox to layer CS
-                                layerCsExtent = csTrans->Transform(wmsLayerExtent);
-                            }
-                            else 
-                            {
-                                layerCsExtent = extents;
-                            }
-                            Ptr<MgCoordinate> layerCsLowerLeftCoordinate = layerCsExtent->GetLowerLeftCoordinate();
-                            Ptr<MgCoordinate> layerCsUpperRightCoordinate = layerCsExtent->GetUpperRightCoordinate();
-                            MgUtil::DoubleToString(layerCsLowerLeftCoordinate->GetX(),sMinX);
-                            MgUtil::DoubleToString(layerCsLowerLeftCoordinate->GetY(),sMinY);
-                            MgUtil::DoubleToString(layerCsUpperRightCoordinate->GetX(),sMaxX);
-                            MgUtil::DoubleToString(layerCsUpperRightCoordinate->GetY(),sMaxY);
+                                Ptr<MgEnvelope> layerCsExtent;
+                                Ptr<MgCoordinateSystem> layerCs = (layerCoordSysWkt.empty()) ? NULL : factory->Create(layerCoordSysWkt);
+                                if(layerCs != NULL && mapCs != NULL)
+                                {   
+                                    csTrans = factory->GetTransform(mapCs,layerCs);
+                                    csTrans->IgnoreDatumShiftWarning(true);
+                                    csTrans->IgnoreOutsideDomainWarning(true);
+                                    // Transform user defined boundingbox to layer CS
+                                    layerCsExtent = csTrans->Transform(wmsLayerExtent);
+                                }
+                                else 
+                                {
+                                    layerCsExtent = extents;
+                                }
+                                Ptr<MgCoordinate> layerCsLowerLeftCoordinate = layerCsExtent->GetLowerLeftCoordinate();
+                                Ptr<MgCoordinate> layerCsUpperRightCoordinate = layerCsExtent->GetUpperRightCoordinate();
+                                MgUtil::DoubleToString(layerCsLowerLeftCoordinate->GetX(),sMinX);
+                                MgUtil::DoubleToString(layerCsLowerLeftCoordinate->GetY(),sMinY);
+                                MgUtil::DoubleToString(layerCsUpperRightCoordinate->GetX(),sMaxX);
+                                MgUtil::DoubleToString(layerCsUpperRightCoordinate->GetY(),sMaxY);
 
-                            STRING propName = prop->GetName();
+                                STRING propName = prop->GetName();
                             
-                            STRING boundingboxGeom = L"GeomFromText('POLYGON((" 
-                                                        + sMinX + L" " + sMinY + L","
-                                                        + sMaxX + L" " + sMinY + L","
-                                                        + sMaxX + L" " + sMaxY + L","
-                                                        + sMinX + L" " + sMaxY + L","
-                                                        + sMinX + L" " + sMinY + L"))')";
-                            if(filter.empty())
-                            {
-                                filter = L"( " + propName + L" ENVELOPEINTERSECTS " + boundingboxGeom + L" )";
-                            }
-                            else
-                            {
-                                filter += L" AND ( " + propName + L" ENVELOPEINTERSECTS " + boundingboxGeom + L" )";
+                                STRING boundingboxGeom = L"GeomFromText('POLYGON((" 
+                                                            + sMinX + L" " + sMinY + L","
+                                                            + sMaxX + L" " + sMinY + L","
+                                                            + sMaxX + L" " + sMaxY + L","
+                                                            + sMinX + L" " + sMaxY + L","
+                                                            + sMinX + L" " + sMinY + L"))')";
+                                if(filter.empty())
+                                {
+                                    filter = L"( " + propName + L" ENVELOPEINTERSECTS " + boundingboxGeom + L" )";
+                                }
+                                else
+                                {
+                                    filter += L" AND ( " + propName + L" ENVELOPEINTERSECTS " + boundingboxGeom + L" )";
+                                }
                             }
                         }
-                    }
 
-                     // Vector Layer
-                    if(NULL != vl)
-                    {
-                        vl->SetFilter(filter);
-                    }
-                    // Grid Layer
-                    if(NULL != gl)
-                    {
-                        gl->SetFilter(filter);
+                         // Vector Layer
+                        if(NULL != vl)
+                        {
+                            vl->SetFilter(filter);
+                        }
+                        // Grid Layer
+                        if(NULL != gl)
+                        {
+                            gl->SetFilter(filter);
+                        }
                     }
 
                     MdfParser::SAX2Parser parser;
