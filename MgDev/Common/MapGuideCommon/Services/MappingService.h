@@ -467,7 +467,90 @@ PUBLISHED_API:
                                            INT32 iconHeight,
                                            INT32 requestedFeatures,
                                            INT32 iconsPerScaleRange) = 0;
-                                             
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns an XML-based description of the runtime map
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgByteReader DescribeRuntimeMap(MgMap map, int requestedFeatures, int iconsPerScaleRange);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgByteReader DescribeRuntimeMap(MgMap map, int requestedFeatures, int iconsPerScaleRange);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgByteReader DescribeRuntimeMap(MgMap map, int requestedFeatures, int iconsPerScaleRange);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param map (MgMap)
+    /// The map to describe
+    /// \param requestedFeatures (int)
+    /// A bitmask representing the desired information to return in the XML response: 
+    /// 1=Layer/Group structure, 2=Layer Icons, 4=Layer Feature Source Information
+    /// \param iconsPerScaleRange (int)
+    /// The number of legend icons per scale range to render inline in the XML response as base64 strings. 
+    /// If a scale range contains a number of rules that exceeds this value, only the first and
+    /// last rules of a type style in the scale range will have inline icons
+    ///
+    /// \remarks
+    /// The bitmask values of 2 (Layer Icons) and 4 (Layer Feature Source Information) have no effect if 1 (Layer/Group structure)
+    /// is not specified
+    ///
+    /// \return
+    /// Returns an XML-based description of the runtime map
+    ///
+    virtual MgByteReader* DescribeRuntimeMap(MgMap* map,
+                                             INT32 requestedFeatures,
+                                             INT32 iconsPerScaleRange) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns an XML-based description of the given runtime map
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgByteReader DescribeRuntimeMap(MgMap map, string iconFormat, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgByteReader DescribeRuntimeMap(MgMap map, String iconFormat, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgByteReader DescribeRuntimeMap(MgMap map, string iconFormat, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param map (MgMap)
+    /// The map to describe
+    /// \param iconFormat (String/string)
+    /// The desired image format for icons (from MgImageFormats)
+    /// \param iconWidth (int)
+    /// The width of each individual inline legend icons. Has no effect if icons was not requested in the response.
+    /// \param iconHeight (int)
+    /// The height of each individual inline legend icons. Has no effect if icons was not requested in the response.
+    /// \param requestedFeatures (int)
+    /// A bitmask representing the desired information to return in the XML response: 
+    /// 1=Layer/Group structure, 2=Layer Icons, 4=Layer Feature Source Information
+    /// \param iconsPerScaleRange (int)
+    /// The number of legend icons per scale range to render inline in the XML response as base64 strings. 
+    /// If a scale range contains a number of rules that exceeds this value, only the first and
+    /// last rules of a type style in the scale range will have inline icons
+    ///
+    /// \remarks
+    /// The bitmask values of 2 (Layer Icons) and 4 (Layer Feature Source Information) have no effect if 1 (Layer/Group structure)
+    /// is not specified
+    ///
+    /// \return
+    /// Returns an XML-based description of the runtime map
+    ///
+    /// \exception MgInvalidArgumentException
+    /// \exception MgNullArgumentException
+    ///
+    virtual MgByteReader* DescribeRuntimeMap(MgMap* map,
+                                             CREFSTRING iconFormat,
+                                             INT32 iconWidth,
+                                             INT32 iconHeight,
+                                             INT32 requestedFeatures,
+                                             INT32 iconsPerScaleRange) = 0;
 
 EXTERNAL_API:
 
@@ -642,7 +725,9 @@ public:
         opIdGeneratePlot3           =  0x1111EE0A,
         opIdGenerateLegendImage     =  0x1111EE0D,
         opIdCreateRuntimeMap        =  0x1111EE0E,
-        opIdCreateRuntimeMap2       =  0x1111EE0F
+        opIdCreateRuntimeMap2       =  0x1111EE0F,
+        opIdDescribeRuntimeMap      =  0x1111EE10,
+        opIdDescribeRuntimeMap2     =  0x1111EE11
     };
 };
 /// \}

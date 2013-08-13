@@ -130,6 +130,17 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
                                                INT32 requestedFeatures,
                                                INT32 iconsPerScaleRange);
 
+        virtual MgByteReader* DescribeRuntimeMap(MgMap* map,
+                                                 INT32 requestedFeatures,
+                                                 INT32 iconsPerScaleRange);
+
+        virtual MgByteReader* DescribeRuntimeMap(MgMap* map,
+                                                 CREFSTRING iconFormat,
+                                                 INT32 iconWidth,
+                                                 INT32 iconHeight,
+                                                 INT32 requestedFeatures,
+                                                 INT32 iconsPerScaleRange);
+
         void SetConnectionProperties(MgConnectionProperties* connProp);
 
 // Data Members

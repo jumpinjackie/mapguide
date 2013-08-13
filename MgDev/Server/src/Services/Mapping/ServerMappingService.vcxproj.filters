@@ -49,6 +49,9 @@
     <ClCompile Include="OpCreateRuntimeMap.cpp">
       <Filter>Ops</Filter>
     </ClCompile>
+    <ClCompile Include="OpDescribeRuntimeMap.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MappingOperation.h">
@@ -94,6 +97,9 @@
     <ClInclude Include="ServerMappingService.h" />
     <ClInclude Include="ServerMappingServiceDefs.h" />
     <ClInclude Include="OpCreateRuntimeMap.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpDescribeRuntimeMap.h">
       <Filter>Ops</Filter>
     </ClInclude>
   </ItemGroup>

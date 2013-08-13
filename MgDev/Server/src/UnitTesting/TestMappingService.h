@@ -37,6 +37,7 @@ class TestMappingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_GetLegendImage);
     CPPUNIT_TEST(TestCase_GetLegendImagePointStyleWithConstRotations);
     CPPUNIT_TEST(TestCase_CreateRuntimeMap);
+    CPPUNIT_TEST(TestCase_DescribeRuntimeMap);
     //CPPUNIT_TEST(TestCase_QueryFeaturesImageMap);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
@@ -53,6 +54,7 @@ public:
     void TestEnd();
 
     void TestCase_CreateRuntimeMap();
+    void TestCase_DescribeRuntimeMap();
     void TestCase_GetMap();
     void TestCase_GetMapUpdate();
     void TestCase_SaveMap();

@@ -105,6 +105,8 @@ INTERNAL_API:
     static const int GenerateLegendImage        = 0x1111EE0D;
     static const int CreateRuntimeMap           = 0x1111EE0E;
     static const int CreateRuntimeMap2          = 0x1111EE0F;
+    static const int DescribeRuntimeMap         = 0x1111EE10;
+    static const int DescribeRuntimeMap2        = 0x1111EE11;
 };
 /// \endcond
 

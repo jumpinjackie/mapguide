@@ -79,6 +79,7 @@
 #include "HttpGetPlot.h"
 #include "HttpGetLegendImage.h"
 #include "HttpGetFeatureSetEnvelope.h"
+#include "HttpDescribeRuntimeMap.h"
 
 // Http Rendering Service operations
 #include "HttpGetDynamicMapOverlayImage.h"
@@ -342,6 +343,7 @@ bool InitializeStaticData()
     //declare each Http class creator, associate the operation name with it
     //
     httpClassCreators[MgHttpResourceStrings::opCreateRuntimeMap] = MgHttpCreateRuntimeMap::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opDescribeRuntimeMap] = MgHttpDescribeRuntimeMap::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetMap] = MgHttpGetMap::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetMapUpdate] = MgHttpGetMapUpdate::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetDrawing] = MgHttpGetDrawing::CreateObject;

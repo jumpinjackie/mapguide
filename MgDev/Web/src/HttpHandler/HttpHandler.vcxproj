@@ -246,6 +246,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="HttpDescribeRuntimeMap.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="HttpEnumerateRepositories.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -951,6 +957,7 @@
     <ClInclude Include="HttpDeleteRepository.h" />
     <ClInclude Include="HttpDeleteResource.h" />
     <ClInclude Include="HttpDeleteResourceData.h" />
+    <ClInclude Include="HttpDescribeRuntimeMap.h" />
     <ClInclude Include="HttpEnumerateRepositories.h" />
     <ClInclude Include="HttpEnumerateResourceData.h" />
     <ClInclude Include="HttpEnumerateResourceReferences.h" />

@@ -509,6 +509,129 @@ MgByteReader* MgProxyMappingService::CreateRuntimeMap(MgResourceIdentifier* mapD
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns an XML-based description of the runtime map
+///
+/// <!-- Syntax in .Net, Java, and PHP -->
+/// \htmlinclude DotNetSyntaxTop.html
+/// virtual MgByteReader DescribeRuntimeMap(MgMap map, int requestedFeatures, int iconsPerScaleRange);
+/// \htmlinclude SyntaxBottom.html
+/// \htmlinclude JavaSyntaxTop.html
+/// virtual MgByteReader DescribeRuntimeMap(MgMap map, int requestedFeatures, int iconsPerScaleRange);
+/// \htmlinclude SyntaxBottom.html
+/// \htmlinclude PHPSyntaxTop.html
+/// virtual MgByteReader DescribeRuntimeMap(MgMap map, int requestedFeatures, int iconsPerScaleRange);
+/// \htmlinclude SyntaxBottom.html
+///
+/// \param map (MgMap)
+/// The map to describe
+/// \param requestedFeatures (int)
+/// A bitmask representing the desired information to return in the XML response: 
+/// 1=Layer/Group structure, 2=Layer Icons, 4=Layer Feature Source Information
+/// \param iconsPerScaleRange (int)
+/// The number of legend icons per scale range to render inline in the XML response as base64 strings. 
+/// If a scale range contains a number of rules that exceeds this value, only the first and
+/// last rules of a type style in the scale range will have inline icons
+///
+/// \remarks
+/// The bitmask values of 2 (Layer Icons) and 4 (Layer Feature Source Information) have no effect if 1 (Layer/Group structure)
+/// is not specified
+///
+/// \return
+/// Returns an XML-based description of the runtime map
+///
+MgByteReader* MgProxyMappingService::DescribeRuntimeMap(MgMap* map,
+                                                        INT32 requestedFeatures,
+                                                        INT32 iconsPerScaleRange)
+{
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,
+                       MgCommand::knObject,
+                       MgMappingServiceOpId::DescribeRuntimeMap,
+                       3,
+                       Mapping_Service,
+                       BUILD_VERSION(2,6,0),
+                       MgCommand::knObject,    map,
+                       MgCommand::knInt32,     requestedFeatures,
+                       MgCommand::knInt32,     iconsPerScaleRange,
+                       MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns an XML-based description of the given runtime map
+///
+/// <!-- Syntax in .Net, Java, and PHP -->
+/// \htmlinclude DotNetSyntaxTop.html
+/// virtual MgByteReader DescribeRuntimeMap(MgMap map, string iconFormat, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+/// \htmlinclude SyntaxBottom.html
+/// \htmlinclude JavaSyntaxTop.html
+/// virtual MgByteReader DescribeRuntimeMap(MgMap map, String iconFormat, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+/// \htmlinclude SyntaxBottom.html
+/// \htmlinclude PHPSyntaxTop.html
+/// virtual MgByteReader DescribeRuntimeMap(MgMap map, string iconFormat, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+/// \htmlinclude SyntaxBottom.html
+///
+/// \param map (MgMap)
+/// The map to describe
+/// \param iconFormat (String/string)
+/// The desired image format for icons (from MgImageFormats)
+/// \param iconWidth (int)
+/// The width of each individual inline legend icons. Has no effect if icons was not requested in the response.
+/// \param iconHeight (int)
+/// The height of each individual inline legend icons. Has no effect if icons was not requested in the response.
+/// \param requestedFeatures (int)
+/// A bitmask representing the desired information to return in the XML response: 
+/// 1=Layer/Group structure, 2=Layer Icons, 4=Layer Feature Source Information
+/// \param iconsPerScaleRange (int)
+/// The number of legend icons per scale range to render inline in the XML response as base64 strings. 
+/// If a scale range contains a number of rules that exceeds this value, only the first and
+/// last rules of a type style in the scale range will have inline icons
+///
+/// \remarks
+/// The bitmask values of 2 (Layer Icons) and 4 (Layer Feature Source Information) have no effect if 1 (Layer/Group structure)
+/// is not specified
+///
+/// \return
+/// Returns an XML-based description of the runtime map
+///
+/// \exception MgInvalidArgumentException
+/// \exception MgNullArgumentException
+///
+MgByteReader* MgProxyMappingService::DescribeRuntimeMap(MgMap* map,
+                                                        CREFSTRING iconFormat,
+                                                        INT32 iconWidth,
+                                                        INT32 iconHeight,
+                                                        INT32 requestedFeatures,
+                                                        INT32 iconsPerScaleRange)
+{
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,
+                       MgCommand::knObject,
+                       MgMappingServiceOpId::DescribeRuntimeMap2,
+                       6,
+                       Mapping_Service,
+                       BUILD_VERSION(2,6,0),
+                       MgCommand::knObject,    map,
+                       MgCommand::knString,    &iconFormat,
+                       MgCommand::knInt32,     iconWidth,
+                       MgCommand::knInt32,     iconHeight,
+                       MgCommand::knInt32,     requestedFeatures,
+                       MgCommand::knInt32,     iconsPerScaleRange,
+                       MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// Sets the connection properties for the Proxy Service.  This

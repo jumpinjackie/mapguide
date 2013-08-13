@@ -40,6 +40,7 @@
 #include "HttpDeleteResource.cpp"
 #include "HttpDeleteResourceData.cpp"
 #include "HttpDescribeDrawing.cpp"
+#include "HttpDescribeRuntimeMap.cpp"
 #include "HttpDescribeSchema.cpp"
 #include "HttpEnumerateDataStores.cpp"
 #include "HttpEnumerateDrawingLayers.cpp"

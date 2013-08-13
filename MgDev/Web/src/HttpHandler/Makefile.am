@@ -38,6 +38,7 @@ include_SOURCES = \
   HttpDeleteResource.cpp \
   HttpDeleteResourceData.cpp \
   HttpDescribeDrawing.cpp \
+  HttpDescribeRuntimeMap.cpp \
   HttpDescribeSchema.cpp \
   HttpEnumerateDataStores.cpp \
   HttpEnumerateDrawingLayers.cpp \
@@ -163,6 +164,7 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpDeleteResource.h \
   HttpDeleteResourceData.h \
   HttpDescribeDrawing.h \
+  HttpDescribeRuntimeMap.h \
   HttpDescribeSchema.h \
   HttpEnumerateDataStores.h \
   HttpEnumerateDrawingLayers.h \

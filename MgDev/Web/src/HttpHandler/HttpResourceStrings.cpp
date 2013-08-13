@@ -189,6 +189,7 @@ const STRING MgHttpResourceStrings::opGetDrawingCoordinateSpace = L"GETDRAWINGCO
 
 // Mapping Service Operation Requests
 const STRING MgHttpResourceStrings::opCreateRuntimeMap = L"CREATERUNTIMEMAP";
+const STRING MgHttpResourceStrings::opDescribeRuntimeMap = L"DESCRIBERUNTIMEMAP";
 const STRING MgHttpResourceStrings::opGetMap = L"GETMAP";
 const STRING MgHttpResourceStrings::opGetMapUpdate = L"GETMAPUPDATE";
 const STRING MgHttpResourceStrings::opGetPlot = L"GETPLOT";

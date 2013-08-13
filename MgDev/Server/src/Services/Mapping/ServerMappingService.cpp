@@ -1862,26 +1862,21 @@ void MgServerMappingService::SetConnectionProperties(MgConnectionProperties*)
     // Do nothing.  No connection properties are required for Server-side service objects.
 }
 
-MgByteReader* MgServerMappingService::CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
-                                                       CREFSTRING sessionId,
-                                                       INT32 requestedFeatures,
-                                                       INT32 iconsPerScaleRange)
+MgByteReader* MgServerMappingService::DescribeRuntimeMap(MgMap* map,
+                                                         INT32 requestedFeatures,
+                                                         INT32 iconsPerScaleRange)
 {
-    CHECKNULL(mapDefinition, L"MgServerMappingService.CreateRuntimeMap");
-    STRING mapName = mapDefinition->GetName();
-    return CreateRuntimeMap(mapDefinition, mapName, sessionId, MgImageFormats::Png, LEGEND_BITMAP_SIZE, LEGEND_BITMAP_SIZE, requestedFeatures, iconsPerScaleRange);
+    CHECKNULL(map, L"MgServerMappingService.DescribeRuntimeMap");
+    return DescribeRuntimeMap(map, MgImageFormats::Png, LEGEND_BITMAP_SIZE, LEGEND_BITMAP_SIZE, requestedFeatures, iconsPerScaleRange);
 }
 
-MgByteReader* MgServerMappingService::CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
-                                                       CREFSTRING targetMapName,
-                                                       CREFSTRING sessionId,
-                                                       CREFSTRING iconFormat,
-                                                       INT32 iconWidth,
-                                                       INT32 iconHeight,
-                                                       INT32 requestedFeatures,
-                                                       INT32 iconsPerScaleRange)
+MgByteReader* MgServerMappingService::DescribeRuntimeMap(MgMap* map,
+                                                         CREFSTRING iconFormat,
+                                                         INT32 iconWidth,
+                                                         INT32 iconHeight,
+                                                         INT32 requestedFeatures,
+                                                         INT32 iconsPerScaleRange)
 {
-    CHECKARGUMENTNULL(mapDefinition, L"MgServerMappingService.CreateRuntimeMap");
     LayerDefinitionMap layerDefinitionMap;
     if (MgImageFormats::Png != iconFormat &&
         MgImageFormats::Gif != iconFormat &&
@@ -1890,7 +1885,7 @@ MgByteReader* MgServerMappingService::CreateRuntimeMap(MgResourceIdentifier* map
     {
         MgStringCollection args;
         args.Add(iconFormat);
-        throw new MgInvalidArgumentException(L"MgServerMappingService.CreateRuntimeMap", __LINE__, __WFILE__, NULL, L"MgInvalidImageFormat", &args);
+        throw new MgInvalidArgumentException(L"MgServerMappingService.DescribeRuntimeMap", __LINE__, __WFILE__, NULL, L"MgInvalidImageFormat", &args);
     }
     Ptr<MgByteReader> byteReader;
 
@@ -1899,25 +1894,9 @@ MgByteReader* MgServerMappingService::CreateRuntimeMap(MgResourceIdentifier* map
     if (m_svcResource == NULL)
         InitializeResourceService();
 
-    Ptr<MgSiteConnection> siteConn = new MgSiteConnection();
-    Ptr<MgUserInformation> userInfo = new MgUserInformation(sessionId);
-    siteConn->Open(userInfo);
-    Ptr<MgMap> map = new MgMap(siteConn);
-    map->Create(mapDefinition, targetMapName);
-    
-    STRING sStateId = L"Session:";
-    sStateId += sessionId;
-    sStateId += L"//";
-    sStateId += targetMapName;
-    sStateId += L".";
-    sStateId += MgResourceType::Map;
-
-    Ptr<MgResourceIdentifier> mapStateId = new MgResourceIdentifier(sStateId);
-    Ptr<MgSelection> sel = new MgSelection(map);
-    //Call our special Save() API that doesn't try to look for a MgUserInformation that's not
-    //there
-    sel->Save(m_svcResource, sessionId, targetMapName);
-    map->Save(m_svcResource, mapStateId);
+    STRING sessionId = map->GetSessionId();
+    STRING targetMapName = map->GetName();
+    Ptr<MgResourceIdentifier> mapDefinition = map->GetMapDefinition();
 
     //TODO: Possible future caching opportunity?
     std::string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";  // NOXLATE
@@ -2084,7 +2063,7 @@ MgByteReader* MgServerMappingService::CreateRuntimeMap(MgResourceIdentifier* map
     byteSource->SetMimeType(MgMimeType::Xml);
     byteReader = byteSource->GetReader();
 
-    MG_SERVER_MAPPING_SERVICE_CATCH(L"MgServerMappingService.CreateRuntimeMap")
+    MG_SERVER_MAPPING_SERVICE_CATCH(L"MgServerMappingService.DescribeRuntimeMap")
 
     //Cleanup our LayerDefinition pointers. Do it here so we don't leak on any exception
     for (LayerDefinitionMap::iterator it = layerDefinitionMap.begin(); it != layerDefinitionMap.end(); it++)
@@ -2095,6 +2074,70 @@ MgByteReader* MgServerMappingService::CreateRuntimeMap(MgResourceIdentifier* map
     layerDefinitionMap.clear();
 
     MG_SERVER_MAPPING_SERVICE_THROW()
+
+    return byteReader.Detach();
+}
+
+MgByteReader* MgServerMappingService::CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                                       CREFSTRING sessionId,
+                                                       INT32 requestedFeatures,
+                                                       INT32 iconsPerScaleRange)
+{
+    CHECKNULL(mapDefinition, L"MgServerMappingService.CreateRuntimeMap");
+    STRING mapName = mapDefinition->GetName();
+    return CreateRuntimeMap(mapDefinition, mapName, sessionId, MgImageFormats::Png, LEGEND_BITMAP_SIZE, LEGEND_BITMAP_SIZE, requestedFeatures, iconsPerScaleRange);
+}
+
+MgByteReader* MgServerMappingService::CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                                       CREFSTRING targetMapName,
+                                                       CREFSTRING sessionId,
+                                                       CREFSTRING iconFormat,
+                                                       INT32 iconWidth,
+                                                       INT32 iconHeight,
+                                                       INT32 requestedFeatures,
+                                                       INT32 iconsPerScaleRange)
+{
+    CHECKARGUMENTNULL(mapDefinition, L"MgServerMappingService.CreateRuntimeMap");
+    LayerDefinitionMap layerDefinitionMap;
+    if (MgImageFormats::Png != iconFormat &&
+        MgImageFormats::Gif != iconFormat &&
+        MgImageFormats::Png8 != iconFormat &&
+        MgImageFormats::Jpeg != iconFormat)
+    {
+        MgStringCollection args;
+        args.Add(iconFormat);
+        throw new MgInvalidArgumentException(L"MgServerMappingService.CreateRuntimeMap", __LINE__, __WFILE__, NULL, L"MgInvalidImageFormat", &args);
+    }
+    Ptr<MgByteReader> byteReader;
+
+    MG_SERVER_MAPPING_SERVICE_TRY()
+
+    if (m_svcResource == NULL)
+        InitializeResourceService();
+
+    Ptr<MgSiteConnection> siteConn = new MgSiteConnection();
+    Ptr<MgUserInformation> userInfo = new MgUserInformation(sessionId);
+    siteConn->Open(userInfo);
+    Ptr<MgMap> map = new MgMap(siteConn);
+    map->Create(mapDefinition, targetMapName);
+    
+    STRING sStateId = L"Session:";
+    sStateId += sessionId;
+    sStateId += L"//";
+    sStateId += targetMapName;
+    sStateId += L".";
+    sStateId += MgResourceType::Map;
+
+    Ptr<MgResourceIdentifier> mapStateId = new MgResourceIdentifier(sStateId);
+    Ptr<MgSelection> sel = new MgSelection(map);
+    //Call our special Save() API that doesn't try to look for a MgUserInformation that's not
+    //there
+    sel->Save(m_svcResource, sessionId, targetMapName);
+    map->Save(m_svcResource, mapStateId);
+
+    byteReader = DescribeRuntimeMap(map, iconFormat, iconWidth, iconHeight, requestedFeatures, iconsPerScaleRange);
+
+    MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgServerMappingService.CreateRuntimeMap")
 
     return byteReader.Detach();
 }

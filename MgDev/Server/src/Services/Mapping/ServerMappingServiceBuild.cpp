@@ -22,6 +22,7 @@
 #include "MappingOperationFactory.cpp"
 #include "MappingServiceHandler.cpp"
 #include "OpCreateRuntimeMap.cpp"
+#include "OpDescribeRuntimeMap.cpp"
 #include "OpGeneratePlot.cpp"
 #include "OpGenerateMap.cpp"
 #include "OpGenerateMapUpdate.cpp"

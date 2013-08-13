@@ -298,6 +298,7 @@ public:
 
     // Mapping services
     static const STRING opCreateRuntimeMap;
+    static const STRING opDescribeRuntimeMap;
     static const STRING opGetMap;
     static const STRING opGetMapUpdate;
     static const STRING opGetPlot;

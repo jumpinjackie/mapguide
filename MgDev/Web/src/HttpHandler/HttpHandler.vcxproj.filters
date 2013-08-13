@@ -383,6 +383,9 @@
     <ClCompile Include="HttpCreateRuntimeMap.cpp">
       <Filter>Mapping Service</Filter>
     </ClCompile>
+    <ClCompile Include="HttpDescribeRuntimeMap.cpp">
+      <Filter>Mapping Service</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HttpApplyResourcePackage.h">
@@ -752,6 +755,9 @@
     <ClInclude Include="XmlJsonConvert.h" />
     <ClInclude Include="HttpReaderStreamer.h" />
     <ClInclude Include="HttpCreateRuntimeMap.h">
+      <Filter>Mapping Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpDescribeRuntimeMap.h">
       <Filter>Mapping Service</Filter>
     </ClInclude>
   </ItemGroup>
