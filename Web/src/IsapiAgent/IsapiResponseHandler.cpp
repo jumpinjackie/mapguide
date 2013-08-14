@@ -192,7 +192,7 @@ void IsapiResponseHandler::SendError(MgException* e)
 {
     MG_TRY()
     STRING shortError = e->GetExceptionMessage();
-    STRING longError = e->GetDetails();
+    STRING stackTrace = e->GetStackTrace();
     STRING statusMessage = e->GetClassName();
     DWORD status = 559;
 
@@ -217,7 +217,7 @@ void IsapiResponseHandler::SendError(MgException* e)
         "<body>\n<h2>%s</h2>\n%s\n</body>\n</html>\n",
         MG_WCHAR_TO_CHAR(statusMessage),
         MG_WCHAR_TO_CHAR(shortError),
-        MG_WCHAR_TO_CHAR(longError));
+        MG_WCHAR_TO_CHAR(stackTrace));
 
 
     MG_CATCH(L"IsapiResponseHandler.SendError")

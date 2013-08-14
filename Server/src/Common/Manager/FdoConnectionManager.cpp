@@ -356,8 +356,6 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
                 MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
 
             STRING message = ex->GetDetails(locale);
-            message += L"\n";
-            message += ex->GetStackTrace(locale);
             MgStringCollection args;
             args.Add(resourceIdentifier->ToString());
             args.Add(message);
