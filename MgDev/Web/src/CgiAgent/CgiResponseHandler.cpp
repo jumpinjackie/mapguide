@@ -178,8 +178,9 @@ void CgiResponseHandler::SendError(MgException* e)
 {
     MG_TRY()
     STRING shortError = e->GetExceptionMessage();
-    STRING longError = e->GetDetails();
+    STRING stackTrace = e->GetStackTrace();
     STRING statusMessage = e->GetClassName();
+    STRING longError = e->GetDetails();
 
     //TODO: Use a string resource for html error text format
     printf(MapAgentStrings::StatusHeader, 559, MG_WCHAR_TO_CHAR(statusMessage));
@@ -192,7 +193,7 @@ void CgiResponseHandler::SendError(MgException* e)
         "<body>\n<h2>%s</h2>\n%s\n</body>\n</html>\n",
         MG_WCHAR_TO_CHAR(statusMessage),
         MG_WCHAR_TO_CHAR(shortError),
-        MG_WCHAR_TO_CHAR(longError));
+        MG_WCHAR_TO_CHAR(stackTrace));
 
     DumpMessage(MG_WCHAR_TO_CHAR(longError));
 
