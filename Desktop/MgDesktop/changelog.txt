@@ -1,6 +1,3 @@
-2.4.1.7610 (12 Jun 2013)
-========================
-
 API Changelog:
 
  - Fix: MgdResourceService::SetResource not properly flushing out in-memory cached content
