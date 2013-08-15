@@ -310,6 +310,7 @@ echo [install]: Server - WMS
 %XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%\wms" "%MG_OUTPUT_SERVER%\wms" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Server - DBXML
 copy /Y "%MG_OEM%\%MG_OEM_DBXML%\%MG_OEM_DB%\build_windows\%TYPEBUILD%32\*.exe" "%MG_OUTPUT_SERVER%\bin"
+copy /Y "%MG_OEM%\%MG_OEM_DBXML%\dbxml\build_windows\%TYPEBUILD%32\*.exe" "%MG_OUTPUT_SERVER%\bin"
 copy /Y "%MG_OEM%\%MG_OEM_DBXML%\bin\*.exe" "%MG_OUTPUT_SERVER%\bin"
 echo [install]: Server - RepositoryAdmin
 %XCOPY% "%MG_SERVER%\RepositoryAdmin" "%MG_OUTPUT_SERVER%\RepositoryAdmin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
