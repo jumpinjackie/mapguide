@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>1</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>FDO_BUILD_SRC</name>
+          <description>FDO Source directory</description>
+          <defaultValue>C:\working\sources\fdo-3.8</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>FDO_VERSION</name>
+          <description>FDO Version Number (major.minor.rev)</description>
+          <defaultValue>3.8.0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>CLEAR_WORKING_AREA</name>
+          <description></description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Default)</jdk>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.BatchFile>
+      <command>@echo off
+SET FDOMYSQL=%MG_LIB_ROOT%\fdo_rdbms_thirdparty\mysql
+SET FDOORACLE=%MG_LIB_ROOT%\fdo_rdbms_thirdparty\oracle\instantclient\11.2\sdk
+SET FDO_BUILD_OUTPUT=%MG_BUILD_ARTIFACT_PATH%\fdo\%FDO_VERSION%\x86_vc10
+SET FDO_BIN_EXTRAS=%MG_LIB_ROOT%\fdo_extras\%FDO_VERSION%\x86
+SET REVNUM_FILE=%MG_TOOL_PATH%\revnum.pl
+SET FDO_STAMP_FILE=%MG_BUILD_ARTIFACT_PATH%\last_fdo_%FDO_VERSION%_revision_x86.txt
+SET FDO_WORKING_AREA=%MG_BUILD_AREA%\FDO\%FDO_VERSION%\x86
+
+echo ============ Env Vars for FDO Build =====================
+echo FDOMYSQL           = %FDOMYSQL%
+echo FDOORACLE          = %FDOORACLE%
+echo FDO_BUILD_OUTPUT   = %FDO_BUILD_OUTPUT%
+echo FDO_BIN_EXTRAS     = %FDO_BIN_EXTRAS%
+echo REVNUM_FILE        = %REVNUM_FILE%
+echo FDO_STAMP_FILE     = %FDO_STAMP_FILE%
+echo FDO_WORKING_AREA   = %FDO_WORKING_AREA%
+echo =========================================================
+
+REM Pre-build checks, nuke artifact dir and working area
+echo [prepare]: Clean out build area and build artifacts
+if exist %FDO_BUILD_OUTPUT% rd /S /Q %FDO_BUILD_OUTPUT%
+if &quot;%CLEAR_WORKING_AREA%&quot;==&quot;false&quot; (
+    echo [prepare]: Skip cleaning build area
+    goto build_fdo
+)
+if exist %FDO_WORKING_AREA% rd /S /Q %FDO_WORKING_AREA%
+if not exist %FDO_WORKING_AREA% mkdir %FDO_WORKING_AREA%
+
+REM Need to supply --force otherwise it won&apos;t export into the dir we made
+echo [prepare]: Exporting SVN working copy to build area
+SET BUILD_ACTION=Exporting SVN working copy to build area
+svn export %FDO_BUILD_SRC% %FDO_WORKING_AREA% --force
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
+
+REM Copy non-UAC UpdateVersion
+echo [prepare]: Copy non UAC-gimped UpdateVersion
+SET BUILD_ACTION=Copy non UAC-gimped UpdateVersion
+copy /Y %MG_TOOL_PATH%\UpdateVersion.exe %FDO_WORKING_AREA%\Thirdparty\util\UpdateVersion\bin
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
+
+REM Prepare for Windows SDK 7.1 C++ compiler
+REM echo [prepare]: Enabling build settings for compilation with Windows 7.1 SDK C++ compiler
+REM SET BUILD_ACTION=Enabling build settings for compilation with Windows 7.1 SDK C++ compiler
+REM call %MG_TOOL_PATH%\fdo_enable_vcexpress64.bat %FDO_WORKING_AREA%
+REM if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
+
+:build_fdo
+echo [prepare]: Noting SVN revision
+pushd %FDO_BUILD_SRC% 
+REM If we ever do implement CI build triggers, remove this update command
+svn info . | perl %REVNUM_FILE% &gt; revision.txt
+set /p REVISION= &lt; revision.txt
+copy /Y revision.txt %FDO_STAMP_FILE%
+popd
+
+pushd %FDO_WORKING_AREA%
+echo [build]: Set env vars
+REM call &quot;%WINDOWS_SDK_71_ROOT%\Bin\SetEnv.cmd&quot; /release /x86
+call setenvironment.bat x86 VC10
+
+echo [build]: build thirdparty
+SET BUILD_ACTION=Build FDO Thirdparty
+call build_thirdparty.bat -p=Win32 -a=buildinstall -o=%FDO_BUILD_OUTPUT%
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
+
+echo [build]: build core and providers
+SET BUILD_ACTION=Build FDO core/providers
+call build.bat -p=Win32 -a=buildinstall -o=%FDO_BUILD_OUTPUT%
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
+
+if not exist %FDO_BIN_EXTRAS% goto pack
+echo [build]: Overlaying FDO extras to build artifacts
+pushd %FDO_BIN_EXTRAS%
+copy /Y *.* %FDO_BUILD_OUTPUT%\Fdo\Bin
+popd
+:pack
+echo [build]: Pack files
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=fdo -b=%REVISION% -r=%FDO_VERSION%
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=shp -b=%REVISION% -r=%FDO_VERSION%
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=sdf -b=%REVISION% -r=%FDO_VERSION%
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=wfs -b=%REVISION% -r=%FDO_VERSION%
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=wms -b=%REVISION% -r=%FDO_VERSION%
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=rdbms -b=%REVISION% -r=%FDO_VERSION%
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=mysql -b=%REVISION% -r=%FDO_VERSION%
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=odbc -b=%REVISION% -r=%FDO_VERSION%
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=sqlspatial -b=%REVISION% -r=%FDO_VERSION%
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=gdal -b=%REVISION% -r=%FDO_VERSION%
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=kingoracle -b=%REVISION% -r=%FDO_VERSION%
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=ogr -b=%REVISION% -r=%FDO_VERSION%
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=sqlite -b=%REVISION% -r=%FDO_VERSION%
+popd
+goto end
+:error
+echo An error occurred while building FDO: %BUILD_ACTION%
+exit /b 1
+:end
+exit /b 0</command>
+    </hudson.tasks.BatchFile>
+  </builders>
+  <publishers>
+    <hudson.tasks.BuildTrigger>
+      <childProjects>MapGuide Open Source x86</childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
+  </publishers>
+  <buildWrappers/>
+</project>
