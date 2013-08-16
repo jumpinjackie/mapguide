@@ -30,7 +30,7 @@
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_MINOR</name>
           <description></description>
-          <defaultValue>5</defaultValue>
+          <defaultValue>4</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_BUILD</name>
@@ -40,12 +40,12 @@
         <hudson.model.StringParameterDefinition>
           <name>MG_BUILD_SRC64</name>
           <description></description>
-          <defaultValue>C:\working\sources\mg-2.5</defaultValue>
+          <defaultValue>C:\working\sources\mg-2.4</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>FDO_SRC64</name>
           <description></description>
-          <defaultValue>C:\builds\fdo\3.8.0\x64_vc10\Fdo</defaultValue>
+          <defaultValue>C:\builds\fdo\3.7.0\x64_vc10\Fdo</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>INSTANT_SETUP_SRC</name>

@@ -13,7 +13,7 @@
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>RELEASE_LABEL64</name>
+          <name>RELEASE_LABEL</name>
           <description></description>
           <defaultValue>Final</defaultValue>
         </hudson.model.StringParameterDefinition>
@@ -30,7 +30,7 @@
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_MINOR</name>
           <description></description>
-          <defaultValue>5</defaultValue>
+          <defaultValue>4</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_BUILD</name>
@@ -38,14 +38,14 @@
           <defaultValue>1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>MG_BUILD_SRC64</name>
+          <name>MG_BUILD_SRC</name>
           <description></description>
-          <defaultValue>C:\working\sources\mg-2.5</defaultValue>
+          <defaultValue>C:\working\sources\mg-2.4</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>FDO_SRC64</name>
+          <name>FDO_SRC</name>
           <description></description>
-          <defaultValue>C:\builds\fdo\3.8.0\x64_vc10\Fdo</defaultValue>
+          <defaultValue>C:\builds\fdo\3.7.0\x86_vc10\Fdo</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>INSTANT_SETUP_SRC</name>
@@ -65,7 +65,7 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <jdk>JDK6 64-bit</jdk>
+  <jdk>JDK6 32-bit</jdk>
   <triggers class="vector"/>
   <concurrentBuild>false</concurrentBuild>
   <builders>
@@ -74,41 +74,41 @@
 
 SET VCBEXTENSION=_vs10
 SET VC_COMPILER=vc100
-call &quot;%WINDOWS_SDK_71_ROOT%\Bin\SetEnv.cmd&quot; /release /x64
+call &quot;%WINDOWS_SDK_71_ROOT%\Bin\SetEnv.cmd&quot; /release /x86
 
 REM Sigh! We can&apos;t seem to reference this from Jenkins
 SET MSBUILD_NET35=C:\Windows\Microsoft.NET\Framework\v3.5\msbuild.exe
 
 SET MG_VER_MAJOR_MINOR=%MG_VER_MAJOR%.%MG_VER_MINOR%
 SET MG_VER_MAJOR_MINOR_BUILD=%MG_VER_MAJOR_MINOR%.%MG_VER_BUILD%
-SET MG_BUILD_OUTPUT_ROOT64=%MG_BUILD_ARTIFACT_PATH%\mapguide
-SET MG_BUILD_OUTPUT64=%MG_BUILD_OUTPUT_ROOT64%\%MG_VER_MAJOR_MINOR_BUILD%\x64\release
-SET MG_BUILD_AREA64=%MG_BUILD_AREA%\mapguide\%MG_VER_MAJOR_MINOR_BUILD%\x64
-SET REVNUM_FILE64=%MG_TOOL_PATH%\revnum.pl
-SET MG_STAMP_FILE64=%MG_BUILD_ARTIFACT_PATH%\last_mapguide_%MG_VER_MAJOR_MINOR_BUILD%_revision_x64.txt
+SET MG_BUILD_OUTPUT_ROOT=%MG_BUILD_ARTIFACT_PATH%\mapguide
+SET MG_BUILD_OUTPUT=%MG_BUILD_OUTPUT_ROOT%\%MG_VER_MAJOR_MINOR_BUILD%\x86\release
+SET MG_BUILD_AREA=%MG_BUILD_AREA%\mapguide\%MG_VER_MAJOR_MINOR_BUILD%\x86
+SET REVNUM_FILE=%MG_TOOL_PATH%\revnum.pl
+SET MG_STAMP_FILE=%MG_BUILD_ARTIFACT_PATH%\last_mapguide_%MG_VER_MAJOR_MINOR_BUILD%_revision_x86.txt
 SET BUILD_ACTION=
 
 echo =================== Env Vars for MapGuide =============================
 echo MG_VER_MAJOR_MINOR         = %MG_VER_MAJOR_MINOR%
 echo MG_VER_MAJOR_MINOR_BUILD   = %MG_VER_MAJOR_MINOR_BUILD%
-echo MG_BUILD_OUTPUT_ROOT64     = %MG_BUILD_OUTPUT_ROOT64%
-echo MG_BUILD_OUTPUT64          = %MG_BUILD_OUTPUT64%
-echo MG_BUILD_AREA64            = %MG_BUILD_AREA64%
-echo REVNUM_FILE64              = %REVNUM_FILE64%
-echo MG_STAMP_FILE64            = %MG_STAMP_FILE64%
+echo MG_BUILD_OUTPUT_ROOT       = %MG_BUILD_OUTPUT_ROOT%
+echo MG_BUILD_OUTPUT            = %MG_BUILD_OUTPUT%
+echo MG_BUILD_AREA              = %MG_BUILD_AREA%
+echo REVNUM_FILE                = %REVNUM_FILE%
+echo MG_STAMP_FILE              = %MG_STAMP_FILE%
 echo INSTANT_SETUP_SRC          = %INSTANT_SETUP_SRC%
 echo JAVA_HOME                  = %JAVA_HOME%
 echo ANT_HOME                   = %ANT_HOME%
 echo =======================================================================
 
 echo [prepare]: Cleaning out build artifacts
-if exist %MG_BUILD_OUTPUT64% rd /S /Q %MG_BUILD_OUTPUT64%
+if exist %MG_BUILD_OUTPUT% rd /S /Q %MG_BUILD_OUTPUT%
 
-pushd %MG_BUILD_SRC64%\MgDev
+pushd %MG_BUILD_SRC%\MgDev
 echo [prepare]: Noting SVN revision
-svn info . | perl %REVNUM_FILE64% &gt; revision.txt
-set /p MG_REVISION64= &lt; revision.txt
-copy /Y revision.txt %MG_STAMP_FILE64%
+svn info . | perl %REVNUM_FILE% &gt; revision.txt
+set /p MG_REVISION= &lt; revision.txt
+copy /Y revision.txt %MG_STAMP_FILE%
 popd
 
 if &quot;%CLEAR_WORKING_AREA%&quot;==&quot;false&quot; (
@@ -117,76 +117,76 @@ if &quot;%CLEAR_WORKING_AREA%&quot;==&quot;false&quot; (
 )
 
 echo [prepare]: Cleaning out SVN metadata in build area
-if exist %MG_BUILD_AREA64% for /R %MG_BUILD_AREA64% %%X in (.svn) do (RD /S /Q %%X 2&gt;nul)
+if exist %MG_BUILD_AREA% for /R %MG_BUILD_AREA% %%X in (.svn) do (RD /S /Q %%X 2&gt;nul)
 echo [prepare]: Cleaning out build area
-if exist %MG_BUILD_AREA64% rd /S /Q %MG_BUILD_AREA64%
+if exist %MG_BUILD_AREA% rd /S /Q %MG_BUILD_AREA%
 echo [prepare]: Re-creating output directories
-if not exist %MG_BUILD_AREA64%\Installer mkdir %MG_BUILD_AREA64%\Installer
-if not exist %MG_BUILD_AREA64%\MgDev mkdir %MG_BUILD_AREA64%\MgDev
+if not exist %MG_BUILD_AREA%\Installer mkdir %MG_BUILD_AREA%\Installer
+if not exist %MG_BUILD_AREA%\MgDev mkdir %MG_BUILD_AREA%\MgDev
 if not exist %MG_BUILD_ARTIFACT_PATH%\mg-desktop mkdir %MG_BUILD_ARTIFACT_PATH%\mg-desktop
 
 echo [prepare]: Exporting SVN working copy to build area (Installer)
 SET BUILD_ACTION=Exporting SVN working copy to build area (Installer)
-svn export %MG_BUILD_SRC64%\Installer %MG_BUILD_AREA64%\Installer --force
+svn export %MG_BUILD_SRC%\Installer %MG_BUILD_AREA%\Installer --force
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 echo [prepare]: Copying SVN working copy to build area (MgDev)
 SET BUILD_ACTION=Copying SVN working copy to build area (MgDev)
-svn export %MG_BUILD_SRC64%\MgDev %MG_BUILD_AREA64%\MgDev --force
+svn export %MG_BUILD_SRC%\MgDev %MG_BUILD_AREA%\MgDev --force
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 echo [prepare]: Overlaying SVN metadata
 REM Yeah, we&apos;re basically re-copying, but this will include missing SVN metadata that export obviously leaves out
-robocopy %MG_BUILD_SRC64%\MgDev\Oem\fusion_build %MG_BUILD_AREA64%\MgDev\Oem\fusion_build /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Web\src\localized %MG_BUILD_AREA64%\MgDev\Web\src\localized /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Web\src\mapadmin %MG_BUILD_AREA64%\MgDev\Web\src\mapadmin /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\UnitTest/WebTier\MapAgent\MapAgentForms %MG_BUILD_AREA64%\MgDev\UnitTest/WebTier\MapAgent\MapAgentForms /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Web\src\mapviewerjava %MG_BUILD_AREA64%\MgDev\Web\src\mapviewerjava /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Web\src\mapviewernet %MG_BUILD_AREA64%\MgDev\Web\src\mapviewernet /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Web\src\mapviewerphp %MG_BUILD_AREA64%\MgDev\Web\src\mapviewerphp /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Web\src\schemareport %MG_BUILD_AREA64%\MgDev\Web\src\schemareport /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Web\src\stdicons %MG_BUILD_AREA64%\MgDev\Web\src\stdicons /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Web\src\viewerfiles %MG_BUILD_AREA64%\MgDev\Web\src\viewerfiles /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Doc\samples\dotnetsamples %MG_BUILD_AREA64%\MgDev\Doc\samples\dotnetsamples /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Doc\samples\dotnetviewersample %MG_BUILD_AREA64%\MgDev\Doc\samples\dotnetviewersample /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Doc\samples\javasamples %MG_BUILD_AREA64%\MgDev\Doc\samples\javasamples /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Doc\samples\javaviewersample %MG_BUILD_AREA64%\MgDev\Doc\samples\javaviewersample /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Doc\samples\phpsamples %MG_BUILD_AREA64%\MgDev\Doc\samples\phpsamples /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Doc\samples\phpviewersample %MG_BUILD_AREA64%\MgDev\Doc\samples\phpviewersample /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC64%\MgDev\Doc\viewerapi %MG_BUILD_AREA64%\MgDev\Doc\viewerapi /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Oem\fusion_build %MG_BUILD_AREA%\MgDev\Oem\fusion_build /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Web\src\localized %MG_BUILD_AREA%\MgDev\Web\src\localized /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Web\src\mapadmin %MG_BUILD_AREA%\MgDev\Web\src\mapadmin /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\UnitTest/WebTier\MapAgent\MapAgentForms %MG_BUILD_AREA%\MgDev\UnitTest/WebTier\MapAgent\MapAgentForms /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Web\src\mapviewerjava %MG_BUILD_AREA%\MgDev\Web\src\mapviewerjava /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Web\src\mapviewernet %MG_BUILD_AREA%\MgDev\Web\src\mapviewernet /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Web\src\mapviewerphp %MG_BUILD_AREA%\MgDev\Web\src\mapviewerphp /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Web\src\schemareport %MG_BUILD_AREA%\MgDev\Web\src\schemareport /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Web\src\stdicons %MG_BUILD_AREA%\MgDev\Web\src\stdicons /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Web\src\viewerfiles %MG_BUILD_AREA%\MgDev\Web\src\viewerfiles /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\dotnetsamples %MG_BUILD_AREA%\MgDev\Doc\samples\dotnetsamples /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\dotnetviewersample %MG_BUILD_AREA%\MgDev\Doc\samples\dotnetviewersample /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\javasamples %MG_BUILD_AREA%\MgDev\Doc\samples\javasamples /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\javaviewersample %MG_BUILD_AREA%\MgDev\Doc\samples\javaviewersample /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\phpsamples %MG_BUILD_AREA%\MgDev\Doc\samples\phpsamples /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\phpviewersample %MG_BUILD_AREA%\MgDev\Doc\samples\phpviewersample /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC%\MgDev\Doc\viewerapi %MG_BUILD_AREA%\MgDev\Doc\viewerapi /E /NFL /NDL /nc /ns /np /MT
 
 echo [prepare]: Setup FDO in Oem
-cd %MG_BUILD_AREA64%\MgDev\Oem\FDO
-xcopy /S /Y /I %FDO_SRC64%\Inc Inc
-xcopy /S /Y /I %FDO_SRC64%\Lib Lib64
-xcopy /S /Y /I %FDO_SRC64%\Bin Bin\Release64
-xcopy /S /Y /I %FDO_SRC64%\Bin\com\*.* Bin\Release64\com
+cd %MG_BUILD_AREA%\MgDev\Oem\FDO
+xcopy /S /Y /I %FDO_SRC%\Inc Inc
+xcopy /S /Y /I %FDO_SRC%\Lib Lib
+xcopy /S /Y /I %FDO_SRC%\Bin Bin\Release
+xcopy /S /Y /I %FDO_SRC%\Bin\com\*.* Bin\Release\com
 REM For release we don&apos;t want pdbs and .net assemblies
-cd %MG_BUILD_AREA64%\MgDev\Oem\FDO\Bin\Release64
+cd %MG_BUILD_AREA%\MgDev\Oem\FDO\Bin\Release
 del /Q OSGeo.FDO.*
 del /Q *.pdb
 
-echo [prepare]: Pre-process for 64-bit compilation with Windows SDK 7.1
-sed -i &quot;s/\%%MSBUILD\%% InstallerPreReq\%%VS_SLN_SUFFIX\%%.sln/REM \%%MSBUILD\%% InstallerPreReq\%%VS_SLN_SUFFIX\%%.sln/g&quot; %MG_BUILD_AREA64%\Installer\build64.bat
-sed -i &quot;s/REM call build64_vce.bat/call build64_vce.bat/g&quot; %MG_BUILD_AREA64%\Installer\build64.bat
-echo Updated - %MG_BUILD_AREA64%\Installer\build64.bat
+REM echo [prepare]: Pre-process for 64-bit compilation with Windows SDK 7.1
+REM sed -i &quot;s/\%%MSBUILD\%% InstallerPreReq\%%VS_SLN_SUFFIX\%%.sln/REM \%%MSBUILD\%% InstallerPreReq\%%VS_SLN_SUFFIX\%%.sln/g&quot; %MG_BUILD_AREA%\Installer\build64.bat
+REM sed -i &quot;s/REM call build64_vce.bat/call build64_vce.bat/g&quot; %MG_BUILD_AREA%\Installer\build64.bat
+REM echo Updated - %MG_BUILD_AREA%\Installer\build64.bat
 
 :build_mapguide
-cd %MG_BUILD_AREA64%\MgDev
+cd %MG_BUILD_AREA%\MgDev
 echo [build]: Stamp version numbers
 SET BUILD_ACTION=Stamp version numbers
-cscript updateversion.vbs /major:%MG_VER_MAJOR% /minor:%MG_VER_MINOR% /point:%MG_VER_BUILD% /build:%MG_REVISION64%
-call stampassemblies.bat %MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%
+cscript updateversion.vbs /major:%MG_VER_MAJOR% /minor:%MG_VER_MINOR% /point:%MG_VER_BUILD% /build:%MG_REVISION%
+call stampassemblies.bat %MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION%
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 REM ========================================= MapGuide ====================================================
 
-cd %MG_BUILD_AREA64%\MgDev
+cd %MG_BUILD_AREA%\MgDev
 echo [build]: Set env vars
-call setenvironment64.bat vc10
+call setenvironment.bat vc10
 
 echo [build]: Prep httpd source
-cd %MG_BUILD_AREA64%\MgDev\Oem\LinuxApt
+cd %MG_BUILD_AREA%\MgDev\Oem\LinuxApt
 if not exist httpd-2.2.21.tar 7z x httpd-2.2.21.tar.gz
 REM Extract regardless. We may have an incomplete directory here because windows is stingy
 REM about hidden/locked files when deleting a directory you&apos;re sure is clean
@@ -195,67 +195,67 @@ type .\httpd-2.2.21\srclib\apr\include\apr.hw &gt; .\httpd-2.2.21\srclib\apr\inc
 type .\httpd-2.2.21\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.21\srclib\apr-util\include\apu.h
 
 echo [build]: build oem/server/web
-cd %MG_BUILD_AREA64%\MgDev
+cd %MG_BUILD_AREA%\MgDev
 SET BUILD_ACTION=build oem/server/web
-call build64.bat -o=%MG_BUILD_OUTPUT64% -v
+call build.bat -o=%MG_BUILD_OUTPUT% -v
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 echo [build]: install files to build artifact directory
 SET BUILD_ACTION=install files to build artifact directory
-call build64.bat -a=install -o=%MG_BUILD_OUTPUT64%
+call build.bat -a=install -o=%MG_BUILD_OUTPUT%
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 REM Move fusion-selfbuild tools out of staging area
-pushd %MG_BUILD_OUTPUT64%\fusion-selfbuild
-move /Y fusion-buildtools.zip %MG_BUILD_OUTPUT_ROOT64%
+pushd %MG_BUILD_OUTPUT%\fusion-selfbuild
+move /Y fusion-buildtools.zip %MG_BUILD_OUTPUT_ROOT%
 popd
-pushd %MG_BUILD_OUTPUT64%
+pushd %MG_BUILD_OUTPUT%
 rd /S /Q fusion-selfbuild
 popd
 
 REM ========================================= mg-desktop ====================================================
 :build_mgdesktop
 REM HACK: mg-desktop batch files not aware of new output dir so set old one
-SET MG_OUTPUT=%MG_BUILD_AREA64%\MgDev\Release64
-pushd %MG_BUILD_AREA64%\MgDev
+SET MG_OUTPUT=%MG_BUILD_AREA%\MgDev\Release
+pushd %MG_BUILD_AREA%\MgDev
 echo [build]: mg-desktop
 SET BUILD_ACTION=Build mg-desktop
-call build_desktop.bat x64
+call build_desktop.bat x86
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 popd
 
-pushd %MG_BUILD_AREA64%\MgDev\nuget
+pushd %MG_BUILD_AREA%\MgDev\nuget
 echo [clean]: Nuget package temp files
 call package_clean.bat
 popd
 
-pushd %MG_BUILD_AREA64%\MgDev
+pushd %MG_BUILD_AREA%\MgDev
 echo [build]: Nuget packages
-call nuget_prepare.bat %MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64% x64
+call nuget_prepare.bat %MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION% x86
 SET BUILD_ACTION=Nuget packages
-call nuget_pack.bat x64
+call nuget_pack.bat x86
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 popd
 
-pushd %MG_BUILD_AREA64%\MgDev\nuget
+pushd %MG_BUILD_AREA%\MgDev\nuget
 echo [build]: Copy mg-desktop build artifacts (NuGet packages)
 set BUILD_ACTION=Copy mg-desktop build artifacts (NuGet packages)
 move *.nupkg %MG_BUILD_ARTIFACT_PATH%\mg-desktop
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 popd
 
-pushd %MG_BUILD_AREA64%\MgDev\Release64
+pushd %MG_BUILD_AREA%\MgDev\Release
 echo [build]: Copy mg-desktop build artifacts (zip dist)
 SET BUILD_ACTION=Copy mg-desktop build artifacts (zip dist)
-7z a -mx9 %MG_BUILD_ARTIFACT_PATH%\mg-desktop\mg-desktop-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%-net40-vc10-x64.zip Desktop DesktopSamples
+7z a -mx9 %MG_BUILD_ARTIFACT_PATH%\mg-desktop\mg-desktop-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION%-net40-vc10-x86.zip Desktop DesktopSamples
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 popd
 
 REM ========================================= Instant Setup =========================================================
-pushd %MG_BUILD_AREA64%\Installer
+pushd %MG_BUILD_AREA%\Installer
 echo [build]: Prepare artifact directory
 SET BUILD_ACTION=Prepare artifact directory
-call build64.bat -a=prepare -source=%MG_BUILD_OUTPUT64%
+call build.bat -a=prepare -source=%MG_BUILD_OUTPUT%
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 popd
 
@@ -285,34 +285,34 @@ popd
 
 :copy_instantsetup_build_artifacts
 echo [build]: Copy MgInstantSetup build artifacts
-if not exist %MG_BUILD_OUTPUT64%\Setup mkdir %MG_BUILD_OUTPUT64%\Setup
+if not exist %MG_BUILD_OUTPUT%\Setup mkdir %MG_BUILD_OUTPUT%\Setup
 pushd %INSTANT_SETUP_SRC%\InstantSetup\bin\release
-copy /Y *.exe %MG_BUILD_OUTPUT64%\Setup
-copy /Y *.pdb %MG_BUILD_OUTPUT64%\Setup
-copy /Y *.dll %MG_BUILD_OUTPUT64%\Setup
-copy /Y *.config %MG_BUILD_OUTPUT64%\Setup
+copy /Y *.exe %MG_BUILD_OUTPUT%\Setup
+copy /Y *.pdb %MG_BUILD_OUTPUT%\Setup
+copy /Y *.dll %MG_BUILD_OUTPUT%\Setup
+copy /Y *.config %MG_BUILD_OUTPUT%\Setup
 popd
 
 :zip_mginstantsetup
-pushd %MG_BUILD_OUTPUT64%
-7z a %MG_BUILD_OUTPUT_ROOT64%\MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%-InstantSetup-x64.exe -mmt -mx5 -sfx7z.sfx .
+pushd %MG_BUILD_OUTPUT%
+7z a %MG_BUILD_OUTPUT_ROOT%\MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION%-InstantSetup-x86.exe -mmt -mx5 -sfx7z.sfx .
 popd
 
 REM ========================================= MapGuide Installer ====================================================
 
 :build_installer
-pushd %MG_BUILD_AREA64%\Installer
+pushd %MG_BUILD_AREA%\Installer
 echo [build]: Generate installer file listings
 SET BUILD_ACTION=Generate installer file listings
-call build64.bat -a=generate -source=%MG_BUILD_OUTPUT64%
+call build.bat -a=generate -source=%MG_BUILD_OUTPUT%
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 echo [build]: Build the installer
 SET BUILD_ACTION=Build the installer
-call build64.bat -source=%MG_BUILD_OUTPUT64% -version=%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64% -name=MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%-%RELEASE_LABEL64%-x64 -title=&quot;MapGuide Open Source %MG_VER_MAJOR_MINOR_BUILD% %RELEASE_LABEL64%&quot;
+call build.bat -source=%MG_BUILD_OUTPUT% -version=%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION% -name=MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION%-%RELEASE_LABEL%-x86 -title=&quot;MapGuide Open Source %MG_VER_MAJOR_MINOR_BUILD% %RELEASE_LABEL%&quot;
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
-move /Y Output\en-US\MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%-%RELEASE_LABEL64%-x64.exe %MG_BUILD_OUTPUT_ROOT64%
+move /Y Output\en-US\MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION%-%RELEASE_LABEL%-x86.exe %MG_BUILD_OUTPUT_ROOT%
 popd
 goto end
 :error

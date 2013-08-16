@@ -15,7 +15,7 @@
         <hudson.model.StringParameterDefinition>
           <name>VersionLabel</name>
           <description>The release version label</description>
-          <defaultValue>5.1</defaultValue>
+          <defaultValue>5.0.1</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -23,7 +23,7 @@
   <scm class="hudson.scm.SubversionSCM" plugin="subversion@1.48">
     <locations>
       <hudson.scm.SubversionSCM_-ModuleLocation>
-        <remote>http://svn.osgeo.org/mapguide/trunk/Tools/Maestro</remote>
+        <remote>http://svn.osgeo.org/mapguide/branches/maestro-5.0.x</remote>
         <local>.</local>
         <depthOption>infinity</depthOption>
         <ignoreExternalsOption>false</ignoreExternalsOption>

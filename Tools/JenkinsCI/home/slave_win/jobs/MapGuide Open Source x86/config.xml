@@ -185,9 +185,19 @@ cd %MG_BUILD_AREA%\MgDev
 echo [build]: Set env vars
 call setenvironment.bat vc10
 
+echo [build]: Prep httpd source
+cd %MG_BUILD_AREA%\MgDev\Oem\LinuxApt
+if not exist httpd-2.2.21.tar 7z x httpd-2.2.21.tar.gz
+REM Extract regardless. We may have an incomplete directory here because windows is stingy
+REM about hidden/locked files when deleting a directory you&apos;re sure is clean
+7z x httpd-2.2.21.tar
+type .\httpd-2.2.21\srclib\apr\include\apr.hw &gt; .\httpd-2.2.21\srclib\apr\include\apr.h
+type .\httpd-2.2.21\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.21\srclib\apr-util\include\apu.h
+
 echo [build]: build oem/server/web
+cd %MG_BUILD_AREA%\MgDev
 SET BUILD_ACTION=build oem/server/web
-call build.bat -o=%MG_BUILD_OUTPUT%
+call build.bat -o=%MG_BUILD_OUTPUT% -v
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 echo [build]: install files to build artifact directory
@@ -299,7 +309,7 @@ if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 echo [build]: Build the installer
 SET BUILD_ACTION=Build the installer
-call build.bat -source=%MG_BUILD_OUTPUT% -version=%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION% -name=MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION%-%RELEASE_LABEL%-x86 -title=&quot;MapGuide Open Source %MG_VER_MAJOR_MINOR% %RELEASE_LABEL%&quot;
+call build.bat -source=%MG_BUILD_OUTPUT% -version=%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION% -name=MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION%-%RELEASE_LABEL%-x86 -title=&quot;MapGuide Open Source %MG_VER_MAJOR_MINOR_BUILD% %RELEASE_LABEL%&quot;
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 move /Y Output\en-US\MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION%-%RELEASE_LABEL%-x86.exe %MG_BUILD_OUTPUT_ROOT%
