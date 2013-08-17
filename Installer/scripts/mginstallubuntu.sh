@@ -1,12 +1,13 @@
 #!/bin/bash
 TEMPDIR=/tmp/build_mapguide
-URL="http://download.osgeo.org/mapguide/releases/2.4.0/RC2/ubuntu12"
+URL="http://download.osgeo.org/mapguide/releases/2.4.1/ubuntu12"
+#URL="http://192.168.0.7/downloads/2.4.1/ubuntu12"
 FDOVER_MAJOR_MINOR=3.7
 FDOVER_MAJOR_MINOR_REV=${FDOVER_MAJOR_MINOR}.0
-FDOVER=${FDOVER_MAJOR_MINOR_REV}-6577_i386
+FDOVER=${FDOVER_MAJOR_MINOR_REV}-6960_i386
 MGVER_MAJOR_MINOR=2.4
-MGVER_MAJOR_MINOR_REV=${MGVER_MAJOR_MINOR}.0
-MGVER=${MGVER_MAJOR_MINOR_REV}-6989_i386
+MGVER_MAJOR_MINOR_REV=${MGVER_MAJOR_MINOR}.1
+MGVER=${MGVER_MAJOR_MINOR_REV}-7778_i386
 
 # Must have root
 if [[ $EUID -ne 0 ]]; then
