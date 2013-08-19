@@ -98,7 +98,6 @@ void ApacheResponseHandler::SendResponse(MgHttpResponse *response)
             m_r->content_type = apr_pstrdup(m_r->pool, tempHeader);
         }
 
-        Ptr<MgReader> outputDataReader;
         Ptr<MgByteReader> outputReader;
         Ptr<MgDisposable> resultObj = result->GetResultObject();
         MgDisposable* pResultObj = (MgDisposable*)resultObj;
@@ -107,21 +106,9 @@ void ApacheResponseHandler::SendResponse(MgHttpResponse *response)
         {
             outputReader = (MgByteReader*) SAFE_ADDREF(pResultObj);
         }
-        else if (NULL != dynamic_cast<MgFeatureReader*>(pResultObj))
-        {
-            outputDataReader = SAFE_ADDREF((MgFeatureReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
-        }
         else if (NULL != dynamic_cast<MgStringCollection*>(pResultObj))
         {
             outputReader = ((MgStringCollection*)pResultObj)->ToXml();
-        }
-        else if (NULL != dynamic_cast<MgSqlDataReader*>(pResultObj))
-        {
-            outputDataReader = SAFE_ADDREF((MgSqlDataReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
-        }
-        else if (NULL != dynamic_cast<MgDataReader*>(pResultObj))
-        {
-            outputDataReader = SAFE_ADDREF((MgDataReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
         }
         else if (NULL != dynamic_cast<MgSpatialContextReader*>(pResultObj))
         {
@@ -145,24 +132,29 @@ void ApacheResponseHandler::SendResponse(MgHttpResponse *response)
             ap_send_http_header(m_r);
             ap_rwrite(utf8.c_str(), (int)utf8.length(), m_r);
         }
-        else if (outputDataReader != NULL)
-        {
-            ApacheReaderStreamer ars(m_r, outputDataReader, result->GetResultContentType());
-            ars.StreamResult();
-        }
         else if (outputReader != NULL)
         {
-            INT64 outLen = outputReader->GetLength();
-            sprintf(tempHeader, "%d", (INT32)outLen);
-            apr_table_set(m_r->headers_out, MapAgentStrings::ContentLengthKey, tempHeader);
-            ap_send_http_header(m_r);
-
-            unsigned char buf[4096];
-            int nBytes = outputReader->Read(buf,4096);
-            while (nBytes > 0)
+            Ptr<MgHttpHeader> respHeader = response->GetHeader();
+            //Check for chunking hint
+            if (respHeader->GetHeaderValue(MgHttpResourceStrings::hrhnTransfer_Encoding) == MgHttpResourceStrings::hrhnChunked)
             {
-                ap_rwrite(buf, nBytes, m_r);
-                nBytes = outputReader->Read(buf,4096);
+                ApacheReaderStreamer ars(m_r, outputReader);
+                ars.StreamResult();
+            }
+            else
+            {
+                INT64 outLen = outputReader->GetLength();
+                sprintf(tempHeader, "%d", (INT32)outLen);
+                apr_table_set(m_r->headers_out, MapAgentStrings::ContentLengthKey, tempHeader);
+                ap_send_http_header(m_r);
+
+                unsigned char buf[4096];
+                int nBytes = outputReader->Read(buf,4096);
+                while (nBytes > 0)
+                {
+                    ap_rwrite(buf, nBytes, m_r);
+                    nBytes = outputReader->Read(buf,4096);
+                }
             }
         }
         else

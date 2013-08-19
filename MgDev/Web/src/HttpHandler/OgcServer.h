@@ -512,9 +512,7 @@ private:
     // These are the links to the outside world.  The input (request) and
     // the output (response) objects.
     MgHttpRequestParameters& m_Request;
-    CStream*                m_pResponse;
-
-
+    
     // This determines whether writing is enabled.
     bool m_bWriteEnabled;
     EscapeState m_eEscapeState;
@@ -528,8 +526,11 @@ private:
     int  m_iExpansionRecursionDepth;
 
 
-    // Statics...
 protected:
+    CStream*                m_pResponse;
+
+    // Statics...
+
     // Given a parser and a dictionary, shove definitions found in the former
     // into the latter.
     static void ProcessDefinitions(MgXmlParser& Template,MgUtilDictionary& Dictionary);

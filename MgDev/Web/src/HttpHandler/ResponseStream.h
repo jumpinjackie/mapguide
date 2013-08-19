@@ -52,6 +52,31 @@ public:
 };
 */
 
+// This is not a true stream. It's just a temporary MgByteReader
+// placeholder that passes the CStream type test allowing us to 
+// pass this into a MgOgcWfsServer instance.
+class MgGetWfsFeaturesResponseStream : public CStream
+{
+public:
+    MgGetWfsFeaturesResponseStream() 
+    {
+        m_reader = NULL;
+    }
+    ~MgGetWfsFeaturesResponseStream() 
+    { 
+        m_reader = NULL;
+    }
+
+    virtual void SetContentType(CPSZ pszContentTypeMime) { }
+    virtual long Write(CPSZ pszBuffer,size_t uBytesToWrite,size_t* puBytesWritten) { return -1; }
+
+    void SetReader(MgByteReader* reader) { m_reader = SAFE_ADDREF(reader); }
+    MgByteReader* GetReader() { return SAFE_ADDREF(m_reader); }
+
+private:
+    MgByteReader* m_reader;
+};
+
 class MgHttpResponseStream: public CStream
 {
 public:

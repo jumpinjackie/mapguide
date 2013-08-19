@@ -102,7 +102,6 @@ void CgiResponseHandler::SendResponse(MgHttpResponse* response)
             printf(MapAgentStrings::ContentTypeHeader, MapAgentStrings::TextPlain, MapAgentStrings::Utf8Text);
         }
 
-        Ptr<MgReader> outputDataReader;
         Ptr<MgByteReader> outputReader;
         Ptr<MgDisposable> resultObj = result->GetResultObject();
         MgDisposable* pResultObj = (MgDisposable*)resultObj;
@@ -111,21 +110,9 @@ void CgiResponseHandler::SendResponse(MgHttpResponse* response)
         {
             outputReader = (MgByteReader*) SAFE_ADDREF(pResultObj);
         }
-        else if (NULL != dynamic_cast<MgFeatureReader*>(pResultObj))
-        {
-            outputDataReader = SAFE_ADDREF((MgFeatureReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
-        }
         else if (NULL != dynamic_cast<MgStringCollection*>(pResultObj))
         {
             outputReader = ((MgStringCollection*)pResultObj)->ToXml();
-        }
-        else if (NULL != dynamic_cast<MgSqlDataReader*>(pResultObj))
-        {
-            outputDataReader = SAFE_ADDREF((MgSqlDataReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
-        }
-        else if (NULL != dynamic_cast<MgDataReader*>(pResultObj))
-        {
-            outputDataReader = SAFE_ADDREF((MgDataReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
         }
         else if (NULL != dynamic_cast<MgSpatialContextReader*>(pResultObj))
         {
@@ -146,22 +133,27 @@ void CgiResponseHandler::SendResponse(MgHttpResponse* response)
             printf(MapAgentStrings::ContentLengthHeader, utf8.length());
             printf("\r\n%s",utf8.c_str());
         }
-        else if (outputDataReader != NULL)
-        {
-            CgiReaderStreamer crs(outputDataReader, result->GetResultContentType());
-            crs.StreamResult();
-        }
         else if (outputReader != NULL)
         {
-            INT64 outLen = outputReader->GetLength();
-            printf(MapAgentStrings::ContentLengthHeader,(INT32)outLen);
-            printf("\r\n");
-            unsigned char buf[4096];
-            int nBytes = outputReader->Read(buf,4096);
-            while (nBytes > 0)
+            Ptr<MgHttpHeader> respHeader = response->GetHeader();
+            //Check for chunking hint
+            if (respHeader->GetHeaderValue(MgHttpResourceStrings::hrhnTransfer_Encoding) == MgHttpResourceStrings::hrhnChunked)
             {
-                fwrite(buf, 1, nBytes, stdout);
-                nBytes = outputReader->Read(buf,4096);
+                CgiReaderStreamer crs(outputReader);
+                crs.StreamResult();
+            }
+            else
+            {
+                INT64 outLen = outputReader->GetLength();
+                printf(MapAgentStrings::ContentLengthHeader,(INT32)outLen);
+                printf("\r\n");
+                unsigned char buf[4096];
+                int nBytes = outputReader->Read(buf,4096);
+                while (nBytes > 0)
+                {
+                    fwrite(buf, 1, nBytes, stdout);
+                    nBytes = outputReader->Read(buf,4096);
+                }
             }
         }
         else

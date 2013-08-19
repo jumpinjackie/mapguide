@@ -24,7 +24,7 @@
 class CgiReaderStreamer : public MgHttpReaderStreamer
 {
 public:
-    CgiReaderStreamer(MgReader* reader, CREFSTRING format);
+    CgiReaderStreamer(MgByteReader* reader);
     virtual ~CgiReaderStreamer();
 
 protected:

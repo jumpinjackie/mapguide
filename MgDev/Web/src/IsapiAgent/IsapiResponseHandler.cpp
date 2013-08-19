@@ -103,7 +103,6 @@ void IsapiResponseHandler::SendResponse(MgHttpResponse* response)
             sResponseHeader.append(tempHeader);
         }
 
-        Ptr<MgReader> outputDataReader;
         Ptr<MgByteReader> outputReader;
         Ptr<MgDisposable> resultObj = result->GetResultObject();
         MgDisposable* pResultObj = (MgDisposable*)resultObj;
@@ -112,21 +111,9 @@ void IsapiResponseHandler::SendResponse(MgHttpResponse* response)
         {
             outputReader = (MgByteReader*) SAFE_ADDREF(pResultObj);
         }
-        else if (NULL != dynamic_cast<MgFeatureReader*>(pResultObj))
-        {
-            outputDataReader = SAFE_ADDREF((MgFeatureReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
-        }
         else if (NULL != dynamic_cast<MgStringCollection*>(pResultObj))
         {
             outputReader = ((MgStringCollection*)pResultObj)->ToXml();
-        }
-        else if (NULL != dynamic_cast<MgSqlDataReader*>(pResultObj))
-        {
-            outputDataReader = SAFE_ADDREF((MgSqlDataReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
-        }
-        else if (NULL != dynamic_cast<MgDataReader*>(pResultObj))
-        {
-            outputDataReader = SAFE_ADDREF((MgDataReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
         }
         else if (NULL != dynamic_cast<MgSpatialContextReader*>(pResultObj))
         {
@@ -153,27 +140,32 @@ void IsapiResponseHandler::SendResponse(MgHttpResponse* response)
             DWORD dwBufLen = (DWORD)utf8.length();
             m_pECB->WriteClient(m_pECB->ConnID, (LPVOID)utf8.c_str(), &dwBufLen, 0);
         }
-        else if (outputDataReader != NULL)
-        {
-            IsapiReaderStreamer irs(m_pECB, sResponseHeader, outputDataReader, result->GetResultContentType());
-            irs.StreamResult();
-        }
         else if (outputReader != NULL)
         {
-            INT64 outLen = outputReader->GetLength();
-            sprintf(tempHeader, MapAgentStrings::ContentLengthHeader, (INT32)outLen);
-            sResponseHeader.append(tempHeader);
-            sResponseHeader.append(MapAgentStrings::CrLf);
-            WriteHeader(sResponseHeader.c_str());
-
-            unsigned char buf[4096];
-            DWORD dwSize;
-            int nBytes = outputReader->Read(buf,4096);
-            while (nBytes > 0)
+            Ptr<MgHttpHeader> respHeader = response->GetHeader();
+            //Check for chunking hint
+            if (respHeader->GetHeaderValue(MgHttpResourceStrings::hrhnTransfer_Encoding) == MgHttpResourceStrings::hrhnChunked)
             {
-                dwSize = nBytes;
-                m_pECB->WriteClient(m_pECB->ConnID, buf, &dwSize, 0);
-                nBytes = outputReader->Read(buf,4096);
+                IsapiReaderStreamer irs(m_pECB, sResponseHeader, outputReader);
+                irs.StreamResult();
+            }
+            else
+            {
+                INT64 outLen = outputReader->GetLength();
+                sprintf(tempHeader, MapAgentStrings::ContentLengthHeader, (INT32)outLen);
+                sResponseHeader.append(tempHeader);
+                sResponseHeader.append(MapAgentStrings::CrLf);
+                WriteHeader(sResponseHeader.c_str());
+
+                unsigned char buf[4096];
+                DWORD dwSize;
+                int nBytes = outputReader->Read(buf,4096);
+                while (nBytes > 0)
+                {
+                    dwSize = nBytes;
+                    m_pECB->WriteClient(m_pECB->ConnID, buf, &dwSize, 0);
+                    nBytes = outputReader->Read(buf,4096);
+                }
             }
         }
         else

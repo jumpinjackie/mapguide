@@ -367,22 +367,10 @@ void MgOgcWfsServer::GetFeatureResponse()
 {
     try
     {
-        // See what format they requested the GetFeature response in...
-        CPSZ pszFormat = RequestParameter(kpszQueryStringOutputFormat);
-        STRING sOutputFormat;
-
-        if(pszFormat == NULL)
-        {
-            CPSZ pszVersion = RequestParameter(MgHttpResourceStrings::reqWfsVersion.c_str());
-            sOutputFormat = this->GetDefaultGetFeatureOutputFormat(pszVersion);
-            pszFormat = sOutputFormat.c_str();
-        }
-        // Generate a response to the GetFeature request
-        if(GenerateResponse(kpszQueryValueGetFeature,pszFormat))
-        {
-            // The response was generated successfully, so we return
-            return;
-        }
+        //MgHttpWfsGetFeature will pass a MgGetWfsFeaturesResponseStream to this instance when executing
+        MgGetWfsFeaturesResponseStream* wfsResponse = static_cast<MgGetWfsFeaturesResponseStream*>(m_pResponse);
+        wfsResponse->SetReader(m_pFeatureSet);
+        return;
     }
     catch(MgException* pEx)
     {
@@ -453,14 +441,6 @@ bool MgOgcWfsServer::ProcessOtherInstruction(CREFSTRING sProc,MgXmlProcessingIns
     {
         ProcedureEnumFeatureTypes(PI);
     }
-    else if(sProc == kpszPiEnumFeatures)
-    {
-        ProcedureEnumFeatures(PI);
-    }
-    else if(sProc == kpszPiGetFeatureCollection)
-    {
-        ProcedureGetFeatureCollection(PI);
-    }
     else
     {
         return false; // Unknown
@@ -511,41 +491,6 @@ void MgOgcWfsServer::ProcedureEnumFeatureTypes(MgXmlProcessingInstruction& PIEnu
     }
 }
 
-
-void MgOgcWfsServer::ProcedureEnumFeatures(MgXmlProcessingInstruction& PIEnum)
-{
-    STRING sFormat;
-    if(!PIEnum.GetAttribute(kpszPiAttributeUsing,sFormat))
-        sFormat = kpszPiGetFeatureCollectionDefaultFormat;
-
-    STRING sSubset;
-    if(!PIEnum.GetAttribute(kpszPiAttributeSubset,sSubset))
-        sSubset = kpszEmpty;
-    ProcessExpandableTextIntoString(sSubset,sSubset);
-
-    int iNum = 0;
-
-    if(m_pFeatureSet != NULL) {
-        while(m_pFeatureSet->Next())
-        {
-            // We ensure that each feature gets its own stack frame
-            // so definitions don't get carried over to the next feature.
-            CDictionaryStackFrame ForEachFeature(this);
-
-            m_pFeatureSet->GenerateDefinitions(*m_pTopOfDefinitions);
-
-            if(IsIterationInSubset(++iNum,sSubset,kpszPiDefinitionFeatureIteration) && (*m_pTopOfDefinitions)[L"Feature.OuterXml"] )
-            {
-                ProcessExpandableText(sFormat);
-            }
-        }
-    }
-}
-
-
-
-
-
 void MgOgcWfsServer::GenerateTypeNameException(CREFSTRING sTypeName)
 {
     sTypeName; // RESERVED FOR FUTURE USE; unused for now... to provide this info in exception body.
@@ -554,29 +499,7 @@ void MgOgcWfsServer::GenerateTypeNameException(CREFSTRING sTypeName)
                                                      MgHttpResourceStrings::reqWfsTypeName.c_str()));
 }
 
-void MgOgcWfsServer::ProcedureGetFeatureCollection(MgXmlProcessingInstruction& PI)
-{
-    STRING sFormat;
-    if(!PI.GetAttribute(kpszPiAttributeUsing,sFormat))
-        sFormat = kpszPiGetFeatureCollectionDefaultFormat;
-
-    STRING sSubset;
-    if(!PI.GetAttribute(kpszPiAttributeSubset,sSubset))
-        sSubset = kpszEmpty;
-    ProcessExpandableTextIntoString(sSubset,sSubset);
-
-    bool bHasNamespace = false;
-
-    if(m_pFeatureSet != NULL) {
-        while(!bHasNamespace && m_pFeatureSet->Next()) {
-            bHasNamespace = m_pFeatureSet->GenerateNamespacesDefinition(*m_pTopOfDefinitions);
-        }
-    }
-
-    ProcessExpandableText(sFormat);
-}
-
-void MgOgcWfsServer::SetFeatures(MgWfsFeatures* pFeatures)
+void MgOgcWfsServer::SetFeatures(MgByteReader* pFeatures)
 {
     m_pFeatureSet = SAFE_ADDREF(pFeatures);
 }

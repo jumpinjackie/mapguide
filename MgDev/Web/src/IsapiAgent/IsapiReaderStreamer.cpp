@@ -3,8 +3,8 @@
 #include "IsapiReaderStreamer.h"
 #include "MapAgentStrings.h"
 
-IsapiReaderStreamer::IsapiReaderStreamer(EXTENSION_CONTROL_BLOCK* rec, const std::string& sResponseHeader, MgReader* reader, CREFSTRING format) :
-    MgHttpReaderStreamer(reader, format), 
+IsapiReaderStreamer::IsapiReaderStreamer(EXTENSION_CONTROL_BLOCK* rec, const std::string& sResponseHeader, MgByteReader* reader) :
+    MgHttpReaderStreamer(reader), 
     m_pECB(rec), 
     m_sResponseHeader(sResponseHeader), 
     m_bEndOfStream(false)

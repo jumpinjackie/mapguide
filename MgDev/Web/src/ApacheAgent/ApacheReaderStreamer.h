@@ -26,7 +26,7 @@
 class ApacheReaderStreamer : public MgHttpReaderStreamer
 {
 public:
-    ApacheReaderStreamer(request_rec* rec, MgReader* reader, CREFSTRING format);
+    ApacheReaderStreamer(request_rec* rec, MgByteReader* reader);
     virtual ~ApacheReaderStreamer();
 
 protected:

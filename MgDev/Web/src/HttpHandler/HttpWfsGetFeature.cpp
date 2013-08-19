@@ -34,7 +34,7 @@
             ogc_server.ServiceExceptionReportResponse(                                        \
                 MgOgcWfsException(MgOgcWfsException::ogc_exception_code,                      \
                                   sReport.c_str() ));                                         \
-            Ptr<MgByteReader> capabilities = responseStream.Stream().GetReader();             \
+            Ptr<MgByteReader> capabilities = responseStream.GetReader();                      \
             hResult->SetResultObject(capabilities, capabilities->GetMimeType());              \
             e->Release();                                                                     \
         }                                                                                     \
@@ -49,7 +49,7 @@
             ogc_server.ServiceExceptionReportResponse(                                        \
                 MgOgcWfsException(MgOgcWfsException::kpszInternalError,                       \
                                   _("Unexpected exception was thrown.  No additional details available.")));\
-            Ptr<MgByteReader> capabilities = responseStream.Stream().GetReader();             \
+            Ptr<MgByteReader> capabilities = responseStream.GetReader();                      \
             hResult->SetResultObject(capabilities, capabilities->GetMimeType());              \
         }                                                                                     \
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,7 +119,7 @@ void MgHttpWfsGetFeature::Execute(MgHttpResponse& hResponse)
     }
     MgHttpRequestParameters requestParams(origReqParams);
 
-    MgHttpResponseStream responseStream;
+    MgGetWfsFeaturesResponseStream responseStream;
     MgOgcServer::SetLoader(GetDocument);
 
     MgUserInformation::SetCurrentUserInfo(m_userInfo);
@@ -132,7 +132,11 @@ void MgHttpWfsGetFeature::Execute(MgHttpResponse& hResponse)
         wfsServer.ProcessRequest(this);
 
         // Obtain the response byte reader
-        Ptr<MgByteReader> responseReader = responseStream.Stream().GetReader();
+        Ptr<MgByteReader> responseReader = responseStream.GetReader();
+
+        Ptr<MgHttpHeader> respHeader = hResponse.GetHeader();
+        //This is the "hint" to chunk the MgByteReader content
+        respHeader->AddHeader(MgHttpResourceStrings::hrhnTransfer_Encoding, MgHttpResourceStrings::hrhnChunked);
 
         // Set the result
         hResult->SetResultObject(responseReader, responseReader->GetMimeType());
@@ -165,6 +169,7 @@ void MgHttpWfsGetFeature::AcquireValidationData(MgOgcServer* ogcServer)
 // Acquire data required to generate the response
 void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
 {
+    Ptr<MgByteReader> resultReader;
     MgOgcWfsServer* wfsServer = (MgOgcWfsServer*)ogcServer;
     if(wfsServer != NULL)
     {
@@ -274,33 +279,26 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
 
                             // Call the C++ API
                             // NOTE: I updated the maxFeatures value from numFeaturesToRetrieve to numFeaturesToRetrieve-1
-                            // Because the MgServerFdoFeatureReader in MapGudie server uses -1 to mark empty, while MgWfsFeatures
+                            // Because the MgServerFdoFeatureReader in MapGuide server uses -1 to mark empty, while MgWfsFeatures
                             // in MapGuide web tier uses 0
-                            Ptr<MgByteReader> resultReader = featureService->GetWfsFeature(featureSourceId, ((sSchemaHash.size()==0) ? sClass : sSchemaHash + _(":") + sClass),
+                            resultReader = featureService->GetWfsFeature(featureSourceId, ((sSchemaHash.size()==0) ? sClass : sSchemaHash + _(":") + sClass),
                                 requiredProperties, m_getFeatureParams->GetSrs(), filter, numFeaturesToRetrieve-1, sVersion, sOutputFormat, sSortCriteria, sPrefix, oFeatureTypes.GetNamespaceUrl());
 
-                            // TODO How to determine number of features retrieved...?
-                            // Note: for now, maxFeatures is managed by the MgWfsFeatures object. - TMT 2006-3-20
-                            // numFeaturesRetrieved += ?
-
-                            // Write the byte reader's data into our response data object
-                            string thisResponseString;
-                            resultReader->ToStringUtf8(thisResponseString);
-
-                            // just append the entire thing; there's important stuff, like namespace declarations
-                            // that we would lose if we just extracted the <featureMember> elements.
-                            // The MgWfsFeatures object will parse the pseudo-XML that results.
-                            responseString += thisResponseString;
+                            // Store the MgByteReader directly for retrieval
+                            //
+                            // DO NOT PASS THROUGH OGC XML TEMPLATE PROCESSING CODE!
+                            // DO NOT PASS GO!
+                            // DO NOT COLLECT MEMORY SPIKES NEEDLESSLY BUFFERING XML TEMPLATE CONTENT AS A RESULT!
+                            //
+                            // This *is* already the WFS GetFeature response. There is nothing to post-process through the XML templates!
                         }
                     }
                 }
             }
         }
-        if(responseString.length() > 0)
+        if (NULL != resultReader.p)
         {
-            STRING wResponseString = MgUtil::MultiByteToWideChar(responseString);
-            Ptr<MgWfsFeatures> features = new MgWfsFeatures(wResponseString.c_str(),m_getFeatureParams->GetMaxFeatures());
-            wfsServer->SetFeatures(features);
+            wfsServer->SetFeatures(resultReader);
         }
     }
 }

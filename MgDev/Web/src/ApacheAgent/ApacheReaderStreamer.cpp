@@ -19,8 +19,8 @@
 #include "http_protocol.h"
 
 
-ApacheReaderStreamer::ApacheReaderStreamer(request_rec* rec, MgReader* reader, CREFSTRING format) :
-    MgHttpReaderStreamer(reader, format), m_r(rec)
+ApacheReaderStreamer::ApacheReaderStreamer(request_rec* rec, MgByteReader* reader) :
+    MgHttpReaderStreamer(reader), m_r(rec)
 {
 }
 

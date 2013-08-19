@@ -23,7 +23,7 @@
 class IsapiReaderStreamer : public MgHttpReaderStreamer
 {
 public:
-    IsapiReaderStreamer(EXTENSION_CONTROL_BLOCK* rec, const std::string& sResponseHeader, MgReader* reader, CREFSTRING format);
+    IsapiReaderStreamer(EXTENSION_CONTROL_BLOCK* rec, const std::string& sResponseHeader, MgByteReader* reader);
     virtual ~IsapiReaderStreamer();
 
 protected:

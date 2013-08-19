@@ -718,13 +718,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="WfsFeatureDefinitions.cpp">
+    <ClCompile Include="ReaderByteSourceImpl.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="WfsFeatures.cpp">
+    <ClCompile Include="WfsFeatureDefinitions.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -1038,11 +1038,11 @@
     <ClInclude Include="OgcWmsException.h" />
     <ClInclude Include="OgcWmsServer.h" />
     <ClInclude Include="HttpReaderStreamer.h" />
+    <ClInclude Include="ReaderByteSourceImpl.h" />
     <ClInclude Include="ResponseStream.h" />
     <ClInclude Include="Stream.h" />
     <ClInclude Include="StringStream.h" />
     <ClInclude Include="WfsFeatureDefinitions.h" />
-    <ClInclude Include="WfsFeatures.h" />
     <ClInclude Include="WfsGetFeatureParams.h" />
     <ClInclude Include="WmsFeatureInfo.h" />
     <ClInclude Include="WmsFeatureProperties.h" />

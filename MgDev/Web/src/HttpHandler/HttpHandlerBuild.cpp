@@ -126,6 +126,8 @@
 #include "HttpEnumerateUnmanagedData.cpp"
 #include "WmsMapUtil.cpp"
 
+#include "ReaderByteSourceImpl.cpp"
+
 // JSON conversion files
 #include "XmlJsonConvert.cpp"
 #include "JsonDoc.cpp"
@@ -142,7 +144,6 @@
 #include "WmsFeatureInfo.cpp"
 #include "WmsFeatureProperties.cpp"
 #include "WfsFeatureDefinitions.cpp"
-#include "WfsFeatures.cpp"
 #include "XmlParser.cpp"
 #include "Dictionary.cpp"
 #include "NameStringValueCollection.cpp"

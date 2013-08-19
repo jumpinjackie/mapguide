@@ -22,8 +22,8 @@ extern void DumpMessage(const char* format, ...);
 extern void DumpMessage2(const char* msg);
 
 
-CgiReaderStreamer::CgiReaderStreamer(MgReader* reader, CREFSTRING format) :
-    MgHttpReaderStreamer(reader, format),
+CgiReaderStreamer::CgiReaderStreamer(MgByteReader* reader) :
+    MgHttpReaderStreamer(reader),
     m_bEndOfStream(false)
 {
 }

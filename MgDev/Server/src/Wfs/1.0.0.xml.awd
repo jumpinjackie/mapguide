@@ -115,16 +115,6 @@
    <ogc:&Enum.item; />
  </Define>
 
- <Define item="GetFeature.xml">
-   <!-- Feature &Feature.iteration; -->
-   &Feature.OuterXml;
- </Define>
-
- <Define item="GetFeatureCollection.xml">
-   <wfs:FeatureCollection &FeatureCollection.Namespaces;>
-     <?EnumFeatures using="&GetFeature.xml;" ?> 
-   </wfs:FeatureCollection>
- </Define>
 </Definitions>
 
 <!--
@@ -251,15 +241,6 @@
             elementFormDefault="qualified" attributeFormDefault="unqualified">
  <?EnumFeatureTypes using="&DescribeFeature.EnumFeature.xml;" ?>
  </xs:schema>
-</Response>
-
-<!--
-
-  WFS GetFeature - XML, GML 2.1.2
-
--->
-<Response request="GetFeature" content-type="text/xml; subtype=gml/2.1.2">
- <?GetFeatureCollection using="&GetFeatureCollection.xml;" ?>
 </Response>
 
 <!--

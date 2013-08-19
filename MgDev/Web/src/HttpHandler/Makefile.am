@@ -132,8 +132,8 @@ include_SOURCES = \
   OgcWfsServer.cpp \
   OgcWmsException.cpp \
   OgcWmsServer.cpp \
+  ReaderByteSourceImpl.cpp \
   WfsFeatureDefinitions.cpp \
-  WfsFeatures.cpp \
   WfsGetFeatureParams.cpp \
   WmsFeatureInfo.cpp \
   WmsFeatureProperties.cpp \
@@ -266,6 +266,7 @@ noinst_HEADERS = $(include_SOURCES) \
   OgcWfsServer.h \
   OgcWmsException.h \
   OgcWmsServer.h \
+  ReaderByteSourceImpl.h \
   ResponseStream.h \
   Stream.h \
   StringStream.h \

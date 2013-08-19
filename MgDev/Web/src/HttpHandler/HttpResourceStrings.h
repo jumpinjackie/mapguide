@@ -40,6 +40,8 @@ public:
     static const STRING hrhnPublic;
     static const STRING hrhnContent_Length;
     static const STRING hrhnContent_Type;
+    static const STRING hrhnTransfer_Encoding;
+    static const STRING hrhnChunked;
     static const STRING hrhnContent_Transfer_Encoding;
     static const STRING hrhnContent_Encoding;
     static const STRING hrhnDate;

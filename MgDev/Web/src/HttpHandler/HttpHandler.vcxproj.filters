@@ -37,6 +37,9 @@
     <Filter Include="Web Applications">
       <UniqueIdentifier>{e21c5925-6c01-4fe4-89d2-1e95e2b3d79e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Byte Source Adapters">
+      <UniqueIdentifier>{0f2e34d9-18f7-49af-b11f-8d3c874192ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HttpApplyResourcePackage.cpp">
@@ -291,9 +294,6 @@
     <ClCompile Include="WfsFeatureDefinitions.cpp">
       <Filter>Ogc</Filter>
     </ClCompile>
-    <ClCompile Include="WfsFeatures.cpp">
-      <Filter>Ogc</Filter>
-    </ClCompile>
     <ClCompile Include="WfsGetFeatureParams.cpp">
       <Filter>Ogc</Filter>
     </ClCompile>
@@ -383,8 +383,8 @@
     <ClCompile Include="HttpCreateRuntimeMap.cpp">
       <Filter>Mapping Service</Filter>
     </ClCompile>
-    <ClCompile Include="HttpDescribeRuntimeMap.cpp">
-      <Filter>Mapping Service</Filter>
+    <ClCompile Include="ReaderByteSourceImpl.cpp">
+      <Filter>Byte Source Adapters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -658,9 +658,6 @@
     <ClInclude Include="WfsFeatureDefinitions.h">
       <Filter>Ogc</Filter>
     </ClInclude>
-    <ClInclude Include="WfsFeatures.h">
-      <Filter>Ogc</Filter>
-    </ClInclude>
     <ClInclude Include="WfsGetFeatureParams.h">
       <Filter>Ogc</Filter>
     </ClInclude>
@@ -757,8 +754,8 @@
     <ClInclude Include="HttpCreateRuntimeMap.h">
       <Filter>Mapping Service</Filter>
     </ClInclude>
-    <ClInclude Include="HttpDescribeRuntimeMap.h">
-      <Filter>Mapping Service</Filter>
+    <ClInclude Include="ReaderByteSourceImpl.h">
+      <Filter>Byte Source Adapters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

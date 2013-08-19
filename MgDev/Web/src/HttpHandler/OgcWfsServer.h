@@ -21,7 +21,6 @@
 #include "OgcServer.h"
 #include "OgcWfsException.h"
 #include "WfsFeatureDefinitions.h"
-#include "WfsFeatures.h"
 
 class MgOgcWfsServer: public MgOgcServer
 {
@@ -30,7 +29,8 @@ public:
     MgOgcWfsServer(MgHttpRequestParameters& Request, CStream& Response);
 
     void GenerateTypeNameException(CREFSTRING sTypeName);
-    void SetFeatures(MgWfsFeatures* pFeatures);
+    
+    void SetFeatures(MgByteReader* pFeatures);
     void SetGetFeatureRequestParams(WfsGetFeatureParams* pGetFeatureParams);
     void SetFeatureDefinitions(MgWfsFeatureDefinitions* pFeatureDefs);
 
@@ -93,16 +93,10 @@ private:
     // ?>
     void ProcedureEnumFeatureTypes(MgXmlProcessingInstruction& PIEnum);
 
-    void ProcedureGetFeatureCollection(MgXmlProcessingInstruction& PIEnum);
-
-    // <?EnumFeatures
-    //
-    void ProcedureEnumFeatures(MgXmlProcessingInstruction& PIEnum);
-
     CPSZ ServiceExceptionReportElement();
 
     MgWfsFeatureDefinitions* m_pFeatures;
-    Ptr<MgWfsFeatures> m_pFeatureSet;
+    Ptr<MgByteReader> m_pFeatureSet;
     Ptr<WfsGetFeatureParams> m_pGetFeatureParams;
 
     // The backing store for the default exception.

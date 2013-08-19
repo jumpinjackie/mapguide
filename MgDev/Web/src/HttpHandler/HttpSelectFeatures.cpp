@@ -17,6 +17,7 @@
 
 #include "HttpHandler.h"
 #include "HttpSelectFeatures.h"
+#include "ReaderByteSourceImpl.h"
 
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpSelectFeatures)
 
@@ -104,9 +105,18 @@ void MgHttpSelectFeatures::Execute(MgHttpResponse& hResponse)
     }
 
     Ptr<MgFeatureReader> featureReader = service->SelectFeatures(&resId, m_className, qryOptions);
-    //HACK-ish: We're passing conversion responsibility to the caller (agent), so we store the
-    //originally requested format so the caller can determine if conversion is required
-    hResult->SetResultObject(featureReader, m_responseFormat);
+    //MgByteSource owns this and will clean it up when done
+    ByteSourceImpl* bsImpl = new MgReaderByteSourceImpl(featureReader, m_responseFormat);
+
+    Ptr<MgByteSource> byteSource = new MgByteSource(bsImpl);
+    byteSource->SetMimeType(m_responseFormat);
+    Ptr<MgByteReader> byteReader = byteSource->GetReader();
+    hResult->SetResultObject(byteReader, m_responseFormat);
+
+    Ptr<MgHttpHeader> respHeader = hResponse.GetHeader();
+
+    //This is the "hint" to chunk the MgByteReader content
+    respHeader->AddHeader(MgHttpResourceStrings::hrhnTransfer_Encoding, MgHttpResourceStrings::hrhnChunked);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpSelectFeatures.Execute")
 }

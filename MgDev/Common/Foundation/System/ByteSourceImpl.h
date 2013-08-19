@@ -23,7 +23,7 @@
 /// \brief
 /// Placeholder for various ByteSourceInfo derived classes, which supply
 /// the actual access to the bytes in the source
-class ByteSourceImpl
+class MG_FOUNDATION_API ByteSourceImpl
 {
 public:
 

@@ -29,16 +29,14 @@ public:
     virtual ~MgHttpReaderStreamer();
 
 protected:
-    MgHttpReaderStreamer(MgReader* reader, CREFSTRING format);
+    MgHttpReaderStreamer(MgByteReader* reader);
     virtual void SetChunkedEncoding();
     virtual void WriteChunk(const char* str, size_t length);
     virtual void Dispose() { delete this; }
     virtual void EndStream();
     
 private:
-    void ToJson(string& xmlString, string& jsonString);
-    Ptr<MgReader> m_reader;
-    STRING m_format;
+    Ptr<MgByteReader> m_reader;
 };
 
 #endif
