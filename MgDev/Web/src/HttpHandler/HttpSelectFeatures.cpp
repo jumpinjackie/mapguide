@@ -38,6 +38,10 @@ MgHttpSelectFeatures::MgHttpSelectFeatures(MgHttpRequest *hRequest)
     Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
     m_resId = params->GetParameterValue(MgHttpResourceStrings::reqFeatResourceId);
     m_className = params->GetParameterValue(MgHttpResourceStrings::reqFeatClass);
+
+    //Default to xml if not specified
+    if (m_responseFormat.empty())
+        m_responseFormat = MgMimeType::Xml;
 }
 
 /// <summary>

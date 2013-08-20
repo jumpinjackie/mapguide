@@ -23,6 +23,9 @@
 #include "OgcFramework.h"
 #include "OgcWfsServer.h"
 
+extern CPSZ kpszQueryStringTypeName;
+extern CPSZ kpszExceptionMessageMalformedRequestedType;
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //                                          MgException* or derivative                       //
 //                                          |                 MgOgcWfsException::kpsz...     //
@@ -34,7 +37,7 @@
             ogc_server.ServiceExceptionReportResponse(                                        \
                 MgOgcWfsException(MgOgcWfsException::ogc_exception_code,                      \
                                   sReport.c_str() ));                                         \
-            Ptr<MgByteReader> capabilities = responseStream.GetReader();                      \
+            Ptr<MgByteReader> capabilities = responseStream.Stream().GetReader();             \
             hResult->SetResultObject(capabilities, capabilities->GetMimeType());              \
             e->Release();                                                                     \
         }                                                                                     \
@@ -49,7 +52,7 @@
             ogc_server.ServiceExceptionReportResponse(                                        \
                 MgOgcWfsException(MgOgcWfsException::kpszInternalError,                       \
                                   _("Unexpected exception was thrown.  No additional details available.")));\
-            Ptr<MgByteReader> capabilities = responseStream.GetReader();                      \
+            Ptr<MgByteReader> capabilities = responseStream.Stream().GetReader();             \
             hResult->SetResultObject(capabilities, capabilities->GetMimeType());              \
         }                                                                                     \
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,16 +133,27 @@ void MgHttpWfsGetFeature::Execute(MgHttpResponse& hResponse)
     try
     {
         wfsServer.ProcessRequest(this);
+        //We have the GetFeature response
+        if (responseStream.HasReader())
+        {
+            // Obtain the response byte reader
+            Ptr<MgByteReader> responseReader = responseStream.GetReader();
 
-        // Obtain the response byte reader
-        Ptr<MgByteReader> responseReader = responseStream.GetReader();
+            Ptr<MgHttpHeader> respHeader = hResponse.GetHeader();
+            //This is the "hint" to chunk the MgByteReader content
+            respHeader->AddHeader(MgHttpResourceStrings::hrhnTransfer_Encoding, MgHttpResourceStrings::hrhnChunked);
 
-        Ptr<MgHttpHeader> respHeader = hResponse.GetHeader();
-        //This is the "hint" to chunk the MgByteReader content
-        respHeader->AddHeader(MgHttpResourceStrings::hrhnTransfer_Encoding, MgHttpResourceStrings::hrhnChunked);
+            // Set the result
+            hResult->SetResultObject(responseReader, responseReader->GetMimeType());
+        }
+        else //Write out whatever the MgOgcWfsServer has written
+        {
+            // Slurp the results.
+            Ptr<MgByteReader> response = responseStream.Stream().GetReader();
 
-        // Set the result
-        hResult->SetResultObject(responseReader, responseReader->GetMimeType());
+            // Set the result
+            hResult->SetResultObject(response, response->GetMimeType());
+        }
     }
     
     CATCH_MGEXCEPTION_HANDLE_AS_OGC_WFS(MgException,kpszInternalError,wfsServer)
@@ -292,6 +306,18 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                             //
                             // This *is* already the WFS GetFeature response. There is nothing to post-process through the XML templates!
                         }
+                        else //Cannot resolve feature source from feature type name
+                        {
+                            MgStringCollection args;
+                            args.Add(sFeatureType);
+                            throw new MgInvalidArgumentException(L"MgHttpWfsGetFeature.AcquireResponseData", __LINE__, __WFILE__, NULL, L"MgCannotResolveFeatureSourceFromWfsTypeName", &args);
+                        }
+                    }
+                    else //Feature type name is malformed. We expected the form <namespace>:<class_name>
+                    {
+                        wfsServer->ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWfsException::kpszInvalidParameterValue,
+                                                                                    kpszExceptionMessageMalformedRequestedType,
+                                                                                    kpszQueryStringTypeName));
                     }
                 }
             }

@@ -40,6 +40,7 @@ CPSZ kpszQueryStringGetFeatureOutputFormatDefault_1_0_0    = _("Formats.GetFeatu
 CPSZ kpszQueryStringGetFeatureOutputFormatDefault_1_1_0    = _("Formats.GetFeature.default.1.1.0");
 CPSZ kpszPiGetFeatureCollection              = _("GetFeatureCollection");
 CPSZ kpszPiGetFeatureCollectionDefaultFormat = _("&GetFeatureCollection.xml;");
+CPSZ kpszQueryStringTypeName                 = _("typename");
 
 CPSZ kpszQueryStringAcceptVersions           = _("acceptversions");
 CPSZ kpszQueryStringSections                 = _("sections");
@@ -65,6 +66,7 @@ CPSZ kpszExceptionMessageWfsGetFeatureMissingFeatureType = _("A WFS GetFeature r
 CPSZ kpszExceptionMessageWfsVersionNegotiationFailed = _("Requested version is unsupported in AcceptVersions"); //Localize
 CPSZ kpszExceptionMessageWfsInvalidVersion = _("Version number specified must correspond to a version supported by the service."); // Localize
 CPSZ kpszExceptionMessageWfsInvalidService = _("Invalid parameter value for SERVICE"); //Localize
+CPSZ kpszExceptionMessageMalformedRequestedType = _("Encountered malformed typeName in request"); //Localize
 
 CPSZ kpszInternalErrorMissingGetFeatureRequestParams   = _("Internal Error: Missing WFS GetFeature request parameters."); // Localize
 //

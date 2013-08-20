@@ -52,31 +52,6 @@ public:
 };
 */
 
-// This is not a true stream. It's just a temporary MgByteReader
-// placeholder that passes the CStream type test allowing us to 
-// pass this into a MgOgcWfsServer instance.
-class MgGetWfsFeaturesResponseStream : public CStream
-{
-public:
-    MgGetWfsFeaturesResponseStream() 
-    {
-        m_reader = NULL;
-    }
-    ~MgGetWfsFeaturesResponseStream() 
-    { 
-        m_reader = NULL;
-    }
-
-    virtual void SetContentType(CPSZ pszContentTypeMime) { }
-    virtual long Write(CPSZ pszBuffer,size_t uBytesToWrite,size_t* puBytesWritten) { return -1; }
-
-    void SetReader(MgByteReader* reader) { m_reader = SAFE_ADDREF(reader); }
-    MgByteReader* GetReader() { return SAFE_ADDREF(m_reader); }
-
-private:
-    MgByteReader* m_reader;
-};
-
 class MgHttpResponseStream: public CStream
 {
 public:
@@ -84,6 +59,12 @@ public:
     {
         m_pStore = new MgByte();
         m_pStream = new MgByteSource(m_pStore);
+    }
+
+    virtual ~MgHttpResponseStream()
+    {
+        m_pStream = NULL;
+        m_pStore = NULL;
     }
 
     void SetContentType(CPSZ pszContentTypeMime)
@@ -121,9 +102,33 @@ public:
         return *m_pStream;
     }
 
-private:
+protected:
     Ptr<MgByte>       m_pStore;
     Ptr<MgByteSource> m_pStream;
+};
+
+// This is a specialized response stream for GetFeature that allows us to attach
+// the MgFeatureService.GetWfsFeature() response directly (which the GetFeature operation will
+// check for), while still retaining the ability to have any exception responses written to it
+// by the MgOgcServer instance.
+class MgGetWfsFeaturesResponseStream : public MgHttpResponseStream
+{
+public:
+    MgGetWfsFeaturesResponseStream() : MgHttpResponseStream()
+    {
+        m_reader = NULL;
+    }
+    virtual ~MgGetWfsFeaturesResponseStream() 
+    { 
+        SAFE_RELEASE(m_reader);
+    }
+
+    bool HasReader() { return NULL != m_reader; }
+    void SetReader(MgByteReader* reader) { m_reader = SAFE_ADDREF(reader); }
+    MgByteReader* GetReader() { return SAFE_ADDREF(m_reader); }
+
+private:
+    MgByteReader* m_reader;
 };
 
 #endif//_CgiResponseStream_h

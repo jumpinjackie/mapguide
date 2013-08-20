@@ -159,6 +159,7 @@ MgXmlParserException                                  = An exception occurred in
 MgArgumentsMismatch                                   = The arguments needed do not match the arguments provided.
 MgArgumentOutOfRange                                  = Argument out of range [%1, %2]: %3
 MgClassWOIdentity                                     = A class definition has no identity property.
+MgCannotResolveFeatureSourceFromWfsTypeName           = Could not resolve the Feature Source from the given WFS Type Name: %1
 MgCollectionEmpty                                     = The collection cannot be empty.
 MgCoordinateSystemNotReadyException                   = The object is not ready for this operation.
 MgConfigurationPropertyLengthIsInvalid                = The value of property %1 under section %2 is %3. Its length must be %4

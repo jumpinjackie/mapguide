@@ -48,6 +48,10 @@ MgHttpSelectFeaturesSpatially::MgHttpSelectFeaturesSpatially(MgHttpRequest *hReq
         m_operation = atoi(MgUtil::WideCharToMultiByte(spatialOp).c_str());
 
     m_geometry = params->GetParameterValue(MgHttpResourceStrings::reqFeatGeometry);
+
+    //Default to xml if not specified
+    if (m_responseFormat.empty())
+        m_responseFormat = MgMimeType::Xml;
 }
 
 /// <summary>
