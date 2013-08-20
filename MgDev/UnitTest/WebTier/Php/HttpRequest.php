@@ -62,7 +62,9 @@ class HttpRequest
         curl_setopt($this->ch, CURLOPT_HEADER, true);
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->ch, CURLOPT_USERPWD, "Administrator:admin");
-
+        //Uncomment for fiddler tracing
+        //curl_setopt($this->ch, CURLOPT_PROXY, '127.0.0.1:8888');
+        
         //curl_setopt($this->ch, CURLOPT_COOKIEFILE, $this->cookieJar);
         //curl_setopt($this->ch, CURLOPT_COOKIEJAR, $this->cookieJar);
 
