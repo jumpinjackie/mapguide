@@ -51,6 +51,12 @@ namespace SqliteGUI
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog2;
+        private TextBox txtFind;
+        private TextBox txtReplace;
+        private Label label3;
+        private Label label4;
+        private GroupBox groupBox1;
+        private Button btnReplace;
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -135,7 +141,14 @@ namespace SqliteGUI
             this.saveButton = new System.Windows.Forms.Button();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.saveFileDialog2 = new System.Windows.Forms.SaveFileDialog();
+            this.txtFind = new System.Windows.Forms.TextBox();
+            this.txtReplace = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnReplace = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid1)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // newTestNameLabel
@@ -152,6 +165,7 @@ namespace SqliteGUI
             this.DeleteParamSet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.DeleteParamSet.Location = new System.Drawing.Point(232, 336);
             this.DeleteParamSet.Name = "DeleteParamSet";
+            this.DeleteParamSet.Size = new System.Drawing.Size(75, 23);
             this.DeleteParamSet.TabIndex = 10;
             this.DeleteParamSet.Text = "Delete";
             this.DeleteParamSet.Click += new System.EventHandler(this.DeleteParamSet_Click);
@@ -161,6 +175,7 @@ namespace SqliteGUI
             this.AddParamSet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.AddParamSet.Location = new System.Drawing.Point(232, 448);
             this.AddParamSet.Name = "AddParamSet";
+            this.AddParamSet.Size = new System.Drawing.Size(75, 23);
             this.AddParamSet.TabIndex = 9;
             this.AddParamSet.Text = "Add";
             this.AddParamSet.Click += new System.EventHandler(this.AddParamSet_Click);
@@ -170,13 +185,13 @@ namespace SqliteGUI
             this.paramSetBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.paramSetBox.Location = new System.Drawing.Point(120, 448);
             this.paramSetBox.Name = "paramSetBox";
+            this.paramSetBox.Size = new System.Drawing.Size(100, 20);
             this.paramSetBox.TabIndex = 8;
-            this.paramSetBox.Text = "";
             // 
             // paramSetsList
             // 
             this.paramSetsList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                | System.Windows.Forms.AnchorStyles.Left)));
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.paramSetsList.Location = new System.Drawing.Point(120, 280);
             this.paramSetsList.Name = "paramSetsList";
             this.paramSetsList.Size = new System.Drawing.Size(104, 147);
@@ -216,7 +231,6 @@ namespace SqliteGUI
             this.addTestBox.Name = "addTestBox";
             this.addTestBox.Size = new System.Drawing.Size(288, 20);
             this.addTestBox.TabIndex = 2;
-            this.addTestBox.Text = "";
             // 
             // prerequisite
             // 
@@ -224,19 +238,19 @@ namespace SqliteGUI
             this.prerequisite.Name = "prerequisite";
             this.prerequisite.Size = new System.Drawing.Size(280, 20);
             this.prerequisite.TabIndex = 6;
-            this.prerequisite.Text = "";
             // 
             // executeSequence
             // 
             this.executeSequence.Location = new System.Drawing.Point(120, 96);
             this.executeSequence.Name = "executeSequence";
+            this.executeSequence.Size = new System.Drawing.Size(100, 20);
             this.executeSequence.TabIndex = 4;
-            this.executeSequence.Text = "";
             // 
             // prerequisiteLabel
             // 
             this.prerequisiteLabel.Location = new System.Drawing.Point(16, 208);
             this.prerequisiteLabel.Name = "prerequisiteLabel";
+            this.prerequisiteLabel.Size = new System.Drawing.Size(100, 23);
             this.prerequisiteLabel.TabIndex = 5;
             this.prerequisiteLabel.Text = "Prerequisite";
             this.prerequisiteLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -254,6 +268,7 @@ namespace SqliteGUI
             // 
             this.executeSequenceLabel.Location = new System.Drawing.Point(8, 96);
             this.executeSequenceLabel.Name = "executeSequenceLabel";
+            this.executeSequenceLabel.Size = new System.Drawing.Size(100, 23);
             this.executeSequenceLabel.TabIndex = 3;
             this.executeSequenceLabel.Text = "Execute Sequence";
             this.executeSequenceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -279,8 +294,8 @@ namespace SqliteGUI
             // dataGrid1
             // 
             this.dataGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                | System.Windows.Forms.AnchorStyles.Left) 
-                | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGrid1.DataMember = "";
             this.dataGrid1.HeaderForeColor = System.Drawing.SystemColors.ControlText;
             this.dataGrid1.Location = new System.Drawing.Point(464, 144);
@@ -321,17 +336,16 @@ namespace SqliteGUI
             // contentType
             // 
             this.contentType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-                | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.contentType.Location = new System.Drawing.Point(464, 432);
             this.contentType.Name = "contentType";
             this.contentType.Size = new System.Drawing.Size(120, 20);
             this.contentType.TabIndex = 13;
-            this.contentType.Text = "";
             // 
             // sampleResult
             // 
             this.sampleResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-                | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.sampleResult.Location = new System.Drawing.Point(464, 464);
             this.sampleResult.Name = "sampleResult";
             this.sampleResult.Size = new System.Drawing.Size(408, 104);
@@ -341,7 +355,7 @@ namespace SqliteGUI
             // resultDescription
             // 
             this.resultDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-                | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.resultDescription.Location = new System.Drawing.Point(464, 384);
             this.resultDescription.Name = "resultDescription";
             this.resultDescription.Size = new System.Drawing.Size(408, 32);
@@ -352,6 +366,7 @@ namespace SqliteGUI
             // 
             this.testTypeLabel.Location = new System.Drawing.Point(16, 240);
             this.testTypeLabel.Name = "testTypeLabel";
+            this.testTypeLabel.Size = new System.Drawing.Size(100, 23);
             this.testTypeLabel.TabIndex = 82;
             this.testTypeLabel.Text = "Test Type";
             this.testTypeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -362,7 +377,6 @@ namespace SqliteGUI
             this.testType.Name = "testType";
             this.testType.Size = new System.Drawing.Size(104, 20);
             this.testType.TabIndex = 7;
-            this.testType.Text = "";
             // 
             // testDescription
             // 
@@ -371,7 +385,6 @@ namespace SqliteGUI
             this.testDescription.Name = "testDescription";
             this.testDescription.Size = new System.Drawing.Size(280, 56);
             this.testDescription.TabIndex = 5;
-            this.testDescription.Text = "";
             // 
             // saveButton
             // 
@@ -383,10 +396,68 @@ namespace SqliteGUI
             this.saveButton.Text = "Save Changes";
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
+            // txtFind
+            // 
+            this.txtFind.Location = new System.Drawing.Point(94, 28);
+            this.txtFind.Name = "txtFind";
+            this.txtFind.Size = new System.Drawing.Size(188, 20);
+            this.txtFind.TabIndex = 87;
+            // 
+            // txtReplace
+            // 
+            this.txtReplace.Location = new System.Drawing.Point(94, 54);
+            this.txtReplace.Name = "txtReplace";
+            this.txtReplace.Size = new System.Drawing.Size(188, 20);
+            this.txtReplace.TabIndex = 88;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(19, 31);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(67, 13);
+            this.label3.TabIndex = 89;
+            this.label3.Text = "Find Content";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(16, 57);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(72, 13);
+            this.label4.TabIndex = 90;
+            this.label4.Text = "Replace With";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox1.Controls.Add(this.btnReplace);
+            this.groupBox1.Controls.Add(this.txtFind);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.txtReplace);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Location = new System.Drawing.Point(35, 490);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(302, 117);
+            this.groupBox1.TabIndex = 91;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Find/Replace content in sample result";
+            // 
+            // btnReplace
+            // 
+            this.btnReplace.Location = new System.Drawing.Point(94, 81);
+            this.btnReplace.Name = "btnReplace";
+            this.btnReplace.Size = new System.Drawing.Size(75, 23);
+            this.btnReplace.TabIndex = 91;
+            this.btnReplace.Text = "Replace";
+            this.btnReplace.UseVisualStyleBackColor = true;
+            this.btnReplace.Click += new System.EventHandler(this.btnReplace_Click);
+            // 
             // NewAddTestForm
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(888, 618);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.testType);
             this.Controls.Add(this.testTypeLabel);
@@ -417,7 +488,10 @@ namespace SqliteGUI
             this.Name = "NewAddTestForm";
             this.Text = "NewAddTestForm";
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid1)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
         #endregion
@@ -1059,6 +1133,15 @@ namespace SqliteGUI
                 overwrite = true;
             }
             return overwrite;
+        }
+
+        private void btnReplace_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtFind.Text))
+            {
+                sampleResult.Text = sampleResult.Text.Replace(txtFind.Text, txtReplace.Text);
+                MessageBox.Show("Sample Result field updated");
+            }
         }
     }
 }
