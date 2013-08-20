@@ -40,13 +40,14 @@ SET OEM_PHP=%OEM_PATH%\php\Release_TS
 REM MENTOR_DICTIONARY_PATH fallback for MgCoordinateSystem still exists, so use it so we don't have to mess around with webconfig.ini
 SET MENTOR_DICTIONARY_PATH=%OEM_PATH%\CsMap\Dictionaries
 SET OEM_SQLITE=%OEM_PATH%\SQLite\bin\release
+SET MAPAGENT=%CD%\..\Web\src\mapagent
 IF "%PLATFORM%" == "64" (
     SET OEM_PHP=%OEM_PATH%\php\x64\Release_TS
     SET WEB_BIN=%CD%\..\Web\bin\release64
-    SET SERVER_BIN=%CD%\..\Server\bin\release
+    SET SERVER_BIN=%CD%\..\Server\bin\release64
     SET OEM_SQLITE=%OEM_PATH%\SQLite\bin\release64
+    SET MAPAGENT=%CD%\..\Web\src\mapagent64
 )
-SET MAPAGENT=%CD%\..\Web\src\mapagent
 SET OLD_PATH=%PATH%
 SET PATH=%PATH%;%OEM_PHP%;%MAPAGENT%
 
@@ -92,7 +93,7 @@ REM We're ready now. Dive in
 echo Starting unit tests
 pushd WebTier\php
 IF "%API_ONLY%" == "1" (
-    php.exe -n -d display_errors=Off -d extension_dir=%OEM_PHP% -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -d extension=php_SQLitePhpApi.dll RunTests.php -- -apionly
+    php.exe -n -d display_errors=Off -d extension_dir=%OEM_PHP% -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -d extension=php_SQLitePhpApi.dll RunTests.php -apionly
 ) ELSE (
     php.exe -n -d display_errors=Off -d extension_dir=%OEM_PHP% -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -d extension=php_SQLitePhpApi.dll RunTests.php
 )

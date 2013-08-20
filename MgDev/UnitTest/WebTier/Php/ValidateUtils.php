@@ -34,6 +34,27 @@ class ValidateUtils
         }
         return $cleanResult;
     }
+    
+    public static function RemoveStackTraceFromOgcException($result)
+    {
+        $cleanResult = $result;
+        $start = strpos($result, "<details>");
+        if ($start)
+        {
+            $start += strlen("<details>");
+            $before = substr($result, 0, $start);
+            $upToExceptionStart = strpos($result, "\n", $start);
+            
+            $cleanResult = substr($result, 0, $upToExceptionStart);
+            $detailsEnd = strpos($result, "</details>");
+            $after = substr($result, $detailsEnd);
+            //echo "Current: $result\n";
+            //echo "Before: $before\n";
+            //echo "After: $after\n";
+            $cleanResult .= $after;
+        }
+        return $cleanResult;
+    }
 
     public static function GetExtension($mimeType)
     {
@@ -147,8 +168,11 @@ class ValidateUtils
         {
             $resultData = self::RemoveCreationDate($resultData);
         }
-
-
+        elseif ($operation == "WmsGetMap")
+        {
+            $resultData = self::RemoveStackTraceFromOgcException($resultData);
+        }
+        
         if (strstr($contentType,"text/xml") != FALSE)
         {
             $doc = new DOMDocument();

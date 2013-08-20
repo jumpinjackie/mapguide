@@ -19,8 +19,13 @@
 
 //Class that defines static methods that are commonly used in the infrastructure
 
-define( 'WEBCONFIGINI', "../../../Web/src/webconfig.ini");
-
+if (!defined('WEBCONFIGINI')) {
+    if (array_key_exists("WEBCONFIGINI", $_SERVER)) {
+        define("WEBCONFIGINI", $_SERVER["WEBCONFIGINI"]);
+    } else {
+        define('WEBCONFIGINI', "../../../Web/src/webconfig.ini");
+    }
+}
 class Utils
 {
     public static function SetCommonParams($paramSet, $db)

@@ -57,6 +57,10 @@ function main()
             {
                 $runApiTestsOnly = true;
             }
+            else if ($_SERVER['argv'][$i] == "-config" && $i < count($_SERVER['argv']) - 1)
+            {
+                define("WEBCONFIGINI", $_SERVER['argv'][$i+1]);
+            }
         }
     }
 

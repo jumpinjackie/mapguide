@@ -313,6 +313,9 @@ class Validate
 
                     if ($_POST['testExecutionMode'] == "validate")
                     {
+                        //Normalize line endings. Don't want stray CRLFs derailing verification
+                        $resultData = str_replace("\r\n", "\n", $resultData);
+                        $expectedResult = str_replace("\r\n", "\n", $expectedResult);
 
                         //If the results are different and special validation fails then then the operation failed ->mark it red
                         if ( strncasecmp($resultData, $expectedResult, strlen($resultData.$expectedResult)) && !(ValidateUtils::SpecialValidation($operation, $resultData, $expectedResult)))

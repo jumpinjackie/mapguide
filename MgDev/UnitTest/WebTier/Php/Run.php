@@ -92,7 +92,7 @@ class Run
             {
                 $url="http://".$_SERVER['SERVER_ADDR'].":".$_SERVER['SERVER_PORT']."/mapguide/mapagent/mapagent.fcgi";
             }
-
+            //print("Using mapagent url: $url\n");
             $testName=$_POST['testName'];
             $dbName = Utils::GetPath($_POST[$testName.":dbPath"]);
             if (file_exists($dbName))
