@@ -1,20 +1,24 @@
 <html>
     <head>
-        <title>CreateRuntimeMap Example</title>
+        <title>Basic Sheboygan un-tiled map example with basic legend</title>
         <link rel="stylesheet" href="../assets/theme/default/style.css" />
         <style type="text/css">
+            body { font-family: Verdana; font-size: 0.9em; }
             #error { color: red; }
             #wrap { width: 900; }
             #map { width: 650; height: 500; float: right; }
             #details { width: 250; height: 500; overflow: auto; display: block-inline; float: left; }
             #rootList { list-style-type: none; margin-left: -20px; }
             #rootList li { list-style-type: none; }
+            .olControlMousePosition { background: #ffff66; font-size: 0.6em !important; padding: 2px; }
         </style>
         <script type="text/javascript" src="../assets/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="../assets/OpenLayers.js"></script>
+        <script type="text/javascript" src="../assets/legend.js"></script>
         <script type="text/javascript">
         
-        var mapAgentUrl = "../mapagent/mapagent.fcgi";
+        //This sample is assumed to be hosted at http://servername/mapguide/ol2samples/untiled/index.html
+        var mapAgentUrl = "../../mapagent/mapagent.fcgi";
         
         //Various features you can include in the CREATERUNTIMEMAP response.
         var REQ_NONE = 0;                   //Nothing. This the default.
@@ -152,75 +156,19 @@
             mgLayer = new OpenLayers.Layer.MapGuide( "MapGuide (from CREATERUNTIMEMAP)", mapAgentUrl, params, options );
             map.addLayer(mgLayer);
             map.zoomToMaxExtent();
-            var groupElMap = {};
-            if (rtMapInfo.RuntimeMap.Group) {
-                var remainingGroups = {};
-                $("#noLayerStructure").hide();
-                //1st pass, un-parented groups
-                for (var i = 0; i < rtMapInfo.RuntimeMap.Group.length; i++) {
-                    var group = rtMapInfo.RuntimeMap.Group[i];
-                    if (group.ParentId) {
-                        remainingGroups[group.ObjectId[0]] = group;
-                        continue;
-                    }
-                    var el = createGroupElement(group);
-                    groupElMap[group.ObjectId[0]] = el;
-                    $("#rootList").append(el);
-                }
-                //2nd pass, parented groups
-                var itemCount = 0;
-                for (var objId in remainingGroups) {
-                    itemCount++;
-                }
-                //Whittle down
-                while(itemCount > 0) {
-                    var removeIds = [];
-                    for (var objId in remainingGroups) {
-                        var group = remainingGroups[objId];
-                        //Do we have a parent?
-                        if (typeof(groupElMap[group.ParentId[0]]) != 'undefined') {
-                            var el = createGroupElement(group);
-                            groupElMap[group.ParentId[0]].find("ul.groupChildren").append(el);
-                            removeIds.push(group.ObjectId[0]);
-                        }
-                    }
-                    for (var i = 0; i < removeIds.length; i++) {
-                        delete remainingGroups[removeIds[i]];
-                    }
-                
-                    itemCount = 0;
-                    for (var objId in remainingGroups) {
-                        itemCount++;
-                    }
-                }
-            }
-            if (rtMapInfo.RuntimeMap.Layer) {
-                $("#noLayerStructure").hide();
-                for (var i = 0; i < rtMapInfo.RuntimeMap.Layer.length; i++) {
-                    var layer = rtMapInfo.RuntimeMap.Layer[i];
-                    var el = createLayerElement(layer);
-                    if (layer.ParentId) {
-                        groupElMap[layer.ParentId[0]].find("ul.groupChildren").append(el);
-                    } else {
-                        $("#rootList").append(el);
-                    }
-                }
-            }
+            
+            var legend = new Legend({
+                legendSelector: "#rootList",
+                stdIconRoot: "../../stdicons",
+                runtimeMap: rtMapInfo,
+                map: map,
+                mgLayerOL: mgLayer
+            });
+            legend.update();
+            
             $("#mapName").html("MapGuide mapname: " + rtMapInfo.RuntimeMap.Name[0]);
             $("#mgSession").html("MapGuide session ID: " + sessionId);
             $("div.olMap").css("background-color", "#" + rtMapInfo.RuntimeMap.BackgroundColor[0].substring(2));
-            $("input.group-checkbox").change(function() {
-                var bShow = $(this).is(":checked");
-                var objId = $(this).val();
-                showGroup(objId, bShow);
-            });
-            
-            $("input.layer-checkbox").change(function() {
-                var bShow = $(this).is(":checked");
-                var objId = $(this).val();
-                showLayer(objId, bShow);
-            });
-            
             startKeepAlive();
         }
         
@@ -238,84 +186,6 @@
             keepAlive();
         }
         
-        var req = {
-            showgroups: null,
-            showlayers: null,
-            hidegroups: null,
-            hidelayers: null
-        };
-        
-        function resetRequest() {
-            req.showgroups = null;
-            req.showlayers = null;
-            req.hidegroups = null;
-            req.hidelayers = null;
-        }
-        
-        function showGroup(groupId, bShow) {
-            resetRequest();
-            if (bShow)
-                req.showgroups = groupId;
-            else
-                req.hidegroups = groupId;
-            mgLayer.mergeNewParams(req);
-        }
-        
-        function showLayer(layerId, bShow) {
-            resetRequest();
-            if (bShow)
-                req.showlayers = layerId;
-            else
-                req.hidelayers = layerId;
-            mgLayer.mergeNewParams(req);
-        }
-        
-        function createGroupElement(group) {
-            return $("<li><input type='checkbox' class='group-checkbox' value='" + group.ObjectId[0] + "' " + ((group.Visible[0] == "true") ? "checked='checked'" : "") + " /><img src='../stdicons/lc_group.gif' /> " + group.LegendLabel[0] + "<ul class='groupChildren'></ul></li>");
-        }
-        
-        function getIconUri(iconBase64) {
-            return "data:" + gMimeType + ";base64," + iconBase64;
-        }
-        
-        function createLayerElement(layer) {
-            var icon = "legend-layer.png";
-            var text = layer.LegendLabel ? layer.LegendLabel[0] : "";
-            var childHtml = "";
-            //This is using the first scale range and the first geometry type. To do this proper you'd find the matching scale range
-            //based on the current map's view scale. Then dynamically, toggle item visibility when the map scale
-            //changes
-            if (layer.ScaleRange) {
-                if (layer.ScaleRange[0].FeatureStyle) {
-                    var fts = layer.ScaleRange[0].FeatureStyle[0];
-                    var ruleCount = fts.Rule.length;
-                    if (ruleCount > 1) {
-                        icon = "../stdicons/lc_theme.gif";
-                        childHtml = "<ul>";
-                        //Test compression
-                        var bCompressed = false;
-                        if (ruleCount > 3) {
-                            bCompressed = !(fts.Rule[1].Icon);
-                        }
-                        if (bCompressed) {
-                            childHtml += "<li><img src='" + getIconUri(fts.Rule[0].Icon[0]) + "' /> " + (fts.Rule[0].LegendLabel ? fts.Rule[0].LegendLabel[0] : "") + "</li>";
-                            childHtml += "<li>... (" + (ruleCount - 2) + " other theme rules)</li>";
-                            childHtml += "<li><img src='" + getIconUri(fts.Rule[ruleCount-1].Icon[0]) + "' /> " + (fts.Rule[ruleCount-1].LegendLabel ? fts.Rule[ruleCount-1].LegendLabel[0] : "") + "</li>";
-                        } else {
-                            for (var i = 0; i < ruleCount; i++) {
-                                var rule = fts.Rule[i];
-                                childHtml += "<li><img src='" + getIconUri(rule.Icon[0]) + "' /> " + (rule.LegendLabel ? rule.LegendLabel[0] : "") + "</li>";
-                            }
-                        }
-                        childHtml += "</ul>";
-                    } else {
-                        icon = getIconUri(fts.Rule[0].Icon[0]);
-                    }
-                }
-            }
-            return $("<li><input type='checkbox' class='layer-checkbox' value='" + layer.ObjectId[0] + "' " + ((layer.Visible[0] == "true") ? "checked='checked'" : "") + " /><img src='" + icon + "' /> " + text + childHtml + "</li>");
-        }
-        
         </script>
     </head>
     <body>
@@ -327,7 +197,6 @@
         <div id="wrap">
             <div id="details">
                 <strong>Layer and Groups</strong>
-                <span id="noLayerStructure">No layer/group structure found. Probably because no additional features were specified in the CREATERUNTIMEMAP request</span>
                 <ul id="rootList">
                 </ul>
             </div>

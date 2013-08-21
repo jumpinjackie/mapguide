@@ -1,20 +1,26 @@
 <html>
     <head>
-        <title>CreateRuntimeMap Example</title>
-        <link rel="stylesheet" href="http://openlayers.org/api/2.13-rc3/theme/default/style.css" />
+        <title>Basic Sheboygan tiled map example</title>
+        <link rel="stylesheet" href="../assets/theme/default/style.css" />
         <style type="text/css">
+            body { font-family: Verdana; font-size: 0.9em; }
             #error { color: red; }
             #wrap { width: 900; }
             #map { width: 650; height: 500; float: right; }
             #layers { width: 250; height: 500; overflow: auto; display: block-inline; float: left; }
             #rootList { list-style-type: none; margin-left: -20px; }
             #rootList li { list-style-type: none; }
+            .olControlMousePosition { background: #ffff66; font-size: 0.6em !important; padding: 2px; }
+            
+            #layers { background: #6699FF; color: white; }
+            #layers .baseLayersDiv { font-size: 0.7em; }
         </style>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-        <script type="text/javascript" src="http://openlayers.org/api/2.13-rc3/OpenLayers.js"></script>
+        <script type="text/javascript" src="../assets/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="../assets/OpenLayers.js"></script>
         <script type="text/javascript">
         
-        var mapAgentUrl = "../mapagent/mapagent.fcgi";
+        //This sample is assumed to be hosted at http://servername/mapguide/ol2samples/tiled/index.html
+        var mapAgentUrl = "../../mapagent/mapagent.fcgi";
         
         //Various features you can include in the CREATERUNTIMEMAP response.
         var REQ_NONE = 0;                   //Nothing. This the default.
