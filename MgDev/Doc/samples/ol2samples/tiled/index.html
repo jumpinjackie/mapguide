@@ -12,11 +12,12 @@
             #rootList li { list-style-type: none; }
             .olControlMousePosition { background: #ffff66; font-size: 0.6em !important; padding: 2px; }
             
-            #layers { background: #6699FF; color: white; }
-            #layers .baseLayersDiv { font-size: 0.7em; }
+            #baseLayerSwitcher { background: #6699FF; color: white; padding: 5px; }
+            #baseLayerSwitcher .baseLayersDiv { font-size: 0.7em; }
         </style>
         <script type="text/javascript" src="../assets/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="../assets/OpenLayers.js"></script>
+        <script type="text/javascript" src="../assets/legend.js"></script>
         <script type="text/javascript">
         
         //This sample is assumed to be hosted at http://servername/mapguide/ol2samples/tiled/index.html
@@ -35,9 +36,9 @@
             OpenLayers.Control.DragPan.prototype.enableKinetic = false;
             //Have a play with the bitmask values to see the differences in JSON payload size
             //and to see how our legend control gracefully handles such situations
-            createMap(REQ_NONE);
+            //createMap(REQ_NONE);
             //createMap(REQ_LAYER_STRUCTURE);
-            //createMap(REQ_LAYER_STRUCTURE | REQ_LAYER_FEATURE_SOURCE | REQ_LAYER_ICONS);
+            createMap(REQ_LAYER_STRUCTURE | REQ_LAYER_FEATURE_SOURCE | REQ_LAYER_ICONS);
         });
         
         function createMap(reqFeatures) {
@@ -119,7 +120,7 @@
                     new OpenLayers.Control.Zoom(),
                     new OpenLayers.Control.ScaleLine(),
                     new OpenLayers.Control.MousePosition(),
-                    new OpenLayers.Control.LayerSwitcher({ div: $("#layers")[0] }),
+                    new OpenLayers.Control.LayerSwitcher({ div: $("#baseLayerSwitcher")[0] }),
                     new OpenLayers.Control.CustomNavToolbar({alwaysZoom:true})
                 ]
             };
@@ -138,6 +139,7 @@
             };
 
             map = new OpenLayers.Map('map', mapOptions );
+            var tiledLayers = {};
             for (var i = 0; i < rtMapInfo.RuntimeMap.Group.length; i++) {
                 var group = rtMapInfo.RuntimeMap.Group[i];
                 if (group.Type[0] == "2") { //MgLayerGroupType.BaseMap
@@ -148,9 +150,19 @@
                         singleTile: false
                     });
                     map.addLayer(layer);
+                    tiledLayers[group.Name[0]] = layer;
                 }
             }
             map.zoomToMaxExtent();
+            
+            var legend = new Legend({
+                legendSelector: "#rootList",
+                stdIconRoot: "../../stdicons",
+                runtimeMap: rtMapInfo,
+                map: map,
+                mgTiledLayers: tiledLayers
+            });
+            legend.update();
         }
         </script>
     </head>
@@ -162,7 +174,13 @@
         </div>
         <div id="wrap">
             <div id="layers">
-                
+                <div id="baseLayerSwitcher">
+                </div>
+                <div id="legend">
+                    <strong>Layer and Groups</strong>
+                    <ul id="rootList">
+                    </ul>
+                </div>
             </div>
             <div id="map">
             </div>

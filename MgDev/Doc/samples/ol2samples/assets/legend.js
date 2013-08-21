@@ -10,6 +10,7 @@ function Legend(options)
     var legendSelector = options.legendSelector;
     this.map = options.map;
     this.mgLayer = options.mgLayerOL;
+    this.mgTiledLayers = options.mgTiledLayers || {};
     this.debug = false;
     
     this.stdIconRoot = options.stdIconRoot || "../../stdicons";
@@ -75,14 +76,23 @@ function Legend(options)
     }
     
     $("input.group-checkbox", this.rootEl).change(function() {
-        var bShow = $(this).is(":checked");
-        var objId = $(this).val();
-        _self.showGroup(objId, bShow);
+        var el = $(this);
+        var bShow = el.is(":checked");
+        if (el.attr("data-is-tiled") == "true") {
+            var name = el.attr("data-group-name");
+            if (typeof(_self.mgTiledLayers[name]) != 'undefined') {
+                _self.mgTiledLayers[name].setVisibility(bShow);
+            }
+        } else {
+            var objId = el.val();
+            _self.showGroup(objId, bShow);
+        }
     });
     
     $("input.layer-checkbox", this.rootEl).change(function() {
-        var bShow = $(this).is(":checked");
-        var objId = $(this).val();
+        var el = $(this);
+        var bShow = el.is(":checked");
+        var objId = el.val();
         _self.showLayer(objId, bShow);
     });
     
@@ -137,7 +147,7 @@ Legend.prototype.update = function() {
 };
 
 Legend.prototype.createGroupElement = function(group) {
-    return $("<li><input type='checkbox' class='group-checkbox' value='" + group.ObjectId[0] + "' " + ((group.Visible[0] == "true") ? "checked='checked'" : "") + " /><img src='" + this.stdIconRoot + "/lc_group.gif' /> " + group.LegendLabel[0] + "<ul class='groupChildren'></ul></li>");
+    return $("<li><input type='checkbox' class='group-checkbox' data-is-tiled='" + (group.Type[0] == 2) + "' data-group-name='" + group.Name[0] + "' value='" + group.ObjectId[0] + "' " + ((group.Visible[0] == "true") ? "checked='checked'" : "") + " /><img src='" + this.stdIconRoot + "/lc_group.gif' /> " + group.LegendLabel[0] + "<ul class='groupChildren'></ul></li>");
 };
 
 Legend.prototype.getIconUri = function(iconBase64) {
@@ -183,7 +193,10 @@ Legend.prototype.createLayerElements = function(layer) {
                 } else {
                     icon = this.getIconUri(fts.Rule[0].Icon[0]);
                 }
-                els.push($("<li class='layer-node' data-layer-min-scale='" + scaleRange.MinScale[0] + "' data-layer-max-scale='" + scaleRange.MaxScale[0] + "'><input type='checkbox' class='layer-checkbox' value='" + layer.ObjectId[0] + "' " + ((layer.Visible[0] == "true") ? "checked='checked'" : "") + " /><img src='" + icon + "' /> " + text + childHtml + "</li>"));
+                var chkBoxHtml = "";
+                if (layer.Type[0] == 1) //Dynamic
+                    chkBoxHtml = "<input type='checkbox' class='layer-checkbox' value='" + layer.ObjectId[0] + "' " + ((layer.Visible[0] == "true") ? "checked='checked'" : "") + " />";
+                els.push($("<li class='layer-node' data-layer-min-scale='" + scaleRange.MinScale[0] + "' data-layer-max-scale='" + scaleRange.MaxScale[0] + "'>" + chkBoxHtml + "<img src='" + icon + "' /> " + text + childHtml + "</li>"));
             }
         }
     }
