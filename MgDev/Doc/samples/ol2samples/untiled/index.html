@@ -1,0 +1,342 @@
+<html>
+    <head>
+        <title>CreateRuntimeMap Example</title>
+        <link rel="stylesheet" href="../assets/theme/default/style.css" />
+        <style type="text/css">
+            #error { color: red; }
+            #wrap { width: 900; }
+            #map { width: 650; height: 500; float: right; }
+            #details { width: 250; height: 500; overflow: auto; display: block-inline; float: left; }
+            #rootList { list-style-type: none; margin-left: -20px; }
+            #rootList li { list-style-type: none; }
+        </style>
+        <script type="text/javascript" src="../assets/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="../assets/OpenLayers.js"></script>
+        <script type="text/javascript">
+        
+        var mapAgentUrl = "../mapagent/mapagent.fcgi";
+        
+        //Various features you can include in the CREATERUNTIMEMAP response.
+        var REQ_NONE = 0;                   //Nothing. This the default.
+        var REQ_LAYER_STRUCTURE = 1;        //Information about layers and groups (required for the mask values below to have any effect)
+        var REQ_LAYER_ICONS = 2;            //Icons for each layer (has no effect if REQ_LAYER_STRUCTURE is not in the bitmask)
+        var REQ_LAYER_FEATURE_SOURCE = 4;   //Feature Source information for each layer (has no effect if REQ_LAYER_STRUCTURE is not in the bitmask)
+        
+        var gMimeType = null;
+        var map = null;
+        var mgLayer = null;
+        var sessionId = null;
+        
+        $(document).ready(function() {
+            OpenLayers.Control.DragPan.prototype.enableKinetic = false;
+            //Have a play with the bitmask values to see the differences in JSON payload size
+            //and to see how our legend control gracefully handles such situations
+            //createMap(REQ_NONE);
+            //createMap(REQ_LAYER_STRUCTURE);
+            createMap(REQ_LAYER_STRUCTURE | REQ_LAYER_FEATURE_SOURCE | REQ_LAYER_ICONS);
+        });
+        
+        function createMap(reqFeatures) {
+            $.getJSON(mapAgentUrl, {
+                "OPERATION": "CREATERUNTIMEMAP",
+                "VERSION": "2.6.0",
+                "MAPDEFINITION": "Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition",
+                "USERNAME": "Anonymous", //Or you can use "SESSION": "<my session id>"
+                "REQUESTEDFEATURES": reqFeatures,
+                //Optional parameters you can specify and/or experiment with
+                //"ICONFORMAT": "GIF",    //Uncomment to override desired image format (default: PNG)
+                //"ICONWIDTH": 32,         //Uncomment to override desired icon width (default: 16)
+                //"ICONHEIGHT": 32,        //Uncomment to override desired icon height (default: 16)
+                //"ICONSPERSCALERANGE": 3, //Uncomment to observe theme compression for themes exceeding this number of rules (default: 25)
+                //"TARGETMAPNAME": "MyRuntimeMapForOpenLayers", //Uncomment if you require a specific map name be given (default: inferred from Map Definition)
+                "FORMAT": "application/json"
+            }, function(data, textStatus, jqXHR) {
+                $("#jsonSize").html(jqXHR.responseText.length);
+                loadMap(data);
+            }).error(function(jqXHR, textStatus, errorThrown) {
+                $("#error").html(jqXHR.responseText);
+            });
+        }
+        
+        function loadMap(rtMapInfo) {
+            if (rtMapInfo.RuntimeMap.IconMimeType) {
+                gMimeType = rtMapInfo.RuntimeMap.IconMimeType[0];
+                $("#iconFormat").html(gMimeType);
+            }
+            var extent = new OpenLayers.Bounds(
+                parseFloat(rtMapInfo.RuntimeMap.Extents[0].LowerLeftCoordinate[0].X[0]),
+                parseFloat(rtMapInfo.RuntimeMap.Extents[0].LowerLeftCoordinate[0].Y[0]),
+                parseFloat(rtMapInfo.RuntimeMap.Extents[0].UpperRightCoordinate[0].X[0]),
+                parseFloat(rtMapInfo.RuntimeMap.Extents[0].UpperRightCoordinate[0].Y[0]));
+            
+            OpenLayers.Control.CustomNavToolbar = OpenLayers.Class(OpenLayers.Control.Panel, {
+                /**
+                 * Constructor: OpenLayers.Control.NavToolbar 
+                 * Add our two mousedefaults controls.
+                 *
+                 * Parameters:
+                 * options - {Object} An optional object whose properties will be used
+                 *     to extend the control.
+                 */
+                initialize: function(options) {
+                    OpenLayers.Control.Panel.prototype.initialize.apply(this, [options]);
+                    this.addControls([
+                      new OpenLayers.Control.Navigation(),
+                      //Here it come
+                      new OpenLayers.Control.ZoomBox({alwaysZoom:true})
+                    ]);
+                    // To make the custom navtoolbar use the regular navtoolbar style
+                    this.displayClass = 'olControlNavToolbar'
+                },            
+                /**
+                 * Method: draw 
+                 * calls the default draw, and then activates mouse defaults.
+                 */
+                draw: function() {
+                    var div = OpenLayers.Control.Panel.prototype.draw.apply(this, arguments);
+                    this.defaultControl = this.controls[0];
+                    return div;
+                }
+            });
+            var mapOptions = {
+                theme: null,
+                maxExtent: extent,
+                maxResolution: 'auto',
+                controls: [
+                    new OpenLayers.Control.Navigation(),
+                    new OpenLayers.Control.Attribution(),
+                    new OpenLayers.Control.Zoom(),
+                    new OpenLayers.Control.ScaleLine(),
+                    new OpenLayers.Control.MousePosition(),
+                    new OpenLayers.Control.CustomNavToolbar({alwaysZoom:true})
+                ]
+            };
+            
+            if (rtMapInfo.RuntimeMap.CoordinateSystem[0].EpsgCode[0].length > 0) {
+                mapOptions.projection = "EPSG:" + rtMapInfo.RuntimeMap.CoordinateSystem[0].EpsgCode[0];
+            }
+            
+            var options = {
+                isBaseLayer: true,
+                transitionEffect: "resize",
+                buffer: 1,
+                useOverlay: true,
+                useAsyncOverlay: true,
+                singleTile: true
+            };
+
+            var params = {
+                mapname: rtMapInfo.RuntimeMap.Name[0],
+                session: rtMapInfo.RuntimeMap.SessionId[0],
+                selectioncolor: '0xFF000000',
+                behavior: 2
+            };
+            
+            sessionId = rtMapInfo.RuntimeMap.SessionId[0];
+            
+            //Adjust the scale assumptions for MapGuide layers
+            //Tiled layers MUST use a DPI value of 96, untiled layers can use a 
+            //different DPI value which will be passed to the server as a parameter.
+            //Tiled and untiled layers must adjust the OL INCHES_PER_UNIT values
+            //for any degree-based projections.
+            
+            //You'll still need to do these adjustments manually, but CREATERUNTIMEMAP
+            //now provides the necessary meters-per-unit value for you to do this.
+            var metersPerUnit = parseFloat(rtMapInfo.RuntimeMap.CoordinateSystem[0].MetersPerUnit[0]);
+            var inPerUnit = OpenLayers.INCHES_PER_UNIT.m * metersPerUnit;
+            OpenLayers.INCHES_PER_UNIT["dd"] = inPerUnit;
+            OpenLayers.INCHES_PER_UNIT["degrees"] = inPerUnit;
+            OpenLayers.DOTS_PER_INCH = 96;
+            
+            map = new OpenLayers.Map('map', mapOptions );
+            mgLayer = new OpenLayers.Layer.MapGuide( "MapGuide (from CREATERUNTIMEMAP)", mapAgentUrl, params, options );
+            map.addLayer(mgLayer);
+            map.zoomToMaxExtent();
+            var groupElMap = {};
+            if (rtMapInfo.RuntimeMap.Group) {
+                var remainingGroups = {};
+                $("#noLayerStructure").hide();
+                //1st pass, un-parented groups
+                for (var i = 0; i < rtMapInfo.RuntimeMap.Group.length; i++) {
+                    var group = rtMapInfo.RuntimeMap.Group[i];
+                    if (group.ParentId) {
+                        remainingGroups[group.ObjectId[0]] = group;
+                        continue;
+                    }
+                    var el = createGroupElement(group);
+                    groupElMap[group.ObjectId[0]] = el;
+                    $("#rootList").append(el);
+                }
+                //2nd pass, parented groups
+                var itemCount = 0;
+                for (var objId in remainingGroups) {
+                    itemCount++;
+                }
+                //Whittle down
+                while(itemCount > 0) {
+                    var removeIds = [];
+                    for (var objId in remainingGroups) {
+                        var group = remainingGroups[objId];
+                        //Do we have a parent?
+                        if (typeof(groupElMap[group.ParentId[0]]) != 'undefined') {
+                            var el = createGroupElement(group);
+                            groupElMap[group.ParentId[0]].find("ul.groupChildren").append(el);
+                            removeIds.push(group.ObjectId[0]);
+                        }
+                    }
+                    for (var i = 0; i < removeIds.length; i++) {
+                        delete remainingGroups[removeIds[i]];
+                    }
+                
+                    itemCount = 0;
+                    for (var objId in remainingGroups) {
+                        itemCount++;
+                    }
+                }
+            }
+            if (rtMapInfo.RuntimeMap.Layer) {
+                $("#noLayerStructure").hide();
+                for (var i = 0; i < rtMapInfo.RuntimeMap.Layer.length; i++) {
+                    var layer = rtMapInfo.RuntimeMap.Layer[i];
+                    var el = createLayerElement(layer);
+                    if (layer.ParentId) {
+                        groupElMap[layer.ParentId[0]].find("ul.groupChildren").append(el);
+                    } else {
+                        $("#rootList").append(el);
+                    }
+                }
+            }
+            $("#mapName").html("MapGuide mapname: " + rtMapInfo.RuntimeMap.Name[0]);
+            $("#mgSession").html("MapGuide session ID: " + sessionId);
+            $("div.olMap").css("background-color", "#" + rtMapInfo.RuntimeMap.BackgroundColor[0].substring(2));
+            $("input.group-checkbox").change(function() {
+                var bShow = $(this).is(":checked");
+                var objId = $(this).val();
+                showGroup(objId, bShow);
+            });
+            
+            $("input.layer-checkbox").change(function() {
+                var bShow = $(this).is(":checked");
+                var objId = $(this).val();
+                showLayer(objId, bShow);
+            });
+            
+            startKeepAlive();
+        }
+        
+        function startKeepAlive() {
+            var keepAlive = function() {
+                $.get(mapAgentUrl, {
+                    "OPERATION": "GETSESSIONTIMEOUT",
+                    "VERSION": "1.0.0",
+                    "SESSION": sessionId
+                }, function(data, textStatus, jxXHR) {
+                    $("#mgSession").html("MapGuide session ID: " + sessionId + " (last checked at: " + (new Date()) + ")");
+                    setTimeout(keepAlive, parseInt(data) * 1000);
+                });
+            };
+            keepAlive();
+        }
+        
+        var req = {
+            showgroups: null,
+            showlayers: null,
+            hidegroups: null,
+            hidelayers: null
+        };
+        
+        function resetRequest() {
+            req.showgroups = null;
+            req.showlayers = null;
+            req.hidegroups = null;
+            req.hidelayers = null;
+        }
+        
+        function showGroup(groupId, bShow) {
+            resetRequest();
+            if (bShow)
+                req.showgroups = groupId;
+            else
+                req.hidegroups = groupId;
+            mgLayer.mergeNewParams(req);
+        }
+        
+        function showLayer(layerId, bShow) {
+            resetRequest();
+            if (bShow)
+                req.showlayers = layerId;
+            else
+                req.hidelayers = layerId;
+            mgLayer.mergeNewParams(req);
+        }
+        
+        function createGroupElement(group) {
+            return $("<li><input type='checkbox' class='group-checkbox' value='" + group.ObjectId[0] + "' " + ((group.Visible[0] == "true") ? "checked='checked'" : "") + " /><img src='../stdicons/lc_group.gif' /> " + group.LegendLabel[0] + "<ul class='groupChildren'></ul></li>");
+        }
+        
+        function getIconUri(iconBase64) {
+            return "data:" + gMimeType + ";base64," + iconBase64;
+        }
+        
+        function createLayerElement(layer) {
+            var icon = "legend-layer.png";
+            var text = layer.LegendLabel ? layer.LegendLabel[0] : "";
+            var childHtml = "";
+            //This is using the first scale range and the first geometry type. To do this proper you'd find the matching scale range
+            //based on the current map's view scale. Then dynamically, toggle item visibility when the map scale
+            //changes
+            if (layer.ScaleRange) {
+                if (layer.ScaleRange[0].FeatureStyle) {
+                    var fts = layer.ScaleRange[0].FeatureStyle[0];
+                    var ruleCount = fts.Rule.length;
+                    if (ruleCount > 1) {
+                        icon = "../stdicons/lc_theme.gif";
+                        childHtml = "<ul>";
+                        //Test compression
+                        var bCompressed = false;
+                        if (ruleCount > 3) {
+                            bCompressed = !(fts.Rule[1].Icon);
+                        }
+                        if (bCompressed) {
+                            childHtml += "<li><img src='" + getIconUri(fts.Rule[0].Icon[0]) + "' /> " + (fts.Rule[0].LegendLabel ? fts.Rule[0].LegendLabel[0] : "") + "</li>";
+                            childHtml += "<li>... (" + (ruleCount - 2) + " other theme rules)</li>";
+                            childHtml += "<li><img src='" + getIconUri(fts.Rule[ruleCount-1].Icon[0]) + "' /> " + (fts.Rule[ruleCount-1].LegendLabel ? fts.Rule[ruleCount-1].LegendLabel[0] : "") + "</li>";
+                        } else {
+                            for (var i = 0; i < ruleCount; i++) {
+                                var rule = fts.Rule[i];
+                                childHtml += "<li><img src='" + getIconUri(rule.Icon[0]) + "' /> " + (rule.LegendLabel ? rule.LegendLabel[0] : "") + "</li>";
+                            }
+                        }
+                        childHtml += "</ul>";
+                    } else {
+                        icon = getIconUri(fts.Rule[0].Icon[0]);
+                    }
+                }
+            }
+            return $("<li><input type='checkbox' class='layer-checkbox' value='" + layer.ObjectId[0] + "' " + ((layer.Visible[0] == "true") ? "checked='checked'" : "") + " /><img src='" + icon + "' /> " + text + childHtml + "</li>");
+        }
+        
+        </script>
+    </head>
+    <body>
+        <p>This map was created from the JSON response of the new CREATERUNTIMEMAP operation</p>
+        <p>No more hard-coding values or needing MapGuide Web Extensions API to provide missing values required by OpenLayers. CREATERUNTIMEMAP gives you all of this information</p>
+        <p>This is all pure OpenLayers and the mapagent. No .net/PHP/Java Web API glue was involved in creating this sample!</p>
+        <div id="error">
+        </div>
+        <div id="wrap">
+            <div id="details">
+                <strong>Layer and Groups</strong>
+                <span id="noLayerStructure">No layer/group structure found. Probably because no additional features were specified in the CREATERUNTIMEMAP request</span>
+                <ul id="rootList">
+                </ul>
+            </div>
+            <div id="map">
+            </div>
+        </div>
+        <p>JSON payload for CREATERUNTIMEMAP is: <span id="jsonSize"></span> characters</p>
+        <p>Icon format is: <span id="iconFormat"></span></p>
+        <p id="mapName"></p>
+        <p id="mgSession"></p>
+    </body>
+</html>
