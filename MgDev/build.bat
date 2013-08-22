@@ -335,6 +335,10 @@ echo [install]: Developer's Guide Sample Code (Java)
 %XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\javaviewersample" "%MG_OUTPUT_WEB%\www\javaviewersample" /EXCLUDE:%TYPEBUILD%_excludes.txt
 echo [install]: Developer's Guide Sample Code (DotNet)
 %XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\dotnetviewersample" "%MG_OUTPUT_WEB%\www\dotnetviewersample" /EXCLUDE:%TYPEBUILD%_excludes.txt
+echo [install]: OpenLayers Samples
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\ol2samples" "%MG_OUTPUT_WEB%\www\ol2samples" /EXCLUDE:%TYPEBUILD%_excludes.txt
+echo [install]: Samples landing page
+copy /Y "%MG_DOC_DEVGUIDE_SAMPLES%\samples.html" "%MG_OUTPUT_WEB%\www"
 echo [install]: Viewer API documentation
 %XCOPY% "%MG_DOC%\viewerapi" "%MG_OUTPUT_WEB%\www\help\viewerapi" /EXCLUDE:%TYPEBUILD%_excludes.txt
 echo [install]: Copy dlls into .net samples
