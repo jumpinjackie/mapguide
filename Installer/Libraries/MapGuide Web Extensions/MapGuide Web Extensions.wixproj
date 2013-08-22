@@ -50,6 +50,7 @@
     <Compile Include="FileIncludes\incMapViewerPhpFiles.wxs" />
     <Compile Include="FileIncludes\incMapViewerSchemareportFiles.wxs" />
     <Compile Include="FileIncludes\incMapViewerStdiconFiles.wxs" />
+    <Compile Include="FileIncludes\incOpenLayersSampleFiles.wxs" />
     <Compile Include="FileIncludes\incPhpDevGuideFiles.wxs" />
     <Compile Include="FileIncludes\incPhpFiles.wxs" />
     <Compile Include="FileIncludes\incPhpViewerSampleFiles.wxs" />

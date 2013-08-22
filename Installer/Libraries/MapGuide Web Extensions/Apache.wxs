@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <!-- 
+    HTTPD_EXE, TOMCAT_EXE and TOMCAT_SERVICE_BAT are special identifiers assigned by Paraffin using
+    settings defined in Features.xml
+    -->
     <?if "$(var.MgPlatform)" = "x64" ?>
-        <!-- httpd.exe -->
-        <?define HTTP_MAP = "file_APACHEFILES_19" ?>
-        <!-- tomcat7.exe -->
-        <?define TOMCAT_MAP = "file_TOMCATFILES_40" ?>
-        <!-- service.bat -->
-        <?define TOMCAT_BAT = "file_TOMCATFILES_30" ?>
         <!-- apache_actions.dll path -->
         <?define ACTION_DLL_PATH = "..\..\Custom\apache_actions\bin110_x64\apache_actions.dll" ?>
     <?else ?>
-        <!-- httpd.exe -->
-        <?define HTTP_MAP = "file_APACHEFILES_19" ?>
-        <!-- tomcat7.exe -->
-        <?define TOMCAT_MAP = "file_TOMCATFILES_40" ?>
-        <!-- service.bat -->
-        <?define TOMCAT_BAT = "file_TOMCATFILES_30" ?>
         <!-- apache_actions.dll path -->
         <?define ACTION_DLL_PATH = "..\..\Custom\apache_actions\bin110_Win32\apache_actions.dll" ?>
     <?endif ?>
@@ -25,11 +17,11 @@
         <CustomAction Id="UpdateApacheConfig" Return="check" BinaryKey="ApacheActions" Execute="deferred"  DllEntry="UpdateApacheConfig" />
         <CustomAction Id="UpdatePhpIni.SetValues" Property="UpdatePhpIni" Value='[PHPLOCATION];2;[WEBTEMPLOCATION]' />
         <CustomAction Id="UpdatePhpIni" Return="check" BinaryKey="ApacheActions" Execute="deferred" DllEntry="UpdatePhpIni" />
-        <CustomAction Id="RemoveApacheServiceCA" Execute="immediate" Return="ignore" FileKey="$(var.HTTP_MAP)" ExeCommand="-k uninstall -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
-        <CustomAction Id="InstallApacheServiceCA" Execute="deferred" Return="ignore" FileKey="$(var.HTTP_MAP)" ExeCommand="-k install -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
-        <CustomAction Id="StartApacheServiceCA" Execute="deferred" Return="ignore" FileKey="$(var.HTTP_MAP)" ExeCommand="-k start -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
-        <CustomAction Id="RemoveTomcatServiceCA" Execute="immediate" Return="ignore" FileKey="$(var.TOMCAT_MAP)" ExeCommand="//DS//TomcatMapGuide[MG_VERSION_MAJOR_MINOR]" />
-        <CustomAction Id="InstallTomcatServiceCA" Execute="deferred" Return="ignore" FileKey="$(var.TOMCAT_BAT)" ExeCommand="install TomcatMapGuide[MG_VERSION_MAJOR_MINOR]" />
-        <CustomAction Id="StartTomcatServiceCA" Execute="deferred" Return="ignore" FileKey="$(var.TOMCAT_MAP)" ExeCommand="//RS//TomcatMapGuide[MG_VERSION_MAJOR_MINOR]" />
+        <CustomAction Id="RemoveApacheServiceCA" Execute="immediate" Return="ignore" FileKey="HTTPD_EXE" ExeCommand="-k uninstall -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
+        <CustomAction Id="InstallApacheServiceCA" Execute="deferred" Return="ignore" FileKey="HTTPD_EXE" ExeCommand="-k install -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
+        <CustomAction Id="StartApacheServiceCA" Execute="deferred" Return="ignore" FileKey="HTTPD_EXE" ExeCommand="-k start -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
+        <CustomAction Id="RemoveTomcatServiceCA" Execute="immediate" Return="ignore" FileKey="TOMCAT_EXE" ExeCommand="//DS//TomcatMapGuide[MG_VERSION_MAJOR_MINOR]" />
+        <CustomAction Id="InstallTomcatServiceCA" Execute="deferred" Return="ignore" FileKey="TOMCAT_SERVICE_BAT" ExeCommand="install TomcatMapGuide[MG_VERSION_MAJOR_MINOR]" />
+        <CustomAction Id="StartTomcatServiceCA" Execute="deferred" Return="ignore" FileKey="TOMCAT_EXE" ExeCommand="//RS//TomcatMapGuide[MG_VERSION_MAJOR_MINOR]" />
 	</Fragment>
 </Wix>

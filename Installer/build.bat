@@ -292,6 +292,10 @@ echo [regen]: Web - viewer sample DotNet
 %PARAFFIN% %WIX_INC_WEB%\incDotNetViewerSampleFiles.wxs
 move /Y %WIX_INC_WEB%\incDotNetViewerSampleFiles.PARAFFIN %WIX_INC_WEB%\incDotNetViewerSampleFiles.wxs
 
+echo [regen]: Web - OpenLayers samples
+%PARAFFIN% %WIX_INC_WEB%\incOpenLayersSampleFiles.wxs
+move /Y %WIX_INC_WEB%\incOpenLayersSampleFiles.PARAFFIN %WIX_INC_WEB%\incOpenLayersSampleFiles.wxs
+
 echo [regen]: Web - mapagent
 %PARAFFIN% %WIX_INC_WEB%\incMapAgentFiles.wxs
 move /Y %WIX_INC_WEB%\incMapAgentFiles.PARAFFIN %WIX_INC_WEB%\incMapAgentFiles.wxs
@@ -390,6 +394,9 @@ echo [generate]: Web - Developer's Guide Samples (Java)
 
 echo [generate]: Web - Developer's Guide Samples (DotNet)
 %PARAFFIN% -dir %MG_SOURCE%\Web\www\dotnetviewersample -alias $(var.MgSource)\Web\www\dotnetviewersample -custom DOTNETVIEWERSAMPLEFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incDotNetViewerSampleFiles.wxs
+
+echo [generate]: Web - OpenLayers Samples
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\ol2samples -alias $(var.MgSource)\Web\www\ol2samples -custom OPENLAYERSSAMPLEFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incOpenLayersSampleFiles.wxs
 
 echo [generate]: Web - mapagent
 %PARAFFIN% -dir %MG_SOURCE%\Web\www\mapagent -alias $(var.MgSource)\Web\www\mapagent -custom MAPAGENTFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incMapAgentFiles.wxs

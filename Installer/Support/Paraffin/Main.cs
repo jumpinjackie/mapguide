@@ -223,6 +223,7 @@ namespace Wintellect.Paraffin
             return ( 0 );
         }
 
+        private static Dictionary<string, string> _identifierOverrides = new Dictionary<string, string>();
         private static Dictionary<string, string> _featureMap = new Dictionary<string, string>();
 
         private static void LoadProcessFeatureMap()
@@ -238,6 +239,15 @@ namespace Wintellect.Paraffin
                                };
                 foreach (var m in mappings)
                     _featureMap[m.Name] = m.Suffix;
+
+                var overrides = from item in doc.Descendants("IdentifierOverride")
+                                select new
+                                {
+                                    Pattern = item.Attribute("Pattern").Value,
+                                    Identifier = item.Attribute("Identifier").Value
+                                };
+                foreach (var o in overrides)
+                    _identifierOverrides[o.Pattern] = o.Identifier;
             }
         }
 
@@ -1256,9 +1266,18 @@ namespace Wintellect.Paraffin
             // Create a unique filename. In a one file per component run, this
             // will mean that the file and it's parent component will have the 
             // same number.
-            String fileId = CreateSeventyCharIdString ( "file" ,
-                                                     argValues.CustomValue ,
-                                                     componentNumber - 1 );
+            String fileId = string.Empty;
+            foreach (String pattern in _identifierOverrides.Keys)
+            {
+                if (fileName.EndsWith(pattern))
+                {
+                    fileId = _identifierOverrides[pattern];
+                    Console.WriteLine("Set identifier [{0}] to file [{1}]", fileId, fileName);
+                    break;
+                }
+            }
+            if (String.IsNullOrEmpty(fileId))
+                fileId = CreateSeventyCharIdString("file", argValues.CustomValue, componentNumber - 1);
 
             // If the user wanted to group all the files into a component, I
             // need to bump up the componentNumber to keep everything straight.

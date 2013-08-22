@@ -32,6 +32,8 @@
     <String Id="WebExtJavaViewerSampleFeature_Description">Viewer Sample code (Java)</String>
     <String Id="WebExtDotNetViewerSampleFeature">Viewer Sample (.net)</String>
     <String Id="WebExtDotNetViewerSampleFeature_Description">Viewer Sample code (.net)</String>
+    <String Id="WebExtOpenLayersSampleFeature">OpenLayers Samples</String>
+    <String Id="WebExtOpenLayersSampleFeature_Description">Samples demonstrating OpenLayers integration with MapGuide</String>
     <String Id="WebLocalizedFeature">Localization Files</String>
     <String Id="WebLocalizedFeature_Description">Localization files for the web tier</String>
     <String Id="WebFusionFeature">Fusion</String>
@@ -51,12 +53,7 @@
 
     <String Id="Shortcut_DevGuide">MapGuide Developer's Guide</String>
     <String Id="Shortcut_WebAPI">Web API Documentation</String>
-    <String Id="Shortcut_PhpViewerSample">PHP Viewer Sample</String>
-    <String Id="Shortcut_PhpDevGuideSample">PHP Developer's Guide Samples</String>
-    <String Id="Shortcut_DotNetViewerSample">.net Viewer Sample</String>
-    <String Id="Shortcut_DotNetDevGuideSample">.net Developer's Guide Samples</String>
-    <String Id="Shortcut_JavaViewerSample">Java Viewer Sample</String>
-    <String Id="Shortcut_JavaDevGuideSample">Java Developer's Guide Samples</String>
+    <String Id="Shortcut_Samples">MapGuide Samples</String>
     <String Id="Shortcut_WikiHelp">Autodesk WikiHelp</String>
     <String Id="Shortcut_ViewerAPI">Viewer API Documentation</String>
     <String Id="Shortcut_FusionAPI">Fusion API Documentation</String>
