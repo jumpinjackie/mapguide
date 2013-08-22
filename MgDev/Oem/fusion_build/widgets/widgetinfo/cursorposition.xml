@@ -25,6 +25,14 @@
     <IsMandatory>0</IsMandatory>
   </Parameter>
   <Parameter>
+    <Name>DisplayProjection</Name>
+    <Type>string</Type>
+    <Label>DisplayProjection</Label>
+    <Description>The projection to display mouse coordinates in. This can be an EPSG code (EPSG:XXXX) or a WKT string. This parameter takes precedence over the Units parameter if specified</Description>
+    <DefaultValue></DefaultValue>
+    <IsMandatory>0</IsMandatory>
+  </Parameter>
+  <Parameter>
     <Name>Units</Name>
     <Type>string</Type>
     <Label>Units</Label>

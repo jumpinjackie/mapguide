@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.PanOnClick
  *
- * $Id: PanOnClick.js 1523 2008-09-11 19:30:43Z pagameba $
+ * $Id: PanOnClick.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,8 @@
  *
  * Pans the map a fixed amount in a particular direction
  * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 

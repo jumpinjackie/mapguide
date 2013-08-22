@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Legend
  *
- * $Id: Legend.js 2507 2012-01-04 07:30:36Z jng $
+ * $Id: Legend.js 2755 2013-08-01 01:23:36Z liuar $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,7 +27,9 @@
  * Class: Fusion.Widget.Legend
  *
  * A widget to display a legend of all layers.
- *
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.Legend = OpenLayers.Class(Fusion.Widget,  {
@@ -258,7 +260,7 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
         this.imgDisabledLayerIcon = json.DisabledLayerIcon ? json.DisabledLayerIcon[0] : this.oLegend.defaultDisabledLayerIcon;
         this.imgLayerInfoIcon = json.LayerInfoIcon ? json.LayerInfoIcon[0] : this.oLegend.defaultLayerInfoIcon;
         this.imgGroupInfoIcon = json.GroupInfoIcon ? json.GroupInfoIcon[0] : this.oLegend.defaultGroupInfoIcon;
-       
+
         //not used?
         //this.layerInfoURL = json.LayerInfoURL ? json.LayerInfoURL[0] : '';
         this.selectedLayer = null;
@@ -415,25 +417,52 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
     renderLegend: function(r) {
         this.bIsDrawn = false;
         this.clear();
-
         if (this.showRootFolder) {
-            this.oRoot.setLabel(this.oLegend.getMapLayer().getMapTitle());
+            this.oRoot.setLabel(this.getMap().mapGroup.mapId);
         }
+        
         var startGroup = this.layerRoot;
-        if (!this.showMapFolder) {
-          startGroup = this.layerRoot.groups[0];
-        }
+        if (!this.showMapFolder)
+            startGroup = this.layerRoot.groups[0];
+        
         if (!startGroup.legend) {
             startGroup.legend = {};
             startGroup.legend.treeItem = this.oRoot;
         }
-        for (var i=0; i<startGroup.groups.length; i++) {
-            //startGroup.groups[i].visible = true;
-            this.processMapGroup(startGroup.groups[i], this.oRoot);
+        
+        if (this.layerRoot.groups.length > 1) { //Multi-map
+            if (this.showMapFolder) {
+                for (var i = 0; i < this.layerRoot.groups.length; i++) {
+                    this.processMapGroup(this.layerRoot.groups[i], this.oRoot);
+                }
+            } else {
+                for (var i = 0; i < this.layerRoot.groups.length; i++) {
+                    var mapRoot = this.layerRoot.groups[i];
+                    if (!mapRoot.legend) {
+                        mapRoot.legend = {};
+                        mapRoot.legend.treeItem = this.oRoot;
+                    }
+                    for (var j = 0; j < mapRoot.groups.length; j++) {
+                        this.processMapGroup(mapRoot.groups[j], this.oRoot);
+                    }
+                    for (var j = 0; j < mapRoot.layers.length; j++) {
+                        this.processMapLayer(mapRoot.layers[j], this.oRoot);
+                    }
+                }
+            }
+        } else { //Single-map
+            if (!startGroup.legend) {
+                startGroup.legend = {};
+                startGroup.legend.treeItem = this.oRoot;
+            }
+            for (var i = 0; i < startGroup.groups.length; i++) {
+                this.processMapGroup(startGroup.groups[i], this.oRoot);
+            }
+            for (var i = 0; i < startGroup.layers.length; i++) {
+                this.processMapLayer(startGroup.layers[i], this.oRoot);
+            }
         }
-        for (var i=0; i<startGroup.layers.length; i++) {
-            this.processMapLayer(startGroup.layers[i], this.oRoot);
-        }
+        
         this.bIsDrawn = true;
         this.update();
     },
@@ -463,7 +492,6 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
             // );
 
             folder.add(treeItem);
-
             var groupInfo = group.oMap.getGroupInfoUrl(group.groupName);
             if (groupInfo) {
                 treeItem.setGroupInfo(groupInfo, this.imgGroupInfoIcon);
@@ -504,15 +532,18 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
      * update the tree when the map scale changes
      */
     _update: function() {
+        this.oTree.freeze();
         this.updateTimer = null;
         var map = this.getMap();
         var currentScale = map.getScale();
         for (var i=0; i<map.layerRoot.groups.length; i++) {
             this.updateGroupLayers(map.layerRoot.groups[i], currentScale);
         }
-        for (var i=0; i<map.layerRoot.layers.length; i++) {
+        //Loop reversed. See addLayerTreeItem() for why we do this
+        for (var i=map.layerRoot.layers.length-1; i>=0; i--) {
             this.updateLayer(map.layerRoot.layers[i], currentScale);
         }
+        this.oTree.thaw();
     },
    
     /**
@@ -545,12 +576,37 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
         }
       }
     },
-    
+    addLayerStyleTreeItems: function(treeItem, items) {
+        treeItem.tree.freeze();
+        treeItem.add(items);
+        treeItem.tree.thaw();
+    },
+    addLayerTreeItem: function(treeItem, layerTreeItem) {
+        //Here's the problem: The layers are being iterated in the correct draw order, but they are
+        //being appended *after* groups at any particular level due to the out-of-order tree node rendering
+        //setup between group and layer nodes (groups are drawn first before layers). 
+        //
+        //To do this in a way that preserves draw order, but makes sure thes layer nodes are always 
+        //before group nodes at any particular level. We have to do 2 things:
+        //
+        // 1. Prepend this item instead of appending
+        // 2. Ensure the outermost loop that calls updateLayer() (that calls this method), is iterating
+        //    in *reverse* order.
+        //
+        //This allows for layers to be added in correct draw order *before* the group nodes at any
+        //particular level.
+        //
+        //updateLayer() is the only method that calls this method, so the above contract is satisified.
+        //If this is no longer the case, please re-read what I just wrote to make sure the two points
+        //above are still valid.
+        treeItem.add(layerTreeItem, 0);
+    },
     updateGroupLayers: function(group, fScale) {
         for (var i=0; i<group.groups.length; i++) {
             this.updateGroupLayers(group.groups[i], fScale);
         }
-        for (var i=0; i<group.layers.length; i++) {
+        //Loop reversed. See addLayerTreeItem() for why we do this
+        for (var i=group.layers.length-1 ; i >= 0; i--) {
             this.updateLayer(group.layers[i], fScale);
         }
     },
@@ -579,11 +635,11 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
                 //tree item needs to be a folder
                 if (!layer.legend.treeItem) {
                     layer.legend.treeItem = this.createFolderItem(layer);
-                    layer.parentGroup.legend.treeItem.add(layer.legend.treeItem);
+                    this.addLayerTreeItem(layer.parentGroup.legend.treeItem, layer.legend.treeItem);
                 } else if (layer.legend.treeItem instanceof Fusion.Widget.Legend.TreeItem) {
                     this.clearTreeItem(layer);
                     layer.legend.treeItem = this.createFolderItem(layer);
-                    layer.parentGroup.legend.treeItem.add(layer.legend.treeItem);
+                    this.addLayerTreeItem(layer.parentGroup.legend.treeItem, layer.legend.treeItem);
                 } else {
                     layer.legend.treeItem.empty();
                 }
@@ -597,16 +653,17 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
                     layer.legend.treeItem.scale = fScale;
                     layer.legend.treeItem.hasDecompressedTheme = false;
                     //console.assert(range.styles.length > 2);
-                    layer.legend.treeItem.add(this.createTreeItem(layer, range.styles[0], fScale, false));
-                    layer.legend.treeItem.add(this.createThemeCompressionItem(range.styles.length - 2, layer.legend.treeItem));
-                    layer.legend.treeItem.add(this.createTreeItem(layer, range.styles[range.styles.length-1], fScale, false));
+                    var children = [];
+                    children.push(this.createTreeItem(layer, range.styles[0], fScale, false));
+                    children.push(this.createThemeCompressionItem(range.styles.length - 2, layer.legend.treeItem));
+                    children.push(this.createTreeItem(layer, range.styles[range.styles.length-1], fScale, false));
+                    this.addLayerStyleTreeItems(layer.legend.treeItem, children);
                 } else {
-                    //FIXME: JxLib really needs an API to add these in a single batch that doesn't hammer
-                    //the DOM (if it's even possible)
+                    var children = [];
                     for (var i=0; i<range.styles.length; i++) {
-                        var item = this.createTreeItem(layer, range.styles[i], fScale, false);
-                        layer.legend.treeItem.add(item);
+                        children.push(this.createTreeItem(layer, range.styles[i], fScale, false));
                     }
+                    this.addLayerStyleTreeItems(layer.legend.treeItem, children);
                 }
             /* if there is only one style or no style, we represent it as a tree item */
             } else {
@@ -616,14 +673,23 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
                 }
                 if (!layer.legend.treeItem) {
                     layer.legend.treeItem = this.createTreeItem(layer, style, fScale, !layer.isBaseMapLayer);
-                    layer.parentGroup.legend.treeItem.add(layer.legend.treeItem);
+                    this.addLayerTreeItem(layer.parentGroup.legend.treeItem, layer.legend.treeItem);
                 } else if (layer.legend.treeItem instanceof Fusion.Widget.Legend.TreeFolder) {
                     this.clearTreeItem(layer);
                     layer.legend.treeItem = this.createTreeItem(layer, style, fScale, !layer.isBaseMapLayer);
-                    layer.parentGroup.legend.treeItem.add(layer.legend.treeItem);
+                    this.addLayerTreeItem(layer.parentGroup.legend.treeItem, layer.legend.treeItem);
                 } else {
                     if (range.styles.length > 0) {
-                        var url = layer.oMap.getLegendImageURL(fScale, layer, range.styles[0]);
+                        var url;
+                        if(style.iconOpt && style.iconOpt.url){
+                            url = style.iconOpt.url;
+                            var img = layer.legend.treeItem.elements.get('jxTreeIcon');
+                            var iconX = -1 * style.iconX;
+                            var iconY = -1 * style.iconY;
+                            img.style.backgroundPosition = iconX + 'px ' + iconY + 'px';
+                        }else{
+                            url = layer.oMap.getLegendImageURL(fScale, layer, style);
+                        }
                         layer.legend.treeItem.setImage(url);
                         layer.legend.treeItem.enable(true);
                     } else {
@@ -642,12 +708,12 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
                     layer.legend.treeItem = null;
                 }
             } else {
-              var newTreeItem = this.createTreeItem(layer, {legendLabel: layer.legendLabel, iconOpt: { url: this.oLegend.outOfRangeIcon } }, null, !layer.isBaseMapLayer);
+                var newTreeItem = this.createTreeItem(layer, {legendLabel: layer.legendLabel, iconOpt: { url: this.oLegend.outOfRangeIcon } }, null, !layer.isBaseMapLayer);
                 if (layer.legend.treeItem) {
                     layer.parentGroup.legend.treeItem.replace(layer.legend.treeItem, newTreeItem);
                     layer.legend.treeItem.finalize();
                 } else {
-                    layer.parentGroup.legend.treeItem.add(newTreeItem);
+                    this.addLayerTreeItem(layer.parentGroup.legend.treeItem, newTreeItem);
                 }
                 layer.legend.treeItem = newTreeItem;
             }
@@ -735,8 +801,9 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
         var opt = {};
         opt.statusIsDefault = layer.statusDefault;
         
-        //set the label
-        if (style && style.legendLabel) {
+        //Set the label. Use style label IFF there are more than one style rule.
+        //Otherwise layer's legend label takes precedence
+        if (style && layer.legend.currentRange.styles.length > 1) {
             opt.label = style.legendLabel == '' ? '&nbsp;' : style.legendLabel;
         } else {
             opt.label = layer.legendLabel == '' ? '&nbsp;' : layer.legendLabel;
@@ -757,15 +824,6 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
             }else{
                 opt.image = layer.oMap.getLegendImageURL(scale, layer, style);
             }
-        }
-        // MapGuide DWF and Raster layer
-         // MapGuide Raster and DWF layer
-        if(layer.layerTypes[0] == 4){
-            opt.image = this.imgLayerRasterIcon;
-            opt.enabled = true;
-        } else if(layer.layerTypes[0] == 5){
-            opt.image = this.imgLayerDWFIcon;
-            opt.enabled = true;
         }
 
         var item;
@@ -814,8 +872,8 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
             }
             iconX = -1 * (style.iconX + this.iconWidth);
             iconY = -1 * (style.iconY + this.iconHeight);
+            img.style.backgroundPosition = iconX + 'px ' + iconY + 'px';
         }
-        img.style.backgroundPosition = iconX + 'px ' + iconY + 'px';
         
         return item;
     },
@@ -993,7 +1051,6 @@ Fusion.Widget.Legend.TreeFolder = new Class({
             this.layerInfoIcon.set('src', icon);
         }
     },
-    
     setGroupInfo: function(url, icon) {
         //change class to make fusionGroupInfo display block
         this.domObj.addClass('fusionShowGroupInfo');

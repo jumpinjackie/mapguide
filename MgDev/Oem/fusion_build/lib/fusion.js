@@ -1,7 +1,7 @@
 /**
  * Fusion
  *
- * $Id: fusion.js 2434 2011-10-04 15:32:02Z jng $
+ * $Id: fusion.js 2737 2013-06-26 02:47:36Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -65,49 +65,37 @@ Object.inheritFrom = function(destination, source, args) {
 
     /**
      * Namespace: Fusion
-     * declare global namespace object for Fusion library to use
+     * This is the top-level namespace of the Fusion library
      */
     window.Fusion = {
         
         /***************************************************************************
-         * Class: Fusion.Tools
-         * 
          * A set of utility classes that provide common tools for applications
          ***************************************************************************/
         Tool: {},
 
         /***************************************************************************
-         * Class: Fusion.Widget
-         * 
          * A set of classes that implement the functionlity required for applications
          ***************************************************************************/
         Widget: {},
 
         /***************************************************************************
-         * Class: Fusion.Event
-         * 
          * A class to provide for event handling at application runtime
          ***************************************************************************/
         Event: {lastEventId: 1},
 
         /***************************************************************************
-         * Class: Fusion.Lib
-         * 
          * A set of classes to provide core funtionality
          ***************************************************************************/
         Lib: {},
 
         /***************************************************************************
-         * Class: Fusion.Layers
-         * 
          * A set of classes that implement layer functionality for various server 
          * technologies.
          ***************************************************************************/
         Layers: {},
 
         /***************************************************************************
-         * Class: Fusion.Constant
-         * 
          * Application scope constants
          ***************************************************************************/
         Constant: {},
@@ -188,19 +176,90 @@ Object.inheritFrom = function(destination, source, args) {
         * unit related arrays below: aUnitPerMeter, aMeterPerUnit, aUnitNames
         * and aUnitAbbr
         */
+
+        /**
+         * Constant: UNKNOWN
+         * 
+         * An unknown unit
+         */
         UNKNOWN: 0,
+        /**
+         * Constant: INCHES
+         * 
+         * Inch unit
+         */
         INCHES: 1,
+        /**
+         * Constant: FEET
+         * 
+         * Feet unit
+         */
         FEET: 2,
+        /**
+         * Constant: YARDS
+         * 
+         * Yard unit
+         */
         YARDS: 3,
+        /**
+         * Constant: MILES
+         * 
+         * Mile unit
+         */
         MILES: 4,
+        /**
+         * Constant: NAUTICALMILES
+         * 
+         * Nautical Mile unit
+         */
         NAUTICALMILES: 5,
+        /**
+         * Constant: MILLIMETERS
+         * 
+         * Millimeter unit
+         */
         MILLIMETERS: 6,
+        /**
+         * Constant: CENTIMETERS
+         * 
+         * Centimeter unit
+         */
         CENTIMETERS: 7,
+        /**
+         * Constant: METERS
+         * 
+         * Meter unit
+         */
         METERS: 8,
+        /**
+         * Constant: KILOMETERS
+         * 
+         * Kilometer unit
+         */
         KILOMETERS: 9,
+        /**
+         * Constant: DEGREES
+         * 
+         * Degree unit
+         */
         DEGREES: 10,
+        /**
+         * Constant: DECIMALDEGREES
+         * 
+         * Decimal Degree unit
+         */
         DECIMALDEGREES: 11,
+        /**
+         * Constant: DMS
+         * 
+         * DMS unit
+         */
         DMS: 12,
+        /**
+         * Constant: PIXELS
+         * 
+         * Pixel unit
+         */
         PIXELS: 13,
         /** 
         * conversion factors to go from the specified units to meters
@@ -257,20 +316,24 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * Initialize the Fusion application.  This method must be called from
          * the template's onload method once all script files have been loaded.
-         * Applications can register for the event Fusion.Event.FUSION_INITIALIZED
+         * Applications can register for the event {<Fusion.Event.FUSION_INITIALIZED>}
          * to carry out further application initialization when all the Fusion
          * objects have been created and are available.
          *
-         * @param {Object} options
+         * Valid optional parameters that can be passed include:
+         * 
+         * {String} applicationDefinitionURL: a URL or resource ID 
+         *              for an ApplicationDefinition file
+         *          
+         * {String} sessionId: a session id to start the application
+         *              with.  Normally, applications are started without
+         *              a session id and create one.  However, sometimes
+         *              it is desirable to use an existing session.
          *
-         * Optional paramters that can be passed to initialize are:
+         * Parameters:
+         * options - {Object} Optional parameters
          *
-         * {String} applicationDefinitionURL - a URL or resource ID 
-         *          for an ApplicationDefinition file
-         * {String} sessionId - a session id to start the application
-         *          with.  Normally, applications are started without
-         *          a session id and create one.  However, sometimes
-         *          it is desirable to use an existing session.
+         *           
          */
         initialize: function(options) {
             options = options || {};
@@ -332,11 +395,11 @@ Object.inheritFrom = function(destination, source, args) {
          * Initialize the Strings hash with the requested locale.  This method
          * simply extends the OpenLayers strings hash with strings specific
          * to Fusion.  Add strings to the files in fusion/text/[locale].json.
-         * This method can be called before Fusion.initialize() if localized
+         * This method can be called before <Fusion.initialize> if localized
          * strings are required in the template initialization.
          *
-         * @param {String} locale - the locale value e.g. 'en-CA' or simply 'en'
-         *                        for English
+         * Parameters:
+         * locale - {String} the locale value e.g. 'en-CA' or simply 'en' for English
          *
          */
         initializeLocale: function(locale) {
@@ -360,9 +423,8 @@ Object.inheritFrom = function(destination, source, args) {
          * Depending on the state, this will cause various scripts
          * to be loaded.
          *
-         * Parameter {Integer} state
-         *
-         * the new loading state
+         * Parameters:
+         * state - {Integer} the new loading state
          */
         setLoadState: function(state) {
             //console.log('setLoadState: ' + state);
@@ -440,11 +502,10 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * Insert a new script into the loading queue.  The URL should be relative
          * to the Fusion base url.  The script will not actually be loaded until
-         * loadQueuedScripts is called.
+         * <Fusion.loadQueuedScripts> is called.
          *
-         * Parameter: {String} url 
-         *
-         * The url of the script.
+         * Parameters: 
+         * url - {String} The url of the script.
          */
         queueScript: function(url) {
             if(!document.getElementById(url) && !this.aScripts[url]) {
@@ -466,9 +527,8 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * Called when a script fails to load for some reason.
          *
-         * Parameter: url 
-         *
-         * {String} the url that failed to load
+         * Parameters: 
+         * url - {String} the url that failed to load
          *
          * TODO: the application probably won't work if a script fails to load
          * so we need to decide how to inform the user and fail gracefully.
@@ -484,12 +544,11 @@ Object.inheritFrom = function(destination, source, args) {
          * a script has loaded.  It is removed from the various tracking
          * arrays.  When all requested scripts have been loaded, we check
          * to see if any scripts where required by the ones just loaded.
-         * If yes, then we loadQueuedScripts again, otherwise we advance
+         * If yes, then we <Fusion.loadQueuedScripts> again, otherwise we advance
          * the load state.
          *
-         * Parameter: url 
-         *
-         * {String} the url of the script that was loaded.
+         * Parameters: 
+         * url - {String} the url of the script that was loaded.
          */
         scriptLoaded: function(url) {
             for (var i=0; i<this.aLoadingScripts.length;i++) {
@@ -546,7 +605,7 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * asynchronously load the application definition.  For MapGuide, also
          * set up the broker object.  Once the AppDef is loaded/created advance
-         * the laod state.
+         * the load state.
          */
         loadConfig: function() {
             var mapAgentUrl = this.getConfigurationItem('mapguide', 'mapAgentUrl');
@@ -573,8 +632,8 @@ Object.inheritFrom = function(destination, source, args) {
          * the server has returned the application configuration file that
          * contains enough information to bootstrap the application.
          *
-         * Parameter {Object} r 
-         * an XMLHttpRequest object
+         * Parameters:
+         * r - {XMLHttpRequest} an XMLHttpRequest object
          */
         getConfigCB: function(r) {
             if (r.responseText) {  
@@ -592,8 +651,8 @@ Object.inheritFrom = function(destination, source, args) {
          * the server has returned the application configuration file that
          * contains enough information to bootstrap the application.
          *
-         * Parameter {Object} r 
-         * an XMLHttpRequest object
+         * Parameters:
+         * r - {XMLHttpRequest} an XMLHttpRequest object
          */
         serverSet: function() {
             var s = this.configuration.mapguide.webTierUrl;
@@ -628,9 +687,8 @@ Object.inheritFrom = function(destination, source, args) {
          * Not much point in continuing, but we can inform the user why this
          * happened.
          *
-         * Parameter: {Object} r
-         *  
-         * the XMLHttpRequest object
+         * Parameters: 
+         * r - {XMLHttpRequest} the XMLHttpRequest object
          *
          * TODO: do something more useful in here?
          */
@@ -642,17 +700,13 @@ Object.inheritFrom = function(destination, source, args) {
         /**
          * Function: ajaxRequest
          *
-         * convenience function to issue an XmlHttpRequest to the server relative
+         * convenience function to issue an {XmlHttpRequest} to the server relative
          * to the Fusion installation.
          *
-         * Parameter: {String} scriptURL
-         * 
-         * the URL (relative to Fusion) to request
-         *
-         * Parameter: {Object} options
-         *
-         * optional parameters to send with the request, passed directly to the
-         * OpenLayers Ajax.Request function
+         * Parameters: 
+         * scriptURL - {String} the URL (relative to Fusion) to request
+         * options - {Object} optional parameters to send with the request, passed directly to the
+         *            <OpenLayers Ajax.Request> function
          */
         ajaxRequest: function(scriptURL, options) {
             //console.log('options.parameters='+options.parameters);
@@ -680,9 +734,9 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * trap exceptions produced in handling an ajax response.
          *
-         * Parameter: {XmlHttpRequest} r
-         *
-         * Parameter: {Exception} e
+         * Parameters: 
+         * r - {XmlHttpRequest}
+         * e - {Exception}
          */
         ajaxException: function(r, e) {
             this.reportError(new Fusion.Error(Fusion.Error.WARNING, 
@@ -699,11 +753,11 @@ Object.inheritFrom = function(destination, source, args) {
          * Convert XML to JSON using a server-side script
          * for requests that aren't available in JSON.
          *
-         * Parameter: {String} url - the URL of the XML object to be converted;
-         *      this can be any URL and is not prepended with the Fusion URL
-         *
-         * Parameter: {Function} callback - a callback function to be called if 
-         *      the request is successful
+         * Parameters: 
+         * url - {String} the URL of the XML object to be converted;
+         *       this can be any URL and is not prepended with the Fusion URL
+         * callback - {Function} a callback function to be called if 
+         *            the request is successful
          *
          * boolean indicator if the content is JSON or not.
         */
@@ -716,23 +770,45 @@ Object.inheritFrom = function(destination, source, args) {
             var temp = new OpenLayers.Ajax.Request(url, options);
         },
     
-         /**
+        /**
+         * Function: parseJSON
+         *
+         * Parses the given JSON string to a javascript object. This is safer than using eval() as there is no possibility of
+         * arbitrary code execution
+         *
+         * Parameters: 
+         * str - {String} The JSON string to parse
+         *
+        */
+        parseJSON: function(str) {
+            var o;
+            if (typeof(JSON) != 'undefined' && JSON.parse != null) {
+                o = JSON.parse(str);
+            } else {
+                eval('o='+str); //TODO: Still evil for now, but the evil is localized to this one spot. Replace with a JSON.parse shim
+            }
+            return o;
+        },
+        
+        /**
+         * Function: trim
+         *
+         * Utility function to trim a given string of any trailing whitespace
+         */
+        trim: function(str) {
+            return (typeof String.prototype.trim == 'undefined') ? str.replace(/^\s+|\s+$/g, '') : str.trim();
+        },
+    
+        /**
          * Function: xml2json
          *
-         * Callback method to convert the XNR response into an actual json object
+         * Callback method to convert the XHR response into an actual json object
          * and triggers the call to the callback method
          *
-         * Parameter: callback
-         *
-         * callback method to be executed on success and will be passed a parsed json object
-         *
-         * Parameter: {XmlHttpRequest} r
-         *
-         * the XmlHttpRequest object
-         *
-         * Parameter: json
-         *
-         * boolean indicator if the content is JSON or not (set by OpenLayers)
+         * Parameters: 
+         * callback - {Function} callback method to be executed on success and will be passed a parsed json object
+         * r - {XmlHttpRequest} the XmlHttpRequest object
+         * json - {Boolean} boolean indicator if the content is JSON or not (set by OpenLayers)
          *
         */
         xml2json: function(callback, r, json) {
@@ -766,11 +842,11 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * return a map widget with the given name
          *
-         * Parameter: {String} name
+         * Parameters: 
+         * name - {String} The map name to return
          *
-         * The map name to return
-         *
-         * Returns: {Object} a map object or null if not found.
+         * Return: 
+         * {<Fusion.Widget.Map>} a map object or null if not found.
          */
         getMapByName: function(name) {
             var map = null;
@@ -786,11 +862,11 @@ Object.inheritFrom = function(destination, source, args) {
          * return a map widget that is associated with the given DOM element
          * by id.
          *
-         * Parameter: {String} id
+         * Parameters: 
+         * id - {String} The map id to return
          *
-         * The map id to return
-         *
-         * Returns: {Object} a map object or null if not found.
+         * Return: 
+         * {<Fusion.Widget.Map>} a map object or null if not found.
          */
         getMapById: function(id) {
             var map = null;
@@ -806,11 +882,11 @@ Object.inheritFrom = function(destination, source, args) {
          * return the map widget at the given index if there are more than one
          * map elements specified in the AppDef
          *
-         * Parameter: {String} indice
+         * Parameters: 
+         * indice - {String} The map indice to return
          *
-         * The map indice to return
-         *
-         * Returns: {Object} a map object or null if not found.
+         * Return: 
+         * {<Fusion.Widget.Map>} a map object or null if not found.
          */
         getMapByIndice: function(indice) {
             var map = null;
@@ -826,11 +902,11 @@ Object.inheritFrom = function(destination, source, args) {
          * return a reference to a widget by the id of the DOM
          * Element that it was created in.
          *
-         * Parameter: {String} id
+         * Parameters: 
+         * id - {String} the DOM id to get the widget for
          *
-         * the DOM id to get the widget for
-         *
-         * Returns: {<Fusion.Widget>} the widget or null
+         * Return: 
+         * {<Fusion.Widget>} the widget or null
          */
         getWidgetById: function(id) {
             /*
@@ -853,11 +929,11 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * returns an array of widgets by type.
          *
-         * Parameter: {String} type
+         * Parameters: 
+         * type - {String} the type of widget to get references to
          *
-         * the type of widget to get references to
-         *
-         * Returns: {Array} an array of widgets, which may be empty
+         * Return: 
+         * {Array} an array of widgets, which may be empty
          */
         getWidgetsByType: function(type) {
             var widgets = [];
@@ -872,7 +948,8 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * returns the SearchDefinition objects as defined in the AppDef.
          *
-         * Returns: {Array} an array of searchDefinitions, which may be empty
+         * Return: 
+         * {Array} an array of searchDefinitions, which may be empty
          */
         getSearchDefinitions: function() {
             if (this.applicationDefinition) {
@@ -887,7 +964,8 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * returns the SearchCategory objects as defined in the AppDef.
          *
-         * Returns: {Array} an array of searchCategories, which may be empty
+         * Return:
+         * {Array} an array of searchCategories, which may be empty
          */
         getSearchCategories: function() {
             if (this.applicationDefinition) {
@@ -902,7 +980,8 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * returns the URL of the Application Definition
          *
-         * Returns: {String} a URL
+         * Return: 
+         * {String} a URL
          */
         getApplicationDefinitionURL: function() { return this.applicationDefinitionURL; },
 
@@ -911,7 +990,8 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * returns the applicaiton's absolute URL minus the filename.html part
          *
-         * Returns: {String} a URL
+         * Return: 
+         * {String} a URL
          */
         getApplicationURL: function() { 
           var path = window.location.pathname;
@@ -927,7 +1007,8 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * returns the application's absolute URL minus the filename.html part
          *
-         * Returns: {String} a URL
+         * Return: 
+         * {String} a URL
          */
         getFusionURL: function() {return this.fusionURL;},
     
@@ -936,11 +1017,12 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * returns individual elements out of the Fusion config.json file
          *
-         * Parameter: {String} arch - the server architecture (mapguide or mapserver)
+         * Parameters: 
+         * arch - {String} the server architecture (mapguide or mapserver)
+         * key - {String} the config item to be returned
          *
-         * Parameter: {String} key - the config item to be returned
-         *
-         * Returns: {String} a the value for the key of null if not found
+         * Return: 
+         * {String} a the value for the key of null if not found
          */
         getConfigurationItem: function(arch, key) { 
             if (this.configuration[arch] && (this.configuration[arch][key]!='undefined')) { 
@@ -954,7 +1036,8 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * Accessor to return the server-side script language
          *
-         * Returns: {String} the script language e.g. 'php'
+         * Return: 
+         * {String} the script language e.g. 'php'
          */
         getScriptLanguage: function() { return this.configuration.general.scriptLanguage; },
     
@@ -963,7 +1046,8 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * Accessor to return the URL of the redirect script
          *
-         * Returns: {String} a URL
+         * Return: 
+         * {String} a URL
          */
         getRedirectScript: function() { return this.sRedirectScript; },
     
@@ -973,7 +1057,8 @@ Object.inheritFrom = function(destination, source, args) {
          * Accessor to return the broker object (for MapGuide only).  The broker
          * is used to prepare various queries to the MapGuide server.
          *
-         * Returns: {Object} the broker object
+         * Return: 
+         * {<Fusion.Lib.MGBroker>} the broker object
          */
         getBroker: function() { return this.oBroker; },
     
@@ -984,25 +1069,24 @@ Object.inheritFrom = function(destination, source, args) {
          * loading during Fusion initialization.  Widget code is included
          * through this mecahnism
          *
-         * Parameter: {String} url - the URL of the JS file to be loaded
+         * Parameters: 
+         * url - {String} the URL of the JS file to be loaded
          *
-         * Returns: none
          */
         require: function(url) { this.queueScript(url); },
     
         /**
          * Function: reportError
          *
-         * Triggers the Fusion.Event.FUSION_ERROR and passes along the error
+         * Triggers the <Fusion.Event.FUSION_ERROR> and passes along the error
          * object to the callback functions registered for this event.  Widgets
-         * call Fusion.reportError(o) to inform the system of errors.
+         * call MFusion.reportError> to inform the system of errors.
          * Applications will typically register an event listener for the error
          * event and do something to report the error to the user.  
          * By default, errors are not reported since there is no listener
          *
-         * Parameter: {Object} o - the error object which is typically a string
-         *
-         * Returns: none
+         * Parameters:
+         * o - {Object} the error object which is typically a string
          */
         reportError: function(o) { this.triggerEvent(Fusion.Event.FUSION_ERROR, o); },
     
@@ -1012,9 +1096,11 @@ Object.inheritFrom = function(destination, source, args) {
          * returns index into the units array for the given unit name or 
          * abbreviation
          *
-         * Parameter: {String} unit - the units name to look up
+         * Parameters: 
+         * unit - {String} the units name to look up
          *
-         * Returns: {Integer} index into the units array
+         * Return: 
+         * {Integer} index into the units array
          */
         unitFromName: function(unit) {
             switch(unit.toLowerCase()) {
@@ -1075,14 +1161,16 @@ Object.inheritFrom = function(destination, source, args) {
         },
         
         /**
-         * Function: unitFromName
+         * Function: unitSystem
          *
          * Given a unit, this method returns if the units system is one of:
          * imperial, metric, degrees or device units
          *
-         * Parameter: {Integer} unit - the units array index
+         * Parameters: 
+         * unit - {Integer} the units array index
          *
-         * Returns: {String} the units system
+         * Return: 
+         * {String} the units system
          */
         unitSystem: function(unit) {
             switch(unit) {
@@ -1114,9 +1202,11 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * Given a unit, this method returns the units name
          *
-         * Parameter: {Integer} unit - the units array index
+         * Parameters: 
+         * unit - {Integer} the units array index
          *
-         * Returns: {String} the units name
+         * Return: 
+         * {String} the units name
          */
         unitName: function(unit) {
             if (unit >= Fusion.UNKNOWN && unit <= Fusion.PIXELS) {
@@ -1130,9 +1220,11 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * Given a unit, this method returns the units abbreviation
          *
-         * Parameter: {Integer} unit - the units array index
+         * Parameters:
+         * unit - {Integer} the units array index
          *
-         * Returns: {String} the units abbreviation
+         * Return: 
+         * {String} the units abbreviation
          */
         unitAbbr: function(unit) {
             if (unit >= Fusion.UNKNOWN && unit <= Fusion.PIXELS) {
@@ -1147,10 +1239,12 @@ Object.inheritFrom = function(destination, source, args) {
          * Converts a length value from native units into meters.  This is the
          * identity transform if the input units are meters
          *
-         * Parameter: {Integer} unit - the units array index
-         * Parameter: {Float} value - the value to be converted
+         * Parameters:
+         * unit - {Integer} the units array index
+         * value - {Float} the value to be converted
          *
-         * Returns: {Float} the value in meters
+         * Return: 
+         * {Float} the value in meters
          */
         toMeter: function(unit, value) {
             if (unit == Fusion.UNKNOWN) {
@@ -1168,10 +1262,12 @@ Object.inheritFrom = function(destination, source, args) {
          * Converts a length value from meters into native units.  This is the
          * identity transform if the native units are meters
          *
-         * Parameter: {Integer} unit - the units array index
-         * Parameter: {Float} value - the value to be converted
+         * Parameters:
+         * unit - {Integer} the units array index
+         * value - {Float} the value to be converted
          *
-         * Returns: {Float} the value in native units
+         * Return: 
+         * {Float} the value in native units
          */
         fromMeter: function(unit, value) {
             if (unit == Fusion.UNKNOWN) {
@@ -1188,11 +1284,13 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * Converts a length value from one unit system into another.
          *
-         * Parameter: {Integer} unitsIn - the units array index of the input
-         * Parameter: {Integer} unitsOut - the units array index of the output
-         * Parameter: {Float} value - the value to be converted
+         * Parameters:
+         * unitsIn - {Integer} the units array index of the input
+         * unitsOut - {Integer} the units array index of the output
+         * value - {Float} the value to be converted
          *
-         * Returns: {Float} the value in output units
+         * Return: 
+         * {Float} the value in output units
          */
         convert: function(unitsIn, unitsOut, value) {
             if (unitsIn >= Fusion.UNKNOWN && unitsIn < Fusion.PIXELS && 
@@ -1210,8 +1308,9 @@ Object.inheritFrom = function(destination, source, args) {
          * to meters so this makes sure both Fusion and OpenLayers are using 
          * the same value.
          *
-         * Parameter: {Float} metersPerUnit - the value returned by LoadMap.php
-         *                                    for meters per unit
+         * Parameters: 
+         * metersPerUnit - {Float} the value returned by LoadMap.php
+         *                 for meters per unit
          */
         initUnits: function(metersPerUnit) {
             var eps = 1000;
@@ -1236,7 +1335,8 @@ Object.inheritFrom = function(destination, source, args) {
         *
         * find the OpenLayers units identifier given the Fusion metersPerUnit value
         *
-        * @param metersPerUnit the value returned by LoadMap.php for meters per unit
+        * Parameters:
+        * metersPerUnit - {Float} the value returned by LoadMap.php for meters per unit
         */
         getClosestUnits: function(metersPerUnit) {
             var units = "degrees";
@@ -1258,9 +1358,8 @@ Object.inheritFrom = function(destination, source, args) {
          * Dynamically load a CSS stylesheet.  The url will be prepended with
          * the Fusion URL.
          *
-         * Parameter: {String} url - the URL of the CSS file to be loaded
-         *
-         * Returns: none
+         * Parameters: 
+         * url - {String} the URL of the CSS file to be loaded
          */
         addWidgetStyleSheet: function(url) {
             var lnk = document.createElement('link');
@@ -1276,9 +1375,10 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * An initialization time function to parse the application URL parameters
          * and stores them in an array.  They can be retrieved using 
-         * Fusion.getQueryParam(key).
+         * {<Fusion.getQueryParam>}
          *
-         * Returns: {Array} an array of the query params from when the page was loaded
+         * Return: 
+         * {Array} an array of the query params from when the page was loaded
          */
         parseQueryString: function() {
             this.queryParams = [];
@@ -1299,9 +1399,11 @@ Object.inheritFrom = function(destination, source, args) {
          *
          * Returns the query parameter value for a given parameter name
          *
-         * Parameter: {String} p - the parameter to lookup
+         * Parameters: 
+         * p - {String} the parameter to lookup
          *
-         * Returns: parameter value or the empty string '' if not found
+         * Return: 
+         * parameter value or the empty string '' if not found
          */
         getQueryParam: function(p) {
             if (!this.queryParams) {
@@ -1325,7 +1427,7 @@ Object.inheritFrom = function(destination, source, args) {
          * Function: _getScriptLocation
          * Return the path to this script for bootstrapping Fusion.
          *
-         * Returns:
+         * Return:
          * {String} Path to this script
          */
         _getScriptLocation: function () {
@@ -1397,11 +1499,10 @@ Object.inheritFrom = function(destination, source, args) {
     window._FusionLocale = locale;
     
     if (!Fusion._singleFile) {
-        var coreScripts = ['lib/OpenLayers/OpenLayers.js',
-                            'lib/OLpatch.js',
-                            'lib/jxLib/jxlib.uncompressed.js',
-                            'lib/IE9patch.js',
-                            'lib/Proj4js/proj4js-compressed.js',
+        var coreScripts = [ 'lib/jxLib/jxlib.uncompressed.js', //JxLib has first dibs on any globals
+                            'lib/Proj4js/proj4js-combined.js',
+                            'layers/MapGuide/php/csmap2proj4.js',
+                            'lib/OpenLayers/OpenLayers.js',
                             'lib/EventMgr.js',
                             'lib/Error.js',
                             'lib/ApplicationDefinition.js',
@@ -1515,38 +1616,65 @@ Object.inheritFrom = function(destination, source, args) {
         }
         xhr.open("GET", url, false);
         xhr.send(null); 
-        var o;
-        eval('o='+xhr.responseText);
+        var o = Fusion.parseJSON(xhr.responseText);
         Fusion.sessionId = o.sessionId;
+        var version = o.siteVersion;
+        var bits = version.split('.');
+        Fusion.siteVersion = new Array(parseInt(bits[0]),
+                                       parseInt(bits[1]),
+                                       parseInt(bits[2]),
+                                       parseInt(bits[3])
+        );
     }
 
     var appDefUrl = Fusion.getQueryParam('ApplicationDefinition'); 
-    if(appDefUrl && (
+    if (appDefUrl && (
         appDefUrl.indexOf('Library') == 0 ||
-        appDefUrl.indexOf('Session') == 0)){
+        appDefUrl.indexOf('Session') == 0)) {
+        
+        var fetchAppDef = function(appDefUrl, sessionId) {
+            var xhr = new getXmlHttpRequest(); 
+            var mapAgentUrl = getAgentUrl(); 
+            xhr.open("GET", mapAgentUrl + "?OPERATION=GETRESOURCECONTENT&VERSION=1.0.0&LOCALE=en&CLIENTAGENT=MapGuide+Developer&RESOURCEID=" + appDefUrl + "&FORMAT=text%2Fxml&SESSION="+ sessionId, false); 
+            xhr.send(null); 
+            var appDefXML = xhr.responseXML.documentElement; 
+
+            if (appDefXML) {
+                var googleElement = appDefXML.getElementsByTagName("GoogleScript")[0]; 
+                var yahooElement = appDefXML.getElementsByTagName("YahooScript")[0]; 
+                var veElement = appDefXML.getElementsByTagName("VirtualEarthScript")[0];
+                var osmElement = appDefXML.getElementsByTagName("OpenStreetMapScript")[0];
+
+                addElement(googleElement); 
+                addElement(yahooElement); 
+                addElement(veElement);
+                addElement(osmElement);
+            }
+        };
+        
+        var getSiteVersion = function(sessionId) {
+            var xhr = new getXmlHttpRequest(); 
+            var mapAgentUrl = getAgentUrl(); 
+            xhr.open("GET", mapAgentUrl + "?OPERATION=GETSITEVERSION&VERSION=1.0.0&LOCALE=en&CLIENTAGENT=MapGuide+Developer&SESSION="+ sessionId, false); 
+            xhr.send(null); 
+            var verXML = xhr.responseXML.documentElement; 
+            var el = verXML.getElementsByTagName("Version")[0];
+            var version = el.textContent || el.text;
+            var bits = version.split('.');
+            return new Array(parseInt(bits[0]),
+                             parseInt(bits[1]),
+                             parseInt(bits[2]),
+                             parseInt(bits[3]));
+        };
+        
         var passedSessionId = Fusion.getQueryParam('Session'); 
-        if(passedSessionId == null || passedSessionId == "" ){
+        if (passedSessionId == null || passedSessionId == "" ){
             createSessionId(Fusion.getQueryParam("Username"), Fusion.getQueryParam("Password"));
-        }else{
+        } else {
             Fusion.sessionId = passedSessionId;
+            Fusion.siteVersion = getSiteVersion(passedSessionId);
         }
-        var xhr = new getXmlHttpRequest(); 
-        var mapAgentUrl = getAgentUrl(); 
-        xhr.open("GET", mapAgentUrl + "?OPERATION=GETRESOURCECONTENT&VERSION=1.0.0&LOCALE=en&CLIENTAGENT=MapGuide+Developer&RESOURCEID=" + appDefUrl + "&FORMAT=text%2Fxml&SESSION="+ Fusion.sessionId, false); 
-        xhr.send(null); 
-        var appDefXML = xhr.responseXML.documentElement; 
-
-        if(appDefXML){
-            var googleElement = appDefXML.getElementsByTagName("GoogleScript")[0]; 
-            var yahooElement = appDefXML.getElementsByTagName("YahooScript")[0]; 
-            var veElement = appDefXML.getElementsByTagName("VirtualEarthScript")[0];
-            var osmElement = appDefXML.getElementsByTagName("OpenStreetMapScript")[0];
-
-            addElement(googleElement); 
-            addElement(yahooElement); 
-            addElement(veElement);
-            addElement(osmElement);
-        }
+        fetchAppDef(appDefUrl, Fusion.sessionId);
     }
     
 })();

@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Buffer
  *
- * $Id: Buffer.js 2313 2011-01-07 20:36:04Z madair $
+ * $Id: Buffer.js 2670 2013-03-22 15:33:22Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -32,11 +32,13 @@
  * NOTE: This version of the widget is not currently being used.  
  * Use BufferPanel instead. The 2 widgets will be merged eventually.
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **************************************************************************/
 
 Fusion.Widget.Buffer = OpenLayers.Class(Fusion.Widget, {
     uiClass: Jx.Button,
-    isExclusive: true,
+    isExclusive: false,
     layerName: null,
     layerNameInput: null,
     bufferDistance: null,

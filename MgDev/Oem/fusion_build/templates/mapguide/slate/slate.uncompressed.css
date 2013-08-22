@@ -601,7 +601,7 @@ span.jxMenuItemContent {
 /* ======================== */
 
 .jxPanelContentContainer {
-  background-image: url(images/panelBackround.png);
+  background-image: url(images/panelBackground.png);
   background-repeat: repeat-x;
   background-position: left bottom;
   background-color: #f0f0f0;

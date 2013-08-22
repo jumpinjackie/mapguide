@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Maptip
  *
- * $Id: Maptip.js 2494 2011-12-21 02:52:44Z liuar $
+ * $Id: Maptip.js 2765 2013-08-09 06:49:50Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -45,6 +45,8 @@
  * queried and the top-most one will be displayed.  Multiple Layer tags
  * can be added, allowing tooltips to come from different layers.
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 
@@ -120,6 +122,19 @@ Fusion.Widget.Maptip = OpenLayers.Class(Fusion.Widget, {
         this.mapTipReqFinishedFunc = OpenLayers.Function.bind(this._display,this);
         this.mapBusyChangedFunc = this.busyChanged.bind(this);
         this.mapLoaded = this.startMapTips.bind(this);
+        
+        //Subscribe to digitizer events so we know when not to interfere
+        this.getMap().registerForEvent(Fusion.Event.MAP_DIGITIZER_ACTIVATED, OpenLayers.Function.bind(this.onDigitizerActivated, this));
+        this.getMap().registerForEvent(Fusion.Event.MAP_DIGITIZER_DEACTIVATED, OpenLayers.Function.bind(this.onDigitizerDeactivated, this));
+    },
+    
+    onDigitizerActivated: function() {
+        this.hideMaptip();
+        this.bDigitizerActive = true;
+    },
+    
+    onDigitizerDeactivated: function() {
+        this.bDigitizerActive = false;
     },
     
     setUiObject: function(uiObj) {
@@ -127,7 +142,8 @@ Fusion.Widget.Maptip = OpenLayers.Class(Fusion.Widget, {
 
         this.mapTipBtn = new Jx.Button({
             id: 'maptipButton',
-            image: Fusion.getApplicationURL() + 'images/maptip.png',
+            image: Fusion.getApplicationURL() + 'images/icons.png',
+            imageClass: "maptip",
             label: this.label,
             toggle: true,
             onDown: (function() {
@@ -162,7 +178,7 @@ Fusion.Widget.Maptip = OpenLayers.Class(Fusion.Widget, {
                 }).bind(this)
         }).addTo(uiObj);
         if (this.widgetTag.tooltip) {
-          this.mapTipBtn.setTooltip(this.widgetTag.tooltip);
+            this.mapTipBtn.setTooltip(this.widgetTag.tooltip);
         }
         if (uiObj.options.active) {
             this.mapTipBtn.setActive(true);
@@ -268,13 +284,39 @@ Fusion.Widget.Maptip = OpenLayers.Class(Fusion.Widget, {
         this.mouseIsDown = false;
     },
     
+    _getMapTip: function(oMapTips) {
+        var iMgInstances = 0;
+        var mapWidget = this.getMap();
+        for (var i = mapWidget.aMaps.length - 1; i >= 0; i--) {
+            if (mapWidget.aMaps[i].arch == "MapGuide") {
+                iMgInstances++;
+            }
+        }
+        if (iMgInstances <= 1) {
+            this.getMapLayer().getMapTip(this);
+        } else {
+            var scale = mapWidget.getScale();
+            for (var i = mapWidget.aMaps.length - 1; i >= 0; i--) {
+                var mp = mapWidget.aMaps[i];
+                if (scale >= mp.minScale && scale <= mp.maxScale && mp.layerRoot.visible) {
+                    mp.getMapTip(oMapTips);
+                }
+            }
+        }
+    },
+    
     showMaptip: function() {
-        this.getMapLayer().getMapTip(this);
+        if (this.bDigitizerActive === true) {
+            //console.log("Abort maptip query");
+            return;
+        }
+        this._getMapTip(this);
         this.mapTipFired = true;
     },
     
     _display: function(eventID,oMapTip) {
-        if (typeof(oMapTip) == "undefined" || oMapTip.t == '') {
+        if (this.bDigitizerActive === true || typeof(oMapTip) == "undefined" || oMapTip.t == '') {
+            //console.log("Abort maptip display");
             return;
         }
         if(this.domObj.style.visibility != 'visible' || oMapTip.t != this.szTip ){

@@ -1,5 +1,6 @@
 .sbWrapper {
     position: absolute;
+    z-index: 1000;
     margin: 25px 50% 0 50%;
     font-family: Tahoma, Arial, Verdana, sans-serif;
 }

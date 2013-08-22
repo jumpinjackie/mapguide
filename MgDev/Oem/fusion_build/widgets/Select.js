@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Select
  *
- * $Id: Select.js 2460 2011-11-18 02:26:50Z liuar $
+ * $Id: Select.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,8 @@
  *
  * perform a selection on map features
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 

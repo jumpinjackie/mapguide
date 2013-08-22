@@ -21,6 +21,7 @@ Fusion.Strings.en = {
 'selectionInfo': '${features} feature(s) selected on ${layers} layer(s)',
 'attribute': 'Attribute',
 'value': 'Value',
+'stop': 'Stop',
 'taskHome': 'return to the task pane home',
 'prevTask': 'go to previous task executed',
 'nextTask': 'go to next task executed',
@@ -63,6 +64,9 @@ Fusion.Strings.en = {
 'printShowNorthArrow':'Show North Arrow?',
 
 'quickPlotResolutionWarning':'The current settings exceed the map resolution. Zooming out or increasing the scaling will help create a more legible plot',
+'googleSteetViewCSTransformError':'The CS of Current Map Cannot be transformed to EPSG:4326, which will result in Google Street View fail!',
+'googleSteetViewNotAvailableError':'The Service of Google Street View may not available in this specific location!',
+'googleBaseMapNotOnError':'To use Google Street Viewer, the Google Base Map must be turned on!',
 'noCommercialMapLayers':'NONE',
 'googleStreet':'Google Street',
 'googleSatellite':'Google Satellite',
@@ -75,7 +79,10 @@ Fusion.Strings.en = {
 'bingSatellite':'Bing Satellite',
 'bingHybrid':'Bing Hybrid',
 'openStreetMap':'Open Street Map',
-'openStreetMapOsmarender':'Open Street Map (Osmarender)',
+'openStreetMapTransportMap':'Open Street Map (TransportMap)',
 'openStreetMapCycleMap':'Open Street Map (CycleMap)',
-'end': ''
+'end': '',
+'measureInProgress':'Measurement is currently in progress',
+'selectPolygonPrompt':'Click to add a vertex to the selection polygon. Double click to complete the polygon and select all features with it',
+'selectRadiusPrompt':'Click and drag to the desired radius to select'
 };

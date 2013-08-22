@@ -20,3 +20,5 @@ OpenLayers.Map.prototype.isValidLonLat = function(lonlat) {
     return valid;
 }
 
+// Add swiss projection
+Proj4js.wktProjections["Swiss_Oblique_Cylindrical"] = "somerc";

@@ -1,123 +1,54 @@
-/* Copyright (c) 2006-2008 MetaCarta, Inc., published under the Clear BSD
- * license.  See http://svn.openlayers.org/trunk/openlayers/license.txt for the
- * full text of the license. */
+/* Translators (2009 onwards):
+ *  - Fryed-peach
+ *  - Mage Whopper
+ */
 
 /**
- * @requires OpenLayers/Lang/en.js
+ * @requires OpenLayers/Lang.js
  */
 
 /**
  * Namespace: OpenLayers.Lang["ja"]
- * Dictionary for Japanese.  Keys for entries are used in calls to
+ * Dictionary for 日本語.  Keys for entries are used in calls to
  *     <OpenLayers.Lang.translate>.  Entry bodies are normal strings or
  *     strings formatted for use with <OpenLayers.String.format> calls.
  */
-OpenLayers.Lang.ja = OpenLayers.Util.applyDefaults({
+OpenLayers.Lang["ja"] = OpenLayers.Util.applyDefaults({
 
-    'unhandledRequest': "未処理の要求が ${statusText} を返しました",
+    'unhandledRequest': "未処理の要求は ${statusText} を返します",
 
-    'permalink': "Permalink",
+    'Permalink': "パーマリンク",
 
-    'overlays': "オーバーレイ",
+    'Overlays': "オーバーレイ",
 
-    'baseLayer': "基準画層",
+    'Base Layer': "基底レイヤー",
 
-    'sameProjection':
-        "オーバービュー マップは、メイン マップと同じ投影内にある場合のみ機能します",
+    'noFID': "FID のない地物は更新できません。",
 
-    'readNotImplemented': "読み込みは実行されませんでした。",
+    'browserNotSupported': "あなたのブラウザはベクターグラフィックスの描写に対応していません。現時点で対応しているソフトウェアは以下のものです。\n${renderers}",
 
-    'writeNotImplemented': "書き込みは実行されませんでした。",
-
-    'noFID': "FID が指定されていないフィーチャは更新できません。",
-
-    'errorLoadingGML': "GML ファイル ${url} のロードでエラーが発生しました",
-
-    'browserNotSupported':
-        "ご使用のブラウザではベクトルのレンダリングがサポートされていません。現在サポートされているレンダラは次のとおりです:\n${renderers}",
-
-    'componentShouldBe': "addFeatures : コンポーネントは ${geomType} である必要があります",
-
-    // console message
-    'getFeatureError':
-        "レンダラがない画層で getFeatureFromEvent が呼び出されました。通常これは、画層が" +
-        "壊れていて、それに関連付けられている一部のハンドラが壊れていないことを意味します。",
-
-    // console message
-    'minZoomLevelError':
-        "minZoomLevel プロパティは、FixedZoomLevels の下位" +
-        "画層で使用することを意図したものです。wfs 画層が " +
-        "minZoomLevel をチェックすることはなくなりました。" +
-        "ただしこのプロパティを削除するには、これに依存する" +
-        " OL ベースのアプリケーションを削除する必要があります。" +
-        "このため、minZoomLevel 以下のチェックは、3.0 で" +
-        "廃止されます。代わりに最小/最大解像度設定を使用" +
-        "してください。次のサイトを参照してください:" +
-        "http://trac.openlayers.org/wiki/SettingZoomLevels",
+    'minZoomLevelError': "minZoomLevel プロパティは FixedZoomLevels を継承するレイヤーでの使用のみを想定しています。この minZoomLevel に対する WFS レイヤーの検査は歴史的なものです。しかしながら、この検査を除去するとそれに依存する OpenLayers ベースのアプリケーションを破壊してしまう可能性があります。よって廃止が予定されており、この minZoomLevel 検査はバージョン3.0で除去されます。代わりに、http://trac.openlayers.org/wiki/SettingZoomLevels で解説されている、最小および最大解像度設定を使用してください。",
 
     'commitSuccess': "WFS トランザクション: 成功 ${response}",
 
     'commitFailed': "WFS トランザクション: 失敗 ${response}",
 
-    'googleWarning':
-        "Google 画層を正しくロードできませんでした。<br><br>" +
-        "このメッセージを非表示にするには、右上にある画層" +
-        "スイッチ内の新しい BaseLayer を選択します。<br><br>" +
-        "これは、Google Maps ライブラリ スクリプトが含まれて" +
-        "いないか、サイトの正しい API キーが含まれていない" +
-        "ことが原因であると考えられます。<br><br>" +
-        "開発者の方へ: この作業を正しく実行するための情報は、" +
-        "<a href='http://trac.openlayers.org/wiki/Google' " +
-        "target='_blank'>ここ</a>をクリックしてください",
+    'googleWarning': "Google レイヤーが正しく読み込みを行えませんでした。\x3cbr\x3e\x3cbr\x3eこのメッセージを消すには、右上の隅にあるレイヤー切り替え部分で新しい基底レイヤーを選んでください。\x3cbr\x3e\x3cbr\x3eおそらく、これは Google マップ用ライブラリのスクリプトが組み込まれていないか、あなたのサイトに対応する正しい API キーが設定されていないためです。\x3cbr\x3e\x3cbr\x3e開発者の方へ: 正しい動作をさせるために\x3ca href=\'http://trac.openlayers.org/wiki/Google\' target=\'_blank\'\x3eこちらのウィキ\x3c/a\x3eを参照してください。",
 
-    'getLayerWarning':
-        "${layerType} 画層を正しくロードできませんでした。<br><br>" +
-        "このメッセージを非表示にするには、右上にある画層" +
-        "スイッチ内の新しい BaseLayer を選択します。<br><br>" +
-        "これは、${layerLib} ライブラリ スクリプトが正しく含まれ" +
-        "ていないことが原因であると考えられます。<br><br>" +
-        "開発者の方へ: この作業を正しく実行するための情報は、" +
-        "<a href='http://trac.openlayers.org/wiki/${layerLib}' " +
-        "target='_blank'>ここ</a>をクリックしてください",
+    'getLayerWarning': "${layerType} レイヤーが正しく読み込みを行えませんでした。\x3cbr\x3e\x3cbr\x3eこのメッセージを消すには、右上の隅にあるレイヤー切り替え部分で新しい基底レイヤーを選んでください。\x3cbr\x3e\x3cbr\x3eおそらく、これは ${layerLib} ライブラリのスクリプトが正しく組み込まれていないためです。\x3cbr\x3e\x3cbr\x3e開発者の方へ: 正しい動作をさせるために\x3ca href=\'http://trac.openlayers.org/wiki/${layerLib}\' target=\'_blank\'\x3eこちらのウィキ\x3c/a\x3eを参照してください。",
 
-    'scale': "尺度 = 1 : ${scaleDenom}",
+    'Scale = 1 : ${scaleDenom}': "縮尺 = 1 : ${scaleDenom}",
 
-    // console message
-    'layerAlreadyAdded':
-        "画層 ${layerName} をマップに追加しようとしましたが、この画層は既に追加されています",
+    'W': "西",
 
-    // console message
-    'reprojectDeprecated':
-        "'reproject' オプションを同じ ${layerName} 画層で使用して" +
-        "います。このオプションは推奨しません。このオプションは商用の" +
-        "ベースマップにデータを表示することを意図したものですが、" + 
-        "その場合は Spherical Mercator サポートを使用してください。" +
-        "詳細については、http://trac.openlayers.org/wiki/SphericalMercator" +
-        "を参照してください。",
+    'E': "東",
 
-    // console message
-    'methodDeprecated':
-        "このメソッドは非推奨で、3.0 で廃止されます。 " +
-        "代わりに ${newMethod} を使用してください。",
+    'N': "北",
 
-    // console message
-    'boundsAddError': "関数を追加するには、x と y の両方の値を渡す必要があります。",
+    'S': "南",
 
-    // console message
-    'lonlatAddError': "関数を追加するには、lon と lat の両方の値を渡す必要があります。",
+    'reprojectDeprecated': "あなたは「${layerName}」レイヤーで reproject オプションを使っています。このオプションは商用の基底地図上に情報を表示する目的で設計されましたが、現在ではその機能は Spherical Mercator サポートを利用して実現されており、このオプションの使用は非推奨です。追加の情報は http://trac.openlayers.org/wiki/SphericalMercator で入手できます。",
 
-    // console message
-    'pixelAddError': "関数を追加するには、x と y の両方の値を渡す必要があります。",
+    'methodDeprecated': "このメソッドは廃止が予定されており、バージョン3.0で除去されます。代わりに ${newMethod} を使用してください。"
 
-    // console message
-    'unsupportedGeometryType': "サポートされていないジオメトリ タイプ: ${geomType}",
-
-    // console message
-    'pagePositionFailed':
-        "OpenLayers.Util.pagePosition が失敗しました: ID ${elemId} を持つエレメントは誤った場所に配置されている可能性があります。",
-                    
-    // console message
-    'filterEvaluateNotImplemented': "このフィルタの種類では評価が実装されていません。",
-	
-	'end': ''
-}, OpenLayers.Lang["en"]);
+});

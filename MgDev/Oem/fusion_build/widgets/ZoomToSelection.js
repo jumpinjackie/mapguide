@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.ZoomToSelection
  *
- * $Id: ZoomToSelection.js 2313 2011-01-07 20:36:04Z madair $
+ * $Id: ZoomToSelection.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,8 @@
  *
  * Zoom to the current selection, if any
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.ZoomToSelection = OpenLayers.Class(Fusion.Widget, {
@@ -45,20 +47,31 @@ Fusion.Widget.ZoomToSelection = OpenLayers.Class(Fusion.Widget, {
         this.getMap().registerForEvent(Fusion.Event.MAP_SELECTION_OFF, OpenLayers.Function.bind(this.disable, this));
     },
 
-    /**
-     * get the selection from the map (which may not be loaded yet).
-     * zoomToSelection is called when the selection is ready.
-     */
+     /**
+      * Function: activate
+      * 
+      * get the selection from the map (which may not be loaded yet).
+      * zoomToSelection is called when the selection is ready.
+      * 
+      * Returns:
+      * 
+      *   return description
+      */
     activate: function() {
         this.getMap().getSelection(OpenLayers.Function.bind(this.zoomToSelection, this));
     },
 
-    /**
-     * set the extents of the map based on the pixel coordinates
-     * passed
-     * 
-     * @param selection the active selection, or null if there is none
-     */
+     /**
+      * Function: zoomToSelection
+      * 
+      * set the extents of the map based on the pixel coordinates
+      * passed
+      * 
+      * Parameters:
+      * 
+      *   selection - the active selection, or null if there is none
+      * 
+      */
     zoomToSelection: function(selection) {
         var aMaps = this.getMap().getAllMaps();
         var bounds = new OpenLayers.Bounds();

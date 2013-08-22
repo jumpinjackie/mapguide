@@ -2,7 +2,7 @@
 /**
  * CreateSession
  *
- * $Id: CreateSession.php 2468 2011-11-23 03:12:48Z liuar $
+ * $Id: CreateSession.php 2734 2013-06-06 14:10:58Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -48,6 +48,7 @@ try {
     $result = null;
     $result->sessionId = $sessionId;
     $result->userName = $username;
+    $result->siteVersion = GetSiteVersion();
     $result->acceptLanguage = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
     echo var2json($result);
 

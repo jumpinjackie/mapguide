@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.SelectRadius
  *
- * $Id: SelectRadius.js 2378 2011-05-05 19:24:04Z madair $
+ * $Id: SelectRadius.js 2686 2013-04-05 11:44:39Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,11 +28,13 @@
  *
  * perform a selection by radius from a point
  * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 Fusion.Event.RADIUS_WIDGET_ACTIVATED = Fusion.Event.lastEventId++;
 
 Fusion.Widget.SelectRadius = OpenLayers.Class(Fusion.Widget, {
-    isExclusive: true,
+    isExclusive: false,
     uiClass: Jx.Button,
     selectionType: 'INTERSECTS',
     bActiveOnly: false, //only select feature(s) on the active layer?
@@ -90,6 +92,8 @@ Fusion.Widget.SelectRadius = OpenLayers.Class(Fusion.Widget, {
             move: this.mouseMove
             }, this.handlerOptions);
         mapWidget.handlers.push(this.handler);
+        
+        this.keyHandler = OpenLayers.Function.bind(this.onKeyPress, this);
     },
     
     setRadius: function(r) {
@@ -104,12 +108,20 @@ Fusion.Widget.SelectRadius = OpenLayers.Class(Fusion.Widget, {
         }
     },
     
+    onKeyPress: function(e) {
+        var charCode = (e.charCode ) ? e.charCode : ((e.keyCode) ? e.keyCode : e.which);
+        if (charCode == OpenLayers.Event.KEY_ESC) {
+            this.deactivate();
+        }
+    },
+    
     /**
      * activate the widget (listen to mouse events and change cursor)
      * This function should be defined for all functions that register
      * as a widget in the map
      */
     activate: function() {
+        OpenLayers.Event.observe(document,"keypress",this.keyHandler);
         var radius = this.getMap().pixToGeoMeasure(this.defaultRadius);
         this.handler.setOptions({radius: radius});
         this.handler.activate();
@@ -117,8 +129,14 @@ Fusion.Widget.SelectRadius = OpenLayers.Class(Fusion.Widget, {
         map.setCursor(this.asCursor);
         /*map units for tool tip*/
         this.units = map.units;
+        var msg = map.message;
+        msg.info(OpenLayers.i18n("selectRadiusPrompt") + ' <a id="abortSelectRadiusLink" href="javascript:void(0)">' + OpenLayers.i18n("stop") + '</a>');
+        var link = msg.container.ownerDocument.getElementById("abortSelectRadiusLink");
+        //Wire the anchor click
+        link.onclick = OpenLayers.Function.bind(this.deactivate, this);
         map.supressContextMenu(true);
         this.triggerEvent(Fusion.Event.RADIUS_WIDGET_ACTIVATED, true);
+        this.getMap().triggerEvent(Fusion.Event.MAP_DIGITIZER_ACTIVATED);
     },
 
     /**
@@ -127,11 +145,15 @@ Fusion.Widget.SelectRadius = OpenLayers.Class(Fusion.Widget, {
      * as a widget in the map
      **/
     deactivate: function() {
+        OpenLayers.Event.stopObserving(document,"keypress",this.keyHandler);
         this.handler.deactivate();
-        this.getMap().setCursor('auto');
-        this.getMap().supressContextMenu(false);
+        var map = this.getMap();
+        map.message.clear();
+        map.setCursor('auto');
+        map.supressContextMenu(false);
         /*icon button*/
         this.triggerEvent(Fusion.Event.RADIUS_WIDGET_ACTIVATED, false);
+        this.getMap().triggerEvent(Fusion.Event.MAP_DIGITIZER_DEACTIVATED);
     },
     
     /**
@@ -142,25 +164,25 @@ Fusion.Widget.SelectRadius = OpenLayers.Class(Fusion.Widget, {
      * @param e Event the event that happened on the mapObj
      */
     mouseDown: function(geom) {
-      var evt = this.handler.evt;
-      if (OpenLayers.Event.isLeftClick(evt)) {
-          this.handler.fixedRadius = false;
-          
-          var p = this.getMap().getEventPosition(evt);
-          var point = this.getMap().pixToGeo(p.x, p.y);
-          var radius = this.getMap().pixToGeoMeasure(this.handler.radius);
-          
-          if (this.radiusTip && this.radiusTipType == 'dynamic') {
-              this.radiusTip.style.display = 'block';
-              var size = $(this.radiusTip).getBorderBoxSize();
-              this.radiusTip.style.top = (p.y - size.height*2) + 'px';
-              this.radiusTip.style.left = p.x + 'px';
-              if (this.units == 'm' || this.units == 'ft') {
-                  radius = Math.round(radius * 100)/100;
-              }
-              this.radiusTip.innerHTML = radius + this.units;
-          }
-      }
+        var evt = this.handler.evt;
+        if (OpenLayers.Event.isLeftClick(evt)) {
+            this.handler.fixedRadius = false;
+
+            var p = this.getMap().getEventPosition(evt);
+            var point = this.getMap().pixToGeo(p.x, p.y);
+            var radius = this.getMap().pixToGeoMeasure(this.handler.radius);
+
+            if (this.radiusTip && this.radiusTipType == 'dynamic') {
+                this.radiusTip.style.display = 'block';
+                var size = $(this.radiusTip).getBorderBoxSize();
+                this.radiusTip.style.top = (p.y - size.height*2) + 'px';
+                this.radiusTip.style.left = p.x + 'px';
+                if (this.units == 'm' || this.units == 'ft') {
+                    radius = Math.round(radius * 100)/100;
+                }
+                this.radiusTip.innerHTML = radius + this.units;
+            }
+        }
     },
 
     /**
@@ -172,26 +194,26 @@ Fusion.Widget.SelectRadius = OpenLayers.Class(Fusion.Widget, {
      */
     mouseMove: function(geom) {
         
-      var evt = this.handler.evt;
-      if (OpenLayers.Event.isLeftClick(evt)) {
-        var map = this.getMap();
-        var p = map.getEventPosition(evt);
-        var point = map.pixToGeo(p.x, p.y);
-        //var center = this.circle.center;
-        
-        var radius = this.getMap().pixToGeoMeasure(this.handler.radius);//Math.sqrt(Math.pow(center.x-point.x,2) + Math.pow(center.y-point.y,2));
+        var evt = this.handler.evt;
+        if (OpenLayers.Event.isLeftClick(evt)) {
+            var map = this.getMap();
+            var p = map.getEventPosition(evt);
+            var point = map.pixToGeo(p.x, p.y);
+            //var center = this.circle.center;
 
-        if (this.radiusTip && this.radiusTipType == 'dynamic') {
-            this.radiusTip.style.display = 'block';
-            var size = $(this.radiusTip).getBorderBoxSize();
-            this.radiusTip.style.top = (p.y - size.height*2) + 'px';
-            this.radiusTip.style.left = p.x + 'px';
-            if (this.units == 'm' || this.units == 'ft') {
-                radius = Math.round(radius * 100)/100;
+            var radius = this.getMap().pixToGeoMeasure(this.handler.radius);//Math.sqrt(Math.pow(center.x-point.x,2) + Math.pow(center.y-point.y,2));
+
+            if (this.radiusTip && this.radiusTipType == 'dynamic') {
+                this.radiusTip.style.display = 'block';
+                var size = $(this.radiusTip).getBorderBoxSize();
+                this.radiusTip.style.top = (p.y - size.height*2) + 'px';
+                this.radiusTip.style.left = p.x + 'px';
+                if (this.units == 'm' || this.units == 'ft') {
+                    radius = Math.round(radius * 100)/100;
+                }
+                this.radiusTip.innerHTML = radius + this.units;
             }
-            this.radiusTip.innerHTML = radius + this.units;
         }
-      }
     },
     
     /**
@@ -207,7 +229,7 @@ Fusion.Widget.SelectRadius = OpenLayers.Class(Fusion.Widget, {
             this.radiusTip.innerHTML = '';
         }
         if (this.handler.start == this.handler.last) {
-          this.handler.clear();
+            this.handler.clear();
         }
 
         var options = {};
@@ -229,6 +251,7 @@ Fusion.Widget.SelectRadius = OpenLayers.Class(Fusion.Widget, {
         }
         
         this.getMap().query(options);
+        this.deactivate();
     },
     
     setParameter : function(param, value) {

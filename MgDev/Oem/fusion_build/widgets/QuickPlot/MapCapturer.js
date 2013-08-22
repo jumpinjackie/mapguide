@@ -184,14 +184,6 @@ OpenLayers.Control.MapCapturer = OpenLayers.Class(OpenLayers.Control, {
         // Add the features into the layer
         this.layer.addFeatures([this.captureBox, this.rotateHandle, this.rotateHandleStart, this.rotateHandleEnd, this.snappingLine]);
 
-        // Overwrite layer's drawFeatures method to consider the map capturer's enable / disable
-        this.layer.drawFeature = (function(f, item, style)
-                {
-                    if (this.enabled)
-                    {
-                        f.apply(this.layer, Array.prototype.slice.call(arguments, 1));
-                    }
-                }).bind(this, this.layer.drawFeature);
         this.handlers = 
         {
             drag: new OpenLayers.Handler.Drag(
@@ -295,10 +287,10 @@ OpenLayers.Control.MapCapturer = OpenLayers.Class(OpenLayers.Control, {
     },
     
     /**
-     * Method: dragging
+     * Method: isDragging
      * Check if it's currently in dragging to move mode
      */
-    dragging: function() 
+    isDragging: function() 
     {
         if (this.feature && this.captureBox)
         {
@@ -309,10 +301,10 @@ OpenLayers.Control.MapCapturer = OpenLayers.Class(OpenLayers.Control, {
     },
     
     /**
-     * Method: dragging
-     * Check if it's currently in dragging to rotate mode
+     * Method: isRotating
+     * Check if it's currently in rotatiing mode
      */
-    rotating: function() 
+    isRotating: function() 
     {
         return this.feature && this.rotateHandleEnd && this.feature.id == this.rotateHandleEnd.id;
     },
@@ -336,11 +328,11 @@ OpenLayers.Control.MapCapturer = OpenLayers.Class(OpenLayers.Control, {
      */
     setCursor: function() 
     {
-        if (this.dragging())
+        if (this.isDragging())
         {
             this.wMap.setCursor(this.cursorMove);
         }
-        else if (this.rotating())
+        else if (this.isRotating())
         {
             this.wMap.setCursor(this.cursorRotate);
         }
@@ -352,11 +344,11 @@ OpenLayers.Control.MapCapturer = OpenLayers.Class(OpenLayers.Control, {
      */
     mouseMove: function(evt) 
     {
-        if (this.dragging()) 
+        if (this.isDragging()) 
         {
             this.moveFeature(evt);
         }
-        else if (this.rotating()) 
+        else if (this.isRotating()) 
         {
             this.rotateFeature(evt);
         }
@@ -601,8 +593,12 @@ OpenLayers.Control.MapCapturer = OpenLayers.Class(OpenLayers.Control, {
         {
             if (this.validateResolution())
             {
-                this.layer.features.each(function(item){item.layer.drawFeature(item);});
-                this.wMap.message.hide();
+                this.layer.features.each(function(item){
+                    item.layer.drawFeature(item);
+                });
+                if(this.wMap.message){
+                   this.wMap.message.hide();
+                }
             }
             else
             {
@@ -833,8 +829,9 @@ OpenLayers.Control.MapCapturer = OpenLayers.Class(OpenLayers.Control, {
     disable: function()
     {
         this.enabled  = false;
-
-        this.wMap.message.hide();
+        if(this.wMap.message){
+           this.wMap.message.hide();
+        }
         this.clearFeatures();
         this.rotation = 0;
         

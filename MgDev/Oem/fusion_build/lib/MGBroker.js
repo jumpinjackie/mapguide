@@ -1,7 +1,7 @@
 /**
  * Fusion.Lib.MGBroker
  *
- * $Id: MGBroker.js 2420 2011-08-10 01:09:04Z liuar $
+ * $Id: MGBroker.js 2766 2013-08-13 14:45:25Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,20 +28,20 @@
  *
  * MGBroker is used to broker requests to the MapGuide Open Source
  * mapagent interface.  It is a very simple class that is configured
- * with a URL and credentials via the setSiteURL method and can
- * send requests to the server via the dispatchRequest method.
+ * with a URL and credentials via the <Fusion.Lib.MGBroker.setSiteURL> method and can
+ * send requests to the server via the <Fusion.Lib.MGBroker.dispatchRequest> method.
  */
 
 Fusion.Lib.MGBroker = OpenLayers.Class({
     /**
      * the URL to a MapGuide Open Source installation.  Set this using
-     * setSiteURL
+     * <Fusion.Lib.MGBroker.setSiteURL>
      * @type String
      */
     mapGuideURL : '',
     /**
      * the agent URL for the MapGuide Open Source installation.  Set from
-     * setSiteURL
+     * <Fusion.Lib.MGBroker.setSiteURL>
      * @type String
      */
     mapAgentURL : '',
@@ -62,15 +62,19 @@ Fusion.Lib.MGBroker = OpenLayers.Class({
     initialize : function() { 
     },
     /**
+     * Method: dispatchRequest
+     * 
      * send a request to the MapGuide Open Source server using
      * XMLHttpRequest and return the result to the specified
      * function.
-     * @param r {Object} an MGRequest-subclass instance that
+     * 
+     * Parameters:
+     * r - {Object} an <Fusion.Lib.MGRequest>-subclass instance that
      *        defines the operation to request.
-     * @param f {Function} a function object to invoke when the
+     * f - {Function} a function object to invoke when the
      *        XMLHttpRequest call completes
      */
-    dispatchRequest : function( r, f ) {
+    dispatchRequest : function(r, f) {
         var s = r.encode() + '&ts='+(new Date()).getTime();
         if (this.method) {
             r.options.method = this.method;
@@ -80,6 +84,8 @@ Fusion.Lib.MGBroker = OpenLayers.Class({
         a.originalRequest = r;
     },
     /**
+     * Method: setSiteURL
+     * 
      * set up a connection to a MapGuide Open Source site.  This function
      * expects that url is in the form http(s)://<address>/path-to-mapguide.
      * Path-to-mapguide is should be the base URL to a MapGuide Open
@@ -90,10 +96,12 @@ Fusion.Lib.MGBroker = OpenLayers.Class({
      * guess its location.
      * The user name and password are passed on using basic HTML
      * authentication (http://<user>:<pass>@<server>/path-to-mapguide).
-     * @param url {String} a properly formatted universal reverse locator
+     * 
+     * Parameters:
+     * url - {String} a properly formatted universal reverse locator
      *        to a MapGuide Open Source installation.
-     * @param user {String} a valid user name
-     * @param pass {String} the password for the given user.
+     * user - {String} a valid user name
+     * pass - {String} the password for the given user.
      */
     setSiteURL : function(url, user, pass) {
         //url = url.replace('://', '://'+user+':'+pass+'@');
@@ -109,6 +117,8 @@ Fusion.Lib.MGBroker = OpenLayers.Class({
         this.mapAgentURL = url;
     },
     /**
+     * Method: clearSiteURL
+     * 
      * remove all authentication information from the broker
      */
     clearSiteURL: function() {
@@ -146,27 +156,36 @@ Fusion.Lib.MGRequest = OpenLayers.Class({
     },
     
     /**
+     * Method: setParams
+     * 
      * set the parameters associated with this request.  Parameters are
      * dependent on the specific MGRequest subclass except for two
      * mandatory parameters, version and locale, that are provided by
      * this base class.
      *
-     * @param o {Object} an object that contains named key : value pairs 
-     * representing parameters to a request
+     * Parameters:
+     * o - {Object} an object that contains named key : value pairs representing parameters to a request
      */
     setParams : function( o ){ OpenLayers.Util.extend( this.parameters, (o || {}) ); },
 
     /**
+     * Method: setOptions
+     * 
      * set the options associated with this request
-     * @param o {Object} an object that contains named key : value pairs 
-     * representing for a request
+     * 
+     * Parameters:
+     * o - {Object} an object that contains named key : value pairs representing for a request
      */
     setOptions : function( o ){ OpenLayers.Util.extend( this.options, (o || {}) ); },
     
     /**
+     * Method: encode
+     * 
      * returns a string containing all the request parameters in URL form suitable
      * for appending to a URL.
-     * @return {String} the parameters in URL form.
+     * 
+     * Return:
+     * {String} the parameters in URL form.
      */
     encode : function() {
         var s = sep = '';
@@ -184,25 +203,29 @@ Fusion.Lib.MGRequest = OpenLayers.Class({
  * Class: Fusion.Lib.MGRequest.MGEnumerateResources
  *
  * encapsulate a request to the server to enumerate resources in the library.
+ *
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGEnumerateResources = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGEnumerateResources
+     * 
      * initialize a new instance of MGEnumerateResources
      *
-     * @param resourceID {String} optional parameter indicating the resource
-     * to enumerate.  If not set or null, it defaults to "Library://" which
-     * is the root of the library.
+     * Parameters:
+     * resourceID - {String} optional parameter indicating the resource
+     *              to enumerate.  If not set or null, it defaults to "Library://" which
+     *              is the root of the library.
      *
-     * @param type {String} optional parameter indicating the type of resources
-     * to enumerate.  If not set, it will default to an empty string which
-     * indicates all types will be returned.
+     * type - {String} optional parameter indicating the type of resources
+     *        to enumerate.  If not set, it will default to an empty string which
+     *        indicates all types will be returned.
      *
-     * @param depth {Integer} optional parameter that controls the depth of the
-     * resource tree to enumerate.  If not set, it will default to -1 which
-     * means the tree will be fully enumerated.
+     * depth - {Integer} optional parameter that controls the depth of the
+     *         resource tree to enumerate.  If not set, it will default to -1 which
+     *         means the tree will be fully enumerated.
      *
-     * @return {Object} an instance of MGEnumerateResources
      */
     initialize : function( resourceID, type, depth ) {
         this.initializeRequest();
@@ -218,17 +241,20 @@ Fusion.Lib.MGRequest.MGEnumerateResources = OpenLayers.Class(Fusion.Lib.MGReques
  * Class: Fusion.Lib.MGRequest.MGGetResourceContent
  *
  * encapsulate a request to the server to get resource contents from the library.
+ *
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGGetResourceContent = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGGetResourceContent
+     * 
      * initialize a new instance of Fusion.Lib.MGRequest.MGGetResourceContent
      *
-     * @param resourceID {String} optional parameter indicating the resource
-     * to enumerate.  If not set or null, it defaults to "Library://" which
-     * is the root of the library.
-     *
-     * @return {Object} an instance of Fusion.Lib.MGRequest.MGGetResourceContent
+     * Parameters:
+     * resourceID - {String} optional parameter indicating the resource
+     *              to enumerate.  If not set or null, it defaults to "Library://" which
+     *              is the root of the library.
      */
     initialize : function( resourceID ) {
         this.initializeRequest();
@@ -243,17 +269,20 @@ Fusion.Lib.MGRequest.MGGetResourceContent = OpenLayers.Class(Fusion.Lib.MGReques
  * Class: Fusion.Lib.MGRequest.MGGetResourceHeader
  *
  * encapsulate a request to the server to get resource header from the library.
+ *
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGGetResourceHeader = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGGetResourceHeader
+     * 
      * initialize a new instance of Fusion.Lib.MGRequest.MGGetResourceHeader
      *
-     * @param resourceID {String} optional parameter indicating the resource
-     * to enumerate.  If not set or null, it defaults to "Library://" which
-     * is the root of the library.
-     *
-     * @return {Object} an instance of Fusion.Lib.MGRequest.MGGetResourceHeader
+     * Parameters:
+     * resourceID - {String} optional parameter indicating the resource
+     *              to enumerate.  If not set or null, it defaults to "Library://" which
+     *              is the root of the library.
      */
     initialize : function( resourceID ) {
         this.initializeRequest();
@@ -269,13 +298,14 @@ Fusion.Lib.MGRequest.MGGetResourceHeader = OpenLayers.Class(Fusion.Lib.MGRequest
  *
  * encapsulate a request to the server to create a new session on the server.
  *
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGCreateSession = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGCreateSession
+     * 
      * initialize a new instance of Fusion.Lib.MGRequest.MGCreateSession
-     *
-     * @return {Object} an instance of Fusion.Lib.MGRequest.MGCreateSession
      */
     initialize : function( ) {
         this.initializeRequest();
@@ -286,21 +316,80 @@ Fusion.Lib.MGRequest.MGCreateSession = OpenLayers.Class(Fusion.Lib.MGRequest, {
 });
 
 /****************************************************************************
+ * Class: Fusion.Lib.MGRequest.MGCreateRuntimeMap
+ *
+ * encapsulate a request to the server to create a new runtime map (and session if required)
+ * on the server
+ *
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
+ */
+Fusion.Lib.MGRequest.MGCreateRuntimeMap = OpenLayers.Class(Fusion.Lib.MGRequest, {
+    /**
+     * Constructor: Fusion.Lib.MGRequest.MGCreateRuntimeMap
+     * 
+     * initialize a new instance of Fusion.Lib.MGRequest.MGCreateRuntimeMap
+     */
+    initialize: function(mapDefinition, features, iconsPerScaleRange) {
+        this.initializeRequest();
+        this.setParams({
+            operation: "CREATERUNTIMEMAP",
+            mapdefinition: mapDefinition,
+            requestedfeatures: features,
+            iconsperscalerange: iconsPerScaleRange,
+            format: "application/json",
+            version: "2.6.0"
+        });
+    }
+});
+
+/****************************************************************************
+ * Class: Fusion.Lib.MGRequest.MGDescribeRuntimeMap
+ *
+ * encapsulate a request to the server to create a new runtime map (and session if required)
+ * on the server
+ *
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
+ */
+Fusion.Lib.MGRequest.MGDescribeRuntimeMap = OpenLayers.Class(Fusion.Lib.MGRequest, {
+    /**
+     * Constructor: Fusion.Lib.MGRequest.MGCreateRuntimeMap
+     * 
+     * initialize a new instance of Fusion.Lib.MGRequest.MGCreateRuntimeMap
+     */
+    initialize: function(mapName, features, iconsPerScaleRange) {
+        this.initializeRequest();
+        this.setParams({
+            operation: "DESCRIBERUNTIMEMAP",
+            mapname: mapName,
+            requestedfeatures: features,
+            iconsperscalerange: iconsPerScaleRange,
+            format: "application/json",
+            version: "2.6.0"
+        });
+    }
+});
+
+
+/****************************************************************************
  * Class: Fusion.Lib.MGRequest.MGCopyResource
  *
  * encapsulate a request to the server to copy a resource.
  *
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGCopyResource = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGCopyResource
+     * 
      * initialize a new instance of Fusion.Lib.MGRequest.MGCopyResource
      *
-     * @param sourceID {String} the Resource ID of the source
-     * @param destinationID {String} the Resource ID of the destination
-     * @param overwrite {Boolean} overwrite the destination if it exists
-     *
-     * @return {Object} an instance of Fusion.Lib.MGRequest.MGCopyResource
+     * Parameters:
+     * sourceID - {String} the Resource ID of the source
+     * destinationID - {String} the Resource ID of the destination
+     * overwrite - {Boolean} overwrite the destination if it exists
      */
     initialize : function( sourceID, destinationID, overwrite ) {
         this.initializeRequest();
@@ -318,15 +407,17 @@ Fusion.Lib.MGRequest.MGCopyResource = OpenLayers.Class(Fusion.Lib.MGRequest, {
  *
  * encapsulate a request to the server to delete a resource.
  *
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGDeleteResource = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGDeleteResource
+     * 
      * initialize a new instance of Fusion.Lib.MGRequest.MGDeleteResource
      *
-     * @param resourceID {String} the id of the resource to delete
-     *
-     * @return {Object} an instance of Fusion.Lib.MGRequest.MGDeleteResource
+     * Parameters:
+     * resourceID - {String} the id of the resource to delete
      */
     initialize : function( resourceID ) {
         this.initializeRequest();
@@ -342,17 +433,18 @@ Fusion.Lib.MGRequest.MGDeleteResource = OpenLayers.Class(Fusion.Lib.MGRequest, {
  *
  * encapsulate a request to the server to move a resource in the repository.
  *
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGMoveResource = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGMoveResource
      * initialize a new instance of Fusion.Lib.MGRequest.MGMoveResource
      *
-     * @param sourceID {String} the Resource ID of the source
-     * @param destinationID {String} the Resource ID of the destination
-     * @param overwrite {Boolean} overwrite the destination if it exists
-     *
-     * @return {Object} an instance of Fusion.Lib.MGRequest.MGMoveResource
+     * Parameters:
+     * sourceID - {String} the Resource ID of the source
+     * destinationID - {String} the Resource ID of the destination
+     * overwrite - {Boolean} overwrite the destination if it exists
      */
     initialize : function( sourceID, destinationID, overwrite ) {
         this.initializeRequest();
@@ -370,13 +462,14 @@ Fusion.Lib.MGRequest.MGMoveResource = OpenLayers.Class(Fusion.Lib.MGRequest, {
  *
  * encapsulate a request to the server to set the content XML of a resource.
  *
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGMoveResource = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGMoveResource
+     * 
      * initialize a new instance of Fusion.Lib.MGRequest.MGMoveResource
-     *
-     * @return {Object} an instance of Fusion.Lib.MGRequest.MGMoveResource
      */
     initialize : function( resourceID, content, header ) {
         this.initializeRequest();
@@ -395,16 +488,18 @@ Fusion.Lib.MGRequest.MGMoveResource = OpenLayers.Class(Fusion.Lib.MGRequest, {
  *
  * encapsulate a request to the server to describe the schema of a FeatureSource.
  *
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGDescribeSchema = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGDescribeSchema
+     * 
      * initialize a new instance of Fusion.Lib.MGRequest.MGDescribeSchema
      *
-     * @param resourceID {String} the id of the resource to describe the schema for
-     * @param schema {String} what does this do?
-     *
-     * @return {Object} an instance of Fusion.Lib.MGRequest.MGDescribeSchema
+     * Parameters:
+     * resourceID - {String} the id of the resource to describe the schema for
+     * schema - {String} what does this do?
      */
     initialize : function( resourceID, schema ) {
         this.initializeRequest();
@@ -421,16 +516,18 @@ Fusion.Lib.MGRequest.MGDescribeSchema = OpenLayers.Class(Fusion.Lib.MGRequest, {
  *
  * encapsulate a request to the server to retrieve the spatial context of a resource.
  *
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGGetSpatialContexts = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGGetSpatialContexts
+     * 
      * initialize a new instance of Fusion.Lib.MGRequest.MGGetSpatialContexts
      *
-     * @param resourceID {String} the id of the resource to retrieve the spatial context for
-     * @param activeonly {Boolean} what does this do?
-     *
-     * @return {Object} an instance of Fusion.Lib.MGRequest.MGGetSpatialContexts
+     * Parameters:
+     * resourceID - {String} the id of the resource to retrieve the spatial context for
+     * activeonly - {Boolean} what does this do?
      */
     initialize : function(resourceID, activeonly) {
         this.initializeRequest();
@@ -447,15 +544,17 @@ Fusion.Lib.MGRequest.MGGetSpatialContexts = OpenLayers.Class(Fusion.Lib.MGReques
  *
  * encapsulate a request to the server to enumerate the references to a resource id.
  *
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGEnumerateResourceReferences = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGEnumerateResourceReferences
+     * 
      * initialize a new instance of Fusion.Lib.MGRequest.MGEnumerateResourceReferences
      *
-     * @param resourceID {String} the id of the resource to retrieve the spatial context for
-     *
-     * @return {Object} an instance of Fusion.Lib.MGRequest.MGEnumerateResourceReferences
+     * Parameters:
+     * resourceID - {String} the id of the resource to retrieve the spatial context for
      */
     initialize : function( resourceID ) {
         this.initializeRequest();
@@ -473,16 +572,19 @@ Fusion.Lib.MGRequest.MGEnumerateResourceReferences = OpenLayers.Class(Fusion.Lib
  * a FeatureSource
  * N.B. This does not enumerate resource data for 'unmanaged' FeatureSources
  *      (those referencing files or directories outside the respository)
- *      Fusion.Lib.MGRequest.MGDescribeSchema should be used for those sources.
+ *      <Fusion.Lib.MGRequest.MGDescribeSchema> should be used for those sources.
+ *
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGEnumerateResourceData = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGEnumerateResourceData
+     * 
      * initialize a new instance of Fusion.Lib.MGRequest.MGEnumerateResourceData
      *
-     * @param resourceID {String} the id of the FeatureSource to retrieve data for
-     *
-     * @return {Object} an instance of Fusion.Lib.MGRequest.MGEnumerateResourceData
+     * Parameters:
+     * resourceID - {String} the id of the FeatureSource to retrieve data for
      */
     initialize : function( resourceID ) {
         this.initializeRequest();
@@ -496,33 +598,32 @@ Fusion.Lib.MGRequest.MGEnumerateResourceData = OpenLayers.Class(Fusion.Lib.MGReq
 /****************************************************************************
  * Class: Fusion.Lib.MGRequest.MGGetVisibleMapExtent
  *
- * encapsulate a request to the server to enumerate the data associated with
- * a FeatureSource
- * N.B. This does not enumerate resource data for 'unmanaged' FeatureSources
- *      (those referencing files or directories outside the respository)
- *      Fusion.Lib.MGRequest.MGDescribeSchema should be used for those sources.
+ * Encapsulate a request to the server to get the visible map extent
+ *      
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGGetVisibleMapExtent = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGGetVisibleMapExtent
+     * 
      * initialize a new instance of Fusion.Lib.MGRequest.MGGetVisibleMapExtent
      *
-     * @param sessionId {String} the id of the session to restore
-     * @param mapName {String} the name of the map
-     * @param viewCenterX {String} the horizontal center of the view
-     * @param viewCenterY {String} the vertical center of the view
-     * @param viewScale {String} the scale of the map
-     * @param dataExtent {String} the extent of the data 
-     * @param displayDpi {String} the DPI of the display
-     * @param displayWidth {String} the width of the map
-     * @param displayHeight {String} the height of the map
-     * @param showLayers {String} a list of layer names to show
-     * @param hideLayers {String} a list of layer names to hide
-     * @param showGroups {String} a list of group names to show
-     * @param hideGroups {String} a list of groupnames to hide
-     * @param refreshLayers {String} a list of layers that need to be refreshed
-     *
-     * @return {Object} an instance of Fusion.Lib.MGRequest.MGGetVisibleMapExtent
+     * Parameters:
+     * sessionId - {String} the id of the session to restore
+     * mapName - {String} the name of the map
+     * viewCenterX - {String} the horizontal center of the view
+     * viewCenterY - {String} the vertical center of the view
+     * viewScale - {String} the scale of the map
+     * dataExtent - {String} the extent of the data 
+     * displayDpi - {String} the DPI of the display
+     * displayWidth - {String} the width of the map
+     * displayHeight - {String} the height of the map
+     * showLayers - {String} a list of layer names to show
+     * hideLayers - {String} a list of layer names to hide
+     * showGroups - {String} a list of group names to show
+     * hideGroups - {String} a list of groupnames to hide
+     * refreshLayers - {String} a list of layers that need to be refreshed
      */
     initialize : function( sessionId, mapName, viewCenterX, viewCenterY,
                            viewScale, dataExtent, displayDpi, displayWidth, 
@@ -555,30 +656,34 @@ Fusion.Lib.MGRequest.MGGetVisibleMapExtent = OpenLayers.Class(Fusion.Lib.MGReque
  *
  * encapsulate a request to the server to query map features on 
  * selectable layers
+ * 
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGQueryMapFeatures = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGQueryMapFeatures
+     * 
      * initialize a new instance of Fusion.Lib.MGRequest.MGQueryMapFeatures
      *
-     * @param sessionId {String} the id of the session to restore
-     * @param mapName {String} the id of the session to restore
-     * @param geometry (sting wkt} gemetry to use for selection.  Example : POLYGON(x1 y1, x2,y2)
-     * @param maxFeatures {integer} number of maximum results (-1 to indicate no maximum)
-     * @param selectionPersist {boolean} save the selection (valid values are 0 and 1) 
-     * @param selectionVariant {String} indicates the spatial operation. Valid values are 'INTERSECTS', ...
-     * @param featureFilter {String} filter crieteria to be applied for selection.
-     * @param layerNames {String} comma separated list of layer names to include in the query
-     * @param layerAttributeFilter {integer} bitmask determining layer selection behaviour (1=visible layers,
+     * Parameters:
+     * sessionId - {String} the id of the session to restore
+     * mapName - {String} the id of the session to restore
+     * geometry (sting wkt} gemetry to use for selection.  Example : POLYGON(x1 y1, x2,y2)
+     * maxFeatures - {integer} number of maximum results (-1 to indicate no maximum)
+     * selectionPersist - {boolean} save the selection (valid values are 0 and 1) 
+     * selectionVariant - {String} indicates the spatial operation. Valid values are 'INTERSECTS', ...
+     * featureFilter - {String} filter crieteria to be applied for selection.
+     * layerNames - {String} comma separated list of layer names to include in the query
+     * layerAttributeFilter - {integer} bitmask determining layer selection behaviour (1=visible layers,
      *          2=selectable layers, 4=layers with tooltips)
-     *
-     * @return {Object} an instance of Fusion.Lib.MGRequest.MGQueryMapFeatures
      */
     initialize : function( sessionId, mapName, geometry, maxFeatures, persist, selectionVariant, featureFilter, layerNames, layerAttributeFilter ) 
     {
         this.initializeRequest();
         this.setParams( {
             operation : 'QUERYMAPFEATURES',
+            format: "application/json",
             session: sessionId,
             mapname: mapName,
             geometry: geometry,
@@ -593,21 +698,77 @@ Fusion.Lib.MGRequest.MGQueryMapFeatures = OpenLayers.Class(Fusion.Lib.MGRequest,
 });
 
 /****************************************************************************
+ * Class: Fusion.Lib.MGRequest.MGQueryMapFeatures2
+ *
+ * encapsulate a request to the server to query map features on 
+ * selectable layers
+ * 
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
+ */
+Fusion.Lib.MGRequest.MGQueryMapFeatures2 = OpenLayers.Class(Fusion.Lib.MGRequest, {
+    /**
+     * Constructor: Fusion.Lib.MGRequest.MGQueryMapFeatures2
+     * 
+     * initialize a new instance of Fusion.Lib.MGRequest.MGQueryMapFeatures2
+     *
+     * Parameters:
+     * sessionId - {String} the id of the session to restore
+     * mapName - {String} the id of the session to restore
+     * geometry (sting wkt} gemetry to use for selection.  Example : POLYGON(x1 y1, x2,y2)
+     * maxFeatures - {integer} number of maximum results (-1 to indicate no maximum)
+     * selectionPersist - {boolean} save the selection (valid values are 0 and 1) 
+     * selectionVariant - {String} indicates the spatial operation. Valid values are 'INTERSECTS', ...
+     * featureFilter - {String} filter crieteria to be applied for selection.
+     * layerNames - {String} comma separated list of layer names to include in the query
+     * layerAttributeFilter - {integer} bitmask determining layer selection behaviour (1=visible layers,
+     *          2=selectable layers, 4=layers with tooltips)
+     * requestData - {integer} a bitmask of the desired information to return (Attributes = 1 InlineSelection? = 2 Tooltip = 4 Hyperlink = 8)
+     * selectionColor - {String} the html color for the inline selection image (if requested)
+     * selectionFormat - {String} the format of the inline selection image (if requested)
+     */
+    initialize : function( sessionId, mapName, geometry, maxFeatures, persist, selectionVariant, featureFilter, layerNames, layerAttributeFilter, requestData, selectionColor, selectionFormat) 
+    {
+        this.initializeRequest();
+        this.setParams( {
+            operation : 'QUERYMAPFEATURES',
+            format: "application/json",
+            version: "2.6.0",
+            session: sessionId,
+            mapname: mapName,
+            geometry: geometry,
+            maxFeatures: maxFeatures,
+            persist: persist,
+            selectionVariant: selectionVariant,
+            featureFilter: featureFilter,
+            layerNames: layerNames,
+            layerAttributeFilter: layerAttributeFilter,
+            requestData: requestData,
+            selectionColor: selectionColor,
+            selectionFormat: selectionFormat
+        } );
+    }
+});
+
+/****************************************************************************
  * Class: Fusion.Lib.MGRequest.MGGetFeatureSetEnvelope
  *
  * encapsulate a request to the server to query map features on 
  * selectable layers
+ * 
+ * Inherits from:
+ *  - <Fusion.Lib.MGRequest>
  */
 Fusion.Lib.MGRequest.MGGetFeatureSetEnvelope = OpenLayers.Class(Fusion.Lib.MGRequest, {
     /**
-     * @constructor
+     * Constructor: Fusion.Lib.MGRequest.MGGetFeatureSetEnvelope
+     * 
      * initialize a new instance of Fusion.Lib.MGRequest.MGGetFeatureSetEnvelope
      *
-     * @param sessionId {String} the id of the session to restore
-     * @param mapName {String} the id of the session to restore
-     * @param features (String XML} a feature set selection XML
-     *
-     * @return {Object} an instance of Fusion.Lib.MGRequest.MGGetFeatureSetEnvelope
+     * Parameters:
+     * sessionId - {String} the id of the session to restore
+     * mapName - {String} the id of the session to restore
+     * features - (String XML} a feature set selection XML
      */
     initialize : function( sessionId, mapName, features ) 
     {

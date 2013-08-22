@@ -31,6 +31,9 @@
  *
  * uses JavaScript Scale Bar for MapServer 
  * (http://mapserver.commenspace.org/tools/scalebar/
+ * 
+ *  Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Event.GET_FEATURE_INFO_COMPLETE = Fusion.Event.lastEventId++;

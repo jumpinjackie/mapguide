@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.SelectionPanel
  *
- * $Id: SelectionPanel.js 2313 2011-01-07 20:36:04Z madair $
+ * $Id: SelectionPanel.js 2683 2013-03-28 10:07:16Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,8 @@
  *
  * A widget to display information about the currently selected set of features.
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.SelectionPanel = OpenLayers.Class(Fusion.Widget, {
@@ -495,6 +497,20 @@ Fusion.Widget.SelectionPanel.SelectionRendererHorizontal = OpenLayers.Class(Fusi
         $(this.featureDiv).removeClass('noSelection');
         this.featureDiv.innerHTML = '';
         
+        var mapWidget = this.getMap();
+        var aMaps = mapWidget.getAllMaps();
+        var mgLayer = null;
+        //NOTE: We are obviously assuming only one Fusion.Layers.MapGuide instance here (if any)
+        for (var i = 0; i < aMaps.length; i++) {
+            if (aMaps[i].arch == "MapGuide") {
+                mgLayer = aMaps[i];
+                break;
+            }
+        }
+        
+        if (mgLayer == null)
+            return;
+        
         var nLayers = this.oSelection.getNumLayers();
         for (var i=0; i<nLayers; i++) {
             var table = document.createElement('table');
@@ -502,8 +518,9 @@ Fusion.Widget.SelectionPanel.SelectionRendererHorizontal = OpenLayers.Class(Fusi
             table.style.marginBottom = "10px";
             var layerObj = this.oSelection.getLayer(i);
             var aNames = layerObj.getPropertyNames();
+            
             //find the legend label from the Map layer objects
-            var mapLayers = this.getMapLayer().aLayers;
+            var mapLayers = mgLayer.aLayers;
             var labelName = layerObj.getName();
             for (var j=0; j<mapLayers.length; ++j) {
                 if (mapLayers[j].layerName == labelName) {

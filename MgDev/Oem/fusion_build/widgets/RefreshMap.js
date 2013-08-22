@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.RefreshMap
  *
- * $Id: RefreshMap.js 1523 2008-09-11 19:30:43Z pagameba $
+ * $Id: RefreshMap.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,8 @@
  *
  * Refreshes the current map view without changing zoom or center.
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 

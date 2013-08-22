@@ -61,6 +61,9 @@
     $zoomLocal = GetLocalizedString('QUERYZOOM', $locale );
     $selectLocal = GetLocalizedString('QUERYSELECT', $locale );
     $errorLocal = GetLocalizedString('QUERYERROR', $locale );
+    
+    $rectangleHelpLocal = GetLocalizedString('REDLINEEDITRECTANGLEHELP', $locale );
+    $polygonHelpLocal = GetLocalizedString('REDLINEEDITPOLYGONHELP', $locale );
 
     try
     {
@@ -177,11 +180,20 @@
         function OnDigitizeRectangle()
         {
             ClearDigitization();
+            var map = Fusion.getMapByName(mapName).mapWidget;
+            map.message.info("<?= $rectangleHelpLocal ?>" + " <a id='digitizeDismiss' href='javascript:void(0)'>" + OpenLayers.i18n("stop") + "</a>");
+            var link = map.message.container.ownerDocument.getElementById("digitizeDismiss");
+            //Wire the anchor click
+            link.onclick = function() {
+                ClearMessage();
+                ClearDigitization(true);
+            };
             DigitizeRectangle(OnRectangleDigitized);
         }
 
         function OnRectangleDigitized(rectangle)
         {
+            ClearMessage();
             var geomText = "5,"
                 + rectangle.Point1.X + "," + rectangle.Point1.Y + ","
                 + rectangle.Point2.X + "," + rectangle.Point1.Y + ","
@@ -195,11 +207,20 @@
         function OnDigitizePolygon()
         {
             ClearDigitization();
+            var map = Fusion.getMapByName(mapName).mapWidget;
+            map.message.info("<?= $polygonHelpLocal ?>" + " <a id='digitizeDismiss' href='javascript:void(0)'>" + OpenLayers.i18n("stop") + "</a>");
+            var link = map.message.container.ownerDocument.getElementById("digitizeDismiss");
+            //Wire the anchor click
+            link.onclick = function() {
+                ClearMessage();
+                ClearDigitization(true);
+            };
             DigitizePolygon(OnPolyonDigitized);
         }
 
         function OnPolyonDigitized(polygon)
         {
+            ClearMessage();
             var geomText = polygon.Count;
             for (var i = 0; i < polygon.Count; i++)
             {
@@ -404,7 +425,15 @@
 
         function OnUnload()
         {
+            ClearMessage();
+            ClearDigitization(true);
             ToggleSpatialFilter(false);
+        }
+        
+        function ClearMessage() 
+        {
+            var map = GetFusionMapWidget();
+            map.message.clear();
         }
 
         function OnResize()

@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Pan
  *
- * $Id: Pan.js 2287 2010-11-24 03:18:32Z hubu $
+ * $Id: Pan.js 2686 2013-04-05 11:44:39Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,6 +27,9 @@
  * Class: Fusion.Widget.Pan
  *
  * A widget that allows for naviagtion by panning
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.Pan = OpenLayers.Class(Fusion.Widget, {
@@ -45,14 +48,36 @@ Fusion.Widget.Pan = OpenLayers.Class(Fusion.Widget, {
         
         this.cursorNormal = [grabpath, 'grab', '-moz-grab', 'move'];
         this.cursorDrag = [grabbingpath, 'grabbing', '-moz-grabbing', 'move'];
+        
+        //We're interested in these events, because this widget could get in the way
+        this.getMap().registerForEvent(Fusion.Event.MAP_DIGITIZER_ACTIVATED, OpenLayers.Function.bind(this.onDigitizerActivated, this));
+        this.getMap().registerForEvent(Fusion.Event.MAP_DIGITIZER_DEACTIVATED, OpenLayers.Function.bind(this.onDigitizerDeactivated, this));
+    },
+    
+    onDigitizerActivated: function() {
+        this.bRestoreActiveState = this.isActive;
+        //TODO: What we really want is to do is filter out the valid mouse buttons for a drag. So we can
+        //still pan while digitizing via the middle mouse button.
+        //This is an OpenLayers-level limitation (the drag handler is hardcoded to left mouse button)
+        this.deactivate();
+    },
+    
+    onDigitizerDeactivated: function() {
+        if (this.bRestoreActiveState === true) {
+            this.activate();
+            this.bRestoreActiveState = false;
+        }
     },
 
     activate : function() {
+        //TODO: Why Fusion.Widget has no active state flag? Probably should have one
+        this.isActive = true;
         this.control.activate();
         this.getMap().setCursor(this.cursorNormal);
     },
     
     deactivate: function() {
+        this.isActive = false;
         /*console.log('Pan.deactivate');*/
         this.control.deactivate();
         this.getMap().setCursor('auto');

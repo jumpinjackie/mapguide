@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 2495 2011-12-23 03:11:53Z liuar $
+ * $Id: Map.js 2763 2013-08-07 02:12:41Z liuar $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -23,38 +23,117 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
- /****************************************************************************
+/**
+ * Constant: Fusion.Event.MAP_EXTENTS_CHANGED
+ */
+Fusion.Event.MAP_EXTENTS_CHANGED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_BUSY_CHANGED
+ */
+Fusion.Event.MAP_BUSY_CHANGED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_GENERIC_EVENT
+ */
+Fusion.Event.MAP_GENERIC_EVENT = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_RESIZED
+ */
+Fusion.Event.MAP_RESIZED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_SELECTION_ON
+ */
+Fusion.Event.MAP_SELECTION_ON = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_SELECTION_OFF
+ */
+Fusion.Event.MAP_SELECTION_OFF = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_ACTIVE_LAYER_CHANGED
+ */
+Fusion.Event.MAP_ACTIVE_LAYER_CHANGED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_LOADED
+ */
+Fusion.Event.MAP_LOADED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_LOADING
+ */
+Fusion.Event.MAP_LOADING = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_RELOADED
+ */
+Fusion.Event.MAP_RELOADED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_SESSION_CREATED
+ */
+Fusion.Event.MAP_SESSION_CREATED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_MAPTIP_REQ_FINISHED
+ */
+Fusion.Event.MAP_MAPTIP_REQ_FINISHED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.WMS_LAYER_ADDED
+ */
+Fusion.Event.WMS_LAYER_ADDED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_SCALE_RANGE_LOADED
+ */
+Fusion.Event.MAP_SCALE_RANGE_LOADED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_MAP_GROUP_LOADED
+ */
+Fusion.Event.MAP_MAP_GROUP_LOADED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_DIGITIZER_ACTIVATED
+ */
+Fusion.Event.MAP_DIGITIZER_ACTIVATED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_DIGITIZER_DEACTIVATED
+ */
+Fusion.Event.MAP_DIGITIZER_DEACTIVATED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Constant.LAYER_POINT_TYPE
+ */
+Fusion.Constant.LAYER_POINT_TYPE = 0;
+/**
+ * Constant: Fusion.Constant.LAYER_POINT_TYPE
+ */
+Fusion.Constant.LAYER_POINT_TYPE = 1;
+/**
+ * Constant: Fusion.Constant.LAYER_POINT_TYPE
+ */
+Fusion.Constant.LAYER_POINT_TYPE = 2;
+/**
+ * Constant: Fusion.Constant.LAYER_POINT_TYPE
+ */
+Fusion.Constant.LAYER_POINT_TYPE = 3;
+/**
+ * Constant: Fusion.Constant.LAYER_POINT_TYPE
+ */
+Fusion.Constant.LAYER_POINT_TYPE = 4;
+/**
+ * Constant: Fusion.Constant.LAYER_DWF_TYPE
+ */
+Fusion.Constant.LAYER_DWF_TYPE = 5;
+
+/****************************************************************************
  * Class: Fusion.Widget.Map
  *
  * generic class for map widgets. Provides common utility classes.
- * This class provides a wrapper around the OpenLayers Map object.
+ * This class provides a wrapper around the {<OpenLayers.Map>} object.
+ * 
+ * Inherits from:
+ *  - <Fusion.Lib.EventMgr>
  * **********************************************************************/
-
-Fusion.Event.MAP_EXTENTS_CHANGED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_BUSY_CHANGED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_GENERIC_EVENT = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_RESIZED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_SELECTION_ON = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_SELECTION_OFF = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_ACTIVE_LAYER_CHANGED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_LOADED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_LOADING = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_RELOADED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_SESSION_CREATED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_MAPTIP_REQ_FINISHED = Fusion.Event.lastEventId++;
-Fusion.Event.WMS_LAYER_ADDED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_SCALE_RANGE_LOADED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_MAP_GROUP_LOADED = Fusion.Event.lastEventId++;
-
-
-Fusion.Constant.LAYER_POINT_TYPE = 0;
-Fusion.Constant.LAYER_LINE_TYPE = 1;
-Fusion.Constant.LAYER_POLYGON_TYPE = 2;
-Fusion.Constant.LAYER_SOLID_TYPE = 3;
-Fusion.Constant.LAYER_RASTER_TYPE = 4;
-Fusion.Constant.LAYER_DWF_TYPE = 5;
-
 Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
+    
+    ID_DIGITIZING_LAYER: "FusionMapDigitizingLayer",
+    DRAW_CONTROL_POINT: "FusionMapDrawPoint",
+    DRAW_CONTROL_LINE: "FusionMapDrawLine",
+    DRAW_CONTROL_LINESTR: "FusionMapDrawLineString",
+    DRAW_CONTROL_RECT: "FusionMapDrawRect",
+    DRAW_CONTROL_POLY: "FusionMapDrawPoly",
+    DRAW_CONTROL_CIRCLE: "FusionMapDrawCircle",
     
     /** The DOM object that holds the map */
     _oDomObj: null,
@@ -110,6 +189,23 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     maxScale: null, //set this to a large number in AppDef to zoom out beyond maxExtent, e.g. 1 billion
 
     /**
+     * Property: isDigitizing
+     *
+     * Gets whether a digitizer is currently active
+     */
+    isDigitizing: false,
+
+    /**
+     * Property: message
+     * 
+     * The {<Fusion.MapMessage>} notification bar
+     */
+    message: null,
+
+    /** The OL style map for digitizing **/
+    digitizingStyleMap: null,
+
+    /**
      * construct a new view Fusion.Widget.Map class.
      */
     initialize: function(widgetTag, mapGroup, widgetSet) {
@@ -159,7 +255,7 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
         OpenLayers.DOTS_PER_INCH = this._nDpi;
         if (!this.oMapOL) {
             var options = {
-                controls: [],
+                controls: [ new OpenLayers.Control.PinchZoom() ],
                 fallThrough: true,
                 scales: scalesArray,
                 fractionalZoom: this.fractionalZoom
@@ -211,6 +307,8 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
         this.registerEventID(Fusion.Event.WMS_LAYER_ADDED);
         this.registerEventID(Fusion.Event.MAP_SCALE_RANGE_LOADED);
         this.registerEventID(Fusion.Event.MAP_MAP_GROUP_LOADED);
+        this.registerEventID(Fusion.Event.MAP_DIGITIZER_ACTIVATED);
+        this.registerEventID(Fusion.Event.MAP_DIGITIZER_DEACTIVATED);
 
         this.registerForEvent(Fusion.Event.MAP_LOADED, OpenLayers.Function.bind(this.mapLoaded,this));
         this.registerForEvent(Fusion.Event.MAP_RELOADED, OpenLayers.Function.bind(this.mapLoaded,this));
@@ -226,6 +324,19 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
         this.aSelectionCallbacks = [];
         this.bFetchingSelection = false;
 
+        //Create style map
+        this.digitizingStyleMap = new OpenLayers.StyleMap(new OpenLayers.Style({
+            pointRadius: 4,
+            graphicName: "square",
+            fillColor: "white",
+            fillOpacity: 0.4,
+            strokeWidth: 2,
+            strokeOpacity: 1,
+            strokeColor: "#666666",
+            strokeColor: "#666666"
+        }));
+        this.keyHandler = OpenLayers.Function.bind(this.onKeyPress, this);
+
         //create the 'Map' layer widgets defined in the MapGroup
         this.loadMapGroup(mapGroup);
     },
@@ -240,8 +351,8 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
      * Return: none
      */
     mapLoaded: function() {
-      this.setViewOptions(this.getUnits());
-      this.loadScaleRanges(OpenLayers.Function.bind(this.scaleRangesLoaded, this));
+        this.setViewOptions(this.getUnits());
+        this.loadScaleRanges(OpenLayers.Function.bind(this.scaleRangesLoaded, this));
     },
 
     /**
@@ -307,7 +418,9 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
 
           if (Fusion.Layers[mapTag.type]) {
               this.aMaps.push(new Fusion.Layers[mapTag.type](this, mapTag, true));
-              this.layerRoot.addGroup(this.aMaps[this.aMaps.length-1].layerRoot);
+              var oGroup = this.aMaps[this.aMaps.length-1].layerRoot;
+              oGroup.isFusionLayer = true;
+              this.layerRoot.addGroup(oGroup);
           } else {
               this.aMaps.push(new Fusion.Layers.Generic(this, mapTag, true));
               this.layerRoot.addLayer(this.aMaps[this.aMaps.length-1].layerRoot);
@@ -315,6 +428,39 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
           this.aMaps[this.aMaps.length-1].registerForEvent(Fusion.Event.LAYER_LOADED, OpenLayers.Function.bind(this.layerLoaded,this,mapTag));
         }
         this.triggerEvent(Fusion.Event.MAP_MAP_GROUP_LOADED);
+    },
+    
+    _fixBaseLayerGroupVisibility: function() {
+        //Fix Defect: the Base Layer Group should be invisiable when the "initially visiable in map" is set to false
+        var i = 0;
+        var j = 0;
+        for (i = 0;i < this.layerRoot.groups.length; i++) {
+            if (this.layerRoot.groups[i].uniqueId == "layerRoot") {
+                for (var k = 0; k < this.layerRoot.groups[i].groups.length; k++) {
+                    if (!this.layerRoot.groups[i].groups[k].initiallyVisible) {
+                        for (j = 0; j < this.aMaps.length; j++) {
+                            if (this.aMaps[j].arch != 'MapGuide') {
+                                continue;
+                            }
+                            if (this.aMaps[j].oLayerOL.params.basemaplayergroupname === this.layerRoot.groups[i].groups[k].name) {
+                                this.aMaps[j].oLayerOL.setVisibility(false);
+                            } 
+                        }
+                    }   
+                }
+            } else {
+                if (!this.layerRoot.groups[i].initiallyVisible){
+                    for (j = 0; j < this.aMaps.length; j++) {
+                        if (this.aMaps[j].arch != 'MapGuide') {
+                            continue;
+                        }
+                        if (this.aMaps[j].oLayerOL.params.basemaplayergroupname === this.layerRoot.groups[i].name) {
+                            this.aMaps[j].oLayerOL.setVisibility(false);
+                        } 
+                    }
+                }   
+            }
+        }
     },
 
     /**
@@ -329,20 +475,146 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
      * Return: none
      */
     layerLoaded: function(mapTag) {
-      for (var i=0; i<this.aMaps.length; ++i) {
-        if (!this.aMaps[i].isMapLoaded()) {
-          return;
+        for (var i=0; i<this.aMaps.length; ++i) {
+            if (!this.aMaps[i].isMapLoaded()) {
+                return;
+            }
         }
-      }
-      this.mapsLoaded = true;
-      if (this.aMaps.length == 1) {
-        this.oMapOL.setBaseLayer(this.aMaps[0].oLayerOL);
-      }
-      
-      var initialExtent = this.setInitialExtents();
-      this.setExtents(initialExtent);
+        this.mapsLoaded = true;
+        if (this.aMaps.length == 1) {
+            this.oMapOL.setBaseLayer(this.aMaps[0].oLayerOL);
+            this._fixBaseLayerGroupVisibility();
+        } else {
+            //Due to initialization being done asynchronously, re-order the maps to ensure the OpenLayers draw order matches the order of this.aMaps
+            //Fortunately this.aMaps[i] already carries the related OpenLayers layer object.
 
-      this.triggerEvent(Fusion.Event.MAP_LOADED, mapTag);
+            var mgLayerCount = 0;
+
+            //First remove the ones in question
+            for (var i = 0; i < this.aMaps.length; i++) {
+                if (this.aMaps[i].arch == 'MapGuide') {
+                    mgLayerCount++;
+                }
+                
+                //if (this.aMaps[i].oLayerOL != this.oMapOL.layers[i])
+                //    console.log("Found OL layer not in correct position");
+                    
+                this.oMapOL.removeLayer(this.aMaps[i].oLayerOL);
+            }
+
+            //Now re-add them in the correct order
+            for (var i = 0; i < this.aMaps.length; i++) {
+                this.oMapOL.addLayer(this.aMaps[i].oLayerOL);
+            }
+
+            //HACK: Force alwaysInRange = true if more than one Map Definition was found in the MapGroup
+            //
+            //I suspect the underlying problem is the variations in coordinate system name and/or WKT of the
+            //Map Definitions in question that screw up the map resolution calculations that determine
+            //whether the OpenLayers.Layer object actually renders or not. Setting alwaysInRange = true will
+            //skip this (incorrect) calculation
+            if (mgLayerCount > 1) {
+                for (var i = 0; i < this.aMaps.length; i++) {
+                    if (this.aMaps[i].arch == 'MapGuide') {
+                        this.aMaps[i].oLayerOL.isBaseLayer = false; //Required for multiple MG tiled maps a in a MapGroup to be in sync
+                        this.aMaps[i].oLayerOL.alwaysInRange = true;
+                        this.aMaps[i].oLayerOL.setVisibility(true);
+                    }
+                }
+            }
+            
+            //Need to do this after setting alwaysInRange = true as we require the original visibility settings to be respected
+            this._fixBaseLayerGroupVisibility();
+        }
+
+        // Take advantage of new client-zoom capabilities introduced in OpenLayers 2.12
+        //
+        // What we do here is for every grid-based commerical layer, we tack on extra resolutions
+        // of the MapGuide OL Layer that is below the minimum supported resolution of the commercial
+        // layers. The existing resolutions array is shifted to the layer's serverResolutions array.
+        //
+        // When we go below the minimum supported resolution of these commercial layers, 
+        // client-zoom kicks in and stretches the commerical layers appropriately.
+        //
+        // A small side-effect is that if fractionalZoom = true, and the layer setup is such that
+        // this won't be set to false during initialization (eg. fractionalZoom = true + 
+        // A MapGuide dynamic map + OSM layers), then the OSM layers will almost always be slightly 
+        // stretched, as any zoom scale is allowed and OL will be stretching the OSM layers to match.
+        //
+        // This technique does not work with Google layers (as they aren't grid-based). The mere presence
+        // of Google layers (or any non-Grid layers) will disable client-zoom if a non-Grid layer is the active
+        // one, and your map will be snapping to whatever discrete scale list that is imposed by the commercial layer
+        //
+        // With these changes the behaviour is like so (OSM is interchangeable with any other grid-based layer, MapGuide
+        // is assumed to be fully dynamic and have no tiled layers):
+        //
+        // - MapGuide + OSM (fractionalZoom = true): Fully dynamic map and OSM tiles are stretched accordingly. OSM 
+        //                                           tiles will most likely never be un-stretched due to the fully dynamic
+        //                                           nature of the map.
+        // - MapGuide + OSM (fractionalZoom = false): Scales "snap" to OSM scales and are stretched accordingly 
+        //                                            when going below the minimum supported OSM scale
+        // - MapGuide + OSM + Explicit Scale List: Scales "snap" to OSM scales (any MG scales within the OSM scale 
+        //                                         list are disregarded). OSM tiles are stretched accordingly when 
+        //                                         going below the minimum supported OSM scale
+        //                                         
+        // MapGuide Map Definitions with tiled layers cannot take advantage of client-zoom (at least to my knowledge and for
+        // this initial implementation). 
+        //
+        // So the same rules apply for MG tiled map integration: It must use the same scale list as Google + Bing + OSM.
+        var newResolutions = null;
+        var mgResolutions = null;
+        var bCanUseClientZoom = true;
+        for (var i = 0; i < this.aMaps.length; i++) {
+            if (this.aMaps[i].arch == 'MapGuide') {
+                mgResolutions = this.aMaps[i].oLayerOL.resolutions;
+                if (this.aMaps[i].bSingleTile) {
+                    bCanUseClientZoom = true;
+                } else {
+                    //TODO: How smart can we be to make this be true?
+                    bCanUseClientZoom = false;
+                }
+                break;
+            }
+        }
+
+        //console.log("Can use client-zoom: " + bCanUseClientZoom);
+        if (bCanUseClientZoom) {
+            for (var i = 0; i < this.aMaps.length; i++) {
+                if (this.aMaps[i].arch == 'Generic') {
+                    var oLayer = this.aMaps[i].oLayerOL;
+                    oLayer.serverResolutions = oLayer.resolutions;
+                    if (newResolutions == null) {
+                        newResolutions = [];
+                        for (var j = 0; j < oLayer.serverResolutions.length; j++) {
+                            newResolutions.push(oLayer.serverResolutions[j]);
+                        }
+                        for (var j = 0; j < mgResolutions.length; j++) {
+                            if (mgResolutions[j] < oLayer.minResolution) {
+                                newResolutions.push(mgResolutions[j]);
+                            }
+                        }
+                    }
+                    oLayer.resolutions = newResolutions;
+                    var newScales = [];
+                    for (var j = 0; j < newResolutions.length; j++) {
+                        newScales.push(OpenLayers.Util.getScaleFromResolution(newResolutions[j], oLayer.units));
+                    }
+                    oLayer.scales = newScales;
+                    oLayer.minResolution = newResolutions[newResolutions.length - 1];
+                    oLayer.maxScale = newScales[newScales.length - 1];
+                    oLayer.numZoomLevels = newScales.length;
+                }
+                //TODO: Do the same for tiled MapGuide oLayerOL objects, allowing for such layers to be scaled client-side as well
+            }
+        }
+
+        var initialExtent = this.setInitialExtents();
+        this.setExtents(initialExtent);
+        
+        //Start observing keypresses
+        OpenLayers.Event.observe(document,"keypress",this.keyHandler);
+
+        this.triggerEvent(Fusion.Event.MAP_LOADED, mapTag);
     },
 
     /**
@@ -914,7 +1186,7 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
             initialExtents = this.getMapGroupExtent(true);
         }
       }
-      this.initialExtents = initialExtents;
+      if (!this.initialExtents) this.initialExtents = initialExtents;
       return initialExtents;
     },
 
@@ -971,7 +1243,7 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
      *                  - if set to 0 or 1, the map is just recentered
      *                  - if the map has fractional zoom enabled, the map resolution
      *                  will be modified by this factor
-     *                  - with fixed scales, zoom up or down one level, depending on the sign
+     *                  - with fixed scales, zoom up or down log2(nFactor) level
      *
      * Returns: none
      */
@@ -1002,28 +1274,19 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
                 this.setExtents(new OpenLayers.Bounds(fMinX, fMinY, fMaxX, fMaxY));
             } else {
                 var currentZoomLevel = this.oMapOL.getZoom();
-                if (nFactor > 1) {
-                    this.oMapOL.zoomTo(currentZoomLevel+1);
-                } else if (nFactor < 1) {
-                    this.oMapOL.zoomTo(currentZoomLevel-1);
-                }
+                this.oMapOL.setCenter(new OpenLayers.LonLat(fX, fY));
+                this.oMapOL.zoomTo(currentZoomLevel + Math.floor(Math.log(nFactor) / Math.log(2)));
             }
         }
     },
 
     /**
-     * Function: zoom
+     * Function: zoomToScale
      * 
-     * sets the map zoom and extent.
+     * Zooms to the specified scale
      *
      * Parameters:
-     *   fX {Float} - new x coordinate value in map units
-     *   fY {Float} - new y coordinate value in map units
-     *   nFactor {Float} - zoom factor; positive values zoom in, negative out
-     *                  - if set to 0 or 1, the map is just recentered
-     *                  - if the map has fractional zoom enabled, the map resolution
-     *                  will be modified by this factor
-     *                  - with fixed scales, zoom up or down one level, depending on the sign
+     *   fScale - {Float} The scale to zoom to
      *
      * Returns: none
      */
@@ -1034,50 +1297,40 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
 
     /**
-     * Function: zoom
-     * 
-     * sets the map zoom and extent.
+     * Performs a rectangular query
      *
      * Parameters:
-     *   fX {Float} - new x coordinate value in map units
-     *   fY {Float} - new y coordinate value in map units
-     *   nFactor {Float} - zoom factor; positive values zoom in, negative out
-     *                  - if set to 0 or 1, the map is just recentered
-     *                  - if the map has fractional zoom enabled, the map resolution
-     *                  will be modified by this factor
-     *                  - with fixed scales, zoom up or down one level, depending on the sign
+     *   fMinX {Float} - new minimum x coordinate value in map units
+     *   fMinY {Float} - new minimum y coordinate value in map units
+     *   fMaxX {Float} - new maximum x coordinate value in map units
+     *   fMaxY {Float} - new maximum y coordinate value in map units
      *
      * Returns: none
      */
     queryRect: function(fMinX, fMinY, fMaxX, fMaxY) { },
 
     /**
-     * Function: zoom
-     * 
-     * sets the map zoom and extent.
+     * Performs a point query
      *
      * Parameters:
      *   fX {Float} - new x coordinate value in map units
      *   fY {Float} - new y coordinate value in map units
-     *   nFactor {Float} - zoom factor; positive values zoom in, negative out
-     *                  - if set to 0 or 1, the map is just recentered
-     *                  - if the map has fractional zoom enabled, the map resolution
-     *                  will be modified by this factor
-     *                  - with fixed scales, zoom up or down one level, depending on the sign
      *
      * Returns: none
      */
     queryPoint: function(fX, fY) { },
 
     /**
+     * Method: pixToGeo
      *
      * convert pixel coordinates into geographic coordinates.
      *
-     * @paran pX int the x coordinate in pixel units
-     * @param pY int the y coordinate in pixel units
+     * Parameters:
+     * pX - {Integer} the x coordinate in pixel units
+     * pY - {Integer} the y coordinate in pixel units
      *
-     * @return an object with geographic coordinates in x and y properties of the
-     *         object.
+     * Return:
+     * an object with geographic coordinates in x and y properties of the object.
      */
     pixToGeo: function( pX, pY ) {
         var lonLat = this.oMapOL.getLonLatFromPixel( new OpenLayers.Pixel(pX,pY) );
@@ -1088,14 +1341,16 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
 
     /**
+     * Method: geoToPix
      *
      * convert geographic coordinates into pixel coordinates.
      *
-     * @paran gX int the x coordinate in geographic units
-     * @param gY int the y coordinate in geographic units
+     * Parameters:
+     * gX - {Integer} the x coordinate in geographic units
+     * gY - {Integer} the y coordinate in geographic units
      *
-     * @return an object with pixel coordinates in x and y properties of the
-     *         object.
+     * Return:
+     * an object with pixel coordinates in x and y properties of the object.
      */
     geoToPix: function( gX, gY ) {
         if (!(this._oCurrentExtents)) {
@@ -1106,10 +1361,12 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
 
     /**
+     * Method: pixToGeoMeasure
      *
      * convert pixel into geographic : used to measure.
      *
-     * @param nPixels int measures in pixel
+     * Parameters:
+     * nPixels - {Integer} measures in pixel
      *
      * @return geographic measure
      */
@@ -1118,11 +1375,14 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
         return (nPixels*resolution);
     },
 
-  /**
+    /**
+     * Method: setProjection
      *
      * initializes the OpenLayers projection object on the Map object
      *
-     * @param projCode projection code
+     * Parameters:
+     * projCode - {String} projection code
+     * units - the units
      */
     setProjection: function(projCode, units) {
         this.projection = projCode;
@@ -1130,13 +1390,15 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
         this.oMapOL.units = units;
     },
 
-  /**
+    /**
+     * Method: setMetersPerUnit
      *
      * initializes the meters per unit values when a new map is loaded.  Some systems make different
      * assumptions for the conversion of degrees to meters so this makes sure both Fusion and
      * OpenLayers are using the same value.
      *
-     * @param metersPerUnit the value returned by LoadMap.php for meters per unit
+     * Parameters:
+     * metersPerUnit - {Float} the value returned by LoadMap.php for meters per unit
      */
     setMetersPerUnit: function(metersPerUnit) {
         if (this._fMetersperunit < 0) {
@@ -1151,25 +1413,29 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
 
     /**
+     * Method: getMetersPerUnit
      *
      * returns the meters per unit value
      *
-     * @return metersPerUnit the value as set when the map initialized
+     * Return:
+     * metersPerUnit the value as set when the map initialized
      */
     getMetersPerUnit: function() {
         return this._fMetersperunit;
     },
 
-  /**
-     *
+    /**
+     * Method: setViewOptions
+     * 
      * initializes all widgets with the map units after the map has loaded
      *
      */
     setViewOptions: function(data) {
-      this.setWidgetParam('Units', data);
+        this.setWidgetParam('Units', data);
     },
 
-  /**
+    /**
+     * Method: setWidgetParam
      *
      * initializes all widgets with a parameter and value at runtime
      *
@@ -1189,12 +1455,15 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
 
     /**
+     * Method: geoToPixMeasure
      *
      * convert geographic into pixels.
      *
-     * @param fGeo float distance in geographic units
+     * Parameters:
+     * fGeo - {Float} distance in geographic units
      *
-     * @return pixels
+     * Return:
+     * pixels
      */
     geoToPixMeasure: function(fGeo) {
         return parseInt(fGeo/this.oMapOL.getResolution());
@@ -1205,7 +1474,8 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
      *
      * returns the current center of the map view
      *
-     * Return: {Object} an object with the following attributes
+     * Return: 
+     * {Object} an object with the following attributes
      * x - the x coordinate of the center
      * y - the y coordinate of the center
      */
@@ -1215,7 +1485,8 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
 
     /**
-     *
+     * Method: getCurrentExtents
+     * 
      * returns the current extents
      */
     getCurrentExtents: function() {
@@ -1227,7 +1498,8 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
      *
      * returns the Extent of the map given a center point and a scale (optional)
      *
-     * Return: {OpenLayers.Bounds} the bounds for the map centered on a point
+     * Return: 
+     * {<OpenLayers.Bounds>} the bounds for the map centered on a point
      */
     getExtentFromPoint: function(fX,fY,fScale) {
         if (!fScale) {
@@ -1244,10 +1516,26 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
                                            fY + h_deg / 2);
     },
 
+    /**
+     * Function: getScale
+     * 
+     * Gets the current scale of the map
+     * 
+     * Returns:
+     * The current map scale
+     */
     getScale: function() {
         return this.oMapOL.getScale();
     },
 
+    /**
+     * Function: getResolution
+     * 
+     * Gets the current resolution of the map
+     * 
+     * Returns:
+     * The current resolution of the map
+     */
     getResolution: function() {
         return this.oMapOL.getResolution();
     },
@@ -1256,6 +1544,15 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
         return this.oMapOL.baseLayer.units;
     },
 
+    /**
+     * Function: getSize
+     * 
+     * Gets the size of the map
+     * 
+     * Returns:
+     * 
+     *   return description
+     */
     getSize: function() {
         return this.oMapOL.getSize();
     },
@@ -1381,39 +1678,357 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
         return OpenLayers.Util.getParameterString(queryParams);
      },
      
-     supressContextMenu: function( bSupress ) {
-         this.bSupressContextMenu = bSupress;
-     },
+    supressContextMenu: function( bSupress ) {
+        this.bSupressContextMenu = bSupress;
+    },
 
-     setContextMenu: function(menu) {                         
-         //console.log('setcontextmenu');
-         this.oContextMenu = menu;
-     },
+    setContextMenu: function(menu) {                         
+        //console.log('setcontextmenu');
+        this.oContextMenu = menu;
+    },
 
-     onContextMenu: function(e) {
-         //console.log('oncontextmenu');
-         // below line as a workaround for IE9 defect, please refer to https://trac.osgeo.org/fusion/ticket/424
-         // once IE9 fix this defect, we will roll back this line.
-         e=window.event?window.event:e;
-         if (this.oContextMenu && !this.bSupressContextMenu && this.isLoaded()) {
-             this.oContextMenu.show(new Event(e));
-             this.contextMenuPosition = this.getEventPosition(e);
-             OpenLayers.Event.stop(e);
-         }
-     },
+    onContextMenu: function(e) {
+        //console.log('oncontextmenu');
+        if (this.oContextMenu && !this.bSupressContextMenu && this.isLoaded()) {
+            this.oContextMenu.show(new Event(e));
+            this.contextMenuPosition = this.getEventPosition(e);
+            OpenLayers.Event.stop(e);
+        }
+    },
 
-     executeFromContextMenu: function(widget) {
-         //console.log('executefromcontextmenu');
-         widget.activate(this.contextMenuPosition.x, this.contextMenuPosition.y);
-     }
+    executeFromContextMenu: function(widget) {
+        //console.log('executefromcontextmenu');
+        widget.activate(this.contextMenuPosition.x, this.contextMenuPosition.y);
+    },
+    _getDigitizingLayer: function() {
+        var layer = this.oMapOL.getLayer(this.ID_DIGITIZING_LAYER);
+        if (layer == null) {
+            layer = new OpenLayers.Layer.Vector("Digitizing Layer", { styleMap: this.digitizingStyleMap });
+            layer.id = this.ID_DIGITIZING_LAYER;
+            this.oMapOL.addLayers([layer]);
+        }
+        return layer;
+    },
+    /**
+     * Method: cancelDigitization
+     *
+     * De-activates any active digitizers
+     */
+    cancelDigitization: function() {
+        //Don't trigger until the end
+        this._deactivateDigitizer(this.DRAW_CONTROL_POINT, false, true);
+        this._deactivateDigitizer(this.DRAW_CONTROL_LINE, false, true);
+        this._deactivateDigitizer(this.DRAW_CONTROL_LINESTR, false, true);
+        this._deactivateDigitizer(this.DRAW_CONTROL_RECT, false, true);
+        this._deactivateDigitizer(this.DRAW_CONTROL_POLY, false, true);
+        this._deactivateDigitizer(this.DRAW_CONTROL_CIRCLE, false, true);
+        this._triggerDigitizerDeactivated();
+    },
+    _onGeometryDigitized: function(evt, controlId, origCallback) {
+        this._deactivateDigitizer(controlId, true, true);
+        if (controlId == this.DRAW_CONTROL_CIRCLE) {
+            var bcenter = evt.feature.geometry.bounds.getCenterLonLat();
+            var radius = evt.feature.geometry.bounds.getWidth() / 2;
+            origCallback({ x: bcenter.lon, y: bcenter.lat, r: radius });
+        } else {
+            origCallback(evt.feature.geometry);
+        }
+    },
+    _setDigitizationPrompt: function(prompt) {
+        this.message.info(prompt + ' <a id="abortDigitizationLink" href="javascript:void(0)">' + OpenLayers.i18n("stop") + '</a>');
+        var link = this.message.container.ownerDocument.getElementById("abortDigitizationLink");
+        //Wire the anchor click
+        link.onclick = OpenLayers.Function.bind(function() {
+            this.cancelDigitization();
+        }, this);
+    },
+    _deactivateDigitizer: function(controlId, bTrigger, bUnsub) {
+        var ctrl = this.oMapOL.getControl(controlId);
+        if (ctrl) {
+            ctrl.deactivate();
+            ctrl.layer.removeAllFeatures();
+            if (bUnsub)
+                ctrl.events.remove("featureadded");
+        }
+        if (bTrigger)
+            this._triggerDigitizerDeactivated();
+    },
+    _activateDigitizer: function(ctrl, controlId, origCallback) {
+        //Register for one-shot callback notification
+        if (ctrl.events) {
+            var oneShotHandler = OpenLayers.Function.bind(function(cid, evt) {
+                ctrl.events.unregister("featureadded", null, oneShotHandler);
+                //console.log("De-registered one-shot callback for: " + cid)
+                this._onGeometryDigitized(evt, cid, origCallback);
+            }, this, controlId);
+            ctrl.events.register("featureadded", null, oneShotHandler);
+            //console.log("Register one-shot callback for: " + controlId);
+        }
+        ctrl.activate();
+        this._triggerDigitizerActivated();
+    },
+    _triggerDigitizerActivated: function() {
+        if (!this.isDigitizing) {
+            this.isDigitizing = true;
+            this.triggerEvent(Fusion.Event.MAP_DIGITIZER_ACTIVATED);
+            //console.log("digitizer activated");
+        }
+    },
+    _triggerDigitizerDeactivated: function() {
+        if (this.isDigitizing) {
+            this.isDigitizing = false;
+            try {
+                this.message.clear();
+            } catch (e) {}
+            this.triggerEvent(Fusion.Event.MAP_DIGITIZER_DEACTIVATED);
+            //console.log("digitizer de-activated");
+        }
+    },
+    onKeyPress: function(e) {
+        if (this.isDigitizing) {
+            var charCode = (e.charCode) ? e.charCode : ((e.keyCode) ? e.keyCode : e.which);
+            if (charCode == OpenLayers.Event.KEY_ESC) {
+                this.cancelDigitization();
+            }
+        }
+    },
+    /**
+     * Method: digitizePoint
+     *
+     * Digitizes a point and passes the value to a function for processing. Digitization can be cancelled via the cancelDigitization()
+     * method or via pressing the ESC key
+     *
+     * Parameters:
+     * callback - {Function} The callback function that will receive the digitized geometry
+     *
+     * Return:
+     * {OpenLayers.Geometry.Point}
+     */
+    digitizePoint: function(options, callback) {
+        if (this.isDigitizing) {
+            this.cancelDigitization();
+        }
+        var ctrl = this.oMapOL.getControl(this.DRAW_CONTROL_POINT);
+        if (ctrl == null) {
+            ctrl = new OpenLayers.Control.DrawFeature(
+                this._getDigitizingLayer(),
+                OpenLayers.Handler.Point, {
+                    id: this.DRAW_CONTROL_POINT,
+                    handlerOptions: {
+                        layerOptions: {
+                            styleMap: this.digitizingStyleMap
+                        }
+                    }
+                });
+            this.oMapOL.addControl(ctrl);
+        }
+        if (options && options.prompt) {
+            this._setDigitizationPrompt(options.prompt);
+        }
+        this._activateDigitizer(ctrl, this.DRAW_CONTROL_POINT, callback);
+    },
+    /**
+     * Method: digitizeLine
+     *
+     * Digitizes a line and passes the value to a function for processing. Digitization can be cancelled via the cancelDigitization()
+     * method or via pressing the ESC key
+     *
+     * Parameters:
+     * options - {Object} digitization options
+     * callback - {Function} The callback function that will receive the digitized geometry
+     *
+     * Return:
+     * {OpenLayers.Geometry.LineString}
+     */
+    digitizeLine: function(options, callback) {
+        if (this.isDigitizing) {
+            this.cancelDigitization();
+        }
+        var ctrl = this.oMapOL.getControl(this.DRAW_CONTROL_LINE);
+        if (ctrl == null) {
+            ctrl = new OpenLayers.Control.DrawFeature(
+                this._getDigitizingLayer(),
+                OpenLayers.Handler.Path, {
+                    id: this.DRAW_CONTROL_LINE,
+                    handlerOptions: {
+                        maxVertices: 2,
+                        freehandToggle: null, 
+                        freehand: false, 
+                        persist: true,
+                        style: "default", // this forces default render intent
+                        layerOptions: {
+                            styleMap: this.digitizingStyleMap
+                        }
+                    }
+                });
+            this.oMapOL.addControl(ctrl);
+        }
+        if (options && options.prompt) {
+            this._setDigitizationPrompt(options.prompt);
+        }
+        this._activateDigitizer(ctrl, this.DRAW_CONTROL_LINE, callback);
+    },
+    /**
+     * Method: digitizeLineString
+     *
+     * Digitizes a line string and passes the value to a function for processing. Digitization can be cancelled via the cancelDigitization()
+     * method or via pressing the ESC key
+     *
+     * Parameters:
+     * options - {Object} digitization options
+     * callback - {Function} The callback function that will receive the digitized geometry
+     *
+     * Return:
+     * {OpenLayers.Geometry.LineString}
+     */
+    digitizeLineString: function(options, callback) {
+        if (this.isDigitizing) {
+            this.cancelDigitization();
+        }
+        var ctrl = this.oMapOL.getControl(this.DRAW_CONTROL_LINESTR);
+        if (ctrl == null) {
+            ctrl = new OpenLayers.Control.DrawFeature(
+                this._getDigitizingLayer(),
+                OpenLayers.Handler.Path, {
+                    id: this.DRAW_CONTROL_LINESTR,
+                    handlerOptions: {
+                        freehand: false, 
+                        persist: true, 
+                        style: "default", // this forces default render intent
+                        layerOptions: {
+                            styleMap: this.digitizingStyleMap
+                        }
+                    }
+                });
+            this.oMapOL.addControl(ctrl);
+        }
+        if (options && options.prompt) {
+            this._setDigitizationPrompt(options.prompt);
+        }
+        this._activateDigitizer(ctrl, this.DRAW_CONTROL_LINESTR, callback);
+    },
+    /**
+     * Method: digitizeRectangle
+     *
+     * Digitizes a rectangle and passes the value to a function for processing. Digitization can be cancelled via the cancelDigitization()
+     * method or via pressing the ESC key
+     *
+     * Parameters:
+     * options - {Object} digitization options
+     * callback - {Function} The callback function that will receive the digitized geometry
+     *
+     * Return:
+     * {OpenLayers.Geometry.Polygon}
+     */
+    digitizeRectangle: function(options, callback) {
+        if (this.isDigitizing) {
+            this.cancelDigitization();
+        }
+        var ctrl = this.oMapOL.getControl(this.DRAW_CONTROL_RECT);
+        if (ctrl == null) {
+            ctrl = new OpenLayers.Control.DrawFeature(
+                this._getDigitizingLayer(),
+                OpenLayers.Handler.RegularPolygon, {
+                    id: this.DRAW_CONTROL_RECT,
+                    handlerOptions: {
+                        persist: true, 
+                        sides: 4, 
+                        irregular: true,
+                        style: "default", // this forces default render intent
+                        layerOptions: {
+                            styleMap: this.digitizingStyleMap
+                        }
+                    }
+                });
+            this.oMapOL.addControl(ctrl);
+        }
+        if (options && options.prompt) {
+            this._setDigitizationPrompt(options.prompt);
+        }
+        this._activateDigitizer(ctrl, this.DRAW_CONTROL_RECT, callback);
+    },
+    /**
+     * Method: digitizePolygon
+     *
+     * Digitizes a polygon and passes the value to a function for processing. Digitization can be cancelled via the cancelDigitization()
+     * method or via pressing the ESC key
+     *
+     * Parameters:
+     * options - {Object} digitization options
+     * callback - {Function} The callback function that will receive the digitized geometry
+     *
+     * Return:
+     * {OpenLayers.Geometry.Polygon}
+     */
+    digitizePolygon: function(options, callback) {
+        if (this.isDigitizing) {
+            this.cancelDigitization();
+        }
+        var ctrl = this.oMapOL.getControl(this.DRAW_CONTROL_POLY);
+        if (ctrl == null) {
+            ctrl = new OpenLayers.Control.DrawFeature(
+                this._getDigitizingLayer(),
+                OpenLayers.Handler.Polygon, {
+                    id: this.DRAW_CONTROL_POLY,
+                    handlerOptions: {
+                        freehand: false, 
+                        persist: true, 
+                        style: "default", // this forces default render intent
+                        layerOptions: {
+                            styleMap: this.digitizingStyleMap
+                        }
+                    }
+                });
+            this.oMapOL.addControl(ctrl);
+        }
+        if (options && options.prompt) {
+            this._setDigitizationPrompt(options.prompt);
+        }
+        this._activateDigitizer(ctrl, this.DRAW_CONTROL_POLY, callback);
+    },
+    /**
+     * Method: digitizeCircle
+     *
+     * Digitizes a circle and passes the value to a function for processing. Digitization can be cancelled via the cancelDigitization()
+     * method or via pressing the ESC key
+     *
+     * Parameters:
+     * options - {Object} digitization options
+     * callback - {Function} The callback function that will receive the digitized circle
+     *
+     * Return:
+     * {Object} - The circle structured { x, y, r }
+     */
+    digitizeCircle: function(options, callback) {
+        if (this.isDigitizing) {
+            this.cancelDigitization();
+        }
+        var ctrl = this.oMapOL.getControl(this.DRAW_CONTROL_CIRCLE);
+        if (ctrl == null) {
+            ctrl = new OpenLayers.Control.DrawFeature(
+                this._getDigitizingLayer(),
+                OpenLayers.Handler.RegularPolygon, {
+                    id: this.DRAW_CONTROL_CIRCLE,
+                    handlerOptions: {
+                        sides: 40,
+                        layerOptions: {
+                            styleMap: this.digitizingStyleMap
+                        }
+                    }
+                });
+            this.oMapOL.addControl(ctrl);
+        }
+        if (options && options.prompt) {
+            this._setDigitizationPrompt(options.prompt);
+        }
+        this._activateDigitizer(ctrl, this.DRAW_CONTROL_CIRCLE, callback);
+    }
 });
 
-
 /**
- * SelectionObject
- *
- * Utility class to hold slection information
- *
+ * Class: Fusion.SelectionObject
+ * 
+ * Holds information about selected map features
  */
 Fusion.SelectionObject = OpenLayers.Class({
     aLayers : null,
@@ -1438,27 +2053,74 @@ Fusion.SelectionObject = OpenLayers.Class({
             }
         }
     },
-
+    /**
+     * Function: getNumElements
+     * 
+     * Gets the number of selected map features
+     * 
+     * Returns:
+     * 
+     *   the number of selected map features
+     */
     getNumElements : function()
     {
         return this.nTotalElements;
     },
 
+    /**
+     * Function: getLowerLeftCoord
+     * 
+     * Gets the lower left coordinate of this selection's bounding box
+     * 
+     * Returns:
+     * 
+     *   the lower left coordinate
+     */
     getLowerLeftCoord : function()
     {
         return {x:this.fMinX, y:this.fMinY};
     },
 
+    /**
+     * Function: getUpperRightCoord
+     * 
+     * Gets the upper right coordinate of this selection's bounding box
+     * 
+     * Returns:
+     * 
+     *   the upper right coordinate
+     */
     getUpperRightCoord : function()
     {
         return {x:this.fMaxX, y:this.fMaxY};
     },
 
+    /**
+     * Function: getNumLayers
+     * 
+     * Gets the number of map layers included in this selection
+     * 
+     * Returns:
+     *  The number of map layers
+     */
     getNumLayers : function()
     {
         return this.nLayers;
     },
 
+    /**
+     * Function: getLayerByName
+     * 
+     * Gets the selected map layer by its name
+     * 
+     * Parameters:
+     * 
+     *   name - The name of the selected map layer
+     * 
+     * Returns:
+     * 
+     *   {<Fusion.SelectionObject.Layer>} The selected map layer
+     */
     getLayerByName : function(name)
     {
         var oLayer = null;
@@ -1473,7 +2135,19 @@ Fusion.SelectionObject = OpenLayers.Class({
         return oLayer;
     },
 
-
+    /**
+     * Function: getLayer
+     * 
+     * Gets the selected map layer by the specified index
+     * 
+     * Parameters:
+     * 
+     *   iIndice - The index of the selected map layer
+     * 
+     * Returns:
+     * 
+     *   {<Fusion.SelectionObject.Layer>} The selected map layer
+     */
     getLayer : function(iIndice)
     {
         if (iIndice >=0 && iIndice < this.nLayers)
@@ -1488,7 +2162,11 @@ Fusion.SelectionObject = OpenLayers.Class({
     }
 });
 
-
+/**
+ * Class: Fusion.SelectionObject.Layer
+ * 
+ * Defines a map layer in a {<Fusion.SelectionObject>}
+ */
 Fusion.SelectionObject.Layer = OpenLayers.Class({
     name: null,
     nElements: null,
@@ -1510,7 +2188,7 @@ Fusion.SelectionObject.Layer = OpenLayers.Class({
 
         this.aElements = [];
 
-        this.nProperties = o[layerName].propertyvalues.length;
+        this.nProperties = o[layerName].propertyvalues ? o[layerName].propertyvalues.length : 0;
 
         this.aPropertiesName = [];
         this.aPropertiesName  = o[layerName].propertyvalues;

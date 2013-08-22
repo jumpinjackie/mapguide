@@ -6,8 +6,8 @@
   <Label>Maptip</Label>
   <Tooltip>Click to Enable/Disable get information about features from Server</Tooltip>
   <StatusText></StatusText>
-  <ImageUrl>images/maptip.png</ImageUrl>
-  <ImageClass>Maptip</ImageClass>
+  <ImageUrl>images/icons.png</ImageUrl>
+  <ImageClass>maptip</ImageClass>
   <StandardUi>true</StandardUi>
   <ContainableBy>Any</ContainableBy>
   <Parameter>

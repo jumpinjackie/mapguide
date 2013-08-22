@@ -1,5 +1,5 @@
 /******************************************************************************
- * MooTools 1.2.2
+ * MooTools 1.2.6
  * Copyright (c) 2006-2007 [Valerio Proietti](http://mad4milk.net/).
  * MooTools is distributed under an MIT-style license.
  ******************************************************************************
@@ -30,7 +30,7 @@
 /*
 ---
 
-script: Core.js
+name: Core
 
 description: The core of MooTools, contains all the base functions and the Native and Hash implementations. Required by all the other scripts.
 
@@ -41,8 +41,8 @@ copyright: Copyright (c) 2006-2008 [Valerio Proietti](http://mad4milk.net/).
 authors: The MooTools production team (http://mootools.net/developers/)
 
 inspiration:
-- Class implementation inspired by [Base.js](http://dean.edwards.name/weblog/2006/03/base/) Copyright (c) 2006 Dean Edwards, [GNU Lesser General Public License](http://opensource.org/licenses/lgpl-license.php)
-- Some functionality inspired by [Prototype.js](http://prototypejs.org) Copyright (c) 2005-2007 Sam Stephenson, [MIT License](http://opensource.org/licenses/mit-license.php)
+  - Class implementation inspired by [Base.js](http://dean.edwards.name/weblog/2006/03/base/) Copyright (c) 2006 Dean Edwards, [GNU Lesser General Public License](http://opensource.org/licenses/lgpl-license.php)
+  - Some functionality inspired by [Prototype.js](http://prototypejs.org) Copyright (c) 2005-2007 Sam Stephenson, [MIT License](http://opensource.org/licenses/mit-license.php)
 
 provides: [MooTools, Native, Hash.base, Array.each, $util]
 
@@ -50,8 +50,8 @@ provides: [MooTools, Native, Hash.base, Array.each, $util]
 */
 
 var MooTools = {
-	'version': '1.2.5dev',
-	'build': '%build%'
+	'version': '1.2.6',
+	'build': 'a3be7a0ef5205eb655c4ee11e8cbedcb3f2ffa95'
 };
 
 var Native = function(options){
@@ -318,18 +318,18 @@ function $unlink(object){
 	}
 	return unlinked;
 };
+
+
 /*
 ---
 
-script: Browser.js
+name: Browser
 
 description: The Browser Core. Contains Browser initialization, Window and Document, and the Browser Hash.
 
 license: MIT-style license.
 
-requires: 
-- /Native
-- /$util
+requires: [Native, $util]
 
 provides: [Browser, Window, Document, $exec]
 
@@ -486,20 +486,20 @@ var Document = new Native({
 Document.Prototype = {$family: {name: 'document'}};
 
 new Document(document);
+
+
 /*
 ---
 
-script: Array.js
+name: Array
 
 description: Contains Array Prototypes like each, contains, and erase.
 
 license: MIT-style license.
 
-requires:
-- /$util
-- /Array.each
+requires: [$util, Array.each]
 
-provides: [Array]
+provides: Array
 
 ...
 */
@@ -574,7 +574,7 @@ Array.implement({
 		for (var i = 0, j = array.length; i < j; i++) this.push(array[i]);
 		return this;
 	},
-	
+
 	getLast: function(){
 		return (this.length) ? this[this.length - 1] : null;
 	},
@@ -636,23 +636,27 @@ Array.implement({
 	}
 
 });
+
+
 /*
 ---
 
-script: Function.js
+name: Function
 
 description: Contains Function Prototypes like create, bind, pass, and delay.
 
 license: MIT-style license.
 
-requires:
-- /Native
-- /$util
+requires: [Native, $util]
 
-provides: [Function]
+provides: Function
 
 ...
 */
+
+try {
+	delete Function.prototype.bind;
+} catch(e){}
 
 Function.implement({
 
@@ -707,20 +711,20 @@ Function.implement({
 	}
 
 });
+
+
 /*
 ---
 
-script: Number.js
+name: Number
 
 description: Contains Number Prototypes like limit, round, times, and ceil.
 
 license: MIT-style license.
 
-requires:
-- /Native
-- /$util
+requires: [Native, $util]
 
-provides: [Number]
+provides: Number
 
 ...
 */
@@ -761,22 +765,27 @@ Number.alias('times', 'each');
 	});
 	Number.implement(methods);
 })(['abs', 'acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'exp', 'floor', 'log', 'max', 'min', 'pow', 'sin', 'sqrt', 'tan']);
+
+
 /*
 ---
 
-script: String.js
+name: String
 
 description: Contains String Prototypes like camelCase, capitalize, test, and toInt.
 
 license: MIT-style license.
 
-requires:
-- /Native
+requires: Native
 
-provides: [String]
+provides: String
 
 ...
 */
+
+try {
+	delete String.prototype.contains;
+} catch(e){}
 
 String.implement({
 
@@ -855,19 +864,20 @@ String.implement({
 	}
 
 });
+
+
 /*
 ---
 
-script: Hash.js
+name: Hash
 
 description: Contains Hash Prototypes. Provides a means for overcoming the JavaScript practical impossibility of extending native Objects.
 
 license: MIT-style license.
 
-requires:
-- /Hash.base
+requires: Hash.base
 
-provides: [Hash]
+provides: Hash
 
 ...
 */
@@ -998,24 +1008,20 @@ Hash.implement({
 });
 
 Hash.alias({keyOf: 'indexOf', hasValue: 'contains'});
+
+
 /*
 ---
 
-script: Event.js
+name: Event
 
 description: Contains the Event Class, to make the event object cross-browser.
 
 license: MIT-style license.
 
-requires:
-- /Window
-- /Document
-- /Hash
-- /Array
-- /Function
-- /String
+requires: [Window, Document, Hash, Array, Function, String]
 
-provides: [Event]
+provides: Event
 
 ...
 */
@@ -1126,33 +1132,28 @@ Event.implement({
 	}
 
 });
+
+
 /*
 ---
 
-script: Class.js
+name: Class
 
 description: Contains the Class Function for easily creating, extending, and implementing reusable Classes.
 
 license: MIT-style license.
 
-requires:
-- /$util
-- /Native
-- /Array
-- /String
-- /Function
-- /Number
-- /Hash
+requires: [$util, Native, Array, String, Function, Number, Hash]
 
-provides: [Class]
+provides: Class
 
 ...
 */
 
 function Class(params){
-	
+
 	if (params instanceof Function) params = {initialize: params};
-	
+
 	var newClass = function(){
 		Object.reset(this);
 		if (newClass._prototyping) return this;
@@ -1161,9 +1162,9 @@ function Class(params){
 		delete this._current; delete this.caller;
 		return value;
 	}.extend(this);
-	
+
 	newClass.implement(params);
-	
+
 	newClass.constructor = Class;
 	newClass.prototype.constructor = newClass;
 
@@ -1177,14 +1178,14 @@ Function.prototype.protect = function(){
 };
 
 Object.reset = function(object, key){
-		
+
 	if (key == null){
 		for (var p in object) Object.reset(object, p);
 		return object;
 	}
-	
+
 	delete object[key];
-	
+
 	switch ($type(object[key])){
 		case 'object':
 			var F = function(){};
@@ -1194,9 +1195,9 @@ Object.reset = function(object, key){
 		break;
 		case 'array': object[key] = $unlink(object[key]); break;
 	}
-	
+
 	return object;
-	
+
 };
 
 new Native({name: 'Class', initialize: Class}).extend({
@@ -1207,10 +1208,10 @@ new Native({name: 'Class', initialize: Class}).extend({
 		delete F._prototyping;
 		return proto;
 	},
-	
+
 	wrap: function(self, key, method){
 		if (method._origin) method = method._origin;
-		
+
 		return function(){
 			if (method._protected && this._current == null) throw new Error('The method "' + key + '" cannot be called.');
 			var caller = this.caller, current = this._current;
@@ -1221,56 +1222,56 @@ new Native({name: 'Class', initialize: Class}).extend({
 		}.extend({_owner: self, _origin: method, _name: key});
 
 	}
-	
+
 });
 
 Class.implement({
-	
+
 	implement: function(key, value){
-		
+
 		if ($type(key) == 'object'){
 			for (var p in key) this.implement(p, key[p]);
 			return this;
 		}
-		
+
 		var mutator = Class.Mutators[key];
-		
+
 		if (mutator){
 			value = mutator.call(this, value);
 			if (value == null) return this;
 		}
-		
+
 		var proto = this.prototype;
 
 		switch ($type(value)){
-			
+
 			case 'function':
 				if (value._hidden) return this;
 				proto[key] = Class.wrap(this, key, value);
 			break;
-			
+
 			case 'object':
 				var previous = proto[key];
 				if ($type(previous) == 'object') $mixin(previous, value);
 				else proto[key] = $unlink(value);
 			break;
-			
+
 			case 'array':
 				proto[key] = $unlink(value);
 			break;
-			
+
 			default: proto[key] = value;
 
 		}
-		
+
 		return this;
 
 	}
-	
+
 });
 
 Class.Mutators = {
-	
+
 	Extends: function(parent){
 
 		this.parent = parent;
@@ -1291,21 +1292,22 @@ Class.Mutators = {
 		}, this);
 
 	}
-	
+
 };
+
+
 /*
 ---
 
-script: Class.Extras.js
+name: Class.Extras
 
 description: Contains Utility Classes that can be implemented into your own Classes to ease the execution of many common tasks.
 
 license: MIT-style license.
 
-requires:
-- /Class
+requires: Class
 
-provides: [Chain, Events, Options]
+provides: [Chain, Events, Options, Class.Extras]
 
 ...
 */
@@ -1402,23 +1404,18 @@ var Options = new Class({
 	}
 
 });
+
+
 /*
 ---
 
-script: Element.js
+name: Element
 
 description: One of the most important items in MooTools. Contains the dollar function, the dollars function, and an handful of cross-browser, time-saver methods to let you easily work with HTML Elements.
 
 license: MIT-style license.
 
-requires:
-- /Window
-- /Document
-- /Array
-- /String
-- /Function
-- /Number
-- /Hash
+requires: [Window, Document, Array, String, Function, Number, Hash]
 
 provides: [Element, Elements, $, $$, Iframe]
 
@@ -1525,18 +1522,35 @@ Elements.implement({
 
 });
 
+(function(){
+
+/*<ltIE8>*/
+var createElementAcceptsHTML;
+try {
+	var x = document.createElement('<input name=x>');
+	createElementAcceptsHTML = (x.name == 'x');
+} catch(e){}
+
+var escapeQuotes = function(html){
+	return ('' + html).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+};
+/*</ltIE8>*/
+
 Document.implement({
 
 	newElement: function(tag, props){
-		if (Browser.Engine.trident && props){
-			['name', 'type', 'checked'].each(function(attribute){
-				if (!props[attribute]) return;
-				tag += ' ' + attribute + '="' + props[attribute] + '"';
-				if (attribute != 'checked') delete props[attribute];
-			});
-			tag = '<' + tag + '>';
+		if (props && props.checked != null) props.defaultChecked = props.checked;
+		/*<ltIE8>*/// Fix for readonly name and type properties in IE < 8
+		if (createElementAcceptsHTML && props){
+			tag = '<' + tag;
+			if (props.name) tag += ' name="' + escapeQuotes(props.name) + '"';
+			if (props.type) tag += ' type="' + escapeQuotes(props.type) + '"';
+			tag += '>';
+			delete props.name;
+			delete props.type;
 		}
-		return document.id(this.createElement(tag)).set(props);
+		/*</ltIE8>*/
+		return this.id(this.createElement(tag)).set(props);
 	},
 
 	newTextNode: function(text){
@@ -1550,16 +1564,16 @@ Document.implement({
 	getWindow: function(){
 		return this.window;
 	},
-	
+
 	id: (function(){
-		
+
 		var types = {
 
 			string: function(id, nocash, doc){
 				id = doc.getElementById(id);
 				return (id) ? types.element(id, nocash) : null;
 			},
-			
+
 			element: function(el, nocash){
 				$uid(el);
 				if (!nocash && !el.$family && !(/^object|embed$/i).test(el.tagName)){
@@ -1568,16 +1582,16 @@ Document.implement({
 				};
 				return el;
 			},
-			
+
 			object: function(obj, nocash, doc){
 				if (obj.toElement) return types.element(obj.toElement(doc), nocash);
 				return null;
 			}
-			
+
 		};
 
 		types.textnode = types.whitespace = types.window = types.document = $arguments(0);
-		
+
 		return function(el, nocash, doc){
 			if (el && el.$family && el.uid) return el;
 			var type = $type(el);
@@ -1587,6 +1601,8 @@ Document.implement({
 	})()
 
 });
+
+})();
 
 if (window.$ == null) Window.implement({
 	$: function(el, nc){
@@ -1666,7 +1682,7 @@ var clean = function(item, retain){
 			}
 			Element.dispose(item);
 		}
-	}	
+	}
 	if (!uid) return;
 	collected[uid] = storage[uid] = null;
 };
@@ -1818,8 +1834,6 @@ Element.implement({
 
 	removeClass: function(className){
 		this.className = this.className.replace(new RegExp('(^|\\s)' + className + '(?:\\s|$)'), '$1');
-		if(className == 'jxButtonActive')
-		    this.blur();
 		return this;
 	},
 
@@ -1891,7 +1905,7 @@ Element.implement({
 	getParents: function(match, nocash){
 		return walk(this, 'parentNode', null, match, true, nocash);
 	},
-	
+
 	getSiblings: function(match, nocash){
 		return this.getParent().getChildren(match, nocash).erase(this);
 	},
@@ -2075,6 +2089,20 @@ Element.Properties.tag = {
 };
 
 Element.Properties.html = (function(){
+	var BUGGY_INNERHTML = true;
+	try {
+		var tester = document.createElement('tr');
+		tester.innerHTML = '<td>x';
+		tester = tester.firstChild;
+		BUGGY_INNERHTML = !(tester.nodeName == 'TD' && tester.innerHTML == 'x');
+	}
+	catch (e){}
+	if (!BUGGY_INNERHTML) return {
+		set: function(){
+			this.innerHTML = Array.flatten(arguments).join('');
+		}
+	};
+
 	var wrapper = document.createElement('div');
 
 	var translations = {
@@ -2088,7 +2116,7 @@ Element.Properties.html = (function(){
 	var html = {
 		set: function(){
 			var html = Array.flatten(arguments).join('');
-			var wrap = Browser.Engine.trident && translations[this.get('tag')];
+			var wrap = translations[this.get('tag')];
 			if (wrap){
 				var first = wrapper;
 				first.innerHTML = wrap[1] + html + wrap[2];
@@ -2114,20 +2142,20 @@ if (Browser.Engine.webkit && Browser.Engine.version < 420) Element.Properties.te
 		return text;
 	}
 };
+
+
 /*
 ---
 
-script: Element.Event.js
+name: Element.Event
 
 description: Contains Element methods for dealing with events. This file also includes mouseenter and mouseleave custom Element Events.
 
 license: MIT-style license.
 
-requires: 
-- /Element
-- /Event
+requires: [Element, Event]
 
-provides: [Element.Event]
+provides: Element.Event
 
 ...
 */
@@ -2234,6 +2262,12 @@ Native.implement([Element, Window, Document], {
 
 });
 
+// IE9
+try {
+	if (typeof HTMLElement != 'undefined')
+		HTMLElement.prototype.fireEvent = Element.prototype.fireEvent;
+} catch(e){}
+
 Element.NativeEvents = {
 	click: 2, dblclick: 2, mouseup: 2, mousedown: 2, contextmenu: 2, //mouse buttons
 	mousewheel: 2, DOMMouseScroll: 2, //mouse wheel
@@ -2272,19 +2306,20 @@ Element.Events = new Hash({
 });
 
 })();
+
+
 /*
 ---
 
-script: Element.Style.js
+name: Element.Style
 
 description: Contains methods for interacting with the styles of Elements in a fashionable way.
 
 license: MIT-style license.
 
-requires:
-- /Element
+requires: Element
 
-provides: [Element.Style]
+provides: Element.Style
 
 ...
 */
@@ -2421,23 +2456,24 @@ Element.ShortStyles = {margin: {}, padding: {}, border: {}, borderWidth: {}, bor
 	Short.borderStyle[bds] = Short[bd][bds] = All[bds] = '@';
 	Short.borderColor[bdc] = Short[bd][bdc] = All[bdc] = 'rgb(@, @, @)';
 });
+
+
 /*
 ---
 
-script: Element.Dimensions.js
+name: Element.Dimensions
 
 description: Contains methods to work with size, scroll, or positioning of Elements and the window object.
 
 license: MIT-style license.
 
 credits:
-- Element positioning based on the [qooxdoo](http://qooxdoo.org/) code and smart browser fixes, [LGPL License](http://www.gnu.org/licenses/lgpl.html).
-- Viewport dimensions based on [YUI](http://developer.yahoo.com/yui/) code, [BSD License](http://developer.yahoo.com/yui/license.html).
+  - Element positioning based on the [qooxdoo](http://qooxdoo.org/) code and smart browser fixes, [LGPL License](http://www.gnu.org/licenses/lgpl.html).
+  - Viewport dimensions based on [YUI](http://developer.yahoo.com/yui/) code, [BSD License](http://developer.yahoo.com/yui/license.html).
 
-requires:
-- /Element
+requires: Element
 
-provides: [Element.Dimensions]
+provides: Element.Dimensions
 
 ...
 */
@@ -2679,19 +2715,20 @@ Native.implement([Window, Document, Element], {
 	}
 
 });
+
+
 /*
 ---
 
-script: Selectors.js
+name: Selectors
 
 description: Adds advanced CSS-style querying capabilities for targeting HTML Elements. Includes pseudo selectors.
 
 license: MIT-style license.
 
-requires:
-- /Element
+requires: Element
 
-provides: [Selectors]
+provides: Selectors
 
 ...
 */
@@ -2968,7 +3005,7 @@ Selectors.Pseudo = new Hash({
 	checked: function(){
 		return this.checked;
 	},
-	
+
 	empty: function(){
 		return !(this.innerText || this.textContent || '').length;
 	},
@@ -3045,29 +3082,30 @@ Selectors.Pseudo = new Hash({
 	odd: function(argument, local){
 		return Selectors.Pseudo['nth-child'].call(this, '2n', local);
 	},
-	
+
 	selected: function(){
 		return this.selected;
 	},
-	
+
 	enabled: function(){
 		return (this.disabled === false);
 	}
 
 });
+
+
 /*
 ---
 
-script: DomReady.js
+name: DomReady
 
 description: Contains the custom event domready.
 
 license: MIT-style license.
 
-requires:
-- /Element.Event
+requires: Element.Event
 
-provides: [DomReady]
+provides: DomReady
 
 ...
 */
@@ -3088,7 +3126,7 @@ Element.Events.domready = {
 		window.fireEvent('domready');
 		document.fireEvent('domready');
 	};
-	
+
 	window.addEvent('load', domready);
 
 	if (Browser.Engine.trident){
@@ -3108,25 +3146,22 @@ Element.Events.domready = {
 	}
 
 })();
+
+
 /*
 ---
 
-script: JSON.js
+name: JSON
 
 description: JSON encoder and decoder.
 
 license: MIT-style license.
 
-See Also: <http://www.json.org/>
+see: <http://www.json.org/>
 
-requires:
-- /Array
-- /String
-- /Number
-- /Function
-- /Hash
+requires: [Array, String, Number, Function, Hash]
 
-provides: [JSON]
+provides: JSON
 
 ...
 */
@@ -3135,7 +3170,7 @@ var JSON = new Hash(this.JSON && {
 	stringify: JSON.stringify,
 	parse: JSON.parse
 }).extend({
-	
+
 	$specialChars: {'\b': '\\b', '\t': '\\t', '\n': '\\n', '\f': '\\f', '\r': '\\r', '"' : '\\"', '\\': '\\\\'},
 
 	$replaceChars: function(chr){
@@ -3169,29 +3204,21 @@ var JSON = new Hash(this.JSON && {
 
 });
 
-Native.implement([Hash, Array, String, Number], {
 
-	toJSON: function(){
-		return JSON.encode(this);
-	}
-
-});
 /*
 ---
 
-script: Cookie.js
+name: Cookie
 
 description: Class for creating, reading, and deleting browser Cookies.
 
 license: MIT-style license.
 
-credits:
-- Based on the functions by Peter-Paul Koch (http://quirksmode.org).
+credits: Based on the functions by Peter-Paul Koch (http://quirksmode.org).
 
-requires:
-- /Options
+requires: Options
 
-provides: [Cookie]
+provides: Cookie
 
 ...
 */
@@ -3250,23 +3277,22 @@ Cookie.read = function(key){
 Cookie.dispose = function(key, options){
 	return new Cookie(key, options).dispose();
 };
+
+
 /*
 ---
 
-script: Swiff.js
+name: Swiff
 
 description: Wrapper for embedding SWF movies. Supports External Interface Communication.
 
 license: MIT-style license.
 
-credits: 
-- Flash detection & Internet Explorer + Flash Player 9 fix inspired by SWFObject.
+credits: Flash detection & Internet Explorer + Flash Player 9 fix inspired by SWFObject.
 
-requires:
-- /Options
-- /$util
+requires: [Options, $util]
 
-provides: [Swiff]
+provides: Swiff
 
 ...
 */
@@ -3360,21 +3386,20 @@ Swiff.remote = function(obj, fn){
 	var rs = obj.CallFunction('<invoke name="' + fn + '" returntype="javascript">' + __flash__argumentsToXML(arguments, 2) + '</invoke>');
 	return eval(rs);
 };
+
+
 /*
 ---
 
-script: Fx.js
+name: Fx
 
 description: Contains the basic animation logic to be extended by all other Fx Classes.
 
 license: MIT-style license.
 
-requires:
-- /Chain
-- /Events
-- /Options
+requires: [Chain, Events, Options]
 
-provides: [Fx]
+provides: Fx
 
 ...
 */
@@ -3502,20 +3527,20 @@ Fx.compute = function(from, to, delta){
 };
 
 Fx.Durations = {'short': 250, 'normal': 500, 'long': 1000};
+
+
 /*
 ---
 
-script: Fx.CSS.js
+name: Fx.CSS
 
 description: Contains the CSS animation logic. Used by Fx.Tween, Fx.Morph, Fx.Elements.
 
 license: MIT-style license.
 
-requires:
-- /Fx
-- /Element.Style
+requires: [Fx, Element.Style]
 
-provides: [Fx.CSS]
+provides: Fx.CSS
 
 ...
 */
@@ -3644,17 +3669,18 @@ Fx.CSS.Parsers = new Hash({
 	}
 
 });
+
+
 /*
 ---
 
-script: Fx.Tween.js
+name: Fx.Tween
 
 description: Formerly Fx.Style, effect to transition any CSS property for an element.
 
 license: MIT-style license.
 
-requires: 
-- /Fx.CSS
+requires: Fx.CSS
 
 provides: [Fx.Tween, Element.fade, Element.highlight]
 
@@ -3748,19 +3774,20 @@ Element.implement({
 	}
 
 });
+
+
 /*
 ---
 
-script: Fx.Morph.js
+name: Fx.Morph
 
 description: Formerly Fx.Styles, effect to transition any number of CSS properties for an element using an object of rules, or CSS based selector rules.
 
 license: MIT-style license.
 
-requires:
-- /Fx.CSS
+requires: Fx.CSS
 
-provides: [Fx.Morph]
+provides: Fx.Morph
 
 ...
 */
@@ -3826,22 +3853,22 @@ Element.implement({
 	}
 
 });
+
+
 /*
 ---
 
-script: Fx.Transitions.js
+name: Fx.Transitions
 
 description: Contains a set of advanced transitions to be used with any of the Fx Classes.
 
 license: MIT-style license.
 
-credits:
-- Easing Equations by Robert Penner, <http://www.robertpenner.com/easing/>, modified and optimized to be used with MooTools.
+credits: Easing Equations by Robert Penner, <http://www.robertpenner.com/easing/>, modified and optimized to be used with MooTools.
 
-requires:
-- /Fx
+requires: Fx
 
-provides: [Fx.Transitions]
+provides: Fx.Transitions
 
 ...
 */
@@ -3931,23 +3958,20 @@ Fx.Transitions.extend({
 		return Math.pow(p, [i + 2]);
 	});
 });
+
+
 /*
 ---
 
-script: Request.js
+name: Request
 
 description: Powerful all purpose Request Class. Uses XMLHTTPRequest.
 
 license: MIT-style license.
 
-requires:
-- /Element
-- /Chain
-- /Events
-- /Options
-- /Browser
+requires: [Element, Chain, Events, Options, Browser]
 
-provides: [Request]
+provides: Request
 
 ...
 */
@@ -4169,20 +4193,20 @@ Element.implement({
 	}
 
 });
+
+
 /*
 ---
 
-script: Request.HTML.js
+name: Request.HTML
 
 description: Extends the basic Request Class with additional methods for interacting with HTML responses.
 
 license: MIT-style license.
 
-requires:
-- /Request
-- /Element
+requires: [Request, Element]
 
-provides: [Request.HTML]
+provides: Request.HTML
 
 ...
 */
@@ -4271,19 +4295,20 @@ Element.implement({
 	}
 
 });
+
+
 /*
 ---
 
-script: Request.JSON.js
+name: Request.JSON
 
 description: Extends the basic Request Class with additional methods for sending and receiving JSON data.
 
 license: MIT-style license.
 
-requires:
-- /Request JSON
+requires: [Request, JSON]
 
-provides: [Request.HTML]
+provides: [Request.JSON]
 
 ...
 */
@@ -4307,22 +4332,21 @@ Request.JSON = new Class({
 	}
 
 });
+//MooTools More, <http://mootools.net/more>. Copyright (c) 2006-2009 Aaron Newton <http://clientcide.com/>, Valerio Proietti <http://mad4milk.net> & the MooTools team <http://mootools.net/developers>, MIT Style License.
+
 /*
 ---
 
 script: More.js
 
+name: More
+
 description: MooTools More
 
 license: MIT-style license
 
-authors:
- - Guillermo Rauch
- - Thomas Aylott
- - Scott Kyle
-
 requires:
- - core:1.2.4/MooTools
+  - Core/MooTools
 
 provides: [MooTools.More]
 
@@ -4330,25 +4354,30 @@ provides: [MooTools.More]
 */
 
 MooTools.More = {
-	'version': '1.2.4.4',
-	'build': '6f6057dc645fdb7547689183b2311063bd653ddf'
-};/*
+	'version': '1.2.5.1',
+	'build': '254884f2b83651bf95260eed5c6cceb838e22d8e'
+};
+
+
+/*
 ---
 
 script: MooTools.Lang.js
+
+name: MooTools.Lang
 
 description: Provides methods for localization.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Events
- - /MooTools.More
+  - Core/Events
+  - /MooTools.More
 
-provides: [MooTools.Lang]
+provides: [Lang]
 
 ...
 */
@@ -4362,7 +4391,7 @@ provides: [MooTools.Lang]
 		},
 		cascades: ['en-US']
 	};
-	
+
 	var cascaded;
 
 	MooTools.lang = new Events();
@@ -4433,23 +4462,28 @@ provides: [MooTools.Lang]
 
 	});
 
-})();/*
+})();
+
+
+/*
 ---
 
 script: Log.js
+
+name: Log
 
 description: Provides basic logging functionality for plugins to implement.
 
 license: MIT-style license
 
 authors:
- - Guillermo Rauch
- - Thomas Aylott
- - Scott Kyle
+  - Guillermo Rauch
+  - Thomas Aylott
+  - Scott Kyle
 
 requires:
- - core:1.2.4/Class
- - /MooTools.More
+  - Core/Class
+  - /MooTools.More
 
 provides: [Log]
 
@@ -4479,11 +4513,11 @@ var disabled = function(){
 };
 
 this.Log = new Class({
-	
+
 	logged: [],
-	
+
 	log: disabled,
-	
+
 	resetLog: function(){
 		this.logged.empty();
 		return this;
@@ -4501,7 +4535,7 @@ this.Log = new Class({
 		this.log = disabled;
 		return this;
 	}
-	
+
 });
 
 Log.extend(new Log).enableLog();
@@ -4511,352 +4545,29 @@ Log.logger = function(){
 	return this.log.apply(this, arguments);
 };
 
-})();/*
----
+})();
 
-script: Depender.js
 
-description: A stand alone dependency loader for the MooTools library.
-
-license: MIT-style license
-
-authors:
- - Aaron Newton
-
-requires:
- - core:1.2.4/Element.Events
- - core:1.2.4/Request.JSON
- - /MooTools.More
- - /Log
-
-provides: Depender
-
-...
-*/
-
-var Depender = {
-
-	options: {
-		/* 
-		onRequire: $empty(options),
-		onRequirementLoaded: $empty([scripts, options]),
-		onScriptLoaded: $empty({
-			script: script, 
-			totalLoaded: percentOfTotalLoaded, 
-			loaded: scriptsState
-		}),
-		serial: false,
-		target: null,
-		noCache: false,
-		log: false,*/
-		loadedSources: [],
-		loadedScripts: ['Core', 'Browser', 'Array', 'String', 'Function', 'Number', 'Hash', 'Element', 'Event', 'Element.Event', 'Class', 'DomReady', 'Class.Extras', 'Request', 'JSON', 'Request.JSON', 'More', 'Depender', 'Log'],
-		useScriptInjection: true
-	},
-
-	loaded: [],
-
-	sources: {},
-
-	libs: {},
-
-	include: function(libs){
-		this.log('include: ', libs);
-		this.mapLoaded = false;
-		var loader = function(data){
-			this.libs = $merge(this.libs, data);
-			$each(this.libs, function(data, lib){
-				if (data.scripts) this.loadSource(lib, data.scripts);
-			}, this);
-		}.bind(this);
-		if ($type(libs) == 'string'){
-			this.log('fetching libs ', libs);
-			this.request(libs, loader);
-		} else {
-			loader(libs);
-		}
-		return this;
-	},
-
-	required: [],
-
-	require: function(options){
-		var loaded = function(){
-			var scripts = this.calculateDependencies(options.scripts);
-			if (options.sources){
-				options.sources.each(function(source){
-					scripts.combine(this.libs[source].files);
-				}, this);
-			}
-			if (options.serial) scripts.combine(this.getLoadedScripts());
-			options.scripts = scripts;
-			this.required.push(options);
-			this.fireEvent('require', options);
-			this.loadScripts(options.scripts);
-		};
-		if (this.mapLoaded) loaded.call(this);
-		else this.addEvent('mapLoaded', loaded.bind(this));
-		return this;
-	},
-
-	cleanDoubleSlash: function(str){
-		if (!str) return str;
-		var prefix = '';
-		if (str.test(/^http:\/\//)){
-			prefix = 'http://';
-			str = str.substring(7, str.length);
-		}
-		str = str.replace(/\/\//g, '/');
-		return prefix + str;
-	},
-
-	request: function(url, callback){
-		new Request.JSON({
-			url: url,
-			secure: false,
-			onSuccess: callback
-		}).send();
-	},
-
-	loadSource: function(lib, source){
-		if (this.libs[lib].files){
-			this.dataLoaded();
-			return;
-		}
-		this.log('loading source: ', source);
-		this.request(this.cleanDoubleSlash(source + '/scripts.json'), function(result){
-			this.log('loaded source: ', source);
-			this.libs[lib].files = result;
-			this.dataLoaded();
-		}.bind(this));
-	},
-
-	dataLoaded: function(){
-		var loaded = true;
-		$each(this.libs, function(v, k){
-			if (!this.libs[k].files) loaded = false;
-		}, this);
-		if (loaded){
-			this.mapTree();
-			this.mapLoaded = true;
-			this.calculateLoaded();
-			this.lastLoaded = this.getLoadedScripts().getLength();
-			this.fireEvent('mapLoaded');
-			this.removeEvents('mapLoaded');
-		}
-	},
-
-	calculateLoaded: function(){
-		var set = function(script){
-			this.scriptsState[script] = true;
-		}.bind(this);
-		if (this.options.loadedScripts) this.options.loadedScripts.each(set);
-		if (this.options.loadedSources){
-			this.options.loadedSources.each(function(lib){
-				$each(this.libs[lib].files, function(dir){
-					$each(dir, function(data, file){
-						set(file);
-					}, this);
-				}, this);
-			}, this);
-		}
-	},
-
-	deps: {},
-
-	pathMap: {},
-
-	mapTree: function(){
-		$each(this.libs, function(data, source){
-			$each(data.files, function(scripts, folder){
-				$each(scripts, function(details, script){
-					var path = source + ':' + folder + ':' + script;
-					if (this.deps[path]) return;
-					this.deps[path] = details.deps;
-					this.pathMap[script] = path;
-				}, this);
-			}, this);
-		}, this);
-	},
-
-	getDepsForScript: function(script){
-		return this.deps[this.pathMap[script]] || [];
-	},
-
-	calculateDependencies: function(scripts){
-		var reqs = [];
-		$splat(scripts).each(function(script){
-			if (script == 'None' || !script) return;
-			var deps = this.getDepsForScript(script);
-			if (!deps){
-				if (window.console && console.warn) console.warn('dependencies not mapped: script: %o, map: %o, :deps: %o', script, this.pathMap, this.deps);
-			} else {
-				deps.each(function(scr){
-					if (scr == script || scr == 'None' || !scr) return;
-					if (!reqs.contains(scr)) reqs.combine(this.calculateDependencies(scr));
-					reqs.include(scr);
-				}, this);
-			}
-			reqs.include(script);
-		}, this);
-		return reqs;
-	},
-
-	getPath: function(script){
-		try {
-			var chunks = this.pathMap[script].split(':');
-			var lib = this.libs[chunks[0]];
-			var dir = (lib.path || lib.scripts) + '/';
-			chunks.shift();
-			return this.cleanDoubleSlash(dir + chunks.join('/') + '.js');
-		} catch(e){
-			return script;
-		}
-	},
-
-	loadScripts: function(scripts){
-		scripts = scripts.filter(function(s){
-			if (!this.scriptsState[s] && s != 'None'){
-				this.scriptsState[s] = false;
-				return true;
-			}
-		}, this);
-		if (scripts.length){
-			scripts.each(function(scr){
-				this.loadScript(scr);
-			}, this);
-		} else {
-			this.check();
-		}
-	},
-
-	toLoad: [],
-
-	loadScript: function(script){
-		if (this.scriptsState[script] && this.toLoad.length){
-			this.loadScript(this.toLoad.shift());
-			return;
-		} else if (this.loading){
-			this.toLoad.push(script);
-			return;
-		}
-		var finish = function(){
-			this.loading = false;
-			this.scriptLoaded(script);
-			if (this.toLoad.length) this.loadScript(this.toLoad.shift());
-		}.bind(this);
-		var error = function(){
-			this.log('could not load: ', scriptPath);
-		}.bind(this);
-		this.loading = true;
-		var scriptPath = this.getPath(script);
-		if (this.options.useScriptInjection){
-			this.log('injecting script: ', scriptPath);
-			var loaded = function(){
-				this.log('loaded script: ', scriptPath);
-				finish();
-			}.bind(this);
-			new Element('script', {
-				src: scriptPath + (this.options.noCache ? '?noCache=' + new Date().getTime() : ''),
-				events: {
-					load: loaded,
-					readystatechange: function(){
-						if (['loaded', 'complete'].contains(this.readyState)) loaded();
-					},
-					error: error
-				}
-			}).inject(this.options.target || document.head);
-		} else {
-			this.log('requesting script: ', scriptPath);
-			new Request({
-				url: scriptPath,
-				noCache: this.options.noCache,
-				onComplete: function(js){
-					this.log('loaded script: ', scriptPath);
-					$exec(js);
-					finish();
-				}.bind(this),
-				onFailure: error,
-				onException: error
-			}).send();
-		}
-	},
-
-	scriptsState: $H(),
-	
-	getLoadedScripts: function(){
-		return this.scriptsState.filter(function(state){
-			return state;
-		});
-	},
-
-	scriptLoaded: function(script){
-		this.log('loaded script: ', script);
-		this.scriptsState[script] = true;
-		this.check();
-		var loaded = this.getLoadedScripts();
-		var loadedLength = loaded.getLength();
-		var toLoad = this.scriptsState.getLength();
-		this.fireEvent('scriptLoaded', {
-			script: script,
-			totalLoaded: (loadedLength / toLoad * 100).round(),
-			currentLoaded: ((loadedLength - this.lastLoaded) / (toLoad - this.lastLoaded) * 100).round(),
-			loaded: loaded
-		});
-		if (loadedLength == toLoad) this.lastLoaded = loadedLength;
-	},
-
-	lastLoaded: 0,
-
-	check: function(){
-		var incomplete = [];
-		this.required.each(function(required){
-			var loaded = [];
-			required.scripts.each(function(script){
-				if (this.scriptsState[script]) loaded.push(script);
-			}, this);
-			if (required.onStep){
-				required.onStep({
-					percent: loaded.length / required.scripts.length * 100,
-					scripts: loaded
-				});
-			};
-			if (required.scripts.length != loaded.length) return;
-			required.callback();
-			this.required.erase(required);
-			this.fireEvent('requirementLoaded', [loaded, required]);
-		}, this);
-	}
-
-};
-
-$extend(Depender, new Events);
-$extend(Depender, new Options);
-$extend(Depender, new Log);
-
-Depender._setOptions = Depender.setOptions;
-Depender.setOptions = function(){
-	Depender._setOptions.apply(Depender, arguments);
-	if (this.options.log) Depender.enableLog();
-	return this;
-};
 /*
 ---
 
 script: Class.Refactor.js
+
+name: Class.Refactor
 
 description: Extends a class onto itself with new property, preserving any items attached to the class's namespace.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Class
- - /MooTools.More
+  - Core/Class
+  - /MooTools.More
 
-provides: [Class.refactor]
+# Some modules declare themselves dependent on Class.Refactor
+provides: [Class.refactor, Class.Refactor]
 
 ...
 */
@@ -4865,7 +4576,7 @@ Class.refactor = function(original, refactors){
 
 	$each(refactors, function(item, name){
 		var origin = original.prototype[name];
-		if (origin && (origin = origin._origin) && typeof item == 'function') original.implement(name, function(){
+		if (origin && (origin = origin._origin ? origin._origin: origin) && typeof item == 'function') original.implement(name, function(){
 			var old = this.previous;
 			this.previous = origin;
 			var value = item.apply(this, arguments);
@@ -4876,21 +4587,26 @@ Class.refactor = function(original, refactors){
 
 	return original;
 
-};/*
+};
+
+
+/*
 ---
 
 script: Class.Binds.js
+
+name: Class.Binds
 
 description: Automagically binds specified methods in a class to the instance of the class.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Class
- - /MooTools.More
+  - Core/Class
+  - /MooTools.More
 
 provides: [Class.Binds]
 
@@ -4910,22 +4626,26 @@ Class.Mutators.initialize = function(initialize){
 		return initialize.apply(this, arguments);
 	};
 };
+
+
 /*
 ---
 
 script: Class.Occlude.js
+
+name: Class.Occlude
 
 description: Prevents a class from being applied to a DOM element twice.
 
 license: MIT-style license.
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
-requires: 
- - core/1.2.4/Class
- - core:1.2.4/Element
- - /MooTools.More
+requires:
+  - Core/Class
+  - Core/Element
+  - /MooTools.More
 
 provides: [Class.Occlude]
 
@@ -4945,23 +4665,28 @@ Class.Occlude = new Class({
 		return this.occluded;
 	}
 
-});/*
+});
+
+
+/*
 ---
 
 script: Chain.Wait.js
+
+name: Chain.Wait
 
 description: value, Adds a method to inject pauses between chained events.
 
 license: MIT-style license.
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
-requires: 
- - core:1.2.4/Chain
- - core:1.2.4/Element
- - core:1.2.4/Fx
- - /MooTools.More
+requires:
+  - Core/Chain
+  - Core/Element
+  - Core/Fx
+  - /MooTools.More
 
 provides: [Chain.Wait]
 
@@ -5004,20 +4729,25 @@ provides: [Chain.Wait]
 		}
 	});
 
-})();/*
+})();
+
+
+/*
 ---
 
 script: Array.Extras.js
+
+name: Array.Extras
 
 description: Extends the Array native object to include useful methods to work with arrays.
 
 license: MIT-style license
 
 authors:
- - Christoph Pojer
+  - Christoph Pojer
 
 requires:
- - core:1.2.4/Array
+  - Core/Array
 
 provides: [Array.Extras]
 
@@ -5060,94 +4790,32 @@ Array.implement({
 		return this;
 	}
 
-});/*
----
-
-script: Date.English.US.js
-
-description: Date messages for US English.
-
-license: MIT-style license
-
-authors:
- - Aaron Newton
-
-requires:
- - /Lang
- - /Date
-
-provides: [Date.English.US]
-
-...
-*/
-
-MooTools.lang.set('en-US', 'Date', {
-
-	months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-	days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-	//culture's date order: MM/DD/YYYY
-	dateOrder: ['month', 'date', 'year'],
-	shortDate: '%m/%d/%Y',
-	shortTime: '%I:%M%p',
-	AM: 'AM',
-	PM: 'PM',
-
-	/* Date.Extras */
-	ordinal: function(dayOfMonth){
-		//1st, 2nd, 3rd, etc.
-		return (dayOfMonth > 3 && dayOfMonth < 21) ? 'th' : ['th', 'st', 'nd', 'rd', 'th'][Math.min(dayOfMonth % 10, 4)];
-	},
-
-	lessThanMinuteAgo: 'less than a minute ago',
-	minuteAgo: 'about a minute ago',
-	minutesAgo: '{delta} minutes ago',
-	hourAgo: 'about an hour ago',
-	hoursAgo: 'about {delta} hours ago',
-	dayAgo: '1 day ago',
-	daysAgo: '{delta} days ago',
-	weekAgo: '1 week ago',
-	weeksAgo: '{delta} weeks ago',
-	monthAgo: '1 month ago',
-	monthsAgo: '{delta} months ago',
-	yearAgo: '1 year ago',
-	yearsAgo: '{delta} years ago',
-	lessThanMinuteUntil: 'less than a minute from now',
-	minuteUntil: 'about a minute from now',
-	minutesUntil: '{delta} minutes from now',
-	hourUntil: 'about an hour from now',
-	hoursUntil: 'about {delta} hours from now',
-	dayUntil: '1 day from now',
-	daysUntil: '{delta} days from now',
-	weekUntil: '1 week from now',
-	weeksUntil: '{delta} weeks from now',
-	monthUntil: '1 month from now',
-	monthsUntil: '{delta} months from now',
-	yearUntil: '1 year from now',
-	yearsUntil: '{delta} years from now'
-
 });
+
 /*
 ---
 
 script: Date.js
+
+name: Date
 
 description: Extends the Date native object to include methods useful in managing dates.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
- - Nicholas Barthelemy - https://svn.nbarthelemy.com/date-js/
- - Harald Kirshner - mail [at] digitarald.de; http://digitarald.de
- - Scott Kyle - scott [at] appden.com; http://appden.com
+  - Aaron Newton
+  - Nicholas Barthelemy - https://svn.nbarthelemy.com/date-js/
+  - Harald Kirshner - mail [at] digitarald.de; http://digitarald.de
+  - Scott Kyle - scott [at] appden.com; http://appden.com
 
 requires:
- - core:1.2.4/Array
- - core:1.2.4/String
- - core:1.2.4/Number
- - core:1.2.4/Lang
- - core:1.2.4/Date.English.US
- - /MooTools.More
+  - Core/Array
+  - Core/String
+  - Core/Number
+  - /Lang
+  - /Date.English.US
+  - /MooTools.More
 
 provides: [Date]
 
@@ -5171,7 +4839,7 @@ Date.Methods = {
 
 ['Date', 'Day', 'FullYear', 'Hours', 'Milliseconds', 'Minutes', 'Month', 'Seconds', 'Time', 'TimezoneOffset',
 	'Week', 'Timezone', 'GMTOffset', 'DayOfYear', 'LastMonth', 'LastDayOfMonth', 'UTCDate', 'UTCDay', 'UTCFullYear',
-	'AMPM', 'Ordinal', 'UTCHours', 'UTCMilliseconds', 'UTCMinutes', 'UTCMonth', 'UTCSeconds'].each(function(method){
+	'AMPM', 'Ordinal', 'UTCHours', 'UTCMilliseconds', 'UTCMinutes', 'UTCMonth', 'UTCSeconds', 'UTCMilliseconds'].each(function(method){
 	Date.Methods[method.toLowerCase()] = method;
 });
 
@@ -5241,8 +4909,8 @@ Date.implement({
 
 	diff: function(date, resolution){
 		if ($type(date) == 'string') date = Date.parse(date);
-		
-		return ((date - this) / Date.units[resolution || 'day'](3, 3)).toInt(); // non-leap year, 30-day month
+
+		return ((date - this) / Date.units[resolution || 'day'](3, 3)).round(); // non-leap year, 30-day month
 	},
 
 	getLastDayOfMonth: function(){
@@ -5250,14 +4918,14 @@ Date.implement({
 	},
 
 	getDayOfYear: function(){
-		return (Date.UTC(this.get('year'), this.get('mo'), this.get('date') + 1) 
+		return (Date.UTC(this.get('year'), this.get('mo'), this.get('date') + 1)
 			- Date.UTC(this.get('year'), 0, 1)) / Date.units.day();
 	},
 
 	getWeek: function(){
 		return (this.get('dayofyear') / 7).ceil();
 	},
-	
+
 	getOrdinal: function(day){
 		return Date.getMsg('ordinal', day || this.get('date'));
 	},
@@ -5291,7 +4959,7 @@ Date.implement({
 	},
 
 	isValid: function(date) {
-		return !!(date || this).valueOf();
+		return !isNaN((date || this).valueOf());
 	},
 
 	format: function(f){
@@ -5308,6 +4976,8 @@ Date.implement({
 					case 'B': return Date.getMsg('months')[d.get('month')];
 					case 'c': return d.toString();
 					case 'd': return pad(d.get('date'), 2);
+					case 'D': return d.get('date');
+					case 'e': return d.get('date');
 					case 'H': return pad(d.get('hr'), 2);
 					case 'I': return ((d.get('hr') % 12) || 12);
 					case 'j': return pad(d.get('dayofyear'), 3);
@@ -5315,6 +4985,7 @@ Date.implement({
 					case 'M': return pad(d.get('min'), 2);
 					case 'o': return d.get('ordinal');
 					case 'p': return Date.getMsg(d.get('ampm'));
+					case 's': return Math.round(d / 1000);
 					case 'S': return pad(d.get('seconds'), 2);
 					case 'U': return pad(d.get('week'), 2);
 					case 'w': return d.get('day');
@@ -5324,6 +4995,7 @@ Date.implement({
 					case 'Y': return d.get('year');
 					case 'T': return d.get('GMTOffset');
 					case 'Z': return d.get('Timezone');
+					case 'z': return pad(d.get('ms'), 3);
 				}
 				return $1;
 			}
@@ -5355,14 +5027,13 @@ var nativeParse = Date.parse;
 var parseWord = function(type, word, num){
 	var ret = -1;
 	var translated = Date.getMsg(type + 's');
-
 	switch ($type(word)){
 		case 'object':
 			ret = translated[word.get(type)];
 			break;
 		case 'number':
-			ret = translated[month - 1];
-			if (!ret) throw new Error('Invalid ' + type + ' index: ' + index);
+			ret = translated[word];
+			if (!ret) throw new Error('Invalid ' + type + ' index: ' + word);
 			break;
 		case 'string':
 			var match = translated.filter(function(name){
@@ -5439,7 +5110,8 @@ Date.extend({
 			localDate.get('date'),
 			localDate.get('hr'),
 			localDate.get('min'),
-			localDate.get('sec')
+			localDate.get('sec'),
+			localDate.get('ms')
 		);
 		return new Date(utcSeconds);
 	},
@@ -5457,15 +5129,15 @@ Date.extend({
 	},
 
 	parsePatterns: parsePatterns, // this is deprecated
-	
+
 	defineParser: function(pattern){
 		parsePatterns.push((pattern.re && pattern.handler) ? pattern : build(pattern));
 	},
-	
+
 	defineParsers: function(){
 		Array.flatten(arguments).each(Date.defineParser);
 	},
-	
+
 	define2DigitYearStart: function(year){
 		startYear = year % 100;
 		startCentury = year - startYear;
@@ -5485,7 +5157,7 @@ var regexOf = function(type){
 var replacers = function(key){
 	switch(key){
 		case 'x': // iso8601 covers yyyy-mm-dd, so just check if month is first
-			return ((Date.orderIndex('month') == 1) ? '%m[.-/]%d' : '%d[.-/]%m') + '([.-/]%y)?';
+			return ((Date.orderIndex('month') == 1) ? '%m[-./]%d' : '%d[-./]%m') + '([-./]%y)?';
 		case 'X':
 			return '%H([.:]%M)?([.:]%S([.:]%s)?)? ?%p? ?%T?';
 	}
@@ -5512,10 +5184,10 @@ var currentLanguage;
 
 var recompile = function(language){
 	currentLanguage = language;
-	
+
 	keys.a = keys.A = regexOf('days');
 	keys.b = keys.B = regexOf('months');
-	
+
 	parsePatterns.each(function(pattern, i){
 		if (pattern.format) parsePatterns[i] = build(pattern.format);
 	});
@@ -5523,7 +5195,7 @@ var recompile = function(language){
 
 var build = function(format){
 	if (!currentLanguage) return {format: format};
-	
+
 	var parsed = [];
 	var re = (format.source || format) // allow format to be regex
 	 .replace(/%([a-z])/gi,
@@ -5546,9 +5218,13 @@ var build = function(format){
 		re: new RegExp('^' + re + '$', 'i'),
 		handler: function(bits){
 			bits = bits.slice(1).associate(parsed);
-			var date = new Date().clearTime();
+			var date = new Date().clearTime(),
+				year = bits.y || bits.Y;
+
+			if (year != null) handle.call(date, 'y', year); // need to start in the right year
 			if ('d' in bits) handle.call(date, 'd', 1);
 			if ('m' in bits || 'b' in bits || 'B' in bits) handle.call(date, 'm', 1);
+
 			for (var key in bits) handle.call(date, key, bits[key]);
 			return date;
 		}
@@ -5598,21 +5274,26 @@ MooTools.lang.addEvent('langChange', function(language){
 	if (MooTools.lang.get('Date')) recompile(language);
 }).fireEvent('langChange', MooTools.lang.getCurrentLanguage());
 
-})();/*
+})();
+
+
+/*
 ---
 
 script: Date.Extras.js
+
+name: Date.Extras
 
 description: Extends the Date native object to include extra methods (on top of those in Date.js).
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
- - Scott Kyle
+  - Aaron Newton
+  - Scott Kyle
 
 requires:
- - /Date
+  - /Date
 
 provides: [Date.Extras]
 
@@ -5629,10 +5310,10 @@ Date.implement({
 		if (to == null) to = new Date;
 		var delta = ((to - this) / 1000).toInt();
 		if (!delta) return '0s';
-		
+
 		var durations = {s: 60, m: 60, h: 24, d: 365, y: 0};
 		var duration, vals = [];
-		
+
 		for (var step in durations){
 			if (!delta) break;
 			if ((duration = durations[step])){
@@ -5642,7 +5323,7 @@ Date.implement({
 				vals.unshift(delta + step);
 			}
 		}
-		
+
 		return vals.join(joiner || ':');
 	}
 
@@ -5659,7 +5340,7 @@ Date.extend({
 	getTimePhrase: function(delta){
 		var suffix = (delta < 0) ? 'Until' : 'Ago';
 		if (delta < 0) delta *= -1;
-		
+
 		var units = {
 			minute: 60,
 			hour: 60,
@@ -5669,9 +5350,9 @@ Date.extend({
 			year: 12,
 			eon: Infinity
 		};
-		
+
 		var msg = 'lessThanMinute';
-		
+
 		for (var unit in units){
 			var interval = units[unit];
 			if (delta < 1.5 * interval){
@@ -5681,8 +5362,8 @@ Date.extend({
 			delta /= interval;
 			msg = unit + 's';
 		}
-		
-		return Date.getMsg(msg + suffix).substitute({delta: delta.round()});
+
+		return Date.getMsg(msg + suffix, delta).substitute({delta: delta.round()});
 	}
 
 });
@@ -5718,21 +5399,25 @@ Date.defineParsers(
 	}
 
 );
+
+
 /*
 ---
 
 script: Hash.Extras.js
+
+name: Hash.Extras
 
 description: Extends the Hash native object to include getFromPath which allows a path notation to child elements.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Hash.base
- - /MooTools.More
+  - Core/Hash.base
+  - /MooTools.More
 
 provides: [Hash.Extras]
 
@@ -5767,23 +5452,28 @@ Hash.implement({
 		});
 	}
 
-});/*
+});
+
+/*
 ---
 
 script: String.Extras.js
+
+name: String.Extras
 
 description: Extends the String native object to include methods useful in managing various kinds of strings (query strings, urls, html, etc).
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
- - Guillermo Rauch
+  - Aaron Newton
+  - Guillermo Rauch
+  - Christopher Pitt
 
 requires:
- - core:1.2.4/String
- - core:1.2.4/$util
- - core:1.2.4/Array
+  - Core/String
+  - Core/$util
+  - Core/Array
 
 provides: [String.Extras]
 
@@ -5791,25 +5481,75 @@ provides: [String.Extras]
 */
 
 (function(){
-  
-var special = ['À','à','�?','á','Â','â','Ã','ã','Ä','ä','Å','å','Ă','ă','Ą','ą','Ć','ć','Č','�?','Ç','ç', 'Ď','�?','�?','đ', 'È','è','É','é','Ê','ê','Ë','ë','Ě','ě','Ę','ę', 'Ğ','ğ','Ì','ì','�?','í','Î','î','�?','ï', 'Ĺ','ĺ','Ľ','ľ','�?','ł', 'Ñ','ñ','Ň','ň','Ń','ń','Ò','ò','Ó','ó','Ô','ô','Õ','õ','Ö','ö','Ø','ø','ő','Ř','ř','Ŕ','ŕ','Š','š','Ş','ş','Ś','ś', 'Ť','ť','Ť','ť','Ţ','ţ','Ù','ù','Ú','ú','Û','û','Ü','ü','Ů','ů', 'Ÿ','ÿ','ý','�?','Ž','ž','Ź','ź','Ż','ż', 'Þ','þ','�?','ð','ß','Œ','œ','Æ','æ','µ'];
 
-var standard = ['A','a','A','a','A','a','A','a','Ae','ae','A','a','A','a','A','a','C','c','C','c','C','c','D','d','D','d', 'E','e','E','e','E','e','E','e','E','e','E','e','G','g','I','i','I','i','I','i','I','i','L','l','L','l','L','l', 'N','n','N','n','N','n', 'O','o','O','o','O','o','O','o','Oe','oe','O','o','o', 'R','r','R','r', 'S','s','S','s','S','s','T','t','T','t','T','t', 'U','u','U','u','U','u','Ue','ue','U','u','Y','y','Y','y','Z','z','Z','z','Z','z','TH','th','DH','dh','ss','OE','oe','AE','ae','u'];
+var special = {
+	'a': '[àáâãäåăą]',
+	'A': '[ÀÁÂÃÄÅĂĄ]',
+	'c': '[ćčç]',
+	'C': '[ĆČÇ]',
+	'd': '[ďđ]',
+	'D': '[ĎÐ]',
+	'e': '[èéêëěę]',
+	'E': '[ÈÉÊËĚĘ]',
+	'g': '[ğ]',
+	'G': '[Ğ]',
+	'i': '[ìíîï]',
+	'I': '[ÌÍÎÏ]',
+	'l': '[ĺľł]',
+	'L': '[ĹĽŁ]',
+	'n': '[ñňń]',
+	'N': '[ÑŇŃ]',
+	'o': '[òóôõöøő]',
+	'O': '[ÒÓÔÕÖØ]',
+	'r': '[řŕ]',
+	'R': '[ŘŔ]',
+	's': '[ššş]',
+	'S': '[ŠŞŚ]',
+	't': '[ťţ]',
+	'T': '[ŤŢ]',
+	'ue': '[ü]',
+	'UE': '[Ü]',
+	'u': '[ùúûůµ]',
+	'U': '[ÙÚÛŮ]',
+	'y': '[ÿý]',
+	'Y': '[ŸÝ]',
+	'z': '[žźż]',
+	'Z': '[ŽŹŻ]',
+	'th': '[þ]',
+	'TH': '[Þ]',
+	'dh': '[ð]',
+	'DH': '[Ð]',
+	'ss': '[ß]',
+	'oe': '[œ]',
+	'OE': '[Œ]',
+	'ae': '[æ]',
+	'AE': '[Æ]'
+},
 
-var tidymap = {
-	"[\xa0\u2002\u2003\u2009]": " ",
-	"\xb7": "*",
-	"[\u2018\u2019]": "'",
-	"[\u201c\u201d]": '"',
-	"\u2026": "...",
-	"\u2013": "-",
-	"\u2014": "--",
-	"\uFFFD": "&raquo;"
+tidy = {
+	' ': '[\xa0\u2002\u2003\u2009]',
+	'*': '[\xb7]',
+	'\'': '[\u2018\u2019]',
+	'"': '[\u201c\u201d]',
+	'...': '[\u2026]',
+	'-': '[\u2013]',
+	'--': '[\u2014]',
+	'&raquo;': '[\uFFFD]'
 };
 
-var getRegForTag = function(tag, contents) {
+function walk(string, replacements) {
+	var result = string;
+
+	for (key in replacements) {
+		result = result.replace(new RegExp(replacements[key], 'g'), key);
+	}
+
+	return result;
+}
+
+function getRegForTag(tag, contents) {
 	tag = tag || '';
-	var regstr = contents ? "<" + tag + "[^>]*>([\\s\\S]*?)<\/" + tag + ">" : "<\/?" + tag + "([^>]+)?>";
+	var regstr = contents ? "<" + tag + "(?!\\w)[^>]*>([\\s\\S]*?)<\/" + tag + "(?!\\w)>" : "<\/?" + tag + "([^>]+)?>";
 	reg = new RegExp(regstr, "gi");
 	return reg;
 };
@@ -5817,11 +5557,7 @@ var getRegForTag = function(tag, contents) {
 String.implement({
 
 	standardize: function(){
-		var text = this;
-		special.each(function(ch, i){
-			text = text.replace(new RegExp(ch, 'g'), standard[i]);
-		});
-		return text;
+		return walk(this, special);
 	},
 
 	repeat: function(times){
@@ -5845,31 +5581,32 @@ String.implement({
 	},
 
 	tidy: function(){
-		var txt = this.toString();
-		$each(tidymap, function(value, key){
-			txt = txt.replace(new RegExp(key, 'g'), value);
-		});
-		return txt;
+		return walk(this, tidy);
 	}
 
 });
 
-})();/*
+})();
+
+
+/*
 ---
 
 script: String.QueryString.js
+
+name: String.QueryString
 
 description: Methods for dealing with URI query strings.
 
 license: MIT-style license
 
 authors:
- - Sebastian Markbåge, Aaron Newton, Lennart Pilon, Valerio Proietti
+  - Sebastian Markbåge, Aaron Newton, Lennart Pilon, Valerio Proietti
 
 requires:
- - core:1.2.4/Array
- - core:1.2.4/String
- - /MooTools.More
+  - Core/Array
+  - Core/String
+  - /MooTools.More
 
 provides: [String.QueryString]
 
@@ -5878,14 +5615,17 @@ provides: [String.QueryString]
 
 String.implement({
 
-	parseQueryString: function(){
+	parseQueryString: function(decodeKeys, decodeValues){
+		if (decodeKeys == null) decodeKeys = true;
+		if (decodeValues == null) decodeValues = true;
 		var vars = this.split(/[&;]/), res = {};
 		if (vars.length) vars.each(function(val){
 			var index = val.indexOf('='),
-				keys = index < 0 ? [''] : val.substr(0, index).match(/[^\]\[]+/g),
-				value = decodeURIComponent(val.substr(index + 1)),
+				keys = index < 0 ? [''] : val.substr(0, index).match(/([^\]\[]+|(\B)(?=\]))/g),
+				value = decodeValues ? decodeURIComponent(val.substr(index + 1)) : val.substr(index + 1),
 				obj = res;
 			keys.each(function(key, i){
+				if (decodeKeys) key = decodeURIComponent(key);
 				var current = obj[key];
 				if(i < keys.length - 1)
 					obj = obj[key] = current || {};
@@ -5907,24 +5647,28 @@ String.implement({
 		}).join('&');
 	}
 
-});/*
+});
+
+/*
 ---
 
 script: URI.js
+
+name: URI
 
 description: Provides methods useful in managing the window location and uris.
 
 license: MIT-style license
 
 authors:
- - Sebastian Markb�ge
- - Aaron Newton
+  - Sebastian Markbåge
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Selectors
- - /String.QueryString
+  - Core/Selectors
+  - /String.QueryString
 
-provides: URI
+provides: [URI]
 
 ...
 */
@@ -5945,7 +5689,7 @@ var URI = new Class({
 		this.setOptions(options);
 		var base = this.options.base || URI.base;
 		if(!uri) uri = base;
-		
+
 		if (uri && uri.parsed) this.parsed = $unlink(uri.parsed);
 		else this.set('value', uri.href || uri.toString(), base ? new URI(base) : false);
 	},
@@ -6063,22 +5807,27 @@ String.implement({
 		return new URI(this, options);
 	}
 
-});/*
+});
+
+
+/*
 ---
 
 script: URI.Relative.js
+
+name: URI.Relative
 
 description: Extends the URI class to add methods for computing relative and absolute urls.
 
 license: MIT-style license
 
 authors:
- - Sebastian Markbåge
+  - Sebastian Markbåge
 
 
 requires:
- - /Class.refactor
- - /URI
+  - /Class.refactor
+  - /URI
 
 provides: [URI.Relative]
 
@@ -6117,21 +5866,26 @@ URI = Class.refactor(URI, {
 		return this.get('value', new URI(base));
 	}
 
-});/*
+});
+
+
+/*
 ---
 
 script: Element.Forms.js
+
+name: Element.Forms
 
 description: Extends the Element native object to include methods useful in managing inputs.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Element
- - /MooTools.More
+  - Core/Element
+  - /MooTools.More
 
 provides: [Element.Forms]
 
@@ -6241,23 +5995,27 @@ Element.implement({
 		return this;
 	}
 
-});/*
+});
+
+/*
 ---
 
 script: Elements.From.js
+
+name: Elements.From
 
 description: Returns a collection of elements from a string of html.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Element
- - /MooTools.More
+  - Core/Element
+  - /MooTools.More
 
-provides: [Elements.from]
+provides: [Elements.from, Elements.From]
 
 ...
 */
@@ -6277,26 +6035,31 @@ Elements.from = function(text, excludeScripts){
 	}
 
 	return (container || new Element('div')).set('html', text).getChildren();
-};/*
+};
+
+
+/*
 ---
 
 script: Element.Delegation.js
 
+name: Element.Delegation
+
 description: Extends the Element native object to include the delegate method for more efficient event management.
 
 credits:
- - "Event checking based on the work of Daniel Steigerwald. License: MIT-style license.	Copyright: Copyright (c) 2008 Daniel Steigerwald, daniel.steigerwald.cz"
+  - "Event checking based on the work of Daniel Steigerwald. License: MIT-style license.	Copyright: Copyright (c) 2008 Daniel Steigerwald, daniel.steigerwald.cz"
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
- - Daniel Steigerwald
+  - Aaron Newton
+  - Daniel Steigerwald
 
 requires:
- - core:1.2.4/Element.Event
- - core:1.2.4/Selectors
- - /MooTools.More
+  - Core/Element.Event
+  - Core/Selectors
+  - /MooTools.More
 
 provides: [Element.Delegation]
 
@@ -6304,8 +6067,8 @@ provides: [Element.Delegation]
 */
 
 (function(addEvent, removeEvent){
-	
-	var match = /(.*?):relay\(([^)]+)\)$/,
+
+	var match = /(.*?):relay\(((?:\(.*?\)|.)+)\)$/,
 		combinators = /[+>~\s]/,
 		splitType = function(type){
 			var bits = type.match(match);
@@ -6333,24 +6096,24 @@ provides: [Element.Delegation]
 	Element.implement({
 
 		addEvent: function(type, fn){
-			var splitted = splitType(type);
-			if (splitted.selector){
-				var monitors = this.retrieve('$moo:delegateMonitors', {});
+			var split = splitType(type);
+			if (split.selector){
+				var monitors = this.retrieve('delegation:_delegateMonitors', {});
 				if (!monitors[type]){
 					var monitor = function(e){
-						var el = check.call(this, e, splitted.selector);
+						var el = check.call(this, e, split.selector);
 						if (el) this.fireEvent(type, [e, el], 0, el);
 					}.bind(this);
 					monitors[type] = monitor;
-					addEvent.call(this, splitted.event, monitor);
+					addEvent.call(this, split.event, monitor);
 				}
 			}
 			return addEvent.apply(this, arguments);
 		},
 
 		removeEvent: function(type, fn){
-			var splitted = splitType(type);
-			if (splitted.selector){
+			var split = splitType(type);
+			if (split.selector){
 				var events = this.retrieve('events');
 				if (!events || !events[type] || (fn && !events[type].keys.contains(fn))) return this;
 
@@ -6359,8 +6122,8 @@ provides: [Element.Delegation]
 
 				events = this.retrieve('events');
 				if (events && events[type] && events[type].keys.length == 0){
-					var monitors = this.retrieve('$moo:delegateMonitors', {});
-					removeEvent.apply(this, [splitted.event, monitors[type]]);
+					var monitors = this.retrieve('delegation:_delegateMonitors', {});
+					removeEvent.apply(this, [split.event, monitors[type]]);
 					delete monitors[type];
 				}
 				return this;
@@ -6370,6 +6133,11 @@ provides: [Element.Delegation]
 
 		fireEvent: function(type, args, delay, bind){
 			var events = this.retrieve('events');
+			var e, el;
+			if (args) {
+				e = args[0];
+				el = args[1];
+			}
 			if (!events || !events[type]) return this;
 			events[type].keys.each(function(fn){
 				fn.create({bind: bind || this, delay: delay, arguments: args})();
@@ -6379,10 +6147,20 @@ provides: [Element.Delegation]
 
 	});
 
-})(Element.prototype.addEvent, Element.prototype.removeEvent);/*
+})(Element.prototype.addEvent, Element.prototype.removeEvent);
+
+try {
+	if (typeof HTMLElement != 'undefined')
+		HTMLElement.prototype.fireEvent = Element.prototype.fireEvent;
+} catch(e){}
+
+
+/*
 ---
 
 script: Element.Measure.js
+
+name: Element.Measure
 
 description: Extends the Element native object to include methods useful in measuring dimensions.
 
@@ -6391,12 +6169,12 @@ credits: "Element.measure / .expose methods by Daniel Steigerwald License: MIT-s
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Element.Style
- - core:1.2.4/Element.Dimensions
- - /MooTools.More
+  - Core/Element.Style
+  - Core/Element.Dimensions
+  - /MooTools.More
 
 provides: [Element.Measure]
 
@@ -6412,7 +6190,7 @@ Element.implement({
 		if (vis(this)) return fn.apply(this);
 		var parent = this.getParent(),
 			restorers = [],
-			toMeasure = []; 
+			toMeasure = [];
 		while (!vis(parent) && parent != document.body) {
 			toMeasure.push(parent.expose());
 			parent = parent.getParent();
@@ -6461,29 +6239,33 @@ Element.implement({
 	},
 
 	getComputedSize: function(options){
+		//legacy support for my stupid spelling error
+		if (options && options.plains) options.planes = options.plains;
+
 		options = $merge({
 			styles: ['padding','border'],
-			plains: {
+			planes: {
 				height: ['top','bottom'],
 				width: ['left','right']
 			},
 			mode: 'both'
 		}, options);
+
 		var size = {width: 0,height: 0};
 		switch (options.mode){
 			case 'vertical':
 				delete size.width;
-				delete options.plains.width;
+				delete options.planes.width;
 				break;
 			case 'horizontal':
 				delete size.height;
-				delete options.plains.height;
+				delete options.planes.height;
 				break;
 		}
 		var getStyles = [];
 		//this function might be useful in other places; perhaps it should be outside this function?
-		$each(options.plains, function(plain, key){
-			plain.each(function(edge){
+		$each(options.planes, function(plane, key){
+			plane.each(function(edge){
 				options.styles.each(function(style){
 					getStyles.push((style == 'border') ? style + '-' + edge + '-' + 'width' : style + '-' + edge);
 				});
@@ -6492,10 +6274,10 @@ Element.implement({
 		var styles = {};
 		getStyles.each(function(style){ styles[style] = this.getComputedStyle(style); }, this);
 		var subtracted = [];
-		$each(options.plains, function(plain, key){ //keys: width, height, plains: ['left', 'right'], ['top','bottom']
+		$each(options.planes, function(plane, key){ //keys: width, height, planes: ['left', 'right'], ['top','bottom']
 			var capitalized = key.capitalize();
 			size['total' + capitalized] = size['computed' + capitalized] = 0;
-			plain.each(function(edge){ //top, left, right, bottom
+			plane.each(function(edge){ //top, left, right, bottom
 				size['computed' + edge.capitalize()] = 0;
 				getStyles.each(function(style, i){ //padding, border, etc.
 					//'padding-left'.test('left') size['totalWidth'] = size['width'] + [padding-left]
@@ -6526,23 +6308,27 @@ Element.implement({
 		return $extend(styles, size);
 	}
 
-});/*
+});
+
+/*
 ---
 
 script: Element.Pin.js
+
+name: Element.Pin
 
 description: Extends the Element native object to include the pin method useful for fixed positioning for elements.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Element.Event
- - core:1.2.4/Element.Dimensions
- - core:1.2.4/Element.Style
- - /MooTools.More
+  - Core/Element.Event
+  - Core/Element.Dimensions
+  - Core/Element.Style
+  - /MooTools.More
 
 provides: [Element.Pin]
 
@@ -6550,8 +6336,10 @@ provides: [Element.Pin]
 */
 
 (function(){
-	var supportsPositionFixed = false;
-	window.addEvent('domready', function(){
+	var supportsPositionFixed = false,
+		supportTested = false;
+
+	var testPositionFixed = function(){
 		var test = new Element('div').setStyles({
 			position: 'fixed',
 			top: 0,
@@ -6559,66 +6347,78 @@ provides: [Element.Pin]
 		}).inject(document.body);
 		supportsPositionFixed = (test.offsetTop === 0);
 		test.dispose();
-	});
+		supportTested = true;
+	}
 
 	Element.implement({
 
-		pin: function(enable){
-			if (this.getStyle('display') == 'none') return null;
-			
-			var p,
-					scroll = window.getScroll();
+		pin: function(enable, forceScroll){
+			if (!supportTested) testPositionFixed();
+			if (this.getStyle('display') == 'none') return this;
+
+			var pinnedPosition,
+				scroll = window.getScroll();
+
 			if (enable !== false){
-				p = this.getPosition();
-				if (!this.retrieve('pinned')){
-					var pos = {
-						top: p.y - scroll.y,
-						left: p.x - scroll.x
+				pinnedPosition = this.getPosition(supportsPositionFixed ? document.body : this.getOffsetParent());
+				if (!this.retrieve('pin:_pinned')){
+					var currentPosition = {
+						top: pinnedPosition.y - scroll.y,
+						left: pinnedPosition.x - scroll.x
 					};
-					if (supportsPositionFixed){
-						this.setStyle('position', 'fixed').setStyles(pos);
+
+					if (supportsPositionFixed && !forceScroll){
+						this.setStyle('position', 'fixed').setStyles(currentPosition);
 					} else {
-						this.store('pinnedByJS', true);
-						this.setStyles({
-							position: 'absolute',
-							top: p.y,
-							left: p.x
-						}).addClass('isPinned');
-						this.store('scrollFixer', (function(){
-							if (this.retrieve('pinned'))
-								var scroll = window.getScroll();
-								this.setStyles({
-									top: pos.top.toInt() + scroll.y,
-									left: pos.left.toInt() + scroll.x
-								});
-						}).bind(this));
-						window.addEvent('scroll', this.retrieve('scrollFixer'));
+
+						var parent = this.getOffsetParent(),
+							position = this.getPosition(parent),
+							styles = this.getStyles('left', 'top');
+
+						if (parent && styles.left == 'auto' || styles.top == 'auto') this.setPosition(position);
+						if (this.getStyle('position') == 'static') this.setStyle('position', 'absolute');
+
+						position = {
+							x: styles.left.toInt() - scroll.x,
+							y: styles.top.toInt() - scroll.y
+						};
+
+						var scrollFixer = function(){
+							if (!this.retrieve('pin:_pinned')) return;
+							var scroll = window.getScroll();
+							this.setStyles({
+								left: position.x + scroll.x,
+								top: position.y + scroll.y
+							});
+						}.bind(this);
+
+						this.store('pin:_scrollFixer', scrollFixer);
+						window.addEvent('scroll', scrollFixer);
 					}
-					this.store('pinned', true);
+					this.store('pin:_pinned', true);
 				}
+
 			} else {
-				var op;
-				if (!Browser.Engine.trident){
-					var parent = this.getParent();
-					op = (parent.getComputedStyle('position') != 'static' ? parent : parent.getOffsetParent());
-				}
-				p = this.getPosition(op);
-				this.store('pinned', false);
-				var reposition;
-				if (supportsPositionFixed && !this.retrieve('pinnedByJS')){
-					reposition = {
-						top: p.y + scroll.y,
-						left: p.x + scroll.x
-					};
+				if (!this.retrieve('pin:_pinned')) return this;
+
+				var parent = this.getParent(),
+					offsetParent = (parent.getComputedStyle('position') != 'static' ? parent : parent.getOffsetParent());
+
+				pinnedPosition = this.getPosition(offsetParent);
+
+				this.store('pin:_pinned', false);
+				var scrollFixer = this.retrieve('pin:_scrollFixer');
+				if (!scrollFixer){
+					this.setStyles({
+						position: 'absolute',
+						top: pinnedPosition.y + scroll.y,
+						left: pinnedPosition.x + scroll.x
+					});
 				} else {
-					this.store('pinnedByJS', false);
-					window.removeEvent('scroll', this.retrieve('scrollFixer'));
-					reposition = {
-						top: p.y,
-						left: p.x
-					};
+					this.store('pin:_scrollFixer', null);
+					window.removeEvent('scroll', scrollFixer);
 				}
-				this.setStyles($merge(reposition, {position: 'absolute'})).removeClass('isPinned');
+				this.removeClass('isPinned');
 			}
 			return this;
 		},
@@ -6628,28 +6428,33 @@ provides: [Element.Pin]
 		},
 
 		togglepin: function(){
-			this.pin(!this.retrieve('pinned'));
+			return this.pin(!this.retrieve('pin:_pinned'));
 		}
 
 	});
 
-})();/*
+})();
+
+
+/*
 ---
 
 script: Element.Position.js
+
+name: Element.Position
 
 description: Extends the Element native object to include methods useful positioning elements relative to others.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Element.Dimensions
- - /Element.Measure
+  - Core/Element.Dimensions
+  - /Element.Measure
 
-provides: [Elements.Position]
+provides: [Element.Position]
 
 ...
 */
@@ -6681,7 +6486,7 @@ Element.implement({
 			allowNegative: false
 		}, options);
 		//compute the offset of the parent positioned element if this element is in one
-		var parentOffset = {x: 0, y: 0}, 
+		var parentOffset = {x: 0, y: 0},
 				parentPositioned = false;
 		/* dollar around getOffsetParent should not be necessary, but as it does not return
 		 * a mootools extended element in IE, an error occurs on the call to expose. See:
@@ -6703,12 +6508,15 @@ Element.implement({
 			if ($type(option) != 'string') return option;
 			option = option.toLowerCase();
 			var val = {};
+
 			if (option.test('left')) val.x = 'left';
 			else if (option.test('right')) val.x = 'right';
 			else val.x = 'center';
+
 			if (option.test('upper') || option.test('top')) val.y = 'top';
 			else if (option.test('bottom')) val.y = 'bottom';
 			else val.y = 'center';
+
 			return val;
 		};
 		options.edge = fixValue(options.edge);
@@ -6786,7 +6594,7 @@ Element.implement({
 		['minimum', 'maximum'].each(function(minmax) {
 			['left', 'top'].each(function(lr) {
 				var val = options[minmax] ? options[minmax][xy[lr]] : null;
-				if (val != null && pos[lr] < val) pos[lr] = val;
+				if (val != null && ((minmax == 'minimum') ? pos[lr] < val: pos[lr] > val)) pos[lr] = val;
 			});
 		});
 		if (rel.getStyle('position') == 'fixed' || options.relFixedPosition){
@@ -6794,20 +6602,23 @@ Element.implement({
 			pos.top+= winScroll.y;
 			pos.left+= winScroll.x;
 		}
+		var relScroll = rel.getScroll();
 		if (options.ignoreScroll) {
-			var relScroll = rel.getScroll();
-			pos.top-= relScroll.y;
-			pos.left-= relScroll.x;
+			pos.top -= relScroll.y;
+			pos.left -= relScroll.x;
+		} else {
+			pos.top += relScroll.y;
+			pos.left += relScroll.x;
 		}
 		if (options.ignoreMargins) {
 			pos.left += (
-				options.edge.x == 'right' ? dim['margin-right'] : 
-				options.edge.x == 'center' ? -dim['margin-left'] + ((dim['margin-right'] + dim['margin-left'])/2) : 
+				options.edge.x == 'right' ? dim['margin-right'] :
+				options.edge.x == 'center' ? -dim['margin-left'] + ((dim['margin-right'] + dim['margin-left'])/2) :
 					- dim['margin-left']
 			);
 			pos.top += (
-				options.edge.y == 'bottom' ? dim['margin-bottom'] : 
-				options.edge.y == 'center' ? -dim['margin-top'] + ((dim['margin-bottom'] + dim['margin-top'])/2) : 
+				options.edge.y == 'bottom' ? dim['margin-bottom'] :
+				options.edge.y == 'center' ? -dim['margin-top'] + ((dim['margin-bottom'] + dim['margin-top'])/2) :
 					- dim['margin-top']
 			);
 		}
@@ -6820,21 +6631,26 @@ Element.implement({
 
 });
 
-})();/*
+})();
+
+
+/*
 ---
 
 script: Element.Shortcuts.js
+
+name: Element.Shortcuts
 
 description: Extends the Element native object to include some shortcut methods.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Element.Style
- - /MooTools.More
+  - Core/Element.Style
+  - /MooTools.More
 
 provides: [Element.Shortcuts]
 
@@ -6850,7 +6666,7 @@ Element.implement({
 	isVisible: function(){
 		var w = this.offsetWidth,
 			h = this.offsetHeight;
-		return (w == 0 && h == 0) ? false : (w > 0 && h > 0) ? true : this.isDisplayed();
+		return (w == 0 && h == 0) ? false : (w > 0 && h > 0) ? true : this.style.display != 'none';
 	},
 
 	toggle: function(){
@@ -6863,554 +6679,53 @@ Element.implement({
 			//IE fails here if the element is not in the dom
 			d = this.getStyle('display');
 		} catch(e){}
-		return this.store('originalDisplay', d || '').setStyle('display', 'none');
+		if (d == "none") return this;
+		return this.store('element:_originalDisplay', d || '').setStyle('display', 'none');
 	},
 
 	show: function(display){
-		display = display || this.retrieve('originalDisplay') || 'block';
+		if (!display && this.isDisplayed()) return this;
+		display = display || this.retrieve('element:_originalDisplay') || 'block';
 		return this.setStyle('display', (display == 'none') ? 'block' : display);
 	},
 
 	swapClass: function(remove, add){
 		return this.removeClass(remove).addClass(add);
 	}
-
 });
+
+Document.implement({
+	clearSelection: function(){
+		if (document.selection && document.selection.empty) {
+			document.selection.empty();
+		} else if (window.getSelection) {
+			var selection = window.getSelection();
+			if (selection && selection.removeAllRanges) selection.removeAllRanges();
+		}
+	}
+});
+
 /*
 ---
 
-script: IframeShim.js
-
-description: Defines IframeShim, a class for obscuring select lists and flash objects in IE.
-
-license: MIT-style license
-
-authors:
- - Aaron Newton
-
-requires:
- - core:1.2.4/Element.Event
- - core:1.2.4/Element.Style
- - core:1.2.4/Options Events
- - /Element.Position
- - /Class.Occlude
-
-provides: [IframeShim]
-
-...
-*/
-
-var IframeShim = new Class({
-
-	Implements: [Options, Events, Class.Occlude],
-
-	options: {
-		className: 'iframeShim',
-		src: 'javascript:false;document.write("");',
-		display: false,
-		zIndex: null,
-		margin: 0,
-		offset: {x: 0, y: 0},
-		browsers: (Browser.Engine.trident4 || (Browser.Engine.gecko && !Browser.Engine.gecko19 && Browser.Platform.mac))
-	},
-
-	property: 'IframeShim',
-
-	initialize: function(element, options){
-		this.element = document.id(element);
-		if (this.occlude()) return this.occluded;
-		this.setOptions(options);
-		this.makeShim();
-		return this;
-	},
-
-	makeShim: function(){
-		if(this.options.browsers){
-			var zIndex = this.element.getStyle('zIndex').toInt();
-
-			if (!zIndex){
-				zIndex = 1;
-				var pos = this.element.getStyle('position');
-				if (pos == 'static' || !pos) this.element.setStyle('position', 'relative');
-				this.element.setStyle('zIndex', zIndex);
-			}
-			zIndex = ($chk(this.options.zIndex) && zIndex > this.options.zIndex) ? this.options.zIndex : zIndex - 1;
-			if (zIndex < 0) zIndex = 1;
-			this.shim = new Element('iframe', {
-				src: this.options.src,
-				scrolling: 'no',
-				frameborder: 0,
-				styles: {
-					zIndex: zIndex,
-					position: 'absolute',
-					border: 'none',
-					filter: 'progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=0)'
-				},
-				'class': this.options.className
-			}).store('IframeShim', this);
-			var inject = (function(){
-				this.shim.inject(this.element, 'after');
-				this[this.options.display ? 'show' : 'hide']();
-				this.fireEvent('inject');
-			}).bind(this);
-			if (!IframeShim.ready) window.addEvent('load', inject);
-			else inject();
-		} else {
-			this.position = this.hide = this.show = this.dispose = $lambda(this);
-		}
-	},
-
-	position: function(){
-		if (!IframeShim.ready || !this.shim) return this;
-		var size = this.element.measure(function(){ 
-			return this.getSize(); 
-		});
-		if (this.options.margin != undefined){
-			size.x = size.x - (this.options.margin * 2);
-			size.y = size.y - (this.options.margin * 2);
-			this.options.offset.x += this.options.margin;
-			this.options.offset.y += this.options.margin;
-		}
-		this.shim.set({width: size.x, height: size.y}).position({
-			relativeTo: this.element,
-			offset: this.options.offset
-		});
-		return this;
-	},
-
-	hide: function(){
-		if (this.shim) this.shim.setStyle('display', 'none');
-		return this;
-	},
-
-	show: function(){
-		if (this.shim) this.shim.setStyle('display', 'block');
-		return this.position();
-	},
-
-	dispose: function(){
-		if (this.shim) this.shim.dispose();
-		return this;
-	},
-
-	destroy: function(){
-		if (this.shim) this.shim.destroy();
-		return this;
-	}
-
-});
-
-window.addEvent('load', function(){
-	IframeShim.ready = true;
-});/*
----
-
-script: Mask.js
-
-description: Creates a mask element to cover another.
-
-license: MIT-style license
-
-authors:
- - Aaron Newton
-
-requires:
- - core:1.2.4/Options
- - core:1.2.4/Events
- - core:1.2.4/Element.Event
- - /Class.Binds
- - /Element.Position
- - /IframeShim
-
-provides: [Mask]
-
-...
-*/
-
-var Mask = new Class({
-
-	Implements: [Options, Events],
-
-	Binds: ['position'],
-
-	options: {
-		// onShow: $empty,
-		// onHide: $empty,
-		// onDestroy: $empty,
-		// onClick: $empty,
-		//inject: {
-		//  where: 'after',
-		//  target: null,
-		//},
-		// hideOnClick: false,
-		// id: null,
-		// destroyOnHide: false,
-		style: {},
-		'class': 'mask',
-		maskMargins: false,
-		useIframeShim: true,
-		iframeShimOptions: {}
-	},
-
-	initialize: function(target, options){
-		this.target = document.id(target) || document.id(document.body);
-		this.target.store('Mask', this);
-		this.setOptions(options);
-		this.render();
-		this.inject();
-	},
-	
-	render: function() {
-		this.element = new Element('div', {
-			'class': this.options['class'],
-			id: this.options.id || 'mask-' + $time(),
-			styles: $merge(this.options.style, {
-				display: 'none'
-			}),
-			events: {
-				click: function(){
-					this.fireEvent('click');
-					if (this.options.hideOnClick) this.hide();
-				}.bind(this)
-			}
-		});
-		this.hidden = true;
-	},
-
-	toElement: function(){
-		return this.element;
-	},
-
-	inject: function(target, where){
-		where = where || this.options.inject ? this.options.inject.where : '' || this.target == document.body ? 'inside' : 'after';
-		target = target || this.options.inject ? this.options.inject.target : '' || this.target;
-		this.element.inject(target, where);
-		if (this.options.useIframeShim) {
-			this.shim = new IframeShim(this.element, this.options.iframeShimOptions);
-			this.addEvents({
-				show: this.shim.show.bind(this.shim),
-				hide: this.shim.hide.bind(this.shim),
-				destroy: this.shim.destroy.bind(this.shim)
-			});
-		}
-	},
-
-	position: function(){
-		this.resize(this.options.width, this.options.height);
-		this.element.position({
-			relativeTo: this.target,
-			position: 'topLeft',
-			ignoreMargins: !this.options.maskMargins,
-			ignoreScroll: this.target == document.body
-		});
-		return this;
-	},
-
-	resize: function(x, y){
-		var opt = {
-			styles: ['padding', 'border']
-		};
-		if (this.options.maskMargins) opt.styles.push('margin');
-		var dim = this.target.getComputedSize(opt);
-		if (this.target == document.body) {
-			var win = window.getSize();
-			if (dim.totalHeight < win.y) dim.totalHeight = win.y;
-			if (dim.totalWidth < win.x) dim.totalWidth = win.x;
-		}
-		this.element.setStyles({
-			width: $pick(x, dim.totalWidth, dim.x),
-			height: $pick(y, dim.totalHeight, dim.y)
-		});
-		return this;
-	},
-
-	show: function(){
-		if (!this.hidden) return this;
-		window.addEvent('resize', this.position);
-		this.position();
-		this.showMask.apply(this, arguments);
-		return this;
-	},
-
-	showMask: function(){
-		this.element.setStyle('display', 'block');
-		this.hidden = false;
-		this.fireEvent('show');
-	},
-
-	hide: function(){
-		if (this.hidden) return this;
-		window.removeEvent('resize', this.position);
-		this.hideMask.apply(this, arguments);
-		if (this.options.destroyOnHide) return this.destroy();
-		return this;
-	},
-
-	hideMask: function(){
-		this.element.setStyle('display', 'none');
-		this.hidden = true;
-		this.fireEvent('hide');
-	},
-
-	toggle: function(){
-		this[this.hidden ? 'show' : 'hide']();
-	},
-
-	destroy: function(){
-		this.hide();
-		this.element.destroy();
-		this.fireEvent('destroy');
-		this.target.eliminate('mask');
-	}
-
-});
-
-Element.Properties.mask = {
-
-	set: function(options){
-		var mask = this.retrieve('mask');
-		return this.eliminate('mask').store('mask:options', options);
-	},
-
-	get: function(options){
-		if (options || !this.retrieve('mask')){
-			if (this.retrieve('mask')) this.retrieve('mask').destroy();
-			if (options || !this.retrieve('mask:options')) this.set('mask', options);
-			this.store('mask', new Mask(this, this.retrieve('mask:options')));
-		}
-		return this.retrieve('mask');
-	}
-
-};
-
-Element.implement({
-
-	mask: function(options){
-		this.get('mask', options).show();
-		return this;
-	},
-
-	unmask: function(){
-		this.get('mask').hide();
-		return this;
-	}
-
-});/*
----
-
-script: Spinner.js
-
-description: Adds a semi-transparent overlay over a dom element with a spinnin ajax icon.
-
-license: MIT-style license
-
-authors:
- - Aaron Newton
-
-requires:
- - core:1.2.4/Fx.Tween
- - /Class.refactor
- - /Mask
-
-provides: [Spinner]
-
-...
-*/
-
-var Spinner = new Class({
-
-	Extends: Mask,
-
-	options: {
-		/*message: false,*/
-		'class':'spinner',
-		containerPosition: {},
-		content: {
-			'class':'spinner-content'
-		},
-		messageContainer: {
-			'class':'spinner-msg'
-		},
-		img: {
-			'class':'spinner-img'
-		},
-		fxOptions: {
-			link: 'chain'
-		}
-	},
-
-	initialize: function(){
-		this.parent.apply(this, arguments);
-		this.target.store('spinner', this);
-
-		//add this to events for when noFx is true; parent methods handle hide/show
-		var deactivate = function(){ this.active = false; }.bind(this);
-		this.addEvents({
-			hide: deactivate,
-			show: deactivate
-		});
-	},
-
-	render: function(){
-		this.parent();
-		this.element.set('id', this.options.id || 'spinner-'+$time());
-		this.content = document.id(this.options.content) || new Element('div', this.options.content);
-		this.content.inject(this.element);
-		if (this.options.message) {
-			this.msg = document.id(this.options.message) || new Element('p', this.options.messageContainer).appendText(this.options.message);
-			this.msg.inject(this.content);
-		}
-		if (this.options.img) {
-			this.img = document.id(this.options.img) || new Element('div', this.options.img);
-			this.img.inject(this.content);
-		}
-		this.element.set('tween', this.options.fxOptions);
-	},
-
-	show: function(noFx){
-		if (this.active) return this.chain(this.show.bind(this));
-		if (!this.hidden) {
-			this.callChain.delay(20, this);
-			return this;
-		}
-		this.active = true;
-		return this.parent(noFx);
-	},
-
-	showMask: function(noFx){
-		var pos = function(){
-			this.content.position($merge({
-				relativeTo: this.element
-			}, this.options.containerPosition));
-		}.bind(this);
-		if (noFx) {
-			this.parent();
-			pos();
-		} else {
-			this.element.setStyles({
-				display: 'block',
-				opacity: 0
-			}).tween('opacity', this.options.style.opacity || 0.9);
-			pos();
-			this.hidden = false;
-			this.fireEvent('show');
-			this.callChain();
-		}
-	},
-
-	hide: function(noFx){
-		if (this.active) return this.chain(this.hide.bind(this));
-		if (this.hidden) {
-			this.callChain.delay(20, this);
-			return this;
-		}
-		this.active = true;
-		return this.parent(noFx);
-	},
-
-	hideMask: function(noFx){
-		if (noFx) return this.parent();
-		this.element.tween('opacity', 0).get('tween').chain(function(){
-			this.element.setStyle('display', 'none');
-			this.hidden = true;
-			this.fireEvent('hide');
-			this.callChain();
-		}.bind(this));
-	},
-
-	destroy: function(){
-		this.content.destroy();
-		this.parent();
-		this.target.eliminate('spinner');
-	}
-
-});
-
-Spinner.implement(new Chain);
-
-if (window.Request) {
-	Request = Class.refactor(Request, {
-		
-		options: {
-			useSpinner: false,
-			spinnerOptions: {},
-			spinnerTarget: false
-		},
-		
-		initialize: function(options){
-			this._send = this.send;
-			this.send = function(options){
-				if (this.spinner) this.spinner.chain(this._send.bind(this, options)).show();
-				else this._send(options);
-				return this;
-			};
-			this.previous(options);
-			var update = document.id(this.options.spinnerTarget) || document.id(this.options.update);
-			if (this.options.useSpinner && update) {
-				this.spinner = update.get('spinner', this.options.spinnerOptions);
-				['onComplete', 'onException', 'onCancel'].each(function(event){
-					this.addEvent(event, this.spinner.hide.bind(this.spinner));
-				}, this);
-			}
-		},
-		
-		getSpinner: function(){
-			return this.spinner;
-		}
-		
-	});
-}
-
-Element.Properties.spinner = {
-
-	set: function(options){
-		var spinner = this.retrieve('spinner');
-		return this.eliminate('spinner').store('spinner:options', options);
-	},
-
-	get: function(options){
-		if (options || !this.retrieve('spinner')){
-			if (this.retrieve('spinner')) this.retrieve('spinner').destroy();
-			if (options || !this.retrieve('spinner:options')) this.set('spinner', options);
-			new Spinner(this, this.retrieve('spinner:options'));
-		}
-		return this.retrieve('spinner');
-	}
-
-};
-
-Element.implement({
-
-	spin: function(options){
-		this.get('spinner', options).show();
-		return this;
-	},
-
-	unspin: function(){
-		var opt = Array.link(arguments, {options: Object.type, callback: Function.type});
-		this.get('spinner', opt.options).hide(opt.callback);
-		return this;
-	}
-
-});/*
----
-
 script: Form.Request.js
+
+name: Form.Request
 
 description: Handles the basic functionality of submitting a form and updating a dom element with the result.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Element.Event
- - core:1.2.4/Request.HTML
- - /Class.Binds
- - /Class.Occlude
- - /Spinner
- - /String.QueryString
+  - Core/Request.HTML
+  - /Class.Binds
+  - /Class.Occlude
+  - /Spinner
+  - /String.QueryString
+  - /Element.Delegation
 
 provides: [Form.Request]
 
@@ -7437,6 +6752,7 @@ if (!window.Form) window.Form = {};
 				emulation: false,
 				link: 'ignore'
 			},
+			sendButtonClicked: true,
 			extraData: {},
 			resetForm: true
 		},
@@ -7469,16 +6785,16 @@ if (!window.Form) window.Form = {};
 					spinnerTarget: this.element,
 					method: this.element.get('method') || 'post'
 			}, this.options.requestOptions)).addEvents({
-				success: function(text, xml){
+				success: function(tree, elements, html, javascript){
 					['complete', 'success'].each(function(evt){
-						this.fireEvent(evt, [this.update, text, xml]);
+						this.fireEvent(evt, [this.update, tree, elements, html, javascript]);
 					}, this);
 				}.bind(this),
-				failure: function(xhr){
-					this.fireEvent('complete').fireEvent('failure', xhr);
+				failure: function(){
+					this.fireEvent('complete', arguments).fireEvent('failure', arguments);
 				}.bind(this),
 				exception: function(){
-					this.fireEvent('failure', xhr);
+					this.fireEvent('failure', arguments);
 				}.bind(this)
 			});
 		},
@@ -7486,27 +6802,34 @@ if (!window.Form) window.Form = {};
 		attach: function(attach){
 			attach = $pick(attach, true);
 			method = attach ? 'addEvent' : 'removeEvent';
-			
+
+			this.element[method]('click:relay(button, input[type=submit])', this.saveClickedButton.bind(this));
+
 			var fv = this.element.retrieve('validator');
 			if (fv) fv[method]('onFormValidate', this.onFormValidate);
-			if (!fv || !attach) this.element[method]('submit', this.onSubmit);
+			else this.element[method]('submit', this.onSubmit);
 		},
 
 		detach: function(){
 			this.attach(false);
+			return this;
 		},
 
 		//public method
 		enable: function(){
 			this.attach();
+			return this;
 		},
 
 		//public method
 		disable: function(){
 			this.detach();
+			return this;
 		},
 
 		onFormValidate: function(valid, form, e) {
+			//if there's no event, then this wasn't a submit event
+			if (!e) return;
 			var fv = this.element.retrieve('validator');
 			if (valid || (fv && !fv.options.stopOnFailure)) {
 				if (e && e.stop) e.stop();
@@ -7515,14 +6838,29 @@ if (!window.Form) window.Form = {};
 		},
 
 		onSubmit: function(e){
-			if (this.element.retrieve('validator')) {
+			var fv = this.element.retrieve('validator');
+			if (fv) {
 				//form validator was created after Form.Request
-				this.detach();
+				this.element.removeEvent('submit', this.onSubmit);
+				fv.addEvent('onFormValidate', this.onFormValidate);
+				this.element.validate();
 				return;
 			}
-			e.stop();
+			if (e) e.stop();
 			this.send();
 		},
+
+		saveClickedButton: function(event, target) {
+			if (!this.options.sendButtonClicked) return;
+			if (!target.get('name')) return;
+			this.options.extraData[target.get('name')] = target.get('value') || true;
+			this.clickedCleaner = function(){
+				delete this.options.extraData[target.get('name')];
+				this.clickedCleaner = $empty;
+			}.bind(this);
+		},
+
+		clickedCleaner: $empty,
 
 		send: function(){
 			var str = this.element.toQueryString().trim();
@@ -7531,6 +6869,7 @@ if (!window.Form) window.Form = {};
 			else str = data;
 			this.fireEvent('send', [this.element, str.parseQueryString()]);
 			this.request.send({data: str, url: this.element.get("action")});
+			this.clickedCleaner();
 			return this;
 		}
 
@@ -7569,269 +6908,32 @@ if (!window.Form) window.Form = {};
 	Element.implement({
 
 		formUpdate: function(update, options){
-			this.get('form.request', update, options).send();
+			this.get('formRequest', update, options).send();
 			return this;
 		}
 
 	});
 
-})();/*
----
+})();
 
-script: Fx.Reveal.js
-
-description: Defines Fx.Reveal, a class that shows and hides elements with a transition.
-
-license: MIT-style license
-
-authors:
- - Aaron Newton
-
-requires:
- - core:1.2.4/Fx.Morph
- - /Element.Shortcuts
- - /Element.Measure
-
-provides: [Fx.Reveal]
-
-...
-*/
-
-Fx.Reveal = new Class({
-
-	Extends: Fx.Morph,
-
-	options: {/*	  
-		onShow: $empty(thisElement),
-		onHide: $empty(thisElement),
-		onComplete: $empty(thisElement),
-		heightOverride: null,
-		widthOverride: null, */
-		link: 'cancel',
-		styles: ['padding', 'border', 'margin'],
-		transitionOpacity: !Browser.Engine.trident4,
-		mode: 'vertical',
-		display: 'block',
-		hideInputs: Browser.Engine.trident ? 'select, input, textarea, object, embed' : false
-	},
-
-	dissolve: function(){
-		try {
-			if (!this.hiding && !this.showing){
-				if (this.element.getStyle('display') != 'none'){
-					this.hiding = true;
-					this.showing = false;
-					this.hidden = true;
-					this.cssText = this.element.style.cssText;
-					var startStyles = this.element.getComputedSize({
-						styles: this.options.styles,
-						mode: this.options.mode
-					});
-					this.element.setStyle('display', this.options.display);
-					if (this.options.transitionOpacity) startStyles.opacity = 1;
-					var zero = {};
-					$each(startStyles, function(style, name){
-						zero[name] = [style, 0];
-					}, this);
-					this.element.setStyle('overflow', 'hidden');
-					var hideThese = this.options.hideInputs ? this.element.getElements(this.options.hideInputs) : null;
-					this.$chain.unshift(function(){
-						if (this.hidden){
-							this.hiding = false;
-							$each(startStyles, function(style, name){
-								startStyles[name] = style;
-							}, this);
-							this.element.style.cssText = this.cssText;
-							this.element.setStyle('display', 'none');
-							if (hideThese) hideThese.setStyle('visibility', 'visible');
-						}
-						this.fireEvent('hide', this.element);
-						this.callChain();
-					}.bind(this));
-					if (hideThese) hideThese.setStyle('visibility', 'hidden');
-					this.start(zero);
-				} else {
-					this.callChain.delay(10, this);
-					this.fireEvent('complete', this.element);
-					this.fireEvent('hide', this.element);
-				}
-			} else if (this.options.link == 'chain'){
-				this.chain(this.dissolve.bind(this));
-			} else if (this.options.link == 'cancel' && !this.hiding){
-				this.cancel();
-				this.dissolve();
-			}
-		} catch(e){
-			this.hiding = false;
-			this.element.setStyle('display', 'none');
-			this.callChain.delay(10, this);
-			this.fireEvent('complete', this.element);
-			this.fireEvent('hide', this.element);
-		}
-		return this;
-	},
-
-	reveal: function(){
-		try {
-			if (!this.showing && !this.hiding){
-				if (this.element.getStyle('display') == 'none' ||
-					 this.element.getStyle('visiblity') == 'hidden' ||
-					 this.element.getStyle('opacity') == 0){
-					this.showing = true;
-					this.hiding = this.hidden =  false;
-					var startStyles;
-					this.cssText = this.element.style.cssText;
-					//toggle display, but hide it
-					this.element.measure(function(){
-						//create the styles for the opened/visible state
-						startStyles = this.element.getComputedSize({
-							styles: this.options.styles,
-							mode: this.options.mode
-						});
-					}.bind(this));
-					$each(startStyles, function(style, name){
-						startStyles[name] = style;
-					});
-					//if we're overridding height/width
-					if ($chk(this.options.heightOverride)) startStyles.height = this.options.heightOverride.toInt();
-					if ($chk(this.options.widthOverride)) startStyles.width = this.options.widthOverride.toInt();
-					if (this.options.transitionOpacity) {
-						this.element.setStyle('opacity', 0);
-						startStyles.opacity = 1;
-					}
-					//create the zero state for the beginning of the transition
-					var zero = {
-						height: 0,
-						display: this.options.display
-					};
-					$each(startStyles, function(style, name){ zero[name] = 0; });
-					//set to zero
-					this.element.setStyles($merge(zero, {overflow: 'hidden'}));
-					//hide inputs
-					var hideThese = this.options.hideInputs ? this.element.getElements(this.options.hideInputs) : null;
-					if (hideThese) hideThese.setStyle('visibility', 'hidden');
-					//start the effect
-					this.start(startStyles);
-					this.$chain.unshift(function(){
-						this.element.style.cssText = this.cssText;
-						this.element.setStyle('display', this.options.display);
-						if (!this.hidden) this.showing = false;
-						if (hideThese) hideThese.setStyle('visibility', 'visible');
-						this.callChain();
-						this.fireEvent('show', this.element);
-					}.bind(this));
-				} else {
-					this.callChain();
-					this.fireEvent('complete', this.element);
-					this.fireEvent('show', this.element);
-				}
-			} else if (this.options.link == 'chain'){
-				this.chain(this.reveal.bind(this));
-			} else if (this.options.link == 'cancel' && !this.showing){
-				this.cancel();
-				this.reveal();
-			}
-		} catch(e){
-			this.element.setStyles({
-				display: this.options.display,
-				visiblity: 'visible',
-				opacity: 1
-			});
-			this.showing = false;
-			this.callChain.delay(10, this);
-			this.fireEvent('complete', this.element);
-			this.fireEvent('show', this.element);
-		}
-		return this;
-	},
-
-	toggle: function(){
-		if (this.element.getStyle('display') == 'none' ||
-			 this.element.getStyle('visiblity') == 'hidden' ||
-			 this.element.getStyle('opacity') == 0){
-			this.reveal();
-		} else {
-			this.dissolve();
-		}
-		return this;
-	},
-
-	cancel: function(){
-		this.parent.apply(this, arguments);
-		this.element.style.cssText = this.cssText;
-		this.hidding = false;
-		this.showing = false;
-	}
-
-});
-
-Element.Properties.reveal = {
-
-	set: function(options){
-		var reveal = this.retrieve('reveal');
-		if (reveal) reveal.cancel();
-		return this.eliminate('reveal').store('reveal:options', options);
-	},
-
-	get: function(options){
-		if (options || !this.retrieve('reveal')){
-			if (options || !this.retrieve('reveal:options')) this.set('reveal', options);
-			this.store('reveal', new Fx.Reveal(this, this.retrieve('reveal:options')));
-		}
-		return this.retrieve('reveal');
-	}
-
-};
-
-Element.Properties.dissolve = Element.Properties.reveal;
-
-Element.implement({
-
-	reveal: function(options){
-		this.get('reveal', options).reveal();
-		return this;
-	},
-
-	dissolve: function(options){
-		this.get('reveal', options).dissolve();
-		return this;
-	},
-
-	nix: function(){
-		var params = Array.link(arguments, {destroy: Boolean.type, options: Object.type});
-		this.get('reveal', params.options).dissolve().chain(function(){
-			this[params.destroy ? 'destroy' : 'dispose']();
-		}.bind(this));
-		return this;
-	},
-
-	wink: function(){
-		var params = Array.link(arguments, {duration: Number.type, options: Object.type});
-		var reveal = this.get('reveal', params.options);
-		reveal.reveal().chain(function(){
-			(function(){
-				reveal.dissolve();
-			}).delay(params.duration || 2000);
-		});
-	}
-
-
-});/*
+/*
 ---
 
 script: Form.Request.Append.js
+
+name: Form.Request.Append
 
 description: Handles the basic functionality of submitting a form and updating a dom element with the result. The result is appended to the DOM element instead of replacing its contents.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - /Form.Request
- - /Fx.Reveal
- - /Elements.from
+  - /Form.Request
+  - /Fx.Reveal
+  - /Elements.from
 
 provides: [Form.Request.Append]
 
@@ -7889,87 +6991,35 @@ Form.Request.Append = new Class({
 		});
 	}
 
-});/*
----
-
-script: Form.Validator.English.js
-
-description: Form Validator messages for English.
-
-license: MIT-style license
-
-authors:
- - Aaron Newton
-
-requires:
- - /Lang
- - /Form.Validator
-
-provides: [Form.Validator.English]
-
-...
-*/
-
-MooTools.lang.set('en-US', 'Form.Validator', {
-
-	required:'This field is required.',
-	minLength:'Please enter at least {minLength} characters (you entered {length} characters).',
-	maxLength:'Please enter no more than {maxLength} characters (you entered {length} characters).',
-	integer:'Please enter an integer in this field. Numbers with decimals (e.g. 1.25) are not permitted.',
-	numeric:'Please enter only numeric values in this field (i.e. "1" or "1.1" or "-1" or "-1.1").',
-	digits:'Please use numbers and punctuation only in this field (for example, a phone number with dashes or dots is permitted).',
-	alpha:'Please use letters only (a-z) with in this field. No spaces or other characters are allowed.',
-	alphanum:'Please use only letters (a-z) or numbers (0-9) only in this field. No spaces or other characters are allowed.',
-	dateSuchAs:'Please enter a valid date such as {date}',
-	dateInFormatMDY:'Please enter a valid date such as MM/DD/YYYY (i.e. "12/31/1999")',
-	email:'Please enter a valid email address. For example "fred@domain.com".',
-	url:'Please enter a valid URL such as http://www.google.com.',
-	currencyDollar:'Please enter a valid $ amount. For example $100.00 .',
-	oneRequired:'Please enter something for at least one of these inputs.',
-	errorPrefix: 'Error: ',
-	warningPrefix: 'Warning: ',
-
-	//Form.Validator.Extras
-
-	noSpace: 'There can be no spaces in this input.',
-	reqChkByNode: 'No items are selected.',
-	requiredChk: 'This field is required.',
-	reqChkByName: 'Please select a {label}.',
-	match: 'This field needs to match the {matchName} field',
-	startDate: 'the start date',
-	endDate: 'the end date',
-	currendDate: 'the current date',
-	afterDate: 'The date should be the same or after {label}.',
-	beforeDate: 'The date should be the same or before {label}.',
-	startMonth: 'Please select a start month',
-	sameMonth: 'These two dates must be in the same month - you must change one or the other.',
-	creditcard: 'The credit card number entered is invalid. Please check the number and try again. {length} digits entered.'
-
 });
+
 /*
 ---
 
 script: Form.Validator.js
+
+name: Form.Validator
 
 description: A css-class based form validation system.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Options
- - core:1.2.4/Events
- - core:1.2.4/Selectors
- - core:1.2.4/Element.Event
- - core:1.2.4/Element.Style
- - core:1.2.4/JSON
- - /Lang
- - /Class.Binds
- - /Date Element.Forms
- - /Form.Validator.English
- - /Element.Shortcuts
+  - Core/Options
+  - Core/Events
+  - Core/Selectors
+  - Core/Element.Event
+  - Core/Element.Style
+  - Core/JSON
+  - /Lang
+  - /Class.Binds
+  - /Date
+  - /Element.Forms
+  - /Form.Validator.English
+  - /Element.Shortcuts
 
 provides: [Form.Validator, InputValidator, FormValidator.BaseValidators]
 
@@ -8175,10 +7225,9 @@ Form.Validator = new Class({
 		field = document.id(field);
 		if((this.options.ignoreHidden && !field.isVisible()) || (this.options.ignoreDisabled && field.get('disabled'))) return true;
 		var validator = this.getValidator(className);
-		if (field.hasClass('ignoreValidation')) return true;
 		warn = $pick(warn, false);
 		if (field.hasClass('warnOnly')) warn = true;
-		var isValid = validator ? validator.test(field) : true;
+		var isValid = field.hasClass('ignoreValidation') || (validator ? validator.test(field) : true);
 		if (validator && field.isVisible()) this.fireEvent('elementValidate', [isValid, field, className, warn]);
 		if (warn) return true;
 		return isValid;
@@ -8402,7 +7451,7 @@ Form.Validator.addAllThese([
 	['validate-one-required', {
 		errorMsg: Form.Validator.getMsg.pass('oneRequired'),
 		test: function(element, props){
-			var p = document.id(props['validate-one-required']) || element.getParent();
+			var p = document.id(props['validate-one-required']) || element.getParent(props['validate-one-required']);
 			return p.getElements('input').some(function(el){
 				if (['checkbox', 'radio'].contains(el.get('type'))) return el.get('checked');
 				return el.get('value');
@@ -8417,7 +7466,7 @@ Element.Properties.validator = {
 	set: function(options){
 		var validator = this.retrieve('validator');
 		if (validator) validator.setOptions(options);
-		return this.store('validator:options');
+		return this.store('validator:options', options);
 	},
 
 	get: function(options){
@@ -8433,26 +7482,31 @@ Element.Properties.validator = {
 Element.implement({
 
 	validate: function(options){
-		this.set('validator', options);
+		if (options) this.set('validator', options);
 		return this.get('validator', options).validate();
 	}
 
 });
 //legacy
-var FormValidator = Form.Validator;/*
+var FormValidator = Form.Validator;
+
+
+/*
 ---
 
 script: Form.Validator.Inline.js
+
+name: Form.Validator.Inline
 
 description: Extends Form.Validator to add inline messages.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - /Form.Validator
+  - /Form.Validator
 
 provides: [Form.Validator.Inline]
 
@@ -8464,7 +7518,17 @@ Form.Validator.Inline = new Class({
 	Extends: Form.Validator,
 
 	options: {
+		showError: function(errorElement){
+			if (errorElement.reveal) errorElement.reveal();
+			else errorElement.setStyle('display', 'block');
+		},
+		hideError: function(errorElement){
+			if (errorElement.dissolve) errorElement.dissolve();
+			else errorElement.setStyle('display', 'none');
+		},
 		scrollToErrorsOnSubmit: true,
+		scrollToErrorsOnBlur: false,
+		scrollToErrorsOnChange: false,
 		scrollFxOptions: {
 			transition: 'quad:out',
 			offset: {
@@ -8499,7 +7563,7 @@ Form.Validator.Inline = new Class({
 			advice = new Element('div', {
 				html: errorMsg,
 				styles: { display: 'none' },
-				id: 'advice-' + className + '-' + this.getFieldId(field)
+				id: 'advice-' + className.split(':')[0] + '-' + this.getFieldId(field)
 			}).addClass(cssClass);
 		}
 		field.store('advice-' + className, advice);
@@ -8517,8 +7581,8 @@ Form.Validator.Inline = new Class({
 				|| advice.getStyle('visiblity') == 'hidden'
 				|| advice.getStyle('opacity') == 0)){
 			field.store(this.getPropName(className), true);
-			if (advice.reveal) advice.reveal();
-			else advice.setStyle('display', 'block');
+			this.options.showError(advice);
+			this.fireEvent('showAdvice', [field, advice, className]);
 		}
 	},
 
@@ -8526,9 +7590,8 @@ Form.Validator.Inline = new Class({
 		var advice = this.getAdvice(className, field);
 		if (advice && field.retrieve(this.getPropName(className))){
 			field.store(this.getPropName(className), false);
-			//if Fx.Reveal.js is present, transition the advice out
-			if (advice.dissolve) advice.dissolve();
-			else advice.setStyle('display', 'none');
+			this.options.hideError(advice);
+			this.fireEvent('hideAdvice', [field, advice, className]);
 		}
 	},
 
@@ -8580,9 +7643,9 @@ Form.Validator.Inline = new Class({
 		}
 	},
 
-	validateField: function(field, force){
+	validateField: function(field, force, scroll){
 		var result = this.parent(field, force);
-		if (this.options.scrollToErrorsOnSubmit && !result){
+		if (((this.options.scrollToErrorsOnSubmit && scroll === undefined) || scroll) && !result){
 			var failed = document.id(this).getElement('.validation-failed');
 			var par = document.id(this).getParent();
 			while (par != document.body && par.getScrollSize().y == par.getSize().y){
@@ -8599,23 +7662,38 @@ Form.Validator.Inline = new Class({
 			}
 		}
 		return result;
+	},
+
+	watchFields: function(fields){
+		fields.each(function(el){
+			if (this.options.evaluateFieldsOnBlur){
+				el.addEvent('blur', this.validationMonitor.pass([el, false, this.options.scrollToErrorsOnBlur], this));
+			}
+			if (this.options.evaluateFieldsOnChange){
+				el.addEvent('change', this.validationMonitor.pass([el, true, this.options.scrollToErrorsOnChange], this));
+			}
+		}, this);
 	}
 
 });
+
+
 /*
 ---
 
 script: Form.Validator.Extras.js
+
+name: Form.Validator.Extras
 
 description: Additional validators for the Form.Validator class.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - /Form.Validator
+  - /Form.Validator
 
 provides: [Form.Validator.Extras]
 
@@ -8625,27 +7703,32 @@ Form.Validator.addAllThese([
 
 	['validate-enforce-oncheck', {
 		test: function(element, props){
-			if (element.checked){
-				var fv = element.getParent('form').retrieve('validator');
-				if (!fv) return true;
-				(props.toEnforce || document.id(props.enforceChildrenOf).getElements('input, select, textarea')).map(function(item){
+			var fv = element.getParent('form').retrieve('validator');
+			if (!fv) return true;
+			(props.toEnforce || document.id(props.enforceChildrenOf).getElements('input, select, textarea')).map(function(item){
+				if (element.checked) {
 					fv.enforceField(item);
-				});
-			}
+				} else {
+					fv.ignoreField(item);
+					fv.resetField(item);
+				}
+			});
 			return true;
 		}
 	}],
 
 	['validate-ignore-oncheck', {
 		test: function(element, props){
-			if (element.checked){
-				var fv = element.getParent('form').retrieve('validator');
-				if (!fv) return true;
-				(props.toIgnore || document.id(props.ignoreChildrenOf).getElements('input, select, textarea')).each(function(item){
+			var fv = element.getParent('form').retrieve('validator');
+			if (!fv) return true;
+			(props.toIgnore || document.id(props.ignoreChildrenOf).getElements('input, select, textarea')).each(function(item){
+				if (element.checked) {
 					fv.ignoreField(item);
 					fv.resetField(item);
-				});
-			}
+				} else {
+					fv.enforceField(item);
+				}
+			});
 			return true;
 		}
 	}],
@@ -8823,26 +7906,30 @@ Form.Validator.addAllThese([
 	}]
 
 
-]);/*
+]);
+
+/*
 ---
 
 script: OverText.js
+
+name: OverText
 
 description: Shows text over an input that disappears when the user clicks into it. The text remains hidden if the user adds a value.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Options
- - core:1.2.4/Events
- - core:1.2.4/Element.Event
- - /Class.Binds
- - /Class.Occlude
- - /Element.Position
- - /Element.Shortcuts
+  - Core/Options
+  - Core/Events
+  - Core/Element.Event
+  - /Class.Binds
+  - /Class.Occlude
+  - /Element.Position
+  - /Element.Shortcuts
 
 provides: [OverText]
 
@@ -8920,14 +8007,38 @@ var OverText = new Class({
 			}).adopt(this.text).inject(this.element, 'before');
 		}
 
+		return this.enable();
+	},
+
+	destroy: function(){
+		this.element.eliminate('OverTextDiv').eliminate('OverText');
+		this.disable();
+		if (this.text) this.text.destroy();
+		if (this.textHolder) this.textHolder.destroy();
+		return this;
+	},
+
+	disable: function(){
+		this.element.removeEvents({
+			focus: this.focus,
+			blur: this.assert,
+			change: this.assert
+		});
+		window.removeEvent('resize', this.reposition);
+		this.hide(true, true);
+		return this;
+	},
+
+	enable: function(){
 		this.element.addEvents({
 			focus: this.focus,
 			blur: this.assert,
 			change: this.assert
-		}).store('OverTextDiv', this.text);
-		window.addEvent('resize', this.reposition.bind(this));
+		});
+		window.addEvent('resize', this.reposition);
 		this.assert(true);
 		this.reposition();
+		return this;
 	},
 
 	wrap: function(){
@@ -9018,7 +8129,7 @@ $extend(OverText, {
 			return null; //the input or the text was destroyed
 		});
 	},
-	
+
 	update: function(){
 
 		return OverText.each(function(ot){
@@ -9047,21 +8158,25 @@ if (window.Fx && Fx.Reveal) {
 	Fx.Reveal.implement({
 		hideInputs: Browser.Engine.trident ? 'select, input, textarea, object, embed, .overTxtLabel' : false
 	});
-}/*
+}
+
+/*
 ---
 
 script: Fx.Elements.js
+
+name: Fx.Elements
 
 description: Effect to change any number of CSS properties of any number of Elements.
 
 license: MIT-style license
 
 authors:
- - Valerio Proietti
+  - Valerio Proietti
 
 requires:
- - core:1.2.4/Fx.CSS
- - /MooTools.More
+  - Core/Fx.CSS
+  - /MooTools.More
 
 provides: [Fx.Elements]
 
@@ -9079,50 +8194,65 @@ Fx.Elements = new Class({
 
 	compute: function(from, to, delta){
 		var now = {};
+
 		for (var i in from){
 			var iFrom = from[i], iTo = to[i], iNow = now[i] = {};
 			for (var p in iFrom) iNow[p] = this.parent(iFrom[p], iTo[p], delta);
 		}
+
 		return now;
 	},
 
 	set: function(now){
 		for (var i in now){
+			if (!this.elements[i]) continue;
+
 			var iNow = now[i];
 			for (var p in iNow) this.render(this.elements[i], p, iNow[p], this.options.unit);
 		}
+
 		return this;
 	},
 
 	start: function(obj){
 		if (!this.check(obj)) return this;
 		var from = {}, to = {};
+
 		for (var i in obj){
+			if (!this.elements[i]) continue;
+
 			var iProps = obj[i], iFrom = from[i] = {}, iTo = to[i] = {};
+
 			for (var p in iProps){
 				var parsed = this.prepare(this.elements[i], p, iProps[p]);
 				iFrom[p] = parsed.from;
 				iTo[p] = parsed.to;
 			}
 		}
+
 		return this.parent(from, to);
 	}
 
-});/*
+});
+
+
+/*
 ---
 
 script: Fx.Accordion.js
+
+name: Fx.Accordion
 
 description: An Fx.Elements extension which allows you to easily create accordion type controls.
 
 license: MIT-style license
 
 authors:
- - Valerio Proietti
+  - Valerio Proietti
 
 requires:
- - core:1.2.4/Element.Event
- - /Fx.Elements
+  - Core/Element.Event
+  - /Fx.Elements
 
 provides: [Fx.Accordion]
 
@@ -9136,9 +8266,9 @@ Fx.Accordion = new Class({
 	options: {/*
 		onActive: $empty(toggler, section),
 		onBackground: $empty(toggler, section),
+		*/
 		fixedHeight: false,
 		fixedWidth: false,
-		*/
 		display: 0,
 		show: false,
 		height: true,
@@ -9209,15 +8339,33 @@ Fx.Accordion = new Class({
 		return this;
 	},
 
-	detach: function(){
-		this.togglers.each(function(toggler) {
+	removeSection: function(toggler, displayIndex) {
+		var idx = this.togglers.indexOf(toggler);
+		var element = this.elements[idx];
+		var remover = function(){
+			this.togglers.erase(toggler);
+			this.elements.erase(element);
+			this.detach(toggler);
+		}.bind(this);
+		if (this.now == idx || displayIndex != undefined) this.display($pick(displayIndex, idx - 1 >= 0 ? idx - 1 : 0)).chain(remover);
+		else remover();
+		return this;
+	},
+
+	detach: function(toggler){
+		var remove = function(toggler) {
 			toggler.removeEvent(this.options.trigger, toggler.retrieve('accordion:display'));
-		}, this);
+		}.bind(this);
+		if (!toggler) this.togglers.each(remove);
+		else remove(toggler);
+		return this;
 	},
 
 	display: function(index, useFx){
 		if (!this.check(index, useFx)) return this;
 		useFx = $pick(useFx, true);
+		index = ($type(index) == 'element') ? this.elements.indexOf(index) : index;
+		if (index == this.previous && !this.options.alwaysHide) return this;
 		if (this.options.returnHeightToAuto){
 			var prev = this.elements[this.previous];
 			if (prev && !this.selfHidden){
@@ -9226,7 +8374,6 @@ Fx.Accordion = new Class({
 				}
 			}
 		}
-		index = ($type(index) == 'element') ? this.elements.indexOf(index) : index;
 		if ((this.timer && this.options.wait) || (index === this.previous && !this.options.alwaysHide)) return this;
 		this.previous = index;
 		var obj = {};
@@ -9242,6 +8389,7 @@ Fx.Accordion = new Class({
 			this.fireEvent(hide ? 'background' : 'active', [this.togglers[i], el]);
 			for (var fx in this.effects) obj[i][fx] = hide ? 0 : el[this.effects[fx]];
 		}, this);
+		this.internalChain.clearChain();
 		this.internalChain.chain(function(){
 			if (this.options.returnHeightToAuto && !this.selfHidden){
 				var el = this.elements[index];
@@ -9282,21 +8430,25 @@ var Accordion = new Class({
 		return this.parent.apply(this, arguments);
 	}
 
-});/*
+});
+
+/*
 ---
 
 script: Fx.Move.js
+
+name: Fx.Move
 
 description: Defines Fx.Move, a class that works with Element.Position.js to transition an element from one location to another.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Fx.Morph
- - /Element.Position
+  - Core/Fx.Morph
+  - /Element.Position
 
 provides: [Fx.Move]
 
@@ -9315,7 +8467,12 @@ Fx.Move = new Class({
 	},
 
 	start: function(destination){
-		return this.parent(this.element.position($merge(this.options, destination, {returnPos: true})));
+		var element = this.element,
+			topLeft = element.getStyles('top', 'left');
+		if (topLeft.top == 'auto' || topLeft.left == 'auto'){
+			element.setPosition(element.getPosition(element.getOffsetParent()));
+		}
+		return this.parent(element.position($merge(this.options, destination, {returnPos: true})));
 	}
 
 });
@@ -9346,23 +8503,272 @@ Element.implement({
 	}
 
 });
+
+
+/*
+---
+
+script: Fx.Reveal.js
+
+name: Fx.Reveal
+
+description: Defines Fx.Reveal, a class that shows and hides elements with a transition.
+
+license: MIT-style license
+
+authors:
+  - Aaron Newton
+
+requires:
+  - Core/Fx.Morph
+  - /Element.Shortcuts
+  - /Element.Measure
+
+provides: [Fx.Reveal]
+
+...
+*/
+
+Fx.Reveal = new Class({
+
+	Extends: Fx.Morph,
+
+	options: {/*
+		onShow: $empty(thisElement),
+		onHide: $empty(thisElement),
+		onComplete: $empty(thisElement),
+		heightOverride: null,
+		widthOverride: null, */
+		link: 'cancel',
+		styles: ['padding', 'border', 'margin'],
+		transitionOpacity: !Browser.Engine.trident4,
+		mode: 'vertical',
+		display: function(){
+			return this.element.get('tag') != 'tr' ? 'block' : 'table-row';
+		},
+		hideInputs: Browser.Engine.trident ? 'select, input, textarea, object, embed' : false,
+		opacity: 1
+	},
+
+	dissolve: function(){
+		try {
+			if (!this.hiding && !this.showing){
+				if (this.element.getStyle('display') != 'none'){
+					this.hiding = true;
+					this.showing = false;
+					this.hidden = true;
+					this.cssText = this.element.style.cssText;
+					var startStyles = this.element.getComputedSize({
+						styles: this.options.styles,
+						mode: this.options.mode
+					});
+					this.element.setStyle('display', $lambda(this.options.display).apply(this));
+					if (this.options.transitionOpacity) startStyles.opacity = this.options.opacity;
+					var zero = {};
+					$each(startStyles, function(style, name){
+						zero[name] = [style, 0];
+					}, this);
+					this.element.setStyle('overflow', 'hidden');
+					var hideThese = this.options.hideInputs ? this.element.getElements(this.options.hideInputs) : null;
+					this.$chain.unshift(function(){
+						if (this.hidden){
+							this.hiding = false;
+							$each(startStyles, function(style, name){
+								startStyles[name] = style;
+							}, this);
+							this.element.style.cssText = this.cssText;
+							this.element.setStyle('display', 'none');
+							if (hideThese) hideThese.setStyle('visibility', 'visible');
+						}
+						this.fireEvent('hide', this.element);
+						this.callChain();
+					}.bind(this));
+					if (hideThese) hideThese.setStyle('visibility', 'hidden');
+					this.start(zero);
+				} else {
+					this.callChain.delay(10, this);
+					this.fireEvent('complete', this.element);
+					this.fireEvent('hide', this.element);
+				}
+			} else if (this.options.link == 'chain'){
+				this.chain(this.dissolve.bind(this));
+			} else if (this.options.link == 'cancel' && !this.hiding){
+				this.cancel();
+				this.dissolve();
+			}
+		} catch(e){
+			this.hiding = false;
+			this.element.setStyle('display', 'none');
+			this.callChain.delay(10, this);
+			this.fireEvent('complete', this.element);
+			this.fireEvent('hide', this.element);
+		}
+		return this;
+	},
+
+	reveal: function(){
+		try {
+			if (!this.showing && !this.hiding){
+				if (this.element.getStyle('display') == 'none'){
+					this.showing = true;
+					this.hiding = this.hidden =  false;
+					var startStyles;
+					this.cssText = this.element.style.cssText;
+					//toggle display, but hide it
+					this.element.measure(function(){
+						//create the styles for the opened/visible state
+						startStyles = this.element.getComputedSize({
+							styles: this.options.styles,
+							mode: this.options.mode
+						});
+					}.bind(this));
+					$each(startStyles, function(style, name){
+						startStyles[name] = style;
+					});
+					//if we're overridding height/width
+					if ($chk(this.options.heightOverride)) startStyles.height = this.options.heightOverride.toInt();
+					if ($chk(this.options.widthOverride)) startStyles.width = this.options.widthOverride.toInt();
+					if (this.options.transitionOpacity) {
+						this.element.setStyle('opacity', 0);
+						startStyles.opacity = this.options.opacity;
+					}
+					//create the zero state for the beginning of the transition
+					var zero = {
+						height: 0,
+						display: $lambda(this.options.display).apply(this)
+					};
+					$each(startStyles, function(style, name){ zero[name] = 0; });
+					//set to zero
+					this.element.setStyles($merge(zero, {overflow: 'hidden'}));
+					//hide inputs
+					var hideThese = this.options.hideInputs ? this.element.getElements(this.options.hideInputs) : null;
+					if (hideThese) hideThese.setStyle('visibility', 'hidden');
+					//start the effect
+					this.start(startStyles);
+					this.$chain.unshift(function(){
+						this.element.style.cssText = this.cssText;
+						this.element.setStyle('display', $lambda(this.options.display).apply(this));
+						if (!this.hidden) this.showing = false;
+						if (hideThese) hideThese.setStyle('visibility', 'visible');
+						this.callChain();
+						this.fireEvent('show', this.element);
+					}.bind(this));
+				} else {
+					this.callChain();
+					this.fireEvent('complete', this.element);
+					this.fireEvent('show', this.element);
+				}
+			} else if (this.options.link == 'chain'){
+				this.chain(this.reveal.bind(this));
+			} else if (this.options.link == 'cancel' && !this.showing){
+				this.cancel();
+				this.reveal();
+			}
+		} catch(e){
+			this.element.setStyles({
+				display: $lambda(this.options.display).apply(this),
+				visiblity: 'visible',
+				opacity: this.options.opacity
+			});
+			this.showing = false;
+			this.callChain.delay(10, this);
+			this.fireEvent('complete', this.element);
+			this.fireEvent('show', this.element);
+		}
+		return this;
+	},
+
+	toggle: function(){
+		if (this.element.getStyle('display') == 'none'){
+			this.reveal();
+		} else {
+			this.dissolve();
+		}
+		return this;
+	},
+
+	cancel: function(){
+		this.parent.apply(this, arguments);
+		this.element.style.cssText = this.cssText;
+		this.hiding = false;
+		this.showing = false;
+		return this;
+	}
+
+});
+
+Element.Properties.reveal = {
+
+	set: function(options){
+		var reveal = this.retrieve('reveal');
+		if (reveal) reveal.cancel();
+		return this.eliminate('reveal').store('reveal:options', options);
+	},
+
+	get: function(options){
+		if (options || !this.retrieve('reveal')){
+			if (options || !this.retrieve('reveal:options')) this.set('reveal', options);
+			this.store('reveal', new Fx.Reveal(this, this.retrieve('reveal:options')));
+		}
+		return this.retrieve('reveal');
+	}
+
+};
+
+Element.Properties.dissolve = Element.Properties.reveal;
+
+Element.implement({
+
+	reveal: function(options){
+		this.get('reveal', options).reveal();
+		return this;
+	},
+
+	dissolve: function(options){
+		this.get('reveal', options).dissolve();
+		return this;
+	},
+
+	nix: function(){
+		var params = Array.link(arguments, {destroy: Boolean.type, options: Object.type});
+		this.get('reveal', params.options).dissolve().chain(function(){
+			this[params.destroy ? 'destroy' : 'dispose']();
+		}.bind(this));
+		return this;
+	},
+
+	wink: function(){
+		var params = Array.link(arguments, {duration: Number.type, options: Object.type});
+		var reveal = this.get('reveal', params.options);
+		reveal.reveal().chain(function(){
+			(function(){
+				reveal.dissolve();
+			}).delay(params.duration || 2000);
+		});
+	}
+
+
+});
+
 /*
 ---
 
 script: Fx.Scroll.js
+
+name: Fx.Scroll
 
 description: Effect to smoothly scroll any element, including the window.
 
 license: MIT-style license
 
 authors:
- - Valerio Proietti
+  - Valerio Proietti
 
 requires:
- - core:1.2.4/Fx
- - core:1.2.4/Element.Event
- - core:1.2.4/Element.Dimensions
- - /MooTools.More
+  - Core/Fx
+  - Core/Element.Event
+  - Core/Element.Dimensions
+  - /MooTools.More
 
 provides: [Fx.Scroll]
 
@@ -9400,7 +8806,7 @@ Fx.Scroll = new Class({
 	set: function(){
 		var now = Array.flatten(arguments);
 		if (Browser.Engine.gecko) now = [Math.round(now[0]), Math.round(now[1])];
-		this.element.scrollTo(now[0], now[1]);
+		this.element.scrollTo(now[0] + this.options.offset.x, now[1] + this.options.offset.y);
 	},
 
 	compute: function(from, to, delta){
@@ -9412,7 +8818,7 @@ Fx.Scroll = new Class({
 	start: function(x, y){
 		if (!this.check(x, y)) return this;
 		var scrollSize = this.element.getScrollSize(),
-			scroll = this.element.getScroll(), 
+			scroll = this.element.getScroll(),
 			values = {x: x, y: y};
 		for (var z in values){
 			var max = scrollSize[z];
@@ -9493,21 +8899,26 @@ Fx.Scroll = new Class({
 	}
 
 });
+
+
 /*
 ---
 
 script: Fx.Slide.js
+
+name: Fx.Slide
 
 description: Effect to slide an element in and out of view.
 
 license: MIT-style license
 
 authors:
- - Valerio Proietti
+  - Valerio Proietti
 
 requires:
- - core:1.2.4/Fx Element.Style
- - /MooTools.More
+  - Core/Fx
+  - Core/Element.Style
+  - /MooTools.More
 
 provides: [Fx.Slide]
 
@@ -9521,13 +8932,14 @@ Fx.Slide = new Class({
 	options: {
 		mode: 'vertical',
 		wrapper: false,
-		hideOverflow: true
+		hideOverflow: true,
+		resetHeight: false
 	},
 
 	initialize: function(element, options){
 		this.addEvent('complete', function(){
 			this.open = (this.wrapper['offset' + this.layout.capitalize()] != 0);
-			if (this.open) this.wrapper.setStyle('height', '');
+			if (this.open && this.options.resetHeight) this.wrapper.setStyle('height', '');
 			if (this.open && Browser.Engine.webkit419) this.element.dispose().inject(this.wrapper);
 		}, true);
 		this.element = this.subject = document.id(element);
@@ -9649,21 +9061,25 @@ Element.implement({
 	}
 
 });
+
+
 /*
 ---
 
 script: Fx.SmoothScroll.js
+
+name: Fx.SmoothScroll
 
 description: Class for creating a smooth scrolling effect to all internal links on the page.
 
 license: MIT-style license
 
 authors:
- - Valerio Proietti
+  - Valerio Proietti
 
 requires:
- - core:1.2.4/Selectors
- - /Fx.Scroll
+  - Core/Selectors
+  - /Fx.Scroll
 
 provides: [Fx.SmoothScroll]
 
@@ -9707,22 +9123,26 @@ var SmoothScroll = Fx.SmoothScroll = new Class({
 			}
 		}.bind(this));
 	}
-});/*
+});
+
+/*
 ---
 
 script: Fx.Sort.js
+
+name: Fx.Sort
 
 description: Defines Fx.Sort, a class that reorders lists with a transition.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Element.Dimensions
- - /Fx.Elements
- - /Element.Measure
+  - Core/Element.Dimensions
+  - /Fx.Elements
+  - /Element.Measure
 
 provides: [Fx.Sort]
 
@@ -9776,10 +9196,10 @@ Fx.Sort = new Class({
 				};
 				left += val.width;
 			}
-			var plain = vert ? 'top' : 'left';
+			var plane = vert ? 'top' : 'left';
 			zero[index] = {};
-			var start = el.getStyle(plain).toInt();
-			zero[index][plain] = start || 0;
+			var start = el.getStyle(plane).toInt();
+			zero[index][plane] = start || 0;
 			return val;
 		}, this);
 		this.set(zero);
@@ -9858,37 +9278,42 @@ Fx.Sort = new Class({
 	swap: function(one, two){
 		if ($type(one) == 'element') one = this.elements.indexOf(one);
 		if ($type(two) == 'element') two = this.elements.indexOf(two);
-		
+
 		var newOrder = $A(this.currentOrder);
 		newOrder[this.currentOrder.indexOf(one)] = two;
 		newOrder[this.currentOrder.indexOf(two)] = one;
 		return this.sort(newOrder);
 	}
 
-});/*
+});
+
+/*
 ---
 
 script: Drag.js
+
+name: Drag
 
 description: The base Drag Class. Can be used to drag and resize Elements using mouse events.
 
 license: MIT-style license
 
 authors:
- - Valerio Proietti
- - Tom Occhinno
- - Jan Kassens
+  - Valerio Proietti
+  - Tom Occhinno
+  - Jan Kassens
 
 requires:
- - core:1.2.4/Events
- - core:1.2.4/Options
- - core:1.2.4/Element.Event
- - core:1.2.4/Element.Style
- - /MooTools.More
+  - Core/Events
+  - Core/Options
+  - Core/Element.Event
+  - Core/Element.Style
+  - Core/Element.Dimensions
+  - /MooTools.More
 
 provides: [Drag]
-
 ...
+
 */
 
 var Drag = new Class({
@@ -9955,18 +9380,41 @@ var Drag = new Class({
 		this.fireEvent('beforeStart', this.element);
 		var limit = this.options.limit;
 		this.limit = {x: [], y: []};
-		for (var z in this.options.modifiers){
+		var styles = this.element.getStyles('left', 'right', 'top', 'bottom');
+		this._invert = {
+			x: this.options.modifiers.x == 'left' && styles.left == 'auto' &&
+			   !isNaN(styles.right.toInt()) && (this.options.modifiers.x = 'right'),
+			y: this.options.modifiers.y == 'top' && styles.top == 'auto' &&
+			   !isNaN(styles.bottom.toInt()) && (this.options.modifiers.y = 'bottom')
+		};
+
+		var z, coordinates;
+		for (z in this.options.modifiers){
 			if (!this.options.modifiers[z]) continue;
-			if (this.options.style) this.value.now[z] = this.element.getStyle(this.options.modifiers[z]).toInt();
+
+			var style = this.element.getStyle(this.options.modifiers[z]);
+
+			// Some browsers (IE and Opera) don't always return pixels.
+			if (style && !style.match(/px$/)){
+				if (!coordinates) coordinates = this.element.getCoordinates(this.element.getOffsetParent());
+				style = coordinates[this.options.modifiers[z]];
+			}
+
+			if (this.options.style) this.value.now[z] = (style || 0).toInt();
 			else this.value.now[z] = this.element[this.options.modifiers[z]];
+
 			if (this.options.invert) this.value.now[z] *= -1;
+			if (this._invert[z]) this.value.now[z] *= -1;
+
 			this.mouse.pos[z] = event.page[z] - this.value.now[z];
+
 			if (limit && limit[z]){
 				for (var i = 2; i--; i){
 					if ($chk(limit[z][i])) this.limit[z][i] = $lambda(limit[z][i])();
 				}
 			}
 		}
+
 		if ($type(this.options.grid) == 'number') this.options.grid = {x: this.options.grid, y: this.options.grid};
 		this.document.addEvents({mousemove: this.bound.check, mouseup: this.bound.cancel});
 		this.document.addEvent(this.selection, this.bound.eventStop);
@@ -9992,6 +9440,7 @@ var Drag = new Class({
 			if (!this.options.modifiers[z]) continue;
 			this.value.now[z] = this.mouse.now[z] - this.mouse.pos[z];
 			if (this.options.invert) this.value.now[z] *= -1;
+			if (this._invert[z]) this.value.now[z] *= -1;
 			if (this.options.limit && this.limit[z]){
 				if ($chk(this.limit[z][1]) && (this.value.now[z] > this.limit[z][1])){
 					this.value.now[z] = this.limit[z][1];
@@ -10038,25 +9487,29 @@ Element.implement({
 	}
 
 });
+
+
 /*
 ---
 
 script: Drag.Move.js
+
+name: Drag.Move
 
 description: A Drag extension that provides support for the constraining of draggables to containers and droppables.
 
 license: MIT-style license
 
 authors:
- - Valerio Proietti
- - Tom Occhinno
- - Jan Kassens
- - Aaron Newton
- - Scott Kyle
+  - Valerio Proietti
+  - Tom Occhinno
+  - Jan Kassens
+  - Aaron Newton
+  - Scott Kyle
 
 requires:
- - core:1.2.4/Element.Dimensions
- - /Drag
+  - Core/Element.Dimensions
+  - /Drag
 
 provides: [Drag.Move]
 
@@ -10081,19 +9534,29 @@ Drag.Move = new Class({
 	initialize: function(element, options){
 		this.parent(element, options);
 		element = this.element;
-		
+
 		this.droppables = $$(this.options.droppables);
 		this.container = document.id(this.options.container);
-		
+
 		if (this.container && $type(this.container) != 'element')
 			this.container = document.id(this.container.getDocument().body);
-		
-		var styles = element.getStyles('left', 'top', 'position');
-		if (styles.left == 'auto' || styles.top == 'auto')
-			element.setPosition(element.getPosition(element.getOffsetParent()));
-		
-		if (styles.position == 'static')
-			element.setStyle('position', 'absolute');
+
+		if (this.options.style){
+			if (this.options.modifiers.x == "left" && this.options.modifiers.y == "top"){
+				var parentStyles,
+					parent = document.id(element.getOffsetParent());
+				if (parent) parentStyles = parent.getStyles('border-top-width', 'border-left-width');
+
+				var styles = element.getStyles('left', 'top');
+				if (parent && (styles.left == 'auto' || styles.top == 'auto')){
+					var parentPosition = element.getPosition(parent);
+					parentPosition.x = parentPosition.x - (parentStyles['border-left-width'] ? parentStyles['border-left-width'].toInt() : 0);
+					parentPosition.y = parentPosition.y - (parentStyles['border-top-width'] ? parentStyles['border-top-width'].toInt() : 0);
+					element.setPosition(parentPosition);
+				}
+			}
+			if (element.getStyle('position') == 'static') element.setStyle('position', 'absolute');
+		}
 
 		this.addEvent('start', this.checkDroppables, true);
 
@@ -10102,23 +9565,24 @@ Drag.Move = new Class({
 
 	start: function(event){
 		if (this.container) this.options.limit = this.calculateLimit();
-		
+
 		if (this.options.precalculate){
 			this.positions = this.droppables.map(function(el){
 				return el.getCoordinates();
 			});
 		}
-		
+
 		this.parent(event);
 	},
-	
+
 	calculateLimit: function(){
-		var offsetParent = this.element.getOffsetParent(),
+		var offsetParent = document.id(this.element.getOffsetParent()) || document.body,
 			containerCoordinates = this.container.getCoordinates(offsetParent),
 			containerBorder = {},
 			elementMargin = {},
 			elementBorder = {},
 			containerMargin = {},
+			offsetParentBorder = {},
 			offsetParentPadding = {};
 
 		['top', 'right', 'bottom', 'left'].each(function(pad){
@@ -10127,6 +9591,7 @@ Drag.Move = new Class({
 			elementMargin[pad] = this.element.getStyle('margin-' + pad).toInt();
 			containerMargin[pad] = this.container.getStyle('margin-' + pad).toInt();
 			offsetParentPadding[pad] = offsetParent.getStyle('padding-' + pad).toInt();
+			offsetParentBorder[pad] = offsetParent.getStyle('border-' + pad).toInt();
 		}, this);
 
 		var width = this.element.offsetWidth + elementMargin.left + elementMargin.right,
@@ -10143,17 +9608,17 @@ Drag.Move = new Class({
 			right += elementMargin.right;
 			bottom += elementMargin.bottom;
 		}
-		
+
 		if (this.element.getStyle('position') == 'relative'){
 			var coords = this.element.getCoordinates(offsetParent);
 			coords.left -= this.element.getStyle('left').toInt();
 			coords.top -= this.element.getStyle('top').toInt();
-			
+
 			left += containerBorder.left - coords.left;
 			top += containerBorder.top - coords.top;
 			right += elementMargin.left - coords.left;
 			bottom += elementMargin.top - coords.top;
-			
+
 			if (this.container != offsetParent){
 				left += containerMargin.left + offsetParentPadding.left;
 				top += (Browser.Engine.trident4 ? 0 : containerMargin.top) + offsetParentPadding.top;
@@ -10161,16 +9626,17 @@ Drag.Move = new Class({
 		} else {
 			left -= elementMargin.left;
 			top -= elementMargin.top;
-			
 			if (this.container == offsetParent){
 				right -= containerBorder.left;
 				bottom -= containerBorder.top;
 			} else {
-				left += containerCoordinates.left + containerBorder.left;
-				top += containerCoordinates.top + containerBorder.top;
+				left += containerCoordinates.left + containerBorder.left - offsetParentBorder.left;
+				top += containerCoordinates.top + containerBorder.top - offsetParentBorder.top;
+				right -= offsetParentBorder.left;
+				bottom -= offsetParentBorder.top;
 			}
 		}
-		
+
 		return {
 			x: [left, right],
 			y: [top, bottom]
@@ -10215,24 +9681,27 @@ Element.implement({
 	}
 
 });
+
+
 /*
 ---
 
 script: Slider.js
+
+name: Slider
 
 description: Class for creating horizontal and vertical slider controls.
 
 license: MIT-style license
 
 authors:
- - Valerio Proietti
+  - Valerio Proietti
 
 requires:
- - core:1.2.4/Element.Dimensions
- - /Class.Binds
- - /Drag
- - /Element.Dimensions
- - /Element.Measure
+  - Core/Element.Dimensions
+  - /Class.Binds
+  - /Drag
+  - /Element.Measure
 
 provides: [Slider]
 
@@ -10279,20 +9748,15 @@ var Slider = new Class({
 				this.property = 'left';
 				offset = 'offsetWidth';
 		}
-		
-		this.full = this.element.measure(function(){ 
-			this.half = this.knob[offset] / 2; 
-			return this.element[offset] - this.knob[offset] + (this.options.offset * 2); 
-		}.bind(this));
-		
-		this.min = $chk(this.options.range[0]) ? this.options.range[0] : 0;
-		this.max = $chk(this.options.range[1]) ? this.options.range[1] : this.options.steps;
-		this.range = this.max - this.min;
-		this.steps = this.options.steps || this.full;
-		this.stepSize = Math.abs(this.range) / this.steps;
-		this.stepWidth = this.stepSize * this.full / Math.abs(this.range) ;
 
-		this.knob.setStyle('position', 'relative').setStyle(this.property, this.options.initialStep ? this.toPosition(this.options.initialStep) : - this.options.offset);
+		this.full = this.element.measure(function(){
+			this.half = this.knob[offset] / 2;
+			return this.element[offset] - this.knob[offset] + (this.options.offset * 2);
+		}.bind(this));
+
+		this.setRange(this.options.range);
+
+		this.knob.setStyle('position', 'relative').setStyle(this.property, - this.options.offset);
 		modifiers[this.axis] = this.property;
 		limit[this.axis] = [- this.options.offset, this.full - this.options.offset];
 
@@ -10321,6 +9785,7 @@ var Slider = new Class({
 
 		this.drag = new Drag(this.knob, dragOptions);
 		this.attach();
+		if (this.options.initialStep != null) this.set(this.options.initialStep)
 	},
 
 	attach: function(){
@@ -10345,6 +9810,17 @@ var Slider = new Class({
 		this.checkStep();
 		this.fireEvent('tick', this.toPosition(this.step));
 		this.end();
+		return this;
+	},
+
+	setRange: function(range, pos){
+		this.min = $pick(range[0], 0);
+		this.max = $pick(range[1], this.options.steps);
+		this.range = this.max - this.min;
+		this.steps = this.options.steps || this.full;
+		this.stepSize = Math.abs(this.range) / this.steps;
+		this.stepWidth = this.stepSize * this.full / Math.abs(this.range);
+		this.set($pick(pos, this.step).floor(this.min).max(this.max));
 		return this;
 	},
 
@@ -10398,22 +9874,27 @@ var Slider = new Class({
 		return (this.full * Math.abs(this.min - step)) / (this.steps * this.stepSize) - this.options.offset;
 	}
 
-});/*
+});
+
+
+/*
 ---
 
 script: Sortables.js
+
+name: Sortables
 
 description: Class for creating a drag and drop sorting interface for lists of items.
 
 license: MIT-style license
 
 authors:
- - Tom Occhino
+  - Tom Occhino
 
 requires:
- - /Drag.Move
+  - /Drag.Move
 
-provides: [Slider]
+provides: [Sortables]
 
 ...
 */
@@ -10431,7 +9912,8 @@ var Sortables = new Class({
 		clone: false,
 		revert: false,
 		handle: false,
-		constrain: false
+		constrain: false,
+		preventDefault: false
 	},
 
 	initialize: function(lists, options){
@@ -10477,7 +9959,7 @@ var Sortables = new Class({
 			this.elements.erase(element);
 			var start = element.retrieve('sortables:start');
 			(this.options.handle ? element.getElement(this.options.handle) || element : element).removeEvent('mousedown', start);
-			
+
 			return element;
 		}, this));
 	},
@@ -10486,13 +9968,13 @@ var Sortables = new Class({
 		return $$(Array.flatten(arguments).map(function(list){
 			this.lists.erase(list);
 			this.removeItems(list.getChildren());
-			
+
 			return list;
 		}, this));
 	},
 
 	getClone: function(event, element){
-		if (!this.options.clone) return new Element('div').inject(document.body);
+		if (!this.options.clone) return new Element(element.tagName).inject(document.body);
 		if ($type(this.options.clone) == 'function') return this.options.clone.call(this, event, element, this.list);
 		var clone = element.clone(true).setStyles({
 			margin: '0px',
@@ -10504,9 +9986,10 @@ var Sortables = new Class({
 		if (clone.get('html').test('radio')) {
 			clone.getElements('input[type=radio]').each(function(input, i) {
 				input.set('name', 'clone_' + i);
+				if (input.get('checked')) element.getElements('input[type=radio]')[i].set('checked', true);
 			});
 		}
-		
+
 		return clone.inject(this.list).setPosition(element.getPosition(element.getOffsetParent()));
 	},
 
@@ -10529,7 +10012,12 @@ var Sortables = new Class({
 	},
 
 	start: function(event, element){
-		if (!this.idle) return;
+		if (
+			!this.idle ||
+			event.rightClick ||
+			['button', 'input'].contains(document.id(event.target).get('tag'))
+		) return;
+
 		this.idle = false;
 		this.element = element;
 		this.opacity = element.get('opacity');
@@ -10537,6 +10025,7 @@ var Sortables = new Class({
 		this.clone = this.getClone(event, element);
 
 		this.drag = new Drag.Move(this.clone, {
+			preventDefault: this.options.preventDefault,
 			snap: this.options.snap,
 			container: this.options.constrain && this.element.getParent(),
 			droppables: this.getDroppables(),
@@ -10560,7 +10049,7 @@ var Sortables = new Class({
 		this.element.set('opacity', this.opacity);
 		if (this.effect){
 			var dim = this.element.getStyles('width', 'height');
-			var pos = this.clone.computePosition(this.element.getPosition(this.clone.offsetParent));
+			var pos = this.clone.computePosition(this.element.getPosition(this.clone.getOffsetParent()));
 			this.effect.element = this.clone;
 			this.effect.start({
 				top: pos.top,
@@ -10594,23 +10083,27 @@ var Sortables = new Class({
 	}
 
 });
+
+
 /*
 ---
 
 script: Request.JSONP.js
+
+name: Request.JSONP
 
 description: Defines Request.JSONP, a class for cross domain javascript via script injection.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
- - Guillermo Rauch
+  - Aaron Newton
+  - Guillermo Rauch
 
 requires:
- - core:1.2.4/Element
- - core:1.2.4/Request
- - /Log
+  - Core/Element
+  - Core/Request
+  - /Log
 
 provides: [Request.JSONP]
 
@@ -10658,8 +10151,8 @@ Request.JSONP = new Class({
 	send: function(options){
 		if (!$chk(arguments[1]) && !this.check(options)) return this;
 
-		var type = $type(options), 
-				old = this.options, 
+		var type = $type(options),
+				old = this.options,
 				index = $chk(arguments[1]) ? arguments[1] : this.requests++;
 		if (type == 'string' || type == 'element') options = {data: options};
 
@@ -10681,7 +10174,7 @@ Request.JSONP = new Class({
 						script.destroy();
 						this.send(options, index).fireEvent('retry', this.triesRemaining[index]);
 					}
-				} else if(script && this.options.timeout){
+				} else if(this.running && script && this.options.timeout){
 					script.destroy();
 					this.cancel().fireEvent('failure');
 				}
@@ -10707,10 +10200,10 @@ Request.JSONP = new Class({
 			case 'object': case 'hash': data = Hash.toQueryString(options.data);
 		}
 
-		var src = options.url + 
-			 (options.url.test('\\?') ? '&' :'?') + 
-			 (options.callbackKey || this.options.callbackKey) + 
-			 '=Request.JSONP.request_map.request_'+ index + 
+		var src = options.url +
+			 (options.url.test('\\?') ? '&' :'?') +
+			 (options.callbackKey || this.options.callbackKey) +
+			 '=Request.JSONP.request_map.request_'+ index +
 			 (data ? '&' + data : '');
 		if (src.length > 2083) this.log('JSONP '+ src +' will fail in Internet Explorer, which enforces a 2083 bytes length limit on URIs');
 
@@ -10720,6 +10213,7 @@ Request.JSONP = new Class({
 	},
 
 	success: function(args, script){
+		if (!this.running) return false;
 		if (script) script.destroy();
 		this.running = false;
 		this.log('JSONP successfully retrieved: ', args);
@@ -10729,22 +10223,27 @@ Request.JSONP = new Class({
 });
 
 Request.JSONP.counter = 0;
-Request.JSONP.request_map = {};/*
+Request.JSONP.request_map = {};
+
+
+/*
 ---
 
 script: Request.Queue.js
+
+name: Request.Queue
 
 description: Controls several instances of Request and its variants to run only one request at a time.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Element
- - core:1.2.4/Request
- - /Log
+  - Core/Element
+  - Core/Request
+  - /Log
 
 provides: [Request.Queue]
 
@@ -10775,13 +10274,13 @@ Request.Queue = new Class({
 	initialize: function(options){
 		if(options){
 			var requests = options.requests;
-			delete options.requests;	
+			delete options.requests;
 		}
 		this.setOptions(options);
 		this.requests = new Hash;
 		this.queue = [];
 		this.reqBinders = {};
-		
+
 		if(requests) this.addRequests(requests);
 	},
 
@@ -10935,21 +10434,25 @@ Request.Queue = new Class({
 	}
 
 });
+
+
 /*
 ---
 
 script: Request.Periodical.js
+
+name: Request.Periodical
 
 description: Requests the same URL to pull data from a server but increases the intervals if no data is returned to reduce the load
 
 license: MIT-style license
 
 authors:
- - Christoph Pojer
+  - Christoph Pojer
 
 requires:
- - core:1.2.4/Request
- - /MooTools.More
+  - Core/Request
+  - /MooTools.More
 
 provides: [Request.Periodical]
 
@@ -10983,21 +10486,25 @@ Request.implement({
 		return this.removeEvent('complete', this.completeCheck);
 	}
 
-});/*
+});
+
+/*
 ---
 
 script: Assets.js
+
+name: Assets
 
 description: Provides methods to dynamically load JavaScript, CSS, and Image files into the document.
 
 license: MIT-style license
 
 authors:
- - Valerio Proietti
+  - Valerio Proietti
 
 requires:
- - core:1.2.4/Element.Event
- - /MooTools.More
+  - Core/Element.Event
+  - /MooTools.More
 
 provides: [Assets]
 
@@ -11012,13 +10519,15 @@ var Asset = {
 			document: document,
 			check: $lambda(true)
 		}, properties);
-		
-		if (properties.onLoad) properties.onload = properties.onLoad;
-		
+
+		if (properties.onLoad) {
+			properties.onload = properties.onLoad;
+			delete properties.onLoad;
+		}
 		var script = new Element('script', {src: source, type: 'text/javascript'});
 
-		var load = properties.onload.bind(script), 
-			check = properties.check, 
+		var load = properties.onload.bind(script),
+			check = properties.check,
 			doc = properties.document;
 		delete properties.onload;
 		delete properties.check;
@@ -11041,6 +10550,14 @@ var Asset = {
 	},
 
 	css: function(source, properties){
+		properties = properties || {};
+		var onload = properties.onload || properties.onLoad;
+		if (onload) {
+			properties.events = properties.events || {};
+			properties.events.load = onload;
+			delete properties.onload;
+			delete properties.onLoad;
+		}
 		return new Element('link', $merge({
 			rel: 'stylesheet',
 			media: 'screen',
@@ -11060,7 +10577,10 @@ var Asset = {
 		['load', 'abort', 'error'].each(function(name){
 			var type = 'on' + name;
 			var cap = name.capitalize();
-			if (properties['on' + cap]) properties[type] = properties['on' + cap];
+			if (properties['on' + cap]) {
+				properties[type] = properties['on' + cap];
+				delete properties['on' + cap];
+			}
 			var event = properties[type];
 			delete properties[type];
 			image[type] = function(){
@@ -11089,15 +10609,15 @@ var Asset = {
 		sources = $splat(sources);
 		var images = [];
 		var counter = 0;
-		return new Elements(sources.map(function(source){
+		return new Elements(sources.map(function(source, index){
 			return Asset.image(source, $extend(options.properties, {
 				onload: function(){
-					options.onProgress.call(this, counter, sources.indexOf(source));
+					options.onProgress.call(this, counter, index);
 					counter++;
 					if (counter == sources.length) options.onComplete();
 				},
 				onerror: function(){
-					options.onError.call(this, counter, sources.indexOf(source));
+					options.onError.call(this, counter, index);
 					counter++;
 					if (counter == sources.length) options.onComplete();
 				}
@@ -11105,25 +10625,29 @@ var Asset = {
 		}));
 	}
 
-};/*
+};
+
+/*
 ---
 
 script: Color.js
+
+name: Color
 
 description: Class for creating and manipulating colors in JavaScript. Supports HSB -> RGB Conversions and vice versa.
 
 license: MIT-style license
 
 authors:
- - Valerio Proietti
+  - Valerio Proietti
 
 requires:
- - core:1.2.4/Array
- - core:1.2.4/String
- - core:1.2.4/Number
- - core:1.2.4/Hash
- - core:1.2.4/Function
- - core:1.2.4/$util
+  - Core/Array
+  - Core/String
+  - Core/Number
+  - Core/Hash
+  - Core/Function
+  - Core/$util
 
 provides: [Color]
 
@@ -11264,21 +10788,25 @@ String.implement({
 	}
 
 });
+
+
 /*
 ---
 
 script: Group.js
+
+name: Group
 
 description: Class for monitoring collections of events
 
 license: MIT-style license
 
 authors:
- - Valerio Proietti
+  - Valerio Proietti
 
 requires:
- - core:1.2.4/Events
- - /MooTools.More
+  - Core/Events
+  - /MooTools.More
 
 provides: [Group]
 
@@ -11317,23 +10845,27 @@ var Group = new Class({
 	}
 
 });
+
+
 /*
 ---
 
 script: Hash.Cookie.js
+
+name: Hash.Cookie
 
 description: Class for creating, reading, and deleting Cookies in JSON format.
 
 license: MIT-style license
 
 authors:
- - Valerio Proietti
- - Aaron Newton
+  - Valerio Proietti
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Cookie
- - core:1.2.4/JSON
- - /MooTools.More
+  - Core/Cookie
+  - Core/JSON
+  - /MooTools.More
 
 provides: [Hash.Cookie]
 
@@ -11374,22 +10906,158 @@ Hash.each(Hash.prototype, function(method, name){
 		if (this.options.autoSave) this.save();
 		return value;
 	});
-});/*
+});
+
+/*
+---
+
+script: IframeShim.js
+
+name: IframeShim
+
+description: Defines IframeShim, a class for obscuring select lists and flash objects in IE.
+
+license: MIT-style license
+
+authors:
+  - Aaron Newton
+
+requires:
+  - Core/Element.Event
+  - Core/Element.Style
+  - Core/Options
+  - Core/Events
+  - /Element.Position
+  - /Class.Occlude
+
+provides: [IframeShim]
+
+...
+*/
+
+var IframeShim = new Class({
+
+	Implements: [Options, Events, Class.Occlude],
+
+	options: {
+		className: 'iframeShim',
+		src: 'javascript:false;document.write("");',
+		display: false,
+		zIndex: null,
+		margin: 0,
+		offset: {x: 0, y: 0},
+		browsers: (Browser.Engine.trident4 || (Browser.Engine.gecko && !Browser.Engine.gecko19 && Browser.Platform.mac))
+	},
+
+	property: 'IframeShim',
+
+	initialize: function(element, options){
+		this.element = document.id(element);
+		if (this.occlude()) return this.occluded;
+		this.setOptions(options);
+		this.makeShim();
+		return this;
+	},
+
+	makeShim: function(){
+		if(this.options.browsers){
+			var zIndex = this.element.getStyle('zIndex').toInt();
+
+			if (!zIndex){
+				zIndex = 1;
+				var pos = this.element.getStyle('position');
+				if (pos == 'static' || !pos) this.element.setStyle('position', 'relative');
+				this.element.setStyle('zIndex', zIndex);
+			}
+			zIndex = ($chk(this.options.zIndex) && zIndex > this.options.zIndex) ? this.options.zIndex : zIndex - 1;
+			if (zIndex < 0) zIndex = 1;
+			this.shim = new Element('iframe', {
+				src: this.options.src,
+				scrolling: 'no',
+				frameborder: 0,
+				styles: {
+					zIndex: zIndex,
+					position: 'absolute',
+					border: 'none',
+					filter: 'progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=0)'
+				},
+				'class': this.options.className
+			}).store('IframeShim', this);
+			var inject = (function(){
+				this.shim.inject(this.element, 'after');
+				this[this.options.display ? 'show' : 'hide']();
+				this.fireEvent('inject');
+			}).bind(this);
+			if (!IframeShim.ready) window.addEvent('load', inject);
+			else inject();
+		} else {
+			this.position = this.hide = this.show = this.dispose = $lambda(this);
+		}
+	},
+
+	position: function(){
+		if (!IframeShim.ready || !this.shim) return this;
+		var size = this.element.measure(function(){
+			return this.getSize();
+		});
+		if (this.options.margin != undefined){
+			size.x = size.x - (this.options.margin * 2);
+			size.y = size.y - (this.options.margin * 2);
+			this.options.offset.x += this.options.margin;
+			this.options.offset.y += this.options.margin;
+		}
+		this.shim.set({width: size.x, height: size.y}).position({
+			relativeTo: this.element,
+			offset: this.options.offset
+		});
+		return this;
+	},
+
+	hide: function(){
+		if (this.shim) this.shim.setStyle('display', 'none');
+		return this;
+	},
+
+	show: function(){
+		if (this.shim) this.shim.setStyle('display', 'block');
+		return this.position();
+	},
+
+	dispose: function(){
+		if (this.shim) this.shim.dispose();
+		return this;
+	},
+
+	destroy: function(){
+		if (this.shim) this.shim.destroy();
+		return this;
+	}
+
+});
+
+window.addEvent('load', function(){
+	IframeShim.ready = true;
+});
+
+
+/*
 ---
 
 script: HtmlTable.js
+
+name: HtmlTable
 
 description: Builds table elements with methods to add rows.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Options
- - core:1.2.4/Events
- - /Class.Occlude
+  - Core/Options
+  - Core/Events
+  - /Class.Occlude
 
 provides: [HtmlTable]
 
@@ -11433,7 +11101,7 @@ var HtmlTable = new Class({
 
 		if (this.options.footers.length) this.setFooters(this.options.footers);
 		this.tfoot = document.id(this.element.tFoot);
-		if (this.tfoot) this.foot = document.id(this.thead.rows[0]);
+		if (this.tfoot) this.foot = document.id(this.tfoot.rows[0]);
 
 		this.options.rows.each(function(row){
 			this.push(row);
@@ -11473,9 +11141,16 @@ var HtmlTable = new Class({
 	},
 
 	push: function(row, rowProperties, target, tag){
+		if ($type(row) == "element" && row.get('tag') == 'tr') {
+			row.inject(target || this.body);
+			return {
+				tr: row,
+				tds: row.getChildren('td')
+			};
+		}
 		var tds = row.map(function(data){
-			var td = new Element(tag || 'td', data.properties),
-				type = data.content || data || '',
+			var td = new Element(tag || 'td', data ? data.properties : {}),
+				type = (data ? data.content : '') || data,
 				element = document.id(type);
 			if($type(type) != 'string' && element) td.adopt(element);
 			else td.set('html', type);
@@ -11490,22 +11165,26 @@ var HtmlTable = new Class({
 	}
 
 });
+
+
 /*
 ---
 
 script: HtmlTable.Zebra.js
+
+name: HtmlTable.Zebra
 
 description: Builds a stripy table with methods to add rows.
 
 license: MIT-style license
 
 authors:
- - Harald Kirschner
- - Aaron Newton
+  - Harald Kirschner
+  - Aaron Newton
 
 requires:
- - /HtmlTable
- - /Class.refactor
+  - /HtmlTable
+  - /Class.refactor
 
 provides: [HtmlTable.Zebra]
 
@@ -11539,25 +11218,30 @@ HtmlTable = Class.refactor(HtmlTable, {
 		return pushed;
 	}
 
-});/*
+});
+
+/*
 ---
 
 script: HtmlTable.Sort.js
+
+name: HtmlTable.Sort
 
 description: Builds a stripy, sortable table with methods to add rows.
 
 license: MIT-style license
 
 authors:
- - Harald Kirschner
- - Aaron Newton
+  - Harald Kirschner
+  - Aaron Newton
 
 requires:
- - core:1.2.4/Hash
- - /HtmlTable
- - /Class.refactor
- - /Element.Delegation
- - /Date
+  - Core/Hash
+  - /HtmlTable
+  - /Class.refactor
+  - /Element.Delegation
+  - /String.Extras
+  - /Date
 
 provides: [HtmlTable.Sort]
 
@@ -11606,10 +11290,10 @@ HtmlTable = Class.refactor(HtmlTable, {
 		this.previous.apply(this, arguments);
 		if (this.sortEnabled) this.detectParsers();
 	},
-	
+
 	detectParsers: function(force){
 		if (!this.head) return;
-		var parsers = this.options.parsers, 
+		var parsers = this.options.parsers,
 				rows = this.body.rows;
 
 		// auto-detect
@@ -11621,10 +11305,10 @@ HtmlTable = Class.refactor(HtmlTable, {
 			});
 			thDiv.inject(cell);
 			var sortSpan = new Element('span', {'html': '&#160;', 'class': this.options.classSortSpan}).inject(thDiv, 'top');
-			
+
 			this.sortSpans.push(sortSpan);
 
-			var parser = parsers[index], 
+			var parser = parsers[index],
 					cancel;
 			switch ($type(parser)) {
 				case 'function': parser = {convert: parser}; cancel = true; break;
@@ -11635,7 +11319,8 @@ HtmlTable = Class.refactor(HtmlTable, {
 					var match = current.match;
 					if (!match) return false;
 					for (var i = 0, j = rows.length; i < j; i++) {
-						var text = $(rows[i].cells[index]).get('html').clean();
+						var cell = document.id(rows[i].cells[index]);
+						var text = cell ? cell.get('html').clean() : '';
 						if (text && match.test(text)) {
 							parser = current;
 							return true;
@@ -11651,7 +11336,6 @@ HtmlTable = Class.refactor(HtmlTable, {
 	},
 
 	headClick: function(event, el) {
-		console.log(el);
 		if (!this.head || el.hasClass(this.options.classNoSort)) return;
 		var index = Array.indexOf(this.head.cells, el);
 		this.sort(index);
@@ -11662,7 +11346,7 @@ HtmlTable = Class.refactor(HtmlTable, {
 		if (!this.head) return;
 		pre = !!(pre);
 		var classCellSort = this.options.classCellSort;
-		var classGroup = this.options.classGroup, 
+		var classGroup = this.options.classGroup,
 				classGroupHead = this.options.classGroupHead;
 
 		if (!pre) {
@@ -11739,7 +11423,7 @@ HtmlTable = Class.refactor(HtmlTable, {
 					group = item.value;
 					row.removeClass(classGroup).addClass(classGroupHead);
 				}
-				if (this.zebra) this.zebra(row, i);
+				if (this.options.zebra) this.zebra(row, i);
 
 				row.cells[index].addClass(classCellSort);
 			}
@@ -11784,7 +11468,8 @@ HtmlTable.Parsers = new Hash({
 	'date': {
 		match: /^\d{2}[-\/ ]\d{2}[-\/ ]\d{2,4}$/,
 		convert: function() {
-			return Date.parse(this.get('text')).format('db');
+			var d = Date.parse(this.get('text').stripTags());
+			return $type(d) == 'date' ? d.format('db') : '';
 		},
 		type: 'date'
 	},
@@ -11803,35 +11488,35 @@ HtmlTable.Parsers = new Hash({
 	'number': {
 		match: /^\d+[^\d.,]*$/,
 		convert: function() {
-			return this.get('text').toInt();
+			return this.get('text').stripTags().toInt();
 		},
 		number: true
 	},
 	'numberLax': {
 		match: /^[^\d]+\d+$/,
 		convert: function() {
-			return this.get('text').replace(/[^-?^0-9]/, '').toInt();
+			return this.get('text').replace(/[^-?^0-9]/, '').stripTags().toInt();
 		},
 		number: true
 	},
 	'float': {
 		match: /^[\d]+\.[\d]+/,
 		convert: function() {
-			return this.get('text').replace(/[^-?^\d.]/, '').toFloat();
+			return this.get('text').replace(/[^-?^\d.]/, '').stripTags().toFloat();
 		},
 		number: true
 	},
 	'floatLax': {
 		match: /^[^\d]+[\d]+\.[\d]+$/,
 		convert: function() {
-			return this.get('text').replace(/[^-?^\d.]/, '');
+			return this.get('text').replace(/[^-?^\d.]/, '').stripTags();
 		},
 		number: true
 	},
 	'string': {
 		match: null,
 		convert: function() {
-			return this.get('text');
+			return this.get('text').stripTags();
 		}
 	},
 	'title': {
@@ -11843,25 +11528,311 @@ HtmlTable.Parsers = new Hash({
 
 });
 
+
+HtmlTable.defineParsers = function(parsers){
+	HtmlTable.Parsers = new Hash(parsers).combine(HtmlTable.Parsers);
+};
+
+
+/*
+---
+
+script: HtmlTable.Select.js
+
+name: HtmlTable.Select
+
+description: Builds a stripy, sortable table with methods to add rows. Rows can be selected with the mouse or keyboard navigation.
+
+license: MIT-style license
+
+authors:
+  - Harald Kirschner
+  - Aaron Newton
+
+requires:
+  - /Keyboard.Extras
+  - /HtmlTable
+  - /Class.refactor
+  - /Element.Delegation
+  - /Element.Shortcuts
+
+provides: [HtmlTable.Select]
+
+...
+*/
+
+HtmlTable = Class.refactor(HtmlTable, {
+
+	options: {
+		/*onRowFocus: $empty,
+		onRowUnfocus: $empty,*/
+		useKeyboard: true,
+		classRowSelected: 'table-tr-selected',
+		classRowHovered: 'table-tr-hovered',
+		classSelectable: 'table-selectable',
+		shiftForMultiSelect: true,
+		allowMultiSelect: true,
+		selectable: false
+	},
+
+	initialize: function(){
+		this.previous.apply(this, arguments);
+		if (this.occluded) return this.occluded;
+		this._selectedRows = new Elements();
+		this._bound = {
+			mouseleave: this._mouseleave.bind(this),
+			clickRow: this._clickRow.bind(this)
+		};
+		if (this.options.selectable) this.enableSelect();
+	},
+
+	enableSelect: function(){
+		this._selectEnabled = true;
+		this._attachSelects();
+		this.element.addClass(this.options.classSelectable);
+	},
+
+	disableSelect: function(){
+		this._selectEnabled = false;
+		this._attachSelects(false);
+		this.element.removeClass(this.options.classSelectable);
+	},
+
+	push: function(){
+		var ret = this.previous.apply(this, arguments);
+		this._updateSelects();
+		return ret;
+	},
+
+	toggleRow: function(row){
+		return this.isSelected(row) ? this.deselectRow.apply(this, arguments) : this.selectRow.apply(this, arguments);
+	},
+
+	selectRow: function(row, _nocheck){
+		//private variable _nocheck: boolean whether or not to confirm the row is in the table body
+		//added here for optimization when selecting ranges
+		if (this.isSelected(row) || (!_nocheck && !this.body.getChildren().contains(row))) return;
+		if (!this.options.allowMultiSelect) this.selectNone();
+
+		if (!this.isSelected(row)) {
+			this._selectedRows.push(row);
+			row.addClass(this.options.classRowSelected);
+			this.fireEvent('rowFocus', [row, this._selectedRows]);
+		}
+		this._focused = row;
+		document.clearSelection();
+		return this;
+	},
+
+	isSelected: function(row){
+		return this._selectedRows.contains(row);
+	},
+
+	deselectRow: function(row, _nocheck){
+		if (!this.isSelected(row) || (!_nocheck && !this.body.getChildren().contains(row))) return;
+		this._selectedRows.erase(row);
+		row.removeClass(this.options.classRowSelected);
+		this.fireEvent('rowUnfocus', [row, this._selectedRows]);
+		return this;
+	},
+
+	selectAll: function(selectNone){
+		if (!selectNone && !this.options.allowMultiSelect) return;
+		this.selectRange(0, this.body.rows.length, selectNone);
+		return this;
+	},
+
+	selectNone: function(){
+		return this.selectAll(true);
+	},
+
+	selectRange: function(startRow, endRow, _deselect){
+		if (!this.options.allowMultiSelect && !_deselect) return;
+		var method = _deselect ? 'deselectRow' : 'selectRow',
+		    rows = $A(this.body.rows);
+
+		if ($type(startRow) == 'element') startRow = rows.indexOf(startRow);
+		if ($type(endRow) == 'element') endRow = rows.indexOf(endRow);
+		endRow = endRow < rows.length - 1 ? endRow : rows.length - 1;
+
+		if (endRow < startRow) {
+			var tmp = startRow;
+			startRow = endRow;
+			endRow = tmp;
+		}
+
+		for(var i = startRow; i <= endRow; i++) this[method](rows[i], true);
+
+		return this;
+	},
+
+	deselectRange: function(startRow, endRow){
+		this.selectRange(startRow, endRow, true);
+	},
+/*
+	Private methods:
+*/
+
+	_enterRow: function(row){
+		if (this._hovered) this._hovered = this._leaveRow(this._hovered);
+		this._hovered = row.addClass(this.options.classRowHovered);
+	},
+
+	_leaveRow: function(row){
+		row.removeClass(this.options.classRowHovered);
+	},
+
+	_updateSelects: function(){
+		Array.each(this.body.rows, function(row){
+			var binders = row.retrieve('binders');
+			if ((binders && this._selectEnabled) || (!binders && !this._selectEnabled)) return;
+			if (!binders){
+				binders = {
+					mouseenter: this._enterRow.bind(this, [row]),
+					mouseleave: this._leaveRow.bind(this, [row])
+				};
+				row.store('binders', binders).addEvents(binders);
+			} else {
+				row.removeEvents(binders);
+			}
+		}, this);
+	},
+
+	_shiftFocus: function(offset, event){
+		if (!this._focused) return this.selectRow(this.body.rows[0], event);
+		var to = this._getRowByOffset(offset);
+		if (to === null || this._focused == this.body.rows[to]) return this;
+		this.toggleRow(this.body.rows[to], event);
+	},
+
+	_clickRow: function(event, row){
+		var selecting = (event.shift || event.meta || event.control) && this.options.shiftForMultiSelect;
+		if (!selecting && !(event.rightClick && this.isSelected(row) && this.options.allowMultiSelect)) this.selectNone();
+		if (event.rightClick) this.selectRow(row);
+		else this.toggleRow(row);
+		if (event.shift) {
+			this.selectRange(this._rangeStart || this.body.rows[0], row, this._rangeStart ? !this.isSelected(row) : true);
+			this._focused = row;
+		}
+		this._rangeStart = row;
+	},
+
+	_getRowByOffset: function(offset){
+		if (!this._focused) return 0;
+		var index = Array.indexOf(this.body.rows, this._focused) + offset;
+		if (index < 0) index = null;
+		if (index >= this.body.rows.length) index = null;
+		return index;
+	},
+
+	_attachSelects: function(attach){
+		attach = $pick(attach, true);
+		var method = attach ? 'addEvents' : 'removeEvents';
+		this.element[method]({
+			mouseleave: this._bound.mouseleave
+		});
+		this.body[method]({
+			'click:relay(tr)': this._bound.clickRow,
+			'contextmenu:relay(tr)': this._bound.clickRow
+		});
+		if (this.options.useKeyboard || this.keyboard){
+			if (!this.keyboard) {
+				var timer, held;
+				var move = function(offset){
+					var mover = function(e){
+						$clear(timer);
+						e.preventDefault();
+						var to = this.body.rows[this._getRowByOffset(offset)];
+						if (e.shift && to && this.isSelected(to)) {
+							this.deselectRow(this._focused);
+							this._focused = to;
+						} else {
+							if (to && (!this.options.allowMultiSelect || !e.shift)) {
+								this.selectNone();
+							}
+							this._shiftFocus(offset, e);
+						}
+						if (held) {
+							timer = mover.delay(100, this, e);
+						} else {
+							timer = (function(){
+								held = true;
+								mover(e);
+							}).delay(400);
+						}
+					}.bind(this);
+					return mover;
+				}.bind(this);
+
+				var clear = function(){
+					$clear(timer);
+					held = false;
+				};
+
+				this.keyboard = new Keyboard({
+					events: {
+						'keydown:shift+up': move(-1),
+						'keydown:shift+down': move(1),
+						'keyup:shift+up': clear,
+						'keyup:shift+down': clear,
+						'keyup:up': clear,
+						'keyup:down': clear
+					},
+					active: true
+				});
+
+				var shiftHint = '';
+				if (this.options.allowMultiSelect && this.options.shiftForMultiSelect && this.options.useKeyboard) {
+					shiftHint = " (Shift multi-selects).";
+				}
+
+				this.keyboard.addShortcuts({
+					'Select Previous Row': {
+						keys: 'up',
+						shortcut: 'up arrow',
+						handler: move(-1),
+						description: 'Select the previous row in the table.' + shiftHint
+					},
+					'Select Next Row': {
+						keys: 'down',
+						shortcut: 'down arrow',
+						handler: move(1),
+						description: 'Select the next row in the table.' + shiftHint
+					}
+				});
+			}
+			this.keyboard[attach ? 'activate' : 'deactivate']();
+		}
+		this._updateSelects();
+	},
+
+	_mouseleave: function(){
+		if (this._hovered) this._leaveRow(this._hovered);
+	}
+
+});
+
 /*
 ---
 
 script: Keyboard.js
+
+name: Keyboard
 
 description: KeyboardEvents used to intercept events on a class for keyboard and format modifiers in a specific order so as to make alt+shift+c the same as shift+alt+c.
 
 license: MIT-style license
 
 authors:
- - Perrin Westrich
- - Aaron Newton
- - Scott Kyle
+  - Perrin Westrich
+  - Aaron Newton
+  - Scott Kyle
 
 requires:
- - core:1.2.4/Events
- - core:1.2.4/Options
- - core:1.2.4/Element.Event
- - /Log
+  - Core/Events
+  - Core/Options
+  - Core/Element.Event
+  - /Log
 
 provides: [Keyboard]
 
@@ -11869,7 +11840,7 @@ provides: [Keyboard]
 */
 
 (function(){
-	
+
 	var Keyboard = this.Keyboard = new Class({
 
 		Extends: Events,
@@ -11883,14 +11854,19 @@ provides: [Keyboard]
 			*/
 			defaultEventType: 'keydown',
 			active: false,
+			manager: null,
 			events: {},
 			nonParsedEvents: ['activate', 'deactivate', 'onactivate', 'ondeactivate', 'changed', 'onchanged']
 		},
 
 		initialize: function(options){
+			if (options && options.manager) {
+				this.manager = options.manager;
+				delete options.manager;
+			}
 			this.setOptions(options);
 			this.setup();
-		}, 
+		},
 		setup: function(){
 			this.addEvents(this.options.events);
 			//if this is the root manager, nothing manages it
@@ -11901,14 +11877,14 @@ provides: [Keyboard]
 		handle: function(event, type){
 			//Keyboard.stop(event) prevents key propagation
 			if (event.preventKeyboardPropagation) return;
-			
+
 			var bubbles = !!this.manager;
 			if (bubbles && this.activeKB){
 				this.activeKB.handle(event, type);
 				if (event.preventKeyboardPropagation) return;
 			}
 			this.fireEvent(type, event);
-			
+
 			if (!bubbles && this.activeKB) this.activeKB.handle(event, type);
 		},
 
@@ -11926,8 +11902,12 @@ provides: [Keyboard]
 
 		activate: function(instance){
 			if (instance) {
-				//if we're stealing focus, store the last keyboard to have it so the relenquish command works
-				if (instance != this.activeKB) this.previous = this.activeKB;
+				if (instance.isActive()) return this;
+				//if we're stealing focus, store the last keyboard to have it so the relinquish command works
+				if (this.activeKB && instance != this.activeKB) {
+					this.previous = this.activeKB;
+					this.previous.fireEvent('deactivate');
+				}
 				//if we're enabling a child, assign it so that events are now passed to it
 				this.activeKB = instance.fireEvent('activate');
 				Keyboard.manager.fireEvent('changed');
@@ -11938,6 +11918,10 @@ provides: [Keyboard]
 			return this;
 		},
 
+		isActive: function(){
+			return this.manager ? this.manager.activeKB == this :  Keyboard.manager == this;
+		},
+
 		deactivate: function(instance){
 			if (instance) {
 				if(instance === this.activeKB) {
@@ -11945,24 +11929,22 @@ provides: [Keyboard]
 					instance.fireEvent('deactivate');
 					Keyboard.manager.fireEvent('changed');
 				}
-			}
-			else if (this.manager) {
+			} else if (this.manager) {
 				this.manager.deactivate(this);
 			}
 			return this;
 		},
 
-		relenquish: function(){
-			if (this.previous) this.activate(this.previous);
+		relinquish: function(){
+			if (this.isActive() && this.manager && this.manager.previous) this.manager.activate(this.manager.previous);
 		},
 
 		//management logic
 		manage: function(instance){
-			if (instance.manager) instance.manager.drop(instance);
+			if (instance.manager && instance.manager != Keyboard.manager && this != Keyboard.manager) instance.manager.drop(instance);
 			this.instances.push(instance);
 			instance.manager = this;
 			if (!this.activeKB) this.activate(instance);
-			else this._disable(instance);
 		},
 
 		_disable: function(instance){
@@ -11972,6 +11954,8 @@ provides: [Keyboard]
 		drop: function(instance){
 			this._disable(instance);
 			this.instances.erase(instance);
+			Keyboard.manager.manage(instance);
+			if (this.activeKB == instance && this.previous && this.instances.contains(this.previous)) this.activate(this.previous);
 		},
 
 		instances: [],
@@ -11985,14 +11969,14 @@ provides: [Keyboard]
 		}
 
 	});
-	
+
 	var parsed = {};
 	var modifiers = ['shift', 'control', 'alt', 'meta'];
 	var regex = /^(?:shift|control|ctrl|alt|meta)$/;
-	
+
 	Keyboard.parse = function(type, eventType, ignore){
 		if (ignore && ignore.contains(type.toLowerCase())) return type;
-		
+
 		type = type.toLowerCase().replace(/^(keyup|keydown):/, function($0, $1){
 			eventType = $1;
 			return '';
@@ -12006,12 +11990,12 @@ provides: [Keyboard]
 			});
 
 			mods.control = mods.control || mods.ctrl; // allow both control and ctrl
-			
+
 			var keys = [];
 			modifiers.each(function(mod){
 				if (mods[mod]) keys.push(mod);
 			});
-			
+
 			if (key) keys.push(key);
 			parsed[type] = keys.join('+');
 		}
@@ -12034,7 +12018,7 @@ provides: [Keyboard]
 	Keyboard.manager = new Keyboard({
 		active: true
 	});
-	
+
 	Keyboard.trace = function(keyboard){
 		keyboard = keyboard || Keyboard.manager;
 		keyboard.enableLog();
@@ -12043,17 +12027,17 @@ provides: [Keyboard]
 			keyboard.log(document.id(current.widget) || current.wiget || current);
 		});
 	};
-	
+
 	var handler = function(event){
 		var keys = [];
 		modifiers.each(function(mod){
 			if (event[mod]) keys.push(mod);
 		});
-		
+
 		if (!regex.test(event.key)) keys.push(event.key);
 		Keyboard.manager.handle(event, event.type + ':' + keys.join('+'));
 	};
-	
+
 	document.addEvents({
 		'keyup': handler,
 		'keydown': handler
@@ -12073,7 +12057,7 @@ provides: [Keyboard]
 		';': 186,
 		'=': 187,
 		',': 188,
-		'-': Browser.Engine.Gecko ? 109 : 189,
+		'-': Browser.Engine.gecko ? 109 : 189,
 		'.': 190,
 		'/': 191,
 		'`': 192,
@@ -12084,197 +12068,25 @@ provides: [Keyboard]
 	});
 
 })();
+
+
 /*
 ---
 
-script: HtmlTable.Select.js
+script: Keyboard.Extras.js
 
-description: Builds a stripy, sortable table with methods to add rows. Rows can be selected with the mouse or keyboard navigation.
-
-license: MIT-style license
-
-authors:
- - Harald Kirschner
- - Aaron Newton
-
-requires:
- - /Keyboard
- - /HtmlTable
- - /Class.refactor
- - /Element.Delegation
-
-provides: [HtmlTable.Select]
-
-...
-*/
-
-HtmlTable = Class.refactor(HtmlTable, {
-
-	options: {
-		/*onRowFocus: $empty,
-		onRowUnfocus: $empty,*/
-		useKeyboard: true,
-		classRowSelected: 'table-tr-selected',
-		classRowHovered: 'table-tr-hovered',
-		classSelectable: 'table-selectable',
-		allowMultiSelect: true,
-		selectable: false
-	},
-
-	initialize: function(){
-		this.previous.apply(this, arguments);
-		if (this.occluded) return this.occluded;
-		this.selectedRows = new Elements();
-		this.bound = {
-			mouseleave: this.mouseleave.bind(this),
-			focusRow: this.focusRow.bind(this)
-		};
-		if (this.options.selectable) this.enableSelect();
-	},
-
-	enableSelect: function(){
-		this.selectEnabled = true;
-		this.attachSelects();
-		this.element.addClass(this.options.classSelectable);
-	},
-
-	disableSelect: function(){
-		this.selectEnabled = false;
-		this.attach(false);
-		this.element.removeClass(this.options.classSelectable);
-	},
-
-	attachSelects: function(attach){
-		attach = $pick(attach, true);
-		var method = attach ? 'addEvents' : 'removeEvents';
-		this.element[method]({
-			mouseleave: this.bound.mouseleave
-		});
-		this.body[method]({
-			'click:relay(tr)': this.bound.focusRow
-		});
-		if (this.options.useKeyboard || this.keyboard){
-			if (!this.keyboard) this.keyboard = new Keyboard({
-				events: {
-					down: function(e) {
-						e.preventDefault();
-						this.shiftFocus(1);
-					}.bind(this),
-					up: function(e) {
-						e.preventDefault();
-						this.shiftFocus(-1);
-					}.bind(this),
-					enter: function(e) {
-						e.preventDefault();
-						if (this.hover) this.focusRow(this.hover);
-					}.bind(this)
-				},
-				active: true
-			});
-			this.keyboard[attach ? 'activate' : 'deactivate']();
-		}
-		this.updateSelects();
-	},
-
-	mouseleave: function(){
-		if (this.hover) this.leaveRow(this.hover);
-	},
-
-	focus: function(){
-		if (this.keyboard) this.keyboard.activate();
-	},
-
-	blur: function(){
-		if (this.keyboard) this.keyboard.deactivate();
-	},
-
-	push: function(){
-		var ret = this.previous.apply(this, arguments);
-		this.updateSelects();
-		return ret;
-	},
-
-	updateSelects: function(){
-		Array.each(this.body.rows, function(row){
-			var binders = row.retrieve('binders');
-			if ((binders && this.selectEnabled) || (!binders && !this.selectEnabled)) return;
-			if (!binders){
-				binders = {
-					mouseenter: this.enterRow.bind(this, [row]),
-					mouseleave: this.leaveRow.bind(this, [row])
-				};
-				row.store('binders', binders).addEvents(binders);
-			} else {
-				row.removeEvents(binders);
-			}
-		}, this);
-	},
-
-	enterRow: function(row){
-		if (this.hover) this.hover = this.leaveRow(this.hover);
-		this.hover = row.addClass(this.options.classRowHovered);
-	},
-
-	shiftFocus: function(offset){
-		if (!this.hover) return this.enterRow(this.body.rows[0]);
-		var to = Array.indexOf(this.body.rows, this.hover) + offset;
-		if (to < 0) to = 0;
-		if (to >= this.body.rows.length) to = this.body.rows.length - 1;
-		if (this.hover == this.body.rows[to]) return this;
-		this.enterRow(this.body.rows[to]);
-	},
-
-	leaveRow: function(row){
-		row.removeClass(this.options.classRowHovered);
-	},
-
-	focusRow: function(){
-		var row = arguments[1] || arguments[0]; //delegation passes the event first
-		if (!this.body.getChildren().contains(row)) return;
-		var unfocus = function(row){
-			this.selectedRows.erase(row);
-			row.removeClass(this.options.classRowSelected);
-			this.fireEvent('rowUnfocus', [row, this.selectedRows]);
-		}.bind(this);
-		if (!this.options.allowMultiSelect) this.selectedRows.each(unfocus);
-		if (!this.selectedRows.contains(row)) {
-			this.selectedRows.push(row);
-			row.addClass(this.options.classRowSelected);
-			this.fireEvent('rowFocus', [row, this.selectedRows]);
-		} else {
-			unfocus(row);
-		}
-		return false;
-	},
-
-	selectAll: function(status){
-		status = $pick(status, true);
-		if (!this.options.allowMultiSelect && status) return;
-		if (!status) this.selectedRows.removeClass(this.options.classRowSelected).empty();
-		else this.selectedRows.combine(this.body.rows).addClass(this.options.classRowSelected);
-		return this;
-	},
-
-	selectNone: function(){
-		return this.selectAll(false);
-	}
-
-});
-/*
----
-
-script: Keyboard.js
+name: Keyboard.Extras
 
 description: Enhances Keyboard by adding the ability to name and describe keyboard shortcuts, and the ability to grab shortcuts by name and bind the shortcut to different keys.
 
 license: MIT-style license
 
 authors:
- - Perrin Westrich
+  - Perrin Westrich
 
 requires:
- - core:1.2.4/Function
- - /Keyboard.Extras
+  - /Keyboard
+  - /MooTools.More
 
 provides: [Keyboard.Extras]
 
@@ -12295,7 +12107,7 @@ Keyboard.implement({
 	addShortcut: function(name, shortcut) {
 		this.shortcuts = this.shortcuts || [];
 		this.shortcutIndex = this.shortcutIndex || {};
-		
+
 		shortcut.getKeyboard = $lambda(this);
 		shortcut.name = name;
 		this.shortcutIndex[name] = shortcut;
@@ -12306,6 +12118,21 @@ Keyboard.implement({
 
 	addShortcuts: function(obj){
 		for(var name in obj) this.addShortcut(name, obj[name]);
+		return this;
+	},
+
+	removeShortcut: function(name) {
+		var shortcut = this.getShortcut(name);
+		if (shortcut && shortcut.keys) {
+			this.removeEvent(shortcut.keys, shortcut.handler);
+			delete this.shortcutIndex[name];
+			this.shortcuts.erase(shortcut);
+		}
+		return this;
+	},
+
+	removeShortcuts: function(names) {
+		names.each(this.removeShortcut, this);
 		return this;
 	},
 
@@ -12342,7 +12169,7 @@ Keyboard.getShortcut = function(name, keyboard, opts){
 		set = opts.many ? function(kb){
 				var shortcut = kb.getShortcut(name);
 				if(shortcut) shortcuts.push(shortcut);
-			} : function(kb) { 
+			} : function(kb) {
 				if(!shortcuts) shortcuts = kb.getShortcut(name);
 			};
 	Keyboard.each(keyboard, set);
@@ -12352,23 +12179,224 @@ Keyboard.getShortcut = function(name, keyboard, opts){
 Keyboard.getShortcuts = function(name, keyboard) {
 	return Keyboard.getShortcut(name, keyboard, { many: true });
 };
+
+
+/*
+---
+
+script: Mask.js
+
+name: Mask
+
+description: Creates a mask element to cover another.
+
+license: MIT-style license
+
+authors:
+  - Aaron Newton
+
+requires:
+  - Core/Options
+  - Core/Events
+  - Core/Element.Event
+  - /Class.Binds
+  - /Element.Position
+  - /IframeShim
+
+provides: [Mask]
+
+...
+*/
+
+var Mask = new Class({
+
+	Implements: [Options, Events],
+
+	Binds: ['position'],
+
+	options: {
+		// onShow: $empty,
+		// onHide: $empty,
+		// onDestroy: $empty,
+		// onClick: $empty,
+		//inject: {
+		//  where: 'after',
+		//  target: null,
+		//},
+		// hideOnClick: false,
+		// id: null,
+		// destroyOnHide: false,
+		style: {},
+		'class': 'mask',
+		maskMargins: false,
+		useIframeShim: true,
+		iframeShimOptions: {}
+	},
+
+	initialize: function(target, options){
+		this.target = document.id(target) || document.id(document.body);
+		this.target.store('Mask', this);
+		this.setOptions(options);
+		this.render();
+		this.inject();
+	},
+
+	render: function() {
+		this.element = new Element('div', {
+			'class': this.options['class'],
+			id: this.options.id || 'mask-' + $time(),
+			styles: $merge(this.options.style, {
+				display: 'none'
+			}),
+			events: {
+				click: function(){
+					this.fireEvent('click');
+					if (this.options.hideOnClick) this.hide();
+				}.bind(this)
+			}
+		});
+		this.hidden = true;
+	},
+
+	toElement: function(){
+		return this.element;
+	},
+
+	inject: function(target, where){
+		where = where || this.options.inject ? this.options.inject.where : '' || this.target == document.body ? 'inside' : 'after';
+		target = target || this.options.inject ? this.options.inject.target : '' || this.target;
+		this.element.inject(target, where);
+		if (this.options.useIframeShim) {
+			this.shim = new IframeShim(this.element, this.options.iframeShimOptions);
+			this.addEvents({
+				show: this.shim.show.bind(this.shim),
+				hide: this.shim.hide.bind(this.shim),
+				destroy: this.shim.destroy.bind(this.shim)
+			});
+		}
+	},
+
+	position: function(){
+		this.resize(this.options.width, this.options.height);
+		this.element.position({
+			relativeTo: this.target,
+			position: 'topLeft',
+			ignoreMargins: !this.options.maskMargins,
+			ignoreScroll: this.target == document.body
+		});
+		return this;
+	},
+
+	resize: function(x, y){
+		var opt = {
+			styles: ['padding', 'border']
+		};
+		if (this.options.maskMargins) opt.styles.push('margin');
+		var dim = this.target.getComputedSize(opt);
+		if (this.target == document.body) {
+			var win = window.getScrollSize();
+			if (dim.totalHeight < win.y) dim.totalHeight = win.y;
+			if (dim.totalWidth < win.x) dim.totalWidth = win.x;
+		}
+		this.element.setStyles({
+			width: $pick(x, dim.totalWidth, dim.x),
+			height: $pick(y, dim.totalHeight, dim.y)
+		});
+		return this;
+	},
+
+	show: function(){
+		if (!this.hidden) return this;
+		window.addEvent('resize', this.position);
+		this.position();
+		this.showMask.apply(this, arguments);
+		return this;
+	},
+
+	showMask: function(){
+		this.element.setStyle('display', 'block');
+		this.hidden = false;
+		this.fireEvent('show');
+	},
+
+	hide: function(){
+		if (this.hidden) return this;
+		window.removeEvent('resize', this.position);
+		this.hideMask.apply(this, arguments);
+		if (this.options.destroyOnHide) return this.destroy();
+		return this;
+	},
+
+	hideMask: function(){
+		this.element.setStyle('display', 'none');
+		this.hidden = true;
+		this.fireEvent('hide');
+	},
+
+	toggle: function(){
+		this[this.hidden ? 'show' : 'hide']();
+	},
+
+	destroy: function(){
+		this.hide();
+		this.element.destroy();
+		this.fireEvent('destroy');
+		this.target.eliminate('mask');
+	}
+
+});
+
+Element.Properties.mask = {
+
+	set: function(options){
+		var mask = this.retrieve('mask');
+		return this.eliminate('mask').store('mask:options', options);
+	},
+
+	get: function(options){
+		if (options || !this.retrieve('mask')){
+			if (this.retrieve('mask')) this.retrieve('mask').destroy();
+			if (options || !this.retrieve('mask:options')) this.set('mask', options);
+			this.store('mask', new Mask(this, this.retrieve('mask:options')));
+		}
+		return this.retrieve('mask');
+	}
+
+};
+
+Element.implement({
+
+	mask: function(options){
+		this.get('mask', options).show();
+		return this;
+	},
+
+	unmask: function(){
+		this.get('mask').hide();
+		return this;
+	}
+
+});
+
 /*
 ---
 
 script: Scroller.js
+
+name: Scroller
 
 description: Class which scrolls the contents of any Element (including the window) when the mouse reaches the Element's boundaries.
 
 license: MIT-style license
 
 authors:
- - Valerio Proietti
+  - Valerio Proietti
 
 requires:
- - core:1.2.4/Events
- - core:1.2.4/Options
- - core:1.2.4/Element.Event
- - core:1.2.4/Element.Dimensions
+  - Core/Events
+  - Core/Options
+  - Core/Element.Event
+  - Core/Element.Dimensions
 
 provides: [Scroller]
 
@@ -12403,15 +12431,15 @@ var Scroller = new Class({
 
 	start: function(){
 		this.listener.addEvents({
-			mouseover: this.bound.attach,
-			mouseout: this.bound.detach
+			mouseenter: this.bound.attach,
+			mouseleave: this.bound.detach
 		});
 	},
 
 	stop: function(){
 		this.listener.removeEvents({
-			mouseover: this.bound.attach,
-			mouseout: this.bound.detach
+			mouseenter: this.bound.attach,
+			mouseleave: this.bound.detach
 		});
 		this.detach();
 		this.timer = $clear(this.timer);
@@ -12432,41 +12460,49 @@ var Scroller = new Class({
 	},
 
 	scroll: function(){
-		var size = this.element.getSize(), 
-			scroll = this.element.getScroll(), 
-			pos = this.element != this.docBody ? this.element.getOffsets() : {x: 0, y:0}, 
-			scrollSize = this.element.getScrollSize(), 
-			change = {x: 0, y: 0};
+		var size = this.element.getSize(),
+			scroll = this.element.getScroll(),
+			pos = this.element != this.docBody ? this.element.getOffsets() : {x: 0, y:0},
+			scrollSize = this.element.getScrollSize(),
+			change = {x: 0, y: 0},
+			top = this.options.area.top || this.options.area,
+		  bottom = this.options.area.bottom || this.options.area;
 		for (var z in this.page){
-			if (this.page[z] < (this.options.area + pos[z]) && scroll[z] != 0) {
-				change[z] = (this.page[z] - this.options.area - pos[z]) * this.options.velocity;
-			} else if (this.page[z] + this.options.area > (size[z] + pos[z]) && scroll[z] + size[z] != scrollSize[z]) {
-				change[z] = (this.page[z] - size[z] + this.options.area - pos[z]) * this.options.velocity;
+			if (this.page[z] < (top + pos[z]) && scroll[z] != 0) {
+				change[z] = (this.page[z] - top - pos[z]) * this.options.velocity;
+			} else if (this.page[z] + bottom > (size[z] + pos[z]) && scroll[z] + size[z] != scrollSize[z]) {
+				change[z] = (this.page[z] - size[z] + bottom - pos[z]) * this.options.velocity;
 			}
+			change[z] = change[z].round();
 		}
 		if (change.y || change.x) this.fireEvent('change', [scroll.x + change.x, scroll.y + change.y]);
 	}
 
-});/*
+});
+
+
+/*
 ---
 
 script: Tips.js
+
+name: Tips
 
 description: Class for creating nice tips that follow the mouse cursor when hovering an element.
 
 license: MIT-style license
 
 authors:
- - Valerio Proietti
- - Christoph Pojer
+  - Valerio Proietti
+  - Christoph Pojer
 
 requires:
- - core:1.2.4/Options
- - core:1.2.4/Events
- - core:1.2.4/Element.Event
- - core:1.2.4/Element.Style
- - core:1.2.4/Element.Dimensions
- - /MooTools.More
+  - Core/Options
+  - Core/Events
+  - Core/Element.Event
+  - Core/Element.Style
+  - Core/Element.Dimensions
+  - /MooTools.More
 
 provides: [Tips]
 
@@ -12527,29 +12563,29 @@ this.Tips = new Class({
 			new Element('div', {'class': 'tip-top'}),
 			this.container,
 			new Element('div', {'class': 'tip-bottom'})
-		).inject(document.body);
+		);
 	},
 
 	attach: function(elements){
 		$$(elements).each(function(element){
 			var title = read(this.options.title, element),
 				text = read(this.options.text, element);
-			
+
 			element.erase('title').store('tip:native', title).retrieve('tip:title', title);
 			element.retrieve('tip:text', text);
 			this.fireEvent('attach', [element]);
-			
+
 			var events = ['enter', 'leave'];
 			if (!this.options.fixed) events.push('move');
-			
+
 			events.each(function(value){
 				var event = element.retrieve('tip:' + value);
 				if (!event) event = this['element' + value.capitalize()].bindWithEvent(this, element);
-				
+
 				element.store('tip:' + value, event).addEvent('mouse' + value, event);
 			}, this);
 		}, this);
-		
+
 		return this;
 	},
 
@@ -12558,29 +12594,29 @@ this.Tips = new Class({
 			['enter', 'leave', 'move'].each(function(value){
 				element.removeEvent('mouse' + value, element.retrieve('tip:' + value)).eliminate('tip:' + value);
 			});
-			
+
 			this.fireEvent('detach', [element]);
-			
+
 			if (this.options.title == 'title'){ // This is necessary to check if we can revert the title
 				var original = element.retrieve('tip:native');
 				if (original) element.set('title', original);
 			}
 		}, this);
-		
+
 		return this;
 	},
 
 	elementEnter: function(event, element){
 		this.container.empty();
-		
+
 		['title', 'text'].each(function(value){
 			var content = element.retrieve('tip:' + value);
 			if (content) this.fill(new Element('div', {'class': 'tip-' + value}).inject(this.container), content);
 		}, this);
-		
+
 		$clear(this.timer);
 		this.timer = (function(){
-			this.show(this, element);
+			this.show(element);
 			this.position((this.options.fixed) ? {page: element.getPosition()} : event);
 		}).delay(this.options.showDelay, this);
 	},
@@ -12609,12 +12645,12 @@ this.Tips = new Class({
 			tip = {x: this.tip.offsetWidth, y: this.tip.offsetHeight},
 			props = {x: 'left', y: 'top'},
 			obj = {};
-		
+
 		for (var z in props){
 			obj[props[z]] = event.page[z] + this.options.offset[z];
 			if ((obj[props[z]] + tip[z] - scroll[z]) > size[z] - this.options.windowPadding[z]) obj[props[z]] = event.page[z] - this.options.offset[z] - tip[z];
 		}
-		
+
 		this.tip.setStyles(obj);
 	},
 
@@ -12625,6 +12661,7 @@ this.Tips = new Class({
 
 	show: function(element){
 		if (!this.tip) document.id(this);
+		if (!this.tip.getParent()) this.tip.inject(document.body);
 		this.fireEvent('show', [this.tip, element]);
 	},
 
@@ -12635,21 +12672,358 @@ this.Tips = new Class({
 
 });
 
-})();/*
+})();
+
+
+/*
+---
+
+script: Spinner.js
+
+name: Spinner
+
+description: Adds a semi-transparent overlay over a dom element with a spinnin ajax icon.
+
+license: MIT-style license
+
+authors:
+  - Aaron Newton
+
+requires:
+  - Core/Fx.Tween
+  - Core/Request
+  - /Class.refactor
+  - /Mask
+
+provides: [Spinner]
+
+...
+*/
+
+var Spinner = new Class({
+
+	Extends: Mask,
+
+	options: {
+		/*message: false,*/
+		'class':'spinner',
+		containerPosition: {},
+		content: {
+			'class':'spinner-content'
+		},
+		messageContainer: {
+			'class':'spinner-msg'
+		},
+		img: {
+			'class':'spinner-img'
+		},
+		fxOptions: {
+			link: 'chain'
+		}
+	},
+
+	initialize: function(){
+		this.parent.apply(this, arguments);
+		this.target.store('spinner', this);
+
+		//add this to events for when noFx is true; parent methods handle hide/show
+		var deactivate = function(){ this.active = false; }.bind(this);
+		this.addEvents({
+			hide: deactivate,
+			show: deactivate
+		});
+	},
+
+	render: function(){
+		this.parent();
+		this.element.set('id', this.options.id || 'spinner-'+$time());
+		this.content = document.id(this.options.content) || new Element('div', this.options.content);
+		this.content.inject(this.element);
+		if (this.options.message) {
+			this.msg = document.id(this.options.message) || new Element('p', this.options.messageContainer).appendText(this.options.message);
+			this.msg.inject(this.content);
+		}
+		if (this.options.img) {
+			this.img = document.id(this.options.img) || new Element('div', this.options.img);
+			this.img.inject(this.content);
+		}
+		this.element.set('tween', this.options.fxOptions);
+	},
+
+	show: function(noFx){
+		if (this.active) return this.chain(this.show.bind(this));
+		if (!this.hidden) {
+			this.callChain.delay(20, this);
+			return this;
+		}
+		this.active = true;
+		return this.parent(noFx);
+	},
+
+	showMask: function(noFx){
+		var pos = function(){
+			this.content.position($merge({
+				relativeTo: this.element
+			}, this.options.containerPosition));
+		}.bind(this);
+		if (noFx) {
+			this.parent();
+			pos();
+		} else {
+			this.element.setStyles({
+				display: 'block',
+				opacity: 0
+			}).tween('opacity', this.options.style.opacity || 0.9);
+			pos();
+			this.hidden = false;
+			this.fireEvent('show');
+			this.callChain();
+		}
+	},
+
+	hide: function(noFx){
+		if (this.active) return this.chain(this.hide.bind(this));
+		if (this.hidden) {
+			this.callChain.delay(20, this);
+			return this;
+		}
+		this.active = true;
+		return this.parent(noFx);
+	},
+
+	hideMask: function(noFx){
+		if (noFx) return this.parent();
+		this.element.tween('opacity', 0).get('tween').chain(function(){
+			this.element.setStyle('display', 'none');
+			this.hidden = true;
+			this.fireEvent('hide');
+			this.callChain();
+		}.bind(this));
+	},
+
+	destroy: function(){
+		this.content.destroy();
+		this.parent();
+		this.target.eliminate('spinner');
+	}
+
+});
+
+Spinner.implement(new Chain);
+
+Request = Class.refactor(Request, {
+
+	options: {
+		useSpinner: false,
+		spinnerOptions: {},
+		spinnerTarget: false
+	},
+
+	initialize: function(options){
+		this._send = this.send;
+		this.send = function(options){
+			var spinner = this.getSpinner();
+			if (spinner) spinner.chain(this._send.bind(this, options)).show();
+			else this._send(options);
+			return this;
+		};
+		this.previous(options);
+	},
+
+	getSpinner: function(){
+		if (!this.spinner) {
+			var update = document.id(this.options.spinnerTarget) || document.id(this.options.update);
+			if (this.options.useSpinner && update) {
+				this.spinner = update.get('spinner', this.options.spinnerOptions);
+				['onComplete', 'onException', 'onCancel'].each(function(event){
+					this.addEvent(event, this.spinner.hide.bind(this.spinner));
+				}, this);
+			}
+		}
+		return this.spinner;
+	}
+
+});
+
+Element.Properties.spinner = {
+
+	set: function(options){
+		var spinner = this.retrieve('spinner');
+		return this.eliminate('spinner').store('spinner:options', options);
+	},
+
+	get: function(options){
+		if (options || !this.retrieve('spinner')){
+			if (this.retrieve('spinner')) this.retrieve('spinner').destroy();
+			if (options || !this.retrieve('spinner:options')) this.set('spinner', options);
+			new Spinner(this, this.retrieve('spinner:options'));
+		}
+		return this.retrieve('spinner');
+	}
+
+};
+
+Element.implement({
+
+	spin: function(options){
+		this.get('spinner', options).show();
+		return this;
+	},
+
+	unspin: function(){
+		var opt = Array.link(arguments, {options: Object.type, callback: Function.type});
+		this.get('spinner', opt.options).hide(opt.callback);
+		return this;
+	}
+
+});
+
+/*
+---
+
+script: Date.English.US.js
+
+name: Date.English.US
+
+description: Date messages for US English.
+
+license: MIT-style license
+
+authors:
+  - Aaron Newton
+
+requires:
+  - /Lang
+
+provides: [Date.English.US]
+
+...
+*/
+
+MooTools.lang.set('en-US', 'Date', {
+
+	months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+	days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+
+	// Culture's date order: MM/DD/YYYY
+	dateOrder: ['month', 'date', 'year'],
+	shortDate: '%m/%d/%Y',
+	shortTime: '%I:%M%p',
+	AM: 'AM',
+	PM: 'PM',
+
+	// Date.Extras
+	ordinal: function(dayOfMonth){
+		// 1st, 2nd, 3rd, etc.
+		return (dayOfMonth > 3 && dayOfMonth < 21) ? 'th' : ['th', 'st', 'nd', 'rd', 'th'][Math.min(dayOfMonth % 10, 4)];
+	},
+
+	lessThanMinuteAgo: 'less than a minute ago',
+	minuteAgo: 'about a minute ago',
+	minutesAgo: '{delta} minutes ago',
+	hourAgo: 'about an hour ago',
+	hoursAgo: 'about {delta} hours ago',
+	dayAgo: '1 day ago',
+	daysAgo: '{delta} days ago',
+	weekAgo: '1 week ago',
+	weeksAgo: '{delta} weeks ago',
+	monthAgo: '1 month ago',
+	monthsAgo: '{delta} months ago',
+	yearAgo: '1 year ago',
+	yearsAgo: '{delta} years ago',
+
+	lessThanMinuteUntil: 'less than a minute from now',
+	minuteUntil: 'about a minute from now',
+	minutesUntil: '{delta} minutes from now',
+	hourUntil: 'about an hour from now',
+	hoursUntil: 'about {delta} hours from now',
+	dayUntil: '1 day from now',
+	daysUntil: '{delta} days from now',
+	weekUntil: '1 week from now',
+	weeksUntil: '{delta} weeks from now',
+	monthUntil: '1 month from now',
+	monthsUntil: '{delta} months from now',
+	yearUntil: '1 year from now',
+	yearsUntil: '{delta} years from now'
+
+});
+
+
+/*
+---
+
+script: Form.Validator.English.js
+
+name: Form.Validator.English
+
+description: Form Validator messages for English.
+
+license: MIT-style license
+
+authors:
+  - Aaron Newton
+
+requires:
+  - /Lang
+
+provides: [Form.Validator.English]
+
+...
+*/
+
+MooTools.lang.set('en-US', 'Form.Validator', {
+
+	required: 'This field is required.',
+	minLength: 'Please enter at least {minLength} characters (you entered {length} characters).',
+	maxLength: 'Please enter no more than {maxLength} characters (you entered {length} characters).',
+	integer: 'Please enter an integer in this field. Numbers with decimals (e.g. 1.25) are not permitted.',
+	numeric: 'Please enter only numeric values in this field (i.e. "1" or "1.1" or "-1" or "-1.1").',
+	digits: 'Please use numbers and punctuation only in this field (for example, a phone number with dashes or dots is permitted).',
+	alpha: 'Please use only letters (a-z) within this field. No spaces or other characters are allowed.',
+	alphanum: 'Please use only letters (a-z) or numbers (0-9) in this field. No spaces or other characters are allowed.',
+	dateSuchAs: 'Please enter a valid date such as {date}',
+	dateInFormatMDY: 'Please enter a valid date such as MM/DD/YYYY (i.e. "12/31/1999")',
+	email: 'Please enter a valid email address. For example "fred@domain.com".',
+	url: 'Please enter a valid URL such as http://www.google.com.',
+	currencyDollar: 'Please enter a valid $ amount. For example $100.00 .',
+	oneRequired: 'Please enter something for at least one of these inputs.',
+	errorPrefix: 'Error: ',
+	warningPrefix: 'Warning: ',
+
+	// Form.Validator.Extras
+	noSpace: 'There can be no spaces in this input.',
+	reqChkByNode: 'No items are selected.',
+	requiredChk: 'This field is required.',
+	reqChkByName: 'Please select a {label}.',
+	match: 'This field needs to match the {matchName} field',
+	startDate: 'the start date',
+	endDate: 'the end date',
+	currendDate: 'the current date',
+	afterDate: 'The date should be the same or after {label}.',
+	beforeDate: 'The date should be the same or before {label}.',
+	startMonth: 'Please select a start month',
+	sameMonth: 'These two dates must be in the same month - you must change one or the other.',
+	creditcard: 'The credit card number entered is invalid. Please check the number and try again. {length} digits entered.'
+
+});
+
+
+/*
 ---
 
 script: Date.Catalan.js
+
+name: Date.Catalan
 
 description: Date messages for Catalan.
 
 license: MIT-style license
 
 authors:
- - Alfons Sanchez
+  - Ãlfons Sanchez
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.Catalan]
 
@@ -12660,16 +13034,15 @@ MooTools.lang.set('ca-CA', 'Date', {
 
 	months: ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juli', 'Agost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'],
 	days: ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'],
-	//culture's date order: MM/DD/YYYY
-	dateOrder: ['date', 'month', 'year'],
 
+	// Culture's date order: DD/MM/YYYY
+	dateOrder: ['date', 'month', 'year'],
 	shortDate: '%d/%m/%Y',
 	shortTime: '%H:%M',
-
 	AM: 'AM',
 	PM: 'PM',
 
-	/* Date.Extras */
+	// Date.Extras
 	ordinal: '',
 
 	lessThanMinuteAgo: 'fa menys d`un minut',
@@ -12679,6 +13052,7 @@ MooTools.lang.set('ca-CA', 'Date', {
 	hoursAgo: 'fa unes {delta} hores',
 	dayAgo: 'fa un dia',
 	daysAgo: 'fa {delta} dies',
+
 	lessThanMinuteUntil: 'menys d`un minut des d`ara',
 	minuteUntil: 'un minut des d`ara',
 	minutesUntil: '{delta} minuts des d`ara',
@@ -12687,106 +13061,127 @@ MooTools.lang.set('ca-CA', 'Date', {
 	dayUntil: '1 dia des d`ara',
 	daysUntil: '{delta} dies des d`ara'
 
-});/*
+});
+
+
+/*
 ---
 
 script: Date.Czech.js
+
+name: Date.Czech
 
 description: Date messages for Czech.
 
 license: MIT-style license
 
 authors:
- - Jan Černý chemiX
+  - Jan Černý chemiX
+  - Christopher Zukowski
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.Czech]
 
 ...
 */
+(function(){
+
+// Czech language pluralization rules, see http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html
+// one -> n is 1;            1
+// few -> n in 2..4;         2-4
+// other -> everything else  0, 5-999, 1.31, 2.31, 5.31...
+var pluralize = function (n, one, few, other) {
+	if (n == 1) return one;
+	else if (n == 2 || n == 3 || n == 4) return few;
+	else return other;
+};
 
 MooTools.lang.set('cs-CZ', 'Date', {
 
 	months: ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'],
 	days: ['Neděle', 'Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota'],
-	//culture's date order: MM/DD/YYYY
+
+	// Culture's date order: DD.MM.YYYY
 	dateOrder: ['date', 'month', 'year'],
-	shortDate: '%d/%m/%Y',
+	shortDate: '%d.%m.%Y',
 	shortTime: '%H:%M',
 	AM: 'dop.',
 	PM: 'odp.',
 
-	/* Date.Extras */
-	ordinal: function(dayOfMonth){
-		return '.';
-	},
+	// Date.Extras
+	ordinal: '.',
 
-    // TODO : in examples use and fix it
-	lessThanMinuteAgo: 'méně než minutou',
+	lessThanMinuteAgo: 'před chvílí',
 	minuteAgo: 'přibližně před minutou',
-	minutesAgo: 'před {delta} minutami',
+	minutesAgo: function(delta) { return 'před {delta} ' + pluralize(delta, 'minutou', 'minutami', 'minutami'); },
 	hourAgo: 'přibližně před hodinou',
-	hoursAgo: 'před {delta} hodinami',
+	hoursAgo: function(delta) { return 'před {delta} ' + pluralize(delta, 'hodinou', 'hodinami', 'hodinami'); },
 	dayAgo: 'před dnem',
-	daysAgo: 'před {delta} dni',
-	lessThanMinuteUntil: 'před méně než minutou',
-	minuteUntil: 'asi před minutou',
-	minutesUntil: ' asi před {delta} minutami',
-	hourUntil: 'asi před hodinou',
-	hoursUntil: 'před {delta} hodinami',
-	dayUntil: 'před dnem',
-	daysUntil: 'před {delta} dni',
-	weekUntil: 'před týdnem',
-	weeksUntil: 'před {delta} týdny',
-	monthUntil: 'před měsícem',
-	monthsUntil: 'před {delta} měsíci',
-	yearUntil: 'před rokem',
-	yearsUntil: 'před {delta} lety'
+	daysAgo: function(delta) { return 'před {delta} ' + pluralize(delta, 'dnem', 'dny', 'dny'); },
+	weekAgo: 'před týdnem',
+	weeksAgo: function(delta) { return 'před {delta} ' + pluralize(delta, 'týdnem', 'týdny', 'týdny'); },
+	monthAgo: 'před měsícem',
+	monthsAgo: function(delta) { return 'před {delta} ' + pluralize(delta, 'měsícem', 'měsíci', 'měsíci'); },
+	yearAgo: 'před rokem',
+	yearsAgo: function(delta) { return 'před {delta} ' + pluralize(delta, 'rokem', 'lety', 'lety'); },
 
+	lessThanMinuteUntil: 'za chvíli',
+	minuteUntil: 'přibližně za minutu',
+	minutesUntil: function(delta) { return 'za {delta} ' + pluralize(delta, 'minutu', 'minuty', 'minut'); },
+	hourUntil: 'přibližně za hodinu',
+	hoursUntil: function(delta) { return 'za {delta} ' + pluralize(delta, 'hodinu', 'hodiny', 'hodin'); },
+	dayUntil: 'za den',
+	daysUntil: function(delta) { return 'za {delta} ' + pluralize(delta, 'den', 'dny', 'dnů'); },
+	weekUntil: 'za týden',
+	weeksUntil: function(delta) { return 'za {delta} ' + pluralize(delta, 'týden', 'týdny', 'týdnů'); },
+	monthUntil: 'za měsíc',
+	monthsUntil: function(delta) { return 'za {delta} ' + pluralize(delta, 'měsíc', 'měsíce', 'měsíců'); },
+	yearUntil: 'za rok',
+	yearsUntil: function(delta) { return 'za {delta} ' + pluralize(delta, 'rok', 'roky', 'let'); }
 });
+
+})();
+
+
 /*
 ---
 
 script: Date.Danish.js
+
+name: Date.Danish
 
 description: Date messages for Danish.
 
 license: MIT-style license
 
 authors:
- - Martin Overgaard
- - Henrik Hansen
+  - Martin Overgaard
+  - Henrik Hansen
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.Danish]
 
 ...
 */
- 
+
 MooTools.lang.set('da-DK', 'Date', {
 
 	months: ['Januar', 'Februa', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'],
 	days: ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'],
-	//culture's date order: DD/MM/YYYY
-	dateOrder: ['date', 'month', 'year'],
 
+	// Culture's date order: DD-MM-YYYY
+	dateOrder: ['date', 'month', 'year'],
+	shortDate: '%d-%m-%Y',
+	shortTime: '%H:%M',
 	AM: 'AM',
 	PM: 'PM',
 
-	shortDate: '%d-%m-%Y',
-	shortTime: '%H:%M',
-
-	/* Date.Extras */
-	ordinal: function(dayOfMonth){
-	  //1st, 2nd, 3rd, etc.
-	  return (dayOfMonth > 3 && dayOfMonth < 21) ? 'th' : ['th', 'st', 'nd', 'rd', 'th'][Math.min(dayOfMonth % 10, 4)];
-	},
+	// Date.Extras
+	ordinal: '.',
 
 	lessThanMinuteAgo: 'mindre end et minut siden',
 	minuteAgo: 'omkring et minut siden',
@@ -12799,8 +13194,9 @@ MooTools.lang.set('da-DK', 'Date', {
 	weeksAgo: '{delta} uger siden',
 	monthAgo: '1 måned siden',
 	monthsAgo: '{delta} måneder siden',
-	yearthAgo: '1 år siden',
+	yearAgo: '1 år siden',
 	yearsAgo: '{delta} år siden',
+
 	lessThanMinuteUntil: 'mindre end et minut fra nu',
 	minuteUntil: 'omkring et minut fra nu',
 	minutesUntil: '{delta} minutter fra nu',
@@ -12816,21 +13212,25 @@ MooTools.lang.set('da-DK', 'Date', {
 	yearsUntil: '{delta} år fra nu'
 
 });
+
+
 /*
 ---
 
 script: Date.Dutch.js
 
-description: Date messages in Dutch.
+name: Date.Dutch
+
+description: Date messages for Dutch.
 
 license: MIT-style license
 
 authors:
- - Lennart Pilon
+  - Lennart Pilon
+  - Tim Wienk
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.Dutch]
 
@@ -12839,69 +13239,66 @@ provides: [Date.Dutch]
 
 MooTools.lang.set('nl-NL', 'Date', {
 
-	months: ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'],
-	days: ['Zondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag'],
-	//culture's date order: DD/MM/YYYY
-	dateOrder: ['date', 'month', 'year'],
+	months: ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
+	days: ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'],
 
+	// Culture's date order: DD-MM-YYYY
+	dateOrder: ['date', 'month', 'year'],
+	shortDate: '%d-%m-%Y',
+	shortTime: '%H:%M',
 	AM: 'AM',
 	PM: 'PM',
 
-	shortDate: '%d/%m/%Y',
-	shortTime: '%H:%M',
-
-	/* Date.Extras */
+	// Date.Extras
 	ordinal: 'e',
 
 	lessThanMinuteAgo: 'minder dan een minuut geleden',
 	minuteAgo: 'ongeveer een minuut geleden',
-	minutesAgo: 'minuten geleden',
+	minutesAgo: '{delta} minuten geleden',
 	hourAgo: 'ongeveer een uur geleden',
 	hoursAgo: 'ongeveer {delta} uur geleden',
-	dayAgo: '{delta} dag geleden',
-	daysAgo: 'dagen geleden',
+	dayAgo: 'een dag geleden',
+	daysAgo: '{delta} dagen geleden',
 	weekAgo: 'een week geleden',
 	weeksAgo: '{delta} weken geleden',
 	monthAgo: 'een maand geleden',
 	monthsAgo: '{delta} maanden geleden',
 	yearAgo: 'een jaar geleden',
 	yearsAgo: '{delta} jaar geleden',
-	lessThanMinuteUntil: 'minder dan een minuut vanaf nu',
-	minuteUntil: 'ongeveer een minuut vanaf nu',
-	minutesUntil: '{delta} minuten vanaf nu',
-	hourUntil: 'ongeveer een uur vanaf nu',
-	hoursUntil: 'ongeveer {delta} uur vanaf nu',
-	dayUntil: '1 dag vanaf nu',
-	daysUntil: '{delta} dagen vanaf nu',
-	weekAgo: 'een week geleden',
-	weeksAgo: '{delta} weken geleden',
-	monthAgo: 'een maand geleden',
-	monthsAgo: '{delta} maanden geleden',
-	yearthAgo: 'een jaar geleden',
-	yearsAgo: '{delta} jaar geleden',
 
+	lessThanMinuteUntil: 'over minder dan een minuut',
+	minuteUntil: 'over ongeveer een minuut',
+	minutesUntil: 'over {delta} minuten',
+	hourUntil: 'over ongeveer een uur',
+	hoursUntil: 'over {delta} uur',
+	dayUntil: 'over ongeveer een dag',
+	daysUntil: 'over {delta} dagen',
 	weekUntil: 'over een week',
 	weeksUntil: 'over {delta} weken',
 	monthUntil: 'over een maand',
 	monthsUntil: 'over {delta} maanden',
 	yearUntil: 'over een jaar',
-	yearsUntil: 'over {delta} jaar' 
+	yearsUntil: 'over {delta} jaar'
 
-});/*
+});
+
+
+/*
 ---
 
 script: Date.English.GB.js
+
+name: Date.English.GB
 
 description: Date messages for British English.
 
 license: MIT-style license
 
 authors:
- - Aaron Newton
+  - Aaron Newton
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.English.GB]
 
@@ -12910,26 +13307,30 @@ provides: [Date.English.GB]
 
 MooTools.lang.set('en-GB', 'Date', {
 
+	// Culture's date order: DD/MM/YYYY
 	dateOrder: ['date', 'month', 'year'],
-	
 	shortDate: '%d/%m/%Y',
 	shortTime: '%H:%M'
 
-}).set('cascade', ['en-US']);/*
+}).set('cascade', ['en-US']);
+
+
+/*
 ---
 
 script: Date.Estonian.js
+
+name: Date.Estonian
 
 description: Date messages for Estonian.
 
 license: MIT-style license
 
 authors:
- - Kevin Valdek
+  - Kevin Valdek
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.Estonian]
 
@@ -12940,16 +13341,15 @@ MooTools.lang.set('et-EE', 'Date', {
 
 	months: ['jaanuar', 'veebruar', 'märts', 'aprill', 'mai', 'juuni', 'juuli', 'august', 'september', 'oktoober', 'november', 'detsember'],
 	days: ['pühapäev', 'esmaspäev', 'teisipäev', 'kolmapäev', 'neljapäev', 'reede', 'laupäev'],
-	//culture's date order: MM.DD.YYYY
-	dateOrder: ['month', 'date', 'year'],
 
+	// Culture's date order: MM.DD.YYYY
+	dateOrder: ['month', 'date', 'year'],
+	shortDate: '%m.%d.%Y',
+	shortTime: '%H:%M',
 	AM: 'AM',
 	PM: 'PM',
 
-	shortDate: '%m.%d.%Y',
-	shortTime: '%H:%M',
-
-	/* Date.Extras */
+	// Date.Extras
 	ordinal: '',
 
 	lessThanMinuteAgo: 'vähem kui minut aega tagasi',
@@ -12965,6 +13365,7 @@ MooTools.lang.set('et-EE', 'Date', {
 	monthsAgo: '{delta} kuud tagasi',
 	yearAgo: '1 aasta tagasi',
 	yearsAgo: '{delta} aastat tagasi',
+
 	lessThanMinuteUntil: 'vähem kui minuti aja pärast',
 	minuteUntil: 'umbes minuti aja pärast',
 	minutesUntil: '{delta} minuti pärast',
@@ -12979,24 +13380,28 @@ MooTools.lang.set('et-EE', 'Date', {
 	yearUntil: '1 aasta pärast',
 	yearsUntil: '{delta} aasta pärast'
 
-});/*
+});
+
+
+/*
 ---
 
 script: Date.German.js
+
+name: Date.German
 
 description: Date messages for German.
 
 license: MIT-style license
 
 authors:
- - Christoph Pojer
- - Frank Rossi
- - Ulrich Petri
- - Fabian Beiner
+  - Christoph Pojer
+  - Frank Rossi
+  - Ulrich Petri
+  - Fabian Beiner
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.German]
 
@@ -13007,16 +13412,15 @@ MooTools.lang.set('de-DE', 'Date', {
 
 	months: ['Januar', 'Februar', 'M&auml;rz', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
 	days: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
-	//culture's date order: MM/DD/YYYY
-	dateOrder: [ 'date', 'month', 'year', '.'],
 
+	// Culture's date order: DD.MM.YYYY
+	dateOrder: ['date', 'month', 'year'],
+	shortDate: '%d.%m.%Y',
+	shortTime: '%H:%M',
 	AM: 'vormittags',
 	PM: 'nachmittags',
 
-	shortDate: '%d.%m.%Y',
-	shortTime: '%H:%M',
-
-	/* Date.Extras */
+	// Date.Extras
 	ordinal: '.',
 
 	lessThanMinuteAgo: 'Vor weniger als einer Minute',
@@ -13032,6 +13436,7 @@ MooTools.lang.set('de-DE', 'Date', {
 	monthsAgo: 'Vor {delta} Monaten',
 	yearAgo: 'Vor einem Jahr',
 	yearsAgo: 'Vor {delta} Jahren',
+
 	lessThanMinuteUntil: 'In weniger als einer Minute',
 	minuteUntil: 'In einer Minute',
 	minutesUntil: 'In {delta} Minuten',
@@ -13045,67 +13450,77 @@ MooTools.lang.set('de-DE', 'Date', {
 	monthsUntil: 'In {delta} Monaten',
 	yearUntil: 'In einem Jahr',
 	yearsUntil: 'In {delta} Jahren'
-});/*
+
+});
+
+
+/*
 ---
 
 script: Date.German.CH.js
+
+name: Date.German.CH
 
 description: Date messages for German (Switzerland).
 
 license: MIT-style license
 
 authors:
- - Michael van der Weg
+  - Michael van der Weg
 
 requires:
- - /Lang
- - /Date.German
+  - /Lang
+  - /Date.German
 
 provides: [Date.German.CH]
 
 ...
 */
 
-MooTools.lang.set('de-CH', 'cascade', ['de-DE']);/*
+MooTools.lang.set('de-CH', 'cascade', ['de-DE']);
+
+
+/*
 ---
 
 script: Date.French.js
 
-description: Date messages in French.
+name: Date.French
+
+description: Date messages for French.
 
 license: MIT-style license
 
 authors:
- - Nicolas Sorosac
- - Antoine Abt
+  - Nicolas Sorosac
+  - Antoine Abt
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.French]
 
 ...
 */
- 
+
 MooTools.lang.set('fr-FR', 'Date', {
 
-	months: ['janvier', 'f&eacute;vrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'ao&ucirc;t', 'septembre', 'octobre', 'novembre', 'd&eacute;cembre'],
-	days: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
-	dateOrder: ['date', 'month', 'year'],
+	months: ['Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre'],
+	days: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
 
+	// Culture's date order: DD/MM/YYYY
+	dateOrder: ['date', 'month', 'year'],
+	shortDate: '%d/%m/%Y',
+	shortTime: '%H:%M',
 	AM: 'AM',
 	PM: 'PM',
 
-	shortDate: '%d/%m/%Y',
-	shortTime: '%H:%M',
-
-	/* Date.Extras */
-	getOrdinal: function(dayOfMonth){
-	  return (dayOfMonth > 1) ? '' : 'er';
+	// Date.Extras
+	ordinal: function(dayOfMonth){
+		return (dayOfMonth > 1) ? '' : 'er';
 	},
 
-	lessThanMinuteAgo: 'il y a moins d\'une minute',
+	lessThanMinuteAgo: "il y a moins d'une minute",
 	minuteAgo: 'il y a une minute',
 	minutesAgo: 'il y a {delta} minutes',
 	hourAgo: 'il y a une heure',
@@ -13118,7 +13533,8 @@ MooTools.lang.set('fr-FR', 'Date', {
 	monthsAgo: 'il y a {delta} mois',
 	yearthAgo: 'il y a 1 an',
 	yearsAgo: 'il y a {delta} ans',
-	lessThanMinuteUntil: 'dans moins d\'une minute',
+
+	lessThanMinuteUntil: "dans moins d'une minute",
 	minuteUntil: 'dans une minute',
 	minutesUntil: 'dans {delta} minutes',
 	hourUntil: 'dans une heure',
@@ -13133,74 +13549,81 @@ MooTools.lang.set('fr-FR', 'Date', {
 	yearsUntil: 'dans {delta} ans'
 
 });
+
+
 /*
 ---
 
 script: Date.Italian.js
+
+name: Date.Italian
 
 description: Date messages for Italian.
 
 license: MIT-style license.
 
 authors:
- - Andrea Novero
- - Valerio Proietti
+  - Andrea Novero
+  - Valerio Proietti
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.Italian]
 
 ...
 */
- 
+
 MooTools.lang.set('it-IT', 'Date', {
- 
+
 	months: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
 	days: ['Domenica', 'Luned&igrave;', 'Marted&igrave;', 'Mercoled&igrave;', 'Gioved&igrave;', 'Venerd&igrave;', 'Sabato'],
-	//culture's date order: DD/MM/YYYY
-	dateOrder: ['date', 'month', 'year'],
 
+	// Culture's date order: DD/MM/YYYY
+	dateOrder: ['date', 'month', 'year'],
+	shortDate: '%d/%m/%Y',
+	shortTime: '%H.%M',
 	AM: 'AM',
 	PM: 'PM',
 
-	shortDate: '%d/%m/%Y',
-	shortTime: '%H.%M',
-
-	/* Date.Extras */
+	// Date.Extras
 	ordinal: '&ordm;',
 
 	lessThanMinuteAgo: 'meno di un minuto fa',
 	minuteAgo: 'circa un minuto fa',
 	minutesAgo: 'circa {delta} minuti fa',
-	hourAgo: 'circa un\'ora fa',
+	hourAgo: "circa un'ora fa",
 	hoursAgo: 'circa {delta} ore fa',
 	dayAgo: 'circa 1 giorno fa',
 	daysAgo: 'circa {delta} giorni fa',
+
 	lessThanMinuteUntil: 'tra meno di un minuto',
 	minuteUntil: 'tra circa un minuto',
 	minutesUntil: 'tra circa {delta} minuti',
-	hourUntil: 'tra circa un\'ora',
+	hourUntil: "tra circa un'ora",
 	hoursUntil: 'tra circa {delta} ore',
 	dayUntil: 'tra circa un giorno',
 	daysUntil: 'tra circa {delta} giorni'
 
-});/*
+});
+
+
+/*
 ---
 
 script: Date.Norwegian.js
 
-description: Date messages in Norwegian.
+name: Date.Norwegian
+
+description: Date messages for Norwegian.
 
 license: MIT-style license
 
 authors:
- - Espen 'Rexxars' Hovlandsdal
+  - Espen 'Rexxars' Hovlandsdal
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.Norwegian]
 
@@ -13209,10 +13632,12 @@ provides: [Date.Norwegian]
 
 MooTools.lang.set('no-NO', 'Date', {
 
+	// Culture's date order: DD.MM.YYYY
 	dateOrder: ['date', 'month', 'year'],
-
 	shortDate: '%d.%m.%Y',
 	shortTime: '%H:%M',
+	AM: 'AM',
+	PM: 'PM',
 
 	lessThanMinuteAgo: 'kortere enn et minutt siden',
 	minuteAgo: 'omtrent et minutt siden',
@@ -13222,21 +13647,25 @@ MooTools.lang.set('no-NO', 'Date', {
 	dayAgo: '{delta} dag siden',
 	daysAgo: '{delta} dager siden'
 
-});/*
+});
+
+
+/*
 ---
 
 script: Date.Polish.js
+
+name: Date.Polish
 
 description: Date messages for Polish.
 
 license: MIT-style license
 
 authors:
- - Oskar Krawczyk
+  - Oskar Krawczyk
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.Polish]
 
@@ -13244,16 +13673,18 @@ provides: [Date.Polish]
 */
 
 MooTools.lang.set('pl-PL', 'Date', {
+
 	months: ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'],
 	days: ['Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota'],
+
+	// Culture's date order: YYYY-MM-DD
 	dateOrder: ['year', 'month', 'date'],
+	shortDate: '%Y-%m-%d',
+	shortTime: '%H:%M',
 	AM: 'nad ranem',
 	PM: 'po południu',
 
-	shortDate: '%Y-%m-%d',
-	shortTime: '%H:%M',
-
-	/* Date.Extras */
+	// Date.Extras
 	ordinal: function(dayOfMonth){
 		return (dayOfMonth > 3 && dayOfMonth < 21) ? 'ty' : ['ty', 'szy', 'gi', 'ci', 'ty'][Math.min(dayOfMonth % 10, 4)];
 	},
@@ -13265,6 +13696,7 @@ MooTools.lang.set('pl-PL', 'Date', {
 	hoursAgo: 'około {delta} godzin temu',
 	dayAgo: 'Wczoraj',
 	daysAgo: '{delta} dni temu',
+
 	lessThanMinuteUntil: 'za niecałą minutę',
 	minuteUntil: 'za około minutę',
 	minutesUntil: 'za {delta} minut',
@@ -13272,21 +13704,26 @@ MooTools.lang.set('pl-PL', 'Date', {
 	hoursUntil: 'za około {delta} godzin',
 	dayUntil: 'za 1 dzień',
 	daysUntil: 'za {delta} dni'
-});/*
+
+});
+
+
+/*
 ---
 
 script: Date.Portuguese.BR.js
 
-description: Date messages in Portuguese-BR (Brazil).
+name: Date.Portuguese.BR
+
+description: Date messages for Portuguese (Brazil).
 
 license: MIT-style license
 
 authors:
- - Fabio Miranda Costa
+  - Fabio Miranda Costa
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.Portuguese.BR]
 
@@ -13297,16 +13734,16 @@ MooTools.lang.set('pt-BR', 'Date', {
 
 	months: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
 	days: ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'],
-	//culture's date order: DD/MM/YYYY
+
+	// Culture's date order: DD/MM/YYYY
 	dateOrder: ['date', 'month', 'year'],
 	shortDate: '%d/%m/%Y',
 	shortTime: '%H:%M',
+	AM: 'AM',
+	PM: 'PM',
 
-	/* Date.Extras */
-	ordinal: function(dayOfMonth){
-		//1º, 2º, 3º, etc.
-    	return '&ordm;';
-	},
+	// Date.Extras
+	ordinal: '&ordm;',
 
 	lessThanMinuteAgo: 'há menos de um minuto',
 	minuteAgo: 'há cerca de um minuto',
@@ -13315,12 +13752,13 @@ MooTools.lang.set('pt-BR', 'Date', {
 	hoursAgo: 'há cerca de {delta} horas',
 	dayAgo: 'há um dia',
 	daysAgo: 'há {delta} dias',
-    weekAgo: 'há uma semana',
+	weekAgo: 'há uma semana',
 	weeksAgo: 'há {delta} semanas',
 	monthAgo: 'há um mês',
 	monthsAgo: 'há {delta} meses',
 	yearAgo: 'há um ano',
 	yearsAgo: 'há {delta} anos',
+
 	lessThanMinuteUntil: 'em menos de um minuto',
 	minuteUntil: 'em um minuto',
 	minutesUntil: 'em {delta} minutos',
@@ -13335,86 +13773,105 @@ MooTools.lang.set('pt-BR', 'Date', {
 	yearUntil: 'em um ano',
 	yearsUntil: 'em {delta} anos'
 
-});/*
-Script: Date.Russian.js
-	Date messages for Russian.
+});
 
-	License:
-		MIT-style license.
 
-	Authors:
-		Evstigneev Pavel
+/*
+---
+
+script: Date.Russian.js
+
+name: Date.Russian
+
+description: Date messages for Russian (utf-8).
+
+license: MIT-style license
+
+authors:
+  - Evstigneev Pavel
+
+requires:
+  - /Lang
+
+provides: [Date.Russian]
+
+...
 */
+
+(function(){
+
+// Russian language pluralization rules, taken from CLDR project, http://unicode.org/cldr/
+// one -> n mod 10 is 1 and n mod 100 is not 11;
+// few -> n mod 10 in 2..4 and n mod 100 not in 12..14;
+// many -> n mod 10 is 0 or n mod 10 in 5..9 or n mod 100 in 11..14;
+// other -> everything else (example 3.14)
+var pluralize = function (n, one, few, many, other){
+	var modulo10 = n % 10,
+		modulo100 = n % 100;
+
+	if (modulo10 == 1 && modulo100 != 11){
+		return one;
+	} else if ((modulo10 == 2 || modulo10 == 3 || modulo10 == 4) && !(modulo100 == 12 || modulo100 == 13 || modulo100 == 14)){
+		return few;
+	} else if (modulo10 == 0 || (modulo10 == 5 || modulo10 == 6 || modulo10 == 7 || modulo10 == 8 || modulo10 == 9) || (modulo100 == 11 || modulo100 == 12 || modulo100 == 13 || modulo100 == 14)){
+		return many;
+	} else {
+		return other;
+	}
+};
 
 MooTools.lang.set('ru-RU-unicode', 'Date', {
 
-	months: ['Январь', 'Февраль', 'Март', '�?прель', 'Май', 'Июнь', 'Июль', '�?вгу�?т', 'Сент�?брь', 'Окт�?брь', '�?о�?брь', 'Декабрь'],
-	days: ['Во�?кре�?енье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'П�?тница', 'Суббота'],
-	//culture's date order: MM/DD/YYYY
+	months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+	days: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
+
+	// Culture's date order: DD.MM.YYYY
 	dateOrder: ['date', 'month', 'year'],
+	shortDate: '%d.%m.%Y',
+	shortTime: '%H:%M',
 	AM: 'AM',
 	PM: 'PM',
 
-	shortDate: '%d/%m/%Y',
-	shortTime: '%H:%M',
-
-
-  /*
-   *  Russian language pluralization rules, taken from CLDR project, http://unicode.org/cldr/
-   *
-   *  one -> n mod 10 is 1 and n mod 100 is not 11;
-   *  few -> n mod 10 in 2..4 and n mod 100 not in 12..14;
-   *  many -> n mod 10 is 0 or n mod 10 in 5..9 or n mod 100 in 11..14;
-   *  other -> everything else (example 3.14)
-   */
-
-  pluralize: function (n, one, few, many, other) {
-    var modulo10 = n % 10
-    var modulo100 = n % 100
-
-    if (modulo10 == 1 && modulo100 != 11) {
-      return one;
-    } else if ((modulo10 == 2 || modulo10 == 3 || modulo10 == 4) && !(modulo100 == 12 || modulo100 == 13 || modulo100 == 14)) {
-      return few;
-    } else if (modulo10 == 0 || (modulo10 == 5 || modulo10 == 6 || modulo10 == 7 || modulo10 == 8 || modulo10 == 9) || (modulo100 == 11 || modulo100 == 12 || modulo100 == 13 || modulo100 == 14)) {
-      return many;
-    } else {
-      return other;
-    }
-  },
-
-	/* Date.Extras */
+	// Date.Extras
 	ordinal: '',
+
 	lessThanMinuteAgo: 'меньше минуты назад',
 	minuteAgo: 'минута назад',
-	minutesAgo: function (delta) { return  '{delta} ' + this.pluralize(delta, 'минута', 'минуты', 'минут') + ' назад'},
-	hourAgo: 'ча�? назад',
-	hoursAgo: function (delta) { return  '{delta} ' + this.pluralize(delta, 'ча�?', 'ча�?а', 'ча�?ов') + ' назад'},
+	minutesAgo: function(delta){ return '{delta} ' + pluralize(delta, 'минута', 'минуты', 'минут') + ' назад'; },
+	hourAgo: 'час назад',
+	hoursAgo: function(delta){ return '{delta} ' + pluralize(delta, 'час', 'часа', 'часов') + ' назад'; },
 	dayAgo: 'вчера',
-	daysAgo: function (delta) { return '{delta} ' + this.pluralize(delta, 'день', 'дн�?', 'дней') + ' назад' },
+	daysAgo: function(delta){ return '{delta} ' + pluralize(delta, 'день', 'дня', 'дней') + ' назад'; },
+
 	lessThanMinuteUntil: 'меньше минуты назад',
 	minuteUntil: 'через минуту',
-	minutesUntil: function (delta) { return  'через {delta} ' + this.pluralize(delta, 'ча�?', 'ча�?а', 'ча�?ов') + ''},
-	hourUntil: 'через ча�?',
-	hoursUntil: function (delta) { return  'через {delta} ' + this.pluralize(delta, 'ча�?', 'ча�?а', 'ча�?ов') + ''},
+	minutesUntil: function(delta){ return 'через {delta} ' + pluralize(delta, 'час', 'часа', 'часов') + ''; },
+	hourUntil: 'через час',
+	hoursUntil: function(delta){ return 'через {delta} ' + pluralize(delta, 'час', 'часа', 'часов') + ''; },
 	dayUntil: 'завтра',
-	daysUntil: function (delta) { return 'через {delta} ' + this.pluralize(delta, 'день', 'дн�?', 'дней') + '' }
+	daysUntil: function(delta){ return 'через {delta} ' + pluralize(delta, 'день', 'дня', 'дней') + ''; }
 
-});/*
+});
+
+})();
+
+
+/*
 ---
 
-script: Date.Spanish.US.js
+script: Date.Spanish.js
+
+name: Date.Spanish
 
 description: Date messages for Spanish.
 
 license: MIT-style license
 
 authors:
- - Ãlfons Sanchez
+  - Ãlfons Sanchez
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.Spanish]
 
@@ -13425,15 +13882,15 @@ MooTools.lang.set('es-ES', 'Date', {
 
 	months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
 	days: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-	//culture's date order: MM/DD/YYYY
+
+	// Culture's date order: DD/MM/YYYY
 	dateOrder: ['date', 'month', 'year'],
+	shortDate: '%d/%m/%Y',
+	shortTime: '%H:%M',
 	AM: 'AM',
 	PM: 'PM',
 
-	shortDate: '%d/%m/%Y',
-	shortTime: '%H:%M',
-
-	/* Date.Extras */
+	// Date.Extras
 	ordinal: '',
 
 	lessThanMinuteAgo: 'hace menos de un minuto',
@@ -13449,6 +13906,7 @@ MooTools.lang.set('es-ES', 'Date', {
 	monthsAgo: 'hace {delta} meses',
 	yearAgo: 'hace un año',
 	yearsAgo: 'hace {delta} años',
+
 	lessThanMinuteUntil: 'menos de un minuto desde ahora',
 	minuteUntil: 'un minuto desde ahora',
 	minutesUntil: '{delta} minutos desde ahora',
@@ -13463,21 +13921,25 @@ MooTools.lang.set('es-ES', 'Date', {
 	yearUntil: 'un año desde ahora',
 	yearsUntil: '{delta} años desde ahora'
 
-});/*
+});
+
+
+/*
 ---
 
 script: Date.Swedish.js
 
-description: Date messages for Swedish (SE).
+name: Date.Swedish
+
+description: Date messages for Swedish.
 
 license: MIT-style license
 
 authors:
- - Martin Lundgren
+  - Martin Lundgren
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.Swedish]
 
@@ -13488,19 +13950,16 @@ MooTools.lang.set('sv-SE', 'Date', {
 
 	months: ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'],
 	days: ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag'],
-	// culture's date order: YYYY-MM-DD
+
+	// Culture's date order: YYYY-MM-DD
 	dateOrder: ['year', 'month', 'date'],
+	shortDate: '%Y-%m-%d',
+	shortTime: '%H:%M',
 	AM: '',
 	PM: '',
 
-	shortDate: '%Y-%m-%d',
-	shortTime: '%H:%M',
-
-	/* Date.Extras */
-	ordinal: function(dayOfMonth){
-		// Not used in Swedish
-		return '';
-	},
+	// Date.Extras
+	ordinal: '',
 
 	lessThanMinuteAgo: 'mindre än en minut sedan',
 	minuteAgo: 'ungefär en minut sedan',
@@ -13509,6 +13968,7 @@ MooTools.lang.set('sv-SE', 'Date', {
 	hoursAgo: 'ungefär {delta} timmar sedan',
 	dayAgo: '1 dag sedan',
 	daysAgo: '{delta} dagar sedan',
+
 	lessThanMinuteUntil: 'mindre än en minut sedan',
 	minuteUntil: 'ungefär en minut sedan',
 	minutesUntil: '{delta} minuter sedan',
@@ -13517,21 +13977,25 @@ MooTools.lang.set('sv-SE', 'Date', {
 	dayUntil: '1 dag sedan',
 	daysUntil: '{delta} dagar sedan'
 
-});/*
+});
+
+
+/*
 ---
 
 script: Date.Ukrainian.js
+
+name: Date.Ukrainian
 
 description: Date messages for Ukrainian.
 
 license: MIT-style license
 
 authors:
- - Slik
+  - Slik
 
 requires:
- - /Lang
- - /Date
+  - /Lang
 
 provides: [Date.Ukrainian]
 
@@ -13539,97 +14003,82 @@ provides: [Date.Ukrainian]
 */
 
 (function(){
-	var pluralize = function(n, one, few, many, other){
-		var d = (n / 10).toInt();
-		var z = n % 10;
-		var s = (n / 100).toInt();
 
-		if(d == 1 && n > 10) return many;
-		if(z == 1) return one;
-		if(z > 0 && z < 5) return few;
-		return many;
-	};
+var pluralize = function(n, one, few, many, other){
+	var d = (n / 10).toInt(),
+		z = n % 10,
+		s = (n / 100).toInt();
 
-	MooTools.lang.set('uk-UA', 'Date', {
-			months: ['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вере�?ень', 'Жовтень', 'Ли�?топад', 'Грудень'],
-			days: ['�?еділ�?', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', 'П\'�?тниц�?', 'Субота'],
-			//culture's date order: DD/MM/YYYY
-			dateOrder: ['date', 'month', 'year'],
-			AM: 'до полудн�?',
-			PM: 'по полудню',
+	if (d == 1 && n > 10) return many;
+	if (z == 1) return one;
+	if (z > 0 && z < 5) return few;
+	return many;
+};
 
-			shortDate: '%d/%m/%Y',
-			shortTime: '%H:%M',
+MooTools.lang.set('uk-UA', 'Date', {
 
-			/* Date.Extras */
-			ordinal: '',
-			lessThanMinuteAgo: 'меньше хвилини тому',
-			minuteAgo: 'хвилину тому',
-			minutesAgo: function (delta){
-				return '{delta} ' + pluralize(delta, 'хвилину', 'хвилини', 'хвилин') + ' тому';
-			},
-			hourAgo: 'годину тому',
-			hoursAgo: function (delta){
-				return '{delta} ' + pluralize(delta, 'годину', 'години', 'годин') + ' тому';
-			},
-			dayAgo: 'вчора',
-			daysAgo: function (delta){
-				return '{delta} ' + pluralize(delta, 'день', 'дн�?', 'днів') + ' тому';
-			},
-			weekAgo: 'тиждень тому',
-			weeksAgo: function (delta){
-				return '{delta} ' + pluralize(delta, 'тиждень', 'тижні', 'тижнів') + ' тому';
-			},
-			monthAgo: 'мі�?�?ць тому',
-			monthsAgo: function (delta){
-				return '{delta} ' + pluralize(delta, 'мі�?�?ць', 'мі�?�?ці', 'мі�?�?ців') + ' тому';
-			},
-			yearAgo: 'рік тому',
-			yearsAgo: function (delta){
-				return '{delta} ' + pluralize(delta, 'рік', 'роки', 'років') + ' тому';
-			},
-			lessThanMinuteUntil: 'за мить',
-			minuteUntil: 'через хвилину',
-			minutesUntil: function (delta){
-				return 'через {delta} ' + pluralize(delta, 'хвилину', 'хвилини', 'хвилин');
-			},
-			hourUntil: 'через годину',
-			hoursUntil: function (delta){
-				return 'через {delta} ' + pluralize(delta, 'годину', 'години', 'годин');
-			},
-			dayUntil: 'завтра',
-			daysUntil: function (delta){
-				return 'через {delta} ' + pluralize(delta, 'день', 'дн�?', 'днів');
-			},
-			weekUntil: 'через тиждень',
-			weeksUntil: function (delta){
-				return 'через {delta} ' + pluralize(delta, 'тиждень', 'тижні', 'тижнів');
-			},
-			monthUntil: 'через мі�?�?ць',
-			monthesUntil: function (delta){
-				return 'через {delta} ' + pluralize(delta, 'мі�?�?ць', 'мі�?�?ці', 'мі�?�?ців');
-			},
-			yearUntil: 'через рік',
-			yearsUntil: function (delta){
-				return 'через {delta} ' + pluralize(delta, 'рік', 'роки', 'років');
-			}
-	});
+	months: ['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень'],
+	days: ['Неділя', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", 'Субота'],
 
-})();/*
+	// Culture's date order: DD/MM/YYYY
+	dateOrder: ['date', 'month', 'year'],
+	shortDate: '%d/%m/%Y',
+	shortTime: '%H:%M',
+	AM: 'до полудня',
+	PM: 'по полудню',
+
+	// Date.Extras
+	ordinal: '',
+
+	lessThanMinuteAgo: 'меньше хвилини тому',
+	minuteAgo: 'хвилину тому',
+	minutesAgo: function(delta){ return '{delta} ' + pluralize(delta, 'хвилину', 'хвилини', 'хвилин') + ' тому'; },
+	hourAgo: 'годину тому',
+	hoursAgo: function(delta){ return '{delta} ' + pluralize(delta, 'годину', 'години', 'годин') + ' тому'; },
+	dayAgo: 'вчора',
+	daysAgo: function(delta){ return '{delta} ' + pluralize(delta, 'день', 'дня', 'днів') + ' тому'; },
+	weekAgo: 'тиждень тому',
+	weeksAgo: function(delta){ return '{delta} ' + pluralize(delta, 'тиждень', 'тижні', 'тижнів') + ' тому'; },
+	monthAgo: 'місяць тому',
+	monthsAgo: function(delta){ return '{delta} ' + pluralize(delta, 'місяць', 'місяці', 'місяців') + ' тому'; },
+	yearAgo: 'рік тому',
+	yearsAgo: function(delta){ return '{delta} ' + pluralize(delta, 'рік', 'роки', 'років') + ' тому'; },
+
+	lessThanMinuteUntil: 'за мить',
+	minuteUntil: 'через хвилину',
+	minutesUntil: function(delta){ return 'через {delta} ' + pluralize(delta, 'хвилину', 'хвилини', 'хвилин'); },
+	hourUntil: 'через годину',
+	hoursUntil: function(delta){ return 'через {delta} ' + pluralize(delta, 'годину', 'години', 'годин'); },
+	dayUntil: 'завтра',
+	daysUntil: function(delta){ return 'через {delta} ' + pluralize(delta, 'день', 'дня', 'днів'); },
+	weekUntil: 'через тиждень',
+	weeksUntil: function(delta){ return 'через {delta} ' + pluralize(delta, 'тиждень', 'тижні', 'тижнів'); },
+	monthUntil: 'через місяць',
+	monthesUntil: function(delta){ return 'через {delta} ' + pluralize(delta, 'місяць', 'місяці', 'місяців'); },
+	yearUntil: 'через рік',
+	yearsUntil: function(delta){ return 'через {delta} ' + pluralize(delta, 'рік', 'роки', 'років'); }
+
+});
+
+})();
+
+
+/*
 ---
 
 script: Form.Validator.Arabic.js
 
-description: Form.Validator messages in Arabic.
+name: Form.Validator.Arabic
+
+description: Form Validator messages for Arabic.
 
 license: MIT-style license
 
 authors:
- - Chafik Barbar
+  - Chafik Barbar
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.Arabic]
 
@@ -13637,40 +14086,44 @@ provides: [Form.Validator.Arabic]
 */
 
 MooTools.lang.set('ar', 'Form.Validator', {
-	required:'هذا الحقل مطلوب.',
-	minLength:'رجاءً إدخال {minLength}  أحر�? على الأقل (تم إدخال {length} أحر�?).',
-	maxLength:'الرجاء عدم إدخال أكثر من {maxLength} أحر�? (تم إدخال {length} أحر�?).',
-	integer:'الرجاء إدخال عدد صحيح �?ي هذا الحقل. أي رقم ذو كسر عشري أو مئوي (مثال 1.25 ) غير مسموح.',
-	numeric:'الرجاء إدخال قيم رقمية �?ي هذا الحقل (مثال "1" أو "1.1" أو "-1" أو "-1.1").',
-	digits:'الرجاء أستخدام قيم رقمية وعلامات ترقيمية �?قط �?ي هذا الحقل (مثال, رقم هات�? مع نقطة أو شحطة)',
-	alpha:'الرجاء أستخدام أحر�? �?قط (ا-ي) �?ي هذا الحقل. أي �?راغات أو علامات غير مسموحة.',
-	alphanum:'الرجاء أستخدام أحر�? �?قط (ا-ي) أو أرقام (0-9) �?قط �?ي هذا الحقل. أي �?راغات أو علامات غير مسموحة.',
-	dateSuchAs:'الرجاء إدخال تاريخ صحيح كالتالي {date}',
-	dateInFormatMDY:'الرجاء إدخال تاريخ صحيح (مثال, 31-12-1999)',
-	email:'الرجاء إدخال بريد إلكتروني صحيح.',
-	url:'الرجاء إدخال عنوان إلكتروني صحيح مثل http://www.google.com',
-	currencyDollar:'الرجاء إدخال قيمة $ صحيحة.  مثال, 100.00$',
-	oneRequired:'الرجاء إدخال قيمة �?ي أحد هذه الحقول على الأقل.',
+
+	required: 'هذا الحقل مطلوب.',
+	minLength: 'رجاءً إدخال {minLength}  أحرف على الأقل (تم إدخال {length} أحرف).',
+	maxLength: 'الرجاء عدم إدخال أكثر من {maxLength} أحرف (تم إدخال {length} أحرف).',
+	integer: 'الرجاء إدخال عدد صحيح في هذا الحقل. أي رقم ذو كسر عشري أو مئوي (مثال 1.25 ) غير مسموح.',
+	numeric: 'الرجاء إدخال قيم رقمية في هذا الحقل (مثال "1" أو "1.1" أو "-1" أو "-1.1").',
+	digits: 'الرجاء أستخدام قيم رقمية وعلامات ترقيمية فقط في هذا الحقل (مثال, رقم هاتف مع نقطة أو شحطة)',
+	alpha: 'الرجاء أستخدام أحرف فقط (ا-ي) في هذا الحقل. أي فراغات أو علامات غير مسموحة.',
+	alphanum: 'الرجاء أستخدام أحرف فقط (ا-ي) أو أرقام (0-9) فقط في هذا الحقل. أي فراغات أو علامات غير مسموحة.',
+	dateSuchAs: 'الرجاء إدخال تاريخ صحيح كالتالي {date}',
+	dateInFormatMDY: 'الرجاء إدخال تاريخ صحيح (مثال, 31-12-1999)',
+	email: 'الرجاء إدخال بريد إلكتروني صحيح.',
+	url: 'الرجاء إدخال عنوان إلكتروني صحيح مثل http://www.google.com',
+	currencyDollar: 'الرجاء إدخال قيمة $ صحيحة.  مثال, 100.00$',
+	oneRequired: 'الرجاء إدخال قيمة في أحد هذه الحقول على الأقل.',
 	errorPrefix: 'خطأ: ',
 	warningPrefix: 'تحذير: '
-}).set('ar', 'Date', {
-	dateOrder: ['date', 'month', 'year', '/']
-});/*
+
+});
+
+
+/*
 ---
 
 script: Form.Validator.Catalan.js
 
-description: Date messages for Catalan.
+name: Form.Validator.Catalan
+
+description: Form Validator messages for Catalan.
 
 license: MIT-style license
 
 authors:
- - Miquel Hudin
- - Alfons Sanchez
+  - Miquel Hudin
+  - Ãlfons Sanchez
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.Catalan]
 
@@ -13679,25 +14132,24 @@ provides: [Form.Validator.Catalan]
 
 MooTools.lang.set('ca-CA', 'Form.Validator', {
 
-	required:'Aquest camp es obligatori.',
-	minLength:'Per favor introdueix al menys {minLength} caracters (has introduit {length} caracters).',
-	maxLength:'Per favor introdueix no mes de {maxLength} caracters (has introduit {length} caracters).',
-	integer:'Per favor introdueix un nombre enter en aquest camp. Nombres amb decimals (p.e. 1,25) no estan permesos.',
-	numeric:'Per favor introdueix sols valors numerics en aquest camp (p.e. "1" o "1,1" o "-1" o "-1,1").',
-	digits:'Per favor usa sols numeros i puntuacio en aquest camp (per exemple, un nombre de telefon amb guions i punts no esta permes).',
-	alpha:'Per favor utilitza lletres nomes (a-z) en aquest camp. No s´admiteixen espais ni altres caracters.',
-	alphanum:'Per favor, utilitza nomes lletres (a-z) o numeros (0-9) en aquest camp. No s´admiteixen espais ni altres caracters.',
-	dateSuchAs:'Per favor introdueix una data valida com {date}',
-	dateInFormatMDY:'Per favor introdueix una data valida com DD/MM/YYYY (p.e. "31/12/1999")',
-	email:'Per favor, introdueix una adreça de correu electronic valida. Per exemple,  "fred@domain.com".',
-	url:'Per favor introdueix una URL valida com http://www.google.com.',
-	currencyDollar:'Per favor introdueix una quantitat valida de €. Per exemple €100,00 .',
-	oneRequired:'Per favor introdueix alguna cosa per al menys una d´aquestes entrades.',
+	required: 'Aquest camp es obligatori.',
+	minLength: 'Per favor introdueix al menys {minLength} caracters (has introduit {length} caracters).',
+	maxLength: 'Per favor introdueix no mes de {maxLength} caracters (has introduit {length} caracters).',
+	integer: 'Per favor introdueix un nombre enter en aquest camp. Nombres amb decimals (p.e. 1,25) no estan permesos.',
+	numeric: 'Per favor introdueix sols valors numerics en aquest camp (p.e. "1" o "1,1" o "-1" o "-1,1").',
+	digits: 'Per favor usa sols numeros i puntuacio en aquest camp (per exemple, un nombre de telefon amb guions i punts no esta permes).',
+	alpha: 'Per favor utilitza lletres nomes (a-z) en aquest camp. No s´admiteixen espais ni altres caracters.',
+	alphanum: 'Per favor, utilitza nomes lletres (a-z) o numeros (0-9) en aquest camp. No s´admiteixen espais ni altres caracters.',
+	dateSuchAs: 'Per favor introdueix una data valida com {date}',
+	dateInFormatMDY: 'Per favor introdueix una data valida com DD/MM/YYYY (p.e. "31/12/1999")',
+	email: 'Per favor, introdueix una adreça de correu electronic valida. Per exemple,  "fred@domain.com".',
+	url: 'Per favor introdueix una URL valida com http://www.google.com.',
+	currencyDollar: 'Per favor introdueix una quantitat valida de €. Per exemple €100,00 .',
+	oneRequired: 'Per favor introdueix alguna cosa per al menys una d´aquestes entrades.',
 	errorPrefix: 'Error: ',
 	warningPrefix: 'Avis: ',
 
-	//Form.Validator.Extras
-
+	// Form.Validator.Extras
 	noSpace: 'No poden haver espais en aquesta entrada.',
 	reqChkByNode: 'No hi han elements seleccionats.',
 	requiredChk: 'Aquest camp es obligatori.',
@@ -13711,21 +14163,25 @@ MooTools.lang.set('ca-CA', 'Form.Validator', {
 	startMonth: 'Per favor selecciona un mes d´orige',
 	sameMonth: 'Aquestes dos dates deuen estar dins del mateix mes - deus canviar una o altra.'
 
-});/*
+});
+
+
+/*
 ---
 
 script: Form.Validator.Czech.js
+
+name: Form.Validator.Czech
 
 description: Form Validator messages for Czech.
 
 license: MIT-style license
 
 authors:
- - Jan Černý chemiX
+  - Jan Černý chemiX
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.Czech]
 
@@ -13734,153 +14190,173 @@ provides: [Form.Validator.Czech]
 
 MooTools.lang.set('cs-CZ', 'Form.Validator', {
 
-	required:'Tato položka je povinná.',
-	minLength:'Zadejte prosím alespoň {minLength} znaků (napsáno {length} znaků).',
-	maxLength:'Zadejte prosím méně než {maxLength} znaků (nápsáno {length} znaků).',
-	integer:'Zadejte prosím celé �?íslo. Desetinná �?ísla (např. 1.25) nejsou povolena.',
-	numeric:'Zadejte jen �?íselné hodnoty  (tj. "1" nebo "1.1" nebo "-1" nebo "-1.1").',
-	digits:'Zadejte prosím pouze �?ísla a interpunk�?ní znaménka(například telefonní �?íslo s poml�?kami nebo te�?kami je povoleno).',
-	alpha:'Zadejte prosím pouze písmena (a-z). Mezery nebo jiné znaky nejsou povoleny.',
-	alphanum:'Zadejte prosím pouze písmena (a-z) nebo �?íslice (0-9). Mezery nebo jiné znaky nejsou povoleny.',
-	dateSuchAs:'Zadejte prosím platné datum jako {date}',
-	dateInFormatMDY:'Zadejte prosím platné datum jako MM / DD / RRRR (tj. "12/31/1999")',
-	email:'Zadejte prosím platnou e-mailovou adresu. Například "fred@domain.com".',
-	url:'Zadejte prosím platnou URL adresu jako http://www.google.com.',
-	currencyDollar:'Zadejte prosím platnou �?ástku. Například $100.00.',
-	oneRequired:'Zadejte prosím alespoň jednu hodnotu pro tyto položky.',
+	required: 'Tato položka je povinná.',
+	minLength: 'Zadejte prosím alespoň {minLength} znaků (napsáno {length} znaků).',
+	maxLength: 'Zadejte prosím méně než {maxLength} znaků (nápsáno {length} znaků).',
+	integer: 'Zadejte prosím celé číslo. Desetinná čísla (např. 1.25) nejsou povolena.',
+	numeric: 'Zadejte jen číselné hodnoty  (tj. "1" nebo "1.1" nebo "-1" nebo "-1.1").',
+	digits: 'Zadejte prosím pouze čísla a interpunkční znaménka(například telefonní číslo s pomlčkami nebo tečkami je povoleno).',
+	alpha: 'Zadejte prosím pouze písmena (a-z). Mezery nebo jiné znaky nejsou povoleny.',
+	alphanum: 'Zadejte prosím pouze písmena (a-z) nebo číslice (0-9). Mezery nebo jiné znaky nejsou povoleny.',
+	dateSuchAs: 'Zadejte prosím platné datum jako {date}',
+	dateInFormatMDY: 'Zadejte prosím platné datum jako MM / DD / RRRR (tj. "12/31/1999")',
+	email: 'Zadejte prosím platnou e-mailovou adresu. Například "fred@domain.com".',
+	url: 'Zadejte prosím platnou URL adresu jako http://www.google.com.',
+	currencyDollar: 'Zadejte prosím platnou částku. Například $100.00.',
+	oneRequired: 'Zadejte prosím alespoň jednu hodnotu pro tyto položky.',
 	errorPrefix: 'Chyba: ',
 	warningPrefix: 'Upozornění: ',
 
-	//Form.Validator.Extras
-
+	// Form.Validator.Extras
 	noSpace: 'V této položce nejsou povoleny mezery',
 	reqChkByNode: 'Nejsou vybrány žádné položky.',
 	requiredChk: 'Tato položka je vyžadována.',
 	reqChkByName: 'Prosím vyberte {label}.',
 	match: 'Tato položka se musí shodovat s položkou {matchName}',
 	startDate: 'datum zahájení',
-	endDate: 'datum ukon�?ení',
+	endDate: 'datum ukončení',
 	currendDate: 'aktuální datum',
 	afterDate: 'Datum by mělo být stejné nebo větší než {label}.',
 	beforeDate: 'Datum by mělo být stejné nebo menší než {label}.',
-	startMonth: 'Vyberte po�?áte�?ní měsíc.',
+	startMonth: 'Vyberte počáteční měsíc.',
 	sameMonth: 'Tyto dva datumy musí být ve stejném měsíci - změňte jeden z nich.',
-    creditcard: 'Zadané �?íslo kreditní karty je neplatné. Prosím opravte ho. Bylo zadáno {length} �?ísel.'
+	creditcard: 'Zadané číslo kreditní karty je neplatné. Prosím opravte ho. Bylo zadáno {length} čísel.'
 
 });
+
+
 /*
 ---
 
 script: Form.Validator.Chinese.js
 
-description: Form.Validator messages in chinese (both simplified and traditional).
+name: Form.Validator.Chinese
+
+description: Form Validator messages for Chinese (simplified and traditional).
 
 license: MIT-style license
 
 authors:
- - 陈桂军 - guidy <at> ixuer [dot] net
+  - YMind Chan
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
+  - /Form.Validator
 
-provides: [Form.Validator.Chinese]
+provides: [Form.Validator.Chinese, Form.Validator.CurrencyYuanValidator]
 
 ...
 */
 
-/*
-In Chinese:
-------------
-需�?指出的是：
-简体中文适用于中国大陆，
-�?体中文适用于香港�?澳门和�?�湾�?。
-简体中文和�?体中文在字体和语法上有很多的�?�?�之处。
-
-我�?�以确�?简体中文语言包的准确性，
-但对于�?体中文，我�?�以�?�?用户�?�以准确的�?�解，但无法�?�?语�?�符�?�他们的阅读习惯。
-如果您�?能确认的�?，�?�以�?�使用简体中文语言包，因为它是最通用的。
-
-In English:
-------------
-It should be noted that:
-Simplified  Chinese apply to mainland Chinese,
-Traditional Chinese apply to Hong Kong, Macao and Taiwan Province.
-There are a lot of different from Simplified  Chinese and Traditional Chinese , Contains font and syntax .
-
-I can assure Simplified Chinese language pack accuracy .
-For Traditional Chinese, I can only guarantee that users can understand, but not necessarily in line with their reading habits.
-If you are unsure, you can only use the simplified Chinese language pack, as it is the most common.
-
-*/
-
 // Simplified Chinese
-MooTools.lang.set('zhs-CN', 'Form.Validator', {
-	required:'这是必填项。',
-	minLength:'请至少输入 {minLength} 个字符 (已输入 {length} 个)。',
-	maxLength:'最多�?�能输入 {maxLength} 个字符 (已输入 {length} 个)。',
-	integer:'请输入一个整数，�?能包�?��?数点。例如："1", "200"。',
-	numeric:'请输入一个数字，例如："1", "1.1", "-1", "-1.1"。',
-	digits:'这里�?�能接�?�数字和标点的输入，标点�?�以是："(", ")", ".", ":", "-", "+", "#"和空格。',
-	alpha:'请输入 A-Z 的 26 个字�?，�?能包�?�空格或任何其他字符。',
-	alphanum:'请输入 A-Z 的 26 个字�?或 0-9 的 10 个数字，�?能包�?�空格或任何其他字符。',
-	dateSuchAs:'请输入�?�法的日期格�?，如：{date}。',
-	dateInFormatMDY:'请输入�?�法的日期格�?，例如：MM/DD/YYYY ("12/31/1999")。',
-	email:'请输入�?�法的电�?信箱地�?�，例如："fred@domain.com"。',
-	url:'请输入�?�法的 Url 地�?�，例如：http://www.google.com。',
-	currencyDollar:'请输入�?�法的货�?符�?�，例如：￥',
-	oneRequired:'请至少选择一项。',
+MooTools.lang.set('zh-CHS', 'Form.Validator', {
+
+	required: '此项必填。',
+	minLength: '请至少输入 {minLength} 个字符 (已输入 {length} 个)。',
+	maxLength: '最多只能输入 {maxLength} 个字符 (已输入 {length} 个)。',
+	integer: '请输入一个整数，不能包含小数点。例如："1", "200"。',
+	numeric: '请输入一个数字，例如："1", "1.1", "-1", "-1.1"。',
+	digits: '请输入由数字和标点符号组成的内容。例如电话号码。',
+	alpha: '请输入 A-Z 的 26 个字母，不能包含空格或任何其他字符。',
+	alphanum: '请输入 A-Z 的 26 个字母或 0-9 的 10 个数字，不能包含空格或任何其他字符。',
+	dateSuchAs: '请输入合法的日期格式，如：{date}。',
+	dateInFormatMDY: '请输入合法的日期格式，例如：YYYY-MM-DD ("2010-12-31")。',
+	email: '请输入合法的电子信箱地址，例如："fred@domain.com"。',
+	url: '请输入合法的 Url 地址，例如：http://www.google.com。',
+	currencyDollar: '请输入合法的货币符号，例如：￥100.0',
+	oneRequired: '请至少选择一项。',
 	errorPrefix: '错误：',
-	warningPrefix: '警告：'
+	warningPrefix: '警告：',
+
+	// Form.Validator.Extras
+	noSpace: '不能包含空格。',
+	reqChkByNode: '未选择任何内容。',
+	requiredChk: '此项必填。',
+	reqChkByName: '请选择 {label}.',
+	match: '必须与{matchName}相匹配',
+	startDate: '起始日期',
+	endDate: '结束日期',
+	currendDate: '当前日期',
+	afterDate: '日期必须等于或晚于 {label}.',
+	beforeDate: '日期必须早于或等于 {label}.',
+	startMonth: '请选择起始月份',
+	sameMonth: '您必须修改两个日期中的一个，以确保它们在同一月份。',
+	creditcard: '您输入的信用卡号码不正确。当前已输入{length}个字符。'
+
 });
 
 // Traditional Chinese
-MooTools.lang.set('zht-CN', 'Form.Validator', {
-	required:'這是必填項。',
-	minLength:'請至少�?�入 {minLength} 個字符(已�?�入 {length} 個)。',
-	maxLength:'最多�?�能�?�入 {maxLength} 個字符(已�?�入 {length} 個)。',
-	integer:'請�?�入一個整數，�?能包�?��?數點。例如："1", "200"。',
-	numeric:'請�?�入一個數字，例如："1", "1.1", "-1", "-1.1"。',
-	digits:'這裡�?�能接�?�數字和標點的�?�入，標點�?�以是："(", ")", ".", ":", "-", "+", "#"和空格。',
-	alpha:'請�?�入 A-Z 的 26 個字�?，�?能包�?�空格或任何其他字符。',
-	alphanum:'請�?�入 A-Z 的 26 個字�?或 0-9 的 10 個數字，�?能包�?�空格或任何其他字符。',
-	dateSuchAs:'請�?�入�?�法的日期格�?，如：{date}。',
-	dateInFormatMDY:'請�?�入�?�法的日期格�?，例如：MM/DD/YYYY ("12/31/1999")。',
-	email:'請�?�入�?�法的電�?信箱地�?�，例如："fred@domain.com"。',
-	url:'請�?�入�?�法的 Url 地�?�，例如：http://www.google.com。',
-	currencyYuan:'請�?�入�?�法的貨幣符號，例如：￥',
-	oneRequired:'請至少�?�擇一項。',
+MooTools.lang.set('zh-CHT', 'Form.Validator', {
+
+	required: '此項必填。 ',
+	minLength: '請至少輸入{minLength} 個字符(已輸入{length} 個)。 ',
+	maxLength: '最多只能輸入{maxLength} 個字符(已輸入{length} 個)。 ',
+	integer: '請輸入一個整數，不能包含小數點。例如："1", "200"。 ',
+	numeric: '請輸入一個數字，例如："1", "1.1", "-1", "-1.1"。 ',
+	digits: '請輸入由數字和標點符號組成的內容。例如電話號碼。 ',
+	alpha: '請輸入AZ 的26 個字母，不能包含空格或任何其他字符。 ',
+	alphanum: '請輸入AZ 的26 個字母或0-9 的10 個數字，不能包含空格或任何其他字符。 ',
+	dateSuchAs: '請輸入合法的日期格式，如：{date}。 ',
+	dateInFormatMDY: '請輸入合法的日期格式，例如：YYYY-MM-DD ("2010-12-31")。 ',
+	email: '請輸入合法的電子信箱地址，例如："fred@domain.com"。 ',
+	url: '請輸入合法的Url 地址，例如：http://www.google.com。 ',
+	currencyDollar: '請輸入合法的貨幣符號，例如：￥100.0',
+	oneRequired: '請至少選擇一項。 ',
 	errorPrefix: '錯誤：',
-	warningPrefix: '警告：'
+	warningPrefix: '警告：',
+
+	// Form.Validator.Extras
+	noSpace: '不能包含空格。 ',
+	reqChkByNode: '未選擇任何內容。 ',
+	requiredChk: '此項必填。 ',
+	reqChkByName: '請選擇 {label}.',
+	match: '必須與{matchName}相匹配',
+	startDate: '起始日期',
+	endDate: '結束日期',
+	currendDate: '當前日期',
+	afterDate: '日期必須等於或晚於{label}.',
+	beforeDate: '日期必須早於或等於{label}.',
+	startMonth: '請選擇起始月份',
+	sameMonth: '您必須修改兩個日期中的一個，以確保它們在同一月份。 ',
+	creditcard: '您輸入的信用卡號碼不正確。當前已輸入{length}個字符。 '
+
 });
 
 Form.Validator.add('validate-currency-yuan', {
+
 	errorMsg: function(){
 		return Form.Validator.getMsg('currencyYuan');
 	},
+
 	test: function(element) {
 		// [￥]1[##][,###]+[.##]
 		// [￥]1###+[.##]
 		// [￥]0.##
 		// [￥].##
-		return Form.Validator.getValidator('IsEmpty').test(element) ||  (/^￥?\-?([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*(\.[0-9]{0,2})?|[1-9]{1}\d*(\.[0-9]{0,2})?|0(\.[0-9]{0,2})?|(\.[0-9]{1,2})?)$/).test(element.get('value'));
+		return Form.Validator.getValidator('IsEmpty').test(element) || (/^￥?\-?([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*(\.[0-9]{0,2})?|[1-9]{1}\d*(\.[0-9]{0,2})?|0(\.[0-9]{0,2})?|(\.[0-9]{1,2})?)$/).test(element.get('value'));
 	}
+
 });
+
+
 /*
 ---
 
 script: Form.Validator.Dutch.js
 
-description: Form.Validator messages in Dutch.
+name: Form.Validator.Dutch
+
+description: Form Validator messages for Dutch.
 
 license: MIT-style license
 
 authors:
- - Lennart Pilon
+  - Lennart Pilon
+  - Arian Stolwijk
+  - Tim Wienk
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.Dutch]
 
@@ -13888,37 +14364,58 @@ provides: [Form.Validator.Dutch]
 */
 
 MooTools.lang.set('nl-NL', 'Form.Validator', {
-	required:'Dit veld is verplicht.',
-	minLength:'Vul minimaal {minLength} karakters in (je hebt {length} karakters ingevoerd).',
-	maxLength:'Vul niet meer dan {maxLength} karakters in (je hebt {length} karakters ingevoerd).',
-	integer:'Vul een getal in. Getallen met decimalen (bijvoorbeeld 1,25) zijn niet toegestaan.',
-	numeric:'Vul alleen numerieke waarden in (bijvoorbeeld. "1" of "1.1" of "-1" of "-1.1").',
-	digits:'Vul alleen nummers en leestekens in (bijvoorbeeld een telefoonnummer met een streepje).',
-	alpha:'Vul alleen letters in (a-z). Spaties en andere karakters zijn niet toegestaan.',
-	alphanum:'Vul alleen letters in (a-z) of nummers (0-9). Spaties en andere karakters zijn niet toegestaan.',
-	dateSuchAs:'Vul een geldige datum in, zoals {date}',
-	dateInFormatMDY:'Vul een geldige datum, in het formaat MM/DD/YYYY (bijvoorbeeld "12/31/1999")',
-	email:'Vul een geldig e-mailadres in. Bijvoorbeeld "fred@domein.nl".',
-	url:'Vul een geldige URL in, zoals http://www.google.nl.',
-	currencyDollar:'Vul een geldig $ bedrag in. Bijvoorbeeld $100.00 .',
-	oneRequired:'Vul iets in bij minimaal een van de invoervelden.',
+
+	required: 'Dit veld is verplicht.',
+	minLength: 'Vul minimaal {minLength} karakters in (je hebt {length} karakters ingevoerd).',
+	maxLength: 'Vul niet meer dan {maxLength} karakters in (je hebt {length} karakters ingevoerd).',
+	integer: 'Vul een getal in. Getallen met decimalen (bijvoorbeeld 1.25) zijn niet toegestaan.',
+	numeric: 'Vul alleen numerieke waarden in (bijvoorbeeld "1" of "1.1" of "-1" of "-1.1").',
+	digits: 'Vul alleen nummers en leestekens in (bijvoorbeeld een telefoonnummer met streepjes is toegestaan).',
+	alpha: 'Vul alleen letters in (a-z). Spaties en andere karakters zijn niet toegestaan.',
+	alphanum: 'Vul alleen letters (a-z) of nummers (0-9) in. Spaties en andere karakters zijn niet toegestaan.',
+	dateSuchAs: 'Vul een geldige datum in, zoals {date}',
+	dateInFormatMDY: 'Vul een geldige datum, in het formaat MM/DD/YYYY (bijvoorbeeld "12/31/1999")',
+	email: 'Vul een geldig e-mailadres in. Bijvoorbeeld "fred@domein.nl".',
+	url: 'Vul een geldige URL in, zoals http://www.google.nl.',
+	currencyDollar: 'Vul een geldig $ bedrag in. Bijvoorbeeld $100.00 .',
+	oneRequired: 'Vul iets in bij in ieder geval een van deze velden.',
 	warningPrefix: 'Waarschuwing: ',
-	errorPrefix: 'Fout: '
-});/*
+	errorPrefix: 'Fout: ',
+
+	// Form.Validator.Extras
+	noSpace: 'Spaties zijn niet toegestaan in dit veld.',
+	reqChkByNode: 'Er zijn geen items geselecteerd.',
+	requiredChk: 'Dit veld is verplicht.',
+	reqChkByName: 'Selecteer een {label}.',
+	match: 'Dit veld moet overeen komen met het {matchName} veld',
+	startDate: 'de begin datum',
+	endDate: 'de eind datum',
+	currendDate: 'de huidige datum',
+	afterDate: 'De datum moet hetzelfde of na {label} zijn.',
+	beforeDate: 'De datum moet hetzelfde of voor {label} zijn.',
+	startMonth: 'Selecteer een begin maand',
+	sameMonth: 'Deze twee data moeten in dezelfde maand zijn - u moet een van beide aanpassen.',
+	creditcard: 'Het ingevulde creditcard nummer is niet geldig. Controleer het nummer en probeer opnieuw. {length} getallen ingevuld.'
+
+});
+
+
+/*
 ---
 
 script: Form.Validator.Estonian.js
 
-description: Date messages for Estonian.
+name: Form.Validator.Estonian
+
+description: Form Validator messages for Estonian.
 
 license: MIT-style license
 
 authors:
- - Kevin Valdek
+  - Kevin Valdek
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.Estonian]
 
@@ -13927,25 +14424,24 @@ provides: [Form.Validator.Estonian]
 
 MooTools.lang.set('et-EE', 'Form.Validator', {
 
-	required:'Väli peab olema täidetud.',
-	minLength:'Palun sisestage vähemalt {minLength} tähte (te sisestasite {length} tähte).',
-	maxLength:'Palun ärge sisestage rohkem kui {maxLength} tähte (te sisestasite {length} tähte).',
-	integer:'Palun sisestage väljale täisarv. Kümnendarvud (näiteks 1.25) ei ole lubatud.',
-	numeric:'Palun sisestage ainult numbreid väljale (näiteks "1", "1.1", "-1" või "-1.1").',
-	digits:'Palun kasutage ainult numbreid ja kirjavahemärke (telefoninumbri sisestamisel on lubatud kasutada kriipse ja punkte).',
-	alpha:'Palun kasutage ainult tähti (a-z). Tühikud ja teised sümbolid on keelatud.',
-	alphanum:'Palun kasutage ainult tähti (a-z) või numbreid (0-9). Tühikud ja teised sümbolid on keelatud.',
-	dateSuchAs:'Palun sisestage kehtiv kuupäev kujul {date}',
-	dateInFormatMDY:'Palun sisestage kehtiv kuupäev kujul MM.DD.YYYY (näiteks: "12.31.1999").',
-	email:'Palun sisestage kehtiv e-maili aadress (näiteks: "fred@domain.com").',
-	url:'Palun sisestage kehtiv URL (näiteks: http://www.google.com).',
-	currencyDollar:'Palun sisestage kehtiv $ summa (näiteks: $100.00).',
-	oneRequired:'Palun sisestage midagi vähemalt ühele antud väljadest.',
+	required: 'Väli peab olema täidetud.',
+	minLength: 'Palun sisestage vähemalt {minLength} tähte (te sisestasite {length} tähte).',
+	maxLength: 'Palun ärge sisestage rohkem kui {maxLength} tähte (te sisestasite {length} tähte).',
+	integer: 'Palun sisestage väljale täisarv. Kümnendarvud (näiteks 1.25) ei ole lubatud.',
+	numeric: 'Palun sisestage ainult numbreid väljale (näiteks "1", "1.1", "-1" või "-1.1").',
+	digits: 'Palun kasutage ainult numbreid ja kirjavahemärke (telefoninumbri sisestamisel on lubatud kasutada kriipse ja punkte).',
+	alpha: 'Palun kasutage ainult tähti (a-z). Tühikud ja teised sümbolid on keelatud.',
+	alphanum: 'Palun kasutage ainult tähti (a-z) või numbreid (0-9). Tühikud ja teised sümbolid on keelatud.',
+	dateSuchAs: 'Palun sisestage kehtiv kuupäev kujul {date}',
+	dateInFormatMDY: 'Palun sisestage kehtiv kuupäev kujul MM.DD.YYYY (näiteks: "12.31.1999").',
+	email: 'Palun sisestage kehtiv e-maili aadress (näiteks: "fred@domain.com").',
+	url: 'Palun sisestage kehtiv URL (näiteks: http://www.google.com).',
+	currencyDollar: 'Palun sisestage kehtiv $ summa (näiteks: $100.00).',
+	oneRequired: 'Palun sisestage midagi vähemalt ühele antud väljadest.',
 	errorPrefix: 'Viga: ',
 	warningPrefix: 'Hoiatus: ',
 
-	//Form.Validator.Extras
-
+	// Form.Validator.Extras
 	noSpace: 'Väli ei tohi sisaldada tühikuid.',
 	reqChkByNode: 'Ükski väljadest pole valitud.',
 	requiredChk: 'Välja täitmine on vajalik.',
@@ -13959,23 +14455,27 @@ MooTools.lang.set('et-EE', 'Form.Validator', {
 	startMonth: 'Palun valige algkuupäev.',
 	sameMonth: 'Antud kaks kuupäeva peavad olema samas kuus - peate muutma ühte kuupäeva.'
 
-});/*
+});
+
+
+/*
 ---
 
 script: Form.Validator.German.js
 
-description: Date messages for German.
+name: Form.Validator.German
+
+description: Form Validator messages for German.
 
 license: MIT-style license
 
-authors: 
- - Frank Rossi
- - Ulrich Petri
- - Fabian Beiner
+authors:
+  - Frank Rossi
+  - Ulrich Petri
+  - Fabian Beiner
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.German]
 
@@ -14001,8 +14501,7 @@ MooTools.lang.set('de-DE', 'Form.Validator', {
 	errorPrefix: 'Fehler: ',
 	warningPrefix: 'Warnung: ',
 
-	//Form.Validator.Extras
-
+	// Form.Validator.Extras
 	noSpace: 'Es darf kein Leerzeichen in diesem Eingabefeld sein.',
 	reqChkByNode: 'Es wurden keine Elemente gew&auml;hlt.',
 	requiredChk: 'Dieses Feld muss ausgef&uuml;llt werden.',
@@ -14016,188 +14515,203 @@ MooTools.lang.set('de-DE', 'Form.Validator', {
 	startMonth: 'W&auml;hlen Sie bitte einen Anfangsmonat',
 	sameMonth: 'Diese zwei Datumsangaben m&uuml;ssen im selben Monat sein - Sie m&uuml;ssen eines von beiden ver&auml;ndern.',
 	creditcard: 'Die eingegebene Kreditkartennummer ist ung&uuml;ltig. Bitte &uuml;berpr&uuml;fen Sie diese und versuchen Sie es erneut. {length} Zahlen eingegeben.'
+
 });
+
+
 /*
 ---
 
 script: Form.Validator.German.CH.js
 
-description: Date messages for German (Switzerland).
- 
+name: Form.Validator.German.CH
+
+description: Form Validator messages for German (Switzerland).
+
 license: MIT-style license
- 
+
 authors:
- - Michael van der Weg
+  - Michael van der Weg
 
 requires:
- - /Lang
- - /Form.Validator.German
+  - /Lang
 
 provides: [Form.Validator.German.CH]
 
 ...
 */
- 
+
 MooTools.lang.set('de-CH', 'Form.Validator', {
- 
-  required:'Dieses Feld ist obligatorisch.',
-  minLength:'Geben Sie bitte mindestens {minLength} Zeichen ein (Sie haben {length} Zeichen eingegeben).',
-  maxLength:'Bitte geben Sie nicht mehr als {maxLength} Zeichen ein (Sie haben {length} Zeichen eingegeben).',
-  integer:'Geben Sie bitte eine ganze Zahl ein. Dezimalzahlen (z.B. 1.25) sind nicht erlaubt.',
-  numeric:'Geben Sie bitte nur Zahlenwerte in dieses Eingabefeld ein (z.B. &quot;1&quot;, &quot;1.1&quot;, &quot;-1&quot; oder &quot;-1.1&quot;).',
-  digits:'Benutzen Sie bitte nur Zahlen und Satzzeichen in diesem Eingabefeld (erlaubt ist z.B. eine Telefonnummer mit Bindestrichen und Punkten).',
-  alpha:'Benutzen Sie bitte nur Buchstaben (a-z) in diesem Feld. Leerzeichen und andere Zeichen sind nicht erlaubt.',
-  alphanum:'Benutzen Sie bitte nur Buchstaben (a-z) und Zahlen (0-9) in diesem Eingabefeld. Leerzeichen und andere Zeichen sind nicht erlaubt.',
-  dateSuchAs:'Geben Sie bitte ein g&uuml;ltiges Datum ein. Wie zum Beispiel {date}',
-  dateInFormatMDY:'Geben Sie bitte ein g&uuml;ltiges Datum ein. Wie zum Beispiel TT.MM.JJJJ (z.B. &quot;31.12.1999&quot;)',
-  email:'Geben Sie bitte eine g&uuml;ltige E-Mail Adresse ein. Wie zum Beispiel &quot;maria@bernasconi.ch&quot;.',
-  url:'Geben Sie bitte eine g&uuml;ltige URL ein. Wie zum Beispiel http://www.google.ch.',
-  currencyDollar:'Geben Sie bitte einen g&uuml;ltigen Betrag in Schweizer Franken ein. Wie zum Beispiel 100.00 CHF .',
-  oneRequired:'Machen Sie f&uuml;r mindestens eines der Eingabefelder einen Eintrag.',
-  errorPrefix: 'Fehler: ',
-  warningPrefix: 'Warnung: ',
- 
-  //Form.Validator.Extras
- 
-  noSpace: 'In diesem Eingabefeld darf kein Leerzeichen sein.',
-  reqChkByNode: 'Es wurden keine Elemente gew&auml;hlt.',
-  requiredChk: 'Dieses Feld ist obligatorisch.',
-  reqChkByName: 'Bitte w&auml;hlen Sie ein {label}.',
-  match: 'Dieses Eingabefeld muss mit dem Feld {matchName} &uuml;bereinstimmen.',
-  startDate: 'Das Anfangsdatum',
-  endDate: 'Das Enddatum',
-  currendDate: 'Das aktuelle Datum',
-  afterDate: 'Das Datum sollte zur gleichen Zeit oder sp&auml;ter sein {label}.',
-  beforeDate: 'Das Datum sollte zur gleichen Zeit oder fr&uuml;her sein {label}.',
-  startMonth: 'W&auml;hlen Sie bitte einen Anfangsmonat',
-  sameMonth: 'Diese zwei Datumsangaben m&uuml;ssen im selben Monat sein - Sie m&uuml;ssen eine von beiden ver&auml;ndern.'
- 
-});/*
+
+	required: 'Dieses Feld ist obligatorisch.',
+	minLength: 'Geben Sie bitte mindestens {minLength} Zeichen ein (Sie haben {length} Zeichen eingegeben).',
+	maxLength: 'Bitte geben Sie nicht mehr als {maxLength} Zeichen ein (Sie haben {length} Zeichen eingegeben).',
+	integer: 'Geben Sie bitte eine ganze Zahl ein. Dezimalzahlen (z.B. 1.25) sind nicht erlaubt.',
+	numeric: 'Geben Sie bitte nur Zahlenwerte in dieses Eingabefeld ein (z.B. &quot;1&quot;, &quot;1.1&quot;, &quot;-1&quot; oder &quot;-1.1&quot;).',
+	digits: 'Benutzen Sie bitte nur Zahlen und Satzzeichen in diesem Eingabefeld (erlaubt ist z.B. eine Telefonnummer mit Bindestrichen und Punkten).',
+	alpha: 'Benutzen Sie bitte nur Buchstaben (a-z) in diesem Feld. Leerzeichen und andere Zeichen sind nicht erlaubt.',
+	alphanum: 'Benutzen Sie bitte nur Buchstaben (a-z) und Zahlen (0-9) in diesem Eingabefeld. Leerzeichen und andere Zeichen sind nicht erlaubt.',
+	dateSuchAs: 'Geben Sie bitte ein g&uuml;ltiges Datum ein. Wie zum Beispiel {date}',
+	dateInFormatMDY: 'Geben Sie bitte ein g&uuml;ltiges Datum ein. Wie zum Beispiel TT.MM.JJJJ (z.B. &quot;31.12.1999&quot;)',
+	email: 'Geben Sie bitte eine g&uuml;ltige E-Mail Adresse ein. Wie zum Beispiel &quot;maria@bernasconi.ch&quot;.',
+	url: 'Geben Sie bitte eine g&uuml;ltige URL ein. Wie zum Beispiel http://www.google.ch.',
+	currencyDollar: 'Geben Sie bitte einen g&uuml;ltigen Betrag in Schweizer Franken ein. Wie zum Beispiel 100.00 CHF .',
+	oneRequired: 'Machen Sie f&uuml;r mindestens eines der Eingabefelder einen Eintrag.',
+	errorPrefix: 'Fehler: ',
+	warningPrefix: 'Warnung: ',
+
+	// Form.Validator.Extras
+	noSpace: 'In diesem Eingabefeld darf kein Leerzeichen sein.',
+	reqChkByNode: 'Es wurden keine Elemente gew&auml;hlt.',
+	requiredChk: 'Dieses Feld ist obligatorisch.',
+	reqChkByName: 'Bitte w&auml;hlen Sie ein {label}.',
+	match: 'Dieses Eingabefeld muss mit dem Feld {matchName} &uuml;bereinstimmen.',
+	startDate: 'Das Anfangsdatum',
+	endDate: 'Das Enddatum',
+	currendDate: 'Das aktuelle Datum',
+	afterDate: 'Das Datum sollte zur gleichen Zeit oder sp&auml;ter sein {label}.',
+	beforeDate: 'Das Datum sollte zur gleichen Zeit oder fr&uuml;her sein {label}.',
+	startMonth: 'W&auml;hlen Sie bitte einen Anfangsmonat',
+	sameMonth: 'Diese zwei Datumsangaben m&uuml;ssen im selben Monat sein - Sie m&uuml;ssen eine von beiden ver&auml;ndern.',
+	creditcard: 'Die eingegebene Kreditkartennummer ist ung&uuml;ltig. Bitte &uuml;berpr&uuml;fen Sie diese und versuchen Sie es erneut. {length} Zahlen eingegeben.'
+
+});
+
+
+/*
 ---
 
 script: Form.Validator.French.js
 
-description: Form.Validator messages in French.
+name: Form.Validator.French
+
+description: Form Validator messages in French.
 
 license: MIT-style license
 
-authors: 
- - Miquel Hudin
- - Nicolas Sorosac <nicolas <dot> sorosac <at> gmail <dot> com>
+authors:
+  - Miquel Hudin
+  - Nicolas Sorosac
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.French]
 
 ...
 */
- 
+
 MooTools.lang.set('fr-FR', 'Form.Validator', {
-  required:'Ce champ est obligatoire.',
-  minLength:'Veuillez saisir un minimum de {minLength} caract&egrave;re(s) (vous avez saisi {length} caract&egrave;re(s)).',
-  maxLength:'Veuillez saisir un maximum de {maxLength} caract&egrave;re(s) (vous avez saisi {length} caract&egrave;re(s)).',
-  integer:'Veuillez saisir un nombre entier dans ce champ. Les nombres d&eacute;cimaux (ex : "1,25") ne sont pas autoris&eacute;s.',
-  numeric:'Veuillez saisir uniquement des chiffres dans ce champ (ex : "1" ou "1,1" ou "-1" ou "-1,1").',
-  digits:'Veuillez saisir uniquement des chiffres et des signes de ponctuation dans ce champ (ex : un num&eacute;ro de t&eacute;l&eacute;phone avec des traits d\'union est autoris&eacute;).',
-  alpha:'Veuillez saisir uniquement des lettres (a-z) dans ce champ. Les espaces ou autres caract&egrave;res ne sont pas autoris&eacute;s.',
-  alphanum:'Veuillez saisir uniquement des lettres (a-z) ou des chiffres (0-9) dans ce champ. Les espaces ou autres caract&egrave;res ne sont pas autoris&eacute;s.',
-  dateSuchAs:'Veuillez saisir une date correcte comme {date}',
-  dateInFormatMDY:'Veuillez saisir une date correcte, au format JJ/MM/AAAA (ex : "31/11/1999").',
-  email:'Veuillez saisir une adresse de courrier &eacute;lectronique. Par example "fred@domaine.com".',
-  url:'Veuillez saisir une URL, comme http://www.google.com.',
-  currencyDollar:'Veuillez saisir une quantit&eacute; correcte. Par example 100,00&euro;.',
-  oneRequired:'Veuillez s&eacute;lectionner au moins une de ces options.',
-  errorPrefix: 'Erreur : ',
-  warningPrefix: 'Attention : ',
-  
-  //Form.Validator.Extras
- 
-  noSpace: 'Ce champ n\'accepte pas les espaces.',
-  reqChkByNode: 'Aucun &eacute;l&eacute;ment n\'est s&eacute;lectionn&eacute;.',
-  requiredChk: 'Ce champ est obligatoire.',
-  reqChkByName: 'Veuillez s&eacute;lectionner un(e) {label}.',
-  match: 'Ce champ doit correspondre avec le champ {matchName}.',
-  startDate: 'date de d&eacute;but',
-  endDate: 'date de fin',
-  currendDate: 'date actuelle',
-  afterDate: 'La date doit &ecirc;tre identique ou post&eacute;rieure &agrave; {label}.',
-  beforeDate: 'La date doit &ecirc;tre identique ou ant&eacute;rieure &agrave; {label}.',
-  startMonth: 'Veuillez s&eacute;lectionner un mois de d&eacute;but.',
-  sameMonth: 'Ces deux dates doivent &ecirc;tre dans le m&ecirc;me mois - vous devez en modifier une.'
- 
-});/*
+
+	required: 'Ce champ est obligatoire.',
+	minLength: 'Veuillez saisir un minimum de {minLength} caract&egrave;re(s) (vous avez saisi {length} caract&egrave;re(s)).',
+	maxLength: 'Veuillez saisir un maximum de {maxLength} caract&egrave;re(s) (vous avez saisi {length} caract&egrave;re(s)).',
+	integer: 'Veuillez saisir un nombre entier dans ce champ. Les nombres d&eacute;cimaux (ex : "1,25") ne sont pas autoris&eacute;s.',
+	numeric: 'Veuillez saisir uniquement des chiffres dans ce champ (ex : "1" ou "1,1" ou "-1" ou "-1,1").',
+	digits: "Veuillez saisir uniquement des chiffres et des signes de ponctuation dans ce champ (ex : un num&eacute;ro de t&eacute;l&eacute;phone avec des traits d'union est autoris&eacute;).",
+	alpha: 'Veuillez saisir uniquement des lettres (a-z) dans ce champ. Les espaces ou autres caract&egrave;res ne sont pas autoris&eacute;s.',
+	alphanum: 'Veuillez saisir uniquement des lettres (a-z) ou des chiffres (0-9) dans ce champ. Les espaces ou autres caract&egrave;res ne sont pas autoris&eacute;s.',
+	dateSuchAs: 'Veuillez saisir une date correcte comme {date}',
+	dateInFormatMDY: 'Veuillez saisir une date correcte, au format JJ/MM/AAAA (ex : "31/11/1999").',
+	email: 'Veuillez saisir une adresse de courrier &eacute;lectronique. Par example "fred@domaine.com".',
+	url: 'Veuillez saisir une URL, comme http://www.google.com.',
+	currencyDollar: 'Veuillez saisir une quantit&eacute; correcte. Par example 100,00&euro;.',
+	oneRequired: 'Veuillez s&eacute;lectionner au moins une de ces options.',
+	errorPrefix: 'Erreur : ',
+	warningPrefix: 'Attention : ',
+
+	// Form.Validator.Extras
+	noSpace: "Ce champ n'accepte pas les espaces.",
+	reqChkByNode: "Aucun &eacute;l&eacute;ment n'est s&eacute;lectionn&eacute;.",
+	requiredChk: 'Ce champ est obligatoire.',
+	reqChkByName: 'Veuillez s&eacute;lectionner un(e) {label}.',
+	match: 'Ce champ doit correspondre avec le champ {matchName}.',
+	startDate: 'date de d&eacute;but',
+	endDate: 'date de fin',
+	currendDate: 'date actuelle',
+	afterDate: 'La date doit &ecirc;tre identique ou post&eacute;rieure &agrave; {label}.',
+	beforeDate: 'La date doit &ecirc;tre identique ou ant&eacute;rieure &agrave; {label}.',
+	startMonth: 'Veuillez s&eacute;lectionner un mois de d&eacute;but.',
+	sameMonth: 'Ces deux dates doivent &ecirc;tre dans le m&ecirc;me mois - vous devez en modifier une.'
+
+});
+
+
+/*
 ---
 
 script: Form.Validator.Italian.js
 
-description: Form.Validator messages in Italian.
+name: Form.Validator.Italian
+
+description: Form Validator messages in Italian.
 
 license: MIT-style license
 
 authors:
- - Leonardo Laureti
- - Andrea Novero
+  - Leonardo Laureti
+  - Andrea Novero
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.Italian]
 
 ...
 */
- 
+
 MooTools.lang.set('it-IT', 'Form.Validator', {
 
-	required:'Il campo &egrave; obbligatorio.',
-	minLength:'Inserire almeno {minLength} caratteri (ne sono stati inseriti {length}).',
-	maxLength:'Inserire al massimo {maxLength} caratteri (ne sono stati inseriti {length}).',
-	integer:'Inserire un numero intero. Non sono consentiti decimali (es.: 1.25).',
-	numeric:'Inserire solo valori numerici (es.: "1" oppure "1.1" oppure "-1" oppure "-1.1").',
-	digits:'Inserire solo numeri e caratteri di punteggiatura. Per esempio &egrave; consentito un numero telefonico con trattini o punti.',
-	alpha:'Inserire solo lettere (a-z). Non sono consentiti spazi o altri caratteri.',
-	alphanum:'Inserire solo lettere (a-z) o numeri (0-9). Non sono consentiti spazi o altri caratteri.',
-	dateSuchAs:'Inserire una data valida del tipo {date}',
-	dateInFormatMDY:'Inserire una data valida nel formato MM/GG/AAAA (es.: "12/31/1999")',
-	email:'Inserire un indirizzo email valido. Per esempio "nome@dominio.com".',
-	url:'Inserire un indirizzo valido. Per esempio "http://www.dominio.com".',
-	currencyDollar:'Inserire un importo valido. Per esempio "$100.00".',
-	oneRequired:'Completare almeno uno dei campi richiesti.',
+	required: 'Il campo &egrave; obbligatorio.',
+	minLength: 'Inserire almeno {minLength} caratteri (ne sono stati inseriti {length}).',
+	maxLength: 'Inserire al massimo {maxLength} caratteri (ne sono stati inseriti {length}).',
+	integer: 'Inserire un numero intero. Non sono consentiti decimali (es.: 1.25).',
+	numeric: 'Inserire solo valori numerici (es.: "1" oppure "1.1" oppure "-1" oppure "-1.1").',
+	digits: 'Inserire solo numeri e caratteri di punteggiatura. Per esempio &egrave; consentito un numero telefonico con trattini o punti.',
+	alpha: 'Inserire solo lettere (a-z). Non sono consentiti spazi o altri caratteri.',
+	alphanum: 'Inserire solo lettere (a-z) o numeri (0-9). Non sono consentiti spazi o altri caratteri.',
+	dateSuchAs: 'Inserire una data valida del tipo {date}',
+	dateInFormatMDY: 'Inserire una data valida nel formato MM/GG/AAAA (es.: "12/31/1999")',
+	email: 'Inserire un indirizzo email valido. Per esempio "nome@dominio.com".',
+	url: 'Inserire un indirizzo valido. Per esempio "http://www.dominio.com".',
+	currencyDollar: 'Inserire un importo valido. Per esempio "$100.00".',
+	oneRequired: 'Completare almeno uno dei campi richiesti.',
 	errorPrefix: 'Errore: ',
 	warningPrefix: 'Attenzione: ',
 
-	//Form.Validator.Extras
-
+	// Form.Validator.Extras
 	noSpace: 'Non sono consentiti spazi.',
 	reqChkByNode: 'Nessuna voce selezionata.',
 	requiredChk: 'Il campo &egrave; obbligatorio.',
 	reqChkByName: 'Selezionare un(a) {label}.',
 	match: 'Il valore deve corrispondere al campo {matchName}',
-	startDate: 'data d\'inizio',
+	startDate: "data d'inizio",
 	endDate: 'data di fine',
 	currendDate: 'data attuale',
 	afterDate: 'La data deve corrispondere o essere successiva al {label}.',
 	beforeDate: 'La data deve corrispondere o essere precedente al {label}.',
-	startMonth: 'Selezionare un mese d\'inizio',
+	startMonth: "Selezionare un mese d'inizio",
 	sameMonth: 'Le due date devono essere dello stesso mese - occorre modificarne una.'
 
-});/*
+});
+
+
+/*
 ---
 
 script: Form.Validator.Norwegian.js
 
-description: Form.Validator messages in Norwegian.
+name: Form.Validator.Norwegian
+
+description: Form Validator messages in Norwegian.
 
 license: MIT-style license
 
 authors:
- - Espen 'Rexxars' Hovlandsdal
+  - Espen 'Rexxars' Hovlandsdal
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.Norwegian]
 
@@ -14205,37 +14719,43 @@ provides: [Form.Validator.Norwegian]
 */
 
 MooTools.lang.set('no-NO', 'Form.Validator', {
-   required:'Dette feltet er pÃ¥krevd.',
-   minLength:'Vennligst skriv inn minst {minLength} tegn (du skrev {length} tegn).',
-   maxLength:'Vennligst skriv inn maksimalt {maxLength} tegn (du skrev {length} tegn).',
-   integer:'Vennligst skriv inn et tall i dette feltet. Tall med desimaler (for eksempel 1,25) er ikke tillat.',
-   numeric:'Vennligst skriv inn kun numeriske verdier i dette feltet (for eksempel "1", "1.1", "-1" eller "-1.1").',
-   digits:'Vennligst bruk kun nummer og skilletegn i dette feltet.',
-   alpha:'Vennligst bruk kun bokstaver (a-z) i dette feltet. Ingen mellomrom eller andre tegn er tillat.',
-   alphanum:'Vennligst bruk kun bokstaver (a-z) eller nummer (0-9) i dette feltet. Ingen mellomrom eller andre tegn er tillat.',
-   dateSuchAs:'Vennligst skriv inn en gyldig dato, som {date}',
-   dateInFormatMDY:'Vennligst skriv inn en gyldig dato, i formatet MM/DD/YYYY (for eksempel "12/31/1999")',
-   email:'Vennligst skriv inn en gyldig epost-adresse. For eksempel "espen@domene.no".',
-   url:'Vennligst skriv inn en gyldig URL, for eksempel http://www.google.no.',
-   currencyDollar:'Vennligst fyll ut et gyldig $ belÃ¸p. For eksempel $100.00 .',
-   oneRequired:'Vennligst fyll ut noe i minst ett av disse feltene.',
-   errorPrefix: 'Feil: ',
-   warningPrefix: 'Advarsel: '
-});/*
+
+	required: 'Dette feltet er pÃ¥krevd.',
+	minLength: 'Vennligst skriv inn minst {minLength} tegn (du skrev {length} tegn).',
+	maxLength: 'Vennligst skriv inn maksimalt {maxLength} tegn (du skrev {length} tegn).',
+	integer: 'Vennligst skriv inn et tall i dette feltet. Tall med desimaler (for eksempel 1,25) er ikke tillat.',
+	numeric: 'Vennligst skriv inn kun numeriske verdier i dette feltet (for eksempel "1", "1.1", "-1" eller "-1.1").',
+	digits: 'Vennligst bruk kun nummer og skilletegn i dette feltet.',
+	alpha: 'Vennligst bruk kun bokstaver (a-z) i dette feltet. Ingen mellomrom eller andre tegn er tillat.',
+	alphanum: 'Vennligst bruk kun bokstaver (a-z) eller nummer (0-9) i dette feltet. Ingen mellomrom eller andre tegn er tillat.',
+	dateSuchAs: 'Vennligst skriv inn en gyldig dato, som {date}',
+	dateInFormatMDY: 'Vennligst skriv inn en gyldig dato, i formatet MM/DD/YYYY (for eksempel "12/31/1999")',
+	email: 'Vennligst skriv inn en gyldig epost-adresse. For eksempel "espen@domene.no".',
+	url: 'Vennligst skriv inn en gyldig URL, for eksempel http://www.google.no.',
+	currencyDollar: 'Vennligst fyll ut et gyldig $ belÃ¸p. For eksempel $100.00 .',
+	oneRequired: 'Vennligst fyll ut noe i minst ett av disse feltene.',
+	errorPrefix: 'Feil: ',
+	warningPrefix: 'Advarsel: '
+
+});
+
+
+/*
 ---
 
 script: Form.Validator.Polish.js
 
-description: Date messages for Polish.
+name: Form.Validator.Polish
+
+description: Form Validator messages for Polish.
 
 license: MIT-style license
 
 authors:
- - Oskar Krawczyk
+  - Oskar Krawczyk
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.Polish]
 
@@ -14244,25 +14764,24 @@ provides: [Form.Validator.Polish]
 
 MooTools.lang.set('pl-PL', 'Form.Validator', {
 
-	required:'To pole jest wymagane.',
-	minLength:'Wymagane jest przynajmniej {minLength} znaków (wpisanych zostało tylko {length}).',
-	maxLength:'Dozwolone jest nie więcej niż {maxLength} znaków (wpisanych zostało {length})',
-	integer:'To pole wymaga liczb całych. Liczby dziesiętne (np. 1.25) są niedozwolone.',
-	numeric:'Prosimy używać tylko numerycznych wartości w tym polu (np. "1", "1.1", "-1" lub "-1.1").',
-	digits:'Prosimy używać liczb oraz zankow punktuacyjnych w typ polu (dla przykładu, przy numerze telefonu myślniki i kropki są dozwolone).',
-	alpha:'Prosimy używać tylko liter (a-z) w tym polu. Spacje oraz inne znaki są niedozwolone.',
-	alphanum:'Prosimy używać tylko liter (a-z) lub liczb (0-9) w tym polu. Spacje oraz inne znaki są niedozwolone.',
-	dateSuchAs:'Prosimy podać prawidłową datę w formacie: {date}',
-	dateInFormatMDY:'Prosimy podać poprawną date w formacie DD.MM.RRRR (i.e. "12.01.2009")',
-	email:'Prosimy podać prawidłowy adres e-mail, np. "jan@domena.pl".',
-	url:'Prosimy podać prawidłowy adres URL, np. http://www.google.pl.',
-	currencyDollar:'Prosimy podać prawidłową sumę w PLN. Dla przykładu: 100.00 PLN.',
-	oneRequired:'Prosimy wypełnić chociaż jedno z pól.',
+	required: 'To pole jest wymagane.',
+	minLength: 'Wymagane jest przynajmniej {minLength} znaków (wpisanych zostało tylko {length}).',
+	maxLength: 'Dozwolone jest nie więcej niż {maxLength} znaków (wpisanych zostało {length})',
+	integer: 'To pole wymaga liczb całych. Liczby dziesiętne (np. 1.25) są niedozwolone.',
+	numeric: 'Prosimy używać tylko numerycznych wartości w tym polu (np. "1", "1.1", "-1" lub "-1.1").',
+	digits: 'Prosimy używać liczb oraz zankow punktuacyjnych w typ polu (dla przykładu, przy numerze telefonu myślniki i kropki są dozwolone).',
+	alpha: 'Prosimy używać tylko liter (a-z) w tym polu. Spacje oraz inne znaki są niedozwolone.',
+	alphanum: 'Prosimy używać tylko liter (a-z) lub liczb (0-9) w tym polu. Spacje oraz inne znaki są niedozwolone.',
+	dateSuchAs: 'Prosimy podać prawidłową datę w formacie: {date}',
+	dateInFormatMDY: 'Prosimy podać poprawną date w formacie DD.MM.RRRR (i.e. "12.01.2009")',
+	email: 'Prosimy podać prawidłowy adres e-mail, np. "jan@domena.pl".',
+	url: 'Prosimy podać prawidłowy adres URL, np. http://www.google.pl.',
+	currencyDollar: 'Prosimy podać prawidłową sumę w PLN. Dla przykładu: 100.00 PLN.',
+	oneRequired: 'Prosimy wypełnić chociaż jedno z pól.',
 	errorPrefix: 'Błąd: ',
 	warningPrefix: 'Uwaga: ',
 
-	//Form.Validator.Extras
-
+	// Form.Validator.Extras
 	noSpace: 'W tym polu nie mogą znajdować się spacje.',
 	reqChkByNode: 'Brak zaznaczonych elementów.',
 	requiredChk: 'To pole jest wymagane.',
@@ -14276,21 +14795,25 @@ MooTools.lang.set('pl-PL', 'Form.Validator', {
 	startMonth: 'Prosimy wybrać początkowy miesiąc.',
 	sameMonth: 'Te dwie daty muszą być w zakresie tego samego miesiąca - wymagana jest zmiana któregoś z pól.'
 
-});/*
+});
+
+
+/*
 ---
 
 script: Form.Validator.Portuguese.js
 
-description: Form.Validator messages in Portuguese.
+name: Form.Validator.Portuguese
+
+description: Form Validator messages in Portuguese.
 
 license: MIT-style license
 
 authors:
- - Miquel Hudin
+  - Miquel Hudin
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.Portuguese]
 
@@ -14298,40 +14821,43 @@ provides: [Form.Validator.Portuguese]
 */
 
 MooTools.lang.set('pt-PT', 'Form.Validator', {
-	required:'Este campo é necessário.',
-	minLength:'Digite pelo menos{minLength} caracteres (comprimento {length} caracteres).',
-	maxLength:'Não insira mais de {maxLength} caracteres (comprimento {length} caracteres).',
-	integer:'Digite um número inteiro neste domínio. Com números decimais (por exemplo, 1,25), não são permitidas.',
-	numeric:'Digite apenas valores numéricos neste domínio (p.ex., "1" ou "1.1" ou "-1" ou "-1,1").',
-	digits:'Por favor, use números e pontuação apenas neste campo (p.ex., um número de telefone com traços ou pontos é permitida).',
-	alpha:'Por favor use somente letras (a-z), com nesta área. Não utilize espaços nem outros caracteres são permitidos.',
-	alphanum:'Use somente letras (a-z) ou números (0-9) neste campo. Não utilize espaços nem outros caracteres são permitidos.',
-	dateSuchAs:'Digite uma data válida, como {date}',
-	dateInFormatMDY:'Digite uma data válida, como DD/MM/YYYY (p.ex. "31/12/1999")',
-	email:'Digite um endereço de email válido. Por exemplo "fred@domain.com".',
-	url:'Digite uma URL válida, como http://www.google.com.',
-	currencyDollar:'Digite um valor válido $. Por exemplo $ 100,00. ',
-	oneRequired:'Digite algo para pelo menos um desses insumos.',
+
+	required: 'Este campo é necessário.',
+	minLength: 'Digite pelo menos{minLength} caracteres (comprimento {length} caracteres).',
+	maxLength: 'Não insira mais de {maxLength} caracteres (comprimento {length} caracteres).',
+	integer: 'Digite um número inteiro neste domínio. Com números decimais (por exemplo, 1,25), não são permitidas.',
+	numeric: 'Digite apenas valores numéricos neste domínio (p.ex., "1" ou "1.1" ou "-1" ou "-1,1").',
+	digits: 'Por favor, use números e pontuação apenas neste campo (p.ex., um número de telefone com traços ou pontos é permitida).',
+	alpha: 'Por favor use somente letras (a-z), com nesta área. Não utilize espaços nem outros caracteres são permitidos.',
+	alphanum: 'Use somente letras (a-z) ou números (0-9) neste campo. Não utilize espaços nem outros caracteres são permitidos.',
+	dateSuchAs: 'Digite uma data válida, como {date}',
+	dateInFormatMDY: 'Digite uma data válida, como DD/MM/YYYY (p.ex. "31/12/1999")',
+	email: 'Digite um endereço de email válido. Por exemplo "fred@domain.com".',
+	url: 'Digite uma URL válida, como http://www.google.com.',
+	currencyDollar: 'Digite um valor válido $. Por exemplo $ 100,00. ',
+	oneRequired: 'Digite algo para pelo menos um desses insumos.',
 	errorPrefix: 'Erro: ',
 	warningPrefix: 'Aviso: '
 
-}).set('pt-PT', 'Date', {
-	dateOrder: ['date', 'month', 'year', '/']
-});/*
+});
+
+
+/*
 ---
 
 script: Form.Validator.Portuguese.BR.js
 
-description: Form.Validator messages in Portuguese-BR.
+name: Form.Validator.Portuguese.BR
+
+description: Form Validator messages in Portuguese-BR.
 
 license: MIT-style license
 
 authors:
- - Fábio Miranda Costa
+  - Fábio Miranda Costa
 
 requires:
- - /Lang
- - /Form.Validator.Portuguese
+  - /Lang
 
 provides: [Form.Validator.Portuguese.BR]
 
@@ -14357,8 +14883,7 @@ MooTools.lang.set('pt-BR', 'Form.Validator', {
 	errorPrefix: 'Erro: ',
 	warningPrefix: 'Aviso: ',
 
-	//Form.Validator.Extras
-
+	// Form.Validator.Extras
 	noSpace: 'Não é possível digitar espaços neste campo.',
 	reqChkByNode: 'Não foi selecionado nenhum item.',
 	requiredChk: 'Este campo é obrigatório.',
@@ -14373,21 +14898,25 @@ MooTools.lang.set('pt-BR', 'Form.Validator', {
 	sameMonth: 'Estas duas datas devem ter o mesmo mês - você deve modificar uma das duas.',
 	creditcard: 'O número do cartão de crédito informado é inválido. Por favor verifique o valor e tente novamente. {length} números informados.'
 
-});/*
+});
+
+
+/*
 ---
 
 script: Form.Validator.Russian.js
 
-description: Form.Validator messages in Russian (utf-8 and cp1251).
+name: Form.Validator.Russian
+
+description: Form Validator messages for Russian (utf-8 and cp1251).
 
 license: MIT-style license
 
 authors:
- - Chernodarov Egor
+  - Chernodarov Egor
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.Russian]
 
@@ -14395,57 +14924,65 @@ provides: [Form.Validator.Russian]
 */
 
 MooTools.lang.set('ru-RU-unicode', 'Form.Validator', {
-	required:'Это поле об�?зательно к заполнению.',
-	minLength:'Пожалуй�?та, введите хот�? бы {minLength} �?имволов (Вы ввели {length}).',
-	maxLength:'Пожалуй�?та, введите не больше {maxLength} �?имволов (Вы ввели {length}).',
-	integer:'Пожалуй�?та, введите в �?то поле чи�?ло. Дробные чи�?ла (например 1.25) тут не разрешены.',
-	numeric:'Пожалуй�?та, введите в �?то поле чи�?ло (например "1" или "1.1", или "-1", или "-1.1").',
-	digits:'В �?том поле Вы можете и�?пользовать только цифры и знаки пунктуации (например, телефонный номер �?о знаками дефи�?а или �? точками).',
-	alpha:'В �?том поле можно и�?пользовать только латин�?кие буквы (a-z). Пробелы и другие �?имволы запрещены.',
-	alphanum:'В �?том поле можно и�?пользовать только латин�?кие буквы (a-z) и цифры (0-9). Пробелы и другие �?имволы запрещены.',
-	dateSuchAs:'Пожалуй�?та, введите корректную дату {date}',
-	dateInFormatMDY:'Пожалуй�?та, введите дату в формате ММ/ДД/ГГГГ (например "12/31/1999")',
-	email:'Пожалуй�?та, введите корректный емейл-адре�?. Дл�? примера "fred@domain.com".',
-	url:'Пожалуй�?та, введите правильную �?�?ылку вида http://www.google.com.',
-	currencyDollar:'Пожалуй�?та, введите �?умму в долларах. �?апример: $100.00 .',
-	oneRequired:'Пожалуй�?та, выберите хоть что-нибудь в одном из �?тих полей.',
+
+	required: 'Это поле обязательно к заполнению.',
+	minLength: 'Пожалуйста, введите хотя бы {minLength} символов (Вы ввели {length}).',
+	maxLength: 'Пожалуйста, введите не больше {maxLength} символов (Вы ввели {length}).',
+	integer: 'Пожалуйста, введите в это поле число. Дробные числа (например 1.25) тут не разрешены.',
+	numeric: 'Пожалуйста, введите в это поле число (например "1" или "1.1", или "-1", или "-1.1").',
+	digits: 'В этом поле Вы можете использовать только цифры и знаки пунктуации (например, телефонный номер со знаками дефиса или с точками).',
+	alpha: 'В этом поле можно использовать только латинские буквы (a-z). Пробелы и другие символы запрещены.',
+	alphanum: 'В этом поле можно использовать только латинские буквы (a-z) и цифры (0-9). Пробелы и другие символы запрещены.',
+	dateSuchAs: 'Пожалуйста, введите корректную дату {date}',
+	dateInFormatMDY: 'Пожалуйста, введите дату в формате ММ/ДД/ГГГГ (например "12/31/1999")',
+	email: 'Пожалуйста, введите корректный емейл-адрес. Для примера "fred@domain.com".',
+	url: 'Пожалуйста, введите правильную ссылку вида http://www.google.com.',
+	currencyDollar: 'Пожалуйста, введите сумму в долларах. Например: $100.00 .',
+	oneRequired: 'Пожалуйста, выберите хоть что-нибудь в одном из этих полей.',
 	errorPrefix: 'Ошибка: ',
 	warningPrefix: 'Внимание: '
+
 });
 
-//translation in windows-1251 codepage
+// Translated to windows-1251 codepage
 MooTools.lang.set('ru-RU', 'Form.Validator', {
-	required:'�?òî ïîëå îáÿçàòåëüíî ê çàïîëíåíèþ.',
-	minLength:'�?îæàëóéñòà, ââåäèòå õîòÿ áû {minLength} ñèìâîëîâ (Âû ââåëè {length}).',
-	maxLength:'�?îæàëóéñòà, ââåäèòå íå áîëüøå {maxLength} ñèìâîëîâ (Âû ââåëè {length}).',
-	integer:'�?îæàëóéñòà, ââåäèòå â ýòî ïîëå ÷èñëî. Äðîáíûå ÷èñëà (íàïðèìåð 1.25) òóò íå ðàçðåøåíû.',
-	numeric:'�?îæàëóéñòà, ââåäèòå â ýòî ïîëå ÷èñëî (íàïðèìåð "1" èëè "1.1", èëè "-1", èëè "-1.1").',
-	digits:'Â ýòîì ïîëå Âû ìîæåòå èñïîëüçîâàòü òîëüêî öèôðû è çíàêè ïóíêòóàöèè (íàïðèìåð, òåëåôîííûé íîìåð ñî çíàêàìè äåôèñà èëè ñ òî÷êàìè).',
-	alpha:'Â ýòîì ïîëå ìîæíî èñïîëüçîâàòü òîëüêî ëàòèíñêèå áóêâû (a-z). �?ðîáåëû è äðóãèå ñèìâîëû çàïðåùåíû.',
-	alphanum:'Â ýòîì ïîëå ìîæíî èñïîëüçîâàòü òîëüêî ëàòèíñêèå áóêâû (a-z) è öèôðû (0-9). �?ðîáåëû è äðóãèå ñèìâîëû çàïðåùåíû.',
-	dateSuchAs:'�?îæàëóéñòà, ââåäèòå êîððåêòíóþ äàòó {date}',
-	dateInFormatMDY:'�?îæàëóéñòà, ââåäèòå äàòó â ôîðìàòå ÌÌ/ÄÄ/ÃÃÃÃ (íàïðèìåð "12/31/1999")',
-	email:'�?îæàëóéñòà, ââåäèòå êîððåêòíûé åìåéë-àäðåñ. Äëÿ ïðèìåðà "fred@domain.com".',
-	url:'�?îæàëóéñòà, ââåäèòå ïðàâèëüíóþ ññûëêó âèäà http://www.google.com.',
-	currencyDollar:'�?îæàëóéñòà, ââåäèòå ñóììó â äîëëàðàõ. �?àïðèìåð: $100.00 .',
-	oneRequired:'�?îæàëóéñòà, âûáåðèòå õîòü ÷òî-íèáóäü â îäíîì èç ýòèõ ïîëåé.',
+
+	required: 'Ýòî ïîëå îáÿçàòåëüíî ê çàïîëíåíèþ.',
+	minLength: 'Ïîæàëóéñòà, ââåäèòå õîòÿ áû {minLength} ñèìâîëîâ (Âû ââåëè {length}).',
+	maxLength: 'Ïîæàëóéñòà, ââåäèòå íå áîëüøå {maxLength} ñèìâîëîâ (Âû ââåëè {length}).',
+	integer: 'Ïîæàëóéñòà, ââåäèòå â ýòî ïîëå ÷èñëî. Äðîáíûå ÷èñëà (íàïðèìåð 1.25) òóò íå ðàçðåøåíû.',
+	numeric: 'Ïîæàëóéñòà, ââåäèòå â ýòî ïîëå ÷èñëî (íàïðèìåð "1" èëè "1.1", èëè "-1", èëè "-1.1").',
+	digits: 'Â ýòîì ïîëå Âû ìîæåòå èñïîëüçîâàòü òîëüêî öèôðû è çíàêè ïóíêòóàöèè (íàïðèìåð, òåëåôîííûé íîìåð ñî çíàêàìè äåôèñà èëè ñ òî÷êàìè).',
+	alpha: 'Â ýòîì ïîëå ìîæíî èñïîëüçîâàòü òîëüêî ëàòèíñêèå áóêâû (a-z). Ïðîáåëû è äðóãèå ñèìâîëû çàïðåùåíû.',
+	alphanum: 'Â ýòîì ïîëå ìîæíî èñïîëüçîâàòü òîëüêî ëàòèíñêèå áóêâû (a-z) è öèôðû (0-9). Ïðîáåëû è äðóãèå ñèìâîëû çàïðåùåíû.',
+	dateSuchAs: 'Ïîæàëóéñòà, ââåäèòå êîððåêòíóþ äàòó {date}',
+	dateInFormatMDY: 'Ïîæàëóéñòà, ââåäèòå äàòó â ôîðìàòå ÌÌ/ÄÄ/ÃÃÃÃ (íàïðèìåð "12/31/1999")',
+	email: 'Ïîæàëóéñòà, ââåäèòå êîððåêòíûé åìåéë-àäðåñ. Äëÿ ïðèìåðà "fred@domain.com".',
+	url: 'Ïîæàëóéñòà, ââåäèòå ïðàâèëüíóþ ññûëêó âèäà http://www.google.com.',
+	currencyDollar: 'Ïîæàëóéñòà, ââåäèòå ñóììó â äîëëàðàõ. Íàïðèìåð: $100.00 .',
+	oneRequired: 'Ïîæàëóéñòà, âûáåðèòå õîòü ÷òî-íèáóäü â îäíîì èç ýòèõ ïîëåé.',
 	errorPrefix: 'Îøèáêà: ',
 	warningPrefix: 'Âíèìàíèå: '
-});/*
+
+});
+
+
+/*
 ---
 
 script: Form.Validator.Spanish.js
 
-description: Date messages for Spanish.
+name: Form.Validator.Spanish
+
+description: Form Validator messages for Spanish.
 
 license: MIT-style license
 
 authors:
- - Ãlfons Sanchez
+  - Ãlfons Sanchez
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.Spanish]
 
@@ -14454,25 +14991,24 @@ provides: [Form.Validator.Spanish]
 
 MooTools.lang.set('es-ES', 'Form.Validator', {
 
-	required:'Este campo es obligatorio.',
-	minLength:'Por favor introduce al menos {minLength} caracteres (has introducido {length} caracteres).',
-	maxLength:'Por favor introduce no m&aacute;s de {maxLength} caracteres (has introducido {length} caracteres).',
-	integer:'Por favor introduce un n&uacute;mero entero en este campo. N&uacute;meros con decimales (p.e. 1,25) no se permiten.',
-	numeric:'Por favor introduce solo valores num&eacute;ricos en este campo (p.e. "1" o "1,1" o "-1" o "-1,1").',
-	digits:'Por favor usa solo n&uacute;meros y puntuaci&oacute;n en este campo (por ejemplo, un n&uacute;mero de tel&eacute;fono con guiones y puntos no esta permitido).',
-	alpha:'Por favor usa letras solo (a-z) en este campo. No se admiten espacios ni otros caracteres.',
-	alphanum:'Por favor, usa solo letras (a-z) o n&uacute;meros (0-9) en este campo. No se admiten espacios ni otros caracteres.',
-	dateSuchAs:'Por favor introduce una fecha v&aacute;lida como {date}',
-	dateInFormatMDY:'Por favor introduce una fecha v&aacute;lida como DD/MM/YYYY (p.e. "31/12/1999")',
-	email:'Por favor, introduce una direcci&oacute;n de email v&aacute;lida. Por ejemplo,  "fred@domain.com".',
-	url:'Por favor introduce una URL v&aacute;lida como http://www.google.com.',
-	currencyDollar:'Por favor introduce una cantidad v&aacute;lida de €. Por ejemplo €100,00 .',
-	oneRequired:'Por favor introduce algo para por lo menos una de estas entradas.',
+	required: 'Este campo es obligatorio.',
+	minLength: 'Por favor introduce al menos {minLength} caracteres (has introducido {length} caracteres).',
+	maxLength: 'Por favor introduce no m&aacute;s de {maxLength} caracteres (has introducido {length} caracteres).',
+	integer: 'Por favor introduce un n&uacute;mero entero en este campo. N&uacute;meros con decimales (p.e. 1,25) no se permiten.',
+	numeric: 'Por favor introduce solo valores num&eacute;ricos en este campo (p.e. "1" o "1,1" o "-1" o "-1,1").',
+	digits: 'Por favor usa solo n&uacute;meros y puntuaci&oacute;n en este campo (por ejemplo, un n&uacute;mero de tel&eacute;fono con guiones y puntos no esta permitido).',
+	alpha: 'Por favor usa letras solo (a-z) en este campo. No se admiten espacios ni otros caracteres.',
+	alphanum: 'Por favor, usa solo letras (a-z) o n&uacute;meros (0-9) en este campo. No se admiten espacios ni otros caracteres.',
+	dateSuchAs: 'Por favor introduce una fecha v&aacute;lida como {date}',
+	dateInFormatMDY: 'Por favor introduce una fecha v&aacute;lida como DD/MM/YYYY (p.e. "31/12/1999")',
+	email: 'Por favor, introduce una direcci&oacute;n de email v&aacute;lida. Por ejemplo,  "fred@domain.com".',
+	url: 'Por favor introduce una URL v&aacute;lida como http://www.google.com.',
+	currencyDollar: 'Por favor introduce una cantidad v&aacute;lida de €. Por ejemplo €100,00 .',
+	oneRequired: 'Por favor introduce algo para por lo menos una de estas entradas.',
 	errorPrefix: 'Error: ',
 	warningPrefix: 'Aviso: ',
 
-	//Form.Validator.Extras
-
+	// Form.Validator.Extras
 	noSpace: 'No pueden haber espacios en esta entrada.',
 	reqChkByNode: 'No hay elementos seleccionados.',
 	requiredChk: 'Este campo es obligatorio.',
@@ -14487,21 +15023,24 @@ MooTools.lang.set('es-ES', 'Form.Validator', {
 	sameMonth: 'Estas dos fechas deben estar en el mismo mes - debes cambiar una u otra.'
 
 });
+
+
 /*
 ---
 
 script: Form.Validator.Swedish.js
 
-description: Date messages for Swedish.
+name: Form.Validator.Swedish
+
+description: Form Validator messages for Swedish.
 
 license: MIT-style license
 
 authors:
- - Martin Lundgren
+  - Martin Lundgren
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.Swedish]
 
@@ -14510,25 +15049,24 @@ provides: [Form.Validator.Swedish]
 
 MooTools.lang.set('sv-SE', 'Form.Validator', {
 
-	required:'Fältet är obligatoriskt.',
-	minLength:'Ange minst {minLength} tecken (du angav {length} tecken).',
-	maxLength:'Ange högst {maxLength} tecken (du angav {length} tecken). ',
-	integer:'Ange ett heltal i fältet. Tal med decimaler (t.ex. 1,25) är inte tillåtna.',
-	numeric:'Ange endast numeriska värden i detta fält (t.ex. "1" eller "1.1" eller "-1" eller "-1,1").',
-	digits:'Använd endast siffror och skiljetecken i detta fält (till exempel ett telefonnummer med bindestreck tillåtet).',
-	alpha:'Använd endast bokstäver (a-ö) i detta fält. Inga mellanslag eller andra tecken är tillåtna.',
-	alphanum:'Använd endast bokstäver (a-ö) och siffror (0-9) i detta fält. Inga mellanslag eller andra tecken är tillåtna.',
-	dateSuchAs:'Ange ett giltigt datum som t.ex. {date}',
-	dateInFormatMDY:'Ange ett giltigt datum som t.ex. YYYY-MM-DD (i.e. "1999-12-31")',
-	email:'Ange en giltig e-postadress. Till exempel "erik@domain.com".',
-	url:'Ange en giltig webbadress som http://www.google.com.',
-	currencyDollar:'Ange en giltig belopp. Exempelvis 100,00.',
-	oneRequired:'Vänligen ange minst ett av dessa alternativ.',
+	required: 'Fältet är obligatoriskt.',
+	minLength: 'Ange minst {minLength} tecken (du angav {length} tecken).',
+	maxLength: 'Ange högst {maxLength} tecken (du angav {length} tecken). ',
+	integer: 'Ange ett heltal i fältet. Tal med decimaler (t.ex. 1,25) är inte tillåtna.',
+	numeric: 'Ange endast numeriska värden i detta fält (t.ex. "1" eller "1.1" eller "-1" eller "-1,1").',
+	digits: 'Använd endast siffror och skiljetecken i detta fält (till exempel ett telefonnummer med bindestreck tillåtet).',
+	alpha: 'Använd endast bokstäver (a-ö) i detta fält. Inga mellanslag eller andra tecken är tillåtna.',
+	alphanum: 'Använd endast bokstäver (a-ö) och siffror (0-9) i detta fält. Inga mellanslag eller andra tecken är tillåtna.',
+	dateSuchAs: 'Ange ett giltigt datum som t.ex. {date}',
+	dateInFormatMDY: 'Ange ett giltigt datum som t.ex. YYYY-MM-DD (i.e. "1999-12-31")',
+	email: 'Ange en giltig e-postadress. Till exempel "erik@domain.com".',
+	url: 'Ange en giltig webbadress som http://www.google.com.',
+	currencyDollar: 'Ange en giltig belopp. Exempelvis 100,00.',
+	oneRequired: 'Vänligen ange minst ett av dessa alternativ.',
 	errorPrefix: 'Fel: ',
 	warningPrefix: 'Varning: ',
 
-	//Form.Validator.Extras
-
+	// Form.Validator.Extras
 	noSpace: 'Det får inte finnas några mellanslag i detta fält.',
 	reqChkByNode: 'Inga objekt är valda.',
 	requiredChk: 'Detta är ett obligatoriskt fält.',
@@ -14542,21 +15080,25 @@ MooTools.lang.set('sv-SE', 'Form.Validator', {
 	startMonth: 'Välj en start månad',
 	sameMonth: 'Dessa två datum måste vara i samma månad - du måste ändra det ena eller det andra.'
 
-});/*
+});
+
+
+/*
 ---
 
 script: Form.Validator.Ukrainian.js
 
-description: Form.Validator messages in Ukrainian (utf-8).
+name: Form.Validator.Ukrainian
+
+description: Form Validator messages in Ukrainian (utf-8).
 
 license: MIT-style license
 
 authors:
- - Slik
+  - Slik
 
 requires:
- - /Lang
- - /Form.Validator
+  - /Lang
 
 provides: [Form.Validator.Ukrainian]
 
@@ -14564,23 +15106,26 @@ provides: [Form.Validator.Ukrainian]
 */
 
 MooTools.lang.set('uk-UA', 'Form.Validator', {
-	required:'Це поле повинне бути заповненим.',
-	minLength:'Введіть хоча б {minLength} �?имволів (Ви ввели {length}).',
-	maxLength:'Кількі�?ть �?имволів не може бути більше {maxLength} (Ви ввели {length}).',
-	integer:'Введіть в це поле чи�?ло. Дробові чи�?ла (наприклад 1.25) не дозволені.',
-	numeric:'Введіть в це поле чи�?ло (наприклад "1" або "1.1", або "-1", або "-1.1").',
-	digits:'В цьому полі ви можете викори�?товувати лише цифри і знаки пунктіації (наприклад, телефонний номер з знаками дефізу або з крапками).',
-	alpha:'В цьому полі можна викори�?товувати лише латин�?ькі літери (a-z). Пробіли і інші �?имволи заборонені.',
-	alphanum:'В цьому полі можна викори�?товувати лише латин�?ькі літери (a-z) і цифри (0-9). Пробіли і інші �?имволи заборонені.',
-	dateSuchAs:'Введіть коректну дату {date}.',
-	dateInFormatMDY:'Введіть дату в форматі ММ/ДД/РРРР (наприклад "12/31/2009").',
-	email:'Введіть коректну адре�?у електронної пошти (наприклад "name@domain.com").',
-	url:'Введіть коректне інтернет-по�?иланн�? (наприклад http://www.google.com).',
-	currencyDollar:'Введіть �?уму в доларах (наприклад "$100.00").',
-	oneRequired:'Заповніть одне з полів.',
+
+	required: 'Це поле повинне бути заповненим.',
+	minLength: 'Введіть хоча б {minLength} символів (Ви ввели {length}).',
+	maxLength: 'Кількість символів не може бути більше {maxLength} (Ви ввели {length}).',
+	integer: 'Введіть в це поле число. Дробові числа (наприклад 1.25) не дозволені.',
+	numeric: 'Введіть в це поле число (наприклад "1" або "1.1", або "-1", або "-1.1").',
+	digits: 'В цьому полі ви можете використовувати лише цифри і знаки пунктіації (наприклад, телефонний номер з знаками дефізу або з крапками).',
+	alpha: 'В цьому полі можна використовувати лише латинські літери (a-z). Пробіли і інші символи заборонені.',
+	alphanum: 'В цьому полі можна використовувати лише латинські літери (a-z) і цифри (0-9). Пробіли і інші символи заборонені.',
+	dateSuchAs: 'Введіть коректну дату {date}.',
+	dateInFormatMDY: 'Введіть дату в форматі ММ/ДД/РРРР (наприклад "12/31/2009").',
+	email: 'Введіть коректну адресу електронної пошти (наприклад "name@domain.com").',
+	url: 'Введіть коректне інтернет-посилання (наприклад http://www.google.com).',
+	currencyDollar: 'Введіть суму в доларах (наприклад "$100.00").',
+	oneRequired: 'Заповніть одне з полів.',
 	errorPrefix: 'Помилка: ',
 	warningPrefix: 'Увага: '
+
 });
+
 /*
 ---
 
@@ -14885,7 +15430,7 @@ Jx.setLanguage(Jx.lang);
  * object {Object} the object (img) to which the filter needs to be applied.
  */
 Jx.applyPNGFilter = function(o) {
-    var t = Jx.aPixel.src, 
+    var t = Jx.aPixel.src,
         s;
     if (o.src != t) {
         s = o.src;
@@ -15208,8 +15753,8 @@ Jx.type = function(obj) {
          * is the size to set the content area of the element to.
          */
         setBorderBoxSize: function(size) {
-            var m, 
-                width, 
+            var m,
+                width,
                 height;
             if (this.getBoxSizing() == 'content-box') {
                 m = this.measure(function() {
@@ -15974,7 +16519,7 @@ provides: [Locale.English.US]
 ...
  */
 MooTools.lang.set('en-US', 'Jx', {
-	
+
 	'widget': {
 		busyMessage: 'Working ...'
 	},
@@ -16423,7 +16968,7 @@ Jx.Widget = new Class({
             ver = $splat(options.vertical || ['center center']),
             offsets = $merge({top:0,right:0,bottom:0,left:0}, options.offsets || {}),
             coords = relative.getCoordinates(), //top, left, width, height,
-            page, 
+            page,
             scroll,
             size,
             left,
@@ -17839,8 +18384,8 @@ provides: [Locale.German]
  */
 
 MooTools.lang.set('de-DE', 'Date', {
-  // need to overwrite 'M&auml;rz' to 'März' for jx.select fields
-  months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
+  // need to overwrite 'M&auml;rz' to 'MÃ¤rz' for jx.select fields
+  months: ['Januar', 'Februar', 'MÃ¤rz', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
 });
 
 MooTools.lang.set('de-DE', 'Jx', {
@@ -17852,7 +18397,7 @@ MooTools.lang.set('de-DE', 'Jx', {
 		alphaLabel: 'alpha (%)'
 	},
 	notice: {
-		closeTip: 'Notiz schließen'
+		closeTip: 'Notiz schlieÃŸen'
 	},
 	progressbar: {
 		messageText: 'Lade...',
@@ -17869,17 +18414,17 @@ MooTools.lang.set('de-DE', 'Jx', {
 		'false': 'Nein'
 	},
 	'formatter.currency': {
-		sign: '€'
+		sign: 'â‚¬'
 	},
 	'formatter.number': {
 		decimalSeparator: ',',
     thousandsSeparator: '.'
 	},
 	splitter: {
-		barToolTip: 'Ziehen Sie diese Leiste um die Größe zu verändern'
+		barToolTip: 'Ziehen Sie diese Leiste um die GrÃ¶ÃŸe zu verÃ¤ndern'
 	},
 	panelset: {
-		barToolTip: 'Ziehen Sie diese Leiste um die Größe zu verändern'
+		barToolTip: 'Ziehen Sie diese Leiste um die GrÃ¶ÃŸe zu verÃ¤ndern'
 	},
 	panel: {
         collapseTooltip: 'Panel ein-/ausklappen', //colB
@@ -17889,8 +18434,8 @@ MooTools.lang.set('de-DE', 'Jx', {
         maximizeLabel: 'maximieren',
         restoreTooltip: 'Panel wieder herstellen', //maxB
         restoreLabel: 'wieder herstellen', //maxM
-        closeTooltip: 'Panel schließen', //closeB
-        closeLabel: 'Schließen' //closeM
+        closeTooltip: 'Panel schlieÃŸen', //closeB
+        closeLabel: 'SchlieÃŸen' //closeM
 	},
 	confirm: {
 		affirmativeLabel: 'Ja',
@@ -17910,7 +18455,7 @@ MooTools.lang.set('de-DE', 'Jx', {
 		buttonText: 'Dateien hochladen'
 	},
 	'plugin.resize': {
-	  tooltip: 'Klicken um Größe zu verändern. Doppelklick für automatische Anpassung.'
+	  tooltip: 'Klicken um GrÃ¶ÃŸe zu verÃ¤ndern. Doppelklick fÃ¼r automatische Anpassung.'
 	},
   'plugin.editor': {
     submitButton: 'Speichern',
@@ -17933,77 +18478,77 @@ provides: [Locale.Russian]
 ...
  */
 MooTools.lang.set('ru-RU-unicode', 'Jx', {
-	
+
 	'widget': {
-		busyMessage: 'Обработка...'
+		busyMessage: 'ÐžÐ±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ°...'
 	},
 	'colorpalette': {
 		alphaLabel: 'alpha (%)'
 	},
 	notice: {
-		closeTip: 'закрыть �?то �?ообщение'
+		closeTip: 'Ð·Ð°ÐºÑ€Ñ‹Ñ‚ÑŒ Ñ?Ñ‚Ð¾ Ñ?Ð¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ'
 	},
 	progressbar: {
-		messageText: 'Загрузка...',
-		progressText: '{progress} из {total}'
+		messageText: 'Ð—Ð°Ð³Ñ€ÑƒÐ·ÐºÐ°...',
+		progressText: '{progress} Ð¸Ð· {total}'
 	},
 	field: {
 		requiredText: '*'
 	},
 	file: {
-		browseLabel: 'Выбрать...'
+		browseLabel: 'Ð’Ñ‹Ð±Ñ€Ð°Ñ‚ÑŒ...'
 	},
 	'formatter.boolean': {
-		'true': 'Да',
-		'false': '�?ет'
+		'true': 'Ð”Ð°',
+		'false': 'Ð?ÐµÑ‚'
 	},
 	'formatter.currency': {
-		sign: 'р.'
+		sign: 'Ñ€.'
 	},
 	'formatter.number': {
 		decimalSeparator: ',',
     thousandsSeparator: ' '
 	},
 	splitter: {
-		barToolTip: 'пот�?ни, чтобы изменить размер'
+		barToolTip: 'Ð¿Ð¾Ñ‚Ñ?Ð½Ð¸, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¸Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ñ€Ð°Ð·Ð¼ÐµÑ€'
 	},
 	panelset: {
-		barToolTip: 'пот�?ни, чтобы изменить размер'
+		barToolTip: 'Ð¿Ð¾Ñ‚Ñ?Ð½Ð¸, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¸Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ñ€Ð°Ð·Ð¼ÐµÑ€'
 	},
 	panel: {
-		collapseTooltip: 'Свернуть/Развернуть Панель',
-    collapseLabel: 'Свернуть',
-    expandLabel: 'Развернуть',
-    maximizeTooltip: 'Увеличить Панель',
-    maximizeLabel: 'Увеличить',
-    restoreTooltip: 'Во�?�?тановить Панель',
-    restoreLabel: 'Во�?�?тановить',
-    closeTooltip: 'Закрыть Панель',
-    closeLabel: 'Закрыть'
+		collapseTooltip: 'Ð¡Ð²ÐµÑ€Ð½ÑƒÑ‚ÑŒ/Ð Ð°Ð·Ð²ÐµÑ€Ð½ÑƒÑ‚ÑŒ ÐŸÐ°Ð½ÐµÐ»ÑŒ',
+    collapseLabel: 'Ð¡Ð²ÐµÑ€Ð½ÑƒÑ‚ÑŒ',
+    expandLabel: 'Ð Ð°Ð·Ð²ÐµÑ€Ð½ÑƒÑ‚ÑŒ',
+    maximizeTooltip: 'Ð£Ð²ÐµÐ»Ð¸Ñ‡Ð¸Ñ‚ÑŒ ÐŸÐ°Ð½ÐµÐ»ÑŒ',
+    maximizeLabel: 'Ð£Ð²ÐµÐ»Ð¸Ñ‡Ð¸Ñ‚ÑŒ',
+    restoreTooltip: 'Ð’Ð¾Ñ?Ñ?Ñ‚Ð°Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ ÐŸÐ°Ð½ÐµÐ»ÑŒ',
+    restoreLabel: 'Ð’Ð¾Ñ?Ñ?Ñ‚Ð°Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ',
+    closeTooltip: 'Ð—Ð°ÐºÑ€Ñ‹Ñ‚ÑŒ ÐŸÐ°Ð½ÐµÐ»ÑŒ',
+    closeLabel: 'Ð—Ð°ÐºÑ€Ñ‹Ñ‚ÑŒ'
 	},
 	confirm: {
-		affirmativeLabel: 'Да',
-    negativeLabel: '�?ет'
+		affirmativeLabel: 'Ð”Ð°',
+    negativeLabel: 'Ð?ÐµÑ‚'
 	},
 	dialog: {
-		resizeToolTip: 'Изменить размер'
+		resizeToolTip: 'Ð˜Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ñ€Ð°Ð·Ð¼ÐµÑ€'
 	},
 	message: {
-		okButton: 'Ок'
+		okButton: 'ÐžÐº'
 	},
 	prompt: {
-		okButton: 'Ок',
-		cancelButton: 'Отмена'
+		okButton: 'ÐžÐº',
+		cancelButton: 'ÐžÑ‚Ð¼ÐµÐ½Ð°'
 	},
 	upload: {
-		buttonText: 'Загрузка файла'
+		buttonText: 'Ð—Ð°Ð³Ñ€ÑƒÐ·ÐºÐ° Ñ„Ð°Ð¹Ð»Ð°'
 	},
 	'plugin.resize': {
-	  tooltip: 'Пот�?ни, чтобы изменить, двойной щелчок дл�? авто размера.'
+	  tooltip: 'ÐŸÐ¾Ñ‚Ñ?Ð½Ð¸, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¸Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ, Ð´Ð²Ð¾Ð¹Ð½Ð¾Ð¹ Ñ‰ÐµÐ»Ñ‡Ð¾Ðº Ð´Ð»Ñ? Ð°Ð²Ñ‚Ð¾ Ñ€Ð°Ð·Ð¼ÐµÑ€Ð°.'
 	},
   'plugin.editor': {
-    submitButton: 'Сохранить',
-    cancelButton: 'Отмена'
+    submitButton: 'Ð¡Ð¾Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ',
+    cancelButton: 'ÐžÑ‚Ð¼ÐµÐ½Ð°'
   }
 });/*
 ---
@@ -18351,7 +18896,7 @@ Jx.Store = new Class({
      * Used to determine if the store is completely initialized.
      */
     ready: false,
-    
+
     /**
      * Property: deleted
      * track deleted records before they are purged
@@ -18366,7 +18911,7 @@ Jx.Store = new Class({
         this.parent();
 
         this.deleted = [];
-        
+
         if ($defined(this.options.id)) {
             this.id = this.options.id;
         }
@@ -19768,15 +20313,15 @@ provides: [Jx.Store.Response]
 // $Id: response.js 960 2010-06-06 22:23:16Z jonlb@comcast.net $
 /**
  * Class: Jx.Store.Response
- * 
+ *
  * Extends: <Jx.Object>
- * 
- * This class is used by the protocol to send information back to the calling 
+ *
+ * This class is used by the protocol to send information back to the calling
  * strategy (or other caller).
  *
- * License: 
+ * License:
  * Copyright (c) 2009, Jon Bomgardner.
- * 
+ *
  * This file is licensed under an MIT style license
  */
 Jx.Store.Response = new Class({
@@ -19940,10 +20485,10 @@ Jx.Store.Protocol = new Class({
     /**
      * APIMethod: combineRequests
      * tests whether the protocol supports combining multiple records for a given operation
-     * 
+     *
      * Parameter:
      * operation - {String} the operation to test for multiple record support
-     * 
+     *
      * Returns {Boolean} true if the operation supports it, false otherwise
      */
     combineRequests: function(op) {
@@ -19968,36 +20513,36 @@ provides: [Jx.Store.Protocol.Local]
 // $Id: protocol.local.js 977 2010-09-02 18:57:42Z pagameba $
 /**
  * Class: Jx.Store.Protocol.Local
- * 
+ *
  * Extends: Jx.Store.Protocol
- * 
+ *
  * Based on the Protocol base class, the local protocol uses data that it is
  * handed upon instantiation to process requests.
- * 
+ *
  * Constructor Parameters:
- * data - The data to use 
+ * data - The data to use
  * options - any options for the base protocol class
- * 
- * License: 
+ *
+ * License:
  * Copyright (c) 2009, Jon Bomgardner.
  * inspired by the openlayers.org implementation of a similar system
- * 
+ *
  * This file is licensed under an MIT style license
  */
 Jx.Store.Protocol.Local = new Class({
-    
+
     Extends: Jx.Store.Protocol,
-    
+
     parameters: ['data', 'options'],
     /**
      * Property: data
      * The data passed to the protocol
      */
     data: null,
-    
+
     init: function () {
         this.parent();
-        
+
         if ($defined(this.options.data)) {
             this.data = this.parser.parse(this.options.data);
         }
@@ -20006,8 +20551,8 @@ Jx.Store.Protocol.Local = new Class({
      * APIMethod: read
      * process requests for data and sends the appropriate response via the
      * dataLoaded event.
-     * 
-     * Parameters: 
+     *
+     * Parameters:
      * options - options to use in processing the request.
      */
     read: function (options) {
@@ -20020,8 +20565,8 @@ Jx.Store.Protocol.Local = new Class({
 
         resp.requestType = 'read';
         resp.requestParams = arguments;
-        
-        
+
+
         if ($defined(data)) {
             if (page <= 1 && itemsPerPage === -1) {
                 //send them all
@@ -20031,8 +20576,8 @@ Jx.Store.Protocol.Local = new Class({
                 start = (page - 1) * itemsPerPage;
                 end = start + itemsPerPage;
                 resp.data = data.slice(start, end);
-                resp.meta = { 
-                    page: page, 
+                resp.meta = {
+                    page: page,
                     itemsPerPage: itemsPerPage,
                     totalItems: data.length,
                     totalPages: Math.ceil(data.length/itemsPerPage)
@@ -20043,14 +20588,14 @@ Jx.Store.Protocol.Local = new Class({
         } else {
             resp.code = Jx.Store.Response.SUCCESS;
             this.fireEvent('dataLoaded', resp);
-        }                        
+        }
     }
-    
+
     /**
      * The following methods are not implemented as they make no sense for a
      * local protocol:
      * - create
-     * - update 
+     * - update
      * - delete
      * - commit
      * - abort
@@ -20128,14 +20673,14 @@ Jx.Store.Protocol.Ajax = new Class({
           concurrent: 1
         }
     },
-    
+
     queue: null,
 
     init: function() {
         if (!$defined(Jx.Store.Protocol.Ajax.UniqueId)) {
           Jx.Store.Protocol.Ajax.UniqueId = 1;
         }
-      
+
         this.queue = new Request.Queue({
           autoAdvance: this.options.queue.autoAdvance,
           concurrent: this.options.queue.concurrent
@@ -20171,7 +20716,7 @@ Jx.Store.Protocol.Ajax = new Class({
 
         req = new Request(opts);
         resp.request = req;
-        
+
         this.queue.addRequest(uniqueId, req);
         req.send();
 
@@ -20290,7 +20835,7 @@ Jx.Store.Protocol.Ajax = new Class({
             req,
             data,
             uniqueId = Jx.Store.Protocol.Ajax.UniqueId();
-        
+
         if (Jx.type(record) == 'array') {
           if (!this.combineRequests(method)) {
             record.each(function(r) {
@@ -20325,7 +20870,7 @@ Jx.Store.Protocol.Ajax = new Class({
 
         return resp;
     }
-    
+
 });
 /**
  * Method: uniqueId
@@ -20357,18 +20902,18 @@ provides: [Jx.Store.Strategy]
 // $Id: strategy.js 960 2010-06-06 22:23:16Z jonlb@comcast.net $
 /**
  * Class: Jx.Store.Strategy
- * 
+ *
  * Extends: <Jx.Object>
- * 
+ *
  * Base class for all Jx.Store strategies
  *
- * License: 
+ * License:
  * Copyright (c) 2009, Jon Bomgardner.
- * 
+ *
  * This file is licensed under an MIT style license
  */
 Jx.Store.Strategy = new Class({
-    
+
     Extends: Jx.Object,
     Family: 'Jx.Store.Strategy',
     /**
@@ -20381,7 +20926,7 @@ Jx.Store.Strategy = new Class({
      * whether this strategy has been activated or not.
      */
     active: null,
-    
+
     /**
      * Method: init
      * initialize the strategy, should be called by subclasses
@@ -20401,7 +20946,7 @@ Jx.Store.Strategy = new Class({
         }
         return false;
     },
-    
+
     /**
      * APIMethod: activate
      * activates the strategy if it isn't already active.
@@ -20443,23 +20988,23 @@ provides: [Jx.Store.Strategy.Full]
 // $Id: strategy.full.js 960 2010-06-06 22:23:16Z jonlb@comcast.net $
 /**
  * Class: Jx.Store.Strategy.Full
- * 
+ *
  * Extends: <Jx.Store.Strategy>
- * 
+ *
  * This is a strategy for loading all of the data from a source at one time.
  *
- * License: 
+ * License:
  * Copyright (c) 2009, Jon Bomgardner.
- * 
+ *
  * This file is licensed under an MIT style license
  */
 
 Jx.Store.Strategy.Full = new Class({
-    
+
     Extends: Jx.Store.Strategy,
-    
+
     name: 'full',
-    
+
     options:{},
     /**
      * Method: init
@@ -20470,7 +21015,7 @@ Jx.Store.Strategy.Full = new Class({
         this.bound.load = this.load.bind(this);
         this.bound.loadStore = this.loadStore.bind(this);
     },
-    
+
     /**
      * APIMethod: activate
      * activates the strategy if it isn't already active.
@@ -20478,9 +21023,9 @@ Jx.Store.Strategy.Full = new Class({
     activate: function () {
         this.parent();
         this.store.addEvent('storeLoad', this.bound.load);
-        
+
     },
-    
+
     /**
      * APIMethod: deactivate
      * deactivates the strategy if it is already active.
@@ -20488,13 +21033,13 @@ Jx.Store.Strategy.Full = new Class({
     deactivate: function () {
         this.parent();
         this.store.removeEvent('storeLoad', this.bound.load);
-        
+
     },
     /**
      * APIMethod: load
      * Called as the eventhandler for the store load method. Can also
      * be called independently to load data into the current store.
-     * 
+     *
      * Parameters:
      * params - a hash of parameters to use in loading the data.
      */
@@ -20511,12 +21056,12 @@ Jx.Store.Strategy.Full = new Class({
         opts.data.itemsPerPage = -1;
         this.store.protocol.read(opts);
     },
-    
+
     /**
      * Method: loadStore
      * Called as the event handler for the protocol's dataLoaded event. Checks
      * the response for success and loads the data into the store if needed.
-     * 
+     *
      * Parameters:
      * resp - the response from the protocol
      */
@@ -20537,9 +21082,9 @@ Jx.Store.Strategy.Full = new Class({
     },
     /**
      * Method: parseMetaData
-     * Takes the meta property of the response object and puts the data 
+     * Takes the meta property of the response object and puts the data
      * where it belongs.
-     * 
+     *
      * Parameters:
      * meta - the meta data object from the response.
      */
@@ -20571,22 +21116,22 @@ provides: [Jx.Store.Strategy.Paginate]
 // $Id: strategy.paginate.js 960 2010-06-06 22:23:16Z jonlb@comcast.net $
 /**
  * Class: Jx.Store.Strategy.Paginate
- * 
+ *
  * Extends: <Jx.Store.Strategy>
- * 
+ *
  * Store strategy for paginating results in a store.
  *
- * License: 
+ * License:
  * Copyright (c) 2009, Jon Bomgardner.
- * 
+ *
  * This file is licensed under an MIT style license
  */
 Jx.Store.Strategy.Paginate = new Class({
-    
+
     Extends: Jx.Store.Strategy,
-    
+
     name: 'paginate',
-    
+
     options: {
         /**
          * Option: getPaginationParams
@@ -20601,13 +21146,13 @@ Jx.Store.Strategy.Paginate = new Class({
         },
         /**
          * Option: startingItemsPerPage
-         * Used to set the intial itemsPerPage for the strategy. the pageSize 
+         * Used to set the intial itemsPerPage for the strategy. the pageSize
          * can be changed using the setPageSize() method.
          */
         startingItemsPerPage: 25,
         /**
          * Option: startingPage
-         * The page to start on. Defaults to 1 but can be set to any other 
+         * The page to start on. Defaults to 1 but can be set to any other
          * page.
          */
         startingPage: 1,
@@ -20633,7 +21178,7 @@ Jx.Store.Strategy.Paginate = new Class({
     data: null,
     /**
      * property: cacheTimer
-     * holds one or more cache timer ids - one per page. Each page is set to 
+     * holds one or more cache timer ids - one per page. Each page is set to
      * expire after a certain amount of time.
      */
     cacheTimer: null,
@@ -20647,7 +21192,7 @@ Jx.Store.Strategy.Paginate = new Class({
      * The number of items on each page
      */
     itemsPerPage: null,
-    
+
     /**
      * Method: init
      * initialize this strategy
@@ -20662,7 +21207,7 @@ Jx.Store.Strategy.Paginate = new Class({
         this.itemsPerPage = this.options.startingItemsPerPage;
         this.page = this.options.startingPage;
     },
-    
+
     /**
      * APIMethod: activate
      * activates the strategy if it isn't already active.
@@ -20671,7 +21216,7 @@ Jx.Store.Strategy.Paginate = new Class({
         this.parent();
         this.store.addEvent('storeLoad', this.bound.load);
     },
-    
+
     /**
      * APIMethod: deactivate
      * deactivates the strategy if it is already active.
@@ -20683,7 +21228,7 @@ Jx.Store.Strategy.Paginate = new Class({
     /**
      * APIMethod: load
      * Called to load data into the store
-     * 
+     *
      * Parameters:
      * params - a Hash of parameters to use in getting data from the protocol.
      */
@@ -20698,9 +21243,9 @@ Jx.Store.Strategy.Paginate = new Class({
     },
     /**
      * Method: loadStore
-     * Used to assist in the loading of data into the store. This is 
+     * Used to assist in the loading of data into the store. This is
      * called as a response to the protocol finishing.
-     * 
+     *
      *  Parameters:
      *  resp - the response object
      */
@@ -20721,7 +21266,7 @@ Jx.Store.Strategy.Paginate = new Class({
      * This method does the actual work of loading data to the store. It is
      * called when either the protocol finishes or setPage() has the data and
      * it's not expired.
-     * 
+     *
      * Parameters:
      * data - the data to load into the store.
      */
@@ -20740,7 +21285,7 @@ Jx.Store.Strategy.Paginate = new Class({
      * Method: parseMetaData
      * Takes the metadata returned from the protocol and places it in the
      * appropriate Vplaces.
-     * 
+     *
      * Parameters:
      * meta - the meta data object returned from the protocol.
      */
@@ -20757,14 +21302,14 @@ Jx.Store.Strategy.Paginate = new Class({
         if ($defined(meta.primaryKey)) {
             this.store.options.recordOptions.primaryKey = meta.primaryKey;
         }
-            
+
     },
     /**
      * Method: expirePage
-     * Is called when a pages cache timer expires. Will expire the page by 
-     * erasing the page and timer. This will force a reload of the data the 
+     * Is called when a pages cache timer expires. Will expire the page by
+     * erasing the page and timer. This will force a reload of the data the
      * next time the page is accessed.
-     * 
+     *
      * Parameters:
      * page - the page number to expire.
      */
@@ -20775,10 +21320,10 @@ Jx.Store.Strategy.Paginate = new Class({
     /**
      * APIMethod: setPage
      * Allows a caller (i.e. a paging toolbar) to move to a specific page.
-     * 
+     *
      * Parameters:
      * page - the page to move to. Can be any absolute page number, any number
-     *        prefaced with '-' or '+' (i.e. '-1', '+3'), 'first', 'last', 
+     *        prefaced with '-' or '+' (i.e. '-1', '+3'), 'first', 'last',
      *        'next', or 'previous'
      */
     setPage: function (page) {
@@ -20829,11 +21374,11 @@ Jx.Store.Strategy.Paginate = new Class({
     },
     /**
      * APIMethod: setPageSize
-     * sets the current size of the pages. Calling this will expire every page 
+     * sets the current size of the pages. Calling this will expire every page
      * and force the current one to reload with the new size.
      */
     setPageSize: function (size) {
-        //set the page size 
+        //set the page size
         this.itemsPerPage = size;
         //invalidate all pages cached and reload the current one only
         this.cacheTimer.each(function(val){
@@ -20889,11 +21434,11 @@ provides: [Jx.Store.Strategy.Progressive]
  * This file is licensed under an MIT style license
  */
 Jx.Store.Strategy.Progressive = new Class({
-    
+
     Extends: Jx.Store.Strategy.Paginate,
-    
+
     name: 'progressive',
-    
+
     options: {
         /**
          * Option: maxRecords
@@ -20902,9 +21447,9 @@ Jx.Store.Strategy.Progressive = new Class({
         maxRecords: 1000,
         /**
          * Option: dropRecords
-         * Whether the strategy should drop records when the maxRecords limit 
+         * Whether the strategy should drop records when the maxRecords limit
          * is reached. if this is false then maxRecords is ignored and data is
-         * always added to the bottom of the store. 
+         * always added to the bottom of the store.
          */
         dropRecords: true
     },
@@ -20925,7 +21470,7 @@ Jx.Store.Strategy.Progressive = new Class({
      * Options are 'top' or 'bottom'. Defaults to 'bottom'.
      */
     loadAt: 'bottom',
-    
+
     /**
      * Method: init
      * initialize this strategy
@@ -20936,12 +21481,12 @@ Jx.Store.Strategy.Progressive = new Class({
             this.maxPages = Math.ceil(this.options.maxRecords/this.itemsPerPage);
         }
     },
-    
+
     /**
      * Method: loadStore
-     * Used to assist in the loading of data into the store. This is 
+     * Used to assist in the loading of data into the store. This is
      * called as a response to the protocol finishing.
-     * 
+     *
      *  Parameters:
      *  resp - the response object
      */
@@ -20956,13 +21501,13 @@ Jx.Store.Strategy.Progressive = new Class({
             this.store.fireEvent('storeDataLoadFailed', this.store);
         }
     },
-    
+
     /**
      * Method: loadData
      * This method does the actual work of loading data to the store. It is
      * called when either the protocol finishes or setPage() has the data and
      * it's not expired.
-     * 
+     *
      * Parameters:
      * data - the data to load into the store.
      */
@@ -20973,12 +21518,12 @@ Jx.Store.Strategy.Progressive = new Class({
         this.loadedPages++;
         this.store.fireEvent('storeDataLoaded',this.store);
     },
-    
+
     /**
      * APIMethod: nextPage
-     * Allows a caller (i.e. a paging toolbar) to load more data to the end of 
+     * Allows a caller (i.e. a paging toolbar) to load more data to the end of
      * the store
-     * 
+     *
      * Parameters:
      * params - a hash of parameters to pass to the request if needed.
      */
@@ -21010,7 +21555,7 @@ Jx.Store.Strategy.Progressive = new Class({
         if (!this.options.dropRecords) {
             return;
         }
-        
+
         if (!$defined(params)) {
             params = {};
         }
@@ -21044,28 +21589,28 @@ provides: [Jx.Store.Strategy.Save]
  */
 // $Id: strategy.save.js 995 2010-10-25 14:47:15Z pagameba $
 /**
- * Class: Jx.Store.Strategy.Save 
- * 
+ * Class: Jx.Store.Strategy.Save
+ *
  * Extends: <Jx.Store.Strategy>
- * 
+ *
  * A Store strategy class for saving data via protocols
  *
- * License: 
+ * License:
  * Copyright (c) 2009, Jon Bomgardner.
- * 
+ *
  * This file is licensed under an MIT style license
  */
 Jx.Store.Strategy.Save = new Class({
-    
+
     Extends: Jx.Store.Strategy,
-    
+
     name: 'save',
-    
+
     options: {
         /**
          * Option: autoSave
          * Whether the strategy should be watching the store to save changes
-         * automatically. Set to True to watch events, set it to a number of 
+         * automatically. Set to True to watch events, set it to a number of
          * milliseconds to have the strategy save every so many seconds
          */
         autoSave: false
@@ -21086,7 +21631,7 @@ Jx.Store.Strategy.Save = new Class({
      * when to fire off the storeChangesCompleted event on the store
      */
     totalChanges: 0,
-    
+
     /**
      * Method: init
      * initialize this strategy
@@ -21097,7 +21642,7 @@ Jx.Store.Strategy.Save = new Class({
         this.bound.completed = this.onComplete.bind(this);
         this.parent();
     },
-    
+
     /**
      * APIMethod: activate
      * activates the strategy if it isn't already active.
@@ -21111,9 +21656,9 @@ Jx.Store.Strategy.Save = new Class({
             this.store.addEvent('storeColumnChanged', this.bound.update);
             this.store.addEvent('storeRecordDeleted', this.bound.save);
         }
-        
+
     },
-    
+
     /**
      * APIMethod: deactivate
      * deactivates the strategy if it is already active.
@@ -21127,9 +21672,9 @@ Jx.Store.Strategy.Save = new Class({
             this.store.removeEvent('storeColumnChanged', this.bound.update);
             this.store.removeEvent('storeRecordDeleted', this.bound.save);
         }
-        
+
     },
-    
+
     /**
      * APIMethod: updateRecord
      * called by event handlers when store data is updated
@@ -21149,9 +21694,9 @@ Jx.Store.Strategy.Save = new Class({
     },
     /**
      * APIMethod: saveRecord
-     * Called by event handlers when a store record is added, or deleted. 
+     * Called by event handlers when a store record is added, or deleted.
      * If deleted, the record will be removed from the deleted array.
-     * 
+     *
      * Parameters:
      * record - The Jx.Record instance that was changed
      * store - The instance of the store
@@ -21182,8 +21727,8 @@ Jx.Store.Strategy.Save = new Class({
     },
     /**
      * APIMethod: save
-     * Called manually when the developer wants to save all data changes 
-     * in one shot. It will empty the deleted array and reset all other status 
+     * Called manually when the developer wants to save all data changes
+     * in one shot. It will empty the deleted array and reset all other status
      * flags
      */
     save: function () {
@@ -21192,19 +21737,19 @@ Jx.Store.Strategy.Save = new Class({
             var records = [];
             records[Jx.Record.UPDATE] = [];
             records[Jx.Record.INSERT] = [];
-            
+
             this.store.data.each(function (record) {
                 if ($defined(record) && $defined(record.state)) {
                     records[record.state].push(record);
                 }
             }, this);
             records[Jx.Record.DELETE] = this.store.deleted;
-            
+
             if (!this.updating) {
               if (this.totalChanges === 0) {
                   store.protocol.addEvent('dataLoaded', this.bound.completed);
               }
-              this.totalChanges += records[Jx.Record.UPDATE].length + 
+              this.totalChanges += records[Jx.Record.UPDATE].length +
                                    records[Jx.Record.INSERT].length +
                                    records[Jx.Record.DELETE].length;
               if (records[Jx.Record.UPDATE].length) {
@@ -21217,26 +21762,26 @@ Jx.Store.Strategy.Save = new Class({
                 this.store.protocol['delete'](records[Jx.Record.DELETE]);
               }
             }
-            
+
             // records.flatten().each(function (record) {
             //     this.saveRecord(this.store, record);
             // }, this);
         }
-        
+
     },
     /**
      * Method: onComplete
-     * Handles processing of the response(s) from the protocol. Each 
-     * update/insert/delete will have an individual response. If any responses 
+     * Handles processing of the response(s) from the protocol. Each
+     * update/insert/delete will have an individual response. If any responses
      * come back failed we will hold that response and send it to the caller
      * via the fired event. This method is responsible for updating the status
      * of each record as it returns and on inserts, it updates the primary key
      * of the record. If it was a delete it will remove it permanently from
      * the store's deleted array (provided it returns successful - based on
-     * the success attribute of the meta object). When all changes have been 
-     * accounted for the method fires a finished event and passes all of the 
+     * the success attribute of the meta object). When all changes have been
+     * accounted for the method fires a finished event and passes all of the
      * failed responses to the caller so they can be handled appropriately.
-     * 
+     *
      * Parameters:
      * response - the response returned from the protocol
      */
@@ -21250,7 +21795,7 @@ Jx.Store.Strategy.Save = new Class({
             records.each(function(record, index) {
               if (response.requestType === 'delete') {
                   this.store.deleted.erase(record);
-              } else { 
+              } else {
                   if (response.requestType === 'insert' || response.requestType == 'update') {
                       if (responseData && $defined(responseData[index])) {
                           this.updating = true;
@@ -21265,7 +21810,7 @@ Jx.Store.Strategy.Save = new Class({
                       }
                   }
                   record.state = null;
-              } 
+              }
               this.totalChanges--;
           }, this);
           this.successfulChanges.push(response);
@@ -21298,23 +21843,23 @@ provides: [Jx.Store.Strategy.Sort]
 // $Id: strategy.sort.js 960 2010-06-06 22:23:16Z jonlb@comcast.net $
 /**
  * Class: Jx.Store.Strategy.Sort
- * 
+ *
  * Extends: <Jx.Store.Strategy>
- * 
+ *
  * Strategy used for sorting stores. It can either be called manually or it
  * can listen for specific events from the store.
  *
- * License: 
+ * License:
  * Copyright (c) 2009, Jon Bomgardner.
- * 
+ *
  * This file is licensed under an MIT style license
  */
 Jx.Store.Strategy.Sort = new Class({
-    
+
     Extends: Jx.Store.Strategy,
-    
+
     name: 'sort',
-    
+
     options: {
         /**
          * Option: sortOnStoreEvents
@@ -21336,12 +21881,12 @@ Jx.Store.Strategy.Sort = new Class({
         separator : '.',
         /**
          * Option: sortCols
-         * An array of columns to sort by arranged in the order you want 
+         * An array of columns to sort by arranged in the order you want
          * them sorted.
          */
         sortCols : []
     },
-    
+
     /**
      * Property: sorters
      * an object listing the different sorters available
@@ -21352,7 +21897,7 @@ Jx.Store.Strategy.Sort = new Class({
         heap : "Heapsort",
         'native' : "Nativesort"
     },
-    
+
     /**
      * Method: init
      * initialize this strategy
@@ -21361,7 +21906,7 @@ Jx.Store.Strategy.Sort = new Class({
         this.parent();
         this.bound.sort = this.sort.bind(this);
     },
-    
+
     /**
      * APIMethod: activate
      * activates the strategy if it isn't already active.
@@ -21373,7 +21918,7 @@ Jx.Store.Strategy.Sort = new Class({
             },this);
         }
     },
-    
+
     /**
      * APIMethod: deactivate
      * deactivates the strategy if it is already active.
@@ -21385,17 +21930,17 @@ Jx.Store.Strategy.Sort = new Class({
             },this);
         }
     },
-    
+
     /**
-     * APIMethod: sort 
+     * APIMethod: sort
      * Runs the sorting and grouping
-     * 
-     * Parameters: 
-     * cols - Optional. An array of columns to sort/group by 
+     *
+     * Parameters:
+     * cols - Optional. An array of columns to sort/group by
      * sort - the sort type (quick,heap,merge,native),defaults to
      *     options.defaultSort
      * dir - the direction to sort. Set to "desc" for descending,
-     * anything else implies ascending (even null). 
+     * anything else implies ascending (even null).
      */
     sort : function (cols, sort, dir) {
         if (this.store.count()) {
@@ -21412,50 +21957,50 @@ Jx.Store.Strategy.Sort = new Class({
             } else {
                 return null;
             }
-            
+
             this.sortType = sort;
             // first sort on the first array item
             this.store.data = this.doSort(c[0], sort, this.store.data, true);
-        
+
             if (c.length > 1) {
                 this.store.data = this.subSort(this.store.data, 0, 1);
             }
-        
+
             if ($defined(dir) && dir === 'desc') {
                 this.store.data.reverse();
             }
-        
+
             this.store.fireEvent('storeSortFinished', this);
         }
     },
-    
+
     /**
-     * Method: subSort 
+     * Method: subSort
      * Does the actual group sorting.
-     * 
-     * Parameters: 
-     * data - what to sort 
-     * groupByCol - the column that determines the groups 
+     *
+     * Parameters:
+     * data - what to sort
+     * groupByCol - the column that determines the groups
      * sortCol - the column to sort by
-     * 
+     *
      * returns: the result of the grouping/sorting
      */
     subSort : function (data, groupByCol, sortByCol) {
-        
+
         if (sortByCol >= this.options.sortCols.length) {
             return data;
         }
         /**
          *  loop through the data array and create another array with just the
-         *  items for each group. Sort that sub-array and then concat it 
+         *  items for each group. Sort that sub-array and then concat it
          *  to the result.
          */
         var result = [];
         var sub = [];
-        
+
         var groupCol = this.options.sortCols[groupByCol];
         var sortCol = this.options.sortCols[sortByCol];
-    
+
         var group = data[0].get(groupCol);
         this.sorter.setColumn(sortCol);
         for (var i = 0; i < data.length; i++) {
@@ -21463,13 +22008,13 @@ Jx.Store.Strategy.Sort = new Class({
                 sub.push(data[i]);
             } else {
                 // sort
-    
+
                 if (sub.length > 1) {
                     result = result.concat(this.subSort(this.doSort(sortCol, this.sortType, sub, true), groupByCol + 1, sortByCol + 1));
                 } else {
                     result = result.concat(sub);
                 }
-            
+
                 // change group
                 group = (data[i]).get(groupCol);
                 // clear sub
@@ -21478,49 +22023,49 @@ Jx.Store.Strategy.Sort = new Class({
                 sub.push(data[i]);
             }
         }
-        
+
         if (sub.length > 1) {
             this.sorter.setData(sub);
             result = result.concat(this.subSort(this.doSort(sortCol, this.sortType, sub, true), groupByCol + 1, sortByCol + 1));
         } else {
             result = result.concat(sub);
         }
-        
+
         //this.data = result;
-        
+
         return result;
     },
-    
+
     /**
-     * Method: doSort 
+     * Method: doSort
      * Called to change the sorting of the data
-     * 
-     * Parameters: 
-     * col - the column to sort by 
-     * sort - the kind of sort to use (see list above) 
+     *
+     * Parameters:
+     * col - the column to sort by
+     * sort - the kind of sort to use (see list above)
      * data - the data to sort (leave blank or pass null to sort data
-     * existing in the store) 
+     * existing in the store)
      * ret - flag that tells the function whether to pass
-     * back the sorted data or store it in the store 
+     * back the sorted data or store it in the store
      * options - any options needed to pass to the sorter upon creation
-     * 
+     *
      * returns: nothing or the data depending on the value of ret parameter.
      */
     doSort : function (col, sort, data, ret, options) {
         options = {} || options;
-        
+
         sort = (sort) ? this.sorters[sort] : this.sorters[this.options.defaultSort];
         data = data ? data : this.data;
         ret = ret ? true : false;
-        
+
         if (!$defined(this.comparator)) {
             this.comparator = new Jx.Compare({
                 separator : this.options.separator
             });
         }
-        
+
         this.col = col = this.resolveCol(col);
-        
+
         var fn = this.comparator[col.type].bind(this.comparator);
         if (!$defined(this.sorter)) {
             this.sorter = new Jx.Sort[sort](data, fn, col.name, options);
@@ -21530,7 +22075,7 @@ Jx.Store.Strategy.Sort = new Class({
             this.sorter.setData(data);
         }
         var d = this.sorter.sort();
-        
+
         if (ret) {
             return d;
         } else {
@@ -21539,9 +22084,9 @@ Jx.Store.Strategy.Sort = new Class({
     },
     /**
      * Method: resolveCol
-     * resolves the given column identifier and resolves it to the 
+     * resolves the given column identifier and resolves it to the
      * actual column object in the store.
-     * 
+     *
      * Parameters:
      * col - the name or index of the required column.
      */
@@ -21556,7 +22101,7 @@ Jx.Store.Strategy.Sort = new Class({
                 }
             }, this);
         }
-        return col;   
+        return col;
     }
 });/*
 ---
@@ -21577,36 +22122,36 @@ provides: [Jx.Store.Parser]
 // $Id: parser.js 960 2010-06-06 22:23:16Z jonlb@comcast.net $
 /**
  * Class: Jx.Store.Parser
- * 
+ *
  * Extends: <Jx.Object>
- * 
+ *
  * Base class for all parsers
  *
- * License: 
+ * License:
  * Copyright (c) 2009, Jon Bomgardner.
- * 
+ *
  * This file is licensed under an MIT style license
  */
 
 Jx.Store.Parser = new Class({
-    
+
     Extends: Jx.Object,
     Family: 'Jx.Store.Parser',
-    
+
     /**
      * APIMethod: parse
      * Reads data passed to it by a protocol and parses it into a specific
      * format needed by the store/record.
-     * 
+     *
      * Parameters:
      * data - string of data to parse
      */
     parse: $empty,
     /**
      * APIMethod: encode
-     * Takes an Jx.Record object and encodes it into a format that can be transmitted 
+     * Takes an Jx.Record object and encodes it into a format that can be transmitted
      * by a protocol.
-     * 
+     *
      * Parameters:
      * object - an object to encode
      */
@@ -21893,6 +22438,8 @@ Jx.Button = new Class({
                 }).bindWithEvent(this),
                 mouseup: (function(e) {
                     this.domA.removeClass(options.pressedClass);
+                    if (!this.options.active) //MG Fusion #549
+                        this.blur();
                     mouseDown = false;
                 }).bindWithEvent(this),
                 mouseleave: (function(e) {
@@ -22038,6 +22585,7 @@ Jx.Button = new Class({
                   this.domA.addClass(options.activeClass);
               } else {
                   this.domA.removeClass(options.activeClass);
+                  this.blur(); //MG Fusion 549
               }
           }
           this.fireEvent(active ? 'down':'up', this);
@@ -22485,8 +23033,8 @@ images:
  *
  * MooTools.lang keys:
  * - colorpalette.alphaLabel
- * 
- * 
+ *
+ *
  * License:
  * Copyright (c) 2008, DM Solutions Group Inc.
  *
@@ -22540,7 +23088,7 @@ Jx.ColorPalette = new Class({
         top.adopt(d);
 
         this.colorInputLabel = new Element('label', {
-          'class':'jxColorLabel', 
+          'class':'jxColorLabel',
           html:'#'
         });
         top.adopt(this.colorInputLabel);
@@ -22752,32 +23300,32 @@ Jx.ColorPalette = new Class({
         if (this.options.alpha < 1) {
             styles.opacity = this.options.alpha;
             styles.filter = 'Alpha(opacity='+(this.options.alpha*100)+')';
-            
+
         } else {
             styles.opacity = 1;
             //not sure what the proper way to remove the filter would be since
             // I don't have IE to test against.
-            styles.filter = '';  
+            styles.filter = '';
         }
         this.selectedSwatch.setStyles(styles);
         this.previewSwatch.setStyles(styles);
-        
+
         this.fireEvent('change', this);
     },
-    
+
     /**
      * APIMethod: changeText
      * This method should be overridden by subclasses. It should be used
      * to change any language specific default text that is used by the
      * widget.
-     * 
+     *
      * Parameters:
-     * lang - the language being changed to or that had it's data set of 
+     * lang - the language being changed to or that had it's data set of
      *    translations changed.
      */
     changeText: function (lang) {
     	this.parent();
-    	
+
     	if ($defined(this.alphaLabel)) {
     		this.alphaLabel.set('html', this.getText({set:'Jx',key:'colorpalette',value:'alphaLabel'}));
     	}
@@ -23103,7 +23651,7 @@ Jx.Menu = new Class({
         contentContainer: 'jxMenuContainer',
         subDomObj: 'jxMenu'
     }),
-    
+
     init: function() {
         this.bound.stop = function(e){e.stop();};
         this.bound.remove = function(item) {item.setOwner(null);};
@@ -23144,11 +23692,11 @@ Jx.Menu = new Class({
             this.domObj = this.button.domObj;
             this.domObj.store('jxMenu', this);
         }
-        
+
         this.subDomObj.addEvent('mouseenter', this.bound.mouseenter);
         this.subDomObj.addEvent('mouseleave', this.bound.mouseleave);
         this.subDomObj.store('jxSubMenu', this);
-        
+
         if (this.options.parent) {
             this.addTo(this.options.parent);
         }
@@ -23168,7 +23716,7 @@ Jx.Menu = new Class({
           mouseenter: this.bound.mouseenter,
           mouseleave: this.bound.mouseleave
         });
-        
+
         this.button.destroy();
         this.button = null;
       }
@@ -23289,7 +23837,7 @@ Jx.Menu = new Class({
         }).delay(this.options.hideDelay, this);
       }
     },
-    
+
     /**
      * Method: eventInMenu
      * determine if an event happened inside this menu or a sub menu
@@ -23414,7 +23962,7 @@ Jx.Menu = new Class({
             this.button.domA.addClass(this.button.options.activeClass);
         }
 
-        /* fix bug in IE that closes the menu as it opens 
+        /* fix bug in IE that closes the menu as it opens
          * because of bubbling (I think)
          */
         document.addEvent('mousedown', this.bound.hide);
@@ -23715,7 +24263,7 @@ Jx.Menu.Item = new Class({
         }
         return false;
     },
-    
+
     /**
      * APIMethod: changeText
      *
@@ -23787,7 +24335,7 @@ Jx.ButtonSet = new Class({
      * {Array} array of buttons that are managed by this button set
      */
     buttons: [],
-    
+
     cleanup: function() {
       this.buttons.each(function(b){
         b.removeEvent('down', this.buttonChanged);
@@ -24943,10 +25491,10 @@ Jx.Toolbar = new Class({
             }
             this.list.add(item);
         }, this);
-        
+
         //Update the size of the toolbar container.
         this.update();
-        
+
         return this;
     },
     /**
@@ -25030,14 +25578,14 @@ Jx.Toolbar = new Class({
             this.visibleItem.show();
         }
     },
-    
+
     showItem: function(item) {
         this.fireEvent('show', item);
     },
     /**
      * Method: update
-     * Updates the size of the UL so that the size is always consistently the 
-     * exact size of the size of the sum of the buttons. This will keep all of 
+     * Updates the size of the UL so that the size is always consistently the
+     * exact size of the size of the sum of the buttons. This will keep all of
      * the buttons on one line.
      */
     update: function () {
@@ -25187,9 +25735,9 @@ Jx.Toolbar.Container = new Class({
             this.processElements(this.options.scrollerTemplate, this.classes);
             this.domObj.grab(this.scroller, 'top');
         }
-        
+
         //add the alignment option... not sure why this keeps getting removed??
-        this.domObj.addClass('jxToolbarAlign' + 
+        this.domObj.addClass('jxToolbarAlign' +
                 this.options.align.capitalize());
 
         /* this allows toolbars to add themselves to this bar container
@@ -25304,7 +25852,7 @@ Jx.Toolbar.Container = new Class({
     },
     /**
      * Method: findFirstVisible
-     * Finds the first visible button on the toolbar and saves a reference in 
+     * Finds the first visible button on the toolbar and saves a reference in
      * the scroller object
      */
     findFirstVisible: function() {
@@ -25504,7 +26052,7 @@ Jx.Toolbar.Container = new Class({
         var scrollerSize = this.scroller.getStyle('width').toInt();
 
         if (pos.right > 0 && pos.right <= scrollerSize && pos.left > 0 && pos.left <= scrollerSize) {
-           //we are completely on screen 
+           //we are completely on screen
             return;
         };
 
@@ -25702,7 +26250,7 @@ images:
  * close - fired when the panel is closed
  * collapse - fired when the panel is collapsed
  * expand - fired when the panel is opened
- * 
+ *
  * MooTools.lang Keys:
  * - panel.collapseTooltip
  * - panel.collapseLabel
@@ -25890,7 +26438,7 @@ Jx.Panel = new Class({
                     label: this.options.maximizeLabel,
                     onClick: function() { that.maximize(); }
                 });
-                
+
                 this.addEvents({
                     maximize: function() {
                         this.maxM.setLabel({set:'Jx',key:'panel',value:'maximizeLabel'});
@@ -26203,7 +26751,7 @@ Jx.Panel = new Class({
         this.domObj.dispose();
         this.fireEvent('close', this);
     },
-    
+
     changeText: function (lang) {
     	this.parent();	//TODO: change this class so that we can access these properties without too much voodoo...
     	if($defined(this.closeB)) {
@@ -26302,7 +26850,7 @@ images:
  *
  * Extends:
  * Jx.Dialog extends <Jx.Panel>, please go there for more details.
- * 
+ *
  * MooTools.lang Keys:
  * - dialog.resizeToolTip
  *
@@ -26321,7 +26869,7 @@ Jx.Dialog = new Class({
          * or not.  The default is to create modal dialogs.
          */
         modal: true,
-        /** 
+        /**
          * Option: maskOptions
          */
         maskOptions: {
@@ -26388,7 +26936,7 @@ Jx.Dialog = new Class({
          * (optional) {Object} || false
          * passed to the Drag instance of this dialog to limit the movement
          * {Object} must have x&y coordinates with a range, like {x:[0,500],y:[0,500]}.
-         * Set an id or a reference of a DOM Element (ie 'document', 'myContainerWithId', 
+         * Set an id or a reference of a DOM Element (ie 'document', 'myContainerWithId',
          * $('myContainer'), $('domID').getParent()) to use these dimensions
          * as boundaries. Default is false.
          */
@@ -26407,7 +26955,7 @@ Jx.Dialog = new Class({
         /**
          * Option: keys
          * (optional) {Object} refers with the syntax for MooTools Keyboard Class
-         * to functions. Set key to false to disable it manually 
+         * to functions. Set key to false to disable it manually
          */
         keys: {
           'esc' : 'close'
@@ -26676,19 +27224,19 @@ Jx.Dialog = new Class({
         }
         this.showChrome(this.domObj);
     },
-    
+
     /**
      * Method: maximize
      * Called when the maximize button of a dialog is clicked. It will maximize
      * the dialog to match the size of its parent.
      */
     maximize: function () {
-        
+
         if (!this.maximized) {
             //get size of parent
             var p = this.options.parent;
             var size;
-            
+
             if (p === document.body) {
                 size = Jx.getPageDimensions();
             } else {
@@ -26743,7 +27291,7 @@ Jx.Dialog = new Class({
             'visibility': 'hidden'
         });
         this.toolbar.update();
-        
+
         /* do the modal thing */
         if (this.options.modal && this.options.parent.mask) {
           var opts = $merge(this.options.maskOptions || {}, {
@@ -26766,7 +27314,7 @@ Jx.Dialog = new Class({
         } else {
             this.domObj.resize(this.options);
         }
-        
+
         if (this.firstShow) {
             this.contentContainer.resize({forceResize: true});
             this.layoutContent();
@@ -26834,7 +27382,7 @@ Jx.Dialog = new Class({
             this.isOpening = true;
         }
         // COMMENT: this works only for onDemand -> NOT for cacheContent = false..
-        // for this loading an URL everytime, use this.openURL(url) 
+        // for this loading an URL everytime, use this.openURL(url)
         if(!this.contentIsLoaded && this.options.loadOnDemand) {
           this.loadContent(this.content);
         }
@@ -26862,7 +27410,7 @@ Jx.Dialog = new Class({
     },
 
     cleanup: function() { },
-    
+
     /**
      * APIMethod: isOpen
      * returns true if the dialog is currently open, false otherwise
@@ -26871,7 +27419,7 @@ Jx.Dialog = new Class({
         //check to see if we're visible
         return !((this.domObj.getStyle('display') === 'none') || (this.domObj.getStyle('visibility') === 'hidden'));
     },
-    
+
     changeText: function (lang) {
     	this.parent();
     	if ($defined(this.maxM)) {
@@ -26938,7 +27486,7 @@ Jx.Dialog = new Class({
      */
     setDragLimit : function(reference) {
       if($defined(reference)) this.options.limit = reference;
-      
+
       // check drag limit if it is an container or string for an element and use dimensions
       var limitType = this.options.limit != null ? Jx.type(this.options.limit) : false;
       if(this.options.limit && limitType != 'object') {
@@ -27015,7 +27563,7 @@ css:
  * Example:
  * (code)
  * (end)
- * 
+ *
  * MooTools.lang Keys:
  * - splitter.barToolTip
  *
@@ -27739,12 +28287,12 @@ Jx.Splitter = new Class({
              }
          }
     },
-    
+
     changeText: function (lang) {
     	this.parent();
     	this.bars.each(function(bar){
     		document.id(bar).set('title', this.getText({set:'Jx',key:'splitter',value:'barToolTip'}));
-    	},this);	
+    	},this);
     }
 });/*
 ---
@@ -27771,7 +28319,7 @@ provides: [Jx.PanelSet]
  *
  * A panel set manages a set of panels within a DOM element.  The PanelSet
  * fills its container by resizing the panels in the set to fill the width and
- * then distributing the height of the container across all the panels. 
+ * then distributing the height of the container across all the panels.
  * Panels can be resized by dragging their respective title bars to make them
  * taller or shorter.  The maximize button on the panel title will cause all
  * other panels to be closed and the target panel to be expanded to fill the
@@ -27790,7 +28338,7 @@ provides: [Jx.PanelSet]
  * var p3 = new Jx.Panel({collapse: false, maximize: true, content: 'c3'});
  * var panelSet = new Jx.PanelSet('panels', [p1,p2,p3]);
  * (end)
- * 
+ *
  * MooTools.lang Keys:
  * - panelset.barTooltip
  *
@@ -27992,7 +28540,7 @@ Jx.PanelSet = new Class({
         panel.domObj.resize({top: top, height:panelSize, bottom: null});
         this.fireEvent('panelMaximize',panel);
     },
-    
+
     createText: function (lang) {
       this.parent();
       //barTooltip is handled by the splitter's createText() function
@@ -28026,7 +28574,7 @@ css:
  *
  * Jx.Dialog.Message is an extension of Jx.Dialog that allows the developer
  * to display a message to the user. It only presents an OK button.
- * 
+ *
  * MooTools.lang Keys:
  * - message.okButton
  *
@@ -28123,7 +28671,7 @@ Jx.Dialog.Message = new Class({
     onOk: function () {
         this.close();
     },
-    
+
     /**
      * APIMethod: setMessage
      * set the message of the dialog, useful for responding to language
@@ -28138,7 +28686,7 @@ Jx.Dialog.Message = new Class({
         this.question.set('html',this.getText(message));
       }
     },
-    
+
     /**
      * Method: createText
      * handle change in language
@@ -28182,11 +28730,11 @@ css:
  *
  * Jx.Dialog.Confirm is an extension of Jx.Dialog that allows the developer
  * to prompt their user with e yes/no question.
- * 
+ *
  * MooTools.lang Keys:
  * - confirm.affirmitiveLabel
  * - confirm.negativeLabel
- * 
+ *
  * License:
  * Copyright (c) 2009, Jonathan Bomgardner
  *
@@ -28282,7 +28830,7 @@ Jx.Dialog.Confirm = new Class({
         this.hide();
         this.fireEvent('close', [this, value]);
     },
-    
+
     changeText: function (lang) {
     	this.parent();
     	if ($defined(this.ok)) {
@@ -28634,7 +29182,7 @@ Jx.Fieldset = new Class({
         }
         return this;
     },
-    
+
     /**
      * APIMethod: addTo
      *
@@ -28647,7 +29195,7 @@ Jx.Fieldset = new Class({
         }
         return this.parent(what);
     }
-    
+
 });
 /*
 ---
@@ -28741,7 +29289,7 @@ Jx.Form = new Class({
 
         template: '<form class="jxForm"></form>'
     },
-    
+
     /**
      * Property: defaultAction
      * the default field to activate if the user hits the enter key in this
@@ -28766,7 +29314,7 @@ Jx.Form = new Class({
     classes: $H({
         domObj: 'jxForm'
     }),
-    
+
     init: function() {
       this.parent();
       this.fields = new Hash();
@@ -28787,8 +29335,8 @@ Jx.Form = new Class({
             'accept-charset': this.options.acceptCharset,
             events: {
                 keypress: function(e) {
-                    if (e.key == 'enter' && 
-                        e.target.tagName != "TEXTAREA" && 
+                    if (e.key == 'enter' &&
+                        e.target.tagName != "TEXTAREA" &&
                         this.defaultAction &&
                         this.defaultAction.click) {
                         document.id(this.defaultAction).focus();
@@ -28802,7 +29350,7 @@ Jx.Form = new Class({
         if (this.options.fileUpload) {
             this.domObj.set('enctype', 'multipart/form-data');
         }
-        
+
         if ($defined(this.options.formClass)) {
             this.domObj.addClass(this.options.formClass);
         }
@@ -28886,7 +29434,7 @@ Jx.Form = new Class({
             } else if (field instanceof Jx.Fieldset && !$defined(field.form)) {
                 field.form = this;
             }
-            
+
             this.domObj.grab(field);
         }
         return this;
@@ -28929,7 +29477,7 @@ Jx.Form = new Class({
     getField: function (id) {
         if (this.fields.has(id)) {
             return this.fields.get(id);
-        } 
+        }
         return null;
     },
     /**
@@ -29058,7 +29606,7 @@ provides: [Jx.Field]
  * Example:
  * (code)
  * (end)
- * 
+ *
  * MooTools.lang Keys:
  * - field.requiredText
  *
@@ -29072,7 +29620,7 @@ Jx.Field = new Class({
     Extends : Jx.Widget,
     pluginNamespace: 'Field',
     Binds: ['changeText'],
-    
+
     options : {
         /**
          * Option: id
@@ -29271,7 +29819,7 @@ Jx.Field = new Class({
                 this.field.set("disabled", "disabled");
                 this.field.addClass('jxFieldDisabled');
             }
-            
+
             //add events
             this.field.addEvents({
               'focus': this.onFocus.bind(this),
@@ -29329,7 +29877,7 @@ Jx.Field = new Class({
 
     },
     /**
-     * APIMethod: setValue 
+     * APIMethod: setValue
      * Sets the value property of the field
      *
      * Parameters:
@@ -29376,7 +29924,7 @@ Jx.Field = new Class({
         this.field.erase("disabled");
         this.field.removeClass('jxFieldDisabled');
     },
-    
+
     /**
      * APIMethod: addTo
      * Overrides default Jx.Widget AddTo() so that we can call .add() if
@@ -29395,14 +29943,14 @@ Jx.Field = new Class({
         }
         return this;
     },
-    
+
     /**
      * APIMethod: changeText
      * This method should be overridden by subclasses. It should be used
      * to change any language specific default text that is used by the widget.
-     * 
+     *
      * Parameters:
-     * lang - the language being changed to or that had it's data set of 
+     * lang - the language being changed to or that had it's data set of
      *    translations changed.
      */
     changeText: function (lang) {
@@ -29420,20 +29968,20 @@ Jx.Field = new Class({
         if ($defined(this.requiredText)) {
           this.requiredText.set('html',this.getText({set:'Jx',key:'field',value:'requiredText'}));
         }
-    }, 
-    
+    },
+
     onFocus: function() {
       this.fireEvent('focus', this);
     },
-    
+
     onBlur: function () {
       this.fireEvent('blur',this);
     },
-    
+
     onChange: function () {
       this.fireEvent('change', this);
     },
-    
+
     setBusy: function(state, withoutMask) {
       if (!withoutMask) {
         this.parent(state);
@@ -29544,8 +30092,8 @@ provides: [Jx.Dialog.Prompt]
  * Extends: <Jx.Dialog>
  *
  * Jx.Dialog.Prompt is an extension of Jx.Dialog that allows the developer
- * to display a message to the user and ask for a text response. 
- * 
+ * to display a message to the user and ask for a text response.
+ *
  * MooTools.lang Keys:
  * - prompt.okButton
  * - prompt.cancelButton
@@ -29638,7 +30186,7 @@ Jx.Dialog.Prompt = new Class({
         }
 
         this.options.content = document.id(this.field);
-        
+
         if(this.options.useKeyboard) {
           var self = this;
           this.options.keyboardMethods.ok     = function(ev) { ev.preventDefault(); self.onClick(true); }
@@ -29670,7 +30218,7 @@ Jx.Dialog.Prompt = new Class({
           this.fireEvent('close', [this, value, this.field.getValue()]);
         }
     },
-    
+
     changeText: function (lang) {
     	this.parent();
     	if ($defined(this.ok)) {
@@ -30401,7 +30949,7 @@ css:
  *
  * MooTools.lang Keys:
  * - file.browseLabel
- * 
+ *
  * License:
  * Copyright (c) 2009, Jon Bomgardner.
  *
@@ -30787,14 +31335,14 @@ Jx.Field.File = new Class({
             this.forms.erase(filename);
         }
     },
-    
+
     /**
      * APIMethod: changeText
      * This method should be overridden by subclasses. It should be used
      * to change any language specific default text that is used by the widget.
-     * 
+     *
      * Parameters:
-     * lang - the language being changed to or that had it's data set of 
+     * lang - the language being changed to or that had it's data set of
      * 		translations changed.
      */
     changeText: function (lang) {
@@ -30803,13 +31351,13 @@ Jx.Field.File = new Class({
     		this.browseButton.setLabel( this.getText({set:'Jx',key:'file',value:'browseLabel'}) );
     	}
     },
-    
+
     /**
      * APIMethod: getFileInputs
-     * Used to get an array of all of the basic file inputs. This is mainly 
+     * Used to get an array of all of the basic file inputs. This is mainly
      * here for use by Jx.Form to be able to suck in the file inputs
      * before a standard submit.
-     * 
+     *
      */
     getFileInputs: function () {
         var inputs = [];
@@ -30845,7 +31393,7 @@ images:
 /**
  * Class: Jx.Progressbar
  *
- * 
+ *
  * Example:
  * The following just uses the defaults.
  * (code)
@@ -30855,19 +31403,19 @@ images:
  *      alert('completed!');
  *      this.destroy();
  * });
- * 
+ *
  * progressbar.addTo('container');
- * 
+ *
  * var total = 90;
  * for (i=0; i < total; i++) {
  *      progressbar.update(total, i);
  * }
  * (end)
- * 
+ *
  * Events:
  * onUpdate - Fired when the bar is updated
  * onComplete - fires when the progress bar completes it's fill
- * 
+ *
  * MooTools.lang keys:
  * - progressbar.messageText
  * - progressbar.progressText
@@ -30878,7 +31426,7 @@ images:
 Jx.Progressbar = new Class({
     Family: 'Jx.Progressbar',
     Extends: Jx.Widget,
-    
+
     options: {
         onUpdate: $empty,
         onComplete: $empty,
@@ -30889,7 +31437,7 @@ Jx.Progressbar = new Class({
         parent: null,
         /**
          * Option: progressText
-         * Text to show while processing, uses 
+         * Text to show while processing, uses
          * {progress} von {total}
          */
         progressText : null,
@@ -30905,7 +31453,7 @@ Jx.Progressbar = new Class({
      */
     classes: new Hash({
         domObj: 'jxProgressBar-container',
-        message: 'jxProgressBar-message', 
+        message: 'jxProgressBar-message',
         container: 'jxProgressBar',
         outline: 'jxProgressBar-outline',
         fill: 'jxProgressBar-fill',
@@ -30921,23 +31469,23 @@ Jx.Progressbar = new Class({
      * the element that contains the text that's shown on the bar (if any).
      */
     text: null,
-    
+
     /**
      * APIMethod: render
      * Creates a new progressbar.
      */
     render: function () {
         this.parent();
-        
+
         if ($defined(this.options.parent)) {
             this.domObj.inject(document.id(this.options.parent));
         }
-        
+
         this.domObj.addClass('jxProgressStarting');
 
         //we need to know the width of the bar
         this.width = document.id(this.domObj).getContentBoxSize().width;
-        
+
         //Message
         if (this.message) {
             if ($defined(MooTools.lang.get('Jx','progressbar').messageText)) {
@@ -30953,10 +31501,10 @@ Jx.Progressbar = new Class({
                 'width': 0
             });
         }
-        
+
         //TODO: check for {progress} and {total} in progressText
         var obj = {};
-        var progressText = this.options.progressText == null ? 
+        var progressText = this.options.progressText == null ?
                               this.getText({set:'Jx',key:'progressbar',value:'progressText'}) :
                               this.getText(this.options.progressText);
         if (progressText.contains('{progress}')) {
@@ -30965,31 +31513,31 @@ Jx.Progressbar = new Class({
         if (progressText.contains('{total}')) {
             obj.total = 0;
         }
-        
+
         //Progress text
         if (this.text) {
             this.text.set('html', progressText.substitute(obj));
         }
-        
+
     },
     /**
      * APIMethod: update
      * called to update the progress bar with new percentage.
-     * 
-     * Parameters: 
+     *
+     * Parameters:
      * total - the total # to progress up to
      * progress - the current position in the progress (must be less than or
      *              equal to the total)
      */
     update: function (total, progress) {
-    	
+
     	//check for starting class
     	if (this.domObj.hasClass('jxProgressStarting')) {
     		this.domObj.removeClass('jxProgressStarting').addClass('jxProgressWorking');
     	}
-    	
+
         var newWidth = (progress * this.width) / total;
-        
+
         //update bar width
         this.text.get('tween', {property:'width', onComplete: function() {
             var obj = {};
@@ -31005,9 +31553,9 @@ Jx.Progressbar = new Class({
             var t = progressText.substitute(obj);
             this.text.set('text', t);
         }.bind(this)}).start(newWidth);
-        
+
         this.fill.get('tween', {property: 'width', onComplete: (function () {
-            
+
             if (total === progress) {
                 this.complete = true;
                 this.domObj.removeClass('jxProgressWorking').addClass('jxProgressFinished');
@@ -31016,16 +31564,16 @@ Jx.Progressbar = new Class({
                 this.fireEvent('update');
             }
         }).bind(this)}).start(newWidth);
-        
+
     },
-    
+
     /**
      * APIMethod: changeText
      * This method should be overridden by subclasses. It should be used
      * to change any language specific default text that is used by the widget.
-     * 
+     *
      * Parameters:
-     * lang - the language being changed to or that had it's data set of 
+     * lang - the language being changed to or that had it's data set of
      * 		translations changed.
      */
     changeText: function (lang) {
@@ -31035,7 +31583,7 @@ Jx.Progressbar = new Class({
     	}
         //progress text will update on next update.
     }
-    
+
 });/*
 ---
 
@@ -31071,7 +31619,7 @@ images:
  *
  * This class extends Jx.Panel to provide a consistent interface for uploading
  * files in an application.
- * 
+ *
  * MooTools.lang Keys:
  * - upload.buttonText
  *
@@ -31173,7 +31721,7 @@ Jx.Panel.FileUpload = new Class({
 
         this.listView = new Jx.ListView({
             template: '<ul class="jxListView jxList jxUploadQueue"></ul>'
-            
+
         }).addTo(this.domObjA);
 
         if (!this.options.file.autoUpload) {
@@ -31805,7 +32353,7 @@ Jx.Columns = new Class({
      * an array holding the actual instantiated column objects
      */
     columns : [],
-    
+
     /**
      * Property: rowTemplate
      * a string holding a template for a single row of cells to be populated
@@ -31829,7 +32377,7 @@ Jx.Columns = new Class({
     init : function () {
         this.parent();
 
-        if ($defined(this.options.grid) && 
+        if ($defined(this.options.grid) &&
             this.options.grid instanceof Jx.Grid) {
           this.grid = this.options.grid;
         }
@@ -31845,15 +32393,15 @@ Jx.Columns = new Class({
             }
             var c = this.columns[this.columns.length - 1 ];
         }, this);
-        
+
         this.buildTemplates();
     },
-    
+
     /**
      * APIMethod: addColumns
      * add new columns to the columns object after construction.  Causes
      * the template to change.
-     * 
+     *
      * Parameters:
      * columns - {Array} an array of columns to add
      */
@@ -31861,7 +32409,7 @@ Jx.Columns = new Class({
       this.columns.extend(columns);
       this.buildTemplates();
     },
-    
+
     /**
      * Method: buildTemplates
      * create the row template based on the current columns
@@ -31876,7 +32424,7 @@ Jx.Columns = new Class({
           row = grid.row,
           rhc = grid.row.useHeaders() ? this.getByName(row.options.headerColumn) : null,
           colTemplate;
-      
+
       this.columns.each(function(col, idx) {
         var colTemplate = '';
         if (!col.isHidden() && col != rhc) {
@@ -31960,7 +32508,7 @@ Jx.Columns = new Class({
      * (zero-based)
      */
     getByGridIndex : function (index) {
-        var headers = this.options.useHeaders ? 
+        var headers = this.options.useHeaders ?
                         this.grid.colTableBody.getFirst().getChildren() :
                         this.grid.gridTableBody.getFirst().getChildren();
         var cell = headers[index];
@@ -32012,7 +32560,7 @@ Jx.Columns = new Class({
         }
       }
     },
-    
+
     /**
      * Method: getRow
      * create a single row in the grid for a single record and populate
@@ -32027,7 +32575,7 @@ Jx.Columns = new Class({
           grid = this.grid,
           store = grid.store,
           row = grid.row,
-          rhc = grid.row.useHeaders() ? 
+          rhc = grid.row.useHeaders() ?
                      this.getByName(row.options.headerColumn) : null,
           domInserts = [],
           i = 0;
@@ -32082,7 +32630,7 @@ Jx.Columns = new Class({
         //if it's fixed, set the width to the passed in width
         if (col.options.renderMode == 'fixed') {
           col.calculateWidth(); //col.setWidth(col.options.width);
-          
+
         } else if (col.options.renderMode == 'fit') {
           col.calculateWidth(rowHeader);
         } else if (col.options.renderMode == 'expand' && !$defined(expand)) {
@@ -32102,7 +32650,7 @@ Jx.Columns = new Class({
             }
         }
       },this);
-      
+
       // width of the container
       if (gridSize.width > totalWidth) {
         //now figure the expand column
@@ -32163,7 +32711,7 @@ Jx.Columns = new Class({
         col.rule.style.width = col.getWidth() + "px";
         col.cellRule.style.width = col.getCellWidth() + "px";
     },
-    
+
     /**
      * APIMethod: getColumnCount
      * returns the number of columns in this model (including hidden).
@@ -32188,7 +32736,7 @@ Jx.Columns = new Class({
      * name - the name of the column to get an index for
      */
     getIndexFromGrid : function (name) {
-        var headers = this.options.useHeaders ? 
+        var headers = this.options.useHeaders ?
                         this.grid.colTableBody.getFirst().getChildren() :
                         this.grid.gridTableBody.getFirst().getChildren(),
             c,
@@ -32377,7 +32925,7 @@ Jx.Row = new Class({
           h = 20; // TODO calculate?
           rowEl = this.grid.gridTableBody.rows[row]
           if (rowEl) {
-            h = rowEl.getContentBoxSize().height; 
+            h = rowEl.getContentBoxSize().height;
           }
         } else if (Jx.type(this.options.rowHeight) !== 'number') {
           h = 20; // TODO calculate?
@@ -32638,7 +33186,7 @@ Jx.Grid = new Class({
    * the required variable for plugins
    */
   pluginNamespace: 'Grid',
-  
+
   options: {
     /**
      * Option: parent
@@ -32646,9 +33194,9 @@ Jx.Grid = new Class({
      * to fill the domObj.
      */
     parent: null,
-    
+
     template: "<div class='jxWidget'><div class='jxGridContainer jxGridRowCol'></div><div class='jxGridContainer jxGridColumnsContainer'><table class='jxGridTable jxGridHeader jxGridColumns'><thead class='jxGridColumnHead'></thead></table></div><div class='jxGridContainer jxGridHeader jxGridRowContainer'><table class='jxGridTable jxGridRows'><thead class='jxGridRowBody'></thead></table></div><div class='jxGridContainer jxGridContentContainer'><table class='jxGridTable jxGridContent'><tbody class='jxGridTableBody'></tbody></table></div></div>",
-    
+
     /**
      * Options: columns
      * an object consisting of a columns array that defines the individuals
@@ -32656,7 +33204,7 @@ Jx.Grid = new Class({
      * a Jx.Grid.Columns object itself.
      */
     columns: null,
-    
+
     /**
      * Option: row
      * Either a Jx.Grid.Row object or a json object defining options for
@@ -32670,7 +33218,7 @@ Jx.Grid = new Class({
      */
     store: null
   },
-   
+
   classes: $H({
     domObj: 'jxWidget',
     columnContainer: 'jxGridColumnsContainer',
@@ -32684,48 +33232,48 @@ Jx.Grid = new Class({
     gridObj: 'jxGridContent',
     gridTableBody: 'jxGridTableBody'
   }),
-  
+
   /**
    * Property: columns
    * holds a reference to the columns object
    */
   columns: null,
-  
+
   /**
    * Property: row
    * Holds a reference to the row object
    */
   row: null,
-  
+
   parameters: ['store', 'options'],
-  
+
   /**
    * Property: store
    * holds a reference to the <Jx.Store> that is the store for this
    * grid
    */
   store: null,
-  
+
   /**
    * Property: styleSheet
    * the name of the dynamic style sheet to use for manipulating styles
    */
   styleSheet: 'JxGridStyles',
-  
+
   /**
    * Property: hooks
    * a {Hash} of event names for tracking which events have actually been attached
    * to the grid.
    */
   hooks: null,
-  
+
   /**
    * Property: uniqueId
    * an auto-generated id that is assigned as a class name to the grid's
    * container for scoping generated CSS rules to just this grid
    */
   uniqueId: null,
-  
+
   /**
    * Constructor: Jx.Grid
    */
@@ -32756,7 +33304,7 @@ Jx.Grid = new Class({
     } else {
       this.columns = new Jx.Columns({grid: this});
     }
-    
+
     this.hooks = $H({
       'gridScroll': false,
       'gridColumnEnter': false,
@@ -32771,7 +33319,7 @@ Jx.Grid = new Class({
       'gridCellLeave': false,
       'gridMouseLeave': false
     });
-    
+
     this.storeEvents = {
       'storeDataLoaded': this.storeLoaded,
       // 'storeSortFinished': this.drawStore,
@@ -32781,11 +33329,11 @@ Jx.Grid = new Class({
       'storeMultipleRecordsRemoved': this.removeRows,
       'storeChangesCompleted': this.storeChangesCompleted
     };
-    
-    
+
+
     this.parent();
   },
-  
+
   wantEvent: function(eventName) {
     var hook = this.hooks.get(eventName);
     if (hook === false) {
@@ -32847,7 +33395,7 @@ Jx.Grid = new Class({
       }
     }
   },
-  
+
   /**
    * Method: scroll
    * handle the grid scrolling by updating the position of the headers
@@ -32856,7 +33404,7 @@ Jx.Grid = new Class({
       this.columnContainer.scrollLeft = this.contentContainer.scrollLeft;
       this.rowContainer.scrollTop = this.contentContainer.scrollTop;
   },
-  
+
   /**
    * APIMethod: render
    * Create the grid for the current model
@@ -32868,12 +33416,12 @@ Jx.Grid = new Class({
     }
     this.parent();
     var store = this.store;
-    
+
     this.domObj.addClass(this.uniqueId);
     new Jx.Layout(this.domObj, {
       onSizeChange: this.resize
     });
-    
+
     if (store instanceof Jx.Store) {
       store.addEvents(this.storeEvents);
       if (store.loaded) {
@@ -32885,7 +33433,7 @@ Jx.Grid = new Class({
     } else {
       this.wantEvent('gridScroll');
     }
-    
+
     if (!this.row.useHeaders()) {
       this.rowContainer.dispose();
     } else {
@@ -32893,7 +33441,7 @@ Jx.Grid = new Class({
     }
 
     this.contentContainer.setStyle('overflow', 'auto');
-    
+
     // todo: very hacky!  can plugins 'wantEvent' between init and render?
     this.hooks.each(function(value, key) {
       if (value) {
@@ -32901,13 +33449,13 @@ Jx.Grid = new Class({
         this.wantEvent(key);
       }
     }, this);
-    
+
     if (document.id(this.options.parent)) {
       this.addTo(this.options.parent);
       this.resize();
     }
   },
-  
+
   /**
    * APIMethod: resize
    * resize the grid to fit inside its container.  This involves knowing
@@ -32920,20 +33468,20 @@ Jx.Grid = new Class({
         parentSize = p.getSize(),
         colHeaderHeight = 0,
         rowHeaderWidth = 0;
-    
+
     if (this.columns.useHeaders()) {
       colHeaderHeight = this.columns.getHeaderHeight();
     }
-    
+
     if (this.row.useHeaders()) {
       rowHeaderWidth = this.row.getRowHeaderWidth();
     }
-    
+
     this.rowColContainer.setBorderBoxSize({
         width : rowHeaderWidth,
         height : colHeaderHeight
     });
-    
+
     this.columnContainer.setStyles({
       top: 0,
       left: rowHeaderWidth
@@ -32958,7 +33506,7 @@ Jx.Grid = new Class({
       height: parentSize.y - colHeaderHeight
     });
   },
-  
+
   /**
    * APIMethod: setStore
    * set the store for the grid to display.  If a store is attached to the
@@ -32983,27 +33531,27 @@ Jx.Grid = new Class({
       this.destroyGrid();
     }
   },
-  
+
   /**
    * APIMethod: getStore
    * gets the store set for this grid.
    */
-  getStore: function() { 
+  getStore: function() {
     return this.store;
   },
-  
+
   storeLoaded: function(store) {
     this.redraw();
   },
-  
+
   /**
    */
   storeChangesCompleted: function(results) {
     if (results && results.successful) {
-      
+
     }
   },
-  
+
   redraw: function() {
     var store = this.store,
         template = '',
@@ -33011,11 +33559,11 @@ Jx.Grid = new Class({
         columns = [],
         useRowHeaders = this.row.useHeaders();
     this.fireEvent('beginCreateGrid');
-    
+
     this.gridObj.getElement('tbody').empty();
-    
+
     this.hoverColumn = this.hoverRow = this.hoverCell = null;
-    
+
     // TODO: consider moving whole thing into Jx.Columns ??
     // create a suitable column representation for everything
     // in the store that doesn't already have a representation
@@ -33030,18 +33578,18 @@ Jx.Grid = new Class({
             if (Jx.Grid.Renderer[col.renderer.capitalize()]) {
               renderer = new Jx.Grid.Renderer[col.renderer.capitalize()]();
             }
-          } else if ($type(col.renderer) == 'object' && 
-                     $defined(col.renderer.type) && 
+          } else if ($type(col.renderer) == 'object' &&
+                     $defined(col.renderer.type) &&
                      Jx.Grid.Renderer[col.renderer.type.capitalize()]) {
             renderer = new Jx.Grid.Renderer[col.renderer.type.capitalize()](col.renderer);
           }
         }
         if (format) {
-          if ($type(format) == 'string' && 
+          if ($type(format) == 'string' &&
               $defined(Jx.Formatter[format.capitalize()])) {
             renderer.options.formatter = new Jx.Formatter[format.capitalize()]();
-          } else if ($type(format) == 'object' && 
-                     $defined(format.type) && 
+          } else if ($type(format) == 'object' &&
+                     $defined(format.type) &&
                      $defined(Jx.Formatter[format.type.capitalize()])) {
              renderer.options.formatter = new Jx.Formatter[format.type.capitalize()](format);
           }
@@ -33056,7 +33604,7 @@ Jx.Grid = new Class({
           isResizable: $defined(col.resizable) ? col.resizable : false,
           isHidden: $defined(col.hidden) ? col.hidden : false,
           name: col.name || '',
-          renderer: renderer 
+          renderer: renderer
         });
         columns.push(column);
       }
@@ -33079,10 +33627,10 @@ Jx.Grid = new Class({
     this.drawStore();
     this.fireEvent('doneCreateGrid');
   },
-  
+
   /**
    * APIMethod: addRow
-   * Adds a row to the table. Can add to either the beginning or the end 
+   * Adds a row to the table. Can add to either the beginning or the end
    * based on passed flag
    */
   addRow: function (store, record, position) {
@@ -33095,7 +33643,7 @@ Jx.Grid = new Class({
       this.drawRow(record, this.store.index, position);
     }
   },
-  
+
   /**
    * APIMethod: updateRow
    * update a single row in the grid
@@ -33107,7 +33655,7 @@ Jx.Grid = new Class({
     var record = this.store.getRecord(index);
     this.drawRow(record, index, 'replace');
   },
-  
+
   /**
    * APIMethod: removeRow
    * remove a single row from the grid
@@ -33120,7 +33668,7 @@ Jx.Grid = new Class({
     this.gridObj.deleteRow(index);
     this.rowObj.deleteRow(index);
   },
-  
+
   /**
    * APIMethod: removeRows
    * removes multiple rows from the grid
@@ -33134,7 +33682,7 @@ Jx.Grid = new Class({
         this.removeRow(store, first);
     }
   },
-  
+
   /**
    * APIMethod: setColumnWidth
    * set the width of a column in pixels
@@ -33154,14 +33702,14 @@ Jx.Grid = new Class({
       }
     }
   },
-  
+
   /**
    * Method: drawStore
    * clears the grid and redraws the store.  Does not draw the column headers,
    * that is handled by the render() method
    */
   drawStore: function() {
-    var useHeaders = this.row.useHeaders(), 
+    var useHeaders = this.row.useHeaders(),
         blank;
     this.domObj.resize();
     this.gridTableBody.empty();
@@ -33177,13 +33725,13 @@ Jx.Grid = new Class({
         styles: { height: 1000 }
       });
       blank.adopt(new Element('th', {
-        'class':'jxGridRowHead', 
+        'class':'jxGridRowHead',
         html: '&nbsp'
       }));
       this.rowTableBody.adopt(blank);
     }
   },
-  
+
   /**
    * Method: drawRow
    * this method does the heavy lifting of drawing a single record into the
@@ -33206,7 +33754,7 @@ Jx.Grid = new Class({
         rowHeaderColumn,
         rowHeaderColumnIndex,
         renderer,
-        formatter, 
+        formatter,
         getData,
         tr,
         th,
@@ -33264,7 +33812,7 @@ Jx.Grid = new Class({
     }
     this.fireEvent('gridDrawRow', [index, record]);
   },
-  
+
   /**
    * Method: clickColumnHeader
    * handle clicks on the column header
@@ -33276,7 +33824,7 @@ Jx.Grid = new Class({
       this.fireEvent('gridColumnClick', target);
     }
   },
-  
+
   /**
    * Method: moveColumnHeader
    * handle the mouse moving over the column header
@@ -33310,7 +33858,7 @@ Jx.Grid = new Class({
       this.fireEvent('gridRowClick', target);
     }
   },
-  
+
   /**
    * Method: moveRowHeader
    * handle the mouse moving over the row header
@@ -33332,7 +33880,7 @@ Jx.Grid = new Class({
       }
     }
   },
-  
+
   /**
    * Method: clickCell
    * handle clicks on cells in the grid
@@ -33344,7 +33892,7 @@ Jx.Grid = new Class({
       this.fireEvent('gridCellClick', target);
     }
   },
-  
+
   /**
    * Method: dblclickCell
    * handle doubleclicks on cells in the grid
@@ -33356,7 +33904,7 @@ Jx.Grid = new Class({
       this.fireEvent('gridCellDblClick', target);
     }
   },
-  
+
   /**
    * Method: moveCell
    * handle the mouse moving over cells in the grid
@@ -33384,7 +33932,7 @@ Jx.Grid = new Class({
       }
     }
   },
-  
+
   getCellData: function(cell) {
     var data = null,
         index,
@@ -33413,7 +33961,7 @@ Jx.Grid = new Class({
     }
     return data;
   },
-  
+
   /**
    * Method: leaveGrid
    * handle the mouse leaving the grid
@@ -33422,7 +33970,7 @@ Jx.Grid = new Class({
     this.hoverCell = null;
     this.fireEvent('gridMouseLeave');
   },
-  
+
   /**
    * Method: changeText
    * rerender the grid when the language changes
@@ -33431,7 +33979,7 @@ Jx.Grid = new Class({
       this.parent();
       this.render();
   },
-  
+
   /**
    * Method: addEvent
    * override default addEvent to also trigger wanting the event
@@ -33461,17 +34009,17 @@ provides: [Jx.Grid.Renderer]
 /**
  * Class: Jx.Grid.Renderer
  * This is the base class and namespace for all grid renderers.
- * 
+ *
  * Extends: <Jx.Widget>
  * We extended Jx.Widget to take advantage of templating support.
  */
 Jx.Grid.Renderer = new Class({
-  
+
   Family: 'Jx.Grid.Renderer',
   Extends: Jx.Widget,
-  
+
   parameters: ['options'],
-  
+
   options: {
     deferRender: true,
     /**
@@ -33488,7 +34036,7 @@ Jx.Grid.Renderer = new Class({
      * the store.
      */
   attached: null,
-  
+
   /**
    * Property: domInsert
    * boolean, indicates if the renderer needs to insert a DOM element
@@ -33507,17 +34055,17 @@ Jx.Grid.Renderer = new Class({
     this.parent();
     this.attached = false;
   },
-  
+
   render: function () {
     this.parent();
   },
-  
+
   setColumn: function (column) {
     if (column instanceof Jx.Column) {
       this.column = column;
     }
   }
-  
+
 });/*
 ---
 
@@ -33662,17 +34210,17 @@ provides: [Jx.Grid.Renderer.Checkbox]
  * Class: Jx.Grid.Renderer.CheckBox
  * Renders a checkbox into the cell. Allows options for connecting the cell
  * to a model field and propogating changes back to the store.
- * 
+ *
  * Extends: <Jx.Grid.Renderer>
- * 
+ *
  */
 Jx.Grid.Renderer.Checkbox = new Class({
-  
+
   Family: 'Jx.Grid.Renderer.Checkbox',
   Extends: Jx.Grid.Renderer,
-  
+
   Binds: ['onBlur','onChange'],
-  
+
   options: {
     useStore: false,
     field: null,
@@ -33682,65 +34230,65 @@ Jx.Grid.Renderer.Checkbox = new Class({
       name: ''
     }
   },
-  
+
   domInsert: true,
-  
+
   init: function () {
     this.parent();
   },
-  
+
   render: function () {
     this.parent();
     var checkbox = new Jx.Field.Checkbox(this.options.checkboxOptions);
     this.domObj.adopt(document.id(checkbox));
-    
+
     if (this.options.useStore) {
       //set initial state
       checkbox.setValue(this.store.get(this.options.field));
     }
-    
+
     //hook up change and blur events to change store field
     checkbox.addEvents({
       'blur': this.onBlur,
       'change': this.onChange
     });
   },
-  
+
   setColumn: function (column) {
     this.column = column;
-    
+
     if (this.options.useStore) {
       this.store = this.column.grid.getStore();
       this.attached = true;
     }
   },
-  
+
   onBlur: function (field) {
     if (this.options.updateStore) {
       this.updateStore(field);
     }
     this.column.grid.fireEvent('checkBlur',[this.column, field]);
   },
-  
+
   onChange: function (field) {
     if (this.options.updateStore) {
       this.updateStore(field);
     }
     this.fireEvent('change',[this.column, field]);
   },
-  
+
   updateStore: function (field) {
     var newValue = field.getValue();
-    
+
     var data = document.id(field).getParent().retrieve('jxCellData');
     var row = data.row;
-    
+
     if (this.store.get(this.options.field, row) !== newValue) {
       this.store.set(this.options.field, newValue, row);
     }
   }
-  
-  
+
+
 });/*
 ---
 
@@ -33782,7 +34330,7 @@ Jx.Grid.Renderer.Button = new Class({
          */
         buttonOptions: null
     },
-    
+
     domInsert: true,
 
     classes:  $H({
@@ -33838,7 +34386,7 @@ Jx.Plugin.Grid.Selector = new Class({
 
     Family: 'Jx.Plugin.Grid.Selector',
     Extends : Jx.Plugin,
-    
+
     name: 'Selector',
 
     Binds: ['select','checkSelection','checkAll','afterGridRender','onCellClick', 'sort', 'updateCheckColumn', 'updateSelectedRows'],
@@ -33881,9 +34429,9 @@ Jx.Plugin.Grid.Selector = new Class({
          */
         sortableColumn: false
     },
-    
+
     domInsert: true,
-    
+
     /**
      * Property: selected
      * Holds arrays of selected rows and/or columns and their headers
@@ -33921,9 +34469,9 @@ Jx.Plugin.Grid.Selector = new Class({
         var options = this.options,
             template;
         this.grid = grid;
-        
+
         this.grid.addEvent('gridSortFinished', this.updateSelectedRows);
-        
+
         //setup check column if needed
         if (options.useCheckColumn) {
           grid.addEvent('gridDrawRow', this.updateCheckColumn);
@@ -33969,7 +34517,7 @@ Jx.Plugin.Grid.Selector = new Class({
           grid.addEvent('gridCellClick', this.onCellClick);
         }
     },
-    
+
     /**
      * Method: render
      * required for the renderer interface
@@ -33986,7 +34534,7 @@ Jx.Plugin.Grid.Selector = new Class({
         }
       }).inject(this.domObj);
     },
-    
+
     /**
      * Method: toElement
      * required for the Renderer interface
@@ -33994,7 +34542,7 @@ Jx.Plugin.Grid.Selector = new Class({
     toElement: function() {
       return this.domObj;
     },
-    
+
     /**
      * Method: updateCheckColumn
      * check to see if a row needs to have its checkbox updated after its been drawn
@@ -34007,7 +34555,7 @@ Jx.Plugin.Grid.Selector = new Class({
       var state = this.selected.get('rows').contains(index),
           r = this.grid.gridTableBody.rows,
           tr = document.id((index >= 0 && index < r.length) ? r[index] : null);
-      
+
       if (tr) {
         tr.store('jxRowData', {row: index});
         if (state) {
@@ -34054,7 +34602,7 @@ Jx.Plugin.Grid.Selector = new Class({
             }
         }
         this.grid.removeEvent('gridSortFinished', this.updateSelectedRows);
-        
+
         this.grid = null;
     },
     /**
@@ -34109,7 +34657,7 @@ Jx.Plugin.Grid.Selector = new Class({
           selected.set('columnHeads',[]);
         }
     },
-    
+
     /**
      * Method: onCellClick
      * dispatch clicking on a table cell
@@ -34119,7 +34667,7 @@ Jx.Plugin.Grid.Selector = new Class({
             this.select(cell);
         }
     },
-    
+
     /**
      * Method: select
      * dispatches the grid click to the various selection methods
@@ -34132,7 +34680,7 @@ Jx.Plugin.Grid.Selector = new Class({
         if (options.cell && $defined(data.row) && $defined(data.index)) {
           this.selectCell(cell);
         }
-        
+
         if (options.row && $defined(data.row)) {
             this.selectRow(data.row);
         }
@@ -34145,12 +34693,12 @@ Jx.Plugin.Grid.Selector = new Class({
             }
         }
     },
-    
+
     /**
      * Method: selectCell
      * select a cell
      *
-     * Parameters: 
+     * Parameters:
      * cell - {DOMElement} the cell element to select
      */
     selectCell: function(cell) {
@@ -34166,13 +34714,13 @@ Jx.Plugin.Grid.Selector = new Class({
           this.fireEvent('selectCell', cell);
         }
     },
-    
+
     updateSelectedRows: function() {
       if (!this.options.row) { return; }
       var options = this.options,
           r = this.grid.gridTableBody.rows,
           rows = [];
-          
+
       for (var i=0; i<r.length; i++) {
         if (r[i].hasClass('jxGridRowSelected')) {
           rows.push(i);
@@ -34180,7 +34728,7 @@ Jx.Plugin.Grid.Selector = new Class({
       }
       this.selected.set('rows', rows);
     },
-    
+
     /**
      * Method: selectRow
      * Select a row and apply the jxGridRowSelected style to it.
@@ -34235,7 +34783,7 @@ Jx.Plugin.Grid.Selector = new Class({
                       this.fireEvent('unselectRow', row);
                     }
                   }
-                  
+
                 }, this);
                 if (unselected.length && !silently) {
                   this.fireEvent('unselectRows', [unselected]);
@@ -34278,7 +34826,7 @@ Jx.Plugin.Grid.Selector = new Class({
             return;
         }
         var rows = this.grid.rowTableBody.rows,
-            cell = document.id((row >= 0 && row < rows.length) ? 
+            cell = document.id((row >= 0 && row < rows.length) ?
                               rows[row].cells[0] : null),
             cells;
 
@@ -34415,7 +34963,7 @@ Jx.Plugin.Grid.Selector = new Class({
             col,
             rows,
             selection = [],
-            checked = this.options.checkAsHeader ? 
+            checked = this.options.checkAsHeader ?
                           grid.rowColContainer.getElement('input').get('checked') :
                           this.checkColumn.domObj.getElement('input').get('checked'),
             event = checked ? 'selectRows' : 'unselectRows';
@@ -34438,10 +34986,10 @@ Jx.Plugin.Grid.Selector = new Class({
                 }
             }
         }, this);
-        
+
         this.fireEvent(event, [selection]);
     },
-    
+
     sort: function(dir) {
       var grid = this.grid,
           store = grid.store,
@@ -34452,7 +35000,7 @@ Jx.Plugin.Grid.Selector = new Class({
           rowTableBody = grid.rowTableBody,
           rowParent = rowTableBody.getParent(),
           selected = this.getSelectedRows();
-      
+
       // sorting only works for rows and when more than zero are selected
       // in fact it is probably only useful if multiple selections are also enabled
       // but that is not a hard rule for this method
@@ -34460,7 +35008,7 @@ Jx.Plugin.Grid.Selector = new Class({
         console.log('not sorting by selection, nothing to sort');
         return;
       }
-      
+
       store.each(function(record, index) {
         record.dom = {
           cell: gridTableBody.childNodes[index],
@@ -34498,7 +35046,7 @@ Jx.Plugin.Grid.Selector = new Class({
         rowParent.adopt(rowTableBody);
       }
     },
-    
+
     getSelectedRows: function() {
       var rows = [],
           selected = this.selected.get('rows'),
@@ -34547,9 +35095,9 @@ provides: [Jx.Plugin.Grid.Prelighter]
 Jx.Plugin.Grid.Prelighter = new Class({
 
     Extends : Jx.Plugin,
-    
+
     name: 'Prelighter',
-    
+
     options : {
         /**
          * Option: cell
@@ -34610,7 +35158,7 @@ Jx.Plugin.Grid.Prelighter = new Class({
         // this.grid.wantEvent('gridColumnEnter');
         // this.grid.wantEvent('gridColumnLeave');
         // this.grid.wantEvent('gridMouseLeave');
-        
+
         this.grid.addEvent('gridCellEnter', this.bound.lighton);
         this.grid.addEvent('gridCellLeave', this.bound.lightoff);
         this.grid.addEvent('gridRowEnter', this.bound.lighton);
@@ -34637,7 +35185,7 @@ Jx.Plugin.Grid.Prelighter = new Class({
     /**
      * APIMethod: activate
      * Allows programatic access to turning prelighting on.
-     * 
+     *
      * Parameters:
      * opt - the option to turn on. One of 'cell', 'row', 'rowHeader', 'column', or 'columnHeader'
      */
@@ -34647,7 +35195,7 @@ Jx.Plugin.Grid.Prelighter = new Class({
     /**
      * APIMethod: deactivate
      * Allows programatic access to turning prelighting off.
-     * 
+     *
      * Parameters:
      * opt - the option to turn off. One of 'cell', 'row', 'rowHeader', 'column', or 'columnHeader'
      */
@@ -34799,7 +35347,7 @@ Jx.Plugin.Grid.Prelighter = new Class({
             }
         }
     },
-    
+
     mouseleave: function() {
         //turn off all prelights when the mouse leaves the grid
         if ($defined(this.prelitCell)) {
@@ -34943,7 +35491,7 @@ Jx.Plugin.Grid.Sorter = new Class({
         data = el.retrieve('jxCellData'),
         dir = 'asc',
         opt = this.options;
-    
+
     if ($defined(data.column) && data.column.isSortable()){
       if (el.hasClass(opt.ascendingClass)) {
         el.removeClass(opt.ascendingClass).addClass(opt.descendingClass);
@@ -34957,9 +35505,9 @@ Jx.Plugin.Grid.Sorter = new Class({
         current.removeClass(opt.ascendingClass).removeClass(opt.descendingClass);
       }
       this.current = el;
-      
+
       this.grid.fireEvent('gridSortStarting');
-      
+
       if ($defined(data.column.options.sort) && Jx.type(data.column.options.sort) == 'function') {
         data.column.options.sort(dir);
       } else {
@@ -34974,16 +35522,16 @@ Jx.Plugin.Grid.Sorter = new Class({
               row: useHeaders ? rowTableBody.childNodes[index] : null
             };
           });
-    
+
           sorter.sort(data.column.name, null, dir);
-    
+
           store.each(function(record, index) {
             record.dom.cell.inject(gridTableBody);
             if (useHeaders) {
               record.dom.row.inject(rowTableBody);
             }
           });
-    
+
           if (gridParent) {
             gridParent.adopt(gridTableBody);
           }
@@ -35028,9 +35576,9 @@ provides: [Jx.Plugin.Grid.Resize]
 Jx.Plugin.Grid.Resize = new Class({
 
     Extends : Jx.Plugin,
-    
+
     name: 'Resize',
-    
+
     Binds: ['createHandles','removeHandles'],
     options: {
         /**
@@ -35231,9 +35779,9 @@ images:
 Jx.Plugin.Grid.Editor = new Class({
 
     Extends : Jx.Plugin,
-    
+
     name: 'Editor',
-    
+
     Binds: ['activate','deactivate','changeText','onCellClick'],
 
     options : {
@@ -35400,7 +35948,7 @@ Jx.Plugin.Grid.Editor = new Class({
      *
      * Containing Objects:
      *   field        : Reference to the Jx.Field instance that will be created
-     *   cell         : Reference to the cell inside the table 
+     *   cell         : Reference to the cell inside the table
      *   span         : Reference to the Dom Element inside the selected cell of the grid
      *   oldValue     : Old value of the cell from the grid's store
      *   newValue     : Object with <data> and <error> for better validation possibilites
@@ -35547,7 +36095,7 @@ Jx.Plugin.Grid.Editor = new Class({
     /**
      * APIMethod: detach
      * detaches from the grid
-     * 
+     *
      * @return void
      */
     detach: function() {
@@ -35617,7 +36165,7 @@ Jx.Plugin.Grid.Editor = new Class({
           return;
         }
       }
-      
+
       var data  = this.grid.getCellData(cell); //.retrieve('jxCellData');
 
       if (!data || !$defined(data.row) || !$defined(data.column)) {
@@ -35663,7 +36211,7 @@ Jx.Plugin.Grid.Editor = new Class({
           k,
           n;
 
-      // check if this column has special validation settings - 
+      // check if this column has special validation settings -
       // otherwise use default from this.options.validate
       if(!$defined(data.column.options.validate) || typeof(data.column.options.validate) != 'boolean') {
         data.column.options.validate = options.validate;
@@ -35755,7 +36303,7 @@ Jx.Plugin.Grid.Editor = new Class({
           // clear the timeout when the user focusses again
           'focus' : function() {
             clearTimeout(activeCell.timeoutId);
-          }, 
+          },
           // clear the timeout when the user puts the mouse over the input
           'mouseover' : function() {
             clearTimeout(activeCell.timeoutId);
@@ -35769,7 +36317,7 @@ Jx.Plugin.Grid.Editor = new Class({
       }
 
       activeCell.field.field.focus();
-    }, 
+    },
     /**
      * APIMethod: deactivate
      * hides the currently active field and stores the new entered data if the
@@ -35884,7 +36432,7 @@ Jx.Plugin.Grid.Editor = new Class({
     },
     /**
      * Method: setStyles
-     * 
+     *
      * sets some styles for the Jx.Field elements...
      *
      * Parameters:
@@ -35892,7 +36440,7 @@ Jx.Plugin.Grid.Editor = new Class({
      * @return void
      */
     setStyles : function(cell) {
-      var styles, 
+      var styles,
           size,
           options = this.options,
           activeCell = this.activeCell;
@@ -36049,7 +36597,7 @@ Jx.Plugin.Grid.Editor = new Class({
       // check if buttons are needed, innerWrapper exists and no buttons already exist
       if(this.options.popup.useButtons && this.popup.innerWrapper != null && this.popup.button.submit == null) {
         button.submit = new Jx.Button({
-          label : this.options.popup.button.submit.label.length == 0 ? 
+          label : this.options.popup.button.submit.label.length == 0 ?
                     this.getText({set:'Jx',key:'plugin.editor',value:'submitButton'}) :
                     this.getText(this.options.popup.button.submit.label),
           image : this.options.popup.button.submit.image,
@@ -36058,7 +36606,7 @@ Jx.Plugin.Grid.Editor = new Class({
           }
         }).addTo(this.popup.innerWrapper);
         button.cancel = new Jx.Button({
-          label : this.options.popup.button.cancel.label.length == 0 ? 
+          label : this.options.popup.button.cancel.label.length == 0 ?
                     this.getText({set:'Jx',key:'plugin.editor',value:'cancelButton'}) :
                     this.getText(this.options.popup.button.cancel.label),
           image : this.options.popup.button.cancel.image,
@@ -36180,8 +36728,8 @@ Jx.Plugin.Grid.Editor = new Class({
      */
     getPrevCellInRow: function(save) {
       save = $defined(save) ? save : true;
-      var prevCell, 
-          prevRow, 
+      var prevCell,
+          prevRow,
           i = 0,
           data,
           row,
@@ -36415,7 +36963,7 @@ Jx.Plugin.Grid.Editor = new Class({
         }
     	}
     }
-}); 
+});
 /*
 ---
 
@@ -37712,12 +38260,12 @@ provides: [Jx.Adaptor.Tree.Parent]
 /**
  * Class: Jx.Adapter.Tree.Parent
  * This class adapts a table adhering to the classic Parent-style "tree table".
- * 
+ *
  * Basically, the store needs to have a column that will indicate the
- * parent of each row. The root(s) of the tree should be indicated by a "-1" 
- * in this column. The name of the "parent" column is configurable in the 
+ * parent of each row. The root(s) of the tree should be indicated by a "-1"
+ * in this column. The name of the "parent" column is configurable in the
  * options.
- * 
+ *
  * if the monitorFolders option is set to true then this adapter will send
  * an Ajax request to the server, through the store's strategy (should be
  * Jx.Store.Strategy.Progressive) to request additional nodes. Also, a column
@@ -37728,46 +38276,46 @@ provides: [Jx.Adaptor.Tree.Parent]
  * License: mit-style
  */
 Jx.Adaptor.Tree.Parent = new Class({
-    
+
 
     Extends: Jx.Adaptor.Tree,
     Family: 'Jx.Adaptor.Tree.Parent',
-    
+
     options: {
         parentColumn: 'parent',
         folderColumn: 'folder'
     },
-        
+
     /**
      * APIMethod: hasChildren
-     * 
-     * Parameters: 
-     * index - {integer} the array index of the row in the store (not the 
+     *
+     * Parameters:
+     * index - {integer} the array index of the row in the store (not the
      *          primary key).
      */
     hasChildren: function (index) {
     	return this.store.get(this.options.folderColumn, index);
     },
-    
+
     /**
      * APIMethod: hasParent
-     * 
-     * Parameters: 
-     * index - {integer} the array index of the row in the store (not the 
+     *
+     * Parameters:
+     * index - {integer} the array index of the row in the store (not the
      *          primary key).
      */
     hasParent: function (index) {
         if (this.store.get(this.options.parentColumn, index).toInt() !== -1) {
             return true;
-        } 
+        }
         return false;
     },
-    
+
     /**
      * APIMethod: getParentIndex
-     * 
-     * Parameters: 
-     * index - {integer} the array index of the row in the store (not the 
+     *
+     * Parameters:
+     * index - {integer} the array index of the row in the store (not the
      *          primary key).
      */
     getParentIndex: function (index) {
@@ -37981,7 +38529,7 @@ Jx.Menu.Context = new Class({
         if (this.list.count() ==0) {
             return;
         }
-        
+
         this.target = e.target;
 
         this.contentContainer.setStyle('visibility','hidden');
@@ -38572,7 +39120,7 @@ Jx.Tab = new Class({
          */
         pressedClass: 'jxTabPressed',
         /* Option: activeClass
-         * the CSS class to use when the tab is active, 'jxTabActive' by 
+         * the CSS class to use when the tab is active, 'jxTabActive' by
          * default.
          */
         activeClass: 'jxTabActive',
@@ -38639,7 +39187,7 @@ Jx.Tab = new Class({
         this.domObj.store('jxTab', this);
         this.processElements(this.options.contentTemplate, this.classes);
         new Jx.Layout(this.content, this.options);
-        
+
         // load content onDemand if needed
         if(!this.options.loadOnDemand || this.options.active) {
           this.loadContent(this.content);
@@ -39190,9 +39738,9 @@ Jx.Tree = new Class({
      * domObj element, anything else is optional.
      */
     classes: new Hash({domObj: 'jxTreeRoot'}),
-    
+
     frozen: false,
-    
+
     /**
      * APIMethod: render
      * Render the Jx.Tree.
@@ -39252,7 +39800,7 @@ Jx.Tree = new Class({
      * unfreeze the tree and recursively update styles
      */
     thaw: function() { this.frozen = false; this.update(true); },
-    
+
     setDirty: function(state) {
       this.dirty = state;
       if (state && this.owner && this.owner.setDirty) {
@@ -39360,7 +39908,7 @@ Jx.Tree = new Class({
         this.bound.onAdd = null;
         this.parent();
     },
-    
+
     /**
      * Method: update
      * Update the CSS of the Tree's DOM element in case it has changed
@@ -39376,7 +39924,7 @@ Jx.Tree = new Class({
         // event handling (or some such thing) PS
         if (!this.list) return;
         if (this.frozen) return;
-        
+
         if ($defined(isLast)) {
             if (isLast) {
                 this.domObj.removeClass('jxTreeNest');
@@ -39462,7 +40010,7 @@ Jx.Tree = new Class({
         });
         return result;
     },
-    
+
     /**
      * APIMethod: setSelection
      * sets the <Jx.Selection> object to be used by this tree.  Used primarily
@@ -39651,13 +40199,13 @@ Jx.TreeItem = new Class ({
             this.enable(this.options.enabled, true);
         }
     },
-    
+
     setDirty: function(state) {
       if (state && this.owner && this.owner.setDirty) {
         this.owner.setDirty(state);
       }
     },
-    
+
     /**
      * Method: finalize
      * Clean up the TreeItem and remove all DOM references
@@ -39784,7 +40332,7 @@ Jx.TreeItem = new Class ({
     setSelection: function(selection){
         this.selection = selection;
     },
-    
+
     /**
      * APIMethod: setBusy
      * set the busy state of the widget
@@ -39856,7 +40404,7 @@ Jx.TreeFolder = new Class({
      * {<Jx.Tree>} a Jx.Tree instance for managing the folder contents
      */
     tree : null,
-    
+
     options: {
         /* Option: open
          * is the folder open?  false by default.
@@ -40003,7 +40551,7 @@ Jx.TreeFolder = new Class({
     update: function(shouldDescend,isLast) {
         /* avoid update if not attached to tree yet */
         if (!this.domObj.parentNode) return;
-        
+
         if (this.tree.dirty || (this.owner && this.owner.dirty)) {
           if (!$defined(isLast)) {
               isLast = this.domObj.hasClass('jxTreeBranchLastOpen') ||
@@ -40103,14 +40651,14 @@ Jx.TreeFolder = new Class({
         this.tree.setSelection(selection);
         return this;
     },
-    
+
     setDirty: function(state) {
       this.parent(state);
       if (this.tree) {
         this.tree.setDirty(true);
       }
     }
-    
+
 });/*
 ---
 
@@ -40208,8 +40756,8 @@ Jx.Slider = new Class({
      */
     render: function () {
         this.parent();
-        
-        /** 
+
+        /**
          * Not sure why this is here...
          */
         /**
@@ -40293,7 +40841,7 @@ images:
  * Extends: <Jx.ListItem>
  *
  * Events:
- * 
+ *
  * MooTools.lang Keys:
  * - notice.closeTip
  *
@@ -40349,7 +40897,7 @@ Jx.Notice = new Class({
      */
     render: function () {
         this.parent();
-        
+
         if (this.options.klass) {
             this.domObj.addClass(this.options.klass);
         }
@@ -40483,10 +41031,10 @@ css:
  * This file is licensed under an MIT style license
  */
 Jx.Notifier = new Class({
-    
+
     Family: 'Jx.Notifier',
     Extends: Jx.ListView,
-    
+
     options: {
         /**
          * Option: parent
@@ -40497,7 +41045,7 @@ Jx.Notifier = new Class({
         /**
          * Option: template
          * This is the template for the notification container itself, not the
-         * actual notice. The actual notice is below in the class property 
+         * actual notice. The actual notice is below in the class property
          * noticeTemplate.
          */
         template: '<div class="jxNoticeListContainer"><ul class="jxNoticeList"></ul></div>',
@@ -40512,19 +41060,19 @@ Jx.Notifier = new Class({
         domObj: 'jxNoticeListContainer',
         listObj: 'jxNoticeList'
     }),
-    
+
     /**
      * Method: render
      * render the widget
      */
     render: function () {
         this.parent();
-        
+
         if (!$defined(this.options.parent)) {
             this.options.parent = document.body;
         }
         document.id(this.options.parent).adopt(this.domObj);
-        
+
         this.addEvent('postRender', function() {
             if (Jx.type(this.options.items) == 'array') {
                 this.options.items.each(function(item){
@@ -40533,7 +41081,7 @@ Jx.Notifier = new Class({
             }
         }.bind(this));
     },
-    
+
     /**
      * APIMethod: add
      * Add a new notice to the notifier
@@ -40548,7 +41096,7 @@ Jx.Notifier = new Class({
         notice.addEvent('close', this.remove.bind(this));
         notice.show(this.listObj);
     },
-    
+
     /**
      * APIMethod: remove
      * Add a new notice to the notifier
@@ -40594,10 +41142,10 @@ provides: [Jx.Notifier.Float]
  * This file is licensed under an MIT style license
  */
 Jx.Notifier.Float = new Class({
-    
+
     Family: 'Jx.Notifier.Float',
     Extends: Jx.Notifier,
-    
+
     options: {
         /**
          * Option: chrome
@@ -40636,11 +41184,11 @@ Jx.Notifier.Float = new Class({
         if ($defined(this.options.width)) {
             this.domObj.setStyle('width',this.options.width);
         }
-        this.position(this.domObj, 
+        this.position(this.domObj,
                       this.options.parent,
                       this.options.position);
     },
-    
+
     /**
      * APIMethod: add
      * Add a new notice to the notifier
@@ -40679,21 +41227,21 @@ css:
  * Class: Jx.Scrollbar
  * Creates a custom scrollbar either vertically or horizontally (determined by
  * options). These scrollbars are designed to be styled entirely through CSS.
- * 
+ *
  * Copyright 2009 by Jonathan Bomgardner
  * License: MIT-style
- * 
+ *
  * Based in part on 'Mootools CSS Styled Scrollbar' on
  * http://solutoire.com/2008/03/10/mootools-css-styled-scrollbar/
  */
 Jx.Scrollbar = new Class({
-    
+
     Family: 'Jx.Scrollbar',
-    
+
     Extends: Jx.Widget,
-    
+
     Binds: ['scrollIt'],
-    
+
     options: {
         /**
          * Option: direction
@@ -40703,7 +41251,7 @@ Jx.Scrollbar = new Class({
         direction: 'vertical',
         /**
          * Option: useMouseWheel
-         * Whether to allow the mouse wheel to move the content. Defaults 
+         * Whether to allow the mouse wheel to move the content. Defaults
          * to true.
          */
         useMouseWheel: true,
@@ -40714,7 +41262,7 @@ Jx.Scrollbar = new Class({
         useScrollers: true,
         /**
          * Option: scrollerInterval
-         * The amount to scroll the content when using the scrollers. 
+         * The amount to scroll the content when using the scrollers.
          * useScrollers option must be true. Default is 50 (px).
          */
         scrollerInterval: 50,
@@ -40724,18 +41272,18 @@ Jx.Scrollbar = new Class({
          */
         template: '<div class="jxScrollbarContainer"><div class="jxScrollLeft"></div><div class="jxSlider"></div><div class="jxScrollRight"></div></div>'
     },
-    
+
     classes: new Hash({
         domObj: 'jxScrollbarContainer',
         scrollLeft: 'jxScrollLeft',
         scrollRight: 'jxScrollRight',
         sliderHolder: 'jxSlider'
     }),
-    
+
     el: null,
-    //element is the element we want to scroll. 
+    //element is the element we want to scroll.
     parameters: ['element', 'options'],
-    
+
     /**
      * Method: render
      * render the widget
@@ -40745,27 +41293,27 @@ Jx.Scrollbar = new Class({
         this.el = document.id(this.options.element);
         if (this.el) {
             this.el.addClass('jxHas'+this.options.direction.capitalize()+'Scrollbar');
-            
+
             //wrap content to make scroll work correctly
             var children = this.el.getChildren();
             this.wrapper = new Element('div',{
                 'class': 'jxScrollbarChildWrapper'
             });
-            
+
             /**
              * the wrapper needs the same settings as the original container
              * specifically, the width and height
-             */ 
+             */
             this.wrapper.setStyles({
                 width: this.el.getStyle('width'),
                 height: this.el.getStyle('height')
             });
-            
+
             children.inject(this.wrapper);
             this.wrapper.inject(this.el);
-            
+
             this.domObj.inject(this.el);
-            
+
             var scrollSize = this.wrapper.getScrollSize();
             var size = this.wrapper.getContentBoxSize();
             this.steps = this.options.direction==='horizontal'?scrollSize.x-size.width:scrollSize.y-size.height;
@@ -40776,9 +41324,9 @@ Jx.Scrollbar = new Class({
                 step: 1,
                 mode: this.options.direction,
                 onChange: this.scrollIt
-                
+
             });
-            
+
             if (!this.options.useScrollers) {
                 this.scrollLeft.dispose();
                 this.scrollRight.dispose();
@@ -40788,7 +41336,7 @@ Jx.Scrollbar = new Class({
                 } else {
                     this.sliderHolder.setStyle('height', '100%');
                 }
-                
+
             } else {
                 this.scrollLeft.addEvents({
                     mousedown: function () {
@@ -40827,7 +41375,7 @@ Jx.Scrollbar = new Class({
                 }
             }
             document.id(this.slider).inject(this.sliderHolder);
-            
+
             //allows mouse wheel to function
             if (this.options.useMouseWheel) {
                 $$(this.el, this.domObj).addEvent('mousewheel', function(e){
@@ -40836,16 +41384,16 @@ Jx.Scrollbar = new Class({
                     this.slider.slider.set(step);
                 }.bind(this));
             }
-            
+
             //stop slider if we leave the window
-            document.id(document.body).addEvent('mouseleave', function(){ 
+            document.id(document.body).addEvent('mouseleave', function(){
                 this.slider.slider.drag.stop();
             }.bind(this));
 
             this.slider.start();
         }
     },
-    
+
     /**
      * Method: scrollIt
      * scroll the content in response to the slider being moved.
@@ -40930,7 +41478,7 @@ provides: [Jx.Formatter.Number]
  * Example:
  * (code)
  * (end)
- * 
+ *
  * MooTools.lang Keys:
  * - 'formatter.number'.decimalSeparator
  * - 'formatter.number'.thousandsSeparator
@@ -41027,14 +41575,14 @@ Jx.Formatter.Number = new Class({
 
         return ret;
     },
-    
+
     /**
      * APIMethod: changeText
      * This method should be overridden by subclasses. It should be used
      * to change any language specific default text that is used by the widget.
-     * 
+     *
      * Parameters:
-     * lang - the language being changed to or that had it's data set of 
+     * lang - the language being changed to or that had it's data set of
      * 		translations changed.
      */
     changeText: function (lang) {
@@ -41069,7 +41617,7 @@ provides: [Jx.Formatter.Currency]
  * Example:
  * (code)
  * (end)
- * 
+ *
  * MooTools.lang Keys:
  * - 'formatter.currency'.sign
  *
@@ -41109,14 +41657,14 @@ Jx.Formatter.Currency = new Class({
         }
         return ret;
     },
-    
+
     /**
      * APIMethod: changeText
      * This method should be overridden by subclasses. It should be used
      * to change any language specific default text that is used by the widget.
-     * 
+     *
      * Parameters:
-     * lang - the language being changed to or that had it's data set of 
+     * lang - the language being changed to or that had it's data set of
      * 		translations changed.
      */
     changeText: function (lang) {
@@ -41208,7 +41756,7 @@ provides: [Jx.Formatter.URI]
  * This class formats URIs using the mootools-more's
  * URI extensions. See the -more docs for details of
  * supported formats for parsing and formatting.
- * 
+ *
  * @url http://mootools.net/docs/more/Native/URI
  *
  * Example:
@@ -41295,7 +41843,7 @@ provides: [Jx.Formatter.Boolean]
  * MooTools.lang Keys:
  * - 'formatter.boolean'.true
  * - 'formatter.boolean'.false
- * 
+ *
  * License:
  * Copyright (c) 2009, Jon Bomgardner.
  *
@@ -41336,14 +41884,14 @@ Jx.Formatter.Boolean = new Class({
         }
         return b ? this.getText({set:'Jx',key:'formatter.boolean',value:'true'}) : this.getText({set:'Jx',key:'formatter.boolean',value:'false'});
     },
-    
+
     /**
      * APIMethod: changeText
      * This method should be overridden by subclasses. It should be used
      * to change any language specific default text that is used by the widget.
-     * 
+     *
      * Parameters:
-     * lang - the language being changed to or that had it's data set of 
+     * lang - the language being changed to or that had it's data set of
      * 		translations changed.
      */
     changeText: function (lang) {
@@ -41995,7 +42543,7 @@ Jx.Field.Select = new Class({
             return ret;
         }
     },
-    
+
     /**
      * APIMethod: empty
      * Empties all options from this select
@@ -42150,7 +42698,7 @@ Jx.Field.Button = new Class({
          * (end)
          */
         buttonClass: Jx.Button,
-        
+
         /**
          * Option: buttonOptions
          */
@@ -42161,9 +42709,9 @@ Jx.Field.Button = new Class({
          */
         template: '<span class="jxInputContainer"><label class="jxInputLabel"></label><div class="jxInputButton"></div><span class="jxInputTag"></span></span>'
     },
-    
+
     button: null,
-    
+
     /**
      * Property: type
      * The type of this field
@@ -42183,16 +42731,16 @@ Jx.Field.Button = new Class({
         this.button.setEnabled(!this.options.disabled);
         return h;
     },
-    
+
     click: function() {
         this.button.clicked();
     },
-    
+
     enable: function() {
       this.parent();
       this.button.setEnabled(true);
     },
-    
+
     disable: function() {
       this.parent();
       this.button.setEnabled(false);
@@ -42229,7 +42777,7 @@ provides: [Jx.Field.Combo]
  * (end)
  *
  * Events:
- * change - 
+ * change -
  *
  * License:
  * Copyright (c) 2008, DM Solutions Group Inc.
@@ -42247,9 +42795,9 @@ Jx.Field.Combo = new Class({
          */
          template: '<span class="jxInputContainer"><label class="jxInputLabel"></label><span class="jxInputWrapper"><input type="text" class="jxInputCombo"  name="{name}"><img class="jxInputIcon" src="'+Jx.aPixel.src+'"><span class="jxInputRevealer"></span></span><span class="jxInputTag"></span></span>'
      },
-     
+
      type: 'Combo',
-     
+
     /**
      * APIMethod: render
      * create a new instance of Jx.Field.Combo
@@ -42261,7 +42809,7 @@ Jx.Field.Combo = new Class({
           icon: 'jxInputIcon'
         });
         this.parent();
-        
+
         var button = new Jx.Button({
           template: this.options.buttonTemplate,
           imageClass: 'jxInputRevealerIcon'
@@ -42333,13 +42881,13 @@ Jx.Field.Combo = new Class({
             }).bind(this)
         });
     },
-    
+
     setLabel: function(label) {
       if ($defined(this.field)) {
         this.field.value = this.getText(label);
       }
     },
-    
+
     setImage: function(url, imageClass) {
       if ($defined(this.icon)) {
         this.icon.setStyle('background-image', 'url('+url+')');
@@ -42450,17 +42998,17 @@ Jx.Field.Combo = new Class({
       this.setLabel('');
       this.setImage(Jx.aPixel.src);
     },
-    
+
     enable: function() {
       this.parent();
       this.menu.setEnabled(true);
     },
-    
+
     disable: function() {
       this.parent();
       this.menu.setEnabled(false);
     }
-    
+
 });/*
 ---
 
@@ -42548,7 +43096,7 @@ provides: [Jx.Field.Color]
       template: '<span class="jxInputContainer"><label class="jxInputLabel"></label><span class="jxInputWrapper"><input type="text" class="jxInputColor"  name="{name}"><img class="jxInputIcon" src="'+Jx.aPixel.src+'"><span class="jxInputRevealer"></span></span><span class="jxInputTag"></span></span>',
       /**
        * Option: showOnHover
-       * {Boolean} show the color palette when hovering over the input, default 
+       * {Boolean} show the color palette when hovering over the input, default
        * is false
        */
       showOnHover: false,

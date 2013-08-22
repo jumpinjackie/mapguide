@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.ViewOptions
  *
- * $Id: ViewOptions.js 2421 2011-08-12 01:56:52Z liuar $
+ * $Id: ViewOptions.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,6 +27,9 @@
  * Class: Fusion.Widget.ViewOptions
  *
  * A widget to allow selection of the display units for various widgets
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  ****************************************************************************/
 
 Fusion.Widget.ViewOptions = OpenLayers.Class(Fusion.Widget, {

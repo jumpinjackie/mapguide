@@ -2,16 +2,20 @@
 
 class MarkupCommand
 {
-	const Create	= 1;
-	const Open		= 2;
-	const Delete	= 3;
-	const Refresh	= 4;
-	const Edit		= 5;
-	const Close		= 6;
-    const Download  = 7;
-    const Upload = 8;
-    const EditStyle = 9;
-    const DownloadDataFromLayer = 10;
+    const CreateSdf     = 1;
+    const CreateShp     = 2;
+    const CreateSqlite  = 3;
+    const Open          = 4;
+    const Delete        = 5;
+    const Refresh       = 6;
+    const Edit          = 7;
+    const Close         = 8;
+    const Download      = 9;
+    const Upload        = 10;
+    const EditStyle     = 11;
+    const DownloadDataFromLayer = 12;
+    const DownloadLayerKml = 13;
+    const DownloadLayerKmz = 14;
 }
 
 ?>

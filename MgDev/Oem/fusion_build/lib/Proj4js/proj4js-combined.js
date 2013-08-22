@@ -1055,6 +1055,7 @@ Proj4js.defs['EPSG:3785'] = Proj4js.defs['EPSG:3875'];  //maintain backward comp
 Proj4js.defs['GOOGLE'] = Proj4js.defs['EPSG:3875'];
 Proj4js.defs['EPSG:900913'] = Proj4js.defs['EPSG:3875'];
 Proj4js.defs['EPSG:102113'] = Proj4js.defs['EPSG:3875'];
+Proj4js.defs['EPSG:3857'] = Proj4js.defs['EPSG:3875'];
 
 Proj4js.common = {
   PI : 3.141592653589793238, //Math.PI,

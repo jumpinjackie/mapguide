@@ -61,6 +61,14 @@ Fusion.Layers.Generic = OpenLayers.Class(Fusion.Layers, {
         this.bMapLoaded = false;
 
         this.triggerEvent(Fusion.Event.LAYER_LOADING);
+        
+        this.internalLoadMap(resourceId);
+        
+        //this.triggerEvent(Fusion.Event.LAYER_LOADED);
+        window.setTimeout(OpenLayers.Function.bind(this.asyncTrigger, this),1);
+    },
+
+    internalLoadMap: function(resourceId) {
         if (this.bIsMapWidgetLayer) {
           this.mapWidget._addWorker();
         }
@@ -190,20 +198,23 @@ Fusion.Layers.Generic = OpenLayers.Class(Fusion.Layers, {
        
         if (!this.oLayerOL) {
             if(this.layerType == 'OpenStreetMap' || this.layerType == 'OSM') {
-                this.oLayerOL = new OpenLayers.Layer.OSM(this.getMapName(), null, this.mapTag.layerOptions );
+                //Test OSM sub-type before falling back to OpenLayers.Layer.OSM
+                if (typeof(OpenLayers.Layer.OSM[this.mapTag.layerOptions.type]) != 'undefined') { 
+                    this.oLayerOL = new OpenLayers.Layer.OSM[this.mapTag.layerOptions.type](this.getMapName(), null, this.mapTag.layerOptions );
+                } else {
+                    this.oLayerOL = new OpenLayers.Layer.OSM(this.getMapName(), null, this.mapTag.layerOptions );
+                }
             }
             else {
                 this.oLayerOL = new OpenLayers.Layer[this.layerType](this.getMapName(), this.mapTag.layerOptions );
+                //fractionalZoom not permitted with tiled base layers regardless
+                this.mapWidget.fractionalZoom = false;
+                this.mapWidget.oMapOL.setOptions({fractionalZoom: false});
             }
         }
         
-        //fractionalZoom not permitted with tiled base layers
+        
         this.mapWidget.oMapOL.minPx = null;  //TODO: better fix here, this prevents a mapdraw before layer is ready
-        if (!this.bSingleTile) {
-            this.mapWidget.fractionalZoom = false;
-            this.mapWidget.oMapOL.setOptions({fractionalZoom: false});
-        }
-
         this.oLayerOL.events.register("loadstart", this, this.loadStart);
         this.oLayerOL.events.register("loadend", this, this.loadEnd);
         this.oLayerOL.events.register("loadcancel", this, this.loadEnd);
@@ -236,7 +247,8 @@ Fusion.Layers.Generic = OpenLayers.Class(Fusion.Layers, {
         if (this.layerRoot) {
           parentGroup = this.mapWidget.layerRoot;
           var oldLayer = parentGroup.findLayerByAttribute("layerName", this.layerRoot.layerName);
-          parentGroup.deleteLayer(oldLayer.uniqueId);
+          if (oldLayer)
+            parentGroup.deleteLayer(oldLayer.uniqueId);
         }
         this.layerRoot = new Fusion.Layers.Layer(rootOpts,this);
         if (parentGroup) {
@@ -248,9 +260,6 @@ Fusion.Layers.Generic = OpenLayers.Class(Fusion.Layers, {
           this.mapWidget.addMap(this);
           this.mapWidget._removeWorker();
         }
-        
-        //this.triggerEvent(Fusion.Event.LAYER_LOADED);
-        window.setTimeout(OpenLayers.Function.bind(this.asyncTrigger, this),1);
     },
     
     asyncTrigger: function() {
@@ -269,12 +278,15 @@ Fusion.Layers.Generic = OpenLayers.Class(Fusion.Layers, {
         this.triggerEvent(Fusion.Event.LAYER_LOADED);
     },
     
-//TBD: this function not yet converted for OL    
+    //TBD: this function not yet converted for OL    
     reloadMap: function() {
+        this.bMapLoaded = false;
         
-        this.loadMap(this.sResourceId);
-            this.mapWidget.triggerEvent(Fusion.Event.MAP_RELOADED);
-            this.drawMap();
+        this.internalLoadMap(this.sResourceId);
+        this.mapWidget.triggerEvent(Fusion.Event.MAP_RELOADED);
+        this.drawMap();
+        
+        this.bMapLoaded = true;
     },
     
     drawMap: function() {

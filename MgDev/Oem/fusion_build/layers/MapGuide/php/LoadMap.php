@@ -2,7 +2,7 @@
 /**
  * LoadMap
  *
- * $Id: LoadMap.php 2433 2011-10-04 13:36:29Z jng $
+ * $Id: LoadMap.php 2746 2013-07-22 02:49:32Z liuar $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -89,6 +89,8 @@ try
         if($epsgCode == 3857)
         {
             $epsgCode = 900913;
+            // We need to set the srs code to null because OpenLayers doesn't know the srs code.
+            $srs = "";
         }
 
       } catch (MgException $e) {
@@ -114,7 +116,6 @@ try
     $mapObj->metersPerUnit = $metersPerUnit;
     $mapObj->wkt = $srs;
     $mapObj->epsg = $epsgCode;
-    $mapObj->siteVersion = GetSiteVersion();
 
     $mapObj->mapTitle=addslashes($mapTitle);
 
@@ -133,22 +134,28 @@ try
     //layers
     $mapObj->layers = array();
     $layerDefinitionIds = new MgStringCollection();
-    
+    $featureSourceIds = new MgStringCollection();
     for($i=0;$i<$layers->GetCount();$i++)
     {
         $layer = $layers->GetItem($i);
         $lid = $layer->GetLayerDefinition();
         $layerDefinitionIds->Add($lid->ToString());
+        $featureSourceIds->Add($layer->GetFeatureSourceId());
     }
     
     //Get the layer contents in a single batch
     $layerDefinitionContents = $resourceService->GetResourceContents($layerDefinitionIds, null);
+    $featureSourceContents = $resourceService->GetResourceContents($featureSourceIds, null);
     $layerDocs = array();
+    $fsDocs = array();
     for($i=0;$i<$layers->GetCount();$i++)
     {
-        $content = $layerDefinitionContents->GetItem($i);
-        $doc = DOMDocument::LoadXML($content);
-        array_push($layerDocs, $doc);
+        $ldfContent = $layerDefinitionContents->GetItem($i);
+        $ldfdoc = DOMDocument::LoadXML($ldfContent);
+        array_push($layerDocs, $ldfdoc);
+        $fsContent = $featureSourceContents->GetItem($i);
+        $fsDoc = DOMDocument::LoadXML($fsContent);
+        array_push($fsDocs, $fsDoc);
     }
     
     for($i=0;$i<$layers->GetCount();$i++)
@@ -157,16 +164,17 @@ try
         //not the base map group used for tile maps.  (Where is the test for that Y.A.???)
 
         $layer=$layers->GetItem($i);
-        $content = $layerDocs[$i];
+        $layerContent = $layerDocs[$i];
+        $fsContent = $fsDocs[$i];
         $layerObj = NULL;
-        $mappings = GetLayerPropertyMappings($resourceService, $layer, $content);
+        $mappings = GetLayerPropertyMappings($resourceService, $layer, $layerContent);
         $_SESSION['property_mappings'][$layer->GetObjectId()] = $mappings;
 
         $layerObj->uniqueId = $layer->GetObjectId();
         $layerObj->layerName = addslashes($layer->GetName());
 
         //$aLayerTypes = GetLayerTypes($featureService, $layer);
-        $aLayerTypes = GetLayerTypesFromResourceContent($layer, $content);
+        $aLayerTypes = GetLayerTypesFromResourceContent($layer, $layerContent);
         $layerObj->layerTypes = $aLayerTypes;
 
         $layerObj->resourceId = $layerDefinitionIds->GetItem($i);
@@ -175,7 +183,7 @@ try
         $layerObj->selectable = $layer->GetSelectable();
         $layerObj->visible = $layer->GetVisible();
         $layerObj->actuallyVisible = $layer->isVisible();
-        $layerObj->editable = IsLayerEditable($resourceService, $layer, $content);
+        $layerObj->editable = IsLayerEditable($resourceService, $layer, $fsContent);
 
         $isBaseMapLayer = ($layer->GetLayerType() == MgLayerType::BaseMap);
         $layerObj->isBaseMapLayer = $isBaseMapLayer;
@@ -192,7 +200,7 @@ try
         $layerObj->displayInLegend = $layer->GetDisplayInLegend();
         $layerObj->expandInLegend = $layer->GetExpandInLegend();
 
-        $oScaleRanges = buildScaleRanges($layer, $content);
+        $oScaleRanges = buildScaleRanges($layer, $layerContent);
         $_SESSION['scale_ranges'][$layer->GetObjectId()] = $oScaleRanges;
         //$layerObj->scaleRanges = $oScaleRanges;
         /*get the min/max scale for the layer*/

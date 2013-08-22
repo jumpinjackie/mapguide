@@ -2,7 +2,7 @@
 /**
  * Selection
  *
- * $Id: Selection.php 2512 2012-01-10 05:33:26Z liuar $
+ * $Id: Selection.php 2523 2012-01-20 05:16:28Z liuar $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -78,7 +78,7 @@ if (isset($_SESSION['selection_array']))
         for ($i=0; $i<count($aSelectedLayers); $i++)
         {
             $layerName =  $aSelectedLayers[$i];
-            $layerNameInProperties = GetLayerNameInProperties($layerName);
+            $layerNameInProperties = GetEncodedLayerName($layerName);
             if (($bAllLayers || in_array($layerName, $aLayers)) &&
                 isset($properties->$layerNameInProperties) &&
                 $properties->$layerNameInProperties->numelements > 0)

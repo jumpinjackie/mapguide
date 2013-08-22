@@ -29,6 +29,8 @@
 * SaveMapImage widget to display a pop-up window with an image of the map
 * that can be saved to the users disk
 *
+* Inherits from:
+*  - <Fusion.Widget>
 * **********************************************************************/
 
 Fusion.Widget.SaveMapImage = OpenLayers.Class(Fusion.Widget, {

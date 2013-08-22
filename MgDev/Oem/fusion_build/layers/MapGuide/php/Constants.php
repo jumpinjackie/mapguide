@@ -2,7 +2,7 @@
 /**
  * Constants
  *
- * $Id: Constants.php 1326 2008-03-05 23:28:14Z pspencer $
+ * $Id: Constants.php 2643 2013-02-22 00:28:59Z liuar $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
