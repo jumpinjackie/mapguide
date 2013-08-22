@@ -161,7 +161,7 @@
                 session: sessionId,
                 selectioncolor: '0xFF000000',
                 behavior: 5
-            }
+            };
             
             //Adjust the scale assumptions for MapGuide layers
             //Tiled layers MUST use a DPI value of 96, untiled layers can use a 
@@ -183,9 +183,9 @@
             map.addLayer(mgLayer);
             map.addLayer(selLayer);
             
-            var boxLayer = new OpenLayers.Layer.Vector("Selection Rectangles");
-            map.addLayer(boxLayer);
-            selRectControl = new OpenLayers.Control.DrawFeature(boxLayer,
+            var selectionShapeLayer = new OpenLayers.Layer.Vector("Selection Rectangles");
+            map.addLayer(selectionShapeLayer);
+            selRectControl = new OpenLayers.Control.DrawFeature(selectionShapeLayer,
                 OpenLayers.Handler.RegularPolygon, {
                     handlerOptions: {
                         sides: 4,
@@ -193,9 +193,12 @@
                     }
                 }
             );
-            boxLayer.events.register("beforefeatureadded", this, onSelBoxAdded);
+            selPolyControl = new OpenLayers.Control.DrawFeature(selectionShapeLayer, OpenLayers.Handler.Polygon);
+            
+            selectionShapeLayer.events.register("beforefeatureadded", this, onSelShapeAdded);
             
             map.addControl(selRectControl);
+            map.addControl(selPolyControl);
             
             map.zoomToMaxExtent();
             
@@ -215,14 +218,20 @@
             startKeepAlive();
         }
         
-        function doSelect() {
-            setSelectionState(true);
+        function doSelectPointOrRect() {
+            setSelectionState(true, "point_rect");
             navControl.deactivate();
             zoomControl.deactivate();
+            selRectControl.activate();
         }
         
-        function onSelBoxAdded(e) {
-            sendSelectionQuery(e.feature.geometry.getBounds());
+        function doSelectPolygon() {
+            setSelectionState(true, "polygon");
+            selPolyControl.activate();
+        }
+        
+        function onSelShapeAdded(e) {
+            sendSelectionQuery(e.feature.geometry);
             return false;
         }
         
@@ -243,9 +252,9 @@
             }
         }
         
-        function sendSelectionQuery(bounds) {
+        function sendSelectionQuery(geom) {
             var reqQueryFeatures = 1; //Attributes
-            var wkt = wktFormat.extractGeometry(bounds.toGeometry());
+            var wkt = wktFormat.extractGeometry(geom);
             $.getJSON(mapAgentUrl, {
                 "OPERATION": "QUERYMAPFEATURES",
                 "VERSION": "2.6.0",
@@ -268,13 +277,21 @@
             });
         }
         
-        function setSelectionState(sel) {
+        function getPromptForType(type) {
+            if (type == "polygon")
+                return "Trace a polygon on the map. Double click to finish.";
+            else if (type == "point_rect")
+                return "Click or drag a selection rectangle on the map";
+            return "";
+        }
+        
+        function setSelectionState(sel, type) {
             bSelecting = sel;
             if (bSelecting) {
-                selRectControl.activate();
-                $("#selMessage").html("Selection mode active. Click or drag a selection rectangle on the map");
+                $("#selMessage").html("Selection mode active. " + getPromptForType(type));
             } else {
                 selRectControl.deactivate();
+                selPolyControl.deactivate();
                 $("#selMessage").html("");
             }
         }
@@ -335,7 +352,9 @@
         <p>This example demonstrates selection via QUERYMAPFEATURES. The map is created with CREATERUNTIMEMAP</p>
         <div id="error">
         </div>
-        <button onclick="doSelect()">Select</button><span id="selMessage"></span>
+        <button onclick="doSelectPointOrRect()">Select Point/Rectangle</button>
+        <button onclick="doSelectPolygon()">Select By Polygon</button>
+        <span id="selMessage"></span>
         <div id="wrap">
             <div id="details">
                 <strong>Layer and Groups</strong>
