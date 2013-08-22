@@ -142,6 +142,7 @@
             };
             var selOptions = {
                 isBaseLayer: false,
+                transitionEffect: "resize",
                 buffer: 1,
                 useOverlay: true,
                 useAsyncOverlay: true,
@@ -178,7 +179,7 @@
             
             map = new OpenLayers.Map('map', mapOptions );
             mgLayer = new OpenLayers.Layer.MapGuide( "MapGuide (from CREATERUNTIMEMAP)", mapAgentUrl, params, options );
-            selLayer = new OpenLayers.Layer.MapGuide( "MapGuide Selection Overlay", mapAgentUrl, selParams, options );
+            selLayer = new OpenLayers.Layer.MapGuide( "MapGuide Selection Overlay", mapAgentUrl, selParams, selOptions );
             map.addLayer(mgLayer);
             map.addLayer(selLayer);
             
