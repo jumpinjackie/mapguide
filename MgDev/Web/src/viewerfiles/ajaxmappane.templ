@@ -3679,7 +3679,7 @@ function RequestTile(col, row, tilex, tiley)
             url += ('&TS=' + timestamp);
         }
         
-        tag = '<img id="' + (imgId) + '" width=' + TILECX + ' height=' + TILECY + ' border=0 vspace=0 hspace=0 src="' + url + '" style="visibility: hidden; width: ' + TILECX + 'px; height: ' + TILECY + 'px; vertical-align: bottom;" onload="OnTileLoaded(\'' + imgId + '\')">';
+        tag = '<img class="tilecell" id="' + (imgId) + '" width=' + TILECX + ' height=' + TILECY + ' border=0 vspace=0 hspace=0 src="' + url + '" style="visibility: hidden; width: ' + TILECX + 'px; height: ' + TILECY + 'px; vertical-align: bottom;" onload="OnTileLoaded(\'' + imgId + '\')">';
         imgId ++;
         cell.innerHTML = tag;
     }
