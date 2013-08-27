@@ -271,7 +271,6 @@ noinst_HEADERS = $(include_SOURCES) \
   Stream.h \
   StringStream.h \
   WfsFeatureDefinitions.h \
-  WfsFeatures.h \
   WfsGetFeatureParams.h \
   WmsFeatureInfo.h \
   WmsFeatureProperties.h \
