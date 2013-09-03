@@ -2878,14 +2878,14 @@ void MgResourceHeaderManager::DeleteDocument(MgResourceIdentifier& resource,
 
     CheckParentPermission(resource, MgResourcePermission::ReadWrite);
 
-    // Delete the resource.
-
-    MgResourceDefinitionManager::DeleteDocument(xmlDoc, updateContext);
-
     // Update the local permission cache.
 
     UpdatePermissionCache(MgResourceService::opIdDeleteResource,
         resource.ToString(), MgResourcePermission::ReadWrite, xmlDoc, false);
+
+    // Delete the resource.
+
+    MgResourceDefinitionManager::DeleteDocument(xmlDoc, updateContext);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceHeaderManager.DeleteDocument")
 }
