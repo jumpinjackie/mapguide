@@ -3215,8 +3215,10 @@ function selectionToXml()
             xmlSelection = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<FeatureSet>\n";
             for(var layerId in selection.layers.items)
             {
-                xmlSelection += "<Layer id=\"" + layerId + "\">\n";
                 var layer = selection.layers.getItem(layerId);
+                if (!layer.featIds)
+                    continue;
+                xmlSelection += "<Layer id=\"" + layerId + "\">\n";
                 xmlSelection += "<Class id=\"" + layer.className + "\">\n";
                 for(var id in layer.featIds.items)
                     xmlSelection += "<ID>" +  id + "</ID>\n";
