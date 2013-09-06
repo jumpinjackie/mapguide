@@ -61,6 +61,16 @@ public:
                                bool          allowOverpost,
                                RS_Bounds*    bounds = NULL);
 
+    virtual void ProcessPoint(SE_ApplyContext* ctx,
+                              SE_RenderPointStyle* style,
+                              RS_Bounds* bounds = NULL);
+
+    virtual void ProcessLine(SE_ApplyContext* ctx,
+                             SE_RenderLineStyle* style);
+
+    virtual void ProcessArea(SE_ApplyContext* ctx,
+                             SE_RenderAreaStyle* style);
+
     MgBatchPropertyCollection* GetProperties()
     {
         return SAFE_ADDREF(m_featprops);
