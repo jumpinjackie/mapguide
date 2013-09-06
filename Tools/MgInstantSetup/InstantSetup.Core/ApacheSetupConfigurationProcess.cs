@@ -35,6 +35,7 @@ namespace InstantSetup.Core
 
             this.VirtualDirectoryName = "mapguide";
             this.HttpdServiceName = "ApacheMapGuide";
+            this.ApacheDirName = "Apache2";
         }
 
         public bool EnableJava { get; set; }
@@ -49,11 +50,13 @@ namespace InstantSetup.Core
 
         public string HttpdServiceName { get; set; }
 
+        public string ApacheDirName { get; set; }
+
         public virtual string WebTierApacheDir
         {
             get
             {
-                return Path.Combine(this.WebTierRootDir, "Apache2");
+                return Path.Combine(this.WebTierRootDir, this.ApacheDirName);
             }
         }
 

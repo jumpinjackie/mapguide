@@ -39,6 +39,7 @@ namespace InstantSetup
             numClientPort.Value = apacheConf.ServerClientPort;
             numSitePort.Value = apacheConf.ServerSitePort;
 
+            txtPhysicalDirectory.Text = apacheConf.ApacheDirName;
             txtVirtualDirectory.Text = apacheConf.VirtualDirectoryName;
             numHttpdPort.Value = apacheConf.ApachePortNumber;
             txtServiceName.Text = apacheConf.HttpdServiceName;
@@ -88,6 +89,11 @@ namespace InstantSetup
         private void txtVirtualDirectory_TextChanged(object sender, EventArgs e)
         {
             ApacheConfig.VirtualDirectoryName = txtVirtualDirectory.Text;
+        }
+
+        private void txtPhysicalDirectory_TextChanged(object sender, EventArgs e)
+        {
+            ApacheConfig.ApacheDirName = txtPhysicalDirectory.Text;
         }
 
         private void txtServiceName_TextChanged(object sender, EventArgs e)

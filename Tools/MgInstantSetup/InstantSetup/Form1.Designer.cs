@@ -56,15 +56,19 @@
             this.txtFdoDir = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnConfigure
             // 
             this.btnConfigure.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnConfigure.Location = new System.Drawing.Point(672, 563);
+            this.btnConfigure.Location = new System.Drawing.Point(830, 563);
             this.btnConfigure.Name = "btnConfigure";
             this.btnConfigure.Size = new System.Drawing.Size(75, 23);
             this.btnConfigure.TabIndex = 0;
@@ -80,7 +84,7 @@
             this.tabControl1.Location = new System.Drawing.Point(3, 16);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(474, 423);
+            this.tabControl1.Size = new System.Drawing.Size(580, 428);
             this.tabControl1.TabIndex = 1;
             // 
             // TAB_APACHE
@@ -88,7 +92,7 @@
             this.TAB_APACHE.Location = new System.Drawing.Point(4, 22);
             this.TAB_APACHE.Name = "TAB_APACHE";
             this.TAB_APACHE.Padding = new System.Windows.Forms.Padding(3);
-            this.TAB_APACHE.Size = new System.Drawing.Size(466, 397);
+            this.TAB_APACHE.Size = new System.Drawing.Size(572, 402);
             this.TAB_APACHE.TabIndex = 1;
             this.TAB_APACHE.Text = "Apache";
             this.TAB_APACHE.UseVisualStyleBackColor = true;
@@ -118,7 +122,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtServiceName.Location = new System.Drawing.Point(156, 61);
             this.txtServiceName.Name = "txtServiceName";
-            this.txtServiceName.Size = new System.Drawing.Size(587, 20);
+            this.txtServiceName.Size = new System.Drawing.Size(745, 20);
             this.txtServiceName.TabIndex = 3;
             this.txtServiceName.TextChanged += new System.EventHandler(this.txtServiceName_TextChanged);
             // 
@@ -137,14 +141,14 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSourceDirectory.Location = new System.Drawing.Point(156, 9);
             this.txtSourceDirectory.Name = "txtSourceDirectory";
-            this.txtSourceDirectory.Size = new System.Drawing.Size(552, 20);
+            this.txtSourceDirectory.Size = new System.Drawing.Size(710, 20);
             this.txtSourceDirectory.TabIndex = 5;
             this.txtSourceDirectory.TextChanged += new System.EventHandler(this.txtSourceDirectory_TextChanged);
             // 
             // btnSourceDir
             // 
             this.btnSourceDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSourceDir.Location = new System.Drawing.Point(714, 7);
+            this.btnSourceDir.Location = new System.Drawing.Point(872, 7);
             this.btnSourceDir.Name = "btnSourceDir";
             this.btnSourceDir.Size = new System.Drawing.Size(29, 23);
             this.btnSourceDir.TabIndex = 6;
@@ -168,7 +172,7 @@
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(714, 33);
+            this.button1.Location = new System.Drawing.Point(872, 33);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(29, 23);
             this.button1.TabIndex = 10;
@@ -182,7 +186,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBatchOutput.Location = new System.Drawing.Point(156, 35);
             this.txtBatchOutput.Name = "txtBatchOutput";
-            this.txtBatchOutput.Size = new System.Drawing.Size(552, 20);
+            this.txtBatchOutput.Size = new System.Drawing.Size(710, 20);
             this.txtBatchOutput.TabIndex = 9;
             this.txtBatchOutput.TextChanged += new System.EventHandler(this.txtBatchOutput_TextChanged);
             // 
@@ -220,13 +224,11 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.tabControl1);
-            this.groupBox1.Location = new System.Drawing.Point(267, 111);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(480, 442);
+            this.groupBox1.Size = new System.Drawing.Size(586, 447);
             this.groupBox1.TabIndex = 13;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Web";
@@ -242,31 +244,37 @@
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.txtFdoDir);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Location = new System.Drawing.Point(12, 111);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox2.Location = new System.Drawing.Point(0, 0);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(249, 439);
+            this.groupBox2.Size = new System.Drawing.Size(294, 447);
             this.groupBox2.TabIndex = 14;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Server";
             // 
             // label7
             // 
-            this.label7.Location = new System.Drawing.Point(19, 370);
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.label7.Location = new System.Drawing.Point(19, 386);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(206, 53);
+            this.label7.Size = new System.Drawing.Size(257, 45);
             this.label7.TabIndex = 8;
             this.label7.Text = "NOTE: Some providers (eg. MySQL) require 3rd party external dependencies in order" +
                 " to sucessfully register";
             // 
             // chkProviders
             // 
+            this.chkProviders.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.chkProviders.CheckOnClick = true;
             this.chkProviders.FormattingEnabled = true;
             this.chkProviders.HorizontalScrollbar = true;
             this.chkProviders.Location = new System.Drawing.Point(20, 137);
             this.chkProviders.Name = "chkProviders";
             this.chkProviders.ScrollAlwaysVisible = true;
-            this.chkProviders.Size = new System.Drawing.Size(205, 229);
+            this.chkProviders.Size = new System.Drawing.Size(256, 244);
             this.chkProviders.TabIndex = 7;
             // 
             // label6
@@ -280,7 +288,8 @@
             // 
             // btnFdoRegUtilPath
             // 
-            this.btnFdoRegUtilPath.Location = new System.Drawing.Point(216, 86);
+            this.btnFdoRegUtilPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFdoRegUtilPath.Location = new System.Drawing.Point(249, 86);
             this.btnFdoRegUtilPath.Name = "btnFdoRegUtilPath";
             this.btnFdoRegUtilPath.Size = new System.Drawing.Size(27, 23);
             this.btnFdoRegUtilPath.TabIndex = 5;
@@ -290,7 +299,8 @@
             // 
             // btnFdoPath
             // 
-            this.btnFdoPath.Location = new System.Drawing.Point(216, 41);
+            this.btnFdoPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFdoPath.Location = new System.Drawing.Point(249, 41);
             this.btnFdoPath.Name = "btnFdoPath";
             this.btnFdoPath.Size = new System.Drawing.Size(27, 23);
             this.btnFdoPath.TabIndex = 4;
@@ -300,9 +310,11 @@
             // 
             // txtFdoRegUtilPath
             // 
+            this.txtFdoRegUtilPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFdoRegUtilPath.Location = new System.Drawing.Point(20, 88);
             this.txtFdoRegUtilPath.Name = "txtFdoRegUtilPath";
-            this.txtFdoRegUtilPath.Size = new System.Drawing.Size(190, 20);
+            this.txtFdoRegUtilPath.Size = new System.Drawing.Size(223, 20);
             this.txtFdoRegUtilPath.TabIndex = 3;
             // 
             // label5
@@ -316,9 +328,11 @@
             // 
             // txtFdoDir
             // 
+            this.txtFdoDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFdoDir.Location = new System.Drawing.Point(20, 43);
             this.txtFdoDir.Name = "txtFdoDir";
-            this.txtFdoDir.Size = new System.Drawing.Size(190, 20);
+            this.txtFdoDir.Size = new System.Drawing.Size(223, 20);
             this.txtFdoDir.TabIndex = 1;
             this.txtFdoDir.TextChanged += new System.EventHandler(this.txtFdoDir_TextChanged);
             // 
@@ -331,13 +345,32 @@
             this.label4.TabIndex = 0;
             this.label4.Text = "FDO Path";
             // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitContainer1.Location = new System.Drawing.Point(17, 110);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.groupBox2);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
+            this.splitContainer1.Size = new System.Drawing.Size(884, 447);
+            this.splitContainer1.SplitterDistance = 294;
+            this.splitContainer1.TabIndex = 15;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(759, 598);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(917, 598);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.chk64Bit);
             this.Controls.Add(this.chkWriteMentorDictPath);
             this.Controls.Add(this.button1);
@@ -356,6 +389,9 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -391,6 +427,7 @@
         private System.Windows.Forms.TextBox txtFdoRegUtilPath;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.SplitContainer splitContainer1;
     }
 }
 

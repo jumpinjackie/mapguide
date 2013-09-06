@@ -49,6 +49,8 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rdJava = new System.Windows.Forms.RadioButton();
             this.rdPhp = new System.Windows.Forms.RadioButton();
+            this.txtPhysicalDirectory = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSitePort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numClientPort)).BeginInit();
@@ -147,6 +149,8 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.txtPhysicalDirectory);
+            this.groupBox2.Controls.Add(this.label8);
             this.groupBox2.Controls.Add(this.txtServiceName);
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.numHttpdPort);
@@ -155,7 +159,7 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Location = new System.Drawing.Point(4, 126);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(440, 114);
+            this.groupBox2.Size = new System.Drawing.Size(440, 133);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General";
@@ -164,7 +168,7 @@
             // 
             this.txtServiceName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtServiceName.Location = new System.Drawing.Point(154, 77);
+            this.txtServiceName.Location = new System.Drawing.Point(154, 97);
             this.txtServiceName.Name = "txtServiceName";
             this.txtServiceName.Size = new System.Drawing.Size(229, 20);
             this.txtServiceName.TabIndex = 11;
@@ -173,7 +177,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(23, 80);
+            this.label7.Location = new System.Drawing.Point(23, 100);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(74, 13);
             this.label7.TabIndex = 10;
@@ -181,7 +185,7 @@
             // 
             // numHttpdPort
             // 
-            this.numHttpdPort.Location = new System.Drawing.Point(154, 51);
+            this.numHttpdPort.Location = new System.Drawing.Point(154, 71);
             this.numHttpdPort.Maximum = new decimal(new int[] {
             65536,
             0,
@@ -195,7 +199,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(23, 53);
+            this.label6.Location = new System.Drawing.Point(23, 73);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(93, 13);
             this.label6.TabIndex = 8;
@@ -205,7 +209,7 @@
             // 
             this.txtVirtualDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtVirtualDirectory.Location = new System.Drawing.Point(154, 25);
+            this.txtVirtualDirectory.Location = new System.Drawing.Point(154, 45);
             this.txtVirtualDirectory.Name = "txtVirtualDirectory";
             this.txtVirtualDirectory.Size = new System.Drawing.Size(229, 20);
             this.txtVirtualDirectory.TabIndex = 1;
@@ -214,7 +218,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(23, 28);
+            this.label4.Location = new System.Drawing.Point(23, 48);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(112, 13);
             this.label4.TabIndex = 0;
@@ -228,9 +232,9 @@
             this.groupBox3.Controls.Add(this.chkEnableJava);
             this.groupBox3.Controls.Add(this.numTomcatPort);
             this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Location = new System.Drawing.Point(4, 303);
+            this.groupBox3.Location = new System.Drawing.Point(4, 318);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(440, 66);
+            this.groupBox3.Size = new System.Drawing.Size(440, 62);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             // 
@@ -273,9 +277,9 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.rdJava);
             this.groupBox4.Controls.Add(this.rdPhp);
-            this.groupBox4.Location = new System.Drawing.Point(4, 247);
+            this.groupBox4.Location = new System.Drawing.Point(4, 265);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(440, 50);
+            this.groupBox4.Size = new System.Drawing.Size(440, 47);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Preferred Default Viewer";
@@ -304,6 +308,25 @@
             this.rdPhp.UseVisualStyleBackColor = true;
             this.rdPhp.CheckedChanged += new System.EventHandler(this.defaultViewerCheckedChanged);
             // 
+            // txtPhysicalDirectory
+            // 
+            this.txtPhysicalDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtPhysicalDirectory.Location = new System.Drawing.Point(154, 19);
+            this.txtPhysicalDirectory.Name = "txtPhysicalDirectory";
+            this.txtPhysicalDirectory.Size = new System.Drawing.Size(229, 20);
+            this.txtPhysicalDirectory.TabIndex = 13;
+            this.txtPhysicalDirectory.TextChanged += new System.EventHandler(this.txtPhysicalDirectory_TextChanged);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(23, 22);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(122, 13);
+            this.label8.TabIndex = 12;
+            this.label8.Text = "Physical Directory Name";
+            // 
             // ApacheConfigCtrl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -313,7 +336,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "ApacheConfigCtrl";
-            this.Size = new System.Drawing.Size(447, 372);
+            this.Size = new System.Drawing.Size(447, 383);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSitePort)).EndInit();
@@ -354,5 +377,7 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.RadioButton rdJava;
         private System.Windows.Forms.RadioButton rdPhp;
+        private System.Windows.Forms.TextBox txtPhysicalDirectory;
+        private System.Windows.Forms.Label label8;
     }
 }
