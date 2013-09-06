@@ -40,6 +40,7 @@
         <xs:element name="Extents" type="Envelope" />
         <xs:element name="Group" type="RuntimeMapGroup" minOccurs="0" maxOccurs="unbounded" />
         <xs:element name="Layer" type="RuntimeMapLayer" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="FiniteDisplayScale" type="xs:double" minOccurs="0" maxOccurs="unbounded" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
