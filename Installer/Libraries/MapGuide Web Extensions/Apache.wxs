@@ -20,8 +20,10 @@
         <CustomAction Id="RemoveApacheServiceCA" Execute="immediate" Return="ignore" FileKey="HTTPD_EXE" ExeCommand="-k uninstall -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
         <CustomAction Id="InstallApacheServiceCA" Execute="deferred" Return="ignore" FileKey="HTTPD_EXE" ExeCommand="-k install -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
         <CustomAction Id="StartApacheServiceCA" Execute="deferred" Return="ignore" FileKey="HTTPD_EXE" ExeCommand="-k start -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
+        <!--
         <CustomAction Id="RemoveTomcatServiceCA" Execute="immediate" Return="ignore" FileKey="TOMCAT_EXE" ExeCommand="//DS//TomcatMapGuide[MG_VERSION_MAJOR_MINOR]" />
         <CustomAction Id="InstallTomcatServiceCA" Execute="deferred" Return="ignore" FileKey="TOMCAT_SERVICE_BAT" ExeCommand="install TomcatMapGuide[MG_VERSION_MAJOR_MINOR]" />
         <CustomAction Id="StartTomcatServiceCA" Execute="deferred" Return="ignore" FileKey="TOMCAT_EXE" ExeCommand="//RS//TomcatMapGuide[MG_VERSION_MAJOR_MINOR]" />
-	</Fragment>
+        -->
+    </Fragment>
 </Wix>

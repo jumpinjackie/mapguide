@@ -80,12 +80,13 @@ SET PATH=%PATH%;%PARAFFIN%;%NSIS%;%WIX%\bin\;%CD%\..\MgDev\BuildTools\WebTools\7
 rem ==================================================
 rem Web dependencies
 rem ==================================================
-SET HTTPD_VERSION=2.2.21
-SET PHP_VERSION=5.3.8
-SET TOMCAT_VERSION=7.0.23
-SET HTTPD_PACKAGE=httpd-%HTTPD_VERSION%-%PLATFORM_CLR%-vc10.zip
-SET TOMCAT_PACKAGE=apache-tomcat-%TOMCAT_VERSION%-windows-%PLATFORM_CLR%.zip
-SET PHP_TS_PACKAGE=php-%PHP_VERSION%-%PLATFORM_CLR%-vc10.zip
+SET HTTPD_VERSION=2.4.6
+SET PHP_VERSION=5.5.3
+SET TOMCAT_VERSION=7.0.42
+SET HTTPD_PACKAGE=httpd-%HTTPD_VERSION%-%PLATFORM_CLR%-VC11.zip
+SET TOMCAT_PACKAGE_NAME=apache-tomcat-%TOMCAT_VERSION%
+SET TOMCAT_PACKAGE=%MG_OEM%\LinuxApt\%TOMCAT_PACKAGE_NAME%.tar.gz
+SET PHP_TS_PACKAGE=php-%PHP_VERSION%-%PLATFORM_CLR%-VC11.zip
 
 :study_params
 if (%1)==() goto start_build
@@ -180,15 +181,19 @@ copy %INSTALLER_FDO_REG_UTIL%\%TYPEBUILD%\FdoRegUtil.exe %MG_SOURCE%\Server\FDO
 popd
 echo [prepare] Unpack Apache httpd
 pushd "%INSTALLER_DEV_SUPPORT%\Web\%PLATFORM_CLR%"
-7z x %HTTPD_PACKAGE% -y -o"%MG_SOURCE%\Web\Apache2"
+7z x %HTTPD_PACKAGE% -y -o"%MG_SOURCE%\Web"
 popd
 echo [prepare] Unpack Tomcat
 pushd "%INSTALLER_DEV_SUPPORT%\Web\%PLATFORM_CLR%"
-copy /Y mod_jk.so "%MG_SOURCE%\Web\Apache2\modules"
+copy /Y mod_jk.so "%MG_SOURCE%\Web\Apache24\modules"
 REM we unpack to root because Tomcat is the root dir in the zip file
-7z x %TOMCAT_PACKAGE% -y -o"%MG_SOURCE%\Web"
+7z x "%TOMCAT_PACKAGE%" -y -o"%MG_SOURCE%\Web"
 popd
 pushd "%MG_SOURCE%\Web"
+if exist %TOMCAT_PACKAGE_NAME%.tar (
+    7z x %TOMCAT_PACKAGE_NAME%.tar -y
+    del %TOMCAT_PACKAGE_NAME%.tar
+)
 if exist Tomcat (
 xcopy /S /Y apache-tomcat-%TOMCAT_VERSION%\*.* Tomcat
 rd /S /Q apache-tomcat-%TOMCAT_VERSION%
@@ -206,9 +211,9 @@ echo [prepare] Tomcat config
 echo [prepare] Php config
 %XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM_CLR%\configs\Php" "%MG_SOURCE%\Web\Php" /EXCLUDE:svn_excludes.txt
 echo [prepare] Apache2 config
-%XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM_CLR%\configs\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM_CLR%\configs\Apache2" "%MG_SOURCE%\Web\Apache24" /EXCLUDE:svn_excludes.txt
 echo [prepare] Apache2 mapagent so
-copy /Y "%MG_BUILD_MAPAGENT%" "%MG_SOURCE%\Web\Apache2\modules"
+copy /Y "%MG_BUILD_MAPAGENT%" "%MG_SOURCE%\Web\Apache24\modules"
 echo [prepare] FDO providers.xml
 copy /Y "%INSTALLER_DEV%\Support\Web\%PLATFORM_CLR%\configs\FDO\providers.xml" "%MG_SOURCE%\Server\FDO\"
 
@@ -366,7 +371,7 @@ echo [generate]: CS-Map - dictionaries
 %PARAFFIN% -dir %MG_SOURCE%\CS-Map\Dictionaries -alias $(var.MgSource)\CS-Map\Dictionaries -custom CSMAPDICTFILES -dirref CSMAPLOCATION -ext ASC -ext C -ext CNT -ext GID -ext HLP -ext MAK -ext NMK -ext VCPROJ -ext USER %WIX_INC_CSMAP%\incCSMapDictionaryFiles.wxs
 
 echo [generate]: Web - Apache
-%PARAFFIN% -dir %MG_SOURCE%\Web\Apache2 -alias $(var.MgSource)\Web\Apache2 -custom APACHEFILES -dirref WEBEXTENSIONSLOCATION %WIX_INC_WEB%\incApacheFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Web\Apache24 -alias $(var.MgSource)\Web\Apache24 -custom APACHEFILES -dirref WEBEXTENSIONSLOCATION %WIX_INC_WEB%\incApacheFiles.wxs
 
 echo [generate]: Web - Php TS
 %PARAFFIN% -dir %MG_SOURCE%\Web\Php -alias $(var.MgSource)\Web\Php -custom PHPFILES -dirref WEBEXTENSIONSLOCATION %WIX_INC_WEB%\incPhpFiles.wxs

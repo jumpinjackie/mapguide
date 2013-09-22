@@ -56,7 +56,7 @@
                         </CreateFolder>
                     </Component>
                 </Directory>
-                <Directory Id="APACHELOCATION" Name="Apache2" />
+                <Directory Id="APACHELOCATION" Name="Apache24" />
                 <Directory Id="PHPLOCATION" Name="Php">
                     <Component Id="WebExtPhpComponent" Win64="$(var.Win64)" Guid="88814E96-07DC-4fb7-A993-F31FC1E000CB" Feature="WebExtPhpFeature">
                         <CreateFolder />
