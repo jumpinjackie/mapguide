@@ -1,26 +1,26 @@
 /*
 	Build Configuration Template for Win32.
-	$Id: config.w32.h.in 282624 2009-06-23 06:56:45Z kalle $
+	$Id$
 */
 
 /* Define the minimum supported version */
 #undef _WIN32_WINNT
 #undef NTDDI_VERSION
-#define _WIN32_WINNT 0x500
-#define NTDDI_VERSION  _WIN32_WIN2K
+#define _WIN32_WINNT 0x0600
+#define NTDDI_VERSION  0x06000100
 
 /* Default PHP / PEAR directories */
 #define PHP_CONFIG_FILE_PATH (getenv("SystemRoot"))?getenv("SystemRoot"):""
 #define CONFIGURATION_FILE_PATH "php.ini"
-#define PEAR_INSTALLDIR "C:\\php5\\pear"
-#define PHP_BINDIR "C:\\php5"
-#define PHP_DATADIR "C:\\php5"
-#define PHP_EXTENSION_DIR "C:\\php5"
-#define PHP_INCLUDE_PATH	".;C:\\php5\\pear"
-#define PHP_LIBDIR "C:\\php5"
-#define PHP_LOCALSTATEDIR "C:\\php5"
-#define PHP_PREFIX "C:\\php5"
-#define PHP_SYSCONFDIR "C:\\php5"
+#define PEAR_INSTALLDIR "C:\\php\\pear"
+#define PHP_BINDIR "C:\\php"
+#define PHP_DATADIR "C:\\php"
+#define PHP_EXTENSION_DIR "C:\\php"
+#define PHP_INCLUDE_PATH	".;C:\\php\\pear"
+#define PHP_LIBDIR "C:\\php"
+#define PHP_LOCALSTATEDIR "C:\\php"
+#define PHP_PREFIX "C:\\php"
+#define PHP_SYSCONFDIR "C:\\php"
 
 /* Enable / Disable crypt() function (default: enabled) */
 #define HAVE_CRYPT 1
@@ -28,11 +28,11 @@
 #define PHP_EXT_DES_CRYPT 1
 #define PHP_MD5_CRYPT 1
 #define PHP_BLOWFISH_CRYPT 1
+#define PHP_SHA512_CRYPT 1
+#define PHP_SHA256_CRYPT 1
 
 /* PHP Runtime Configuration */
 #define PHP_URL_FOPEN 1
-#define PHP_SAFE_MODE 0
-#define MAGIC_QUOTES 0
 #define USE_CONFIG_FILE 1
 #define DEFAULT_SHORT_OPEN_TAG "1"
 
@@ -56,6 +56,7 @@
 /* its in win32/time.c */
 #define HAVE_USLEEP 1
 #define HAVE_NANOSLEEP 1
+#define PHP_SLEEP_NON_VOID 1
 
 #define HAVE_GETHOSTNAME 1
 #define HAVE_GETCWD 1
@@ -177,21 +178,14 @@
 /* values determined by configure.js */
 
 /* Configure line */
-#define CONFIGURE_COMMAND "cscript /nologo configure.js  \"--enable-snapshot-build\" \"--disable-isapi\"" " \"--without-enchant\""
+#define CONFIGURE_COMMAND "cscript /nologo configure.js "
 
 /* Detected compiler version */
-#if !defined(_WIN64)
-#define COMPILER "MSVC9 (Visual C++ 2008)"
-#else
-#define COMPILER "MSVC10 (Visual C++ 2010)"
-#endif
+#define COMPILER "MSVC11 (Visual C++ 2012)"
 
 /* Compiler compatibility ID */
-#if !defined(_WIN64)
-#define PHP_COMPILER_ID "VC9"
-#else
-#define PHP_COMPILER_ID "VC10"
-#endif
+#define PHP_COMPILER_ID "VC11"
+
 /* Detected compiler architecture */
 #define ARCHITECTURE "x86"
 
@@ -213,9 +207,6 @@
 /* Have BCMATH library */
 #define HAVE_BCMATH 1
 
-/* Have BZ2 library */
-#define HAVE_BZ2 1
-
 /* Have calendar */
 #define HAVE_CALENDAR 1
 
@@ -224,21 +215,6 @@
 
 /* Have ctype */
 #define HAVE_CTYPE 1
-
-/* Have cURL library */
-#define HAVE_CURL 1
-
-/* Have SSL suppurt in cURL */
-#define HAVE_CURL_SSL 1
-
-/* Have curl_easy_strerror in cURL */
-#define HAVE_CURL_EASY_STRERROR 1
-
-/* Have curl_multi_strerror in cURL */
-#define HAVE_CURL_MULTI_STRERROR 1
-
-/* Have curl_version_info in cURL */
-#define HAVE_CURL_VERSION_INFO 1
 
 /* Have date/time support */
 #define HAVE_DATE 1
@@ -252,91 +228,16 @@
 /* Have FTP support */
 #define HAVE_FTP 1
 
-/* GD support */
-#define HAVE_LIBGD 1
-
-/* GMP support */
-#define HAVE_GMP 1
-
-#define PHP_MHASH_BC 1
-
 #define HAVE_HASH_EXT 1
 
-/* Define if iconv extension is enabled */
-#define HAVE_ICONV 1
+/* Compression support */
+#define MYSQLND_COMPRESSION_ENABLED 1
 
-/* Define if libiconv is available */
-#define HAVE_LIBICONV 1
-
-/* Which iconv implementation to use */
-#define PHP_ICONV_IMPL "\"libiconv\""
-
-/* Whether iconv supports errno or not */
-#define ICONV_SUPPORTS_ERRNO 1
-
-/* Have IMAP support */
-#define HAVE_IMAP 1
-
-/* Have utf8_mime2text */
-#define HAVE_NEW_MIME2TEXT 1
-
-/* Have rfc822_output_address_list */
-#define HAVE_RFC822_OUTPUT_ADDRESS_LIST 1
-
-/* Have modified utf7 support */
-#define HAVE_IMAP_MUTF7 1
-
-/* Internationalization support enabled */
-#define HAVE_INTL 1
-
-#define HAVE_LDAP_PARSE_RESULT 1
-
-#define HAVE_LDAP_PARSE_REFERENCE 1
-
-#define HAVE_LDAP_START_TLS_S 1
-
-#define HAVE_LDAP 1
-
-/* Have mbstring support */
-#define HAVE_MBSTRING 1
-
-/* CN */
-#define HAVE_MBSTR_CN 1
-
-/* JA */
-#define HAVE_MBSTR_JA 1
-
-/* KR */
-#define HAVE_MBSTR_KR 1
-
-/* RU */
-#define HAVE_MBSTR_RU 1
-
-/* TW */
-#define HAVE_MBSTR_TW 1
-
-/* have stdarg.h */
-#define HAVE_STDARG_PROTOTYPES 1
-
-#define HAVE_MBREGEX 1
-
-#define HAVE_ONIG 1
-
-#define USE_COMBINATION_EXPLOSION_CHECK 1
-
-#define HAVE_LIBMCRYPT 1
-
-#define HAVE_LIBMCRYPT24 1
+/* SSL support */
+#define MYSQLND_SSL_SUPPORTED 1
 
 /* ODBC support */
 #define HAVE_UODBC 1
-
-/* Have openssl */
-#define HAVE_OPENSSL_EXT 0
-
-#define HAVE_OPENSSL 1
-
-#define HAVE_DSA_DEFAULT_METHOD 1
 
 /* Using bundled PCRE library */
 #define HAVE_BUNDLED_PCRE 1
@@ -344,107 +245,19 @@
 /* Have PCRE library */
 #define HAVE_PCRE 1
 
-/* Have PostgreSQL library */
-#define HAVE_PGSQL 1
-
 /* Reflection support enabled */
 #define HAVE_REFLECTION 1
 
 /* Session support */
 #define HAVE_PHP_SESSION 1
 
-/* Have SHMOP support */
-#define HAVE_SHMOP 1
-
-#define HAVE_SOCKETS 1
-
 #define HAVE_SPL 1
-
-/* SQLite support */
-#define HAVE_SQLITE3 1
 
 #define PHP_CONFIG_FILE_SCAN_DIR ""
 
 #define PHP_USE_PHP_CRYPT_R 1
 
-/* Have TIDY library */
-#define HAVE_TIDY 1
-
 /* Tokenizer support */
 #define HAVE_TOKENIZER 1
 
-#define HAVE_ZIP 1
-
-/* have the zlib.h header file */
-#define HAVE_ZLIB_H 1
-
-/* ZLIB support */
-#define HAVE_ZLIB 1
-
-/* LibXML support */
-#define HAVE_LIBXML 1
-
-/* DOM support */
-#define HAVE_DOM 1
-
-/* Have exif */
-#define HAVE_EXIF 1
-
-/* Using MySQL native driver */
-#define MYSQL_USE_MYSQLND 1
-
-/* Have MySQL library */
-#define HAVE_MYSQL 1
-
-/* Using MySQL native driver */
-#define MYSQLI_USE_MYSQLND 1
-
-/* Have MySQLi library */
-#define HAVE_MYSQLILIB 1
-
-/* Using MySQL native driver */
-#define PDO_USE_MYSQLND 1
-
-/* Have PostgreSQL library */
-#define HAVE_PDO_PGSQL 1
-
-/* Have PQescapeByteaConn */
-#define HAVE_PQESCAPE_BYTEA_CONN 1
-
-/* Have PQescapeConn */
-#define HAVE_PQESCAPE_CONN 1
-
-/* Have PQprepare */
-#define HAVE_PQPREPARE 1
-
 #define PHAR_HASH_OK 1
-
-/* Simple XML support */
-#define HAVE_SIMPLEXML 1
-
-/* SOAP support */
-#define HAVE_PHP_SOAP 1
-
-/* SQLite support */
-#define HAVE_SQLITE 1
-
-/* WDDX support */
-#define HAVE_WDDX 1
-
-/* XML support */
-#define HAVE_XML 1
-
-/* XMLReader support */
-#define HAVE_XMLREADER 1
-
-/* have the iconv.h header file */
-#define HAVE_ICONV_H 1
-
-/* XMLWriter support */
-#define HAVE_XMLWRITER 1
-
-/*  */
-#define HAVE_XSL_EXSLT 1
-
-/* Define if xsl extension is enabled */
-#define HAVE_XSL 1

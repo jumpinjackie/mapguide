@@ -10,10 +10,10 @@ INCLUDES    = -I../../../Common/Foundation \
               -I../../../Common/MapGuideCommon \
               -I../../../Common/MdfModel \
               -I../../../Oem/ACE/ACE_wrappers \
-              -I../../../Oem/LinuxApt/httpd-2.2.21/include \
-              -I../../../Oem/LinuxApt/httpd-2.2.21/srclib/apr/include \
-              -I../../../Oem/LinuxApt/httpd-2.2.21/srclib/apr-util/include \
-              -I../../../Oem/LinuxApt/httpd-2.2.21/os/unix \
+              -I$(httpd_src)/include \
+              -I$(httpd_src)/srclib/apr/include \
+              -I$(httpd_src)/srclib/apr-util/include \
+              -I$(httpd_src)/os/unix \
               -I/usr/local/mapguideopensource/webserverextensions/apache2/include\
               -I../HttpHandler \
               -I../WebSupport \

@@ -4,10 +4,13 @@ dnl Configure.in for MapGuide Open Source
 # Variables
 # Following are the makefile directories
 #----------------------------------------------------------------------
-AC_INIT(mapguide,2.5.0,http://mapguide.osgeo.org)
+AC_INIT(mapguide,2.6.0,http://mapguide.osgeo.org)
 AC_CONFIG_SRCDIR(configure.in)
 AM_INIT_AUTOMAKE
 AM_INIT_AUTOMAKE([1.9 tar-pax])
+
+# Enable silent rules if supported. Allows for less verbose output while still displaying any compiler/linker warnings/errors
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 
 AC_PREFIX_DEFAULT(/usr/local/mapguideopensource)
 
@@ -36,10 +39,8 @@ map_opt_oem_subdirs="CsMap"
 map_opt_oem_distsubdirs=""
 
 dnl *******************************************************
-dnl PHP 5.3.1 Configuration
+dnl PHP 5.5.3 Configuration
 dnl *******************************************************
-# Check for php
-# Note : Not yet implemented
 AC_ARG_WITH([php],
         MAP_HELP_STRING([--with-php],
                         [specify php headers dir prefix as args [[default=no]]]),
@@ -47,14 +48,44 @@ AC_ARG_WITH([php],
         [with_php=no])
 
 if test $with_php = "no"; then
-    AC_MSG_NOTICE([Using php 5.3.1 from included Oem Directory])
+    AC_MSG_NOTICE([Using php 5.5.3 from included Oem Directory])
+	php_src=`pwd`/Oem/LinuxApt/php-5.5.3
 else
-    AC_MSG_NOTICE(["WARNING!!: Using custom specified php include dir is not supported in this release."])
-    AC_MSG_NOTICE([Using php 5.3.1 from included Oem Directory])
+    AC_MSG_NOTICE([Using custom PHP source directory])
+	php_src=$with_php
 fi
+if test -d $php_src; then
+	AC_MSG_NOTICE([PHP source directory is: $php_src])
+else
+	AC_MSG_ERROR([PHP source directory ($php_src) does not exist])
+fi
+AC_SUBST(php_src)
 
 dnl *******************************************************
-dnl FDO 3.8.0 Configuration
+dnl httpd 2.4.6 Configuration
+dnl *******************************************************
+AC_ARG_WITH([httpd],
+		MAP_HELP_STRING([--with-httpd],
+						[specify httpd source dir prefix as args [[default=no]]]),
+		[with_httpd=$withval],
+		[with_httpd=no])
+
+if test $with_httpd = "no"; then
+    AC_MSG_NOTICE([Using httpd 2.4.6 from included Oem Directory])
+	httpd_src=`pwd`/Oem/LinuxApt/httpd-2.4.6
+else
+    AC_MSG_NOTICE([Using custom httpd source directory])
+	httpd_src=$with_httpd
+fi
+if test -d $http_src; then
+	AC_MSG_NOTICE([httpd source directory is: $httpd_src])
+else
+	AC_MSG_ERROR([httpd source directory ($httpd_src) does not exist])
+fi
+AC_SUBST(httpd_src)
+
+dnl *******************************************************
+dnl FDO 3.8.1 Configuration
 dnl Include / lib paths
 dnl *******************************************************
 # custom Fdo path specification
@@ -65,9 +96,9 @@ AC_ARG_WITH([fdo-include],
         [custom_inc=DEFAULT])
 
 if test $custom_inc = "DEFAULT"; then
-    map_fdo_include="/usr/local/fdo-3.8.0/include"
+    map_fdo_include="/usr/local/fdo-3.8.1/include"
     if test -d $map_fdo_include; then
-        AC_MSG_NOTICE([Building with default location of FDO include files at /usr/local/fdo-3.8.0/include])
+        AC_MSG_NOTICE([Building with default location of FDO include files at /usr/local/fdo-3.8.1/include])
     else
         AC_MSG_ERROR([the default FDO include path $map_fdo_include is not a valid directory. Please use the custom option])
     fi
@@ -87,9 +118,9 @@ AC_ARG_WITH([fdo-lib],
         [custom_lib=DEFAULT])
 
 if test $custom_lib = "DEFAULT"; then
-    map_fdo_lib="/usr/local/fdo-3.8.0/lib"
+    map_fdo_lib="/usr/local/fdo-3.8.1/lib"
     if test -d $map_fdo_lib; then
-        AC_MSG_NOTICE([Building with default location of FDO libraries at /usr/local/fdo-3.8.0/lib])
+        AC_MSG_NOTICE([Building with default location of FDO libraries at /usr/local/fdo-3.8.1/lib])
     else
         AC_MSG_ERROR([the default FDO lib path $map_fdo_lib is not a valid directory. Please use the custom option])
     fi
@@ -101,7 +132,7 @@ else
         AC_MSG_ERROR([the specified FDO library path $custom_lib is not a valid directory])
     fi
 fi
-map_fdo_nls="/usr/local/fdo-3.8.0/nls/%N"
+map_fdo_nls="/usr/local/fdo-3.8.1/nls/%N"
 AC_SUBST(map_fdo_include)
 AC_SUBST(map_fdo_lib)
 AC_SUBST(map_fdo_nls)

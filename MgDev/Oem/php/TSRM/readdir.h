@@ -5,6 +5,8 @@
 /*
  * Structures and types used to implement opendir/readdir/closedir
  * on Windows 95/NT.
+ *
+ * MapGuide-changes: Only define struct dirent if ACE hasn't already
  */
 
 #include <windows.h>

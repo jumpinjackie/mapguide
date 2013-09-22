@@ -94,7 +94,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\Oem\php\main;..\..\..\Oem\php\Zend;..\..\..\Oem\php\TSRM;..\..\..\Oem\php\regex;..\..\..\Oem\php;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PHP_SRC)\main;$(PHP_SRC)\Zend;$(PHP_SRC)\TSRM;$(PHP_SRC)\regex;$(PHP_SRC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PHPMAPGUIDEAPIENVCONFIG_EXPORTS;ZEND_DEBUG=0;ZTS=1;ZEND_WIN32;PHP_WIN32;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -105,7 +105,7 @@
     <Link>
       <AdditionalDependencies>php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_MapGuideApiEnvConfigd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\php\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PHP_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)php_MapGuideApiEnvConfigd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -119,7 +119,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\Oem\php\main;..\..\..\Oem\php\Zend;..\..\..\Oem\php\TSRM;..\..\..\Oem\php\regex;..\..\..\Oem\php;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PHP_SRC)\main;$(PHP_SRC)\Zend;$(PHP_SRC)\TSRM;$(PHP_SRC)\regex;$(PHP_SRC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PHPMAPGUIDEAPIENVCONFIG_EXPORTS;ZEND_DEBUG=0;ZTS=1;ZEND_WIN32;PHP_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -130,7 +130,7 @@
     <Link>
       <AdditionalDependencies>php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_MapGuideApiEnvConfigd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\php\x64\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PHP_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)php_MapGuideApiEnvConfigd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -145,7 +145,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\..\Oem\php\main;..\..\..\Oem\php\Zend;..\..\..\Oem\php\TSRM;..\..\..\Oem\php\regex;..\..\..\Oem\php;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PHP_SRC)\main;$(PHP_SRC)\Zend;$(PHP_SRC)\TSRM;$(PHP_SRC)\regex;$(PHP_SRC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PHPMAPGUIDEAPIENVCONFIG_EXPORTS;ZEND_DEBUG=0;ZTS=1;ZEND_WIN32;PHP_WIN32;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -156,7 +156,7 @@
     <Link>
       <AdditionalDependencies>php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_MapGuideApiEnvConfig.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\php\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PHP_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -172,7 +172,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\..\Oem\php\main;..\..\..\Oem\php\Zend;..\..\..\Oem\php\TSRM;..\..\..\Oem\php\regex;..\..\..\Oem\php;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PHP_SRC)\main;$(PHP_SRC)\Zend;$(PHP_SRC)\TSRM;$(PHP_SRC)\regex;$(PHP_SRC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PHPMAPGUIDEAPIENVCONFIG_EXPORTS;ZEND_DEBUG=0;ZTS=1;ZEND_WIN32;PHP_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -183,7 +183,7 @@
     <Link>
       <AdditionalDependencies>php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_MapGuideApiEnvConfig.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\php\x64\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PHP_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

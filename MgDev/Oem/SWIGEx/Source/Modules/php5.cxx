@@ -873,7 +873,8 @@ public:
     cs_entry = NULL;
     
     Printf(s_entry,"/* Every non-class user visible function must have an entry here */\n");
-    Printf(s_entry,"function_entry %s_functions[] = {\n", module);
+    //PHP 5.4+ changed this to zend_function_entry
+    Printf(s_entry,"zend_function_entry %s_functions[] = {\n", module);
     
     /* start the init section */
     if (gen_extra)

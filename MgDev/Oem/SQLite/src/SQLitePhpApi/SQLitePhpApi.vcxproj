@@ -100,7 +100,7 @@
     </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\ACE\ACE_wrappers;..\..\..\php;..\..\..\php\main;..\..\..\php\Zend;..\..\..\php\TSRM;..\..\..\php\ext\w32api;..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\ACE\ACE_wrappers;$(PHP_SRC);$(PHP_SRC)\main;$(PHP_SRC)\Zend;$(PHP_SRC)\TSRM;$(PHP_SRC)\ext\w32api;..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -114,7 +114,7 @@
     <Link>
       <AdditionalDependencies>php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_SQLitePhpApid.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\php\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PHP_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)php_SQLitePhpApid.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -137,7 +137,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\ACE\ACE_wrappers;..\..\..\php;..\..\..\php\main;..\..\..\php\Zend;..\..\..\php\TSRM;..\..\..\php\ext\w32api;..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\ACE\ACE_wrappers;$(PHP_SRC);$(PHP_SRC)\main;$(PHP_SRC)\Zend;$(PHP_SRC)\TSRM;$(PHP_SRC)\ext\w32api;..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -151,7 +151,7 @@
     <Link>
       <AdditionalDependencies>php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_SQLitePhpApid.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\php\x64\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PHP_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)php_SQLitePhpApid.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -171,7 +171,7 @@
     </PreBuildEvent>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\ACE\ACE_wrappers;..\..\..\php;..\..\..\php\main;..\..\..\php\Zend;..\..\..\php\TSRM;..\..\..\php\ext\w32api;..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\ACE\ACE_wrappers;$(PHP_SRC);$(PHP_SRC)\main;$(PHP_SRC)\Zend;$(PHP_SRC)\TSRM;$(PHP_SRC)\ext\w32api;..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -184,7 +184,7 @@
     <Link>
       <AdditionalDependencies>php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_SQLitePhpApi.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\php\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PHP_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)php_SQLitePhpApi.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -209,7 +209,7 @@
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\ACE\ACE_wrappers;..\..\..\php;..\..\..\php\main;..\..\..\php\Zend;..\..\..\php\TSRM;..\..\..\php\ext\w32api;..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\ACE\ACE_wrappers;$(PHP_SRC);$(PHP_SRC)\main;$(PHP_SRC)\Zend;$(PHP_SRC)\TSRM;$(PHP_SRC)\ext\w32api;..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -222,7 +222,7 @@
     <Link>
       <AdditionalDependencies>php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_SQLitePhpApi.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\php\x64\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PHP_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)php_SQLitePhpApi.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>

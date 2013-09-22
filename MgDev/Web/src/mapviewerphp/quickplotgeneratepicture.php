@@ -144,9 +144,21 @@
 
         // Load the north arrow image which has a 300 dpi resolution
         $na         = imagecreatefrompng("../viewerfiles/quickplotnortharrow.png");
-        // Rotate the north arrow according to the capture rotation
+        
         $transparent= imagecolortransparent($na);
+        // PHP 5.5 broke image rotation (or maybe we did it completely wrong before PHP 5.5). 
+        // Either way, here's how we fix it. Assign an explicit color if imagecolortransparent() returns -1
+        if ($transparent < 0) {
+            $transparent = imagecolorallocatealpha($na, 0, 0, 0, 127);
+            $bReleaseTrans = true;
+        }
+        
+        // Rotate the north arrow according to the capture rotation
         $rotatedNa  = imagerotate($na, -$rotation, $transparent);
+        // Free the transparent color if we allocated it
+        if ($bReleaseTrans)
+            imagecolordeallocate($na, $transparent);
+        
         // Free the north arrow image
         imagedestroy($na);
         // Get the size of north arrow image

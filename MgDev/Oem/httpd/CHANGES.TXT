@@ -1,0 +1,7 @@
+include\apr.h
+
+	Only define uid_t, pid_t and gid_t if ACE hasn't already
+
+include\apr_Want.h
+
+	Only define struct iovec if ACE hasn't already

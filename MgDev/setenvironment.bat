@@ -91,6 +91,27 @@ IF "%ANT_HOME%" == "" SET ANT_HOME=C:\apache-ant-1.8.3
 
 SET PATH=%PATH%;%DOXYGEN%;%GNUWIN32%;%SEVENZ%;%ANT_HOME%\bin
 rem ==================================================
+rem PHP/httpd env vars for Visual Studio
+rem ==================================================
+
+rem Comment out this line if you intend to build against a different version of PHP/httpd
+rem Be sure to change the paths below as well if that's the case
+call prepare_webtier_components.bat
+
+rem Set the env vars that VS will reference
+SET PHP_SRC=%MG_OEM%\LinuxApt\php-5.5.3
+SET PHP_LIB=%MG_OEM%\php\Release_TS
+SET HTTPD_SRC=%MG_OEM%\LinuxApt\httpd-2.4.6
+SET HTTPD_LIB=%MG_OEM%\httpd\lib
+rem Sanity checks
+if not exist "%PHP_SRC%" echo Environment variable PHP_SRC does not point to a valid directory (%PHP_SRC%). Please edit setenvironment64.bat to ensure PHP_SRC points to a valid directory
+if not exist "%PHP_LIB%\php5ts.lib" echo Environment variable PHP_LIB does not point to a valid directory (%PHP_LIB%). Could not find php5ts.lib in this directory. Please edit setenvironment64.bat to ensure PHP_LIB points to a valid directory
+if not exist "%HTTPD_SRC%" echo Environment variable HTTPD_SRC does not point to a valid directory (%HTTPD_SRC%). Please edit setenvironment64.bat to ensure HTTPD_SRC points to a valid directory
+if not exist "%HTTPD_LIB%\libhttpd.lib" echo Environment variable HTTPD_LIB does not point to a valid directory (%HTTPD_LIB%). Could not find libhttpd.lib in this directory. Please edit setenvironment64.bat to ensure HTTPD_LIB points to a valid directory
+if not exist "%HTTPD_LIB%\libapr-1.lib" echo Environment variable HTTPD_LIB does not point to a valid directory (%HTTPD_LIB%). Could not find libapr-1.lib in this directory. Please edit setenvironment64.bat to ensure HTTPD_LIB points to a valid directory
+if not exist "%HTTPD_LIB%\libaprutil-1.lib" echo Environment variable HTTPD_LIB does not point to a valid directory (%HTTPD_LIB%). Could not find libaprutil-1.lib in this directory. Please edit setenvironment64.bat to ensure HTTPD_LIB points to a valid directory
+
+rem ==================================================
 rem MSBuild Settings
 rem ==================================================
 
@@ -113,6 +134,10 @@ SET MSBUILD_CLEAN_CLR=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%CONFI
 SET ANT=ant
 
 echo ======== Environment Variable Summary =============
+echo PHP_SRC    = %PHP_SRC%
+echo PHP_LIB    = %PHP_LIB%
+echo HTTPD_SRC  = %HTTPD_SRC%
+echo HTTPD_LIB  = %HTTPD_LIB%
 echo Configuration is [%TYPEBUILD%, "%CONFIGURATION%|%PLATFORM%"]
 echo Deployment Directory for Server: %MG_OUTPUT_SERVER%
 echo Deployment Directory for Web: %MG_OUTPUT_WEB%

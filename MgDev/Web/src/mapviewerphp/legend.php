@@ -301,8 +301,8 @@ function BuildLayerDefinitionData($layerData, $layerVarName, &$output)
 {
     global $intermediateVar;
 
-    $xmldoc = DOMDocument::loadXML($layerData);
-
+    $xmldoc = new DOMDocument();
+    $xmldoc->loadXML($layerData);
     $type = 0;
     $scaleRanges = $xmldoc->getElementsByTagName('VectorScaleRange');
     if($scaleRanges->length == 0) {

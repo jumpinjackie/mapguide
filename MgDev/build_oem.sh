@@ -222,20 +222,19 @@ clean_geos()
 
 init_php()
 {
-    LIB_NAME="PHP 5.3.1"
+    LIB_NAME="PHP 5.5.3"
 }
 
 build_php()
 {
-    pushd php
-    sh ./configure
-    check_build
+    # Nothing to do here. build_apt.sh builds PHP
+    pushd LinuxApt/php-5.5.3
     popd
 }
 
 clean_php()
 {
-    pushd php
+    pushd LinuxApt/php-5.5.3
     make distclean
     check_clean
     popd

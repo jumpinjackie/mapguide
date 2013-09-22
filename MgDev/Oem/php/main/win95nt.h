@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2013 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -14,9 +14,11 @@
   +----------------------------------------------------------------------+
   | Author:                                                              |
   +----------------------------------------------------------------------+
+  | MapGuide-changes: Only define uid_t, gid_t and pid_t if ACE hasn't   |
+  +----------------------------------------------------------------------+
 */
 
-/* $Id: win95nt.h 306939 2011-01-01 02:19:59Z felipe $ */
+/* $Id$ */
 
 /* Defines and types for Windows 95/NT */
 #define HAVE_DECLARED_TIMEZONE

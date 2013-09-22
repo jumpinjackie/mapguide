@@ -17,11 +17,18 @@ INSTALLDIR=/usr/local/mapguideopensource
 
 PORT=8008
 TOMCAT=0
+TOMCAT_PORT=8009
+START_HTTPD=0
+START_TOMCAT=0
 
 while [ $# -gt 0 ]; do    # Until you run out of parameters . . .
   case "$1" in
     -port|--port)
               PORT="$2"
+              shift
+              ;;
+    -tomcat-port|--tomcat-port)
+              TOMCAT_PORT="$2"
               shift
               ;;
     -prefix|--prefix)
@@ -32,13 +39,25 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters . . .
               TOMCAT=1
               shift
               ;;
+    -start-tomcat|--start-tomcat)
+              START_TOMCAT=1
+              shift
+              ;;
+    -start-httpd|--start-httpd)
+              START_HTTPD=1
+              shift
+              ;;
     -help|--help)
               echo "Usage: $0 (options)"
               echo "Options:"
               echo "  --port [Apache port number]"
               echo "  --prefix [installation directory]"
+              echo "  --start-httpd Automatically start httpd once compiled"
               echo "  --with-tomcat Configure and install Tomcat"
+              echo "  --tomcat-port [Tomcat port number]"
+              echo "  --start-tomcat Automatically start tomcat once configured"
               echo "  --help Display usage"
+              exit 0
               ;;
   esac
   shift       # Check next set of parameters.
@@ -54,7 +73,7 @@ fi
 echo
 echo "Apache will be configured to run on port $PORT."
 if [ "$TOMCAT" = "1" ]; then
-  echo "Tomcat will be configured to run on port $PORT."
+  echo "Tomcat will be configured to run on port $TOMCAT_PORT."
 fi
 
 
@@ -117,43 +136,52 @@ check_tomcat_install ()
 
 #**********************************************************
 # Apache build procedure
-# Notes: none
+# Notes: Be sure to install pcre-devel (on CentOS) or an
+# equivalent library in other Linux distributions
 #**********************************************************
-echo Apache Httpd build started
-tar -zxf httpd-2.2.21.tar.gz
-pushd httpd-2.2.21
+echo "Apache Httpd build started"
+tar -jxf httpd-2.4.6.tar.bz2
+if [ ! -d "httpd-2.4.6/srclib/apr" ]; then
+	tar -jxf apr-1.4.8.tar.bz2
+	mv apr-1.4.8 httpd-2.4.6/srclib/apr
+fi
+if [ ! -d "httpd-2.4.6/srclib/aprutil" ]; then
+	tar -jxf apr-util-1.5.2.tar.bz2
+	mv apr-util-1.5.2 httpd-2.4.6/srclib/apr-util
+fi
+pushd httpd-2.4.6
 ./configure --prefix=$INSTALLWEB/apache2 --enable-mods-shared=all \
---enable-ldap --with-ldap --enable-authnz-ldap --with-included-apr --with-port=$PORT
+--with-included-apr --with-port=$PORT
 check_apache_build
 make
 check_apache_build
 popd
-echo Apache Httpd build completed
+echo "Apache Httpd build completed"
 
 #**********************************************************
 # Apache shutdown  procedure
 # Notes: none
 #**********************************************************
-echo Checking for existing Apache install
+echo "Checking for existing Apache install"
 if [ -d $INSTALLWEB/apache2/bin ]; then
-  echo Attempting to shutdown Apache
+  echo "Attempting to shutdown Apache"
   pushd $INSTALLWEB/apache2/bin
   ./apachectl stop
   popd
-  echo Attempting to remove old Apache and Php
+  echo "Attempting to remove old Apache and Php"
   pushd $INSTALLWEB
   rm -rf apache2
   rm -rf php
   popd
-  echo Completed uninstall of Apache and Php
+  echo "Completed uninstall of Apache and Php"
 fi
 
 #**********************************************************
 # Apache install procedure
 # Notes: none
 #**********************************************************
-echo Apache install started
-pushd httpd-2.2.21
+echo "Apache install started"
+pushd httpd-2.4.6
 make install
 check_apache_install
 popd
@@ -167,7 +195,7 @@ cat httpd.conf.mgorig_ tmpfile > httpd.conf
 rm httpd.conf.mgorig_
 popd
 
-echo Apache install completed
+echo "Apache install completed"
 
 pushd $INSTALLWEB/apache2/conf
 cat > mapguide.conf <<END-OF-CONFIGURATION
@@ -196,8 +224,9 @@ popd
 # Php build procedure
 # Notes: none
 #**********************************************************
-echo Php build started
-pushd ../php
+echo "Php build started"
+tar -jxf php-5.5.3.tar.bz2
+pushd php-5.5.3
 ./configure --prefix=$INSTALLWEB/php --with-apxs2=$INSTALLWEB/apache2/bin/apxs --with-openssl \
 --with-curl --enable-xml --enable-wddx --enable-shared  \
 --enable-safe-mode --with-zlib --enable-zip --enable-mbstring=all --with-xsl=/usr/lib --with-gd --with-png --with-jpeg --with-freetype
@@ -205,27 +234,27 @@ check_php_build
 make
 check_php_build
 popd
-echo Php build completed
+echo "Php build completed"
 
 #**********************************************************
 # Php install procedure
 # Notes: none
 #**********************************************************
-echo Php install started
-pushd ../php
+echo "Php install started"
+pushd php-5.5.3
 make install
 check_php_install
 popd
-echo Php install completed
+echo "Php install completed"
 
 #**********************************************************
 # Tomcat connector build/install procedure
 # Notes: none
 #**********************************************************
 if [ "$TOMCAT" = "1" ]; then
-echo Tomcat connector build/install started
-tar -zxf tomcat-connectors-1.2.30-src.tar.gz
-pushd tomcat-connectors-1.2.30-src/native
+echo "Tomcat connector build/install started"
+tar -zxf tomcat-connectors-1.2.37-src.tar.gz
+pushd tomcat-connectors-1.2.37-src/native
 
 ./configure --with-apxs=$INSTALLWEB/apache2/bin/apxs
 check_tomcat_build
@@ -234,7 +263,7 @@ check_tomcat_build
 make install
 check_tomcat_install
 popd
-echo Tomcat connector build/install completed
+echo "Tomcat connector build/install completed"
 fi
 
 #**********************************************************
@@ -242,14 +271,14 @@ fi
 # Notes: none
 #**********************************************************
 if [ "$TOMCAT" = "1" ]; then
-echo Tomcat install started
-tar -zxf apache-tomcat-7.0.21.tar.gz -C $INSTALLWEB
+echo "Tomcat install started"
+tar -zxf apache-tomcat-7.0.42.tar.gz -C $INSTALLWEB
 check_tomcat_install
 pushd $INSTALLWEB
-mv apache-tomcat-7.0.21 tomcat
+mv apache-tomcat-7.0.42 tomcat
 check_tomcat_install
 popd
-echo Tomcat install completed
+echo "Tomcat install completed"
 fi
 
 #**********************************************************
@@ -257,13 +286,15 @@ fi
 # Notes: none
 #**********************************************************
 
-echo Apache configuration started 
+echo "Apache configuration started"
 
 pushd $INSTALLWEB/apache2/conf
 # Prep httpd.conf to read mapguide configuration
 echo "" > tmpfile
 echo "Include conf/mapguide.conf" >> tmpfile
 cp httpd.conf httpd.conf.mgorig_
+# Activate mod_rewrite
+sed -i "s/#LoadModule rewrite_module modules\/mod_rewrite.so/LoadModule rewrite_module modules\/mod_rewrite.so/g" httpd.conf.mgorig_
 cat httpd.conf.mgorig_ tempfile > httpd.conf
 rm httpd.conf.mgorig_
 popd
@@ -316,8 +347,7 @@ Alias /mapguide "$INSTALLWEB/www/"
 <Directory "$INSTALLWEB/www/">
   AllowOverride All
   Options All
-  Order allow,deny
-  Allow from all
+  Require all granted
 
   AddHandler php5-script .php
   AddHandler mgmapagent_handler fcgi
@@ -336,7 +366,7 @@ echo "Apache configuration completed"
 # Notes: none
 #**********************************************************
 if [ "$TOMCAT" = "1" ]; then
-echo Tomcat configuration started
+echo "Tomcat configuration started"
 pushd $INSTALLWEB/apache2/conf
 cat >> mapguide.conf <<END-OF-CONFIGURATION
 
@@ -372,7 +402,7 @@ worker.list=worker1
 # Set properties for worker1 (ajp13)
 worker.worker1.type=ajp13
 worker.worker1.host=localhost
-worker.worker1.port=8009
+worker.worker1.port=$TOMCAT_PORT
 worker.worker1.lbfactor=50
 worker.worker1.cachesize=10
 worker.worker1.cache_timeout=600
@@ -429,7 +459,7 @@ cat startup.sh.orig >> startup.sh
 chmod 755 startup.sh
 popd
 
-echo Tomcat configuration completed
+echo "Tomcat configuration completed"
 fi
 
 
@@ -452,7 +482,9 @@ echo "Php configuration completed"
 
 echo "Adding test pages"
 
-mkdir $INSTALLWEB/www
+if [ ! -d "$INSTALLWEB/www" ]; then
+	mkdir $INSTALLWEB/www
+fi
 cat >> $INSTALLWEB/www/index.html <<ENDOFINDEX
 <html>
 <body>
@@ -470,7 +502,7 @@ ENDOFINFO
 
 echo "Installation complete."
 
-
+if [ "$START_HTTPD" = "1" ]; then
 #**********************************************************
 # Start Apache
 # Notes: none
@@ -480,17 +512,17 @@ pushd $INSTALLWEB/apache2/bin
 ./apachectl start
 popd
 echo "Apache is now online."
-
+fi
 
 #**********************************************************
 # Tomcat startup procedure
 # Notes: none
 #**********************************************************
-if [ "$TOMCAT" = "1" ]; then
-echo Tomcat startup 
+if [ "$TOMCAT" = "1" -a "$START_TOMCAT" = "1" ]; then
+echo "Tomcat startup"
 pushd $INSTALLWEB/tomcat/bin
 ./startup.sh
 popd
 
-echo Tomcat startup completed
+echo "Tomcat startup completed"
 fi

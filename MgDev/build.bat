@@ -313,8 +313,8 @@ echo [install]: Web Tier - fusion
 call build_fusion.bat
 %XCOPY% "%MG_OEM%\fusion_build" "%MG_OUTPUT_WEB%\www\fusion" /EXCLUDE:%CONFIGURATION%_excludes.txt
 echo [install]: Web Tier - Apache module
-if not exist "%MG_OUTPUT_WEB%\Apache2\modules" mkdir "%MG_OUTPUT_WEB%\Apache2\modules"
-%XCOPY% /F "%MG_BUILD_MAPAGENT%" "%MG_OUTPUT_WEB%\Apache2\modules"
+if not exist "%MG_OUTPUT_WEB%\Apache24\modules" mkdir "%MG_OUTPUT_WEB%\Apache24\modules"
+%XCOPY% /F "%MG_BUILD_MAPAGENT%" "%MG_OUTPUT_WEB%\Apache24\modules"
 if "%TYPECOMPONENT%"=="server" goto quit
 if "%TYPECOMPONENT%"=="web" goto quit
 

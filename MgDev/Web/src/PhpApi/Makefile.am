@@ -14,10 +14,10 @@ INCLUDES = -I../../../Common/MdfModel \
            -I../../../Common/Geometry \
            -I../../../Common/PlatformBase \
            -I../../../Common/MapGuideCommon \
-           -I../../../Oem/php/TSRM \
-           -I../../../Oem/php/Zend \
-           -I../../../Oem/php/main \
-           -I../../../Oem/php \
+           -I$(php_src)/TSRM \
+           -I$(php_src)/Zend \
+           -I$(php_src)/main \
+           -I$(php_src) \
            -I../../../Oem/ACE/ACE_wrappers \
            -I../HttpHandler \
            -I../WebSupport \
