@@ -1182,3 +1182,34 @@ void TestResourceService::TestCase_BenchmarkGetResourceContents()
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
 }
+
+void TestResourceService::TestCase_PackageNoOpUpdateRepository()
+{
+    try
+    {
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
+        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_PackageNoOpUpdateRepository", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        MgResourceIdentifier resId(L"Library://UnitTests/Package/LineSymbol.SymbolDefinition");
+        if (pService->ResourceExists(&resId))
+        {
+            pService->DeleteResource(&resId);
+        }
+
+        Ptr<MgByteSource> byteSource = new MgByteSource(L"..\\UnitTestFiles\\PackageTest.mgp");
+        Ptr<MgByteReader> byteReader = byteSource->GetReader();
+
+        //This package contains an UPDATEREPOSITORY directive, which should no-op when loaded by mg-desktop
+        pService->ApplyResourcePackage(byteReader);
+        CPPUNIT_ASSERT(pService->ResourceExists(&resId));
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
