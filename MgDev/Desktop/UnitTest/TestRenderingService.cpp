@@ -454,10 +454,10 @@ void TestRenderingService::TestEnd()
 
         // Data related to stylization function tests
         Ptr<MgResourceIdentifier> ldfres14 = new MgResourceIdentifier(L"Library://UnitTests/Layers/StylizationFuncs.LayerDefinition");
-        m_svcResource->GetResourceHeader(ldfres14);
+        m_svcResource->DeleteResource(ldfres14);
 
         Ptr<MgResourceIdentifier> mapres15 = new MgResourceIdentifier(L"Library://UnitTests/Maps/StylizationFuncs.MapDefinition");
-        m_svcResource->GetResourceHeader(mapres15);
+        m_svcResource->DeleteResource(mapres15);
     }
     catch(MgFileIoException* e)
     {

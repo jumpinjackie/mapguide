@@ -219,38 +219,7 @@ void MgdResourcePackageLoader::PerformOperation(const MgOperationInfo& opInfo)
 void MgdResourcePackageLoader::UpdateRepository(
     const MgOperationInfo& opInfo)
 {
-    MG_RESOURCE_SERVICE_TRY()
-
-    const MgdOperationParameter& resourceIdParam = opInfo.GetParameter(
-        MgdOperationParameter::ResourceId);
-    Ptr<MgResourceIdentifier> resource = CreateResourceIdentifier(resourceIdParam);
-
-    const MgdOperationParameter& resourceHeaderParam = opInfo.GetParameter(
-        MgdOperationParameter::ResourceHeader, false);
-    Ptr<MgByteReader> header = CreateByteReader(resourceHeaderParam, false);
-
-    const MgdOperationParameter& resourceContentParam = opInfo.GetParameter(
-        MgdOperationParameter::ResourceContent, (header == NULL));
-    Ptr<MgByteReader> content = CreateByteReader(resourceContentParam);
-
-    /*
-    if (m_packageLogWriter != NULL)
-    {
-        MG_LOG_OPERATION_MESSAGE(L"UpdateRepository");
-        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resourceIdParam.GetValue());
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resourceContentParam.GetValue());
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resourceHeaderParam.GetValue());
-        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
-
-        m_packageLogWriter->AddOperation(operationMessage);
-    }*/
-
-    m_repositoryManager.UpdateRepository(resource, content, header);
-
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.UpdateRepository")
+    //NOOP. mg-desktop doesn't implement this operation
 }
 
 ///////////////////////////////////////////////////////////////////////////////
