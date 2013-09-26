@@ -402,4 +402,101 @@
   <data name="TitleSearch" xml:space="preserve">
     <value>Search</value>
   </data>
+  <data name="TitleRedline" xml:space="preserve">
+    <value>Redline</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="area_box" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_box.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_cross" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_cross.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_dash" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_dash.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_dolmit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_dolmit.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_hex" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_hex.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_line" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_line.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_line_135" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_line_135.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_line_45" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_line_45.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_line_90" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_line_90.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_net" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_net.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_sacncr" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_sacncr.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_solid" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_solid.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_square" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_square.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_steel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_steel.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_border" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_border.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_dash" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_dash.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_dashdot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_dashdot.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_dashdotdot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_dashdotdot.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_divide" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_divide.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_dot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_dot.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_fenceline1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_fenceline1.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_rail" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_rail.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_solid" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_solid.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="markupfeaturesource" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\markupfeaturesource.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="markuplayerdefinition" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\markuplayerdefinition.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="markuplayerdefinition_advanced" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\markuplayerdefinition_advanced.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="RedlineLayerGroupLabel" xml:space="preserve">
+    <value>Redline Layers</value>
+  </data>
+  <data name="ConfirmDeleteRedlines" xml:space="preserve">
+    <value>Are you sure you want to delete the selected redline objects?</value>
+  </data>
+  <data name="SpecifyRedlineText" xml:space="preserve">
+    <value>Specify the text for the selected redline(s)</value>
+  </data>
+  <data name="TitleDeleteRedlines" xml:space="preserve">
+    <value>Delete Redlines</value>
+  </data>
+  <data name="TitleEditRedlineText" xml:space="preserve">
+    <value>Edit Redline Text</value>
+  </data>
 </root>

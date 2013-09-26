@@ -22,6 +22,41 @@ namespace OSGeo.MapGuide.Viewer
             return "POLYGON((" + x1str + " " + y1str + ", " + x2str + " " + y1str + ", " + x2str + " " + y2str + ", " + x1str + " " + y2str + ", " + x1str + " " + y1str + "))"; //NOXLATE
         }
 
+        /// <summary>
+        /// Perform sprintf-style substitution of the given template with the given values.
+        /// </summary>
+        /// <param name="templ"></param>
+        /// <param name="vals"></param>
+        /// <returns></returns>
+        public static string Substitute(String templ, String[] vals)
+        {
+            StringBuilder res = new StringBuilder();
+            int index = 0, val = 0;
+            bool found;
+            do
+            {
+                found = false;
+                int i = templ.IndexOf('%', index);
+                if(i != -1)
+                {
+                    found = true;
+                    res.Append(templ.Substring(index, i - index));
+                    if(i < templ.Length - 1)
+                    {
+                        if(templ[i+1] == '%')
+                            res.Append('%');
+                        else if(templ[i+1] == 's')
+                            res.Append(vals[val ++]);
+                        else
+                            res.Append('@');    //add a character illegal in jscript so we know the template was incorrect
+                        index = i + 2;
+                    }
+                }
+            } while(found);
+            res.Append(templ.Substring(index));
+            return res.ToString();
+        }
+
         public static string ToHtmlColor(Color color)
         {
             return String.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B); //NOXLATE
@@ -34,6 +69,19 @@ namespace OSGeo.MapGuide.Viewer
 
         public static Color FromHtmlColor(string html)
         {
+            return FromHtmlColor(html, true);
+        }
+
+        public static Color FromHtmlColor(string html, bool keepAlpha)
+        {
+            //Replace alpha if discarding
+            if (!keepAlpha && html.Length == 8)
+                html = "FF" + html.Substring(2);
+
+            //Put stubbed alpha if missing
+            if (html.Length == 6)
+                html = "FF" + html;
+
             int rgb = int.Parse(html, System.Globalization.NumberStyles.HexNumber);
             return Color.FromArgb(rgb);
         }

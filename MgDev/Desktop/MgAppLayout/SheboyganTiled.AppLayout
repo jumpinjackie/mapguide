@@ -79,6 +79,10 @@
             <ShowLabel>false</ShowLabel>
           </ItemBase>
           <ItemBase xsi:type="CommandItem">
+            <ComponentID>Redline</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
             <ComponentID>Measure</ComponentID>
             <ShowLabel>false</ShowLabel>
           </ItemBase>
@@ -174,6 +178,10 @@
         <Items>
           <ItemBase xsi:type="CommandItem">
             <ComponentID>Buffer</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Redline</ComponentID>
             <ShowLabel>false</ShowLabel>
           </ItemBase>
           <ItemBase xsi:type="CommandItem">
@@ -281,6 +289,10 @@
           <ShowLabel>false</ShowLabel>
         </ItemBase>
         <ItemBase xsi:type="CommandItem">
+          <ComponentID>Redline</ComponentID>
+          <ShowLabel>false</ShowLabel>
+        </ItemBase>
+        <ItemBase xsi:type="CommandItem">
           <ComponentID>Measure</ComponentID>
           <ShowLabel>false</ShowLabel>
         </ItemBase>
@@ -320,6 +332,16 @@
         <NameValue>
           <Name>TaskPane</Name>
           <Value>taskpane:</Value>
+        </NameValue>
+      </Properties>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>Redline</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgRedlineComponent</ClassName>
+      <Properties>
+        <NameValue>
+          <Name>Target</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.MgViewerTarget:TaskPane</Value>
         </NameValue>
       </Properties>
     </ComponentDefinition>
