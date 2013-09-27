@@ -390,8 +390,8 @@ namespace OSGeo.MapGuide.Viewer
                 _control = control;
                 Rectangle screenRectangle = _frm.RectangleToScreen(_frm.ClientRectangle);
                 int titleHeight = screenRectangle.Top - _frm.Top;
-                _frm.Width = _control.PreferredSize.Width;
-                _frm.Height = _control.PreferredSize.Height + titleHeight + 10; //HACK: height calculation is imperfect, so pad out
+                _frm.Width = Math.Max(_control.Size.Width, _control.PreferredSize.Width);
+                _frm.Height = Math.Max(_control.Size.Height, _control.PreferredSize.Height) + titleHeight + 10; //HACK: height calculation is imperfect, so pad out
                 _frm.Text = _control.Title;
                 _frm.Controls.Add(_control);
                 _control.Closer = this;

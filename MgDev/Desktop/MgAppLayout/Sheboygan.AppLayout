@@ -375,6 +375,10 @@
           <Name>DefaultGeometryTypes</Name>
           <Value>7</Value>
         </NameValue>
+        <NameValue>
+          <Name>Target</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.MgViewerTarget:TaskPane</Value>
+        </NameValue>
       </Properties>
     </ComponentDefinition>
     <ComponentDefinition>
