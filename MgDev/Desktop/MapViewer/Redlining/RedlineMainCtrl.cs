@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace OSGeo.MapGuide.Viewer.Redlining
 {
-    public partial class RedlineMainCtrl : UserControl
+    internal partial class RedlineMainCtrl : UserControl
     {
         public RedlineMainCtrl()
         {

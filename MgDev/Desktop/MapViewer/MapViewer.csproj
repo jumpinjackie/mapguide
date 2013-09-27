@@ -243,12 +243,6 @@
     <Compile Include="Redlining\RedlineManager.cs" />
     <Compile Include="Redlining\RedlineRegistry.cs" />
     <Compile Include="Redlining\RedlineSchemaFactory.cs" />
-    <Compile Include="Redlining\RedlineStyleCtrl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Redlining\RedlineStyleCtrl.Designer.cs">
-      <DependentUpon>RedlineStyleCtrl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Redlining\RedlineStyleDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -334,9 +328,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Redlining\RedlineMainCtrl.resx">
       <DependentUpon>RedlineMainCtrl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Redlining\RedlineStyleCtrl.resx">
-      <DependentUpon>RedlineStyleCtrl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Redlining\RedlineStyleDialog.resx">
       <DependentUpon>RedlineStyleDialog.cs</DependentUpon>
