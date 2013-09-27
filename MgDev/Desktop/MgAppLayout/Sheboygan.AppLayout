@@ -359,6 +359,22 @@
           <Name>Target</Name>
           <Value>enum:OSGeo.MapGuide.Viewer.MgViewerTarget:TaskPane</Value>
         </NameValue>
+        <NameValue>
+          <Name>StylizationType</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.Redlining.RedlineStylizationType:Advanced</Value>
+        </NameValue>
+        <NameValue>
+          <Name>UseDefaultSettings</Name>
+          <Value>true</Value>
+        </NameValue>
+        <NameValue>
+          <Name>DefaultDataStoreFormat</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.Redlining.RedlineDataStoreFormat:SDF</Value>
+        </NameValue>
+        <NameValue>
+          <Name>DefaultGeometryTypes</Name>
+          <Value>7</Value>
+        </NameValue>
       </Properties>
     </ComponentDefinition>
     <ComponentDefinition>

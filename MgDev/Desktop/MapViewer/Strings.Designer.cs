@@ -946,6 +946,15 @@ namespace OSGeo.MapGuide.Viewer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SHP only allows a single geometry type.
+        /// </summary>
+        internal static string SHPGeometryLimitation {
+            get {
+                return ResourceManager.GetString("SHPGeometryLimitation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specify the text for the selected redline(s).
         /// </summary>
         internal static string SpecifyRedlineText {

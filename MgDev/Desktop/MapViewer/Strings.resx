@@ -499,4 +499,7 @@
   <data name="TitleEditRedlineText" xml:space="preserve">
     <value>Edit Redline Text</value>
   </data>
+  <data name="SHPGeometryLimitation" xml:space="preserve">
+    <value>SHP only allows a single geometry type</value>
+  </data>
 </root>

@@ -16,12 +16,12 @@ namespace OSGeo.MapGuide.Viewer
             InitializeComponent();
         }
 
-        private IMapViewer _viewer;
+        private MgRedlineComponent _component;
 
-        public MgRedlineControlImpl(IMapViewer viewer)
+        public MgRedlineControlImpl(MgRedlineComponent component)
             : this()
         {
-            _viewer = viewer;
+            _component = component;
             this.Title = Strings.TitleRedline;
             SetBodyControl(new RedlineMainCtrl());
         }
@@ -64,7 +64,7 @@ namespace OSGeo.MapGuide.Viewer
                     lstRedlineLayers.Items.Remove(item);
 
                     AddRedlineLayerOnMap(layer);
-                    _viewer.RefreshMap();
+                    _component.Viewer.RefreshMap();
                 }
             }
         }
@@ -83,7 +83,7 @@ namespace OSGeo.MapGuide.Viewer
                     lstLayersOnMap.Items.Remove(item);
 
                     AddAvailableRedlineLayer(layer);
-                    _viewer.RefreshMap();
+                    _component.Viewer.RefreshMap();
                     SetBodyControl(new RedlineMainCtrl());
                 }
             }
@@ -103,7 +103,7 @@ namespace OSGeo.MapGuide.Viewer
                         if (diag.ShowDialog() == DialogResult.OK)
                         {
                             _manager.UpdateLayerStyle(layer, diag.GetUpdatedStyle());
-                            _viewer.RefreshMap();
+                            _component.Viewer.RefreshMap();
                         }
                     }
                 }
@@ -118,7 +118,7 @@ namespace OSGeo.MapGuide.Viewer
                 var layer = item.Tag as RedlineLayer;
                 if (layer != null)
                 {
-                    var control = new RedlineEditingCtrl(_viewer, layer);
+                    var control = new RedlineEditingCtrl(_component.Viewer, layer);
                     SetBodyControl(control);
                 }
             }
@@ -164,7 +164,7 @@ namespace OSGeo.MapGuide.Viewer
         {
             if (_manager == null)
             {
-                _manager = new RedlineManager(_viewer);
+                _manager = new RedlineManager(_component.Viewer);
             }
             return _manager;
         }
@@ -185,6 +185,9 @@ namespace OSGeo.MapGuide.Viewer
         {
             var mgr = GetRedlineManager();
             var p = GetCreateParams();
+            if (p == null)
+                return;
+
             bool bAddedToMap = false;
             var layerInfo = mgr.CreateRedlineLayer(p, out bAddedToMap);
             if (bAddedToMap)
@@ -195,22 +198,48 @@ namespace OSGeo.MapGuide.Viewer
 
         private CreateRedlineLayerParams GetCreateParams()
         {
-            //TODO: Popup UI dialog for user to enter this information if desired
-            return new CreateRedlineLayerParams()
+            if (_component.UseDefaultSettings)
             {
-                AddToMap = true,
-                Format = RedlineDataStoreFormat.SDF,
-                GeometryTypes = MgFeatureGeometricType.Point | MgFeatureGeometricType.Curve | MgFeatureGeometricType.Surface,
-                Name = GetName(),
-                Style = RedlineStyle.CreateDefault()
-            };
+                //TODO: Popup UI dialog for user to enter this information if desired
+                return new CreateRedlineLayerParams()
+                {
+                    AddToMap = true,
+                    Format = _component.DefaultDataStoreFormat,
+                    GeometryTypes = _component.DefaultGeometryTypes,
+                    Name = GetName(),
+                    Style = RedlineStyle.CreateDefault(),
+                    StyleType = _component.StylizationType
+                };
+            }
+            else
+            {
+                using (var diag = new NewRedlineLayerDialog(RedlineStyle.CreateDefault(),
+                                                            _component.DefaultDataStoreFormat,
+                                                            _component.DefaultGeometryTypes,
+                                                            GetName()))
+                {
+                    if (diag.ShowDialog() == DialogResult.OK)
+                    {
+                        return new CreateRedlineLayerParams()
+                        {
+                            AddToMap = true,
+                            Format = diag.Format,
+                            GeometryTypes = diag.GeometryTypes,
+                            Name = diag.LayerName,
+                            Style = diag.Style,
+                            StyleType = _component.StylizationType
+                        };
+                    }
+                }
+            }
+            return null;
         }
 
         private void btnRefreshAvailableLayers_Click(object sender, EventArgs e)
         {
             lstRedlineLayers.Clear();
             var mgr = GetRedlineManager();
-            MgMapBase map = _viewer.GetMap();
+            MgMapBase map = _component.Viewer.GetMap();
             MgLayerCollection layers = map.GetLayers();
             foreach (var layer in mgr.GetAvailableLayers())
             {
@@ -226,7 +255,7 @@ namespace OSGeo.MapGuide.Viewer
         {
             lstLayersOnMap.Clear();
             var mgr = GetRedlineManager();
-            MgMapBase map = _viewer.GetMap();
+            MgMapBase map = _component.Viewer.GetMap();
             MgLayerCollection layers = map.GetLayers();
             foreach (var layer in mgr.GetAvailableLayers())
             {

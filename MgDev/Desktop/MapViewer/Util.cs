@@ -8,9 +8,41 @@ namespace OSGeo.MapGuide.Viewer
 {
     internal static class Util
     {
-        public static string MakeWktCircle(double x, double y, double r)
+        static List<double> simulateCirclePoints;
+        static int simulateCircleHalfPointNumber = 40;
+
+        static Util()
         {
-            return "CURVEPOLYGON ((" + (x - r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + " (CIRCULARARCSEGMENT (" + x.ToString(CultureInfo.InvariantCulture) + " " + (y - r).ToString(CultureInfo.InvariantCulture) + ", " + (x + r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + "), CIRCULARARCSEGMENT (" + x.ToString(CultureInfo.InvariantCulture) + " " + (y + r).ToString(CultureInfo.InvariantCulture) + ", " + (x - r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + "))))"; //NOXLATE
+            simulateCirclePoints = new List<double>();
+            for (var i = 0; i < 2 * simulateCircleHalfPointNumber + 1; i++)
+            {
+                simulateCirclePoints.Add(Math.Cos(Math.PI * i / simulateCircleHalfPointNumber));
+                simulateCirclePoints.Add(Math.Sin(Math.PI * i / simulateCircleHalfPointNumber));
+            }
+        }
+
+        public static string MakeWktCircle(double x, double y, double r, bool bSimulate)
+        {
+            if (bSimulate)
+            {
+                StringBuilder fgfText = new StringBuilder("POLYGON ((");
+                for (var i = 0; i < 2 * simulateCircleHalfPointNumber + 1; i++)
+                {
+                    if (i != 0)
+                    {
+                        fgfText.Append(", ");
+                    }
+                    fgfText.Append((x + r * simulateCirclePoints[2 * i]).ToString(CultureInfo.InvariantCulture));
+                    fgfText.Append(" ");
+                    fgfText.Append((y + r * simulateCirclePoints[2 * i + 1]).ToString(CultureInfo.InvariantCulture));
+                }
+                fgfText.Append("))");
+                return fgfText.ToString();
+            }
+            else
+            {
+                return "CURVEPOLYGON ((" + (x - r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + " (CIRCULARARCSEGMENT (" + x.ToString(CultureInfo.InvariantCulture) + " " + (y - r).ToString(CultureInfo.InvariantCulture) + ", " + (x + r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + "), CIRCULARARCSEGMENT (" + x.ToString(CultureInfo.InvariantCulture) + " " + (y + r).ToString(CultureInfo.InvariantCulture) + ", " + (x - r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + "))))"; //NOXLATE
+            }
         }
 
         public static string MakeWktPolygon(double x1, double y1, double x2, double y2)

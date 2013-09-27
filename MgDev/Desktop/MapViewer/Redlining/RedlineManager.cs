@@ -42,9 +42,6 @@ namespace OSGeo.MapGuide.Viewer.Redlining
         public RedlineLayer CreateRedlineLayer(CreateRedlineLayerParams param, out bool bAddedToMap)
         {
             bAddedToMap = false;
-
-            //HACK: SQLite leaky abstraction (hard-coded schema name), SHP probably has some leaks of its own, so we can't assume MarkupSchema:Markup
-            //as the class name interrogate our schema to figure it out
             MgResourceIdentifier fsId = GenerateRedlineFeatureSourceId(param);
 
             string className = null;
@@ -60,9 +57,6 @@ namespace OSGeo.MapGuide.Viewer.Redlining
             else
             {
                 MgFeatureSchema schema = RedlineSchemaFactory.CreateSchema(param.GeometryTypes);
-                MgClassDefinitionCollection classes = schema.GetClasses();
-                MgClassDefinition cls = classes.GetItem(0);
-                className = schema.Name + ":" + cls.Name;
 
                 providerName = "OSGeo.SDF";
                 if (param.Format == RedlineDataStoreFormat.SHP)
@@ -72,6 +66,14 @@ namespace OSGeo.MapGuide.Viewer.Redlining
 
                 MgFileFeatureSourceParams createParams = new MgFileFeatureSourceParams(providerName, RedlineSchemaFactory.SPATIAL_CONTEXT, _map.GetMapSRS(), schema);
                 _featSvc.CreateFeatureSource(fsId, createParams);
+
+                //HACK: SQLite leaky abstraction (hard-coded schema name), SHP probably has some leaks of its own, so we can't assume MarkupSchema:Markup
+                //as the class name so re-interrogate our schema to figure it out
+                MgFeatureSchemaCollection schemas = _featSvc.DescribeSchema(fsId, string.Empty, null);
+                schema = schemas.GetItem(0);
+                MgClassDefinitionCollection classes = schema.GetClasses();
+                MgClassDefinition cls = classes.GetItem(0);
+                className = schema.Name + ":" + cls.Name;
             }
 
             MgResourceIdentifier ldfId = GenerateRedlineLayerDefinitionId(param);
@@ -624,7 +626,7 @@ namespace OSGeo.MapGuide.Viewer.Redlining
         }
     }
 
-    internal enum RedlineStylizationType : int
+    public enum RedlineStylizationType : int
     {
         Basic = 1,
         Advanced = 2
@@ -650,7 +652,7 @@ namespace OSGeo.MapGuide.Viewer.Redlining
         Rectangle
     }
 
-    internal enum RedlineDataStoreFormat
+    public enum RedlineDataStoreFormat
     {
         SDF,
         SHP,

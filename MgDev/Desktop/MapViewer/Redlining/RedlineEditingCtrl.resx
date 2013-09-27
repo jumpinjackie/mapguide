@@ -126,13 +126,13 @@
     <value>27, 109</value>
   </data>
   <data name="chkPromptForLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>169, 17</value>
+    <value>155, 17</value>
   </data>
   <data name="chkPromptForLabel.TabIndex" type="System.Int32, mscorlib">
     <value>13</value>
   </data>
   <data name="chkPromptForLabel.Text" xml:space="preserve">
-    <value>Prompt for text when complete</value>
+    <value>Prompt for text when drawn</value>
   </data>
   <data name="&gt;&gt;chkPromptForLabel.Name" xml:space="preserve">
     <value>chkPromptForLabel</value>

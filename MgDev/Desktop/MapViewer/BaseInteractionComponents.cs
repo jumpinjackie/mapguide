@@ -340,7 +340,7 @@ namespace OSGeo.MapGuide.Viewer
                 if (_wktRw == null)
                     _wktRw = new MgWktReaderWriter();
 
-                MgGeometry geom = _wktRw.Read(Util.MakeWktCircle(x, y, r));
+                MgGeometry geom = _wktRw.Read(Util.MakeWktCircle(x, y, r, true));
                 viewer.SelectByGeometry(geom);
             });
         }

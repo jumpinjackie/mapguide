@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RedlineEditingCtrl));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkPromptForLabel = new System.Windows.Forms.CheckBox();
             this.lblRedlineLayerName = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.lblDrawingStatus = new System.Windows.Forms.Label();
@@ -54,7 +55,6 @@
             this.btnDrawRect = new System.Windows.Forms.Button();
             this.btnDrawLineString = new System.Windows.Forms.Button();
             this.drawTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.chkPromptForLabel = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdActiveRedlines)).BeginInit();
@@ -80,6 +80,12 @@
             resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.TabStop = false;
+            // 
+            // chkPromptForLabel
+            // 
+            resources.ApplyResources(this.chkPromptForLabel, "chkPromptForLabel");
+            this.chkPromptForLabel.Name = "chkPromptForLabel";
+            this.chkPromptForLabel.UseVisualStyleBackColor = true;
             // 
             // lblRedlineLayerName
             // 
@@ -184,6 +190,7 @@
             this.btnRefresh.Image = global::OSGeo.MapGuide.Viewer.Properties.Resources.view_refresh;
             resources.ApplyResources(this.btnRefresh, "btnRefresh");
             this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // label2
             // 
@@ -248,12 +255,6 @@
             this.drawTooltip.SetToolTip(this.btnDrawLineString, resources.GetString("btnDrawLineString.ToolTip"));
             this.btnDrawLineString.UseVisualStyleBackColor = true;
             this.btnDrawLineString.Click += new System.EventHandler(this.btnDrawLineString_Click);
-            // 
-            // chkPromptForLabel
-            // 
-            resources.ApplyResources(this.chkPromptForLabel, "chkPromptForLabel");
-            this.chkPromptForLabel.Name = "chkPromptForLabel";
-            this.chkPromptForLabel.UseVisualStyleBackColor = true;
             // 
             // RedlineEditingCtrl
             // 

@@ -17,6 +17,8 @@ namespace OSGeo.MapGuide.Viewer.Redlining
             grdActiveRedlines.DataSource = _activeRedlines;
         }
 
+        private Color _origToolbarColor;
+
         private IMapViewer _viewer;
         private RedlineLayer _layer;
         private RedlineEditor _ed;
@@ -30,11 +32,28 @@ namespace OSGeo.MapGuide.Viewer.Redlining
             _ed = new RedlineEditor(_viewer, _layer);
             this.Disposed += OnDisposed;
             lblRedlineLayerName.Text = _layer.Name;
+            _origToolbarColor = btnRefresh.BackColor;
         }
+
+        private bool _allowPoints;
+        private bool _allowLines;
+        private bool _allowPoly;
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+
+            _allowPoints = ((_layer.GeometryTypes & MgFeatureGeometricType.Point) == MgFeatureGeometricType.Point);
+            _allowLines = ((_layer.GeometryTypes & MgFeatureGeometricType.Curve) == MgFeatureGeometricType.Curve);
+            _allowPoly = ((_layer.GeometryTypes & MgFeatureGeometricType.Surface) == MgFeatureGeometricType.Surface);
+
+            btnDrawPoint.Enabled = _allowPoints;
+            btnDrawLine.Enabled = _allowLines;
+            btnDrawLineString.Enabled = _allowLines;
+            btnDrawRect.Enabled = _allowPoly;
+            btnDrawPolygon.Enabled = _allowPoly;
+            btnDrawCircle.Enabled = _allowPoly;
+
             RefreshActiveRedlineList(false);
         }
 
@@ -60,12 +79,12 @@ namespace OSGeo.MapGuide.Viewer.Redlining
             if (e.PropertyName == "DigitizingType")
             {
                 bool bNotDrawing = (_viewer.DigitizingType == MapDigitizationType.None);
-                btnDrawCircle.Enabled =
-                btnDrawLine.Enabled =
-                btnDrawLineString.Enabled =
-                btnDrawPoint.Enabled =
-                btnDrawPolygon.Enabled =
-                btnDrawRect.Enabled = bNotDrawing;
+                btnDrawCircle.Enabled = (_allowPoly && bNotDrawing);
+                btnDrawLine.Enabled = (_allowLines && bNotDrawing);
+                btnDrawLineString.Enabled = (_allowLines && bNotDrawing);
+                btnDrawPoint.Enabled = (_allowPoints && bNotDrawing);
+                btnDrawPolygon.Enabled = (_allowPoly && bNotDrawing);
+                btnDrawRect.Enabled = (_allowPoly && bNotDrawing);
 
                 lblDrawingStatus.Visible = !bNotDrawing;
             }
@@ -81,9 +100,13 @@ namespace OSGeo.MapGuide.Viewer.Redlining
 
         private BindingList<RedlineObject> _activeRedlines;
 
-        private void OnRedlineAdded(int key, string text)
+        private void OnRedlineAdded(int? key, string text)
         {
-            _activeRedlines.Add(new RedlineObject(key, text));
+            if (key.HasValue)
+                _activeRedlines.Add(new RedlineObject(key.Value, text));
+            else
+                btnRefresh.BackColor = Color.Orange;
+                //RefreshActiveRedlineList(false);
         }
 
         private void btnDrawPoint_Click(object sender, EventArgs e)
@@ -172,6 +195,12 @@ namespace OSGeo.MapGuide.Viewer.Redlining
                 }
                 _viewer.UpdateSelection();
             }
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            btnRefresh.BackColor = _origToolbarColor;
+            RefreshActiveRedlineList(false);
         }
     }
 }

@@ -4,7 +4,17 @@ using System.Text;
 
 namespace OSGeo.MapGuide.Viewer.Redlining
 {
-    public delegate void RedlineAction(int key, string text);
+    /// <summary>
+    /// A callback that's invoked when a new redline object is added
+    /// </summary>
+    /// <param name="key">The key of the inserted feature. Some providers may not be able to return the key of the inserted feature and will pass null into this callback</param>
+    /// <param name="text">The text of the redline</param>
+    public delegate void RedlineAction(int? key, string text);
+
+    /// <summary>
+    /// A callback that retrieves the redline text
+    /// </summary>
+    /// <returns></returns>
     public delegate string RedlineTextFunction();
 
     internal class RedlineEditor
@@ -151,7 +161,11 @@ namespace OSGeo.MapGuide.Viewer.Redlining
 
             MgPropertyCollection result = redlineLayer.UpdateFeatures(commands);
             MgInt32Property updateResult = result.GetItem(0) as MgInt32Property;
-
+            MgStringProperty errorResult = result.GetItem(0) as MgStringProperty;
+            if (errorResult != null)
+            {
+                throw new Exception(errorResult.GetValue());
+            }
             _viewer.RefreshMap();
         }
 
@@ -183,22 +197,37 @@ namespace OSGeo.MapGuide.Viewer.Redlining
             MgPropertyCollection result = redlineLayer.UpdateFeatures(commands);
             //Insert result is a MgFeatureProperty containing an MgFeatureReader
             MgFeatureProperty insertResult = result.GetItem(0) as MgFeatureProperty;
+            MgStringProperty errorResult = result.GetItem(0) as MgStringProperty;
             if (insertResult != null)
             {
                 var reader = insertResult.GetValue();
                 int inserted = 0;
-                int id = -1;
-                if (reader.ReadNext())
+                int? id = null;
+                try
                 {
-                    id = reader.GetInt32(idProp.Name);
-                    inserted++;
+                    if (reader.ReadNext())
+                    {
+                        inserted++;
+                        id = reader.GetInt32(idProp.Name);
+                    }
                 }
-                reader.Close();
+                catch (MgException ex)
+                {
+                    ex.Dispose();
+                }
+                finally
+                {
+                    reader.Close();
+                }
                 if (inserted > 0)
                 {
                     _viewer.RefreshMap();
                     onRedlineAdded(id, text);
                 }
+            }
+            else if (errorResult != null)
+            {
+                throw new Exception(errorResult.GetValue());
             }
         }
 
@@ -285,7 +314,7 @@ namespace OSGeo.MapGuide.Viewer.Redlining
                 string text = string.Empty;
                 if (retrieveTextMethod != null)
                     text = retrieveTextMethod();
-                MgGeometry geom = _wktRW.Read(Util.MakeWktCircle(x, y, r));
+                MgGeometry geom = _wktRW.Read(Util.MakeWktCircle(x, y, r, true));
                 InsertRedlineGeometry(text, geom, onRedlineAdded);
             });
         }
