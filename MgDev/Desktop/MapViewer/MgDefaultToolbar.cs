@@ -258,7 +258,7 @@ namespace OSGeo.MapGuide.Viewer
 
             _viewer.DigitizeCircle((x, y, r) =>
             {
-                MgGeometry geom = _wktRw.Read(Util.MakeWktCircle(x, y, r));
+                MgGeometry geom = _wktRw.Read(Util.MakeWktCircle(x, y, r, true));
                 _viewer.SelectByGeometry(geom);
             });
         }

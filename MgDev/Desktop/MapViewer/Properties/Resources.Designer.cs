@@ -147,6 +147,13 @@ namespace OSGeo.MapGuide.Viewer.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap cross_script {
+            get {
+                object obj = ResourceManager.GetObject("cross-script", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -507,6 +514,20 @@ namespace OSGeo.MapGuide.Viewer.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap map__minus {
+            get {
+                object obj = ResourceManager.GetObject("map--minus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap map__plus {
+            get {
+                object obj = ResourceManager.GetObject("map--plus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -547,6 +568,13 @@ namespace OSGeo.MapGuide.Viewer.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap plus {
+            get {
+                object obj = ResourceManager.GetObject("plus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -573,6 +601,13 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         internal static System.Drawing.Bitmap print {
             get {
                 object obj = ResourceManager.GetObject("print", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap redline {
+            get {
+                object obj = ResourceManager.GetObject("redline", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
