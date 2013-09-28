@@ -55,6 +55,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Messaging" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -168,6 +169,18 @@
     <Compile Include="MgLayerSelectionHandler.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="MgRedlineComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgRedlineComponent.Designer.cs">
+      <DependentUpon>MgRedlineComponent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgRedlineControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgRedlineControlImpl.Designer.cs">
+      <DependentUpon>MgRedlineControlImpl.cs</DependentUpon>
+    </Compile>
     <Compile Include="MgSearchComponent.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -207,6 +220,40 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Redlining\NewRedlineLayerDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Redlining\NewRedlineLayerDialog.Designer.cs">
+      <DependentUpon>NewRedlineLayerDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Redlining\RedlineEditingCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Redlining\RedlineEditingCtrl.Designer.cs">
+      <DependentUpon>RedlineEditingCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Redlining\RedlineEditor.cs" />
+    <Compile Include="Redlining\RedlineMainCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Redlining\RedlineMainCtrl.Designer.cs">
+      <DependentUpon>RedlineMainCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Redlining\RedlineManager.cs" />
+    <Compile Include="Redlining\RedlineRegistry.cs" />
+    <Compile Include="Redlining\RedlineSchemaFactory.cs" />
+    <Compile Include="Redlining\RedlineStyleDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Redlining\RedlineStyleDialog.Designer.cs">
+      <DependentUpon>RedlineStyleDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Redlining\TextPrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Redlining\TextPrompt.Designer.cs">
+      <DependentUpon>TextPrompt.cs</DependentUpon>
     </Compile>
     <Compile Include="Strings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -254,6 +301,9 @@
     <EmbeddedResource Include="MgQueryResultsDialog.resx">
       <DependentUpon>MgQueryResultsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MgRedlineControlImpl.resx">
+      <DependentUpon>MgRedlineControlImpl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MgSearchControlImpl.resx">
       <DependentUpon>MgSearchControlImpl.cs</DependentUpon>
     </EmbeddedResource>
@@ -269,6 +319,21 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\NewRedlineLayerDialog.resx">
+      <DependentUpon>NewRedlineLayerDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\RedlineEditingCtrl.resx">
+      <DependentUpon>RedlineEditingCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\RedlineMainCtrl.resx">
+      <DependentUpon>RedlineMainCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\RedlineStyleDialog.resx">
+      <DependentUpon>RedlineStyleDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\TextPrompt.resx">
+      <DependentUpon>TextPrompt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Strings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -466,6 +531,37 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\AreaLayerDef.txt" />
+    <None Include="Resources\area_box.templ" />
+    <None Include="Resources\area_cross.templ" />
+    <None Include="Resources\area_dash.templ" />
+    <None Include="Resources\area_dolmit.templ" />
+    <None Include="Resources\area_hex.templ" />
+    <None Include="Resources\area_line.templ" />
+    <None Include="Resources\area_line_135.templ" />
+    <None Include="Resources\area_line_45.templ" />
+    <None Include="Resources\area_line_90.templ" />
+    <None Include="Resources\area_net.templ" />
+    <None Include="Resources\area_sacncr.templ" />
+    <None Include="Resources\area_solid.templ" />
+    <None Include="Resources\area_square.templ" />
+    <None Include="Resources\area_steel.templ" />
+    <None Include="Resources\line_border.templ" />
+    <None Include="Resources\line_dash.templ" />
+    <None Include="Resources\markuplayerdefinition_advanced.xml" />
+    <None Include="Resources\markuplayerdefinition.xml" />
+    <None Include="Resources\markupfeaturesource.xml" />
+    <None Include="Resources\line_dashdot.templ" />
+    <None Include="Resources\line_dashdotdot.templ" />
+    <None Include="Resources\line_divide.templ" />
+    <None Include="Resources\line_dot.templ" />
+    <None Include="Resources\line_fenceline1.templ" />
+    <None Include="Resources\line_rail.templ" />
+    <None Include="Resources\line_solid.templ" />
+    <None Include="Resources\redline.png" />
+    <None Include="Resources\map--minus.png" />
+    <None Include="Resources\map--plus.png" />
+    <None Include="Resources\cross-script.png" />
+    <None Include="Resources\plus.png" />
     <None Include="Resources\AreaRuleTemplate.txt" />
     <None Include="Resources\view_log.gif" />
     <None Include="Resources\monitor_status.gif" />

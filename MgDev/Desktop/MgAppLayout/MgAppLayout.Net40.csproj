@@ -103,6 +103,7 @@
     </Compile>
     <None Include="Sheboygan.AppLayout">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="SheboyganTiled.AppLayout">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

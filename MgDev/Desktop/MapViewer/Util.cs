@@ -8,9 +8,41 @@ namespace OSGeo.MapGuide.Viewer
 {
     internal static class Util
     {
-        public static string MakeWktCircle(double x, double y, double r)
+        static List<double> simulateCirclePoints;
+        static int simulateCircleHalfPointNumber = 40;
+
+        static Util()
         {
-            return "CURVEPOLYGON ((" + (x - r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + " (CIRCULARARCSEGMENT (" + x.ToString(CultureInfo.InvariantCulture) + " " + (y - r).ToString(CultureInfo.InvariantCulture) + ", " + (x + r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + "), CIRCULARARCSEGMENT (" + x.ToString(CultureInfo.InvariantCulture) + " " + (y + r).ToString(CultureInfo.InvariantCulture) + ", " + (x - r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + "))))"; //NOXLATE
+            simulateCirclePoints = new List<double>();
+            for (var i = 0; i < 2 * simulateCircleHalfPointNumber + 1; i++)
+            {
+                simulateCirclePoints.Add(Math.Cos(Math.PI * i / simulateCircleHalfPointNumber));
+                simulateCirclePoints.Add(Math.Sin(Math.PI * i / simulateCircleHalfPointNumber));
+            }
+        }
+
+        public static string MakeWktCircle(double x, double y, double r, bool bSimulate)
+        {
+            if (bSimulate)
+            {
+                StringBuilder fgfText = new StringBuilder("POLYGON ((");
+                for (var i = 0; i < 2 * simulateCircleHalfPointNumber + 1; i++)
+                {
+                    if (i != 0)
+                    {
+                        fgfText.Append(", ");
+                    }
+                    fgfText.Append((x + r * simulateCirclePoints[2 * i]).ToString(CultureInfo.InvariantCulture));
+                    fgfText.Append(" ");
+                    fgfText.Append((y + r * simulateCirclePoints[2 * i + 1]).ToString(CultureInfo.InvariantCulture));
+                }
+                fgfText.Append("))");
+                return fgfText.ToString();
+            }
+            else
+            {
+                return "CURVEPOLYGON ((" + (x - r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + " (CIRCULARARCSEGMENT (" + x.ToString(CultureInfo.InvariantCulture) + " " + (y - r).ToString(CultureInfo.InvariantCulture) + ", " + (x + r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + "), CIRCULARARCSEGMENT (" + x.ToString(CultureInfo.InvariantCulture) + " " + (y + r).ToString(CultureInfo.InvariantCulture) + ", " + (x - r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + "))))"; //NOXLATE
+            }
         }
 
         public static string MakeWktPolygon(double x1, double y1, double x2, double y2)
@@ -20,6 +52,41 @@ namespace OSGeo.MapGuide.Viewer
             string x2str = x2.ToString(CultureInfo.InvariantCulture);
             string y2str = y2.ToString(CultureInfo.InvariantCulture);
             return "POLYGON((" + x1str + " " + y1str + ", " + x2str + " " + y1str + ", " + x2str + " " + y2str + ", " + x1str + " " + y2str + ", " + x1str + " " + y1str + "))"; //NOXLATE
+        }
+
+        /// <summary>
+        /// Perform sprintf-style substitution of the given template with the given values.
+        /// </summary>
+        /// <param name="templ"></param>
+        /// <param name="vals"></param>
+        /// <returns></returns>
+        public static string Substitute(String templ, String[] vals)
+        {
+            StringBuilder res = new StringBuilder();
+            int index = 0, val = 0;
+            bool found;
+            do
+            {
+                found = false;
+                int i = templ.IndexOf('%', index);
+                if(i != -1)
+                {
+                    found = true;
+                    res.Append(templ.Substring(index, i - index));
+                    if(i < templ.Length - 1)
+                    {
+                        if(templ[i+1] == '%')
+                            res.Append('%');
+                        else if(templ[i+1] == 's')
+                            res.Append(vals[val ++]);
+                        else
+                            res.Append('@');    //add a character illegal in jscript so we know the template was incorrect
+                        index = i + 2;
+                    }
+                }
+            } while(found);
+            res.Append(templ.Substring(index));
+            return res.ToString();
         }
 
         public static string ToHtmlColor(Color color)
@@ -34,6 +101,19 @@ namespace OSGeo.MapGuide.Viewer
 
         public static Color FromHtmlColor(string html)
         {
+            return FromHtmlColor(html, true);
+        }
+
+        public static Color FromHtmlColor(string html, bool keepAlpha)
+        {
+            //Replace alpha if discarding
+            if (!keepAlpha && html.Length == 8)
+                html = "FF" + html.Substring(2);
+
+            //Put stubbed alpha if missing
+            if (html.Length == 6)
+                html = "FF" + html;
+
             int rgb = int.Parse(html, System.Globalization.NumberStyles.HexNumber);
             return Color.FromArgb(rgb);
         }

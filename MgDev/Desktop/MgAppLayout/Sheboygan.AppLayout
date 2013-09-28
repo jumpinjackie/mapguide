@@ -79,6 +79,10 @@
             <ShowLabel>false</ShowLabel>
           </ItemBase>
           <ItemBase xsi:type="CommandItem">
+            <ComponentID>Redline</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
             <ComponentID>Measure</ComponentID>
             <ShowLabel>false</ShowLabel>
           </ItemBase>
@@ -181,6 +185,10 @@
             <ShowLabel>false</ShowLabel>
           </ItemBase>
           <ItemBase xsi:type="CommandItem">
+            <ComponentID>Redline</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
             <ComponentID>Query</ComponentID>
             <ShowLabel>false</ShowLabel>
           </ItemBase>
@@ -251,6 +259,10 @@
             <ShowLabel>false</ShowLabel>
           </ItemBase>
           <ItemBase xsi:type="CommandItem">
+            <ComponentID>Redline</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
             <ComponentID>Measure</ComponentID>
             <ShowLabel>false</ShowLabel>
           </ItemBase>
@@ -293,6 +305,10 @@
           <ShowLabel>false</ShowLabel>
         </ItemBase>
         <ItemBase xsi:type="CommandItem">
+          <ComponentID>Redline</ComponentID>
+          <ShowLabel>false</ShowLabel>
+        </ItemBase>
+        <ItemBase xsi:type="CommandItem">
           <ComponentID>Query</ComponentID>
           <ShowLabel>false</ShowLabel>
         </ItemBase>
@@ -332,6 +348,36 @@
         <NameValue>
           <Name>TaskPane</Name>
           <Value>taskpane:</Value>
+        </NameValue>
+      </Properties>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>Redline</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgRedlineComponent</ClassName>
+      <Properties>
+        <NameValue>
+          <Name>Target</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.MgViewerTarget:TaskPane</Value>
+        </NameValue>
+        <NameValue>
+          <Name>StylizationType</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.Redlining.RedlineStylizationType:Advanced</Value>
+        </NameValue>
+        <NameValue>
+          <Name>UseDefaultSettings</Name>
+          <Value>true</Value>
+        </NameValue>
+        <NameValue>
+          <Name>DefaultDataStoreFormat</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.Redlining.RedlineDataStoreFormat:SDF</Value>
+        </NameValue>
+        <NameValue>
+          <Name>DefaultGeometryTypes</Name>
+          <Value>7</Value>
+        </NameValue>
+        <NameValue>
+          <Name>Target</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.MgViewerTarget:TaskPane</Value>
         </NameValue>
       </Properties>
     </ComponentDefinition>

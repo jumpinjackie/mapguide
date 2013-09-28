@@ -188,6 +188,18 @@
       <DependentUpon>MgQueryResultsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="MgReadOnlyStream.cs" />
+    <Compile Include="MgRedlineComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgRedlineComponent.Designer.cs">
+      <DependentUpon>MgRedlineComponent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgRedlineControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgRedlineControlImpl.Designer.cs">
+      <DependentUpon>MgRedlineControlImpl.cs</DependentUpon>
+    </Compile>
     <Compile Include="MgSearchComponent.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -228,6 +240,40 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Redlining\NewRedlineLayerDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Redlining\NewRedlineLayerDialog.Designer.cs">
+      <DependentUpon>NewRedlineLayerDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Redlining\RedlineEditingCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Redlining\RedlineEditingCtrl.Designer.cs">
+      <DependentUpon>RedlineEditingCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Redlining\RedlineEditor.cs" />
+    <Compile Include="Redlining\RedlineMainCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Redlining\RedlineMainCtrl.Designer.cs">
+      <DependentUpon>RedlineMainCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Redlining\RedlineManager.cs" />
+    <Compile Include="Redlining\RedlineRegistry.cs" />
+    <Compile Include="Redlining\RedlineSchemaFactory.cs" />
+    <Compile Include="Redlining\RedlineStyleDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Redlining\RedlineStyleDialog.Designer.cs">
+      <DependentUpon>RedlineStyleDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Redlining\TextPrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Redlining\TextPrompt.Designer.cs">
+      <DependentUpon>TextPrompt.cs</DependentUpon>
+    </Compile>
     <Compile Include="Strings.Designer.cs" />
     <Compile Include="Tasks\MgTaskPaneStub.cs">
       <SubType>UserControl</SubType>
@@ -267,6 +313,9 @@
     <EmbeddedResource Include="MgQueryResultsDialog.resx">
       <DependentUpon>MgQueryResultsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MgRedlineControlImpl.resx">
+      <DependentUpon>MgRedlineControlImpl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MgSearchControlImpl.resx">
       <DependentUpon>MgSearchControlImpl.cs</DependentUpon>
     </EmbeddedResource>
@@ -282,6 +331,21 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\NewRedlineLayerDialog.resx">
+      <DependentUpon>NewRedlineLayerDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\RedlineEditingCtrl.resx">
+      <DependentUpon>RedlineEditingCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\RedlineMainCtrl.resx">
+      <DependentUpon>RedlineMainCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\RedlineStyleDialog.resx">
+      <DependentUpon>RedlineStyleDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\TextPrompt.resx">
+      <DependentUpon>TextPrompt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Strings.resx" />
     <EmbeddedResource Include="Tasks\MgTaskPaneStub.resx">
