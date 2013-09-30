@@ -52,13 +52,13 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.BatchFile>
-      <command>pushd %WORKSPACE%
+      <command>pushd &quot;%WORKSPACE%&quot;
 rd /S /Q out
 popd
-pushd %WORKSPACE%\Properties
-%MG_TOOL_PATH%\SetAssemblyVersion.exe -set:5.0.0.%SVN_REVISION% GlobalAssemblyInfo.cs
+pushd &quot;%WORKSPACE%\Properties&quot;
+%MG_TOOL_PATH%\SetAssemblyVersion.exe -set:5.1.0.%SVN_REVISION% GlobalAssemblyInfo.cs
 popd
-pushd %WORKSPACE%\SDK
+pushd &quot;%WORKSPACE%\SDK&quot;
 rd /S /Q bin
 popd</command>
     </hudson.tasks.BatchFile>
@@ -70,37 +70,37 @@ popd</command>
       <continueOnBuildFailure>false</continueOnBuildFailure>
     </hudson.plugins.msbuild.MsBuildBuilder>
     <hudson.tasks.BatchFile>
-      <command>pushd %WORKSPACE%\out\Release\AddIns
+      <command>pushd &quot;%WORKSPACE%\out\Release\AddIns&quot;
 rd /S /Q GeoRest
 popd</command>
     </hudson.tasks.BatchFile>
     <hudson.tasks.BatchFile>
-      <command>pushd %WORKSPACE%\UserDoc
+      <command>pushd &quot;%WORKSPACE%\UserDoc&quot;
 call make.bat html
 popd
-pushd %WORKSPACE%\UserDoc\build\html
+pushd &quot;%WORKSPACE%\UserDoc\build\html&quot;
 xcopy /S /Y *.* &quot;%WORKSPACE%\out\Release\UserDoc\&quot;
 popd
 </command>
     </hudson.tasks.BatchFile>
     <hudson.tasks.BatchFile>
-      <command>pushd %WORKSPACE%\Thirdparty\NSIS
+      <command>pushd &quot;%WORKSPACE%\Thirdparty\NSIS&quot;
 makensis.exe /DSLN_CONFIG=Release /DCPU=x86 /DRELEASE_VERSION=%VersionLabel% &quot;%WORKSPACE%\Install\Maestro.nsi&quot;
-pushd 
-pushd %WORKSPACE%\out
-if not exist %MG_BUILD_ARTIFACT_PATH%\maestro mkdir %MG_BUILD_ARTIFACT_PATH%\maestro
-move /Y *.exe %MG_BUILD_ARTIFACT_PATH%\maestro
+popd
+pushd &quot;%WORKSPACE%\out&quot;
+if not exist &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot; mkdir &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot;
+move /Y *.exe &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot;
 popd</command>
     </hudson.tasks.BatchFile>
     <hudson.tasks.BatchFile>
-      <command>pushd %WORKSPACE%\out\Release\AddIns
+      <command>pushd &quot;%WORKSPACE%\out\Release\AddIns&quot;
 rd /S /Q Local
 rd /S /Q Scripting
 popd
-pushd %WORKSPACE%\out\Release
+pushd &quot;%WORKSPACE%\out\Release&quot;
 del /Q LocalConfigure.*
-if not exist %MG_BUILD_ARTIFACT_PATH%\maestro mkdir %MG_BUILD_ARTIFACT_PATH%\maestro
-7z a -tzip -mx9 %MG_BUILD_ARTIFACT_PATH%\maestro\MapGuideMaestro-%VersionLabel%-Release.zip .
+if not exist &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot; mkdir &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot;
+7z a -tzip -mx9 &quot;%MG_BUILD_ARTIFACT_PATH%\maestro\MapGuideMaestro-%VersionLabel%-Release.zip&quot; .
 popd</command>
     </hudson.tasks.BatchFile>
     <hudson.plugins.msbuild.MsBuildBuilder plugin="msbuild@1.17">
@@ -111,12 +111,12 @@ popd</command>
       <continueOnBuildFailure>false</continueOnBuildFailure>
     </hudson.plugins.msbuild.MsBuildBuilder>
     <hudson.tasks.BatchFile>
-      <command>pushd %WORKSPACE%\Doc\Help
+      <command>pushd &quot;%WORKSPACE%\Doc\Help&quot;
 move /Y MaestroAPI.chm &quot;%WORKSPACE%\SDK&quot;
 popd
-pushd %WORKSPACE%\SDK
-if not exist %MG_BUILD_ARTIFACT_PATH%\maestro mkdir %MG_BUILD_ARTIFACT_PATH%\maestro
-7z a -tzip -mx9 %MG_BUILD_ARTIFACT_PATH%\maestro\MaestroSDK_%VersionLabel%.zip .
+pushd &quot;%WORKSPACE%\SDK&quot;
+if not exist &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot; mkdir &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot;
+7z a -tzip -mx9 &quot;%MG_BUILD_ARTIFACT_PATH%\maestro\MaestroSDK_%VersionLabel%.zip&quot; .
 popd</command>
     </hudson.tasks.BatchFile>
   </builders>
