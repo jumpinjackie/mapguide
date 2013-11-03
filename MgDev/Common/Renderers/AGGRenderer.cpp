@@ -2012,8 +2012,8 @@ void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Ma
                 xform->transform(tx, ty, tx, ty);
 
             // detect a close segment (in a Linebuffer this is caused by first and
-            // last point of the contour being equal
-            if (tx == sx && ty == sy)
+            // last point of the contour being equal and size of contour > 2 points)
+            if (tx == sx && ty == sy && ptlast > 1) 
                 c->ps.close_polygon();
             else if (ptlast == 1)
             {
@@ -2030,11 +2030,21 @@ void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Ma
                 if (len2 < 100.0*LINE_SEGMENT_DOT_SIZE*LINE_SEGMENT_DOT_SIZE)
                 {
                     // found a dot - draw it as a 1-pixel long line
-                    double len = sqrt(len2);
-                    dx /= len;
-                    dy /= len;
-                    c->ps.move_to(tx-0.5*dx, ty-0.5*dy);
-                    c->ps.line_to(tx+0.5*dx, ty+0.5*dy);
+                    if (len2 > 0.0)
+                    {
+                        double len = sqrt(len2);
+                        dx /= len;
+                        dy /= len;
+                        c->ps.move_to(tx-0.5*dx, ty-0.5*dy);
+                        c->ps.line_to(tx+0.5*dx, ty+0.5*dy);
+                    }
+                    else
+                    {
+                        // length of line can be 0 when DOTS_HATCH is rendered from DWF
+                        // so use LINE_SEGMENT_DOT_SIZE to render that dots
+                        c->ps.move_to(tx-LINE_SEGMENT_DOT_SIZE, ty-LINE_SEGMENT_DOT_SIZE);
+                        c->ps.line_to(tx+LINE_SEGMENT_DOT_SIZE, ty+LINE_SEGMENT_DOT_SIZE);
+                    }
                 }
                 else
                 {
