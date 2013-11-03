@@ -149,14 +149,14 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* ctx)
     else // default is Round
         ret->lineStroke.join = SE_LineJoin_Round;
 
-    double dScaleX = scaleX.evaluate(ctx->exec);
-    double dScaleY = scaleY.evaluate(ctx->exec);
+    ret->scaleX = scaleX.evaluate(ctx->exec);
+    ret->scaleY = scaleY.evaluate(ctx->exec);
 
     // populate the line buffer
-    if(dScaleX != 1.0 || dScaleY != 1.0)
+    if (ret->scaleX != 1.0 || ret->scaleY != 1.0)
     {
         // combine the path scaling with the style transform
-        SE_Matrix xform(dScaleX, 0.0, 0.0, 0.0, dScaleY, 0.0);
+        SE_Matrix xform(ret->scaleX, 0.0, 0.0, 0.0, ret->scaleY, 0.0);
         xform.premultiply(*ctx->xform);
         ret->geometry->Transform(xform, CalcTolerance(ctx));
     }
@@ -278,14 +278,14 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* ctx)
     else // default is Round
         ret->lineStroke.join = SE_LineJoin_Round;
 
-    // populate the line buffer
-    double dScaleX = scaleX.evaluate(ctx->exec);
-    double dScaleY = scaleY.evaluate(ctx->exec);
+    ret->scaleX = scaleX.evaluate(ctx->exec);
+    ret->scaleY = scaleY.evaluate(ctx->exec);
 
-    if(dScaleX != 1.0 || dScaleY != 1.0)
+    // populate the line buffer
+    if (ret->scaleX != 1.0 || ret->scaleY != 1.0)
     {
         // combine the path scaling with the style transform
-        SE_Matrix xform(dScaleX, 0.0, 0.0, 0.0, dScaleY, 0.0);
+        SE_Matrix xform(ret->scaleX, 0.0, 0.0, 0.0, ret->scaleY, 0.0);
         xform.premultiply(*ctx->xform);
         ret->geometry->Transform(xform, CalcTolerance(ctx));
     }
@@ -725,7 +725,20 @@ void SE_Style::evaluate(SE_EvalContext* ctx)
                 case SE_RenderPrimitive_Polyline:
                     {
                         SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
-                        rp->geometry->Transform(totalxf, CalcTolerance(ctx));
+
+                        // populate the line buffer
+                        if (rp->scaleX != 1.0 || rp->scaleY != 1.0)
+                        {
+                            // add the path scaling to the overall transform
+                            SE_Matrix xform(rp->scaleX, 0.0, 0.0, 0.0, rp->scaleY, 0.0);
+                            xform.premultiply(totalxf);
+                            rp->geometry->Transform(xform, CalcTolerance(ctx));
+                        }
+                        else
+                        {
+                            rp->geometry->Transform(totalxf, CalcTolerance(ctx));
+                        }
+
                         SE_Bounds* seb = rp->geometry->xf_bounds();
                         double margin = GetHalfWeightMargin(rp->lineStroke);
                         rp->bounds[0].x = seb->min[0] - margin;
@@ -1000,8 +1013,8 @@ void SE_AreaStyle::evaluate(SE_EvalContext* ctx)
 
     // scale by xform->x0 and xform->y1 instead of mm2su, because these encompass
     // mm2su as well as scaleX and scaleY
-    style->origin[0]   = origin[0].evaluate(ctx->exec);
-    style->origin[1]   = origin[1].evaluate(ctx->exec);
+    style->origin[0] = origin[0].evaluate(ctx->exec);
+    style->origin[1] = origin[1].evaluate(ctx->exec);
     if (style->originControl != SE_OriginControl_Local)
     {
         // For non-local origin control the origin is in millimeters and must

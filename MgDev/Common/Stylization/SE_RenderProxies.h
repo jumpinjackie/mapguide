@@ -116,6 +116,8 @@ struct SE_RenderPolyline : public SE_RenderPrimitive
 
     SE_LineBuffer* geometry;
     SE_LineStroke lineStroke;
+    double scaleX;
+    double scaleY;
 };
 
 
