@@ -2315,7 +2315,7 @@ void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const S
     {
         c->ras.reset();
         c->ras.add_path(c->ps, pathids[i]);
-        if(c->bPolyClip)
+        if (c->bPolyClip)
         {
             c->clip_ren.color(agg::argb8_packed(color));
             agg::render_scanlines(c->ras, c->sl, c->clip_ren);
@@ -2669,7 +2669,7 @@ void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt
         else
             agg::render_scanlines_bin(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
     }
-    else if(format == RS_ImageFormat_ARGB)
+    else if (format == RS_ImageFormat_ARGB)
     {
         mg_pixfmt_type_argb pf(src);
         pf.premultiply(); // we need to premultiply the alpha - the agg sampler will not work correctly around image edges otherwise
@@ -2691,7 +2691,7 @@ void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt
         else
             agg::render_scanlines_bin(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
     }
-    else if(format == RS_ImageFormat_NATIVE)
+    else if (format == RS_ImageFormat_NATIVE)
     {
         // source image is already premultiplied, declare a pixel format that uses
         // the correct blender
