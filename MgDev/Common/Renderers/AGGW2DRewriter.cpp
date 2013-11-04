@@ -20,6 +20,9 @@
 #include "AGGImageIO.h"
 #include "AGGW2DRewriter.h"
 
+#include "agg_context.h"
+
+
 ////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------
 //
@@ -568,7 +571,12 @@ WT_Result agr_process_polytriangle(WT_Polytriangle & polytriangle, WT_File & fil
 
         lb.Close();
 
-        AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage(), &lb, NULL, color.argb());
+        agg_context* c = (agg_context*)rewriter->GetW2DTargetImage();
+
+        // fix for MapGuide ticket 1987 - temporarily lower gamma to 0.3
+        c->ras.gamma(agg::gamma_power(0.3));
+        AGGRenderer::DrawScreenPolygon(c, &lb, NULL, color.argb());
+        c->ras.gamma(agg::gamma_power(1.0)); 
 
         LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spDstLB.release());
     }
