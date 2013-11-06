@@ -1196,11 +1196,17 @@ function OpenFlyout(xpos, tbItemIndex)
     for(var i = 0; i < items.length; i++)
     {
         var item = items[i];
-        var cmd = commands[item.cmdIndex];
-        var hasIcon = (cmd.icon != null);
-        var w = parent.tbFrame.MeasureText(item.name) + (hasIcon? 42: 26);
-        if (w > width)
-            width = w;
+        if (item)
+        {
+            var cmd = commands[item.cmdIndex];
+            if (cmd)
+            {
+                var hasIcon = (cmd.icon != null);
+                var w = parent.tbFrame.MeasureText(item.name) + (hasIcon? 42: 26);
+                if (w > width)
+                    width = w;
+            }
+        }
     }
     tbMenu = new MenuData(tbItem.htmlElt, 20, 21, 50, width,
                         "../stdicons/icon_popupscrollup.gif", "../stdicons/icon_popupscrollup_disabled.gif", "../stdicons/icon_popupscrolldown.gif", "../stdicons/icon_popupscrolldown_disabled.gif",
