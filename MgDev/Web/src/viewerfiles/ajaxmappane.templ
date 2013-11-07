@@ -1634,6 +1634,8 @@ function LayoutControls()
             lh = wh - y;
         legendCtrl.style.height = lh + "px";
         legendCtrlDiv.style.height = lh + "px";
+        legendCtrlDiv.style.width = infoWidth + "px";
+        legendCtrl.style.width = (infoWidth-1) + "px";
         if(infoWidth >= 20)
             legendCtrlDiv.style.visibility = "visible";
         y += lh;
