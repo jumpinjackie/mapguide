@@ -104,7 +104,7 @@
           <util:InternetShortcut Id="ApacheSamplesShortcut"
            Directory="MapGuideOpenSourceMenuLocation"
            Name="!(loc.Shortcut_Samples)"
-           Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/samples.html" />
+           Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/samples.php" />
           <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ApacheSamplesShortcutComponent">
             <RegistryValue
               Value="Installed"
@@ -173,7 +173,7 @@
           <util:InternetShortcut Id="IISSamplesShortcut"
            Directory="MapGuideOpenSourceMenuLocation"
            Name="!(loc.Shortcut_Samples)"
-           Target="http://localhost/[VIRTUALDIR]/samples.html" />
+           Target="http://localhost/[VIRTUALDIR]/samples.php" />
           <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISSamplesShortcutComponent">
             <RegistryValue
               Value="Installed"
