@@ -88,10 +88,10 @@
           <!-- FDO Core -->
           <Component Id="FdoCoreCompnent" Win64="$(var.Win64)" Guid="90F4CB26-524F-499B-AA22-BD17036B167D">
               <File Id="FdoRegUtil" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FdoRegUtil.exe" />
-              <File Id="FdoBoostChrono" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_chrono-vc100-mt-1_54.dll" />
-              <File Id="FdoBoostSystem" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_system-vc100-mt-1_54.dll" />
-              <File Id="FdoBoostDateTime" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_date_time-vc100-mt-1_54.dll" />
-              <File Id="FdoBoostThread" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_thread-vc100-mt-1_54.dll" />
+              <File Id="FdoBoostChrono" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_chrono-vc110-mt-1_54.dll" />
+              <File Id="FdoBoostSystem" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_system-vc110-mt-1_54.dll" />
+              <File Id="FdoBoostDateTime" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_date_time-vc110-mt-1_54.dll" />
+              <File Id="FdoBoostThread" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_thread-vc110-mt-1_54.dll" />
               <File Id="XalanLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\Xalan-C_1_11.dll" />
               <File Id="XalanMessagesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\XalanMessages_1_11.dll" />
               <File Id="XercesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\xerces-c_3_1.dll" />
