@@ -187,6 +187,12 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_Rail.sdf \
         ..\..\bin\UnitTestFiles\UT_Rail.fs \
         ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+        ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf \
+        ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf \
+        ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf \
+        ..\..\bin\UnitTestFiles\UT_MultiFTSSingleCTS.ldf \
+        ..\..\bin\UnitTestFiles\UT_MultiFTSWithTheme.ldf \
+        ..\..\bin\UnitTestFiles\UT_SingleFTSMultiCTS.ldf \
         ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf \
         ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
         ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
@@ -446,6 +452,12 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_Rail.sdf \
         ..\..\bin\UnitTestFiles\UT_Rail.fs \
         ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+        ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf \
+        ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf \
+        ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf \
+        ..\..\bin\UnitTestFiles\UT_MultiFTSSingleCTS.ldf \
+        ..\..\bin\UnitTestFiles\UT_MultiFTSWithTheme.ldf \
+        ..\..\bin\UnitTestFiles\UT_SingleFTSMultiCTS.ldf \
         ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf \
         ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
         ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
@@ -705,6 +717,12 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_Rail.sdf \
           ..\..\bin\UnitTestFiles\UT_Rail.fs \
           ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+          ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf \
+          ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf \
+          ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf \
+          ..\..\bin\UnitTestFiles\UT_MultiFTSSingleCTS.ldf \
+          ..\..\bin\UnitTestFiles\UT_MultiFTSWithTheme.ldf \
+          ..\..\bin\UnitTestFiles\UT_SingleFTSMultiCTS.ldf \
           ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf \
           ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
           ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
@@ -964,6 +982,12 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_Rail.sdf \
           ..\..\bin\UnitTestFiles\UT_Rail.fs \
           ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+          ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf \
+          ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf \
+          ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf \
+          ..\..\bin\UnitTestFiles\UT_MultiFTSSingleCTS.ldf \
+          ..\..\bin\UnitTestFiles\UT_MultiFTSWithTheme.ldf \
+          ..\..\bin\UnitTestFiles\UT_SingleFTSMultiCTS.ldf \
           ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf \
           ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
           ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
@@ -1096,6 +1120,12 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTSSingleCTS.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiFTSSingleCTS.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTSWithTheme.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiFTSWithTheme.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SingleFTSMultiCTS.ldf  del /F ..\..\bin\UnitTestFiles\UT_SingleFTSMultiCTS.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf      del /F ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
@@ -1223,6 +1253,12 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTSSingleCTS.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiFTSSingleCTS.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTSWithTheme.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiFTSWithTheme.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SingleFTSMultiCTS.ldf  del /F ..\..\bin\UnitTestFiles\UT_SingleFTSMultiCTS.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf      del /F ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
@@ -1350,6 +1386,12 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTSSingleCTS.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiFTSSingleCTS.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTSWithTheme.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiFTSWithTheme.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SingleFTSMultiCTS.ldf  del /F ..\..\bin\UnitTestFiles\UT_SingleFTSMultiCTS.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf      del /F ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
@@ -1475,6 +1517,12 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTSSingleCTS.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiFTSSingleCTS.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTSWithTheme.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiFTSWithTheme.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SingleFTSMultiCTS.ldf  del /F ..\..\bin\UnitTestFiles\UT_SingleFTSMultiCTS.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf      del /F ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
@@ -1574,6 +1622,12 @@ cleanrelease64:
 "..\..\..\UnitTest\TestData\MappingService\UT_Rail.sdf" :
 "..\..\..\UnitTest\TestData\MappingService\UT_Rail.fs" :
 "..\..\..\UnitTest\TestData\MappingService\UT_Rail.ldf" :
+"..\..\..\UnitTestFiles\UT_MultiCTS.ldf" :
+"..\..\..\UnitTestFiles\UT_MultiCTSWithTheme.ldf" :
+"..\..\..\UnitTestFiles\UT_MultiFTS.ldf" :
+"..\..\..\UnitTestFiles\UT_MultiFTSSingleCTS.ldf" :
+"..\..\..\UnitTestFiles\UT_MultiFTSWithTheme.ldf" :
+"..\..\..\UnitTestFiles\UT_SingleFTSMultiCTS.ldf" :
 "..\..\..\UnitTest\TestData\MappingService\UT_RotatedPointStyles.ldf" :
 "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.mdf" :
 "..\..\..\UnitTest\TestData\TileService\UT_Parcels.fs" :
@@ -1772,6 +1826,30 @@ cleanrelease64:
 ..\..\bin\UnitTestFiles\UT_Rail.ldf : "..\..\..\UnitTest\TestData\MappingService\UT_Rail.ldf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_Rail.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_Rail.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_MultiCTS.ldf : "..\..\..\UnitTest\TestData\MappingService\UT_MultiCTS.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_MultiCTS.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_MultiCTS.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf : "..\..\..\UnitTest\TestData\MappingService\UT_MultiCTSWithTheme.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_MultiCTSWithTheme.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_MultiCTSWithTheme.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_MultiFTS.ldf : "..\..\..\UnitTest\TestData\MappingService\UT_MultiFTS.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_MultiFTS.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_MultiFTS.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_MultiFTSSingleCTS.ldf : "..\..\..\UnitTest\TestData\MappingService\UT_MultiFTSSingleCTS.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_MultiFTSSingleCTS.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_MultiFTSSingleCTS.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_MultiFTSWithTheme.ldf : "..\..\..\UnitTest\TestData\MappingService\UT_MultiFTSWithTheme.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_MultiFTSWithTheme.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_MultiFTSWithTheme.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SingleFTSMultiCTS.ldf : "..\..\..\UnitTest\TestData\MappingService\UT_SingleFTSMultiCTS.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_SingleFTSMultiCTS.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_SingleFTSMultiCTS.ldf" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf : "..\..\..\UnitTest\TestData\MappingService\UT_RotatedPointStyles.ldf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
