@@ -274,24 +274,70 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
             if (ftscol->GetCount() == 0)
                 continue;
 
-            // if there are multiple feature type styles, using the first one
-            MdfModel::FeatureTypeStyle* fts = ftscol->GetAt(0);
-            MdfModel::RuleCollection* rules = fts->GetRules();
-            int nRuleCount = rules->GetCount();
+            //Peek ahead to determine what we're dealing with
+            bool bThemed = false;
+            int nCompositeStyleCount = 0;
+            MdfModel::FeatureTypeStyle* singleFTS = NULL;
+            MdfModel::FeatureTypeStyle* singleCTS = NULL;
+            int nTotalFTSRules = 0;
+            int nTotalCTSRules = 0;
+            //Compile type/rule count to determine if this is a themed layer
+            for (int j = 0; j < ftscol->GetCount(); j++)
+            {
+                MdfModel::FeatureTypeStyle* fts = ftscol->GetAt(j);
+                if (!fts->IsShowInLegend())
+                    continue;
+
+                MdfModel::RuleCollection* rules = fts->GetRules();
+                MdfModel::CompositeTypeStyle* cts = dynamic_cast<MdfModel::CompositeTypeStyle*>(fts);
+                //Composite Styles take precedence (it's what the stylizer does. So we're doing the same thing here). 
+                //If a Composite Style exists, we're using it.
+                if (NULL != cts)
+                {
+                    //For a single type scale range, this will only be set once. Otherwise it could
+                    //be set many times over (for each style type we encounter), but this is okay 
+                    //because we won't be using this pointer anyway for multi-type layers
+                    singleCTS = fts;
+                    nTotalCTSRules += rules->GetCount();
+                    nCompositeStyleCount++;
+                }
+                else
+                {
+                    //For a single type scale range, this will only be set once. Otherwise it could
+                    //be set many times over (for each style type we encounter), but this is okay 
+                    //because we won't be using this pointer anyway for multi-type layers
+                    singleFTS = fts;
+                    nTotalFTSRules += rules->GetCount();
+                }
+            }
+            //It's a themed layer if we found more than one rule of that type
+            bThemed = (nTotalFTSRules > 1);
+            //Found a composite style, re-evaluate against composite rule count
+            if (nCompositeStyleCount > 0)
+                bThemed = (nTotalCTSRules > 1);
 
             //add the layer icon, if any
             x = startX;
             RS_Bounds b2(x, y, x + dIconWidth, y + dIconHeight);
 
-            if (nRuleCount > 1)
+            if (bThemed)
             {
                 //in case of themed layer, use standard theme icon
                 DrawPNG(&dr, (unsigned char*)THEMED_LAYER_ICON, sizeof(THEMED_LAYER_ICON), bitmapPixelWidth, bitmapPixelHeight, b2);
             }
             else
             {
+                assert(NULL != singleFTS || NULL != singleCTS); //Should've been set by peek-ahead from above
+
+                MdfModel::FeatureTypeStyle* theFTS = NULL;
+                //Composite TS takes precedence
+                if (NULL != singleCTS)
+                    theFTS = singleCTS;
+                else if (NULL != singleFTS)
+                    theFTS = singleFTS;
+
                 //otherwise pick the icon from the only rule
-                Ptr<MgByteReader> layerIcon = MgMappingUtil::DrawFTS(m_svcResource, fts, bitmapPixelWidth, bitmapPixelHeight, 0);
+                Ptr<MgByteReader> layerIcon = MgMappingUtil::DrawFTS(m_svcResource, theFTS, bitmapPixelWidth, bitmapPixelHeight, 0);
 
                 if (layerIcon.p)
                 {
@@ -309,38 +355,56 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
             RS_LabelInfo info(x, y + verticalTextAdjust, textDef);
             dr.ProcessLabelGroup(&info, 1, mapLayer->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
 
-            if (nRuleCount > 1)
+            //layer is themed : draw the theme icons under the layer title
+            if (bThemed)
             {
                 //theme icons draw slightly indented
                 x = startX + initialMarginX;
 
-                //layer is themed : draw the theme icons under the layer title
-                for (int i = 0; i < nRuleCount; i++)
+                for (int j = 0; j < ftscol->GetCount(); j++)
                 {
-                    MdfModel::Rule* rule = rules->GetAt(i);
+                    MdfModel::FeatureTypeStyle* fts = ftscol->GetAt(j);
+                    //Skip items not marked for display
+                    if (!fts->IsShowInLegend())
+                        continue;
 
-                    //move y cursor down one line
-                    y -= verticalDelta;
+                    MdfModel::CompositeTypeStyle* cts = dynamic_cast<MdfModel::CompositeTypeStyle*>(fts);
+                    //If we found one or more composite styles, then they take precedence. So skip all non-composite ones
+                    if (nCompositeStyleCount > 0 && NULL == cts)
+                        continue;
+
+                    MdfModel::RuleCollection* rules = fts->GetRules();
+
+                    for (int k = 0; k < rules->GetCount(); k++)
+                    {
+                        MdfModel::Rule* rule = rules->GetAt(k);
+
+                        //move y cursor down one line
+                        y -= verticalDelta;
+
+                        if (y < bottomLimit)
+                            break;
+
+                        //draw the icon for the current theming rule
+                        Ptr<MgByteReader> rdr = MgMappingUtil::DrawFTS(m_svcResource, fts, bitmapPixelWidth, bitmapPixelHeight, k);
+
+                        if (rdr != NULL)
+                        {
+                            MgByteSink sink(rdr);
+                            Ptr<MgByte> bytes = sink.ToBuffer();
+
+                            RS_Bounds b2(x, y, x + dIconWidth, y + dIconHeight);
+                            DrawPNG(&dr, bytes->Bytes(), bytes->GetLength(), bitmapPixelWidth, bitmapPixelHeight, b2);
+                        }
+
+                        //draw the label after the icon, but also allow
+                        //some blank space for better clarity
+                        RS_LabelInfo info(x + dIconWidth + initialMarginX, y + verticalTextAdjust, textDef);
+                        dr.ProcessLabelGroup(&info, 1, rule->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
+                    }
 
                     if (y < bottomLimit)
                         break;
-
-                    //draw the icon for the current theming rule
-                    Ptr<MgByteReader> rdr = MgMappingUtil::DrawFTS(m_svcResource, fts, bitmapPixelWidth, bitmapPixelHeight, i);
-
-                    if (rdr != NULL)
-                    {
-                        MgByteSink sink(rdr);
-                        Ptr<MgByte> bytes = sink.ToBuffer();
-
-                        RS_Bounds b2(x, y, x + dIconWidth, y + dIconHeight);
-                        DrawPNG(&dr, bytes->Bytes(), bytes->GetLength(), bitmapPixelWidth, bitmapPixelHeight, b2);
-                    }
-
-                    //draw the label after the icon, but also allow
-                    //some blank space for better clarity
-                    RS_LabelInfo info(x + dIconWidth + initialMarginX, y + verticalTextAdjust, textDef);
-                    dr.ProcessLabelGroup(&info, 1, rule->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
                 }
             }
         }
