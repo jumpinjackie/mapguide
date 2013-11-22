@@ -15,12 +15,12 @@
         <hudson.model.StringParameterDefinition>
           <name>RELEASE_LABEL</name>
           <description></description>
-          <defaultValue>Preview2</defaultValue>
+          <defaultValue>Final</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>WITH_ARCSDE</name>
           <description></description>
-          <defaultValue>no</defaultValue>
+          <defaultValue>yes</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_MAJOR</name>
@@ -30,22 +30,22 @@
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_MINOR</name>
           <description></description>
-          <defaultValue>6</defaultValue>
+          <defaultValue>5</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_BUILD</name>
           <description></description>
-          <defaultValue>0</defaultValue>
+          <defaultValue>2</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_BUILD_SRC</name>
           <description></description>
-          <defaultValue>C:\working\sources\mg-trunk</defaultValue>
+          <defaultValue>C:\working\sources\mg-2.5</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>FDO_SRC</name>
           <description></description>
-          <defaultValue>C:\builds\fdo\3.9.0\x86\Fdo</defaultValue>
+          <defaultValue>C:\builds\fdo\3.8.1\x86_vc10\Fdo</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>INSTANT_SETUP_SRC</name>
@@ -72,18 +72,9 @@
     <hudson.tasks.BatchFile>
       <command>@echo off
 
-SET BUILD_ACTION=Setting Visual Studio env vars
-SET VCBEXTENSION=_vs12
-SET VC_COMPILER=vc110
-SET ACTIVENAMECHECK=&quot;Microsoft Visual Studio 11&quot;
-SET ACTIVEPATHCHECK=&quot;C:\Program Files\Microsoft Visual Studio 11.0\VC&quot;
-if exist %ACTIVEPATHCHECK% goto VSExist
-SET ACTIVEPATHCHECK=&quot;C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC&quot;
-if exist %ACTIVEPATHCHECK% goto VSExist
-goto error
-
-:VSExist
-call %ACTIVEPATHCHECK%\vcvarsall.bat x86
+SET VCBEXTENSION=_vs10
+SET VC_COMPILER=vc100
+call &quot;%WINDOWS_SDK_71_ROOT%\Bin\SetEnv.cmd&quot; /release /x86
 
 REM Sigh! We can&apos;t seem to reference this from Jenkins
 SET MSBUILD_NET35=C:\Windows\Microsoft.NET\Framework\v3.5\msbuild.exe
@@ -162,7 +153,6 @@ robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\javasamples %MG_BUILD_AREA%\MgDev\Doc\
 robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\javaviewersample %MG_BUILD_AREA%\MgDev\Doc\samples\javaviewersample /E /NFL /NDL /nc /ns /np /MT
 robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\phpsamples %MG_BUILD_AREA%\MgDev\Doc\samples\phpsamples /E /NFL /NDL /nc /ns /np /MT
 robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\phpviewersample %MG_BUILD_AREA%\MgDev\Doc\samples\phpviewersample /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\ol2samples %MG_BUILD_AREA%\MgDev\Doc\samples\ol2samples /E /NFL /NDL /nc /ns /np /MT
 robocopy %MG_BUILD_SRC%\MgDev\Doc\viewerapi %MG_BUILD_AREA%\MgDev\Doc\viewerapi /E /NFL /NDL /nc /ns /np /MT
 
 echo [prepare]: Setup FDO in Oem
@@ -176,6 +166,11 @@ cd %MG_BUILD_AREA%\MgDev\Oem\FDO\Bin\Release
 del /Q OSGeo.FDO.*
 del /Q *.pdb
 
+REM echo [prepare]: Pre-process for 64-bit compilation with Windows SDK 7.1
+REM sed -i &quot;s/\%%MSBUILD\%% InstallerPreReq\%%VS_SLN_SUFFIX\%%.sln/REM \%%MSBUILD\%% InstallerPreReq\%%VS_SLN_SUFFIX\%%.sln/g&quot; %MG_BUILD_AREA%\Installer\build64.bat
+REM sed -i &quot;s/REM call build64_vce.bat/call build64_vce.bat/g&quot; %MG_BUILD_AREA%\Installer\build64.bat
+REM echo Updated - %MG_BUILD_AREA%\Installer\build64.bat
+
 :build_mapguide
 cd %MG_BUILD_AREA%\MgDev
 echo [build]: Stamp version numbers
@@ -188,12 +183,21 @@ REM ========================================= MapGuide =========================
 
 cd %MG_BUILD_AREA%\MgDev
 echo [build]: Set env vars
-call setenvironment.bat
+call setenvironment.bat vc10
+
+echo [build]: Prep httpd source
+cd %MG_BUILD_AREA%\MgDev\Oem\LinuxApt
+if not exist httpd-2.2.21.tar 7z x httpd-2.2.21.tar.gz
+REM Extract regardless. We may have an incomplete directory here because windows is stingy
+REM about hidden/locked files when deleting a directory you&apos;re sure is clean
+7z x httpd-2.2.21.tar
+type .\httpd-2.2.21\srclib\apr\include\apr.hw &gt; .\httpd-2.2.21\srclib\apr\include\apr.h
+type .\httpd-2.2.21\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.21\srclib\apr-util\include\apu.h
 
 echo [build]: build oem/server/web
 cd %MG_BUILD_AREA%\MgDev
 SET BUILD_ACTION=build oem/server/web
-call build.bat
+call build.bat -o=%MG_BUILD_OUTPUT% -v
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 echo [build]: install files to build artifact directory
@@ -243,7 +247,7 @@ popd
 pushd %MG_BUILD_AREA%\MgDev\Release
 echo [build]: Copy mg-desktop build artifacts (zip dist)
 SET BUILD_ACTION=Copy mg-desktop build artifacts (zip dist)
-7z a -mx9 %MG_BUILD_ARTIFACT_PATH%\mg-desktop\mg-desktop-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION%-net40-vc11-x86.zip Desktop DesktopSamples
+7z a -mx9 %MG_BUILD_ARTIFACT_PATH%\mg-desktop\mg-desktop-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION%-net40-vc10-x86.zip Desktop DesktopSamples
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 popd
 

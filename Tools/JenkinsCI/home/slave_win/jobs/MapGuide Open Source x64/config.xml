@@ -15,12 +15,12 @@
         <hudson.model.StringParameterDefinition>
           <name>RELEASE_LABEL64</name>
           <description></description>
-          <defaultValue>Final</defaultValue>
+          <defaultValue>Preview2</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>WITH_ARCSDE</name>
           <description></description>
-          <defaultValue>yes</defaultValue>
+          <defaultValue>no</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_MAJOR</name>
@@ -30,22 +30,22 @@
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_MINOR</name>
           <description></description>
-          <defaultValue>5</defaultValue>
+          <defaultValue>6</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_BUILD</name>
           <description></description>
-          <defaultValue>1</defaultValue>
+          <defaultValue>0</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_BUILD_SRC64</name>
           <description></description>
-          <defaultValue>C:\working\sources\mg-2.5</defaultValue>
+          <defaultValue>C:\working\sources\mg-trunk</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>FDO_SRC64</name>
           <description></description>
-          <defaultValue>C:\builds\fdo\3.8.0\x64_vc10\Fdo</defaultValue>
+          <defaultValue>C:\builds\fdo\3.9.0\x64\Fdo</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>INSTANT_SETUP_SRC</name>
@@ -72,9 +72,19 @@
     <hudson.tasks.BatchFile>
       <command>@echo off
 
-SET VCBEXTENSION=_vs10
-SET VC_COMPILER=vc100
-call &quot;%WINDOWS_SDK_71_ROOT%\Bin\SetEnv.cmd&quot; /release /x64
+SET BUILD_ACTION=Setting Visual Studio env vars
+SET VCBEXTENSION=_vs12
+SET VC_COMPILER=vc110
+SET ACTIVENAMECHECK=&quot;Microsoft Visual Studio 11&quot;
+SET ACTIVEPATHCHECK=&quot;C:\Program Files\Microsoft Visual Studio 11.0\VC&quot;
+if exist %ACTIVEPATHCHECK% goto VSExist
+SET ACTIVEPATHCHECK=&quot;C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC&quot;
+if exist %ACTIVEPATHCHECK% goto VSExist
+goto error
+
+REM Use x86_amd64 because 64-bit compiler in VS2012 express is a cross-compiler
+:VSExist
+call %ACTIVEPATHCHECK%\vcvarsall.bat x86_amd64
 
 REM Sigh! We can&apos;t seem to reference this from Jenkins
 SET MSBUILD_NET35=C:\Windows\Microsoft.NET\Framework\v3.5\msbuild.exe
@@ -153,6 +163,7 @@ robocopy %MG_BUILD_SRC64%\MgDev\Doc\samples\javasamples %MG_BUILD_AREA64%\MgDev\
 robocopy %MG_BUILD_SRC64%\MgDev\Doc\samples\javaviewersample %MG_BUILD_AREA64%\MgDev\Doc\samples\javaviewersample /E /NFL /NDL /nc /ns /np /MT
 robocopy %MG_BUILD_SRC64%\MgDev\Doc\samples\phpsamples %MG_BUILD_AREA64%\MgDev\Doc\samples\phpsamples /E /NFL /NDL /nc /ns /np /MT
 robocopy %MG_BUILD_SRC64%\MgDev\Doc\samples\phpviewersample %MG_BUILD_AREA64%\MgDev\Doc\samples\phpviewersample /E /NFL /NDL /nc /ns /np /MT
+robocopy %MG_BUILD_SRC64%\MgDev\Doc\samples\ol2samples %MG_BUILD_AREA64%\MgDev\Doc\samples\ol2samples /E /NFL /NDL /nc /ns /np /MT
 robocopy %MG_BUILD_SRC64%\MgDev\Doc\viewerapi %MG_BUILD_AREA64%\MgDev\Doc\viewerapi /E /NFL /NDL /nc /ns /np /MT
 
 echo [prepare]: Setup FDO in Oem
@@ -166,11 +177,6 @@ cd %MG_BUILD_AREA64%\MgDev\Oem\FDO\Bin\Release64
 del /Q OSGeo.FDO.*
 del /Q *.pdb
 
-echo [prepare]: Pre-process for 64-bit compilation with Windows SDK 7.1
-sed -i &quot;s/\%%MSBUILD\%% InstallerPreReq\%%VS_SLN_SUFFIX\%%.sln/REM \%%MSBUILD\%% InstallerPreReq\%%VS_SLN_SUFFIX\%%.sln/g&quot; %MG_BUILD_AREA64%\Installer\build64.bat
-sed -i &quot;s/REM call build64_vce.bat/call build64_vce.bat/g&quot; %MG_BUILD_AREA64%\Installer\build64.bat
-echo Updated - %MG_BUILD_AREA64%\Installer\build64.bat
-
 :build_mapguide
 cd %MG_BUILD_AREA64%\MgDev
 echo [build]: Stamp version numbers
@@ -183,26 +189,17 @@ REM ========================================= MapGuide =========================
 
 cd %MG_BUILD_AREA64%\MgDev
 echo [build]: Set env vars
-call setenvironment64.bat vc10
-
-echo [build]: Prep httpd source
-cd %MG_BUILD_AREA64%\MgDev\Oem\LinuxApt
-if not exist httpd-2.2.21.tar 7z x httpd-2.2.21.tar.gz
-REM Extract regardless. We may have an incomplete directory here because windows is stingy
-REM about hidden/locked files when deleting a directory you&apos;re sure is clean
-7z x httpd-2.2.21.tar
-type .\httpd-2.2.21\srclib\apr\include\apr.hw &gt; .\httpd-2.2.21\srclib\apr\include\apr.h
-type .\httpd-2.2.21\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.21\srclib\apr-util\include\apu.h
+call setenvironment64.bat
 
 echo [build]: build oem/server/web
 cd %MG_BUILD_AREA64%\MgDev
 SET BUILD_ACTION=build oem/server/web
-call build64.bat -o=%MG_BUILD_OUTPUT64% -v
+call build.bat
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 echo [build]: install files to build artifact directory
 SET BUILD_ACTION=install files to build artifact directory
-call build64.bat -a=install -o=%MG_BUILD_OUTPUT64%
+call build.bat -a=install -o=%MG_BUILD_OUTPUT64%
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 REM Move fusion-selfbuild tools out of staging area
@@ -247,7 +244,7 @@ popd
 pushd %MG_BUILD_AREA64%\MgDev\Release64
 echo [build]: Copy mg-desktop build artifacts (zip dist)
 SET BUILD_ACTION=Copy mg-desktop build artifacts (zip dist)
-7z a -mx9 %MG_BUILD_ARTIFACT_PATH%\mg-desktop\mg-desktop-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%-net40-vc10-x64.zip Desktop DesktopSamples
+7z a -mx9 %MG_BUILD_ARTIFACT_PATH%\mg-desktop\mg-desktop-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%-net40-vc11-x64.zip Desktop DesktopSamples
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 popd
 
@@ -255,7 +252,7 @@ REM ========================================= Instant Setup ====================
 pushd %MG_BUILD_AREA64%\Installer
 echo [build]: Prepare artifact directory
 SET BUILD_ACTION=Prepare artifact directory
-call build64.bat -a=prepare -source=%MG_BUILD_OUTPUT64%
+call build.bat -a=prepare -source=%MG_BUILD_OUTPUT64%
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 popd
 
@@ -304,12 +301,12 @@ REM ========================================= MapGuide Installer ===============
 pushd %MG_BUILD_AREA64%\Installer
 echo [build]: Generate installer file listings
 SET BUILD_ACTION=Generate installer file listings
-call build64.bat -a=generate -source=%MG_BUILD_OUTPUT64%
+call build.bat -a=generate -source=%MG_BUILD_OUTPUT64%
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 echo [build]: Build the installer
 SET BUILD_ACTION=Build the installer
-call build64.bat -source=%MG_BUILD_OUTPUT64% -version=%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64% -name=MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%-%RELEASE_LABEL64%-x64 -title=&quot;MapGuide Open Source %MG_VER_MAJOR_MINOR_BUILD% %RELEASE_LABEL64%&quot;
+call build.bat -source=%MG_BUILD_OUTPUT64% -version=%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64% -name=MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%-%RELEASE_LABEL64%-x64 -title=&quot;MapGuide Open Source %MG_VER_MAJOR_MINOR_BUILD% %RELEASE_LABEL64%&quot;
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 move /Y Output\en-US\MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%-%RELEASE_LABEL64%-x64.exe %MG_BUILD_OUTPUT_ROOT64%

@@ -15,12 +15,12 @@
         <hudson.model.StringParameterDefinition>
           <name>FDO_BUILD_SRC64</name>
           <description>FDO Source directory</description>
-          <defaultValue>C:\working\sources\fdo-trunk</defaultValue>
+          <defaultValue>C:\working\sources\fdo-3.8</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>FDO_VERSION64</name>
           <description>FDO Version Number (major.minor.rev)</description>
-          <defaultValue>3.9.0</defaultValue>
+          <defaultValue>3.8.1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>CLEAR_WORKING_AREA</name>
@@ -43,8 +43,7 @@
       <command>@echo off
 SET FDOMYSQL=%MG_LIB_ROOT%\fdo_rdbms_thirdparty\mysql_x64
 SET FDOORACLE=%MG_LIB_ROOT%\fdo_rdbms_thirdparty\oracle_x64\instantclient\11.2\sdk
-SET FDOPOSTGRESQL=%MG_LIB_ROOT%\fdo_rdbms_thirdparty\pgsql
-SET FDO_BUILD_OUTPUT64=%MG_BUILD_ARTIFACT_PATH%\fdo\%FDO_VERSION64%\x64
+SET FDO_BUILD_OUTPUT64=%MG_BUILD_ARTIFACT_PATH%\fdo\%FDO_VERSION64%\x64_vc10
 SET FDO_BIN_EXTRAS64=%MG_LIB_ROOT%\fdo_extras\%FDO_VERSION64%\x64
 SET REVNUM_FILE64=%MG_TOOL_PATH%\revnum.pl
 SET FDO_STAMP_FILE64=%MG_BUILD_ARTIFACT_PATH%\last_fdo_%FDO_VERSION64%_revision_x64.txt
@@ -53,7 +52,6 @@ SET FDO_WORKING_AREA64=%MG_BUILD_AREA%\FDO\%FDO_VERSION64%\x64
 echo ============ Env Vars for FDO Build =====================
 echo FDOMYSQL           = %FDOMYSQL%
 echo FDOORACLE          = %FDOORACLE%
-echo FDOPOSTGRESQL      = %FDOPOSTGRESQL%
 echo FDO_BUILD_OUTPUT64 = %FDO_BUILD_OUTPUT64%
 echo FDO_BIN_EXTRAS64   = %FDO_BIN_EXTRAS64%
 echo REVNUM_FILE64      = %REVNUM_FILE64%
@@ -83,6 +81,12 @@ SET BUILD_ACTION=Copy non UAC-gimped UpdateVersion
 copy /Y %MG_TOOL_PATH%\UpdateVersion.exe %FDO_WORKING_AREA64%\Thirdparty\util\UpdateVersion\bin
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
+REM Prepare for Windows SDK 7.1 C++ compiler
+echo [prepare]: Enabling build settings for compilation with Windows 7.1 SDK C++ compiler
+SET BUILD_ACTION=Enabling build settings for compilation with Windows 7.1 SDK C++ compiler
+call %MG_TOOL_PATH%\fdo_enable_vcexpress64.bat %FDO_WORKING_AREA64%
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
+
 :build_fdo
 echo [prepare]: Noting SVN revision
 pushd %FDO_BUILD_SRC64% 
@@ -92,10 +96,10 @@ set /p REVISION= &lt; revision.txt
 copy /Y revision.txt %FDO_STAMP_FILE64%
 popd
 
-REM Need to use x86_amd64 because the 64-bit compiler in VS 2012 express is a cross-compiler
 pushd %FDO_WORKING_AREA64%
 echo [build]: Set env vars
-call setenvironment.bat x86_amd64
+call &quot;%WINDOWS_SDK_71_ROOT%\Bin\SetEnv.cmd&quot; /release /x64
+call setenvironment.bat x64 VC10
 
 echo [build]: build thirdparty
 SET BUILD_ACTION=Build FDO Thirdparty
@@ -138,7 +142,7 @@ exit /b 0</command>
   </builders>
   <publishers>
     <hudson.tasks.BuildTrigger>
-      <childProjects>MapGuide Open Source x64</childProjects>
+      <childProjects>MapGuide Open Source 2.5 x64</childProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>
