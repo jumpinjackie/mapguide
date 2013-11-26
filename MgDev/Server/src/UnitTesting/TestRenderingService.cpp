@@ -796,6 +796,58 @@ void TestRenderingService::TestCase_RenderLegend(CREFSTRING imageFormat, CREFSTR
     }
 }
 
+void TestRenderingService::TestCase_RenderLegendEmptyGroups(CREFSTRING imageFormat, CREFSTRING extension)
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgMap> map = CreateTestMap();
+        map->SetViewScale(75000.0);
+        Ptr<MgColor> bgc = new MgColor(255, 255, 255, 255);
+
+        // Set up the following structure
+        //
+        // EmptyGroup1
+        // EmptyGroup2
+        //    EmptyGroup3
+        //
+        // None of these should be visible when we render the legend
+
+        Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
+        Ptr<MgLayerGroup> group1 = new MgLayerGroup(L"EmptyGroup1");
+        group1->SetLegendLabel(L"EmptyGroup1");
+        Ptr<MgLayerGroup> group2 = new MgLayerGroup(L"EmptyGroup2");
+        group2->SetLegendLabel(L"EmptyGroup2");
+        Ptr<MgLayerGroup> group3 = new MgLayerGroup(L"EmptyGroup3");
+        group3->SetLegendLabel(L"EmptyGroup3");
+
+        group1->SetDisplayInLegend(true);
+        group2->SetDisplayInLegend(true);
+        group3->SetDisplayInLegend(true);
+
+        groups->Add(group1);
+        groups->Add(group2);
+        groups->Add(group3);
+        group3->SetGroup(group2);
+
+        map->Save();
+
+        // Call the API
+        Ptr<MgByteReader> rdr3 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        rdr3->ToFile(GetPath(L"../UnitTestFiles/RenderLegendEmptyGroups", imageFormat, extension));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
 void TestRenderingService::TestCase_RenderLegendMultiFTS(CREFSTRING imageFormat, CREFSTRING extension)
 {
     try

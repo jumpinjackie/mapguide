@@ -184,12 +184,54 @@ void MgLegendPlotUtil::BuildLegendContent(MgMap* map, double scale, MgPlotSpecif
     //for icon and label from the bottom up
     y -= legendSpacing * convertUnits;
 
+    // Compile the necessary information needed to avoid repeated linear searches for this information
+    LayerGroupChildMap groupChildren;
+    VisibleLayerCountMap visibleLayers;
+    CompileInformation(map, visibleLayers, groupChildren);
+
     // Add legend entries for layers that do not belong to a group
-    ProcessLayersForLegend(map, scale, NULL, x, y, textDef, dr, legendSpec, legendOffsetY, convertUnits);
+    ProcessLayersForLegend(map, scale, NULL, x, y, textDef, dr, legendSpec, legendOffsetY, convertUnits, visibleLayers, groupChildren);
 }
 
+void MgLegendPlotUtil::CompileInformation(MgMap* map, VisibleLayerCountMap& visibleLayers, LayerGroupChildMap& groupChildren)
+{
+    Ptr<MgLayerCollection> layers = map->GetLayers();
+    Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
 
-void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLayerGroup* mggroup, double startX, double& startY, RS_TextDef textDef, Renderer& dr, MgPlotSpecification* legendSpec, double legendOffsetY, double convertUnits)
+    for (INT32 i = 0; i < layers->GetCount(); i++)
+    {
+        Ptr<MgLayerBase> layer = layers->GetItem(i);
+        if (!layer->IsVisible()) //Not visible
+            continue;
+
+        Ptr<MgLayerGroup> parentGroup = layer->GetGroup();
+        if (NULL == parentGroup.p) //No parent
+            continue;
+
+        STRING parentGroupName = parentGroup->GetName();
+        VisibleLayerCountMap::iterator vit = visibleLayers.find(parentGroupName);
+        if (vit == visibleLayers.end())
+            visibleLayers[parentGroupName] = 0;
+        visibleLayers[parentGroupName]++;
+    }
+
+    for (INT32 i = 0; i < groups->GetCount(); i++)
+    {
+        Ptr<MgLayerGroup> group = groups->GetItem(i);
+        Ptr<MgLayerGroup> parentGroup = group->GetGroup();
+        if (NULL != parentGroup.p)
+        {
+            STRING groupName = group->GetName();
+            STRING parentGroupName = parentGroup->GetName();
+            LayerGroupChildMap::iterator cit = groupChildren.find(parentGroupName);
+            if (cit == groupChildren.end())
+                groupChildren[parentGroupName] = LayerGroupList();
+            groupChildren[parentGroupName].push_back(groupName);
+        }
+    }
+}
+
+void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLayerGroup* mggroup, double startX, double& startY, RS_TextDef textDef, Renderer& dr, MgPlotSpecification* legendSpec, double legendOffsetY, double convertUnits, VisibleLayerCountMap& visibleLayers, LayerGroupChildMap& groupChildren)
 {
     double x;
     double &y = startY;
@@ -464,7 +506,11 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
         Ptr<MgLayerGroup> groupParent = group->GetGroup();
         if (groupParent.p == mggroup)
         {
-            ProcessLayersForLegend(map, mapScale, group, startX + initialMarginX, y, textDef, dr, legendSpec, legendOffsetY, convertUnits);
+            //If this group has no visible layers, skip it
+            if (!HasVisibleLayers(group->GetName(), visibleLayers, groupChildren))
+                continue;
+
+            ProcessLayersForLegend(map, mapScale, group, startX + initialMarginX, y, textDef, dr, legendSpec, legendOffsetY, convertUnits, visibleLayers, groupChildren);
             if (y < bottomLimit)
             {
                 break;
@@ -473,6 +519,27 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
     }
 }
 
+bool MgLegendPlotUtil::HasVisibleLayers(CREFSTRING groupName, VisibleLayerCountMap& visibleLayers, LayerGroupChildMap& groupChildren)
+{
+    INT32 total = 0;
+    VisibleLayerCountMap::iterator vit = visibleLayers.find(groupName);
+    if (vit != visibleLayers.end())
+    {
+        if (vit->second > 0)
+            return true;
+    }
+
+    LayerGroupChildMap::iterator cit = groupChildren.find(groupName);
+    if (cit != groupChildren.end())
+    {
+        for (LayerGroupList::iterator lit = cit->second.begin(); lit != cit->second.end(); lit++)
+        {
+            if (HasVisibleLayers(*lit, visibleLayers, groupChildren))
+                return true;
+        }
+    }
+    return false;
+}
 
 //
 //  Compute the legend size and the offset position on the page
