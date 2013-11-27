@@ -96,8 +96,8 @@ const double bitmapDpi = STANDARD_DISPLAY_DPI;
 
 const double legendSpacing = bitmapPixelHeight / bitmapDpi + 0.005;
 const double defaultLegendMargin = 0.1; // inch
-const double legendFontHeightMeters = 0.002;
-const double legendTextVertAdjust = 0.07;  // inch
+const double legendFontHeightMeters = 0.003;
+const double legendTextVertAdjust = 0.06;  // inch
 
 const double PrintLegendWidth     = 2.0;
 const double PrintLegendPadding   = 0.1;

@@ -80,6 +80,9 @@ void MgdLegendPlotUtil::AddLegendElement(double dMapScale, Renderer& dr, MgdMap*
     RS_LineStroke lineStroke;
     dr.ProcessPolyline(&lb, lineStroke);
 
+    //Pad left at the top-level
+    legendOffsetX += (defaultLegendMargin * convertUnits);
+
     //And then do the content.
     BuildLegendContent(map, dMapScale, legendSpec, legendOffsetX, legendOffsetY, dr, convertUnits);
 }
@@ -172,6 +175,29 @@ void MgdLegendPlotUtil::ProcessLayersForLegend(MgdMap* map, double mapScale, MgL
 
     //bottom of the legend -- where we stop drawing
     double bottomLimit = legendOffsetY + legendSpec->GetMarginBottom();
+
+    if (NULL != mggroup)
+    {
+        x = startX - initialMarginX;
+        // use group icon
+        RS_Bounds b2(x, y, x + dIconWidth, y + dIconHeight);
+        DrawPNG(&dr, (unsigned char*)LAYER_GROUP_ICON, sizeof(LAYER_GROUP_ICON), bitmapPixelWidth, bitmapPixelHeight, b2);
+
+        // Add the group legend label.
+        RS_LabelInfo info(x + dIconWidth + (defaultLegendMargin * convertUnits), y + legendTextVertAdjust*convertUnits, textDef);
+        dr.ProcessLabelGroup(&info, 1, mggroup->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
+
+        // Indent for children
+        x += initialMarginX;
+
+        //move y cursor down one line
+        y -= verticalDelta;
+
+        if (y < bottomLimit)
+        {
+            return;
+        }
+    }
 
     // build the list of layers that need to be processed
     Ptr<MgLayerCollection> layers = map->GetLayers();
@@ -439,6 +465,29 @@ void MgdLegendPlotUtil::ProcessLayersForLegend(MgdMap* map, double mapScale, MgL
         if (y < bottomLimit)
         {
             break;
+        }
+    }
+
+    //Process child groups of this legend
+    Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
+    for (int i = 0; i < groups->GetCount(); i++)
+    {
+        Ptr<MgLayerGroup> group = groups->GetItem(i);
+        if (!group->GetDisplayInLegend())
+            continue;
+
+        Ptr<MgLayerGroup> groupParent = group->GetGroup();
+        if (groupParent.p == mggroup)
+        {
+            //If this group has no visible layers, skip it
+            if (!HasVisibleLayers(group->GetName(), visibleLayers, groupChildren))
+                continue;
+
+            ProcessLayersForLegend(map, mapScale, group, startX + initialMarginX, y, textDef, dr, legendSpec, legendOffsetY, convertUnits, visibleLayers, groupChildren);
+            if (y < bottomLimit)
+            {
+                break;
+            }
         }
     }
 }
