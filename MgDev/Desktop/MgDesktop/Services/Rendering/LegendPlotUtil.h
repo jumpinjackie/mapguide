@@ -3,6 +3,10 @@
 
 class EPlotRenderer;
 
+typedef std::vector<STRING> LayerGroupList;
+typedef std::map<STRING, LayerGroupList> LayerGroupChildMap;
+typedef std::map<STRING, int> VisibleLayerCountMap;
+
 class MG_DESKTOP_API MgdLegendPlotUtil
 {
 public:
@@ -25,12 +29,14 @@ public:
     //Eventually the scale bar and north arrow ones need to be cleaned up also in order
     //to use them in the AJAX viewer
     void AddLegendElement(double dMapScale, Renderer& dr, MgdMap* map, MgdPlotSpecification* plotSpec, double legendOffsetX, double legendOffsetY);
-    void ProcessLayersForLegend(MgdMap* map, double mapScale, MgLayerGroup* mggroup, double startX, double& startY, RS_TextDef textDef, Renderer& dr, MgdPlotSpecification* plotSpec, double legendOffsetY, double convertUnits);
+    void ProcessLayersForLegend(MgdMap* map, double mapScale, MgLayerGroup* mggroup, double startX, double& startY, RS_TextDef textDef, Renderer& dr, MgdPlotSpecification* plotSpec, double legendOffsetY, double convertUnits, VisibleLayerCountMap& visibleLayers, LayerGroupChildMap& groupChildren);
     void BuildLegendContent(MgdMap* map, double scale, MgdPlotSpecification* legendSpec, double legendOffsetX, double legendOffsetY, Renderer& dr, double convertUnits);
 
     void ExtentFromMapCenter(MgdMap* map, double metersPerUnit, RS_Bounds& b);
+    void CompileInformation(MgdMap* map, VisibleLayerCountMap& visibleLayers, LayerGroupChildMap& groupChildren);
 
 private:
+    static bool HasVisibleLayers(CREFSTRING groupName, VisibleLayerCountMap& visibleLayers, LayerGroupChildMap& groupChildren);
 
     MgResourceService* m_svcResource;
     RS_String m_legendFontName;
