@@ -33,7 +33,7 @@
             $viewer = 'flexible';
         }
 
-        echo '<frameset cols="45%,*" bordercolor=#a0a0a0 frameborder=1 framespacing=2>';
+        echo '<frameset cols="250,*" bordercolor=#a0a0a0 frameborder=1 framespacing=2>';
         echo '<frame name="srcFrame" src="displayschema.php?resId=' . $resName . '&sessionId=' . $sessionId . '&schemaName=' . $schemaName . '&className=' . $className . '&viewer=' . $viewer .'">';
         echo '<frame name="viewFrame" src="blank.php">';
         echo '</frameset>';
