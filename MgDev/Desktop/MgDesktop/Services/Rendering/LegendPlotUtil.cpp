@@ -80,6 +80,9 @@ void MgdLegendPlotUtil::AddLegendElement(double dMapScale, Renderer& dr, MgdMap*
     RS_LineStroke lineStroke;
     dr.ProcessPolyline(&lb, lineStroke);
 
+    //Pad left at the top-level
+    legendOffsetX += (defaultLegendMargin * convertUnits);
+
     //And then do the content.
     BuildLegendContent(map, dMapScale, legendSpec, legendOffsetX, legendOffsetY, dr, convertUnits);
 }
@@ -93,6 +96,10 @@ void MgdLegendPlotUtil::BuildLegendContent(MgdMap* map, double scale, MgdPlotSpe
     textDef.halign() = RS_HAlignment_Left;
     textDef.valign() = RS_VAlignment_Base;
 
+    //for convenience compute legend bitmap size in plot units (inches, mm, pixels, whatever)
+    double dIconWidth = ((double)bitmapPixelWidth / bitmapDpi)*convertUnits;
+    double dIconHeight = ((double)bitmapPixelHeight / bitmapDpi)*convertUnits;
+
     // Get the layer info
     double x = legendOffsetX + legendSpec->GetMarginLeft();
     double y = legendOffsetY + legendSpec->GetPaperHeight() - legendSpec->GetMarginTop() - legendFontHeightMeters*M_TO_IN*convertUnits;
@@ -101,63 +108,54 @@ void MgdLegendPlotUtil::BuildLegendContent(MgdMap* map, double scale, MgdPlotSpe
     //for icon and label from the bottom up
     y -= legendSpacing * convertUnits;
 
+    // Compile the necessary information needed to avoid repeated linear searches for this information
+    LayerGroupChildMap groupChildren;
+    VisibleLayerCountMap visibleLayers;
+    CompileInformation(map, visibleLayers, groupChildren);
+
     // Add legend entries for layers that do not belong to a group
-    ProcessLayersForLegend(map, scale, NULL, x, y, textDef, dr, legendSpec, legendOffsetY, convertUnits);
+    ProcessLayersForLegend(map, scale, NULL, x, y, textDef, dr, legendSpec, legendOffsetY, convertUnits, visibleLayers, groupChildren);
+}
 
-    // do layer groups
-    Ptr<MgLayerGroupCollection> mggroups = map->GetLayerGroups();
+void MgdLegendPlotUtil::CompileInformation(MgdMap* map, VisibleLayerCountMap& visibleLayers, LayerGroupChildMap& groupChildren)
+{
     Ptr<MgLayerCollection> layers = map->GetLayers();
+    Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
 
-    // iterate over groups and draw each group's layers
-    for (int k = 0; k < mggroups->GetCount(); k++)
+    for (INT32 i = 0; i < layers->GetCount(); i++)
     {
-        Ptr<MgLayerGroup> mggroup = mggroups->GetItem(k);
-
-        // Count number of visible layers in this group.
-        bool hasVisibleLayers = false;
-        for (int l = 0; l < layers->GetCount(); l++)
-        {
-            Ptr<MgLayerBase> layer = layers->GetItem(l);
-            Ptr<MgLayerGroup> layerGroup = layer->GetGroup();
-            if ((layer->IsVisible()) && (layerGroup.p == mggroup.p))
-            {
-                hasVisibleLayers = true;
-                break;
-            }
-        }
-        if (!hasVisibleLayers)
+        Ptr<MgLayerBase> layer = layers->GetItem(i);
+        if (!layer->IsVisible()) //Not visible
             continue;
 
-        if (mggroup == NULL)
+        Ptr<MgLayerGroup> parentGroup = layer->GetGroup();
+        if (NULL == parentGroup.p) //No parent
+            continue;
+
+        STRING parentGroupName = parentGroup->GetName();
+        VisibleLayerCountMap::iterator vit = visibleLayers.find(parentGroupName);
+        if (vit == visibleLayers.end())
+            visibleLayers[parentGroupName] = 0;
+        visibleLayers[parentGroupName]++;
+    }
+
+    for (INT32 i = 0; i < groups->GetCount(); i++)
+    {
+        Ptr<MgLayerGroup> group = groups->GetItem(i);
+        Ptr<MgLayerGroup> parentGroup = group->GetGroup();
+        if (NULL != parentGroup.p)
         {
-            throw new MgNullReferenceException(L"MgdLegendPlotUtil.AddLegendElement", __LINE__, __WFILE__, NULL, L"", NULL);
+            STRING groupName = group->GetName();
+            STRING parentGroupName = parentGroup->GetName();
+            LayerGroupChildMap::iterator cit = groupChildren.find(parentGroupName);
+            if (cit == groupChildren.end())
+                groupChildren[parentGroupName] = LayerGroupList();
+            groupChildren[parentGroupName].push_back(groupName);
         }
-        Ptr<MgLayerGroup> mgparent = mggroup->GetGroup();
-
-        double indent = 0;
-        while (mgparent)
-        {
-            indent += PrintGroupIndent;
-            mgparent = mgparent->GetGroup();
-        }
-
-        x = legendOffsetX + (defaultLegendMargin + indent)*convertUnits;
-
-        RS_LabelInfo info(x, y + legendTextVertAdjust*convertUnits, textDef);
-        dr.ProcessLabelGroup(&info, 1, mggroup->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
-
-        y -= legendSpacing*convertUnits;
-
-        if (y < legendSpec->GetMarginBottom())
-            break;
-
-        // Process the layers
-        ProcessLayersForLegend(map, scale, mggroup, x, y, textDef, dr, legendSpec, legendOffsetY, convertUnits);
     }
 }
 
-
-void MgdLegendPlotUtil::ProcessLayersForLegend(MgdMap* map, double mapScale, MgLayerGroup* mggroup, double startX, double& startY, RS_TextDef textDef, Renderer& dr, MgdPlotSpecification* legendSpec, double legendOffsetY, double convertUnits)
+void MgdLegendPlotUtil::ProcessLayersForLegend(MgdMap* map, double mapScale, MgLayerGroup* mggroup, double startX, double& startY, RS_TextDef textDef, Renderer& dr, MgdPlotSpecification* legendSpec, double legendOffsetY, double convertUnits, VisibleLayerCountMap& visibleLayers, LayerGroupChildMap& groupChildren)
 {
     double x;
     double &y = startY;
@@ -177,6 +175,29 @@ void MgdLegendPlotUtil::ProcessLayersForLegend(MgdMap* map, double mapScale, MgL
 
     //bottom of the legend -- where we stop drawing
     double bottomLimit = legendOffsetY + legendSpec->GetMarginBottom();
+
+    if (NULL != mggroup)
+    {
+        x = startX - initialMarginX;
+        // use group icon
+        RS_Bounds b2(x, y, x + dIconWidth, y + dIconHeight);
+        DrawPNG(&dr, (unsigned char*)LAYER_GROUP_ICON, sizeof(LAYER_GROUP_ICON), bitmapPixelWidth, bitmapPixelHeight, b2);
+
+        // Add the group legend label.
+        RS_LabelInfo info(x + dIconWidth + (defaultLegendMargin * convertUnits), y + legendTextVertAdjust*convertUnits, textDef);
+        dr.ProcessLabelGroup(&info, 1, mggroup->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
+
+        // Indent for children
+        x += initialMarginX;
+
+        //move y cursor down one line
+        y -= verticalDelta;
+
+        if (y < bottomLimit)
+        {
+            return;
+        }
+    }
 
     // build the list of layers that need to be processed
     Ptr<MgLayerCollection> layers = map->GetLayers();
@@ -268,24 +289,70 @@ void MgdLegendPlotUtil::ProcessLayersForLegend(MgdMap* map, double mapScale, MgL
             if (ftscol->GetCount() == 0)
                 continue;
 
-            // if there are multiple feature type styles, using the first one
-            MdfModel::FeatureTypeStyle* fts = ftscol->GetAt(0);
-            MdfModel::RuleCollection* rules = fts->GetRules();
-            int nRuleCount = rules->GetCount();
+            //Peek ahead to determine what we're dealing with
+            bool bThemed = false;
+            int nCompositeStyleCount = 0;
+            MdfModel::FeatureTypeStyle* singleFTS = NULL;
+            MdfModel::FeatureTypeStyle* singleCTS = NULL;
+            int nTotalFTSRules = 0;
+            int nTotalCTSRules = 0;
+            //Compile type/rule count to determine if this is a themed layer
+            for (int j = 0; j < ftscol->GetCount(); j++)
+            {
+                MdfModel::FeatureTypeStyle* fts = ftscol->GetAt(j);
+                if (!fts->IsShowInLegend())
+                    continue;
+
+                MdfModel::RuleCollection* rules = fts->GetRules();
+                MdfModel::CompositeTypeStyle* cts = dynamic_cast<MdfModel::CompositeTypeStyle*>(fts);
+                //Composite Styles take precedence (it's what the stylizer does. So we're doing the same thing here). 
+                //If a Composite Style exists, we're using it.
+                if (NULL != cts)
+                {
+                    //For a single type scale range, this will only be set once. Otherwise it could
+                    //be set many times over (for each style type we encounter), but this is okay 
+                    //because we won't be using this pointer anyway for multi-type layers
+                    singleCTS = fts;
+                    nTotalCTSRules += rules->GetCount();
+                    nCompositeStyleCount++;
+                }
+                else
+                {
+                    //For a single type scale range, this will only be set once. Otherwise it could
+                    //be set many times over (for each style type we encounter), but this is okay 
+                    //because we won't be using this pointer anyway for multi-type layers
+                    singleFTS = fts;
+                    nTotalFTSRules += rules->GetCount();
+                }
+            }
+            //It's a themed layer if we found more than one rule of that type
+            bThemed = (nTotalFTSRules > 1);
+            //Found a composite style, re-evaluate against composite rule count
+            if (nCompositeStyleCount > 0)
+                bThemed = (nTotalCTSRules > 1);
 
             //add the layer icon, if any
             x = startX;
             RS_Bounds b2(x, y, x + dIconWidth, y + dIconHeight);
 
-            if (nRuleCount > 1)
+            if (bThemed)
             {
                 //in case of themed layer, use standard theme icon
                 DrawPNG(&dr, (unsigned char*)THEMED_LAYER_ICON, sizeof(THEMED_LAYER_ICON), bitmapPixelWidth, bitmapPixelHeight, b2);
             }
             else
             {
+                assert(NULL != singleFTS || NULL != singleCTS); //Should've been set by peek-ahead from above
+
+                MdfModel::FeatureTypeStyle* theFTS = NULL;
+                //Composite TS takes precedence
+                if (NULL != singleCTS)
+                    theFTS = singleCTS;
+                else if (NULL != singleFTS)
+                    theFTS = singleFTS;
+
                 //otherwise pick the icon from the only rule
-                Ptr<MgByteReader> layerIcon = MgdMappingUtil::DrawFTS(m_svcResource, fts, bitmapPixelWidth, bitmapPixelHeight, 0);
+                Ptr<MgByteReader> layerIcon = MgdMappingUtil::DrawFTS(m_svcResource, theFTS, bitmapPixelWidth, bitmapPixelHeight, 0);
 
                 if (layerIcon.p)
                 {
@@ -303,38 +370,56 @@ void MgdLegendPlotUtil::ProcessLayersForLegend(MgdMap* map, double mapScale, MgL
             RS_LabelInfo info(x, y + verticalTextAdjust, textDef);
             dr.ProcessLabelGroup(&info, 1, mapLayer->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
 
-            if (nRuleCount > 1)
+            //layer is themed : draw the theme icons under the layer title
+            if (bThemed)
             {
                 //theme icons draw slightly indented
                 x = startX + initialMarginX;
 
-                //layer is themed : draw the theme icons under the layer title
-                for (int i = 0; i < nRuleCount; i++)
+                for (int j = 0; j < ftscol->GetCount(); j++)
                 {
-                    MdfModel::Rule* rule = rules->GetAt(i);
+                    MdfModel::FeatureTypeStyle* fts = ftscol->GetAt(j);
+                    //Skip items not marked for display
+                    if (!fts->IsShowInLegend())
+                        continue;
 
-                    //move y cursor down one line
-                    y -= verticalDelta;
+                    MdfModel::CompositeTypeStyle* cts = dynamic_cast<MdfModel::CompositeTypeStyle*>(fts);
+                    //If we found one or more composite styles, then they take precedence. So skip all non-composite ones
+                    if (nCompositeStyleCount > 0 && NULL == cts)
+                        continue;
+
+                    MdfModel::RuleCollection* rules = fts->GetRules();
+
+                    for (int k = 0; k < rules->GetCount(); k++)
+                    {
+                        MdfModel::Rule* rule = rules->GetAt(k);
+
+                        //move y cursor down one line
+                        y -= verticalDelta;
+
+                        if (y < bottomLimit)
+                            break;
+
+                        //draw the icon for the current theming rule
+                        Ptr<MgByteReader> rdr = MgdMappingUtil::DrawFTS(m_svcResource, fts, bitmapPixelWidth, bitmapPixelHeight, k);
+
+                        if (rdr != NULL)
+                        {
+                            MgByteSink sink(rdr);
+                            Ptr<MgByte> bytes = sink.ToBuffer();
+
+                            RS_Bounds b2(x, y, x + dIconWidth, y + dIconHeight);
+                            DrawPNG(&dr, bytes->Bytes(), bytes->GetLength(), bitmapPixelWidth, bitmapPixelHeight, b2);
+                        }
+
+                        //draw the label after the icon, but also allow
+                        //some blank space for better clarity
+                        RS_LabelInfo info(x + dIconWidth + initialMarginX, y + verticalTextAdjust, textDef);
+                        dr.ProcessLabelGroup(&info, 1, rule->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
+                    }
 
                     if (y < bottomLimit)
                         break;
-
-                    //draw the icon for the current theming rule
-                    Ptr<MgByteReader> rdr = MgdMappingUtil::DrawFTS(m_svcResource, fts, bitmapPixelWidth, bitmapPixelHeight, i);
-
-                    if (rdr != NULL)
-                    {
-                        MgByteSink sink(rdr);
-                        Ptr<MgByte> bytes = sink.ToBuffer();
-
-                        RS_Bounds b2(x, y, x + dIconWidth, y + dIconHeight);
-                        DrawPNG(&dr, bytes->Bytes(), bytes->GetLength(), bitmapPixelWidth, bitmapPixelHeight, b2);
-                    }
-
-                    //draw the label after the icon, but also allow
-                    //some blank space for better clarity
-                    RS_LabelInfo info(x + dIconWidth + initialMarginX, y + verticalTextAdjust, textDef);
-                    dr.ProcessLabelGroup(&info, 1, rule->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
                 }
             }
         }
@@ -380,6 +465,29 @@ void MgdLegendPlotUtil::ProcessLayersForLegend(MgdMap* map, double mapScale, MgL
         if (y < bottomLimit)
         {
             break;
+        }
+    }
+
+    //Process child groups of this legend
+    Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
+    for (int i = 0; i < groups->GetCount(); i++)
+    {
+        Ptr<MgLayerGroup> group = groups->GetItem(i);
+        if (!group->GetDisplayInLegend())
+            continue;
+
+        Ptr<MgLayerGroup> groupParent = group->GetGroup();
+        if (groupParent.p == mggroup)
+        {
+            //If this group has no visible layers, skip it
+            if (!HasVisibleLayers(group->GetName(), visibleLayers, groupChildren))
+                continue;
+
+            ProcessLayersForLegend(map, mapScale, group, startX + initialMarginX, y, textDef, dr, legendSpec, legendOffsetY, convertUnits, visibleLayers, groupChildren);
+            if (y < bottomLimit)
+            {
+                break;
+            }
         }
     }
 }
@@ -1278,6 +1386,28 @@ void MgdLegendPlotUtil::AddLayoutElements(MgdPrintLayout* layout, STRING mapName
 
     // Finish adding the layout elements to the page
     dr.EndLayout();
+}
+
+bool MgdLegendPlotUtil::HasVisibleLayers(CREFSTRING groupName, VisibleLayerCountMap& visibleLayers, LayerGroupChildMap& groupChildren)
+{
+    INT32 total = 0;
+    VisibleLayerCountMap::iterator vit = visibleLayers.find(groupName);
+    if (vit != visibleLayers.end())
+    {
+        if (vit->second > 0)
+            return true;
+    }
+
+    LayerGroupChildMap::iterator cit = groupChildren.find(groupName);
+    if (cit != groupChildren.end())
+    {
+        for (LayerGroupList::iterator lit = cit->second.begin(); lit != cit->second.end(); lit++)
+        {
+            if (HasVisibleLayers(*lit, visibleLayers, groupChildren))
+                return true;
+        }
+    }
+    return false;
 }
 
 //

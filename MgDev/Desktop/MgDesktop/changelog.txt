@@ -1,5 +1,18 @@
 API Changelog:
 
+ - Fix: Port legend image rendering fixes from MapGuide
+ - Fix: No-op UPDATEREPOSITORY operations in a package manifest. Packages containing such operations can now be loaded without errors
+
+Viewer Changelog:
+
+ - New Generic Redlining component
+ - Fix: Incorrect display of layers with multiple styles and/or composite styles in legend.
+
+2.5.1.7768 (16 Aug 2013)
+========================
+
+API Changelog:
+
  - Fix: MgdResourceService::SetResource not properly flushing out in-memory cached content
  - Fix: Guard against duplicate extended feature classes 
 

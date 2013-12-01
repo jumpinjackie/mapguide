@@ -321,6 +321,38 @@ void TestRenderingService::TestStart()
         Ptr<MgByteReader> dataReader7 = dataSource7->GetReader();
         m_svcResource->SetResourceData(fsres6, L"UT_VotingDistricts.sdf", L"File", dataReader7);
 
+        // ---------------------------------------------------------
+        // Data for exercising legend rendering
+        // ---------------------------------------------------------
+        Ptr<MgResourceIdentifier> ldfres14 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiFTS.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc14 = new MgByteSource(L"../UnitTestFiles/UT_MultiFTS.ldf", false);
+        Ptr<MgByteReader> ldfrdr14 = ldfsrc14->GetReader();
+        m_svcResource->SetResource(ldfres14, ldfrdr14, NULL);
+
+        Ptr<MgResourceIdentifier> ldfres15 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiCTS.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc15 = new MgByteSource(L"../UnitTestFiles/UT_MultiCTS.ldf", false);
+        Ptr<MgByteReader> ldfrdr15 = ldfsrc15->GetReader();
+        m_svcResource->SetResource(ldfres15, ldfrdr15, NULL);
+
+        Ptr<MgResourceIdentifier> ldfres16 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiFTSWithTheme.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc16 = new MgByteSource(L"../UnitTestFiles/UT_MultiFTSWithTheme.ldf", false);
+        Ptr<MgByteReader> ldfrdr16 = ldfsrc16->GetReader();
+        m_svcResource->SetResource(ldfres16, ldfrdr16, NULL);
+
+        Ptr<MgResourceIdentifier> ldfres17 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiCTSWithTheme.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc17 = new MgByteSource(L"../UnitTestFiles/UT_MultiCTSWithTheme.ldf", false);
+        Ptr<MgByteReader> ldfrdr17 = ldfsrc17->GetReader();
+        m_svcResource->SetResource(ldfres17, ldfrdr17, NULL);
+
+        Ptr<MgResourceIdentifier> ldfres18 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiFTSSingleCTS.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc18 = new MgByteSource(L"../UnitTestFiles/UT_MultiFTSSingleCTS.ldf", false);
+        Ptr<MgByteReader> ldfrdr18 = ldfsrc18->GetReader();
+        m_svcResource->SetResource(ldfres18, ldfrdr18, NULL);
+
+        Ptr<MgResourceIdentifier> ldfres19 = new MgResourceIdentifier(L"Library://UnitTests/Layers/SingleFTSMultiCTS.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc19 = new MgByteSource(L"../UnitTestFiles/UT_SingleFTSMultiCTS.ldf", false);
+        Ptr<MgByteReader> ldfrdr19 = ldfsrc19->GetReader();
+        m_svcResource->SetResource(ldfres19, ldfrdr19, NULL);
     }
     catch (MgException* e)
     {
@@ -440,6 +472,19 @@ void TestRenderingService::TestEnd()
         m_svcResource->DeleteResource(fsres6);
         Ptr<MgResourceIdentifier> fsres7 = new MgResourceIdentifier(L"Library://UnitTests/Data/VotingDistricts.FeatureSource");
         m_svcResource->DeleteResource(fsres7);
+
+        Ptr<MgResourceIdentifier> ldfres14 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiFTS.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres14);
+        Ptr<MgResourceIdentifier> ldfres15 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiCTS.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres15);
+        Ptr<MgResourceIdentifier> ldfres16 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiFTSWithTheme.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres16);
+        Ptr<MgResourceIdentifier> ldfres17 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiCTSWithTheme.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres17);
+        Ptr<MgResourceIdentifier> ldfres18 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiFTSSingleCTS.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres18);
+        Ptr<MgResourceIdentifier> ldfres19 = new MgResourceIdentifier(L"Library://UnitTests/Layers/SingleFTSMultiCTS.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres19);
     }
     catch(MgFileIoException* e)
     {
@@ -627,35 +672,316 @@ void TestRenderingService::TestCase_RenderLegend(CREFSTRING imageFormat, CREFSTR
         Ptr<MgLayerGroupCollection> layerGroups = map->GetLayerGroups();
         Ptr<MgLayerCollection> layers = map->GetLayers();
 
-        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Library://UnitTests/Layers/Parcels.LayerDefinition");
+        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Library://UnitTests/Layers/HydrographicPolygons.LayerDefinition");
+        Ptr<MgResourceIdentifier> ldfRail = new MgResourceIdentifier(L"Library://UnitTests/Layers/Rail.LayerDefinition");
 
-        Ptr<MgLayerGroup> group = new MgLayerGroup(L"Can't see me");
-        group->SetLegendLabel(L"Can't see me");
+        Ptr<MgLayerGroup> group = new MgLayerGroup(L"Test Group");
+        group->SetLegendLabel(L"Test Group");
         group->SetDisplayInLegend(true);
         layerGroups->Add(group);
 
+        Ptr<MgLayerGroup> group1 = new MgLayerGroup(L"Nest top level");
+        group1->SetLegendLabel(L"Nest top level");
+        group1->SetDisplayInLegend(true);
+        layerGroups->Add(group1);
+
+        Ptr<MgLayerGroup> group2 = new MgLayerGroup(L"Nest child");
+        group2->SetLegendLabel(L"Nest child (Nest top level)");
+        group2->SetDisplayInLegend(true);
+        group2->SetGroup(group1);
+        layerGroups->Add(group2);
+
+        Ptr<MgLayerGroup> group3 = new MgLayerGroup(L"Not visible in legend");
+        group3->SetLegendLabel(L"Not visible in legend");
+        group3->SetDisplayInLegend(false);
+        layerGroups->Add(group3);
+
         Ptr<MgdLayer> layer = new MgdLayer(resId, m_svcResource);
-        layer->SetName(L"MyParcels");
-        layer->SetLegendLabel(L"Parcels");
+        layer->SetName(L"HydroPolygons");
+        layer->SetLegendLabel(L"HydroPolygons (Test Group)");
         layer->SetGroup(group);
         layer->SetDisplayInLegend(true);
 
+        Ptr<MgdLayer> layer2 = new MgdLayer(ldfRail, m_svcResource);
+        layer2->SetName(L"RailUnderNestedGroup");
+        layer2->SetLegendLabel(L"Rail (Nest Child)");
+        layer2->SetGroup(group2);
+        layer2->SetDisplayInLegend(true);
+
         layers->Add(layer);
+        layers->Add(layer2);
 
         //Re-draw at 75k. Layer group should not be there because it has no visible layers
         map->SetViewScale(75000.0);
-		Ptr<MgByteReader> rdr3 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
-		rdr3->ToFile(GetPath(L"../UnitTestFiles/RenderLegend75kWithEmptyLayerGroup", imageFormat, extension));
+        Ptr<MgByteReader> rdr3 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        rdr3->ToFile(GetPath(L"../UnitTestFiles/RenderLegend75kWithEmptyLayerGroup", imageFormat, extension));
 
         //Re-draw at 14000. Layer group should still not be there because it has no visible layers
         map->SetViewScale(14000.0);
-		Ptr<MgByteReader> rdr4 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        Ptr<MgByteReader> rdr4 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
         rdr4->ToFile(GetPath(L"../UnitTestFiles/RenderLegend14kWithEmptyLayerGroup", imageFormat, extension));
 
         //Re-draw at 12000. Layer group should now be there because its child layer (Parcels) should be visible
         map->SetViewScale(12000.0);
-		Ptr<MgByteReader> rdr5 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        Ptr<MgByteReader> rdr5 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
         rdr5->ToFile(GetPath(L"../UnitTestFiles/RenderLegend12kWithLayerGroup", imageFormat, extension));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestRenderingService::TestCase_RenderLegendEmptyGroups(CREFSTRING imageFormat, CREFSTRING extension)
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgdMap> map = CreateTestMap();
+        map->SetViewScale(75000.0);
+        Ptr<MgColor> bgc = new MgColor(255, 255, 255, 255);
+
+        // Set up the following structure
+        //
+        // EmptyGroup1
+        // EmptyGroup2
+        //    EmptyGroup3
+        //
+        // None of these should be visible when we render the legend
+
+        Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
+        Ptr<MgLayerGroup> group1 = new MgLayerGroup(L"EmptyGroup1");
+        group1->SetLegendLabel(L"EmptyGroup1");
+        Ptr<MgLayerGroup> group2 = new MgLayerGroup(L"EmptyGroup2");
+        group2->SetLegendLabel(L"EmptyGroup2");
+        Ptr<MgLayerGroup> group3 = new MgLayerGroup(L"EmptyGroup3");
+        group3->SetLegendLabel(L"EmptyGroup3");
+
+        group1->SetDisplayInLegend(true);
+        group2->SetDisplayInLegend(true);
+        group3->SetDisplayInLegend(true);
+
+        groups->Add(group1);
+        groups->Add(group2);
+        groups->Add(group3);
+        group3->SetGroup(group2);
+
+        map->Save();
+
+        // Call the API
+        Ptr<MgByteReader> rdr3 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        rdr3->ToFile(GetPath(L"../UnitTestFiles/RenderLegendEmptyGroups", imageFormat, extension));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestRenderingService::TestCase_RenderLegendMultiFTS(CREFSTRING imageFormat, CREFSTRING extension)
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgdMap> map = CreateTestMap();
+
+        // Insert our test layer
+        Ptr<MgResourceIdentifier> layerDef = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiFTS.LayerDefinition");
+        Ptr<MgdLayer> layer = new MgdLayer(layerDef, m_svcResource);
+        layer->SetLegendLabel(layerDef->GetName());
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+        layers->Insert(0, layer);
+        map->Save();
+
+        // call the API using scales of 75000 and 12000
+        Ptr<MgColor> bgc = new MgColor(255, 255, 255, 255);
+
+        map->SetViewScale(75000.0);
+        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        rdr1->ToFile(GetPath(L"../UnitTestFiles/RenderLegendMultiFTS", imageFormat, extension));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestRenderingService::TestCase_RenderLegendMultiCTS(CREFSTRING imageFormat, CREFSTRING extension)
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgdMap> map = CreateTestMap();
+
+        // Insert our test layer
+        Ptr<MgResourceIdentifier> layerDef = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiCTS.LayerDefinition");
+        Ptr<MgdLayer> layer = new MgdLayer(layerDef, m_svcResource);
+        layer->SetLegendLabel(layerDef->GetName());
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+        layers->Insert(0, layer);
+        map->Save();
+
+        // call the API using scales of 75000 and 12000
+        Ptr<MgColor> bgc = new MgColor(255, 255, 255, 255);
+
+        map->SetViewScale(75000.0);
+        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        rdr1->ToFile(GetPath(L"../UnitTestFiles/RenderLegendMultiCTS", imageFormat, extension));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestRenderingService::TestCase_RenderLegendMultiFTSWithTheme(CREFSTRING imageFormat, CREFSTRING extension)
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgdMap> map = CreateTestMap();
+
+        // Insert our test layer
+        Ptr<MgResourceIdentifier> layerDef = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiFTSWithTheme.LayerDefinition");
+        Ptr<MgdLayer> layer = new MgdLayer(layerDef, m_svcResource);
+        layer->SetLegendLabel(layerDef->GetName());
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+        layers->Insert(0, layer);
+        map->Save();
+
+        // call the API using scales of 75000 and 12000
+        Ptr<MgColor> bgc = new MgColor(255, 255, 255, 255);
+
+        map->SetViewScale(75000.0);
+        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        rdr1->ToFile(GetPath(L"../UnitTestFiles/RenderLegendMultiFTSWithTheme", imageFormat, extension));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestRenderingService::TestCase_RenderLegendMultiCTSWithTheme(CREFSTRING imageFormat, CREFSTRING extension)
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgdMap> map = CreateTestMap();
+
+        // Insert our test layer
+        Ptr<MgResourceIdentifier> layerDef = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiCTSWithTheme.LayerDefinition");
+        Ptr<MgdLayer> layer = new MgdLayer(layerDef, m_svcResource);
+        layer->SetLegendLabel(layerDef->GetName());
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+        layers->Insert(0, layer);
+        map->Save();
+
+        // call the API using scales of 75000 and 12000
+        Ptr<MgColor> bgc = new MgColor(255, 255, 255, 255);
+
+        map->SetViewScale(75000.0);
+        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        rdr1->ToFile(GetPath(L"../UnitTestFiles/RenderLegendMultiCTSWithTheme", imageFormat, extension));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestRenderingService::TestCase_RenderLegendMultiFTSSingleCTS(CREFSTRING imageFormat, CREFSTRING extension)
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgdMap> map = CreateTestMap();
+
+        // Insert our test layer
+        Ptr<MgResourceIdentifier> layerDef = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiFTSSingleCTS.LayerDefinition");
+        Ptr<MgdLayer> layer = new MgdLayer(layerDef, m_svcResource);
+        layer->SetLegendLabel(layerDef->GetName());
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+        layers->Insert(0, layer);
+        map->Save();
+
+        // call the API using scales of 75000 and 12000
+        Ptr<MgColor> bgc = new MgColor(255, 255, 255, 255);
+
+        map->SetViewScale(75000.0);
+        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        rdr1->ToFile(GetPath(L"../UnitTestFiles/RenderLegendMultiFTSSingleCTS", imageFormat, extension));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+
+void TestRenderingService::TestCase_RenderLegendSingleFTSMultiCTS(CREFSTRING imageFormat, CREFSTRING extension)
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgdMap> map = CreateTestMap();
+
+        // Insert our test layer
+        Ptr<MgResourceIdentifier> layerDef = new MgResourceIdentifier(L"Library://UnitTests/Layers/SingleFTSMultiCTS.LayerDefinition");
+        Ptr<MgdLayer> layer = new MgdLayer(layerDef, m_svcResource);
+        layer->SetLegendLabel(layerDef->GetName());
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+        layers->Insert(0, layer);
+        map->Save();
+
+        // call the API using scales of 75000 and 12000
+        Ptr<MgColor> bgc = new MgColor(255, 255, 255, 255);
+
+        map->SetViewScale(75000.0);
+        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        rdr1->ToFile(GetPath(L"../UnitTestFiles/RenderLegendSingleFTSMultiCTS", imageFormat, extension));
     }
     catch (MgException* e)
     {
