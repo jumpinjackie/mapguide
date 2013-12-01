@@ -344,7 +344,7 @@ namespace OSGeo.MapGuide.Viewer
             get { return _themeCompressionLimit; }
             set 
             {
-                if (value != _themeCompressionLimit)
+                if (value == _themeCompressionLimit)
                     return;
 
                 _themeCompressionLimit = value;

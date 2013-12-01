@@ -85,6 +85,12 @@ namespace OSGeo.MapGuide.Viewer
             return true;
         }
 
+        class RuleData
+        {
+            public int GeomType;
+            public XmlNodeList RuleNodes;
+        }
+
         private TreeNode CreateLayerNode(MgLayerBase layer)
         {
             var node = new TreeNode();
@@ -113,7 +119,7 @@ namespace OSGeo.MapGuide.Viewer
                 node.Tag = layerMeta;
                 node.ToolTipText = string.Format(Strings.DrawingLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId);
             }
-            else
+            else //Vector or Grid layer
             {
                 var ldfId = layer.LayerDefinition;
                 if (_layers.ContainsKey(layer.GetObjectId()))
@@ -130,9 +136,13 @@ namespace OSGeo.MapGuide.Viewer
 
                 node.Tag = layerMeta;
 
+                const int LAYER_VECTOR = 0;
+                const int LAYER_RASTER = 1;
+                const int LAYER_DWF = 2;
+
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(layerMeta.LayerDefinitionContent);
-                int type = 0;
+                int type = LAYER_VECTOR;
                 XmlNodeList scaleRanges = doc.GetElementsByTagName("VectorScaleRange"); //NOXLATE
                 if (scaleRanges.Count == 0)
                 {
@@ -142,16 +152,17 @@ namespace OSGeo.MapGuide.Viewer
                         scaleRanges = doc.GetElementsByTagName("DrawingLayerDefinition"); //NOXLATE
                         if (scaleRanges.Count == 0)
                             return null;
-                        type = 2;
+                        type = LAYER_DWF;
                     }
                     else
-                        type = 1;
+                        type = LAYER_RASTER;
                 }
 
                 String[] typeStyles = new String[] { "PointTypeStyle", "LineTypeStyle", "AreaTypeStyle", "CompositeTypeStyle" }; //NOXLATE
                 String[] ruleNames = new String[] { "PointRule", "LineRule", "AreaRule", "CompositeRule" }; //NOXLATE
 
                 node.ToolTipText = string.Format(Strings.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
+                //Do this if not cached already from a previous run
                 if (!layerMeta.HasTheme() || !layerMeta.HasDefaultIcons())
                 {
                     for (int sc = 0; sc < scaleRanges.Count; sc++)
@@ -167,94 +178,164 @@ namespace OSGeo.MapGuide.Viewer
                         if (maxElt.Count > 0)
                             maxScale = maxElt[0].ChildNodes[0].Value;
 
-                        if (type != 0)
+                        if (type != LAYER_VECTOR)
                             break;
 
-                        for (int geomType = 0; geomType < typeStyles.Length; geomType++)
+                        bool bComposite = false;
+
+                        //Check TS count. Give precedence to composite type styles
+                        List<XmlNode> typeStyleCol = new List<XmlNode>();
+                        XmlNodeList styleNodes = scaleRange.GetElementsByTagName(typeStyles[3]);
+                        List<RuleData> rules = new List<RuleData>();
+                        if (styleNodes.Count > 0)
                         {
+                            foreach (XmlNode n in styleNodes)
+                            {
+                                // We will check if this typestyle is going to be shown in the legend
+                                XmlNodeList showInLegend = ((XmlElement)n).GetElementsByTagName("ShowInLegend"); //NOXLATE
+                                if (showInLegend.Count > 0)
+                                    if (!bool.Parse(showInLegend[0].ChildNodes[0].Value))
+                                        continue;   // This typestyle does not need to be shown in the legend
+
+                                typeStyleCol.Add(n);
+
+                                var ruleData = new RuleData();
+                                ruleData.GeomType = 3;
+                                ruleData.RuleNodes = ((XmlElement)n).GetElementsByTagName(ruleNames[3]);
+                                if (ruleData.RuleNodes.Count > 0)
+                                    rules.Add(ruleData);
+                            }
+
+                            bComposite = true;
+                        }
+                        else
+                        {
+                            for (int t = 0; t < 3; t++)
+                            {
+                                styleNodes = scaleRange.GetElementsByTagName(typeStyles[t]);
+                                foreach (XmlNode n in styleNodes)
+                                {
+                                    // We will check if this typestyle is going to be shown in the legend
+                                    XmlNodeList showInLegend = ((XmlElement)n).GetElementsByTagName("ShowInLegend"); //NOXLATE
+                                    if (showInLegend.Count > 0)
+                                        if (!bool.Parse(showInLegend[0].ChildNodes[0].Value))
+                                            continue;   // This typestyle does not need to be shown in the legend
+
+                                    typeStyleCol.Add(n);
+
+                                    var ruleData = new RuleData();
+                                    ruleData.GeomType = t;
+                                    ruleData.RuleNodes = ((XmlElement)n).GetElementsByTagName(ruleNames[t]);
+                                    if (ruleData.RuleNodes.Count > 0)
+                                        rules.Add(ruleData);
+                                }
+                            }
+                        }
+
+                        //No type styles. Skip
+                        if (typeStyleCol.Count == 0)
+                            continue;
+
+                        //Determine if this is themed or not
+                        int nTotalRules = 0;
+                        foreach(RuleData r in rules)
+                        {
+                            nTotalRules += r.RuleNodes.Count;
+                        }
+                        bool bThemed = nTotalRules > 1;
+                        if (bThemed)
+                        {
+                            int catIndex = 0;
+                            for (int i = 0; i < rules.Count; i++)
+                            {
+                                RuleData theRule = rules[i];
+                                ThemeCategory themeCat = new ThemeCategory()
+                                {
+                                    MinScale = minScale,
+                                    MaxScale = maxScale,
+                                    GeometryType = theRule.GeomType
+                                };
+
+                                //Non-composite styles must be processed once
+                                if (layerMeta.CategoryExists(themeCat) && theRule.GeomType != 3)
+                                    continue;
+
+                                layerMeta.SetDefaultIcon(themeCat, Properties.Resources.lc_theme);
+                                node.ToolTipText = string.Format(Strings.ThemedLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName, nTotalRules);
+
+                                if (_legend.ThemeCompressionLimit > 0 && theRule.RuleNodes.Count > _legend.ThemeCompressionLimit)
+                                {
+                                    AddThemeRuleNode(layerMeta, themeCat, node, theRule.GeomType, catIndex, theRule.RuleNodes, 0);
+                                    node.Nodes.Add(CreateCompressedThemeNode(layerMeta, themeCat, theRule.RuleNodes.Count - 2));
+                                    AddThemeRuleNode(layerMeta, themeCat, node, theRule.GeomType, (catIndex + (theRule.RuleNodes.Count - 1)), theRule.RuleNodes, theRule.RuleNodes.Count - 1);
+                                }
+                                else
+                                {
+                                    for (int r = 0; r < theRule.RuleNodes.Count; r++)
+                                    {
+                                        AddThemeRuleNode(layerMeta, themeCat, node, theRule.GeomType, (catIndex + r), theRule.RuleNodes, r);
+                                    }
+                                }
+                                //Only bump catIndex if composite, as category indexes for composite styles are handled differently
+                                if (bComposite)
+                                    catIndex += theRule.RuleNodes.Count;
+                            }
+                        }
+                        else
+                        {
+                            Trace.Assert(rules.Count == 1);
+                            Trace.Assert(rules[0].RuleNodes.Count == 1);
+                            RuleData theRule = rules[0];
+
                             ThemeCategory themeCat = new ThemeCategory()
                             {
                                 MinScale = minScale,
                                 MaxScale = maxScale,
-                                GeometryType = geomType
+                                GeometryType = theRule.GeomType
                             };
 
                             if (layerMeta.CategoryExists(themeCat))
                                 continue;
 
-                            int catIndex = 0;
-                            XmlNodeList typeStyle = scaleRange.GetElementsByTagName(typeStyles[geomType]);
-                            for (int st = 0; st < typeStyle.Count; st++)
+                            if (LayerNodeMetadata.ScaleIsApplicable(_map.ViewScale, themeCat))
                             {
-                                // We will check if this typestyle is going to be shown in the legend
-                                XmlNodeList showInLegend = ((XmlElement)typeStyle[st]).GetElementsByTagName("ShowInLegend"); //NOXLATE
-                                if (showInLegend.Count > 0)
-                                    if (!bool.Parse(showInLegend[0].ChildNodes[0].Value))
-                                        continue;   // This typestyle does not need to be shown in the legend
-
-                                XmlNodeList rules = ((XmlElement)typeStyle[st]).GetElementsByTagName(ruleNames[geomType]);
-                                if (rules.Count > 1)
+                                if (!layerMeta.HasDefaultIconsAt(_map.ViewScale))
                                 {
-                                    layerMeta.SetDefaultIcon(themeCat, Properties.Resources.lc_theme);
-                                    node.ToolTipText = string.Format(Strings.ThemedLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName, rules.Count);
-
-                                    if (_legend.ThemeCompressionLimit > 0 && rules.Count > _legend.ThemeCompressionLimit)
+                                    try
                                     {
-                                        AddThemeRuleNode(layerMeta, themeCat, node, geomType, 0, rules, 0);
-                                        node.Nodes.Add(CreateCompressedThemeNode(layerMeta, themeCat, rules.Count - 2));
-                                        AddThemeRuleNode(layerMeta, themeCat, node, geomType, rules.Count - 1, rules, rules.Count - 1);
-                                    }
-                                    else
-                                    {
-                                        for (int r = 0; r < rules.Count; r++)
-                                        {
-                                            AddThemeRuleNode(layerMeta, themeCat, node, geomType, catIndex++, rules, r);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (LayerNodeMetadata.ScaleIsApplicable(_map.ViewScale, themeCat))
-                                    {
-                                        if (!layerMeta.HasDefaultIconsAt(_map.ViewScale))
+                                        MgByteReader layerIcon = _provider.GenerateLegendImage(layer.LayerDefinition,
+                                                                                               _map.ViewScale,
+                                                                                               16,
+                                                                                               16,
+                                                                                               "PNG", //NOXLATE
+                                                                                               (theRule.GeomType+1),
+                                                                                               -1);
+                                        legendCallCount++;
+                                        if (layerIcon != null)
                                         {
                                             try
                                             {
-                                                MgByteReader layerIcon = _provider.GenerateLegendImage(layer.LayerDefinition,
-                                                                                                           _map.ViewScale,
-                                                                                                           16,
-                                                                                                           16,
-                                                                                                           "PNG", //NOXLATE
-                                                                                                           -1,
-                                                                                                           -1);
-                                                legendCallCount++;
-                                                if (layerIcon != null)
+                                                byte[] b = new byte[layerIcon.GetLength()];
+                                                layerIcon.Read(b, b.Length);
+                                                using (var ms = new MemoryStream(b))
                                                 {
-                                                    try
-                                                    {
-                                                        byte[] b = new byte[layerIcon.GetLength()];
-                                                        layerIcon.Read(b, b.Length);
-                                                        using (var ms = new MemoryStream(b))
-                                                        {
-                                                            layerMeta.SetDefaultIcon(themeCat, Image.FromStream(ms));
-                                                            node.ToolTipText = string.Format(Strings.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
-                                                        }
-                                                    }
-                                                    finally
-                                                    {
-                                                        layerIcon.Dispose();
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    layerMeta.SetDefaultIcon(themeCat, Properties.Resources.lc_broken);
+                                                    layerMeta.SetDefaultIcon(themeCat, Image.FromStream(ms));
+                                                    node.ToolTipText = string.Format(Strings.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
                                                 }
                                             }
-                                            catch
+                                            finally
                                             {
-                                                layerMeta.SetDefaultIcon(themeCat, Properties.Resources.lc_broken);
+                                                layerIcon.Dispose();
                                             }
                                         }
+                                        else
+                                        {
+                                            layerMeta.SetDefaultIcon(themeCat, Properties.Resources.lc_broken);
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        layerMeta.SetDefaultIcon(themeCat, Properties.Resources.lc_broken);
                                     }
                                 }
                             }
@@ -271,9 +352,9 @@ namespace OSGeo.MapGuide.Viewer
             return node;
         }
 
-        private void AddThemeRuleNode(LayerNodeMetadata layerMeta, ThemeCategory themeCat, TreeNode node, int geomType, int catIndex, XmlNodeList rules, int r)
+        private void AddThemeRuleNode(LayerNodeMetadata layerMeta, ThemeCategory themeCat, TreeNode node, int geomType, int catIndex, XmlNodeList rules, int ruleOffset)
         {
-            XmlElement rule = (XmlElement)rules[r];
+            XmlElement rule = (XmlElement)rules[ruleOffset];
             XmlNodeList label = rule.GetElementsByTagName("LegendLabel"); //NOXLATE
             XmlNodeList filter = rule.GetElementsByTagName("Filter"); //NOXLATE
 
