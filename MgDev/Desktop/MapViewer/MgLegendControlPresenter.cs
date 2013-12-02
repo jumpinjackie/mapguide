@@ -181,6 +181,9 @@ namespace OSGeo.MapGuide.Viewer
                         if (type != LAYER_VECTOR)
                             break;
 
+                        if (!LayerNodeMetadata.ScaleIsApplicable(_map.ViewScale, minScale, maxScale))
+                            continue;
+
                         bool bComposite = false;
 
                         //Check TS count. Give precedence to composite type styles
@@ -1103,6 +1106,16 @@ namespace OSGeo.MapGuide.Viewer
                 }
 
                 return nodes.ToArray();
+            }
+
+            internal static bool ScaleIsApplicable(double scale, string minScale, string maxScale)
+            {
+                return ScaleIsApplicable(scale, new ThemeCategory()
+                {
+                    GeometryType = -1,
+                    MinScale = minScale,
+                    MaxScale = maxScale
+                });
             }
 
             internal static bool ScaleIsApplicable(double scale, ThemeCategory cat)
