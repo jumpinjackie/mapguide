@@ -548,10 +548,10 @@ void TestRenderingService::TestEnd()
 
         // Data related to stylization function tests
         Ptr<MgResourceIdentifier> ldfres20 = new MgResourceIdentifier(L"Library://UnitTests/Layers/StylizationFuncs.LayerDefinition");
-        m_svcResource->GetResourceHeader(ldfres20);
+        m_svcResource->DeleteResource(ldfres20);
 
         Ptr<MgResourceIdentifier> mapres15 = new MgResourceIdentifier(L"Library://UnitTests/Maps/StylizationFuncs.MapDefinition");
-        m_svcResource->GetResourceHeader(mapres15);
+        m_svcResource->DeleteResource(mapres15);
 
         #ifdef _DEBUG
         MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
