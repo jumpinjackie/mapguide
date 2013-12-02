@@ -11,5 +11,6 @@
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>CS-Map Coordinate System Dictionary files. This is an optional content-only package containing a subset of the CS-Map Coordinate System dictionary files required by applications using the MgCoordinateSystem* classes of the MapGuide API</description>
         <language>en-US</language>
+        <tags>MapGuide CSMap GIS Geospatial</tags>
     </metadata>
 </package>
