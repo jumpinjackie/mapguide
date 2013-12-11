@@ -33,7 +33,7 @@
 # Make sure setvars.sh is called first before running this script
 
 BUILDROOT=`pwd`
-MGBUILD=2.4.0
+MGBUILD=2.5.2
 MGINST=usr/local/mapguideopensource-${MGBUILD}
 ROOT=${BUILDROOT}/debian/mapguidecommon
 TREE=${BUILDROOT}/debian

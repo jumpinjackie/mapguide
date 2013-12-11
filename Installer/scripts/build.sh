@@ -2,7 +2,7 @@
 
 # Global vars for this script. Modify as necessary
 APIVERSION=2.5
-BUILDNUM=${APIVERSION}.0
+BUILDNUM=${APIVERSION}.2
 BUILDROOT=`pwd`
 INSTALLROOT=/usr/local/mapguideopensource-${BUILDNUM}
 #INSTALLROOT=/usr/local/mapguideopensource-trunk
@@ -17,7 +17,7 @@ SVNROOT=/home/user
 #SVNROOT="svn://svn.bld.mgproto.net"
 #SVNROOT="http://svn.osgeo.org"
 SVNRELPATH=/mapguide/branches/2.5/MgDev
-MY_MAKE_OPTS="-j 4"
+#MY_MAKE_OPTS="-j 4"
 UBUNTU=1
 PRESERVE_BUILD_ROOT=1
 
