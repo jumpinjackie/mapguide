@@ -68,8 +68,33 @@ namespace OSGeo.MapGuide
         {
             get
             {
-                return mIsWrapper ? ((MgException)this).GetStackTrace() : mStackTrace;
+                if (mIsWrapper)
+                {
+                    //Some cosmetic cleaning of the C++ stack trace to better line up with the .net one
+                    string[] mgStackTrace = ((MgException)this).GetStackTrace().Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    //This currently looks like the following if we re-join:
+                    //
+                    // at- <stack frame>
+                    // at- <stack frame>
+                    // at- <stack frame>
+                    //
+                    //The "-" being a leftover, so replace "at-" with "at" as well after re-joining.
+                    //The reason we don't blindly replace "-" in the C++ stack is because we don't want to scramble any physical path
+                    //that would also contain a "-"
+                    string sanitizedStack = ("   at" + string.Join(Environment.NewLine + "   at", mgStackTrace)).Replace("at-", "at");
+                    return string.Format("{0}{1}   ==== [C++ <-> .net] ===={1}{2}", sanitizedStack, Environment.NewLine, base.StackTrace);
+                }
+                else
+                {
+                    return mStackTrace;
+                }
             }
+        }
+        
+        public override string ToString()
+        {
+            string className = this.GetType().ToString();
+            return string.Format("{0}: {1}{2}{3}", className, this.Message, Environment.NewLine, this.StackTrace);
         }
 
         public virtual void Dispose()
