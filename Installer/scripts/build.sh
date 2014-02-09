@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Global vars for this script. Modify as necessary
-APIVERSION=2.5
+APIVERSION=2.6
 BUILDNUM=${APIVERSION}.0
 BUILDROOT=`pwd`
 INSTALLROOT=/usr/local/mapguideopensource-${BUILDNUM}
@@ -12,11 +12,10 @@ VERFILE=${MGSOURCE}/Common/ProductVersion.h
 # Use LOCALSVN=1 if you want to build from an existing copy instead of building
 # from an export (saves bandwidth and faster)
 LOCALSVN=1
-SVNROOT=/home/user
-#SVNRELPATH=/mg-2.4/MgDev
+SVNROOT=/home/mgbuild
 #SVNROOT="svn://svn.bld.mgproto.net"
 #SVNROOT="http://svn.osgeo.org"
-SVNRELPATH=/mapguide/branches/2.5/MgDev
+SVNRELPATH=/mapguide/trunk/MgDev
 MY_MAKE_OPTS="-j 4"
 UBUNTU=1
 PRESERVE_BUILD_ROOT=1
