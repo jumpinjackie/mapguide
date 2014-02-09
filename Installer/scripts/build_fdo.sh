@@ -90,8 +90,8 @@ LOCALSVN=1
 PRESERVE_BUILD_ROOT=1
 CMAKE=0
 
-FDO_SRC=/home/mgbuild/fdo/branches/3.8
-#FDO_SRC=http://svn.osgeo.org/fdo/branches/3.8
+FDO_SRC=/home/mgbuild/fdo/trunk
+#FDO_SRC=http://svn.osgeo.org/fdo/trunk
 FDO_BUILD_AREA=${BUILDROOT}/fdo_build_area
 FDO_FILELIST=${FDO_BUILD_AREA}/install/filelist
 
