@@ -38,7 +38,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.synced_folder "../../sources", "/mapguide_sources"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -132,47 +132,53 @@ echo [provision]: Checking directories
 HAVE_FDO=0
 HAVE_FDO_LIBS=0
 HAVE_MAPGUIDE=0
-if [ -d ~/fdo/trunk ]; 
+SCRIPT_ROOT=~/scripts
+FDO_SRC_ROOT=~/fdo
+FDO_SRC=$FDO_SRC_ROOT/trunk
+FDO_LIB_SRC=~/fdo_rdbms_thirdparty
+MG_SRC_ROOT=~/mapguide/trunk
+MG_SRC=$MG_SRC_ROOT/MgDev
+if [ -d $FDO_SRC ]; 
 then
 HAVE_FDO=1
 fi
-if [ -d ~/fdo_rdbms_thirdparty ];
+if [ -d $FDO_LIB_SRC ];
 then
 HAVE_FDO_LIBS=1
 fi
-if [ -d ~/mapguide/trunk/MgDev ];
+if [ -d $MG_SRC ];
 then
 HAVE_MAPGUIDE=1
 fi
 echo [provision]: Copying shell scripts
-mkdir -p ~/scripts
-cp -f /vagrant/*.sh ~/scripts
-cp -f /vagrant/*.pl ~/scripts
+mkdir -p $SCRIPT_ROOT
+cp -f /vagrant/*.sh $SCRIPT_ROOT
+cp -f /vagrant/*.pl $SCRIPT_ROOT
 if [ $HAVE_FDO_LIBS -eq 0 ];
 then
 echo [provision]: Extracting FDO thirdparty libs
-tar -zxf /vagrant/fdo_rdbms_thirdparty.tar.gz -C ~
+tar -zxf /mapguide_sources/fdo_rdbms_thirdparty.tar.gz -C ~
 fi
 if [ $HAVE_FDO -eq 0 ];
 then
 echo [provision]: Extracting FDO trunk working copy
 mkdir -p ~/fdo
-tar -zxf /vagrant/fdo-checkout-trunk.tar.gz -C ~/fdo
+tar -zxf /mapguide_sources/fdo-checkout.tar.gz -C ~/fdo
 fi
 if [ $HAVE_MAPGUIDE -eq 0 ];
 then
 echo [provision]: Extracting MapGuide trunk working copy
-mkdir -p ~/mapguide/trunk
-tar -zxf /vagrant/mapguide-checkout-trunk.tar.gz -C ~/mapguide/trunk
+mkdir -p $MG_SRC_ROOT
+tar -zxf /mapguide_sources/mapguide-checkout.tar.gz -C $MG_SRC_ROOT
 fi
-echo [provision]: Update working copies
+echo [provision]: svn update FDO
 BUILD_COMPONENT="svn update FDO"
-svn update ~/fdo/trunk
+svn update $FDO_SRC
 check_build
+echo [provision]: svn update MapGuide
 BUILD_COMPONENT="svn update MapGuide"
-svn update ~/mapguide/trunk/MgDev
+svn update $MG_SRC
 check_build
-echo [provision]: Ensuring the correct FDO version
 cd ~/scripts
 BUILD_COMPONENT="FDO"
 sudo -E ./build_fdo.sh
@@ -180,10 +186,14 @@ check_build
 BUILD_COMPONENT="MapGuide"
 sudo -E ./build.sh
 check_build
-MG_REV=`svn info ~/mapguide/trunk/MgDev | perl revnum.pl`
+MG_REV=`svn info $MG_SRC | perl revnum.pl`
 BUILD_COMPONENT="MapGuide deb packages"
 sudo ./dpkgmapguide.sh i386 $MG_REV
 check_build
+cd $SCRIPT_ROOT
+sudo mkdir -p /vagrant/build
+sudo cp bin/*.deb /vagrant/build
+echo Build complete
 SCRIPT
   
   config.vm.provision "shell",
