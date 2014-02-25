@@ -117,10 +117,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #   chef.validation_client_name = "ORGNAME-validator"
   
   $script = <<SCRIPT
+BUILD_COMPONENT=
+check_build()
+{
+	error=$?
+	if [ $error -ne 0 ]; then
+		echo "[error]: ${BUILD_COMPONENT} - Error build failed ($error)"
+		exit $error
+	fi
+}
 cd ~
 echo [provision]: Home directory is `pwd`
-echo [provision]: Checking required tools
-sudo apt-get -y install subversion dos2unix lintian libpcre3-dev
 echo [provision]: Checking directories
 HAVE_FDO=0
 HAVE_FDO_LIBS=0
@@ -144,28 +151,39 @@ cp -f /vagrant/*.pl ~/scripts
 if [ $HAVE_FDO_LIBS -eq 0 ];
 then
 echo [provision]: Extracting FDO thirdparty libs
-tar -zxvf /vagrant/fdo_rdbms_thirdparty.tar.gz -C ~
+tar -zxf /vagrant/fdo_rdbms_thirdparty.tar.gz -C ~
 fi
 if [ $HAVE_FDO -eq 0 ];
 then
 echo [provision]: Extracting FDO trunk working copy
 mkdir -p ~/fdo
-tar -zxvf /vagrant/fdo-checkout-trunk.tar.gz -C ~/fdo
+tar -zxf /vagrant/fdo-checkout-trunk.tar.gz -C ~/fdo
 fi
 if [ $HAVE_MAPGUIDE -eq 0 ];
 then
 echo [provision]: Extracting MapGuide trunk working copy
 mkdir -p ~/mapguide/trunk
-tar -zxvf /vagrant/mapguide-checkout-trunk.tar.gz -C ~/mapguide/trunk
+tar -zxf /vagrant/mapguide-checkout-trunk.tar.gz -C ~/mapguide/trunk
 fi
 echo [provision]: Update working copies
+BUILD_COMPONENT="svn update FDO"
 svn update ~/fdo/trunk
+check_build
+BUILD_COMPONENT="svn update MapGuide"
 svn update ~/mapguide/trunk/MgDev
-cd scripts
+check_build
+echo [provision]: Ensuring the correct FDO version
+cd ~/scripts
+BUILD_COMPONENT="FDO"
 sudo -E ./build_fdo.sh
+check_build
+BUILD_COMPONENT="MapGuide"
 sudo -E ./build.sh
+check_build
 MG_REV=`svn info ~/mapguide/trunk/MgDev | perl revnum.pl`
-./dpkgmapguide.sh i386 $MG_REV
+BUILD_COMPONENT="MapGuide deb packages"
+sudo ./dpkgmapguide.sh i386 $MG_REV
+check_build
 SCRIPT
   
   config.vm.provision "shell",
