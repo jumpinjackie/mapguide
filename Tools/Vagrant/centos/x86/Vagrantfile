@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "vagrant-mapguide-ubuntu-precise32"
+  config.vm.box = "vagrant-centos64-x86"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
@@ -58,7 +58,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Enable provisioning with Puppet stand alone.  Puppet manifests
   # are contained in a directory path relative to this Vagrantfile.
   # You will need to create the manifests directory and a manifest in
-  # the file vagrant-mapguide-ubuntu-precise32.pp in the manifests_path directory.
+  # the file centos6.4-x86-mapguide.pp in the manifests_path directory.
   #
   # An example Puppet manifest to provision the message of the day:
   #
@@ -126,6 +126,13 @@ check_build()
 		exit $error
 	fi
 }
+if hash scons 2>/dev/null; then
+echo [provision]: We have scons
+else
+echo [provision]: We do not have scons. Installing it
+sudo rpm -Uvh /mapguide_sources/scons-2.3.0-1.noarch.rpm
+check_build
+fi
 cd ~
 echo [provision]: Home directory is `pwd`
 echo [provision]: Checking directories
@@ -156,9 +163,8 @@ cp -f /vagrant/*.sh $SCRIPT_ROOT
 cp -f /vagrant/*.pl $SCRIPT_ROOT
 echo [provision]: Flip Ubuntu switch
 cd $SCRIPT_ROOT
-sed -i 's/UBUNTU=0/UBUNTU=1/g' build.sh
-sed -i 's/UBUNTU=0/UBUNTU=1/g' build_fdo.sh
-check_build
+sed -i 's/UBUNTU=1/UBUNTU=0/g' build.sh
+sed -i 's/UBUNTU=1/UBUNTU=0/g' build_fdo.sh
 if [ $HAVE_FDO_LIBS -eq 0 ];
 then
     echo [provision]: Extracting FDO thirdparty libs
@@ -192,13 +198,10 @@ BUILD_COMPONENT="MapGuide"
 sudo -E ./build.sh
 check_build
 MG_REV=`svn info $MG_SRC | perl revnum.pl`
-BUILD_COMPONENT="MapGuide deb packages"
-sudo ./dpkgmapguide.sh i386 $MG_REV
-check_build
 cd $SCRIPT_ROOT
 sudo mkdir -p /vagrant/build
-sudo cp fdo_build_area/install/bin/*.deb /vagrant/build
-sudo cp bin/*.deb /vagrant/build
+sudo cp bin/*.tar.gz /vagrant/build
+sudo cp fdosdk*.tar.gz /vagrant/build
 if [ ! -d /mapguide_sources/updated ]; then
     sudo mkdir -p /mapguide_sources/updated
     cd ~/mapguide/trunk

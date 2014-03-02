@@ -17,7 +17,7 @@ SVNROOT=/home/vagrant
 #SVNROOT="http://svn.osgeo.org"
 SVNRELPATH=/mapguide/trunk/MgDev
 MY_MAKE_OPTS=
-UBUNTU=1
+UBUNTU=0
 PRESERVE_BUILD_ROOT=1
 
 echo "******************************************************************"
@@ -160,7 +160,7 @@ done
 popd
 
 # Make tarball if not ubuntu
-if [ ${UBUNTU} -eq 1 ];
+if [ ${UBUNTU} -eq 0 ];
 then
     echo "Creating MapGuide Open Source binary tarball"
     # Tarball the whole works and put it in a bin directory
