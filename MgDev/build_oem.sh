@@ -24,10 +24,10 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
             CLEAN_FLAG=1
             shift
             ;;
-		-build|--build)
-			BUILD_CPU=$2
-			shift
-			;;
+        -build|--build)
+            BUILD_CPU=$2
+            shift
+            ;;
         -help|--help)
             echo "Usage: $0 (options)"
             echo "Options:"
