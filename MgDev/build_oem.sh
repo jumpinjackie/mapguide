@@ -13,6 +13,7 @@
 echo "MapGuide Open Source build script for OEM components"
 INSTALLDIR=/usr/local/mapguideopensource
 CLEAN_FLAG=0
+BUILD_CPU=32
 while [ $# -gt 0 ]; do    # Until you run out of parameters...
     case "$1" in
         -prefix|--prefix)
@@ -23,11 +24,16 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
             CLEAN_FLAG=1
             shift
             ;;
+		-build|--build)
+			BUILD_CPU=$2
+			shift
+			;;
         -help|--help)
             echo "Usage: $0 (options)"
             echo "Options:"
             echo "  --prefix [installation directory]"
             echo "  --clean [clean all objects and binaries in Oem]"
+            echo "  --build [32(default)|64]"
             echo "  --help [Display usage]"
             exit
             ;;
@@ -103,7 +109,9 @@ init_dwfcore()
 {
     LIB_NAME="DWFCORE 1.0"
     pushd DWFTK7.1/develop/global/build/gnu/dwfcore
-    sh ./build_setup.sh
+    if [ $CLEAN_FLAG -eq 0 ]; then
+    	sh ./build_setup.sh
+    fi
     popd
 }
 
@@ -134,7 +142,9 @@ init_dwftk()
 {
     LIB_NAME="DWFTK 7.1"
     pushd DWFTK7.1/develop/global/build/gnu/dwftoolkit
-    sh ./build_setup.sh
+    if [ $CLEAN_FLAG -eq 0 ]; then
+    	sh ./build_setup.sh
+    fi
     popd
 }
 
@@ -165,7 +175,9 @@ init_dwfemap()
 {
     LIB_NAME="DWFEMAP 1.0"
     pushd DWFTK7.1/develop/global/build/gnu/dwfemap
-    sh ./build_setup.sh
+    if [ $CLEAN_FLAG -eq 0 ]; then
+    	sh ./build_setup.sh
+    fi
     popd
 }
 
@@ -200,7 +212,11 @@ init_geos()
 build_geos()
 {
     pushd geos-2.2.0
-    sh ./configure --prefix="${INSTALLDIR}"
+    if [ $BUILD_CPU -eq 64 ]; then
+        sh ./configure --with-pic --prefix="${INSTALLDIR}"
+    else
+        sh ./configure --prefix="${INSTALLDIR}"
+    fi
     make
     # The check build is disabled as the build will fail with automake version < 2.59
     # check_build
@@ -211,31 +227,6 @@ clean_geos()
 {
     pushd geos-2.2.0
     make clean
-    check_clean
-    popd
-}
-
-#**********************************************************
-# Build PHP 5.3.1
-# Notes: Configure PHP source tree for building PHP extension
-#**********************************************************
-
-init_php()
-{
-    LIB_NAME="PHP 5.5.3"
-}
-
-build_php()
-{
-    # Nothing to do here. build_apt.sh builds PHP
-    pushd LinuxApt/php-5.5.3
-    popd
-}
-
-clean_php()
-{
-    pushd LinuxApt/php-5.5.3
-    make distclean
     check_clean
     popd
 }
@@ -331,7 +322,6 @@ build_cppunit()
 clean_cppunit()
 {
     pushd CppUnit-1.9.14
-    sh ./configure --prefix="${INSTALLDIR}"
     make clean
     check_clean
     popd
@@ -406,7 +396,13 @@ build_libpng()
 {
     pushd gd/lpng
     cp scripts/makefile.std makefile
-    make
+    if [ $BUILD_CPU -eq 64 ]; then
+        #Inject -fPIC to CFLAGS for 64-bit
+        sed 's/^CFLAGS=/CFLAGS= -fPIC /g' makefile > makefile64
+        make -fmakefile64
+    else
+        make
+    fi
     check_build
     popd
 }
@@ -432,8 +428,16 @@ init_jpeg()
 build_jpeg()
 {
     pushd gd/jpeg
-    sh ./configure --enable-static --disable-shared
-    make
+    if [ $BUILD_CPU -eq 64 ]; then
+        sh ./configure --enable-static --disable-shared
+        #--with-pic does nothing (probably ancient configure script), so do some sed trickery
+        #to inject this flag. Know a better way? Enlighten us :)
+        sed 's/^CFLAGS=/CFLAGS= -fPIC/g' Makefile > Makefile64
+        make -fMakefile64
+    else
+        sh ./configure --enable-static --disable-shared
+        make
+    fi
     check_build
     popd
 }
@@ -459,7 +463,11 @@ init_freetype()
 build_freetype()
 {
     pushd gd/freetype
-    sh ./configure --enable-static --disable-shared
+    if [ $BUILD_CPU -eq 64 ]; then
+        sh ./configure --enable-static --disable-shared --with-pic
+    else
+    	sh ./configure --enable-static --disable-shared
+    fi
     make
     check_build
     popd
@@ -486,7 +494,11 @@ init_gd()
 build_gd()
 {
     pushd gd/gd
-    sh ./configure --enable-static --disable-shared --without-fontconfig
+    if [ $BUILD_CPU -eq 64 ]; then
+        sh ./configure --enable-static --disable-shared --without-fontconfig --with-pic
+    else
+        sh ./configure --enable-static --disable-shared --without-fontconfig
+    fi
     make
     check_build
     popd
@@ -513,7 +525,11 @@ init_agg()
 build_agg()
 {
     pushd agg-2.4
-    make
+    if [ $BUILD_CPU -eq 64 ]; then
+        make EXTRACXXFLAGS=-fPIC
+    else
+        make
+    fi
     check_build
     popd
 }
@@ -566,11 +582,23 @@ build_csmap()
     pushd CsMap
     mkdir -p .libs
     pushd Source
-    make -fLibrary.mak
+    if [ $BUILD_CPU -eq 64 ]; then
+        #Need to build CS-Map with -fPIC because linking libraries will be built with -fPIC
+        sed 's/^C_FLG =/C_FLG = -fPIC/g' Library.mak | sed 's/CPP_FLG =/CPP_FLG = -fPIC/g' > Library64.mak
+        make -fLibrary64.mak
+    else
+        make -fLibrary.mak
+    fi
     cp CsMap.a ../.libs/libCsmap.a
     popd
     pushd Dictionaries
-    make -fCompiler.mak
+    if [ $BUILD_CPU -eq 64 ]; then
+        #Need to build CS-Map with -fPIC because linking libraries will be built with -fPIC
+        sed 's/^C_FLG =/C_FLG = -fPIC/g' Library.mak | sed 's/CPP_FLG =/CPP_FLG = -fPIC/g' > Compiler64.mak
+        make -fCompiler64.mak
+    else
+        make -fCompiler.mak
+    fi
     ./CS_Comp -b . .
     popd
     check_build
@@ -579,8 +607,12 @@ build_csmap()
 
 clean_csmap()
 {
-    pushd CsMap
-    make clean
+    pushd CsMap/Source
+    if [ $BUILD_CPU -eq 64 ]; then
+        make clean -fLibrary64.mak
+    else
+        make clean -fLibrary.mak
+    fi
     check_clean
     popd
 }
@@ -590,7 +622,7 @@ clean_csmap()
 #**********************************************************
 
 pushd Oem
-for lib in ace dwfcore dwftk dwfemap geos php swigex bdbxml cppunit imake zlib libpng jpeg freetype gd agg json csmap;
+for lib in ace dwfcore dwftk dwfemap geos swigex bdbxml cppunit imake zlib libpng jpeg freetype gd agg json csmap;
 do
     echo "$lib: Initialization..........................."
     init_"$lib"
