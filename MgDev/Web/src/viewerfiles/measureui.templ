@@ -114,17 +114,126 @@ function SetMeasureResults(partial, total)
 
 function OnChangeUnits()
 {
+    var preUnitsText = document.getElementById("units1").innerHTML;    
+    var preUnits = "";
     var unitelem = document.getElementById("unitselect");
     for (var i=0; i < unitelem.length; i++)
     {
         var opt = unitelem.options[i];
+        if (preUnitsText == opt.text)
+        {
+            preUnits = opt.value;
+        }
         if (opt.selected)
         {
             units = opt.value;
             document.getElementById("units1").innerHTML = opt.text;
             document.getElementById("units2").innerHTML = opt.text;
-            break;
         }
+    }
+    if (preUnits != "" && preUnits != units)
+    {
+        if (preUnits == "mi" && units == "km")  //MILES to KILOMETERS
+        {
+            total = total * 1.60934;
+            partial = partial * 1.60934;
+        }
+        if (preUnits == "km" && units == "mi")  //KILOMETERS to MILES
+        {
+            total = total * 0.621371;
+            partial = partial * 0.621371;
+        }
+        if (preUnits == "mi" && units == "usft")  //MILES to USFEET
+        {
+            total = total * 5279.9896063197;
+            partial = partial * 5279.9896063197;
+        }
+        if (preUnits == "usft" && units == "mi")  //USFEET to MILES
+        {
+            total = total * 0.00018939393339207;
+            partial = partial * 0.00018939393339207;
+        }
+        if (preUnits == "mi" && units == "ft")  //MILES to FEET
+        {
+            total = total * 5280;
+            partial = partial * 5280;
+        }
+        if (preUnits == "ft" && units == "mi")  //FEET to MILES
+        {
+            total = total * 0.000189394;
+            partial = partial * 0.000189394;
+        }
+        if (preUnits == "mi" && units == "m")  //MILES to METERS
+        {
+            total = total * 1609.34;
+            partial = partial * 1609.34;
+        }
+        if (preUnits == "m" && units == "mi")  //METERS to MILES
+        {
+            total = total * 0.00062;
+            partial = partial * 0.00062;
+        }
+        if (preUnits == "km" && units == "usft")  //KILOMETERS to USFEET
+        {
+            total = total * 3280.8334366796;
+            partial = partial * 3280.8334366796;
+        }
+        if (preUnits == "usft" && units == "km")  //USFEET to KILOMETERS
+        {
+            total = total * 0.0003048006;
+            partial = partial * 0.0003048006;
+        }
+        if (preUnits == "km" && units == "ft")  //KILOMETERS to FEET
+        {
+            total = total * 3280.8399;
+            partial = partial * 3280.8399;
+        }
+        if (preUnits == "ft" && units == "km")  //FEET to KILOMETERS
+        {
+            total = total * 0.00030480;
+            partial = partial * 0.00030480;
+        }
+        if (preUnits == "km" && units == "m")  //KILOMETERS to METERS
+        {
+            total = total * 1000;
+            partial = partial * 1000;
+        }
+        if (preUnits == "m" && units == "km")  //METERS to KILOMETERS
+        {
+            total = total * 0.001;
+            partial = partial * 0.001;
+        }
+        if (preUnits == "usft" && units == "ft")  //USFEET to FEET
+        {
+            total = total * 1.000002;
+            partial = partial * 1.000002;
+        }
+        if (preUnits == "ft" && units == "usft")  //FEET to USFEET
+        {
+            total = total * 0.99999803149994;
+            partial = partial * 0.99999803149994;
+        }
+        if (preUnits == "usft" && units == "m")  //USFEET to METERS
+        {
+            total = total * 0.30480061;
+            partial = partial * 0.30480061;
+        }
+        if (preUnits == "m" && units == "usft")  //METERS to USFEET
+        {
+            total = total * 3.280833333;
+            partial = partial * 3.280833333;
+        }
+        if (preUnits == "ft" && units == "m")  //FEET to METERS
+        {
+            total = total * 0.3048;
+            partial = partial * 0.3048;
+        }
+        if (preUnits == "m" && units == "ft")  //METERS to FEET
+        {
+            total = total * 3.28084;
+            partial = partial * 3.28084;
+        }
+        SetMeasureResults(partial, total);
     }
 }
 
