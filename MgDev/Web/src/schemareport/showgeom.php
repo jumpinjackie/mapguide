@@ -38,6 +38,7 @@
 
         <?php
 
+            $includeDebugWatermark = true;
             $sessionId = $_GET['sessionId'];
             $resName = $_GET['resId'];
             $schemaName = $_GET['schemaName'];
@@ -126,8 +127,11 @@
 
                 // Create a map definition
                 $mapfactory = new MapDefinitionFactory();
-                $mapDefinition = CreateMapDef($mapfactory, $className, $resName, $mbr->coordinateSystem, $minX, $maxX, $minY, $maxY);
-
+                if ($includeDebugWatermark) {
+                    $mapDefinition = CreateDebugMapDef($mapfactory, $resourceSrvc, $className, $sessionId, $resName, $mbr->coordinateSystem, $minX, $maxX, $minY, $maxY, $totalEntries);
+                } else {
+                    $mapDefinition = CreateMapDef($mapfactory, $className, $resName, $mbr->coordinateSystem, $minX, $maxX, $minY, $maxY);
+                }
                 // Save the map definition to a resource stored in the session repository
                 $byteSource = new MgByteSource($mapDefinition, strlen($mapDefinition));
                 $byteSource->SetMimeType(MgMimeType::Xml);

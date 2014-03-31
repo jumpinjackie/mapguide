@@ -101,6 +101,11 @@ class WebLay
     const LayoutName = 'Geometry Layout';
 }
 
+class Debug
+{
+    const WatermarkDebugTemplate = 'MapGuide Debugging Information\n==============================\n\nPreviewed Class: %s\nFeature Count: %s\nComputed Extents Min: (%s, %s)\nComputed Extents Max: (%s, %s)\nCoordinate System: \n%s';
+}
+
 class XslStrings
 {
     const Schema = 'Schema:';
