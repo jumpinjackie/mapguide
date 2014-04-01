@@ -189,6 +189,8 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_Rail.sdf \
         ..\..\bin\UnitTestFiles\UT_Rail.fs \
         ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+        ..\..\bin\UnitTestFiles\UT_Rail.wdf \
+        ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf \
         ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf \
         ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf \
         ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf \
@@ -456,6 +458,8 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_Rail.sdf \
         ..\..\bin\UnitTestFiles\UT_Rail.fs \
         ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+        ..\..\bin\UnitTestFiles\UT_Rail.wdf \
+        ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf \
         ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf \
         ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf \
         ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf \
@@ -723,6 +727,8 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_Rail.sdf \
           ..\..\bin\UnitTestFiles\UT_Rail.fs \
           ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+          ..\..\bin\UnitTestFiles\UT_Rail.wdf \
+          ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf \
           ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf \
           ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf \
           ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf \
@@ -990,6 +996,8 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_Rail.sdf \
           ..\..\bin\UnitTestFiles\UT_Rail.fs \
           ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+          ..\..\bin\UnitTestFiles\UT_Rail.wdf \
+          ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf \
           ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf \
           ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf \
           ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf \
@@ -1130,6 +1138,8 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.wdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.wdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf          del /F ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf
@@ -1265,6 +1275,8 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.wdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.wdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf          del /F ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf
@@ -1400,6 +1412,8 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.wdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.wdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf          del /F ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf
@@ -1533,6 +1547,8 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.wdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.wdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf          del /F ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf       del /F ..\..\bin\UnitTestFiles\UT_MultiCTSWithTheme.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf                del /F ..\..\bin\UnitTestFiles\UT_MultiFTS.ldf
@@ -1793,6 +1809,8 @@ debug(v100) : ..\..\bin\debug(v100)\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_Rail.sdf \
         ..\..\bin\UnitTestFiles\UT_Rail.fs \
         ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+        ..\..\bin\UnitTestFiles\UT_Rail.wdf \
+        ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf \
         ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
         ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
         ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource \
@@ -2053,6 +2071,8 @@ debug(v100)64 : ..\..\bin\debug(v100)64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_Rail.sdf \
         ..\..\bin\UnitTestFiles\UT_Rail.fs \
         ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+        ..\..\bin\UnitTestFiles\UT_Rail.wdf \
+        ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf \
         ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
         ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
         ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource \
@@ -2313,6 +2333,8 @@ release(v100) : ..\..\bin\release(v100)\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_Rail.sdf \
           ..\..\bin\UnitTestFiles\UT_Rail.fs \
           ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+          ..\..\bin\UnitTestFiles\UT_Rail.wdf \
+          ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf \
           ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
           ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
           ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource \
@@ -2573,6 +2595,8 @@ release(v100)64 : ..\..\bin\release(v100)64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_Rail.sdf \
           ..\..\bin\UnitTestFiles\UT_Rail.fs \
           ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+          ..\..\bin\UnitTestFiles\UT_Rail.wdf \
+          ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf \
           ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
           ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
           ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource \
@@ -2706,6 +2730,8 @@ cleandebug(v100):
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.wdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.wdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf          del /F ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource
@@ -2834,6 +2860,8 @@ cleandebug(v100)64:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.wdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.wdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf          del /F ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource
@@ -2962,6 +2990,8 @@ cleanrelease(v100):
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.wdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.wdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf          del /F ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource
@@ -3088,6 +3118,8 @@ cleanrelease(v100)64:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.wdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.wdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf          del /F ..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource
@@ -3186,6 +3218,8 @@ cleanrelease(v100)64:
 "..\..\..\UnitTest\TestData\MappingService\UT_Rail.sdf" :
 "..\..\..\UnitTest\TestData\MappingService\UT_Rail.fs" :
 "..\..\..\UnitTest\TestData\MappingService\UT_Rail.ldf" :
+"..\..\..\UnitTest\TestData\MappingService\UT_Rail.wdf" :
+"..\..\..\UnitTest\TestData\MappingService\UT_Rail_Watermark.ldf" :
 "..\..\..\UnitTestFiles\UT_MultiCTS.ldf" :
 "..\..\..\UnitTestFiles\UT_MultiCTSWithTheme.ldf" :
 "..\..\..\UnitTestFiles\UT_MultiFTS.ldf" :
@@ -3392,6 +3426,14 @@ cleanrelease(v100)64:
 ..\..\bin\UnitTestFiles\UT_Rail.ldf : "..\..\..\UnitTest\TestData\MappingService\UT_Rail.ldf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_Rail.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_Rail.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_Rail.wdf : "..\..\..\UnitTest\TestData\MappingService\UT_Rail.wdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_Rail.wdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_Rail.wdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_Rail_Watermark.ldf : "..\..\..\UnitTest\TestData\MappingService\UT_Rail_Watermark.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_Rail_Watermark.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_Rail_Watermark.ldf" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\UT_MultiCTS.ldf : "..\..\..\UnitTest\TestData\MappingService\UT_MultiCTS.ldf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles

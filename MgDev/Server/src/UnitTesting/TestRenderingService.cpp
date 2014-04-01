@@ -408,6 +408,17 @@ void TestRenderingService::TestStart()
         Ptr<MgByteSource> mdfsrc15 = new MgByteSource(L"../UnitTestFiles/UT_StylizationFuncs.mdf", false);
         Ptr<MgByteReader> mdfrdr15 = mdfsrc15->GetReader();
         m_svcResource->SetResource(mapres15, mdfrdr15, NULL);
+
+        // For layer watermark test
+        Ptr<MgResourceIdentifier> wdfres2 = new MgResourceIdentifier(L"Library://UnitTests/Watermarks/Rail.WatermarkDefinition");
+        Ptr<MgByteSource> wdfsrc2 = new MgByteSource(L"../UnitTestFiles/UT_Rail.wdf", false);
+        Ptr<MgByteReader> wdfrdr2 = wdfsrc2->GetReader();
+        m_svcResource->SetResource(wdfres2, wdfrdr2, NULL);
+
+        Ptr<MgResourceIdentifier> ldfres21 = new MgResourceIdentifier(L"Library://UnitTests/Layers/RailWatermark.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc21 = new MgByteSource(L"../UnitTestFiles/UT_Rail_Watermark.ldf", false);
+        Ptr<MgByteReader> ldfrdr21 = ldfsrc21->GetReader();
+        m_svcResource->SetResource(ldfres21, ldfrdr21, NULL);
     }
     catch (MgException* e)
     {
@@ -552,6 +563,12 @@ void TestRenderingService::TestEnd()
 
         Ptr<MgResourceIdentifier> mapres15 = new MgResourceIdentifier(L"Library://UnitTests/Maps/StylizationFuncs.MapDefinition");
         m_svcResource->DeleteResource(mapres15);
+
+        // Layer watermark test
+        Ptr<MgResourceIdentifier> wdfres2 = new MgResourceIdentifier(L"Library://UnitTests/Watermarks/Rail.WatermarkDefinition");
+        m_svcResource->DeleteResource(wdfres2);
+        Ptr<MgResourceIdentifier> ldfres21 = new MgResourceIdentifier(L"Library://UnitTests/Layers/RailWatermark.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres21);
 
         #ifdef _DEBUG
         MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
@@ -1094,6 +1111,52 @@ void TestRenderingService::TestCase_RenderLegendSingleFTSMultiCTS(CREFSTRING ima
         map->SetViewScale(75000.0);
         Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
         rdr1->ToFile(GetPath(L"../UnitTestFiles/RenderLegendSingleFTSMultiCTS", imageFormat, extension));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestRenderingService::TestCase_LayerWatermark(CREFSTRING imageFormat, CREFSTRING extension)
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgMap> map = CreateTestMap();
+
+        // call the API using a scale of 60000
+        map->SetViewScale(60000.0);
+
+        // Remove existing rail layer
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+        INT32 index = layers->IndexOf(L"Rail");
+        if (index >= 0)
+            layers->RemoveAt(index);
+
+        // Insert our watermarked rail layer
+        Ptr<MgResourceIdentifier> layerDef = new MgResourceIdentifier(L"Library://UnitTests/Layers/RailWatermark.LayerDefinition");
+        Ptr<MgLayer> layer = new MgLayer(layerDef, m_svcResource);
+        layer->SetName(L"Rail");
+        layer->SetLegendLabel(layerDef->GetName());
+        layers->Insert(0, layer);
+        map->Save();
+
+        Ptr<MgColor> selColor = new MgColor(0, 0, 255);
+        Ptr<MgRenderingOptions> renderOpts = new MgRenderingOptions(imageFormat, MgRenderingOptions::RenderLayers | MgRenderingOptions::RenderBaseLayers, selColor);
+        Ptr<MgByteReader> img = m_svcRendering->RenderDynamicOverlay(map, NULL, renderOpts);
+        img->ToFile(GetPath(L"../UnitTestFiles/LayerWatermarkOn", imageFormat, extension));
+
+        layer->SetVisible(false);
+        map->Save();
+        img = m_svcRendering->RenderDynamicOverlay(map, NULL, renderOpts);
+        img->ToFile(GetPath(L"../UnitTestFiles/LayerWatermarkOff", imageFormat, extension));
     }
     catch (MgException* e)
     {
