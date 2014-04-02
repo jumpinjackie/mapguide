@@ -307,6 +307,58 @@ function CreateLayerDef($factory, $featureClass, $featureName, $geomName, $geomT
     return $layerDefinition;
 }
 
+function CreateDebugMapDef($factory, $resourceSrvc, $className, $sessionId, $resId, $coordinate, $minX, $maxX, $minY, $maxY, $featureCount)
+{
+    // The full WKT probably won't fit on the map, so tidy it up for display on a map
+    $csClean = str_replace("[", "[\n    ", $coordinate);
+    $csClean = str_replace("],", "],\n", $csClean);
+    // Make a debug text watermark containing relevant debugging information
+    $message = sprintf(Debug::WatermarkDebugTemplate,
+        $className,
+        $featureCount,
+        $minX,
+        $minY,
+        $maxX,
+        $maxY,
+        $csClean);
+    $wmark = $factory->CreateTextWatermark($message);
+    $wmidstr = "Session:$sessionId//".$className."_DEBUG.WatermarkDefinition";
+    $wmid = new MgResourceIdentifier($wmidstr);
+    $wmSource = new MgByteSource($wmark, strlen($wmark));
+    $wmRdr = $wmSource->GetReader();
+    $resourceSrvc->SetResource($wmid, $wmRdr, null);
+
+    // Inputs for Extents
+    $extents = $factory->CreateExtents($minX, $maxX, $minY, $maxY);
+
+    // Inputs for MapLayer
+    $layerName = $className;
+    $selectable = MapDef::Selectable;
+    $showLegend = MapDef::ShowLegend;
+    $legendLabel = $className;
+    $expandLegend = MapDef::ExpandLegend;
+    $visible = MapDef::Visible;
+    $groupName = MapDef::GroupName;
+    $mapLayer = $factory->CreateMapLayer($layerName, $resId, $selectable, $showLegend, $legendLabel, $expandLegend, $visible, $groupName);
+
+    // Inputs for MapLayerGroup
+    $groupName = MapDef::GroupName;
+    $visible = MapDef::Visible;
+    $showLegend = MapDef::ShowLegend;
+    $expandLegend = MapDef::ExpandLegend;
+    $legendLabel = MapDef::LegendLabel;
+    $mapLayerGroup = $factory->CreateMapLayerGroup($groupName, $visible, $showLegend, $expandLegend, $legendLabel);
+    
+    $dbgWatermarks = "<Watermarks><Watermark><Name>DEBUG</Name><ResourceId>$wmidstr</ResourceId></Watermark></Watermarks>";
+    
+    // Inputs for MapDefinition
+    $mapName = MapDef::MapName;
+    $backgroundColor = MapDef::BgColor;
+    $mapDefinition = $factory->CreateMapDefinition($mapName, $coordinate, $extents, $backgroundColor, $mapLayer, $mapLayerGroup, $dbgWatermarks);
+
+    return $mapDefinition;
+}
+
 function CreateMapDef($factory, $className, $resId, $coordinate, $minX, $maxX, $minY, $maxY)
 {
     // Inputs for Extents
@@ -329,7 +381,7 @@ function CreateMapDef($factory, $className, $resId, $coordinate, $minX, $maxX, $
     $expandLegend = MapDef::ExpandLegend;
     $legendLabel = MapDef::LegendLabel;
     $mapLayerGroup = $factory->CreateMapLayerGroup($groupName, $visible, $showLegend, $expandLegend, $legendLabel);
-
+    
     // Inputs for MapDefinition
     $mapName = MapDef::MapName;
     $backgroundColor = MapDef::BgColor;

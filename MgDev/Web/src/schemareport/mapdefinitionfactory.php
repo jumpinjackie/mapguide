@@ -44,11 +44,18 @@ class MapDefinitionFactory
         return $extents;
     }
 
-    static function CreateMapDefinition($name, $coordinate, $extents, $backgroundColor, $mapLayer, $mapLayerGroup)
+    static function CreateMapDefinition($name, $coordinate, $extents, $backgroundColor, $mapLayer, $mapLayerGroup, $watermarks = "")
     {
         $mapDef = file_get_contents("templatefiles/mapdefinition.templ");
-        $mapDef = sprintf($mapDef, $name, $coordinate, $extents, $backgroundColor, $mapLayer, $mapLayerGroup);
+        $mapDef = sprintf($mapDef, $name, $coordinate, $extents, $backgroundColor, $mapLayer, $mapLayerGroup, $watermarks);
         return $mapDef;
+    }
+    
+    static function CreateTextWatermark($text)
+    {
+        $wm = file_get_contents("templatefiles/textwatermark.templ");
+        $mw = sprintf($wm, $text);
+        return $mw;
     }
 }
 
