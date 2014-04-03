@@ -472,11 +472,10 @@
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoArcSdeProviderFeature" Order="3">1</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoKingOracleProviderFeature" Order="4">1</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoMySqlProviderFeature" Order="5">1</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoPostgreSqlProviderFeature" Order="6">1</Publish>
             <!-- If Apache, or IIS and the .Net Framework is not installed, set feature default for the ASPX viewer to not install -->
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="7">(MGWEB_CONFIG=&quot;APACHE&quot;) OR (MGWEB_CONFIG=&quot;IIS&quot; AND NOT NETFRAMEWORK40FULL)</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="8">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="FastCgiWarningDlg" Order="9">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="6">(MGWEB_CONFIG=&quot;APACHE&quot;) OR (MGWEB_CONFIG=&quot;IIS&quot; AND NOT NETFRAMEWORK40FULL)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="7">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="FastCgiWarningDlg" Order="8">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
             <!-- If IIS, set feature defaults for Apache, Tomcat, and JSP viewer to not install -->
             <!-- 
             Turn off:

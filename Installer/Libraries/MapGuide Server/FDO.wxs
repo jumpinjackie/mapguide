@@ -149,6 +149,9 @@
           <Component Id="FdoPostgreSqlProviderComponent" Win64="$(var.Win64)" Guid="550B6CA0-10F8-444B-B51B-8569FF23B8C2">
               <File Id="PostgreSqlOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\PostgreSQLOverrides.dll" />
               <File Id="PostgreSqlProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\PostgreSQLProvider.dll" />
+              <File Id="LibPq" Checksum="yes" Source="$(var.MgSource)\Server\FDO\libpq.dll" />
+              <File Id="LibEay" Checksum="yes" Source="$(var.MgSource)\Server\FDO\libeay32.dll" />
+              <File Id="SslEay" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ssleay32.dll" />
           </Component>
           <!-- SDF Provider -->
           <Component Id="FdoSdfProviderComponent" Win64="$(var.Win64)" Guid="F0976038-9F62-42E7-AA6E-B37C33744C6F">

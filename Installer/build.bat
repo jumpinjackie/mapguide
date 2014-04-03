@@ -205,6 +205,10 @@ echo [prepare] Unpack PHP (Thread Safe)
 pushd "%INSTALLER_DEV_SUPPORT%\Web\%PLATFORM_CLR%"
 7z x %PHP_TS_PACKAGE% -y -o"%MG_SOURCE%\Web\Php"
 popd
+echo [prepare] Copy support dlls for PostgreSQL provider
+copy /Y "%MG_SOURCE%\Web\Php\libpq.dll" "%MG_SOURCE%\Server\FDO"
+copy /Y "%MG_SOURCE%\Web\Php\libeay32.dll" "%MG_SOURCE%\Server\FDO"
+copy /Y "%MG_SOURCE%\Web\Php\ssleay32.dll" "%MG_SOURCE%\Server\FDO"
 rem copy template configs on top
 echo [prepare] Tomcat config
 %XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM_CLR%\configs\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
