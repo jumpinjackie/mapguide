@@ -15,7 +15,7 @@
         <hudson.model.StringParameterDefinition>
           <name>RELEASE_LABEL64</name>
           <description></description>
-          <defaultValue>Preview2</defaultValue>
+          <defaultValue>Beta1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>WITH_ARCSDE</name>
@@ -57,6 +57,11 @@
           <description></description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>MG_STAMP_FILE_SOURCE64</name>
+          <description></description>
+          <defaultValue>C:\working\sources\mapguide_trunk_revision.txt</defaultValue>
+        </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
@@ -114,12 +119,9 @@ echo =======================================================================
 echo [prepare]: Cleaning out build artifacts
 if exist %MG_BUILD_OUTPUT64% rd /S /Q %MG_BUILD_OUTPUT64%
 
-pushd %MG_BUILD_SRC64%\MgDev
 echo [prepare]: Noting SVN revision
-svn info . | perl %REVNUM_FILE64% &gt; revision.txt
-set /p MG_REVISION64= &lt; revision.txt
-copy /Y revision.txt %MG_STAMP_FILE64%
-popd
+set /p MG_REVISION64= &lt; &quot;%MG_STAMP_FILE_SOURCE64%&quot;
+copy /Y &quot;%MG_STAMP_FILE_SOURCE64%&quot; &quot;%MG_STAMP_FILE64%&quot;
 
 if &quot;%CLEAR_WORKING_AREA%&quot;==&quot;false&quot; (
     echo [prepare]: Skip cleaning build area

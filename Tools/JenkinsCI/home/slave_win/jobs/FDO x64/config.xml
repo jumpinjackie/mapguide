@@ -27,6 +27,11 @@
           <description></description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>FDO_STAMP_FILE_SOURCE64</name>
+          <description></description>
+          <defaultValue>C:\working\sources\fdo_trunk_revision.txt</defaultValue>
+        </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
@@ -85,12 +90,8 @@ if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 :build_fdo
 echo [prepare]: Noting SVN revision
-pushd %FDO_BUILD_SRC64% 
-REM If we ever do implement CI build triggers, remove this update command
-svn info . | perl %REVNUM_FILE64% &gt; revision.txt
-set /p REVISION= &lt; revision.txt
-copy /Y revision.txt %FDO_STAMP_FILE64%
-popd
+set /p REVISION= &lt; &quot;%FDO_STAMP_FILE_SOURCE64%&quot;
+copy /Y &quot;%FDO_STAMP_FILE_SOURCE64%&quot; &quot;%FDO_STAMP_FILE64%&quot;
 
 REM Need to use x86_amd64 because the 64-bit compiler in VS 2012 express is a cross-compiler
 pushd %FDO_WORKING_AREA64%
