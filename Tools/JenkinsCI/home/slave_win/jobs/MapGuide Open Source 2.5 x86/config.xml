@@ -82,7 +82,7 @@ SET VC_COMPILER=vc100
 call &quot;%WINDOWS_SDK_71_ROOT%\Bin\SetEnv.cmd&quot; /release /x86
 
 REM Sigh! We can&apos;t seem to reference this from Jenkins
-SET MSBUILD_NET35=C:\Windows\Microsoft.NET\Framework\v3.5\msbuild.exe
+SET MSBUILD_NET40=C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe
 
 SET MG_VER_MAJOR_MINOR=%MG_VER_MAJOR%.%MG_VER_MINOR%
 SET MG_VER_MAJOR_MINOR_BUILD=%MG_VER_MAJOR_MINOR%.%MG_VER_BUILD%
@@ -281,7 +281,7 @@ popd
 echo [build]: MgInstantSetup
 pushd %INSTANT_SETUP_SRC%
 SET BUILD_ACTION=Building MgInstantSetup
-%MSBUILD_NET35% /p:Configuration=Release;Platform=&quot;Any CPU&quot; MgInstantSetup.sln
+%MSBUILD_NET40% /p:Configuration=Release;Platform=&quot;Any CPU&quot; MgInstantSetup.sln
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 popd
 
