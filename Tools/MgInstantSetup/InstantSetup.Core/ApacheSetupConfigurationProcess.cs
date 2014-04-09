@@ -35,7 +35,7 @@ namespace InstantSetup.Core
 
             this.VirtualDirectoryName = "mapguide";
             this.HttpdServiceName = "ApacheMapGuide";
-            this.ApacheDirName = "Apache2";
+            this.ApacheDirName = "Apache24";
         }
 
         public bool EnableJava { get; set; }
