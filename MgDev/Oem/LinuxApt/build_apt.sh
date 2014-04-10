@@ -15,6 +15,8 @@ echo
 
 INSTALLDIR=/usr/local/mapguideopensource
 
+HTTPD_VER=2.4.9
+PHP_VER=5.5.11
 PORT=8008
 TOMCAT=0
 TOMCAT_PORT=8009
@@ -140,16 +142,16 @@ check_tomcat_install ()
 # equivalent library in other Linux distributions
 #**********************************************************
 echo "Apache Httpd build started"
-tar -jxf httpd-2.4.6.tar.bz2
-if [ ! -d "httpd-2.4.6/srclib/apr" ]; then
+tar -jxf httpd-$HTTP_VER.tar.bz2
+if [ ! -d "httpd-$HTTP_VER/srclib/apr" ]; then
 	tar -jxf apr-1.4.8.tar.bz2
-	mv apr-1.4.8 httpd-2.4.6/srclib/apr
+	mv apr-1.4.8 httpd-$HTTP_VER/srclib/apr
 fi
-if [ ! -d "httpd-2.4.6/srclib/aprutil" ]; then
+if [ ! -d "httpd-$HTTP_VER/srclib/aprutil" ]; then
 	tar -jxf apr-util-1.5.2.tar.bz2
-	mv apr-util-1.5.2 httpd-2.4.6/srclib/apr-util
+	mv apr-util-1.5.2 httpd-$HTTP_VER/srclib/apr-util
 fi
-pushd httpd-2.4.6
+pushd httpd-$HTTP_VER
 ./configure --prefix=$INSTALLWEB/apache2 --enable-mods-shared=all \
 --with-included-apr --with-port=$PORT
 check_apache_build
@@ -181,7 +183,7 @@ fi
 # Notes: none
 #**********************************************************
 echo "Apache install started"
-pushd httpd-2.4.6
+pushd httpd-$HTTP_VER
 make install
 check_apache_install
 popd
@@ -225,8 +227,8 @@ popd
 # Notes: none
 #**********************************************************
 echo "Php build started"
-tar -jxf php-5.5.3.tar.bz2
-pushd php-5.5.3
+tar -jxf php-$PHP_VER.tar.bz2
+pushd php-$PHP_VER
 ./configure --prefix=$INSTALLWEB/php --with-apxs2=$INSTALLWEB/apache2/bin/apxs --with-openssl \
 --with-curl --enable-xml --enable-wddx --enable-shared  \
 --enable-safe-mode --with-zlib --enable-zip --enable-mbstring=all --with-xsl=/usr/lib --with-gd --with-png --with-jpeg --with-freetype
@@ -241,7 +243,7 @@ echo "Php build completed"
 # Notes: none
 #**********************************************************
 echo "Php install started"
-pushd php-5.5.3
+pushd php-$PHP_VER
 make install
 check_php_install
 popd

@@ -1,7 +1,7 @@
 lib
 lib64
 	
-	Extracted from httpd-2.4.6 win32 and win64 binaries from http://www.apachelounge.com/download/
+	Extracted from httpd-2.4.9 win32 and win64 binaries from http://www.apachelounge.com/download/
 
 include
 

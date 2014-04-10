@@ -1,7 +1,7 @@
 @echo off
 SET SEVENZ=%CD%\BuildTools\WebTools\7-zip\7z.exe
-SET HTTPD_VER=2.4.6
-SET PHP_VER=5.5.3
+SET HTTPD_VER=2.4.9
+SET PHP_VER=5.5.11
 pushd Oem\LinuxApt
 if exist httpd-%HTTPD_VER% (
     echo httpd already unpacked. Nothing to do here.
