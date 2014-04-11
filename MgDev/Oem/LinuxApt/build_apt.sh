@@ -142,16 +142,16 @@ check_tomcat_install ()
 # equivalent library in other Linux distributions
 #**********************************************************
 echo "Apache Httpd build started"
-tar -jxf httpd-$HTTP_VER.tar.bz2
-if [ ! -d "httpd-$HTTP_VER/srclib/apr" ]; then
+tar -jxf httpd-$HTTPD_VER.tar.bz2
+if [ ! -d "httpd-$HTTPD_VER/srclib/apr" ]; then
 	tar -jxf apr-1.4.8.tar.bz2
-	mv apr-1.4.8 httpd-$HTTP_VER/srclib/apr
+	mv apr-1.4.8 httpd-$HTTPD_VER/srclib/apr
 fi
-if [ ! -d "httpd-$HTTP_VER/srclib/aprutil" ]; then
+if [ ! -d "httpd-$HTTPD_VER/srclib/aprutil" ]; then
 	tar -jxf apr-util-1.5.2.tar.bz2
-	mv apr-util-1.5.2 httpd-$HTTP_VER/srclib/apr-util
+	mv apr-util-1.5.2 httpd-$HTTPD_VER/srclib/apr-util
 fi
-pushd httpd-$HTTP_VER
+pushd httpd-$HTTPD_VER
 ./configure --prefix=$INSTALLWEB/apache2 --enable-mods-shared=all \
 --with-included-apr --with-port=$PORT
 check_apache_build
@@ -183,7 +183,7 @@ fi
 # Notes: none
 #**********************************************************
 echo "Apache install started"
-pushd httpd-$HTTP_VER
+pushd httpd-$HTTPD_VER
 make install
 check_apache_install
 popd
