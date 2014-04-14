@@ -127,11 +127,11 @@ check_build()
 	fi
 }
 if hash scons 2>/dev/null; then
-echo [provision]: We have scons
+	echo [provision]: We have scons
 else
-echo [provision]: We do not have scons. Installing it
-sudo rpm -Uvh /mapguide_sources/scons-2.3.0-1.noarch.rpm
-check_build
+	echo [provision]: We do not have scons. Installing it
+	sudo rpm -Uvh /mapguide_sources/scons-2.3.0-1.noarch.rpm
+	check_build
 fi
 cd ~
 echo [provision]: Home directory is `pwd`
@@ -139,6 +139,7 @@ echo [provision]: Checking directories
 HAVE_FDO=0
 HAVE_FDO_LIBS=0
 HAVE_MAPGUIDE=0
+MG_UNIT_TEST=0
 SCRIPT_ROOT=~/scripts
 FDO_SRC_ROOT=~/fdo
 FDO_SRC=$FDO_SRC_ROOT/trunk
@@ -157,6 +158,8 @@ if [ -d $MG_SRC ];
 then
     HAVE_MAPGUIDE=1
 fi
+echo [provision]: Checking all tools and libs are in place
+yum install -y gcc-* gd-* automake bison byacc flex doxygen expat expat-devel libtool libjpeg-devel libpng libpng-devel libxml2 libxml2-devel openssl curl curl-devel libxslt libxslt-devel subversion java-1.7.0-openjdk java-1.7.0-openjdk-devel ant dos2unix openssh-server openldap-devel alsa-lib-devel pcre-devel unixODBC-devel libcom_err-devel krb5-devel openssl-devel mysql-devel postgresql-devel unixODBC
 echo [provision]: Copying shell scripts
 mkdir -p $SCRIPT_ROOT
 cp -f /vagrant/*.sh $SCRIPT_ROOT
@@ -165,6 +168,9 @@ echo [provision]: Flip Ubuntu switch
 cd $SCRIPT_ROOT
 sed -i 's/UBUNTU=1/UBUNTU=0/g' build.sh
 sed -i 's/UBUNTU=1/UBUNTU=0/g' build_fdo.sh
+sed -i 's/FDO_PLATFORM=64/FDO_PLATFORM=32/g' build_fdo.sh
+sed -i 's/FDO_CPU=x64/FDO_CPU=x86/g' build_fdo.sh
+sed -i 's/FDO_BUILD_CPU=amd64/FDO_BUILD_CPU=i386/g' build_fdo.sh
 if [ $HAVE_FDO_LIBS -eq 0 ];
 then
     echo [provision]: Extracting FDO thirdparty libs
@@ -192,14 +198,20 @@ svn update $MG_SRC
 check_build
 cd ~/scripts
 BUILD_COMPONENT="FDO"
-sudo -E ./build_fdo.sh
+sudo -E ./build_fdo.sh 2>&1 | tee ~/fdo_build.log
 check_build
 BUILD_COMPONENT="MapGuide"
-sudo -E ./build.sh
+sudo -E ./build.sh 2>&1 | tee ~/mapguide_build.log
 check_build
-MG_REV=`svn info $MG_SRC | perl revnum.pl`
+if [ $MG_UNIT_TEST -eq 1 ];
+then
+    echo [provision]: Unit test MapGuide
+    cd $SCRIPT_ROOT/mgdev
+    sudo make check 2>&1 | tee ~/mapguide_unit_test.log
+fi
 cd $SCRIPT_ROOT
 sudo mkdir -p /vagrant/build
+sudo mv -f ~/*.log /vagrant/build
 sudo cp bin/*.tar.gz /vagrant/build
 sudo cp fdosdk*.tar.gz /vagrant/build
 if [ ! -d /mapguide_sources/updated ]; then

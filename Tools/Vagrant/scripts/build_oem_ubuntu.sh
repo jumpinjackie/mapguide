@@ -223,25 +223,25 @@ clean_geos()
 }
 
 #**********************************************************
-# Build PHP 5.3.1
+# Build PHP 5.5.11
 # Notes: Configure PHP source tree for building PHP extension
 #**********************************************************
 
 init_php()
 {
-    LIB_NAME="PHP 5.5.3"
+    LIB_NAME="PHP 5.5.11"
 }
 
 build_php()
 {
     # Nothing to do here. build_apt.sh builds PHP
-    pushd LinuxApt/php-5.5.3
+    pushd LinuxApt/php-5.5.11
     popd
 }
 
 clean_php()
 {
-    pushd LinuxApt/php-5.5.3
+    pushd LinuxApt/php-5.5.11
     make distclean
     check_clean
     popd

@@ -4,6 +4,7 @@
 APIVERSION=2.6
 BUILDNUM=${APIVERSION}.0
 BUILDROOT=`pwd`
+MGCPUPLATFORM=i386
 INSTALLROOT=/usr/local/mapguideopensource-${BUILDNUM}
 #INSTALLROOT=/usr/local/mapguideopensource-trunk
 LOCKFILEDIR=/var/lock/mgserver
@@ -16,7 +17,7 @@ SVNROOT=/home/vagrant
 #SVNROOT="svn://svn.bld.mgproto.net"
 #SVNROOT="http://svn.osgeo.org"
 SVNRELPATH=/mapguide/trunk/MgDev
-MY_MAKE_OPTS=
+MY_MAKE_OPTS="-j 2"
 UBUNTU=0
 PRESERVE_BUILD_ROOT=1
 
@@ -126,9 +127,11 @@ libtoolize --force
 automake --add-missing --copy
 autoconf
 if [ $(uname -m) = "x86_64" ]; then
-    ./configure --enable-optimized --enable-64bit --prefix=${INSTALLROOT}
+    MGCPUPLATFORM=amd64
+    ./configure --enable-optimized --enable-silent-rules --enable-64bit --prefix=${INSTALLROOT}
 else
-    ./configure --enable-optimized --prefix=${INSTALLROOT}
+    MGCPUPLATFORM=i386
+    ./configure --enable-optimized --enable-silent-rules --prefix=${INSTALLROOT}
 fi
 make $MY_MAKE_OPTS
 check_build
@@ -169,7 +172,7 @@ then
         mkdir -p bin
     fi
 
-    tar -zcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.tar.gz ${INSTALLROOT} ${LOCKFILEDIR}
+    tar -zcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.${MGCPUPLATFORM}.tar.gz ${INSTALLROOT} ${LOCKFILEDIR}
 fi
 echo "Build complete!"
 echo Main build execution: `expr $end_time - $start_time` s

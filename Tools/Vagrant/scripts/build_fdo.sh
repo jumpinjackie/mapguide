@@ -15,6 +15,8 @@ FDO_VER_MINOR=9
 FDO_VER_REV=0
 
 UBUNTU=0
+FDO_CPU=x86
+FDO_PLATFORM=32
 FDO_BUILD_CPU=i386
 
 # FDO install directory
@@ -99,9 +101,9 @@ modify_sdk_paths()
 {
 	echo "[info]: Updating setenvironment.sh"
 	# Note: Change your paths here if they're different
-	sed -i 's/export FDOMYSQL=$FDOTHIRDPARTY\/mysql\/rhlinux/export FDOMYSQL=\/home\/vagrant\/fdo_rdbms_thirdparty\/mysql\/x86/g' ${FDO_BUILD_AREA}/setenvironment.sh
+	sed -i 's/export FDOMYSQL=$FDOTHIRDPARTY\/mysql\/rhlinux/export FDOMYSQL=\/home\/vagrant\/fdo_rdbms_thirdparty\/mysql\/'"$FDO_CPU"'/g' ${FDO_BUILD_AREA}/setenvironment.sh
 	sed -i 's/export FDOPOSTGRESQL=$FDOTHIRDPARTY\/pgsql/export FDOPOSTGRESQL=\/home\/vagrant\/fdo_rdbms_thirdparty\/pgsql/g' ${FDO_BUILD_AREA}/setenvironment.sh
-	echo "export FDOORACLE=/home/vagrant/fdo_rdbms_thirdparty/oracle/x86/instantclient_11_2/sdk" >> ${FDO_BUILD_AREA}/setenvironment.sh
+	echo "export FDOORACLE=/home/vagrant/fdo_rdbms_thirdparty/oracle/${FDO_CPU}/instantclient_11_2/sdk" >> ${FDO_BUILD_AREA}/setenvironment.sh
 }
 
 # Must have root
@@ -114,6 +116,7 @@ echo "***********************************************************"
 echo " FDO Source: ${FDO_SRC}"
 echo " FDO Build Area: ${FDO_BUILD_AREA}"
 echo " FDO Install dir: ${FDO_INST}"
+echo " FDO CPU Target: ${FDO_BUILD_CPU}"
 echo " CMake build: ${CMAKE}"
 echo " Is Ubuntu?: ${UBUNTU}"
 echo " Export from local SVN checkout: ${LOCALSVN}"
@@ -141,6 +144,7 @@ else
 		if [ ${PRESERVE_BUILD_ROOT} -eq 1 ];
 		then
 			echo "[info]: FDO build area ${FDO_BUILD_AREA} exists. Going straight to build"
+			modify_sdk_paths
 		else
 			echo "[info]: Removing old FDO build area at ${FDO_BUILD_AREA}"
 			rm -rf ${FDO_BUILD_AREA}
@@ -178,7 +182,7 @@ then
 	exit 1;
 fi
 FDO_BUILD_COMPONENT="FDO Thirdparty"
-./build_thirdparty.sh
+./build_thirdparty.sh -b ${FDO_PLATFORM}
 check_build
 
 if [ ${CMAKE} -eq 1 ];
@@ -191,7 +195,7 @@ else
 	for comp in fdocore fdo utilities
 	do
 		FDO_BUILD_COMPONENT="$comp (automake)"
-		./build_linux.sh --w $comp --p ${FDO_INST}
+		./build_linux.sh --w $comp --p ${FDO_INST} --b ${FDO_PLATFORM}
 		update_fdocore_file_list
 		check_build
 	done
@@ -199,7 +203,7 @@ else
 	do
 		save_current_file_list
 		FDO_BUILD_COMPONENT="$comp (automake)"
-		./build_linux.sh --w $comp --p ${FDO_INST}
+		./build_linux.sh --w $comp --p ${FDO_INST} --b ${FDO_PLATFORM}
 		update_provider_file_list $comp
 		check_build
 	done
@@ -246,7 +250,7 @@ check_build
 cd $BUILDROOT
 FDO_BUILD_COMPONENT="Make tarball"
 # Create a binary tar ball for FDO
-tar -zcf fdosdk-centos6-${FDO_VER_FULL}_${REVISION}.tar.gz ${FDO_INST}
+tar -zcf fdosdk-centos6-${FDO_BUILD_CPU}-${FDO_VER_FULL}_${REVISION}.tar.gz ${FDO_INST}
 check_build
 
 if [ ${UBUNTU} -eq 1 ];

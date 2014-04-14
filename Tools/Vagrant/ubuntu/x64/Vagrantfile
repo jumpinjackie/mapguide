@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "vagrant-mapguide-ubuntu-precise32"
+  config.vm.box = "vagrant-mapguide-ubuntu-precise64"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
@@ -132,7 +132,6 @@ echo [provision]: Checking directories
 HAVE_FDO=0
 HAVE_FDO_LIBS=0
 HAVE_MAPGUIDE=0
-MG_UNIT_TEST=0
 SCRIPT_ROOT=~/scripts
 FDO_SRC_ROOT=~/fdo
 FDO_SRC=$FDO_SRC_ROOT/trunk
@@ -161,9 +160,9 @@ echo [provision]: Flip Ubuntu switch
 cd $SCRIPT_ROOT
 sed -i 's/UBUNTU=0/UBUNTU=1/g' build.sh
 sed -i 's/UBUNTU=0/UBUNTU=1/g' build_fdo.sh
-sed -i 's/FDO_PLATFORM=64/FDO_PLATFORM=32/g' build_fdo.sh
-sed -i 's/FDO_CPU=x64/FDO_CPU=x86/g' build_fdo.sh
-sed -i 's/FDO_BUILD_CPU=amd64/FDO_BUILD_CPU=i386/g' build_fdo.sh
+sed -i 's/FDO_PLATFORM=32/FDO_PLATFORM=64/g' build_fdo.sh
+sed -i 's/FDO_CPU=x86/FDO_CPU=x64/g' build_fdo.sh
+sed -i 's/FDO_BUILD_CPU=i386/FDO_BUILD_CPU=amd64/g' build_fdo.sh
 if [ $HAVE_FDO_LIBS -eq 0 ];
 then
     echo [provision]: Extracting FDO thirdparty libs
@@ -198,14 +197,11 @@ sudo -E ./build.sh 2>&1 | tee ~/mapguide_build.log
 check_build
 MG_REV=`svn info $MG_SRC | perl revnum.pl`
 BUILD_COMPONENT="MapGuide deb packages"
-sudo ./dpkgmapguide.sh i386 $MG_REV
+sudo ./dpkgmapguide.sh amd64 $MG_REV
 check_build
-if [ $MG_UNIT_TEST -eq 1 ];
-then
-    echo [provision]: Unit test MapGuide
-    cd $SCRIPT_ROOT/mgdev
-    sudo make check 2>&1 | tee ~/mapguide_unit_test.log
-fi
+echo [provision]: Unit test MapGuide
+cd $SCRIPT_ROOT/mgdev
+sudo make check 2>&1 | tee ~/mapguide_unit_test.log
 cd $SCRIPT_ROOT
 sudo mkdir -p /vagrant/build
 sudo mv -f ~/*.log /vagrant/build
