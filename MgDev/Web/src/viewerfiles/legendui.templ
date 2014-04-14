@@ -1015,6 +1015,24 @@ function RefreshNodesState(nodes)
                 {
                     // the layer's theme will be changed on demand
                     node.children[nodeCurScale].iconWasRequested = false;
+                    var bCurrentScaleThemed = (node.children[nodeCurScale].children.length > 1);
+                    var themeEl = document.getElementById('ChildrenOf_' + node.objectId);
+                    if (bCurrentScaleThemed && themeEl) {
+                        themeEl.style.display = "block";
+                    }
+                    for (var i = 0; i < node.children.length; i++) {
+                        if (i == nodeCurScale) {
+                            continue;
+                        } else {
+                            // Need to hide any previously set theme rule HTML for other scales
+                            var bThemed = (node.children[i].children.length > 1);
+                            if (bThemed && !bCurrentScaleThemed) {
+                                if (themeEl)
+                                    themeEl.style.display = "none";
+                            }
+                        }
+                    }
+                    
                     // the layer's legend image will be changed immediately
                     if(!HasCollapsedParent(node))
                     {
