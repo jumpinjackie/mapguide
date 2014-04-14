@@ -1,14 +1,14 @@
 #!/bin/bash
 TEMPDIR=/tmp/build_mapguide
-URL="http://download.osgeo.org/mapguide/releases/2.5.0/Beta1/ubuntu12"
-#URL="http://192.168.0.4/downloads/ubuntu12"
+URL="http://download.osgeo.org/mapguide/releases/2.5.2/ubuntu12"
+#URL="http://192.168.0.10/downloads/ubuntu12"
 FDOVER_MAJOR_MINOR=3.8
 FDOVER_MAJOR_MINOR_REV=${FDOVER_MAJOR_MINOR}.0
-FDOBUILD=14601
+FDOBUILD=6957
 FDOVER=${FDOVER_MAJOR_MINOR_REV}-${FDOBUILD}_i386
 MGVER_MAJOR_MINOR=2.5
-MGVER_MAJOR_MINOR_REV=${MGVER_MAJOR_MINOR}.0
-MGBUILD=7345
+MGVER_MAJOR_MINOR_REV=${MGVER_MAJOR_MINOR}.2
+MGBUILD=7949
 MGVER=${MGVER_MAJOR_MINOR_REV}-${MGBUILD}_i386
 
 # Must have root
@@ -108,6 +108,18 @@ start_install()
 {
 	fix_symlinks
 
+	# set initial registration state
+	arcsde_registered=0
+	gdal_registered=0
+	kingoracle_registered=0
+	rdbms_registered=0
+	ogr_registered=0
+	sdf_registered=0
+	shp_registered=0
+	sqlite_registered=0
+	wfs_registered=0
+	wms_registered=0
+
 	# Include core and rdbms packages regardless of choice.
 	choice="core rdbms $choice"
 	# Download and install Ubuntu packages for FDO
@@ -127,6 +139,10 @@ start_install()
 	do
 		case $file in
 		  arcsde)
+			if [ $arcsde_registered -eq 1 ];
+			then
+				continue
+			fi
 			echo "Registering ArcSDE Provider"
 			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
 			echo -ne "\n    <Name>OSGeo.ArcSDE.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
@@ -137,8 +153,13 @@ start_install()
 			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
 			echo -ne "\n    <LibraryPath>libArcSDEProvider.so</LibraryPath>" >> ${providersxml}
 			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
+			arcsde_registered=1
 			;;
 		  gdal)
+			if [ $gdal_registered -eq 1 ];
+			then
+				continue
+			fi
 			echo "Registering GDAL Provider"
 			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
 			echo -ne "\n    <Name>OSGeo.Gdal.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
@@ -149,8 +170,13 @@ start_install()
 			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
 			echo -ne "\n    <LibraryPath>libGRFPProvider.so</LibraryPath>" >> ${providersxml}
 			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
+			gdal_registered=1
 			;;
 		  kingoracle)
+			if [ $kingoracle_registered -eq 1 ];
+			then
+				continue
+			fi
 			echo "Registering King Oracle Provider"
 			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
 			echo -ne "\n    <Name>OSGeo.KingOracle.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
@@ -161,8 +187,13 @@ start_install()
 			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
 			echo -ne "\n    <LibraryPath>libKingOracleProvider.so</LibraryPath>" >> ${providersxml}
 			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
+			kingoracle_registered=1
 			;;
 		  rdbms)
+			if [ $rdbms_registered -eq 1 ];
+			then
+				continue
+			fi
 			echo "Registering ODBC Provider"
 			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
 			echo -ne "\n    <Name>OSGeo.ODBC.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
@@ -193,8 +224,13 @@ start_install()
 			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
 			echo -ne "\n    <LibraryPath>libFdoMySQL.so</LibraryPath>" >> ${providersxml}
 			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
+			rdbms_registered=1
 			;;
 		  ogr)
+			if [ $ogr_registered -eq 1 ];
+			then
+				continue
+			fi
 			echo "Registering OGR Provider"
 			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
 			echo -ne "\n    <Name>OSGeo.OGR.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
@@ -205,8 +241,13 @@ start_install()
 			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
 			echo -ne "\n    <LibraryPath>libOGRProvider.so</LibraryPath>" >> ${providersxml}
 			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
+			ogr_registered=1
 			;;
 		  sdf)
+			if [ $sdf_registered -eq 1 ];
+			then
+				continue
+			fi
 			echo "Registering SDF Provider"
 			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
 			echo -ne "\n    <Name>OSGeo.SDF.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
@@ -217,8 +258,13 @@ start_install()
 			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
 			echo -ne "\n    <LibraryPath>libSDFProvider.so</LibraryPath>" >> ${providersxml}
 			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
+			sdf_registered=1
 			;;
 		  shp)
+			if [ $shp_registered -eq 1 ];
+			then
+				continue
+			fi
 			echo "Registering SHP Provider"
 			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
 			echo -ne "\n    <Name>OSGeo.SHP.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
@@ -229,8 +275,13 @@ start_install()
 			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
 			echo -ne "\n    <LibraryPath>libSHPProvider.so</LibraryPath>" >> ${providersxml}
 			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
+			shp_registered=1
 			;;
 		  sqlite)
+			if [ $sqlite_registered -eq 1 ];
+			then
+				continue
+			fi
 			echo "Registering SQLite Provider"
 			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
 			echo -ne "\n    <Name>OSGeo.SQLite.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
@@ -241,8 +292,13 @@ start_install()
 			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
 			echo -ne "\n    <LibraryPath>libSQLiteProvider.so</LibraryPath>" >> ${providersxml}
 			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
+			sqlite_registered=1
 			;;
 		  wfs)
+			if [ $wfs_registered -eq 1 ];
+			then
+				continue
+			fi
 			echo "Registering WFS Provider"
 			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
 			echo -ne "\n    <Name>OSGeo.WFS.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
@@ -253,8 +309,13 @@ start_install()
 			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
 			echo -ne "\n    <LibraryPath>libWFSProvider.so</LibraryPath>" >> ${providersxml}
 			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
+			wfs_registered=1
 			;;
 		  wms)
+			if [ $wms_registered -eq 1 ];
+			then
+				continue
+			fi
 			echo "Registering WMS Provider"
 			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
 			echo -ne "\n    <Name>OSGeo.WMS.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
@@ -265,6 +326,7 @@ start_install()
 			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
 			echo -ne "\n    <LibraryPath>libWMSProvider.so</LibraryPath>" >> ${providersxml}
 			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
+			wms_registered=1
 			;;
 		esac
 	done
