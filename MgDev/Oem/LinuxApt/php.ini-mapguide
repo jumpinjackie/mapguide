@@ -665,6 +665,11 @@ extension=libphp_MapGuideApi.so
 ; Module Settings ;
 ;;;;;;;;;;;;;;;;;;;
 
+[Date]
+; Defines the default timezone used by the date functions
+; http://php.net/date.timezone
+date.timezone = 'UTC'
+
 [Syslog]
 ; Whether or not to define the various syslog variables (e.g. $LOG_PID,
 ; $LOG_CRON, etc.).  Turning it off is a good idea performance-wise.  In
