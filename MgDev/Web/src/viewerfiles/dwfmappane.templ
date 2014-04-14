@@ -51,10 +51,10 @@
     }
 </style>
 
-<script language="javascript" src="../viewerfiles/browserdetect.js"></script>
-<script language="javascript" src="../viewerfiles/contextmenu.js"></script>
-<script language="javascript" src="../viewerfiles/hashtable.js"></script>
-<script language="javascript">
+<script type="text/javascript" src="../viewerfiles/browserdetect.js"></script>
+<script type="text/javascript" src="../viewerfiles/contextmenu.js"></script>
+<script type="text/javascript" src="../viewerfiles/hashtable.js"></script>
+<script type="text/javascript">
 
 function LayerDef(legend, name, objectId)
 {
@@ -561,25 +561,25 @@ var HyperlinkTarget="%s";
 
 <script src="../viewerfiles/initdwfctrl.js"></script>
 
-<script language=javascript for="DWFViewer" event="OnLButtonDown(x, y, handled)">
+<script type="text/javascript" for="DWFViewer" event="OnLButtonDown(x, y, handled)">
     parent.ForwardMouseDown(document, null);
     if(parent.ClickMap(x, y))
         handled.State = true;
 </script>
 
-<script language="javascript" for="DWFViewer" event="OnLButtonDblClick(x, y, handled)">
+<script type="text/javascript" for="DWFViewer" event="OnLButtonDblClick(x, y, handled)">
     if(OnDblClick(x, y))
     {
         handled.State = true;
     }
 </script>
 
-<script language="javascript" for="DWFViewer" event="OnKeyDown(key, handled)">
+<script type="text/javascript" for="DWFViewer" event="OnKeyDown(key, handled)">
     if(key == 27 && digitizing)
         digitizing = false;
 </script>
 
-<script language=javascript for="DWFViewer" event="OnExecuteCommandEx(itemType, state, data, handled)">
+<script type="text/javascript" for="DWFViewer" event="OnExecuteCommandEx(itemType, state, data, handled)">
     if(itemType == "CONTEXTMENU")
     {
         if(parent.IsContextMenu())
@@ -598,12 +598,12 @@ var HyperlinkTarget="%s";
     }
 </script>
 
-<script language=javascript for="DWFViewer" event="OnMouseMove(buttons, x, y, handled)">
+<script type="text/javascript" for="DWFViewer" event="OnMouseMove(buttons, x, y, handled)">
     if(!parent.OnCursorPosChanged(x, y))
         handled.State = true;
 </script>
 
-<script language=javascript for="DWFViewer" event="OnEndLoadItem(itemName, data, res)">
+<script type="text/javascript" for="DWFViewer" event="OnEndLoadItem(itemName, data, res)">
     if(itemName == "DOCUMENT")
     {
         emapViewer = DWFViewer.DocumentHandler;
