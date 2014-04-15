@@ -18,6 +18,7 @@
     <String Id="ServerRepositoriesTileCacheFeature_Description">You may choose a location for the Tile Cache repository.</String>
     <String Id="ServerTempFeature">Archivos temporales</String>
     <String Id="ServerTempFeature_Description">Usted puede elegir un lugar donde MapGuide almacenará los archivos temporales</String>
+    <String Id="Common_MgServerIp">MapGuide Servidor IP</String>
     <!-- FDO -->
     <String Id="FdoDescription">FDO (objetos de datos de características) permite el acceso al resumen diferentes fuentes de datos.</String>
     <String Id="ArcSdeProvider">ArcSDE Proveedor</String>
