@@ -347,7 +347,6 @@
                 
                     Web Server Port Number:  _______________________
                     Virtual Directory Name:  _______________________
-                    MapGuide Server IP:      _______________________
                     Development Environment:
                     
                     ( ) PHP
@@ -357,10 +356,8 @@
                 <Control Id="TxtServerPort" Type="Edit" Property="APACHE_PORT" X="150" Y="60" Width="120" Height="15" />
                 <Control Id="LblVdirName" Type="Text" Text="{\WixUI_Font_Title}!(loc.ApacheConfigDlg_VDirName)" X="20" Y="80" Width="120" Height="15" />
                 <Control Id="TxtVdirName" Type="Edit" Property="VIRTUALDIR" X="150" Y="80" Width="120" Height="15" />
-                <Control Id="LblMgServerIp" Type="Text" Text="{\WixUI_Font_Title}!(loc.Common_MgServerIp)" X="20" Y="100" Width="120" Height="15" />
-                <Control Id="TxtMgServerIp" Type="Edit" Property="MGSERVER_IP" X="150" Y="100" Width="120" Height="15" />
-                <Control Id="LblDevEnv" Type="Text" Text="{\WixUI_Font_Title}!(loc.ApacheConfigDlg_DevEnv)" X="20" Y="130" Width="120" Height="15" />
-                <Control Id="RdApacheApiType" Property="APACHE_API_TYPE" Type="RadioButtonGroup" X="20" Y="150" Height="100" Width="290">
+                <Control Id="LblDevEnv" Type="Text" Text="{\WixUI_Font_Title}!(loc.ApacheConfigDlg_DevEnv)" X="20" Y="110" Width="120" Height="15" />
+                <Control Id="RdApacheApiType" Property="APACHE_API_TYPE" Type="RadioButtonGroup" X="20" Y="130" Height="100" Width="290">
                     <RadioButtonGroup Property="APACHE_API_TYPE">
                         <RadioButton Text="PHP" Value="PHP" X="25" Y="10" Width="200" Height="45" />
                         <RadioButton Text="Java" Value="JAVA" X="25" Y="40" Width="200" Height="45" />
@@ -380,7 +377,6 @@
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
                 <!-- 
                 Virtual Directory Name:  __________________________________
-                MapGuide Server IP:      __________________________________
                 Development environment:
                 
                 ( ) PHP
@@ -388,9 +384,7 @@
                 -->
                 <Control Id="LblVDirName" Type="Text" Text="{\WixUI_Font_Title}!(loc.IISLangConfigDlg_VDirName)" X="20" Y="60" Width="120" Height="15" />
                 <Control Id="TxtVDirName" Type="Edit" Property="VIRTUALDIR" X="150" Y="60" Width="120" Height="15" />
-                <Control Id="LblMgServerIp" Type="Text" Text="{\WixUI_Font_Title}!(loc.Common_MgServerIp)" X="20" Y="80" Width="120" Height="15" />
-                <Control Id="TxtMgServerIp" Type="Edit" Property="MGSERVER_IP" X="150" Y="80" Width="120" Height="15" />
-                <Control Id="LblDevEnv" Type="Text" Text="{\WixUI_Font_Title}!(loc.IISLangConfigDlg_DevEnv)" X="20" Y="100" Width="120" Height="15" />
+                <Control Id="LblDevEnv" Type="Text" Text="{\WixUI_Font_Title}!(loc.IISLangConfigDlg_DevEnv)" X="20" Y="80" Width="120" Height="15" />
                 <Control Id="RdIIsApiType" Property="IIS_API_TYPE" Type="RadioButtonGroup" Text="{\WixUI_Font_Title}!(loc.IISLangConfigDlg_DevEnv)" X="30" Y="90" Height="100" Width="290">
                     <RadioButtonGroup Property="IIS_API_TYPE">
                         <RadioButton Text="PHP" Value="PHP" X="25" Y="10" Width="200" Height="45" />

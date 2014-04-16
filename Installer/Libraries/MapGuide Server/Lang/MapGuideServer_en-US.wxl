@@ -18,7 +18,6 @@
     <String Id="ServerRepositoriesTileCacheFeature_Description">You may choose a location for the Tile Cache repository.</String>
     <String Id="ServerTempFeature">Temp Directory</String>
     <String Id="ServerTempFeature_Description">You may choose a location where MapGuide will store temporary files.</String>
-    <String Id="Common_MgServerIp">MapGuide Server IP</String>
     <!-- FDO -->
     <String Id="FdoDescription">FDO (Feature Data Objects) allows abstract access to many different data sources.</String>
     <String Id="ArcSdeProvider">ArcSDE Provider</String>
