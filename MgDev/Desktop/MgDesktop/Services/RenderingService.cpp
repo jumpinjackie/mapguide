@@ -1710,6 +1710,9 @@ inline void MgdRenderingService::RenderWatermarks(MgdMap* map,
     for (int i=0; i<layerCount; ++i)
     {
         Ptr<MgLayerBase> mapLayer(layers->GetItem(i));
+        // Don't draw watermarks for invisible layers 
+        if (!mapLayer->IsVisible())
+            continue;
 
         Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
         ldf.reset(MgLayerBase::GetLayerDefinition(m_svcResource, layerid));

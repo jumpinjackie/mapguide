@@ -1,10 +1,12 @@
 #include "MgDesktop.h"
 #include <fstream>
+#include <cppunit/TestResult.h>
 #include <cppunit/TestResultCollector.h>
 #include <cppunit/TextOutputter.h>
 #include <cppunit/XmlOutputter.h>
+#include <cppunit/BriefTestProgressListener.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/ui/text/TestRunner.h>
+#include <cppunit/TextTestRunner.h>
 
 // for memory leak detection
 #if defined(_WIN32) && defined(_DEBUG)
@@ -65,7 +67,7 @@ int main(int argc, char** argv)
 
     ACE_DEBUG((LM_INFO, ACE_TEXT("MENTOR_DICTIONARY_PATH is: %s\n"), dictDir.c_str()));
 
-    CppUnit::TextUi::TestRunner runner;
+    CppUnit::TextTestRunner runner;
 
     // Add all of the tests
     //NOTE: Leave trace log off, otherwise one of the tests here will fail
@@ -102,14 +104,22 @@ int main(int argc, char** argv)
         if (outfile.is_open())
         {
             runner.setOutputter(new CppUnit::XmlOutputter(&runner.result(), outfile, "ISO-8859-1"));
-            runner.run();
+            //This is what we have to do to get detailed non-dotted test output 
+            //during execution like we get with FDO's unit tests
+            CppUnit::BriefTestProgressListener listener;
+            runner.eventManager().addListener(&listener);
+            runner.run("", false, true, false);
             outfile.close();
         }
     }
     else
     {
         runner.setOutputter(new CppUnit::TextOutputter(&runner.result(), std::cout));
-        runner.run();
+        //This is what we have to do to get detailed non-dotted test output 
+        //during execution like we get with FDO's unit tests
+        CppUnit::BriefTestProgressListener listener;
+        runner.eventManager().addListener(&listener);
+        runner.run("", false, true, false);
     }
 
     int nResult = runner.result().testFailuresTotal();
