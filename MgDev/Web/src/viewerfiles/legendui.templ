@@ -1020,12 +1020,10 @@ function RefreshNodesState(nodes)
                     if (bCurrentScaleThemed && themeEl) {
                         themeEl.style.display = "block";
                     }
-                    for (var i = 0; i < node.children.length; i++) {
-                        if (i == nodeCurScale) {
-                            continue;
-                        } else {
+                    for (var j = 0; j < node.children.length; j++) {
+                        if (j != nodeCurScale) {
                             // Need to hide any previously set theme rule HTML for other scales
-                            var bThemed = (node.children[i].children.length > 1);
+                            var bThemed = (node.children[j].children.length > 1);
                             if (bThemed && !bCurrentScaleThemed) {
                                 if (themeEl)
                                     themeEl.style.display = "none";
