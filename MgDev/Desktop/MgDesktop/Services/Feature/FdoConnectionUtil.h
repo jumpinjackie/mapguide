@@ -20,9 +20,9 @@ class MgdFdoConnectionUtil
 public:
     static MdfModel::FeatureSource* GetFeatureSource(MgResourceIdentifier* resource);
     static void CloseConnection(FdoIConnection* conn);
+    static void PerformTagSubstitution(MgdResourceService* resSvc, REFSTRING str, MgResourceIdentifier* resource, CREFSTRING username = L"", CREFSTRING password = L"");
 
 private:
-    static void PerformTagSubstitution(MgdResourceService* resSvc, REFSTRING str, MgResourceIdentifier* resource, CREFSTRING username = L"", CREFSTRING password = L"");
     static STRING ParseNonQualifiedProviderName(CREFSTRING providerName);
 
     //Creates a connection by feature source ID. Any tag and aliases present in the connection parameters

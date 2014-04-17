@@ -390,6 +390,23 @@ void MgdUnmanagedDataManager::RefreshUnmanagedDataMappings()
         MgdConfigProperties::UnmanagedDataMappingsSection);
 }
 
+void MgdUnmanagedDataManager::AddAliasMapping(CREFSTRING aliasName, CREFSTRING path)
+{
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+
+    if (m_unmanagedDataMappings->Contains(aliasName))
+    {
+        Ptr<MgStringProperty> strProp = dynamic_cast<MgStringProperty*>(m_unmanagedDataMappings->GetItem(aliasName));
+        if (NULL != strProp.p)
+            strProp->SetValue(path);
+    }
+    else
+    {
+        Ptr<MgStringProperty> strProp = new MgStringProperty(aliasName, path);
+        m_unmanagedDataMappings->Add(strProp);
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Return unmanaged data mappings.

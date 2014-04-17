@@ -76,6 +76,22 @@ void TestResourceService::tearDown()
 void TestResourceService::TestStart()
 {
     ACE_DEBUG((LM_INFO, ACE_TEXT("\nRunning Resource Service tests.\n")));
+
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
+    Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
+    if (pService == 0)
+    {
+        throw new MgServiceNotAvailableException(L"TestResourceService.TestEnd", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    Ptr<MgResourceIdentifier> fs1 = new MgResourceIdentifier(L"Library://UnitTests/Data/acea.FeatureSource");
+    Ptr<MgByteSource> fs1Source = new MgByteSource(L"../UnitTestFiles/acea.fs", false);
+    Ptr<MgByteReader> fs1Reader = fs1Source->GetReader();
+    pService->SetResource(fs1, fs1Reader, NULL);
+
+    Ptr<MgByteSource> confSource = new MgByteSource(L"../UnitTestFiles/config.xml", false);
+    Ptr<MgByteReader> confReader = confSource->GetReader();
+    pService->SetResourceData(fs1, L"config.xml", MgResourceDataType::File, confReader);
 }
 
 void TestResourceService::TestEnd()
@@ -92,6 +108,9 @@ void TestResourceService::TestEnd()
         // delete the drawing source definition
         Ptr<MgResourceIdentifier> mapres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/Shuttle.DrawingSource");
         pService->DeleteResource(mapres1);
+
+        Ptr<MgResourceIdentifier> fs1 = new MgResourceIdentifier(L"Library://UnitTests/Data/acea.FeatureSource");
+        pService->DeleteResource(fs1);
 
         // Delete any resources created
         if (pService->ResourceExists(&resourceIdentifier))
@@ -1205,6 +1224,38 @@ void TestResourceService::TestCase_PackageNoOpUpdateRepository()
         //This package contains an UPDATEREPOSITORY directive, which should no-op when loaded by mg-desktop
         pService->ApplyResourcePackage(byteReader);
         CPPUNIT_ASSERT(pService->ResourceExists(&resId));
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
+void TestResourceService::TestCase_AliasedConfigurationDocument()
+{
+    try
+    {
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
+        Ptr<MgdResourceService> pService = dynamic_cast<MgdResourceService*>(fact->CreateService(MgServiceType::ResourceService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_PackageNoOpUpdateRepository", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        pService->AddAliasMapping(L"MG_TEST", L"C:/Temp");
+        
+        //Get configuration document 
+        Ptr<MgResourceIdentifier> fs1 = new MgResourceIdentifier(L"Library://UnitTests/Data/acea.FeatureSource");
+        Ptr<MgByteReader> configContent = pService->GetResourceData(fs1, L"config.xml", MgResourcePreProcessingType::Substitution);
+        Ptr<MgByteSink> sink = new MgByteSink(configContent);
+        STRING xml;
+        sink->ToString(xml);
+
+        //It should have no alias tags as they have been substituted
+        CPPUNIT_ASSERT(xml.find(L"MG_TEST") == STRING::npos);
+        CPPUNIT_ASSERT(xml.find(L"MG_DATA_PATH_ALIAS") == STRING::npos);
     }
     catch(MgException* e)
     {

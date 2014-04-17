@@ -1626,6 +1626,23 @@ MgByteReader* MgdResourceService::GetResourceData(MgResourceIdentifier* resource
     {
         source = new MgByteSource(path);
 	    reader = source->GetReader();
+
+        if (preProcessTags == MgResourcePreProcessingType::Substitution)
+        {
+            STRING resContent;
+            Ptr<MgByteSink> sink = new MgByteSink(reader);
+            sink->ToString(resContent);
+
+            MgdFdoConnectionUtil::PerformTagSubstitution(this, resContent, NULL);
+
+            std::string mbXml = MgUtil::WideCharToMultiByte(resContent);
+            
+            Ptr<MgByteSource> source2 = new MgByteSource((BYTE_ARRAY_IN)mbXml.c_str(), mbXml.length());
+            source2->SetMimeType(MgMimeType::Xml);
+
+            reader = NULL; //Un-ref the old one
+            reader = source2->GetReader();
+        }
     }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourceService::GetResourceData")
@@ -1798,4 +1815,10 @@ void MgdResourceService::SetResourceCredentials(MgResourceIdentifier* resource, 
     MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
 
     MG_RESOURCE_SERVICE_THROW()
+}
+
+void MgdResourceService::AddAliasMapping(CREFSTRING aliasName, CREFSTRING path)
+{
+    MgdUnmanagedDataManager* umgr = MgdUnmanagedDataManager::GetInstance();
+    umgr->AddAliasMapping(aliasName, path);
 }

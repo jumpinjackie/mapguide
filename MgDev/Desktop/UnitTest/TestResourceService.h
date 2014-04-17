@@ -59,6 +59,7 @@ class TestResourceService : public CppUnit::TestFixture
 
 	CPPUNIT_TEST(TestCase_BenchmarkGetResourceContents);
     CPPUNIT_TEST(TestCase_PackageNoOpUpdateRepository);
+    CPPUNIT_TEST(TestCase_AliasedConfigurationDocument);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -108,6 +109,8 @@ public:
 
 	// Benchmarking
 	void TestCase_BenchmarkGetResourceContents();
+
+    void TestCase_AliasedConfigurationDocument();
 };
 
 #endif // TESTRESOURCESERVICE_H_

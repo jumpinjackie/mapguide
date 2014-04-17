@@ -64,6 +64,7 @@ public:
 
     void Initialize();
 
+    void AddAliasMapping(CREFSTRING aliasName, CREFSTRING path);
     void RefreshUnmanagedDataMappings();
     MgPropertyCollection* GetUnmanagedDataMappings();
 

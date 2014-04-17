@@ -91,6 +91,7 @@ INTERNAL_API:
 	STRING ResolveDataPath(MgResourceIdentifier* resId);
 
     void DeleteSessionFiles();
+    void AddAliasMapping(CREFSTRING aliasName, CREFSTRING path);
 
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_Desktop_ResourceService_ResourceService;
