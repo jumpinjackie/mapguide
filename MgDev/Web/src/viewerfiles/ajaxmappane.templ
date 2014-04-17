@@ -1826,10 +1826,10 @@ function OnMapLoaded()
 
 function RequestMap(scale, centerX, centerY, showGroups, hideGroups, showLayers, hideLayers)
 {
-    if(mapDevW == 0 || mapDevH == 0)
+    if (scale <= 0 || mapDevW <= 0 || mapDevH <= 0 || DPI <= 0)
         return;
     OnMapLoading();
-
+    
     var viewParams = "&SETDISPLAYDPI=" + DPI + "&SETDISPLAYWIDTH=" + mapDevW + "&SETDISPLAYHEIGHT=" + mapDevH;
     viewParams += "&SETVIEWSCALE=" + scale + "&SETVIEWCENTERX=" + centerX + "&SETVIEWCENTERY=" + centerY;
     viewParams += "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
