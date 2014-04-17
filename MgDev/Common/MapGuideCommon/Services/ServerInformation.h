@@ -18,6 +18,8 @@
 #ifndef MGSERVERINFORMATION_H_
 #define MGSERVERINFORMATION_H_
 
+/// \cond INTERNAL
+
 class MgServerInformation;
 template class MG_MAPGUIDE_API Ptr<MgServerInformation>;
 
@@ -77,7 +79,6 @@ INTERNAL_API:
     static const INT32 ProfilingService     = 0x00000104;
 };
 
-/// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// This class manages server information.  Information includes the server

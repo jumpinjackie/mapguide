@@ -22,8 +22,10 @@
 #ifndef _MG_READ_ONLY_LAYER_COLLECTION_H_
 #define _MG_READ_ONLY_LAYER_COLLECTION_H_
 
+///\cond INTERNAL
 class MgReadOnlyLayerCollection;
 template class MG_PLATFORMBASE_API Ptr<MgReadOnlyLayerCollection>;
+///\endcond
 
 /////////////////////////////////////////////////////////////////
 /// \brief

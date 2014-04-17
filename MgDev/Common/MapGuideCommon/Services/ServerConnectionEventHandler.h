@@ -20,7 +20,7 @@
 
 #include "Foundation.h"
 
-
+///\cond INTERNAL
 class MgServerConnectionEventHandler : public ACE_Event_Handler
 {
 public:
@@ -39,5 +39,6 @@ private:
     // MgServerConnectionEventHandler(const MgServerConnectionEventHandler&);
     // MgServerConnectionEventHandler& operator=(const MgServerConnectionEventHandler&);
 };
+///\endcond
 
 #endif

@@ -709,6 +709,7 @@ CLASS_ID:
 
 public:
 
+    /// \cond INTERNAL
     //////////////////////////////////////////////////////////////////
     /// Enumerations
     enum OperationId
@@ -729,6 +730,7 @@ public:
         opIdDescribeRuntimeMap      =  0x1111EE10,
         opIdDescribeRuntimeMap2     =  0x1111EE11
     };
+    /// \endcond
 };
 /// \}
 
