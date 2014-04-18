@@ -38,11 +38,7 @@ ctrl/agg_scale_ctrl.cpp \
 ctrl/agg_polygon_ctrl.cpp \
 ctrl/agg_bezier_ctrl.cpp
 
-SRC_C=\
-../gpc/gpc.c
-
-
-OBJ=$(SRC_CXX:.cpp=.o) $(SRC_C:.c=.o)
+OBJ=$(SRC_CXX:.cpp=.o)
 
 all:	$(OBJ)
 	$(LIB) libagg.a $(OBJ) 
