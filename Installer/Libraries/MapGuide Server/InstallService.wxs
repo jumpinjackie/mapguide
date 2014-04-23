@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix   xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <!-- 
+    MGSERVER_EXE is a special identifiers assigned by Paraffin using
+    settings defined in Features.xml
+    -->
+  <Fragment>
+  
+    <CustomAction 
+      Execute="deferred" 
+      Return="ignore" 
+      Id="MgServerInstallCA" 
+      FileKey="MGSERVER_EXE"
+      ExeCommand="install &quot;MapGuide Server [MG_VERSION_MAJOR_MINOR]&quot;" />
+
+    <CustomAction
+      Execute="immediate"
+      Return="ignore"
+      Id="MgServerUninstallCA"
+      FileKey="MGSERVER_EXE"
+      ExeCommand="uninstall" />
+
+  </Fragment>
+</Wix>

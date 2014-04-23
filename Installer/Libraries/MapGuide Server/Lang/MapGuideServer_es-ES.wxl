@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="es-ES" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+    <String Id="ServerFeature">Servidor</String>
+    <String Id="ServerFeature_Description">MapGuide Servidor proporciona análisis geográfico y la prestación de servicios.</String>
+    <String Id="ServerLogsFeature">Archivos de registro</String>
+    <String Id="ServerLogsFeature_Description">Usted puede elegir una ubicación para colocar los archivos de registro del servidor.</String>
+    <String Id="ServerPackagesFeature">Paquetes</String>
+    <String Id="ServerPackagesFeature_Description">Usted puede elegir un lugar donde el servidor de acceso Paquetes (*. mgp).</String>
+    <String Id="ServerRepositoriesFeature">Repositorios</String>
+    <String Id="ServerRepositoriesFeature_Description">Usted puede elegir uno de los padres para la ubicación del servidor repositorios.</String>
+    <String Id="ServerRepositoriesLibraryFeature">Biblioteca Repositorio</String>
+    <String Id="ServerRepositoriesLibraryFeature_Description">Usted puede elegir una ubicación para la Biblioteca de repositorios.</String>
+    <String Id="ServerRepositoriesSessionFeature">Período de sesiones de repositorios</String>
+    <String Id="ServerRepositoriesSessionFeature_Description">Usted puede elegir una ubicación para la reunión de repositorios.</String>
+    <String Id="ServerRepositoriesSiteFeature">Sitio Repositorio</String>
+    <String Id="ServerRepositoriesSiteFeature_Description">Usted puede elegir una ubicación para el sitio de repositorios.</String>
+    <String Id="ServerRepositoriesTileCacheFeature">Azulejos caché Repositorio</String>
+    <String Id="ServerRepositoriesTileCacheFeature_Description">You may choose a location for the Tile Cache repository.</String>
+    <String Id="ServerTempFeature">Archivos temporales</String>
+    <String Id="ServerTempFeature_Description">Usted puede elegir un lugar donde MapGuide almacenará los archivos temporales</String>
+    <!-- FDO -->
+    <String Id="FdoDescription">FDO (objetos de datos de características) permite el acceso al resumen diferentes fuentes de datos.</String>
+    <String Id="ArcSdeProvider">ArcSDE Proveedor</String>
+    <String Id="ArcSdeProviderDesc">De lectura / escritura a una basada en ArcSDE de ESRI almacén de datos utilizando Oracle y SQL Server. (Requiere exteriores ArcSDE dlls)</String>
+    <String Id="GdalProvider">GDAL Proveedor</String>
+    <String Id="GdalProviderDesc">Raster Proveedor FDO para GDAL</String>
+    <String Id="KingOracleProvider">Proveedor de King Oracle</String>
+    <String Id="KingOracleProviderDesc">De lectura / escritura a los datos espaciales y de atributos en una de Oracle Spatial. (requiere Oracle Instant Cliente bibliotecas)</String>
+    <String Id="MySqlProvider">Proveedor de MySQL </String>
+    <String Id="MySqlProviderDesc">Proveedor FDO para MySQL (requiere libmysql.dll)</String>
+    <String Id="OdbcProvider">Proveedor FDO para ODBC</String>
+    <String Id="OdbcProviderDesc">The ODBC Provider</String>
+    <String Id="OgrProvider">Proveedor FDO para OGR</String>
+    <String Id="OgrProviderDesc">Proveedor de OGR</String>
+    <String Id="PostGisProvider">PostGIS Proveedor</String>
+    <String Id="PostGisProviderDesc">Proveedor FDO para PostGIS (requiere libpq.dll)</String>
+    <String Id="PostgreSqlProvider">PostgreSQL/PostGIS Proveedor</String>
+    <String Id="PostgreSqlProviderDesc">De lectura / escritura de acceso a PostgreSQL / PostGIS datos basados en la tienda. Soporta los tipos de datos espaciales y las operaciones espaciales de la consulta.</String>
+    <String Id="SdfProvider">SDF Proveedor</String>
+    <String Id="SdfProviderDesc">De lectura / escritura a Autodesk espacial del formato de base de datos, un archivo basado en Geodatabase personales que soporta múltiples características y atributos, indexación espacial, y el archivo de bloqueo.</String>
+    <String Id="ShpProvider">SHP Proveedor</String>
+    <String Id="ShpProviderDesc">De lectura / escritura a los datos espaciales y de atributos en un archivo de ESRI SHP.</String>
+    <String Id="SltProvider">SQLite Proveedor</String>
+    <String Id="SltProviderDesc">Proveedor de SQLite</String>
+    <String Id="SqlServerProvider">SQL Server Proveedor espacial </String>
+    <String Id="SqlServerProviderDesc">Leer / Escribir el acceso a la función de los datos en un servidor de MS SQL del almacén de datos habilitada espacialmente. Apoya geoespaciales y no de datos geoespaciales y de esquema.</String>
+    <String Id="WfsProvider">WFS Proveedor</String>
+    <String Id="WfsProviderDesc">Acceso de lectura a OGC WFS-basado almacén de datos.</String>
+    <String Id="WmsProvider">WMS Proveedor</String>
+    <String Id="WmsProviderDesc">Acceso de lectura a OGC WMS-basado almacén de datos.</String>
+</WixLocalization>

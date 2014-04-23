@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<FeatureMap>
+  <DirectorySearch Name=".svn" Suffix="_SVNMETADATA" />
+  <IdentifierOverride Pattern="Server\bin\mgserver.exe" Identifier="MGSERVER_EXE" />
+  <IdentifierOverride Pattern="Apache24\bin\httpd.exe" Identifier="HTTPD_EXE" />
+  <IdentifierOverride Pattern="Tomcat\bin\service.bat" Identifier="TOMCAT_SERVICE_BAT" />
+  <IdentifierOverride Pattern="Tomcat\bin\tomcat7.exe" Identifier="TOMCAT_EXE" />
+</FeatureMap>
