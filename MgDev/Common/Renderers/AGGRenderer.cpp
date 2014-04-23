@@ -1421,7 +1421,10 @@ void AGGRenderer::SetRenderSelectionMode(bool mode, int rgba)
     if (mode)
     {
         RS_Color selLineColor = RS_Color((rgba & 0xFFFFFF00) | 200);
-        RS_Color selFillColor = RS_Color((rgba & 0xFFFFFF00) | 160);
+        RS_Color selFillColor(rgba & 0xFFFFFFFF);
+        //For backward compatibility, only do the override if we have a fully opaque alpha component, otherwise respect the value defined
+        if (selFillColor.alpha() == 255)
+            selFillColor = RS_Color((rgba & 0xFFFFFF00) | 160);
         RS_Color selBgColor(0, 0, 0, 0);
         RS_LineStroke selStroke = RS_LineStroke(selLineColor, 0.001, L"Solid", RS_Units_Device);
         m_selFill = RS_FillStyle(selStroke, selFillColor, selBgColor, L"Solid");

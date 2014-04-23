@@ -167,7 +167,12 @@ void SE_Renderer::SetRenderSelectionMode(bool mode, int rgba)
         m_selLineStroke.weight = 3.0;  // should be 1 to give 1mm, but the renderer is way off
         m_selLineStroke.color = RS_Color(rgb0 | 200).argb();
 
-        m_selFillColor  = RS_Color(rgb0 | 160).argb();
+        RS_Color selFillColor(rgba & 0xFFFFFFFF);
+        //For backward compatibility, only do the override if we have a fully opaque alpha component, otherwise respect the value defined
+        if (selFillColor.alpha() == 255)
+            selFillColor = RS_Color((rgba & 0xFFFFFF00) | 160);
+
+        m_selFillColor  = selFillColor.argb();
         m_textForeColor = RS_Color(rgb0 | 200);
         m_textBackColor = RS_Color(rgb0 | 255);
     }
