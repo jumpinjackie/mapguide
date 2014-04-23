@@ -1,0 +1,580 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D46ED17B-329B-4D80-9181-FEF8307EFCBB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OSGeo.MapGuide.Viewer</RootNamespace>
+    <AssemblyName>OSGeo.MapGuide.Viewer</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\OSGeo.MapGuide.Viewer.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OSGeo.MapGuide.Foundation, Version=1.0.0.1, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.Foundation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OSGeo.MapGuide.Geometry, Version=1.0.0.1, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.Geometry.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OSGeo.MapGuide.PlatformBase, Version=1.0.0.1, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.PlatformBase.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Messaging" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppLayoutEngine\AppLayout.cs" />
+    <Compile Include="AppLayoutEngine\MgQuitComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="AppLayoutEngine\Shell.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AppLayoutEngine\Shell.Designer.cs">
+      <DependentUpon>Shell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BaseInteractionComponents.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Debug.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Debug.resx</DependentUpon>
+    </Compile>
+    <Compile Include="IDefaultToolbar.cs" />
+    <Compile Include="IMapLegend.cs" />
+    <Compile Include="IMapViewer.cs" />
+    <Compile Include="IMapViewerComponent.cs" />
+    <Compile Include="IMapStatusBar.cs" />
+    <Compile Include="IPropertyPane.cs" />
+    <Compile Include="MgLegendControlPresenter.cs" />
+    <Compile Include="MgComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgBufferComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgBufferControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgBufferControlImpl.Designer.cs">
+      <DependentUpon>MgBufferControlImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgDefaultToolbar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgGenericInvokeComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgInvokeComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgLineMeasureControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgLineMeasureControlImpl.Designer.cs">
+      <DependentUpon>MgLineMeasureControlImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgLoadPackageComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgLoadMapComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgMapViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MapViewerController.cs" />
+    <Compile Include="MgLegend.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgLegend.Designer.cs">
+      <DependentUpon>MgLegend.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgMapViewerProvider.cs" />
+    <Compile Include="MgMeasureComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgPrintComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgPrintControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgPrintControlImpl.Designer.cs">
+      <DependentUpon>MgPrintControlImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgPropertyPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgPropertyPane.Designer.cs">
+      <DependentUpon>MgPropertyPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgQueryComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgQueryControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgQueryControlImpl.Designer.cs">
+      <DependentUpon>MgQueryControlImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgQueryResultsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MgQueryResultsDialog.Designer.cs">
+      <DependentUpon>MgQueryResultsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgReadOnlyStream.cs" />
+    <Compile Include="MgLayerSelectionHandler.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgRedlineComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgRedlineComponent.Designer.cs">
+      <DependentUpon>MgRedlineComponent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgRedlineControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgRedlineControlImpl.Designer.cs">
+      <DependentUpon>MgRedlineControlImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgSearchComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgSearchControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgSearchControlImpl.Designer.cs">
+      <DependentUpon>MgSearchControlImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgTaskPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgTaskPane.Designer.cs">
+      <DependentUpon>MgTaskPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgThemeComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgThemeControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgThemeControlImpl.Designer.cs">
+      <DependentUpon>MgThemeControlImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgTransientMapState.cs" />
+    <Compile Include="MgViewerOptionsComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgViewerOptionsControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgViewerOptionsControlImpl.Designer.cs">
+      <DependentUpon>MgViewerOptionsControlImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Redlining\NewRedlineLayerDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Redlining\NewRedlineLayerDialog.Designer.cs">
+      <DependentUpon>NewRedlineLayerDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Redlining\RedlineEditingCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Redlining\RedlineEditingCtrl.Designer.cs">
+      <DependentUpon>RedlineEditingCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Redlining\RedlineEditor.cs" />
+    <Compile Include="Redlining\RedlineMainCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Redlining\RedlineMainCtrl.Designer.cs">
+      <DependentUpon>RedlineMainCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Redlining\RedlineManager.cs" />
+    <Compile Include="Redlining\RedlineRegistry.cs" />
+    <Compile Include="Redlining\RedlineSchemaFactory.cs" />
+    <Compile Include="Redlining\RedlineStyleDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Redlining\RedlineStyleDialog.Designer.cs">
+      <DependentUpon>RedlineStyleDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Redlining\TextPrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Redlining\TextPrompt.Designer.cs">
+      <DependentUpon>TextPrompt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Tasks\MgTaskPaneStub.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tasks\MgTaskPaneStub.Designer.cs">
+      <DependentUpon>MgTaskPaneStub.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Util.cs" />
+    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AppLayoutEngine\Shell.resx">
+      <DependentUpon>Shell.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Debug.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Debug.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgBufferControlImpl.resx">
+      <DependentUpon>MgBufferControlImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgControlImpl.resx">
+      <DependentUpon>MgControlImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgLegend.resx">
+      <DependentUpon>MgLegend.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgLineMeasureControlImpl.resx">
+      <DependentUpon>MgLineMeasureControlImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgPrintControlImpl.resx">
+      <DependentUpon>MgPrintControlImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgPropertyPane.resx">
+      <DependentUpon>MgPropertyPane.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgQueryControlImpl.resx">
+      <DependentUpon>MgQueryControlImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgQueryResultsDialog.resx">
+      <DependentUpon>MgQueryResultsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgRedlineControlImpl.resx">
+      <DependentUpon>MgRedlineControlImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgSearchControlImpl.resx">
+      <DependentUpon>MgSearchControlImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgTaskPane.resx">
+      <DependentUpon>MgTaskPane.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgThemeControlImpl.resx">
+      <DependentUpon>MgThemeControlImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgViewerOptionsControlImpl.resx">
+      <DependentUpon>MgViewerOptionsControlImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\NewRedlineLayerDialog.resx">
+      <DependentUpon>NewRedlineLayerDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\RedlineEditingCtrl.resx">
+      <DependentUpon>RedlineEditingCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\RedlineMainCtrl.resx">
+      <DependentUpon>RedlineMainCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\RedlineStyleDialog.resx">
+      <DependentUpon>RedlineStyleDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redlining\TextPrompt.resx">
+      <DependentUpon>TextPrompt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tasks\MgTaskPaneStub.resx">
+      <DependentUpon>MgTaskPaneStub.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lc_broken.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lc_dwf.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lc_group.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lc_raster.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lc_select.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lc_theme.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lc_unselect.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DebugLayer.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\zoomin.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\grab.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_zoomselect.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\zoomout.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\control.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\control-180.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_loading.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_pan.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_select.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\layer-shape.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\layer-shape-ellipse.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\layer-shape-line.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\layer-shape-polygon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\layer-shape-polyline.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\layer-small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PoweredBy_en.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ui-tooltip-balloon-bottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\buffer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\select-clear.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\select-features.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\select-polygon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\select-radius.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\select-zoom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\view-refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\zoom-in-fixed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\measure.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\zoom-out-fixed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\zoom-full.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit-copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit-cut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit-duplicate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit-paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit-xml.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file-print.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file-save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\help.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconNavigator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\initial-center.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\invoke-script.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\invoke-url.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\options.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\overview-map.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\print.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\select-centre.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\view-back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\view-forward.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\zoom-dynamic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\zoom-in.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_etc.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\AreaLayerDef.txt" />
+    <None Include="Resources\area_box.templ" />
+    <None Include="Resources\area_cross.templ" />
+    <None Include="Resources\area_dash.templ" />
+    <None Include="Resources\area_dolmit.templ" />
+    <None Include="Resources\area_hex.templ" />
+    <None Include="Resources\area_line.templ" />
+    <None Include="Resources\area_line_135.templ" />
+    <None Include="Resources\area_line_45.templ" />
+    <None Include="Resources\area_line_90.templ" />
+    <None Include="Resources\area_net.templ" />
+    <None Include="Resources\area_sacncr.templ" />
+    <None Include="Resources\area_solid.templ" />
+    <None Include="Resources\area_square.templ" />
+    <None Include="Resources\area_steel.templ" />
+    <None Include="Resources\line_border.templ" />
+    <None Include="Resources\line_dash.templ" />
+    <None Include="Resources\markuplayerdefinition_advanced.xml" />
+    <None Include="Resources\markuplayerdefinition.xml" />
+    <None Include="Resources\markupfeaturesource.xml" />
+    <None Include="Resources\line_dashdot.templ" />
+    <None Include="Resources\line_dashdotdot.templ" />
+    <None Include="Resources\line_divide.templ" />
+    <None Include="Resources\line_dot.templ" />
+    <None Include="Resources\line_fenceline1.templ" />
+    <None Include="Resources\line_rail.templ" />
+    <None Include="Resources\line_solid.templ" />
+    <None Include="Resources\redline.png" />
+    <None Include="Resources\map--minus.png" />
+    <None Include="Resources\map--plus.png" />
+    <None Include="Resources\cross-script.png" />
+    <None Include="Resources\plus.png" />
+    <None Include="Resources\AreaRuleTemplate.txt" />
+    <None Include="Resources\view_log.gif" />
+    <None Include="Resources\monitor_status.gif" />
+    <None Include="Resources\load_package.gif" />
+    <None Include="Resources\icon_home.gif" />
+    <None Include="Resources\icon_tasks.gif" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

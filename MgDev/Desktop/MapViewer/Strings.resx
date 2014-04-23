@@ -1,0 +1,505 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CircleDigitizationPrompt" xml:space="preserve">
+    <value>Click to finish</value>
+  </data>
+  <data name="CountFormat" xml:space="preserve">
+    <value>{0} features in layer</value>
+  </data>
+  <data name="CountOtherStyles" xml:space="preserve">
+    <value>{0} other styles</value>
+  </data>
+  <data name="CountResults" xml:space="preserve">
+    <value>{0} results</value>
+  </data>
+  <data name="DefaultLayerTooltip" xml:space="preserve">
+    <value>Name: {1}{0}Feature Source: {2}{0}Feature Class: {3}</value>
+  </data>
+  <data name="DrawingLayerTooltip" xml:space="preserve">
+    <value>Name: {1}{0}Feature Source: {2}</value>
+  </data>
+  <data name="ErrorComponentAlreadyExists" xml:space="preserve">
+    <value>A component with ID ({0}) already exists</value>
+  </data>
+  <data name="ErrorComponentNotFound" xml:space="preserve">
+    <value>Component ({0}) does not exist</value>
+  </data>
+  <data name="ErrorComponentTargetNotTaskPane" xml:space="preserve">
+    <value>The specified component's target is not the Task Pane</value>
+  </data>
+  <data name="ErrorEndInitNoTaskPaneAssigned" xml:space="preserve">
+    <value>EndInit: No Task Pane assigned</value>
+  </data>
+  <data name="ErrorGeometryPropertyNotFound" xml:space="preserve">
+    <value>Could not find the geometry property: {0}</value>
+  </data>
+  <data name="ErrorInvalidComponentProperty" xml:space="preserve">
+    <value>Property {0} is not a valid component property as it has not been marked with the MgComponentProperty attribute</value>
+  </data>
+  <data name="ErrorLayerMetadataNotFullyInitialized" xml:space="preserve">
+    <value>Layer metadata not fully initialized</value>
+  </data>
+  <data name="ErrorMalformedEnumString" xml:space="preserve">
+    <value>Malformed enum string. Expected enum:className:value</value>
+  </data>
+  <data name="ErrorNotImplemented" xml:space="preserve">
+    <value>This feature is not yet implemented</value>
+  </data>
+  <data name="ErrorStreamNotRewindable" xml:space="preserve">
+    <value>The stream is not rewindable</value>
+  </data>
+  <data name="ErrorTargetNoTaskPaneAssigned" xml:space="preserve">
+    <value>Target: No Task Pane assigned</value>
+  </data>
+  <data name="ErrorUnsupportedItemType" xml:space="preserve">
+    <value>Unsupported item type: {0}</value>
+  </data>
+  <data name="ErrorViewerNotInitialized" xml:space="preserve">
+    <value>Viewer not initialized via Init()</value>
+  </data>
+  <data name="GeneralDigitizationInstructions" xml:space="preserve">
+    <value>Press ESC to cancel</value>
+  </data>
+  <data name="Infinity" xml:space="preserve">
+    <value>Infinity</value>
+  </data>
+  <data name="LineDigitizationPrompt" xml:space="preserve">
+    <value>Click to finish</value>
+  </data>
+  <data name="LineStringDigitizationPrompt" xml:space="preserve">
+    <value>Click again to add a new vertex.\nDouble-click to finish</value>
+  </data>
+  <data name="MenuFile" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="MenuHelp" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="MenuTools" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="MsgBufferLayerCreated" xml:space="preserve">
+    <value>Buffer Layer ({0}) created</value>
+  </data>
+  <data name="MsgBufferLayerUpdated" xml:space="preserve">
+    <value>Buffer Layer ({0}) updated</value>
+  </data>
+  <data name="MsgEnterNameForLayer" xml:space="preserve">
+    <value>Please enter a name for this layer</value>
+  </data>
+  <data name="MsgIncludeLayersToBuffer" xml:space="preserve">
+    <value>Please include one or more layers to create a buffer from</value>
+  </data>
+  <data name="MsgThemeLayerCreated" xml:space="preserve">
+    <value>Theme Layer ({0}) created</value>
+  </data>
+  <data name="MultiSegmentDigitzationInstructions" xml:space="preserve">
+    <value>Press Ctrl-Z to undo last point.\nPress ESC to cancel</value>
+  </data>
+  <data name="PointDigitizationPrompt" xml:space="preserve">
+    <value>Click to finish</value>
+  </data>
+  <data name="PolygonDigitizationPrompt" xml:space="preserve">
+    <value>Click again to add a new vertex.\nDouble-click to finish</value>
+  </data>
+  <data name="RectangleDigitizationPrompt" xml:space="preserve">
+    <value>Click to finish</value>
+  </data>
+  <data name="StatFeaturesSelected" xml:space="preserve">
+    <value>{0} features selected</value>
+  </data>
+  <data name="TextClearSelection" xml:space="preserve">
+    <value>Clear Selection</value>
+  </data>
+  <data name="TextCopyMap" xml:space="preserve">
+    <value>Copy map to clipboard</value>
+  </data>
+  <data name="TextDigitizeCircle" xml:space="preserve">
+    <value>Digitize Circle</value>
+  </data>
+  <data name="TextDigitizeLine" xml:space="preserve">
+    <value>Digitize Line</value>
+  </data>
+  <data name="TextDigitizeLineString" xml:space="preserve">
+    <value>Digitize Line String</value>
+  </data>
+  <data name="TextDigitizePoint" xml:space="preserve">
+    <value>Digitize Point</value>
+  </data>
+  <data name="TextDigitizePolygon" xml:space="preserve">
+    <value>Digitize Polygon</value>
+  </data>
+  <data name="TextDigitizeRectangle" xml:space="preserve">
+    <value>Digitize Rectangle</value>
+  </data>
+  <data name="TextDisableTooltips" xml:space="preserve">
+    <value>Disable Tooltips</value>
+  </data>
+  <data name="TextEnableTooltips" xml:space="preserve">
+    <value>Enable Tooltips</value>
+  </data>
+  <data name="TextExitApplication" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="TextLoadPackage" xml:space="preserve">
+    <value>Load Package</value>
+  </data>
+  <data name="TextNoSelection" xml:space="preserve">
+    <value>Nothing is selected</value>
+  </data>
+  <data name="TextOptionsSaved" xml:space="preserve">
+    <value>Options Saved</value>
+  </data>
+  <data name="TextPackageLoaded" xml:space="preserve">
+    <value>Package Loaded</value>
+  </data>
+  <data name="TextPan" xml:space="preserve">
+    <value>Pan</value>
+  </data>
+  <data name="TextPlotToDwf" xml:space="preserve">
+    <value>Plot to DWF</value>
+  </data>
+  <data name="TextPrint" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="TextRefreshMap" xml:space="preserve">
+    <value>Refresh Map</value>
+  </data>
+  <data name="TextScale" xml:space="preserve">
+    <value>Scale</value>
+  </data>
+  <data name="TextSelect" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="TextSelectPolygon" xml:space="preserve">
+    <value>Select Polygon</value>
+  </data>
+  <data name="TextSelectRadius" xml:space="preserve">
+    <value>Select Radius</value>
+  </data>
+  <data name="TextTaskPane" xml:space="preserve">
+    <value>Task Pane</value>
+  </data>
+  <data name="TextViewerOptions" xml:space="preserve">
+    <value>Viewer Options</value>
+  </data>
+  <data name="TextZoomExtents" xml:space="preserve">
+    <value>Zoom Extents</value>
+  </data>
+  <data name="TextZoomIn" xml:space="preserve">
+    <value>Zoom In</value>
+  </data>
+  <data name="TextZoomNext" xml:space="preserve">
+    <value>Zoom Next</value>
+  </data>
+  <data name="TextZoomOut" xml:space="preserve">
+    <value>Zoom Out</value>
+  </data>
+  <data name="TextZoomPrevious" xml:space="preserve">
+    <value>Zoom Previous</value>
+  </data>
+  <data name="TextZoomToSelection" xml:space="preserve">
+    <value>Zoom to Selection</value>
+  </data>
+  <data name="ThemedLayerTooltip" xml:space="preserve">
+    <value>Name: {1}{0}Feature Source: {2}{0}Feature Class: {3}{0}Number of Rules: {4}</value>
+  </data>
+  <data name="ThemeEqual" xml:space="preserve">
+    <value>Equal</value>
+  </data>
+  <data name="ThemeIndividual" xml:space="preserve">
+    <value>Individual</value>
+  </data>
+  <data name="ThemeJenks" xml:space="preserve">
+    <value>Jenks (Natural Breaks)</value>
+  </data>
+  <data name="ThemeQuantile" xml:space="preserve">
+    <value>Quantile</value>
+  </data>
+  <data name="ThemeStandardDeviation" xml:space="preserve">
+    <value>Standard Deviation</value>
+  </data>
+  <data name="TitleBuffer" xml:space="preserve">
+    <value>Buffer</value>
+  </data>
+  <data name="TitleError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="TitleMeasure" xml:space="preserve">
+    <value>Measure</value>
+  </data>
+  <data name="TitlePrintSettings" xml:space="preserve">
+    <value>Print Settings</value>
+  </data>
+  <data name="TitleQuery" xml:space="preserve">
+    <value>Query</value>
+  </data>
+  <data name="TitleTheme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="TitleViewerOptions" xml:space="preserve">
+    <value>Viewer Options</value>
+  </data>
+  <data name="TooltipDisableTooltips" xml:space="preserve">
+    <value>Tooltips are enabled. Click to disable</value>
+  </data>
+  <data name="TooltipEnableTooltips" xml:space="preserve">
+    <value>Tooltips are disabled. Click to enable</value>
+  </data>
+  <data name="WarnInitialTaskComponentNotFound" xml:space="preserve">
+    <value>WARNING: The specified initial task component id ({0}) does not exist in the AppLayout</value>
+  </data>
+  <data name="WarnInvokeNonExistentComponent" xml:space="preserve">
+    <value>WARNING: Attempted to invoke the component with ID ({0}), but could not find any component with this ID</value>
+  </data>
+  <data name="StrUnsupportedDataType" xml:space="preserve">
+    <value>[unsupported data type]</value>
+  </data>
+  <data name="TitleTaskPaneAbout" xml:space="preserve">
+    <value>About the Task Pane</value>
+  </data>
+  <data name="TextLayers" xml:space="preserve">
+    <value>Layers</value>
+  </data>
+  <data name="TextLayersRefreshing" xml:space="preserve">
+    <value>Layers (Refreshing...)</value>
+  </data>
+  <data name="ErrorInvalidMapName" xml:space="preserve">
+    <value>Invalid map name "{0}". A map name cannot have spaces or any of the following characters: \:*?"&lt;&gt;|&amp;'%=/</value>
+  </data>
+  <data name="ErrorMapNotFound" xml:space="preserve">
+    <value>A map named ({0}) was not found in the AppLayout</value>
+  </data>
+  <data name="SetLanguage" xml:space="preserve">
+    <value>Set Language</value>
+  </data>
+  <data name="ErrorSearchFilterMissingPlaceholder" xml:space="preserve">
+    <value>The search filter is missing the required $USER_VARIABLE placeholder</value>
+  </data>
+  <data name="ErrorInvalidSearchLayer" xml:space="preserve">
+    <value>Invalid search layer. Layer {0} not found on map</value>
+  </data>
+  <data name="TextEnterSearchCriteria" xml:space="preserve">
+    <value>Enter Search Criteria</value>
+  </data>
+  <data name="TitleSearch" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="TitleRedline" xml:space="preserve">
+    <value>Redline</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="area_box" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_box.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_cross" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_cross.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_dash" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_dash.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_dolmit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_dolmit.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_hex" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_hex.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_line" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_line.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_line_135" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_line_135.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_line_45" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_line_45.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_line_90" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_line_90.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_net" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_net.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_sacncr" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_sacncr.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_solid" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_solid.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_square" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_square.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="area_steel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\area_steel.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_border" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_border.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_dash" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_dash.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_dashdot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_dashdot.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_dashdotdot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_dashdotdot.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_divide" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_divide.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_dot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_dot.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_fenceline1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_fenceline1.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_rail" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_rail.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="line_solid" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\line_solid.templ;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="markupfeaturesource" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\markupfeaturesource.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="markuplayerdefinition" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\markuplayerdefinition.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="markuplayerdefinition_advanced" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\markuplayerdefinition_advanced.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="RedlineLayerGroupLabel" xml:space="preserve">
+    <value>Redline Layers</value>
+  </data>
+  <data name="ConfirmDeleteRedlines" xml:space="preserve">
+    <value>Are you sure you want to delete the selected redline objects?</value>
+  </data>
+  <data name="SpecifyRedlineText" xml:space="preserve">
+    <value>Specify the text for the selected redline(s)</value>
+  </data>
+  <data name="TitleDeleteRedlines" xml:space="preserve">
+    <value>Delete Redlines</value>
+  </data>
+  <data name="TitleEditRedlineText" xml:space="preserve">
+    <value>Edit Redline Text</value>
+  </data>
+  <data name="SHPGeometryLimitation" xml:space="preserve">
+    <value>SHP only allows a single geometry type</value>
+  </data>
+</root>

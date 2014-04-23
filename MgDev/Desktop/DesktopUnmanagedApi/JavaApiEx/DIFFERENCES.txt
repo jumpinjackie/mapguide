@@ -1,0 +1,51 @@
+JavaApiEx differences from JavaApi
+==================================
+
+1. MgException/AppThrowable is no longer a checked exception
+
+AppThrowable now extends RuntimeException making it (and MgException and its subclasses) unchecked exceptions, all methods in the MapGuide API no longer have the (throws MgException) clause.
+
+2. Method names follow Java conventions
+
+All method names in the Java proxy classes are now in lowerCamelCase instead of the MapGuide-default UpperCamelCase
+
+ eg. Instead of this:
+
+	MgSiteConnection siteConn = new MgSiteConnection();
+	MgUserInformation userInfo = new MgUserInfomration(sessionId);
+	siteConn.Open(userInfo);
+	MgFeatureService featureSvc = (MgFeatureService)siteConn.CreateService(MgServiceType.FeatureService);
+	MgFeatureSchemaCollection schema = featureSvc.DescribeSchema(new MgResourceIdentifier("Library://Samples/Sheboygan/Data/Parcels.FeatureSource"), "SHP_Schema");
+
+ It is now this:
+
+	MgSiteConnection siteConn = new MgSiteConnection();
+	MgUserInformation userInfo = new MgUserInfomration(sessionId);
+	siteConn.open(userInfo); //Note the lowercase
+	MgFeatureService featureSvc = (MgFeatureService)siteConn.CreateService(MgServiceType.FeatureService);
+	MgFeatureSchemaCollection schema = featureSvc.describeSchema(new MgResourceIdentifier("Library://Samples/Sheboygan/Data/Parcels.FeatureSource"), "SHP_Schema"); //Note the lowercase
+
+3. The following MapGuide collection classes now implement java.util.Collection<T>:
+
+ - MgBatchPropertyCollection (T is MgPropertyCollection)
+ - MgClassDefinitionCollection (T is MgClassDefinition)
+ - MgFeatureSchemaCollection (T is MgFeatureSchema)
+ - MgPropertyCollection (T is MgProperty)
+ - MgStringCollection (T is String)
+ 
+4. The following classes now implement java.util.Iterable<T> allowing them to be used in an enhanced for-loop
+
+ - MgReadOnlyLayerCollection (T is MgLayerBase)
+
+5. To avoid naming conflicts with SWIG generated code and methods from inherited java classes or interfaces as a result of the above changes, the following class methods have been renamed in the Java MapGuide API:
+
+ - MgPropertyDefinition.Delete      is now MgPropertyDefinition.markAsDeleted
+ - MgClassDefinition.Delete         is now MgClassDefinition.markAsDeleted
+ - MgFeatureSchema.Delete           is now MgFeatureSchema.markAsDeleted
+ - MgException.GetStackTrace        is now MgException.getExceptionStackTrace
+ - MgBatchPropertyCollection.Add    is now MgBatchPropertyCollection.addItem
+ - MgClassDefinitionCollection.Add  is now MgClassDefinitionCollection.addItem
+ - MgFeatureSchemaCollection.Add    is now MgFeatureSchemaCollection.addItem
+ - MgIntCollection.Add              is now MgIntCollection.addItem
+ - MgPropertyCollection.Add         is now MgPropertyCollection.addItem
+ - MgStringCollection.Add           is now MgStringCollection.addItem

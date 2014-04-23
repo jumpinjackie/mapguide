@@ -1,0 +1,336 @@
+<?xml version='1.0'?>
+<Template service="WFS" version="1.1.0">
+
+<!-- THIS TEMPLATE FOR WFS IS STILL UNDER DEVELOPMENT -->
+
+<Definitions>
+
+ <!-- This defines the format any given feature type will take when enumerated -->
+ <Define item="Feature.xml">
+  <!--
+       Feature class #&Feature.iteration;
+    -->
+  <wfs:FeatureType
+     xmlns:&Feature.Prefix;="&Feature.Resource;">
+   <wfs:Name>&Feature.FullName;</wfs:Name>
+   <wfs:Title>&Feature.Title;</wfs:Title>
+   <wfs:Abstract>&Feature.Abstract;</wfs:Abstract>
+   <?Ifdef item="Feature.Keywords"?>
+   <ows:Keywords>
+    <?EnumDelim list="&Feature.Keywords;" using="&Keywords.xml;"?>
+   </ows:Keywords>
+   <?Endif?>
+   <wfs:DefaultSRS>&Feature.DefaultSRS;</wfs:DefaultSRS>
+   <?Ifdef item="Feature.OtherSRS"?>
+    <?EnumDelim list="&Feature.OtherSRS;" using="&OtherSRS.xml"?>
+   <?Endif?>
+   <wfs:OutputFormats>
+    <?Enum list="&Formats.GetFeature;" using="&Format.xml"?>
+   </wfs:OutputFormats>
+   <ows:WGS84BoundingBox>
+   <?Ifdef item="Feature.WGS84BoundingBox"?>
+   <?Enum list="&Feature.WGS84BoundingBox;" using="&BoundingBox.xml;" item="Bounds"?>
+   <?Else?>
+    <?Ifdef item="Feature.Bounds"?>
+      <?Enum list="&Feature.Bounds;" using="&BoundingBox.xml;" item="Bounds"?>
+    <?Else?>
+    &Feature.name.to.BoundingBox;
+    <?Endif?>
+   <?Endif?>
+   </ows:WGS84BoundingBox>
+  </wfs:FeatureType>
+ </Define>
+
+ <Define item="Bounds.translate">
+  <translate>
+    <Bounds SRS="EPSG:4326" west="-180" south="-90" east="180" north="90"/>
+  </translate>
+ </Define>
+
+ <!-- This "intermediate" definition allows us to put the <?Translate?> into another PI's argument list -->
+ <Define item="Feature.name.to.Bounds"><?Translate text="&Feature.name;" with="&Bounds.translate;"?></Define>
+ <!-- This definition takes a feature name and produces a bounding box definition based on a map lookup. -->
+ <Define item="Feature.name.to.BoundingBox"><?Enum list="&Feature.name.to.Bounds;" using="&BoundingBox.xml;" item="Bounds"?></Define>
+
+
+ <!-- Routine Enum formats, in xml -->
+ <Define item="ServiceTypeVersion.xml"><ows:ServiceTypeVersion>&Enum.item.number;</ows:ServiceTypeVersion></Define>
+ <Define item="Keywords.xml"><ows:Keyword>&Enum.item;</ows:Keyword></Define>
+ <Define item="ParameterValue.xml"><ows:Value>&Enum.item;</ows:Value></Define>
+ <Define item="ParameterValue.Version.xml"><ows:Value>&Enum.item.number;</ows:Value></Define>
+ <Define item="GeometryOperands.xml"><ogc:GeometryOperand>gml:&Enum.item;</ogc:GeometryOperand></Define>
+ <Define item="SpatialOperators.xml"><ogc:SpatialOperator name="&Enum.item;"/></Define>
+ <Define item="ComparisonOperators.xml"><ogc:ComparisonOperator>&Enum.item;</ogc:ComparisonOperator></Define>
+ <Define item="FunctionNames.xml"><ogc:FunctionName nArgs="&Enum.item.args;">&Enum.item;</ogc:FunctionName></Define>
+ <Define item="OtherSRS.xml"><wfs:OtherSRS>&Enum.item;</wfs:OtherSRS></Define>
+ <Define item="Format.xml"><Format>&Enum.item;</Format></Define>
+ <Define item="BoundingBox.xml">
+   <ows:LowerCorner>&Enum.item.west; &Enum.item.south;</ows:LowerCorner>
+   <ows:UpperCorner>&Enum.item.east; &Enum.item.north;</ows:UpperCorner>
+ </Define>
+ <Define item="Formats.GetCapabilities">
+   <item>text/xml</item>
+ </Define>
+ 
+ <!-- TODO: these will need to come from the full Feature metadata store -->
+ <!-- for now, these are operating defaults. -->
+ <Define item="Feature.namespace">http://fdo.osgeo.org/schemas</Define>
+ <Define item="Feature.Abstract"></Define>
+ <Define item="Feature.DefaultSRS">urn:ogc:def:crs:EPSG::4326</Define>
+ <!--Define item="Feature.OtherSRS"></Define-->
+ <Define item="Feature.Bounds.north">90</Define>
+ <Define item="Feature.Bounds.south">-90</Define>
+ <Define item="Feature.Bounds.west">-180</Define>
+ <Define item="Feature.Bounds.east">180</Define>
+ <Define item="FeatureCollection.Namespaces">xmlns:gml="http://www.opengis.net/gml" xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"</Define>
+
+ <Define item="DescribeFeature.EnumDelim.xml">
+   <!-- &Enum.iteration; -->
+   <?EnumDelim list="&Enum.item;" sep="," subset="1" using="&DescribeFeature.Import.xml;"?>
+ </Define>
+ <Define item="DescribeFeature.EnumFeature.xml">
+   <!-- &Feature.iteration; -->
+   <?EnumDelim list="&Feature.Fullname;" sep="," subset="1" using="&DescribeFeature.Import.xml;"?>
+ </Define>
+
+ <Define item="DescribeFeature.Import.xml">
+  <xs:import schemaLocation="&Url.DescribeFeatureType;?request=DescribeFeatureType&amp;service=WFS&amp;version=1.1.0&amp;typeName=&Enum.item;"/>
+ </Define>
+ 
+</Definitions>
+
+<!--
+
+  WFS GetCapabilities  - XML
+
+-->
+<Response request="GetCapabilities" content-type="text/xml">
+<wfs:WFS_Capabilities
+  xmlns:gml="http://www.opengis.net/gml"
+  xmlns:wfs="http://www.opengis.net/wfs"
+  xmlns:ows="http://www.opengis.net/ows"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ogc="http://www.opengis.net/ogc"
+  xmlns="http://www.opengis.net/wfs"
+  version="1.1.0" 
+  xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"
+ >
+ 
+  <?Ifdef item="Section.ServiceIdentification"?>
+    <!-- ================================================================== -->
+    <!-- SERVICE IDENTIFICATION SECTION                                     -->
+    <!-- ================================================================== -->
+    <ows:ServiceIdentification>
+    <ows:Title>&Service.Title;</ows:Title>
+    <ows:Abstract>&Service.Abstract;</ows:Abstract>
+    <ows:Keywords>
+      <?Enum list="&Service.Keywords;" using="&Keywords.xml;"?>
+    </ows:Keywords>
+    <ows:ServiceType>WFS</ows:ServiceType>
+    <?Enum list="&SupportedVersions;" using="&ServiceTypeVersion.xml;" item="Version"?>
+    <ows:Fees>&Service.Fees;</ows:Fees>
+    <ows:AccessConstraints>&Service.AccessConstraints;</ows:AccessConstraints>
+  </ows:ServiceIdentification>
+  <?Endif?>
+  
+  <?Ifdef item="Section.ServiceProvider"?>
+    <!-- ================================================================== -->
+    <!-- SERVICE PROVIDER SECTION                                           -->
+    <!-- ================================================================== -->
+    <ows:ServiceProvider>
+    <ows:ProviderName>&Service.Contact.ProviderName;</ows:ProviderName>
+    <ows:ProviderSite>&Service.Contact.ProviderSite;</ows:ProviderSite>
+    <ows:ServiceContact>
+      <ows:IndividualName>&Service.Contact.Name;</ows:IndividualName>
+      <ows:PositionName>&Service.Contact.Position;</ows:PositionName>
+      <ows:ContactInfo>
+        <ows:Phone>
+          <ows:Voice>&Service.Contact.Phone;</ows:Voice>
+          <ows:Facsimile>&Service.Contact.Fax;</ows:Facsimile>
+        </ows:Phone>
+        <ows:Address>
+          <ows:DeliveryPoint>&Service.Contact.Address.Street;</ows:DeliveryPoint>
+          <ows:City>&Service.Contact.Address.City;</ows:City>
+          <ows:AdministrativeArea>&Service.Contact.Address.StateProv;</ows:AdministrativeArea>
+          <ows:PostalCode>&Service.Contact.Address.PostCode;</ows:PostalCode>
+          <ows:Country>&Service.Contact.Address.Country;</ows:Country>
+          <ows:ElectronicMailAddress>&Service.Contact.Email;</ows:ElectronicMailAddress>
+        </ows:Address>
+        <ows:OnlineResource xlink:href="&URL.OnlineResource;"/>
+        <ows:HoursOfService>&Service.Contact.HoursOfService;</ows:HoursOfService>
+        <ows:ContactInstructions>&Service.Contact.Instructions;</ows:ContactInstructions>
+      </ows:ContactInfo>
+      <ows:Role>&Service.Contact.Role;</ows:Role>
+    </ows:ServiceContact>
+  </ows:ServiceProvider>
+  <?Endif?>
+  
+  <?Ifdef item="Section.OperationsMetadata"?>
+    <!-- ================================================================== -->
+    <!-- OPERATIONS METADATA SECTION                                        -->
+    <!-- ================================================================== -->
+    <ows:OperationsMetadata>
+
+    <!-- GetCapabilities -->
+    <ows:Operation name="GetCapabilities">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="&URL.GetCapabilities;?"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="AcceptVersions">
+        <?Enum list="&SupportedVersions;" using="&ParameterValue.Version.xml;" item="Version"?>
+      </ows:Parameter>
+      <ows:Parameter name="AcceptFormats">
+        <?Enum list="&Formats.GetCapabilities;" using="&ParameterValue.xml;"?>
+      </ows:Parameter>
+      <ows:Parameter name="Sections">
+        <ows:Value>ServiceIdentification</ows:Value>
+        <ows:Value>ServiceProvider</ows:Value>
+        <ows:Value>OperationsMetadata</ows:Value>
+        <ows:Value>FeatureTypeList</ows:Value>
+        <ows:Value>Filter_Capabilities</ows:Value>
+      </ows:Parameter>
+    </ows:Operation>
+
+    <!-- DescribeFeatureType -->
+    <ows:Operation name="DescribeFeatureType">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="&Url.DescribeFeatureType;?"/>
+          <!--ows:Post xlink:href="&Url.DescribeFeatureType;"/ -->
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="outputFormat">
+        <?Enum list="&Formats.DescribeFeatureType;" using="&ParameterValue.xml;"?>
+      </ows:Parameter>
+    </ows:Operation>
+
+
+    <!-- GetFeature -->
+    <ows:Operation name="GetFeature">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="&URL.GetFeature;?"/>
+          <ows:Post xlink:href="&URL.GetFeature;"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="resultType">
+        <ows:Value>results</ows:Value>
+        <ows:Value>hits</ows:Value>
+      </ows:Parameter>
+      <ows:Parameter name="outputFormat">
+        <?Enum list="&Formats.GetFeature;" using="&ParameterValue.xml;"?>
+      </ows:Parameter>
+    </ows:Operation>
+
+
+    <!--
+         Common Parameters
+      -->
+
+    <ows:Constraint name="DefaultMaxFeatures">
+      <ows:Value>&Default.MaxFeatures;</ows:Value>
+    </ows:Constraint>
+
+  </ows:OperationsMetadata>
+  <?Endif?>
+  
+  <?Ifdef item="Section.FeatureTypeList"?>
+     <!-- ================================================================== -->
+     <!-- FEATURE TYPE LIST SECTION                                          -->
+     <!-- ================================================================== -->
+     <wfs:FeatureTypeList>
+       <?EnumFeatureTypes using="&Feature.xml;"?>
+     </wfs:FeatureTypeList>
+  <?Endif?>
+ 
+  <!-- ================================================================== -->
+  <!-- FILTER CAPABILITIES SECTION                                        -->
+  <!-- ================================================================== -->
+
+  <ogc:Filter_Capabilities>
+    <ogc:Spatial_Capabilities>
+      <ogc:GeometryOperands>
+        <?Enum list="&Query.GeometryOperands;" using="&GeometryOperands.xml;"?>
+      </ogc:GeometryOperands>
+      <ogc:SpatialOperators>
+        <?Enum list="&Query.SpatialOperators;" using="&SpatialOperators.xml;"?>
+      </ogc:SpatialOperators>
+    </ogc:Spatial_Capabilities>
+
+    <ogc:Scalar_Capabilities>
+      <ogc:LogicalOperators/>
+      <ogc:ComparisonOperators>
+       <?Enum list="&Query.ComparisonOperators;" using="&ComparisonOperators.xml;"?>
+      </ogc:ComparisonOperators>
+      <ogc:ArithmeticOperators>
+        <ogc:SimpleArithmetic/>
+        <ogc:Functions>
+          <ogc:FunctionNames>
+            <?Enum list="&Query.FunctionNames" using="&FunctionNames.xml"?>
+          </ogc:FunctionNames>
+        </ogc:Functions>
+      </ogc:ArithmeticOperators>
+    </ogc:Scalar_Capabilities>
+    <ogc:Id_Capabilities>
+      <ogc:EID/>
+      <ogc:FID/>
+    </ogc:Id_Capabilities>
+  </ogc:Filter_Capabilities>
+
+ </wfs:WFS_Capabilities>
+</Response>
+
+<!--
+
+  WFS DescribeFeatureType - XML, GML 2.1.2
+
+-->
+<Response request="DescribeFeatureType" content-type="text/xml; subtype=gml/2.1.2">
+ <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified" attributeFormDefault="unqualified">
+ <?Ifdef item="Request.typename"?>
+ <?EnumDelim list="&Request.typename;" using="&DescribeFeature.EnumDelim.xml;"?>
+ <?Else?>
+ <?EnumFeatureTypes using="&DescribeFeature.EnumFeature.xml;" ?>
+ <?Endif?>
+ </xs:schema>
+</Response>
+
+<!--
+
+  WFS DescribeFeatureType - XML, GML 3.1.1
+
+-->
+<Response request="DescribeFeatureType" content-type="text/xml; subtype=gml/3.1.1">
+ <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified" attributeFormDefault="unqualified">
+ <?Ifdef item="Request.typename"?>
+ <?EnumDelim list="&Request.typename;" using="&DescribeFeature.EnumDelim.xml;"?>
+ <?Else?>
+ <?EnumFeatureTypes using="&DescribeFeature.EnumFeature.xml;" ?>
+ <?Endif?>
+ </xs:schema>
+</Response>
+<!--
+
+  Exception Format  - XML
+
+-->
+<Response request="Exception" content-type="text/xml">
+<ows:ExceptionReport 
+   version="&TemplateVersion;"
+   xmlns:ows="http://www.opengis.net/ows"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.opengis.net/ows http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd">
+ <ows:Exception exceptionCode="&Exception.Type;" locator="&Exception.Locator;">
+  <ows:ExceptionText>
+   &Exception.message;
+  </ows:ExceptionText>
+ </ows:Exception>
+</ows:ExceptionReport>
+</Response>
+
+</Template>

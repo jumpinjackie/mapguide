@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<LayerDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LayerDefinition-1.3.0.xsd" version="1.3.0">
+ <VectorLayerDefinition>
+  <ResourceId>Library://UnitTests/Data/test-1.FeatureSource</ResourceId>
+  <FeatureName>SDF_2_Schema:TEST</FeatureName>
+  <FeatureNameType>FeatureClass</FeatureNameType>
+  <Geometry>Data</Geometry>
+  <VectorScaleRange>
+   <LineTypeStyle>
+    <LineRule>
+     <LegendLabel></LegendLabel>
+     <LineSymbolization2D>
+      <LineStyle>Solid</LineStyle>
+      <Thickness>0.0</Thickness>
+      <Color>ff000000</Color>
+      <Unit>Centimeters</Unit>
+      <SizeContext>DeviceUnits</SizeContext>
+     </LineSymbolization2D>
+    </LineRule>
+    <ShowInLegend>true</ShowInLegend>
+   </LineTypeStyle>
+  </VectorScaleRange>
+ </VectorLayerDefinition>
+</LayerDefinition>

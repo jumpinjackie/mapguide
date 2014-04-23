@@ -1,0 +1,690 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SymbolDefinition">
+      <UniqueIdentifier>{06b027f3-a387-4147-8598-b6132778f137}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RasterLayer">
+      <UniqueIdentifier>{3854604f-b530-44cd-a1ab-66859decf43c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VectorLayer">
+      <UniqueIdentifier>{abbf9c13-9a8f-47d5-90c3-858a876ee7c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VectorLayer\Joins">
+      <UniqueIdentifier>{e0dd65f2-bf3a-4cf5-8787-e755c8898711}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VectorLayer\VectorStyles">
+      <UniqueIdentifier>{30b3f7da-82ff-4618-8250-a7a289dbf6df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VectorLayer\VectorStyles\Rules">
+      <UniqueIdentifier>{b2d628af-7b80-4867-8fec-ae1c98eacaff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VectorLayer\VectorStyles\Symbolizations">
+      <UniqueIdentifier>{768373d4-aafe-406b-be11-983268bd4812}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VectorLayer\VectorStyles\Symbols">
+      <UniqueIdentifier>{38688552-50d0-45b1-8211-d6b0594cdd47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MapDefinition">
+      <UniqueIdentifier>{52c7b7eb-254d-41c9-8926-2cfeeda39c6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PrintLayout">
+      <UniqueIdentifier>{0f8b8bb8-eda1-49f1-8ce2-cb2d02e74d57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{60789d0c-1f4a-4a81-8778-5732e5e689a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WatermarkDefinition">
+      <UniqueIdentifier>{fb2c8289-d933-4792-98d9-537a10e935f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ProfileResult">
+      <UniqueIdentifier>{117f7c46-7bea-4de3-887b-c162c15359d5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AreaUsage.cpp">
+      <Filter>SymbolDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="CompoundSymbolDefinition.cpp">
+      <Filter>SymbolDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicElement.cpp">
+      <Filter>SymbolDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>SymbolDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="LineUsage.cpp">
+      <Filter>SymbolDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="Parameter.cpp">
+      <Filter>SymbolDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="Path.cpp">
+      <Filter>SymbolDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="PointUsage.cpp">
+      <Filter>SymbolDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizeBox.cpp">
+      <Filter>SymbolDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleSymbol.cpp">
+      <Filter>SymbolDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleSymbolDefinition.cpp">
+      <Filter>SymbolDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="SymbolDefinition.cpp">
+      <Filter>SymbolDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>SymbolDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="TextFrame.cpp">
+      <Filter>SymbolDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="ChannelBand.cpp">
+      <Filter>RasterLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="GridColor.cpp">
+      <Filter>RasterLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="GridColorRule.cpp">
+      <Filter>RasterLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="GridColorStyle.cpp">
+      <Filter>RasterLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="GridLayerDefinition.cpp">
+      <Filter>RasterLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="GridScaleRange.cpp">
+      <Filter>RasterLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="GridSurfaceStyle.cpp">
+      <Filter>RasterLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="HillShade.cpp">
+      <Filter>RasterLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureSource.cpp">
+      <Filter>VectorLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="SupplementalSpatialContextInfo.cpp">
+      <Filter>VectorLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="VectorLayerDefinition.cpp">
+      <Filter>VectorLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="VectorScaleRange.cpp">
+      <Filter>VectorLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="URLData.cpp">
+      <Filter>VectorLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="AttributeRelate.cpp">
+      <Filter>VectorLayer\Joins</Filter>
+    </ClCompile>
+    <ClCompile Include="CalculatedProperty.cpp">
+      <Filter>VectorLayer\Joins</Filter>
+    </ClCompile>
+    <ClCompile Include="Extension.cpp">
+      <Filter>VectorLayer\Joins</Filter>
+    </ClCompile>
+    <ClCompile Include="RelateProperty.cpp">
+      <Filter>VectorLayer\Joins</Filter>
+    </ClCompile>
+    <ClCompile Include="AreaTypeStyle.cpp">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositeTypeStyle.cpp">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureTypeStyle.cpp">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClCompile>
+    <ClCompile Include="Fill.cpp">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClCompile>
+    <ClCompile Include="Label.cpp">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClCompile>
+    <ClCompile Include="LineTypeStyle.cpp">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClCompile>
+    <ClCompile Include="PointTypeStyle.cpp">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClCompile>
+    <ClCompile Include="Stroke.cpp">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClCompile>
+    <ClCompile Include="AreaRule.cpp">
+      <Filter>VectorLayer\VectorStyles\Rules</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositeRule.cpp">
+      <Filter>VectorLayer\VectorStyles\Rules</Filter>
+    </ClCompile>
+    <ClCompile Include="LineRule.cpp">
+      <Filter>VectorLayer\VectorStyles\Rules</Filter>
+    </ClCompile>
+    <ClCompile Include="PointRule.cpp">
+      <Filter>VectorLayer\VectorStyles\Rules</Filter>
+    </ClCompile>
+    <ClCompile Include="Rule.cpp">
+      <Filter>VectorLayer\VectorStyles\Rules</Filter>
+    </ClCompile>
+    <ClCompile Include="AreaSymbolization2D.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositeSymbolization.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClCompile>
+    <ClCompile Include="LineSymbolization2D.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClCompile>
+    <ClCompile Include="Override.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClCompile>
+    <ClCompile Include="PointSymbolization2D.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClCompile>
+    <ClCompile Include="SymbolInstance.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClCompile>
+    <ClCompile Include="Symbolization.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClCompile>
+    <ClCompile Include="ThemeLabel.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockSymbol.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClCompile>
+    <ClCompile Include="FontSymbol.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageSymbol.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClCompile>
+    <ClCompile Include="MarkSymbol.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClCompile>
+    <ClCompile Include="Symbol.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClCompile>
+    <ClCompile Include="TextSymbol.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClCompile>
+    <ClCompile Include="W2DSymbol.cpp">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseMapLayer.cpp">
+      <Filter>MapDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseMapLayerGroup.cpp">
+      <Filter>MapDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="Box2D.cpp">
+      <Filter>MapDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayScale.cpp">
+      <Filter>MapDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="MapDefinition.cpp">
+      <Filter>MapDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer.cpp">
+      <Filter>MapDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayerGroup.cpp">
+      <Filter>MapDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayerGroupCommon.cpp">
+      <Filter>MapDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\DataConfiguration.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\MapView.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\MapViewportDefinition.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\PrintLayoutDefinition.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\PrintLayoutElement.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\PrintLayoutElementDefinition.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\PrintLayoutElementStyle.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\PropertyMapping.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\StylizationConfiguration.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\Thickness.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Color.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Extent3D.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Point3D.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Size2D.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\StringObject.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Vector3D.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="TileWatermarkPosition.cpp">
+      <Filter>WatermarkDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="WatermarkAppearance.cpp">
+      <Filter>WatermarkDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="WatermarkDefinition.cpp">
+      <Filter>WatermarkDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="WatermarkInstance.cpp">
+      <Filter>WatermarkDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="WatermarkPosition.cpp">
+      <Filter>WatermarkDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="WatermarkXOffset.cpp">
+      <Filter>WatermarkDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="WatermarkYOffset.cpp">
+      <Filter>WatermarkDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="XYWatermarkPosition.cpp">
+      <Filter>WatermarkDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderLabelsResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderLayerResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderLayersResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderLayersResultBase.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderMapResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderSelectionResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderWatermarkResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderWatermarksResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ScaleRange.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvertUTF.c" />
+    <ClCompile Include="DrawingLayerDefinition.cpp" />
+    <ClCompile Include="ElevationSettings.cpp" />
+    <ClCompile Include="LayerDefinition.cpp" />
+    <ClCompile Include="LengthConverter.cpp" />
+    <ClCompile Include="MdfModel.cpp" />
+    <ClCompile Include="MdfRootObject.cpp" />
+    <ClCompile Include="NameStringPair.cpp" />
+    <ClCompile Include="UnicodeString.cpp" />
+    <ClCompile Include="Version.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AreaUsage.h">
+      <Filter>SymbolDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="CompoundSymbolDefinition.h">
+      <Filter>SymbolDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicElement.h">
+      <Filter>SymbolDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="IGraphicElementVisitor.h">
+      <Filter>SymbolDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="ISymbolDefinitionVisitor.h">
+      <Filter>SymbolDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="LineUsage.h">
+      <Filter>SymbolDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="Parameter.h">
+      <Filter>SymbolDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="Path.h">
+      <Filter>SymbolDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="PointUsage.h">
+      <Filter>SymbolDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizeBox.h">
+      <Filter>SymbolDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleSymbol.h">
+      <Filter>SymbolDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleSymbolDefinition.h">
+      <Filter>SymbolDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="SymbolDefinition.h">
+      <Filter>SymbolDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="TextFrame.h">
+      <Filter>SymbolDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="ChannelBand.h">
+      <Filter>RasterLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="GridColor.h">
+      <Filter>RasterLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="GridColorRule.h">
+      <Filter>RasterLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="GridColorStyle.h">
+      <Filter>RasterLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="GridLayerDefinition.h">
+      <Filter>RasterLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="GridScaleRange.h">
+      <Filter>RasterLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="GridSurfaceStyle.h">
+      <Filter>RasterLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="HillShade.h">
+      <Filter>RasterLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureSource.h">
+      <Filter>VectorLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="SupplementalSpatialContextInfo.h">
+      <Filter>VectorLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorLayerDefinition.h">
+      <Filter>VectorLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorScaleRange.h">
+      <Filter>VectorLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="URLData.h">
+      <Filter>VectorLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="AttributeRelate.h">
+      <Filter>VectorLayer\Joins</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculatedProperty.h">
+      <Filter>VectorLayer\Joins</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension.h">
+      <Filter>VectorLayer\Joins</Filter>
+    </ClInclude>
+    <ClInclude Include="RelateProperty.h">
+      <Filter>VectorLayer\Joins</Filter>
+    </ClInclude>
+    <ClInclude Include="AreaTypeStyle.h">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClInclude>
+    <ClInclude Include="CompositeTypeStyle.h">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureTypeStyle.h">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClInclude>
+    <ClInclude Include="Fill.h">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClInclude>
+    <ClInclude Include="IFeatureTypeStyleVisitor.h">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClInclude>
+    <ClInclude Include="Label.h">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClInclude>
+    <ClInclude Include="LineTypeStyle.h">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClInclude>
+    <ClInclude Include="PointTypeStyle.h">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClInclude>
+    <ClInclude Include="Stroke.h">
+      <Filter>VectorLayer\VectorStyles</Filter>
+    </ClInclude>
+    <ClInclude Include="AreaRule.h">
+      <Filter>VectorLayer\VectorStyles\Rules</Filter>
+    </ClInclude>
+    <ClInclude Include="CompositeRule.h">
+      <Filter>VectorLayer\VectorStyles\Rules</Filter>
+    </ClInclude>
+    <ClInclude Include="LineRule.h">
+      <Filter>VectorLayer\VectorStyles\Rules</Filter>
+    </ClInclude>
+    <ClInclude Include="PointRule.h">
+      <Filter>VectorLayer\VectorStyles\Rules</Filter>
+    </ClInclude>
+    <ClInclude Include="Rule.h">
+      <Filter>VectorLayer\VectorStyles\Rules</Filter>
+    </ClInclude>
+    <ClInclude Include="AreaSymbolization2D.h">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClInclude>
+    <ClInclude Include="ISymbolizationVisitor.h">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClInclude>
+    <ClInclude Include="LineSymbolization2D.h">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClInclude>
+    <ClInclude Include="Override.h">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClInclude>
+    <ClInclude Include="PointSymbolization2D.h">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClInclude>
+    <ClInclude Include="SymbolInstance.h">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbolization.h">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClInclude>
+    <ClInclude Include="ThemeLabel.h">
+      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockSymbol.h">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClInclude>
+    <ClInclude Include="FontSymbol.h">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageSymbol.h">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClInclude>
+    <ClInclude Include="ISymbolVisitor.h">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClInclude>
+    <ClInclude Include="MarkSymbol.h">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbol.h">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClInclude>
+    <ClInclude Include="TextSymbol.h">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClInclude>
+    <ClInclude Include="W2DSymbol.h">
+      <Filter>VectorLayer\VectorStyles\Symbols</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseMapLayer.h">
+      <Filter>MapDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseMapLayerGroup.h">
+      <Filter>MapDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="Box2D.h">
+      <Filter>MapDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="DisplayScale.h">
+      <Filter>MapDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="MapDefinition.h">
+      <Filter>MapDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer.h">
+      <Filter>MapDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayerGroup.h">
+      <Filter>MapDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayerGroupCommon.h">
+      <Filter>MapDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\DataConfiguration.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\MapView.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\MapViewportDefinition.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\PrintLayoutDefinition.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\PrintLayoutElement.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\PrintLayoutElementDefinition.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\PrintLayoutElementStyle.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\PropertyMapping.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\StylizationConfiguration.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\Thickness.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Color.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Extent3D.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Point3D.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Size2D.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\StringObject.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Vector3D.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="TileWatermarkPosition.h">
+      <Filter>WatermarkDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="WatermarkAppearance.h">
+      <Filter>WatermarkDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="WatermarkDefinition.h">
+      <Filter>WatermarkDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="WatermarkInstance.h">
+      <Filter>WatermarkDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="WatermarkOffsetUnit.h">
+      <Filter>WatermarkDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="WatermarkPosition.h">
+      <Filter>WatermarkDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="WatermarkXOffset.h">
+      <Filter>WatermarkDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="WatermarkYOffset.h">
+      <Filter>WatermarkDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="XYWatermarkPosition.h">
+      <Filter>WatermarkDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderLabelsResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderLayerResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderLayersResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderLayersResultBase.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderMapResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderSelectionResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderWatermarkResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderWatermarksResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ScaleRange.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="Base64.h" />
+    <ClInclude Include="ConvertUTF.h" />
+    <ClInclude Include="DrawingLayerDefinition.h" />
+    <ClInclude Include="ElevationSettings.h" />
+    <ClInclude Include="LayerDefinition.h" />
+    <ClInclude Include="LengthConverter.h" />
+    <ClInclude Include="MdfModel.h" />
+    <ClInclude Include="MdfOwnerCollection.h" />
+    <ClInclude Include="MdfRootObject.h" />
+    <ClInclude Include="NameStringPair.h" />
+    <ClInclude Include="SizeContexts.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="UnicodeString.h" />
+    <ClInclude Include="Version.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MdfModel.rc" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,309 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{67505883-F667-4C18-BCCA-63F3B76C64FF}</ProjectGuid>
+    <RootNamespace>UnitTest</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)obj\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\bin\release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\obj\release\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\bin\release64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\obj\release64\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\CppUnit-1.9.14\include;..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cppunitd.lib;MgDesktopd.lib;FDO.lib;FDOCommon.lib;ACEd.lib;MgFoundationd.lib;MgGeometryd.lib;MgMdfModeld.lib;MgMdfParserd.lib;MgPlatformBased.lib;MgRenderersd.lib;MgStylizationd.lib;xerces-c_3mgD.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\FDO\Lib;..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration);..\..\Common\lib\$(Configuration);..\Lib\debug;..\..\Oem\CppUnit-1.9.14\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /S /Y ..\..\Common\bin\debug\*.* $(OutDir)
+xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)Resources\
+xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib\debug\ACEd.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\dbxml\bin\debug\xerces-c_3_1mgD.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\gd\build\win32\gd\Debug\gd.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\FDO\Bin\Debug\*.* $(OutDir)FDO\
+xcopy /S /Y /I ..\..\Server\bin\Debug\MgGws*.* $(OutDir)
+xcopy /Y ..\MgDesktop\bin\$(Configuration)\*.* $(OutDir)
+xcopy /S /Y /I ..\..\UnitTest\TestData\DrawingService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\SDF\*.* $(OutDir)..\UnitTestFiles\
+xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\SHP\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\MapLayer\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\MappingService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\ResourceService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)..\UnitTestFiles\
+copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels_Writeable.sdf
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.gdc $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.mrt $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\CppUnit-1.9.14\include;..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cppunitd.lib;MgDesktopd.lib;FDO.lib;FDOCommon.lib;ACEd.lib;MgFoundationd.lib;MgGeometryd.lib;MgMdfModeld.lib;MgMdfParserd.lib;MgPlatformBased.lib;MgRenderersd.lib;MgStylizationd.lib;xerces-c_3mgD.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;..\..\Common\lib\$(Configuration)64;..\Lib\debug64;..\..\Oem\CppUnit-1.9.14\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /S /Y ..\..\Common\bin\debug64\*.* $(OutDir)
+xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)Resources\
+xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib\debug64\ACEd.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\dbxml\bin\debug64\xerces-c_3_1mgD.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\gd\build\win32\gd\Debug64\gd.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\FDO\Bin\Debug64\*.* $(OutDir)FDO\
+xcopy /S /Y /I ..\..\Server\bin\Debug64\MgGws*.* $(OutDir)
+xcopy /Y ..\MgDesktop\bin\Debug64\*.* $(OutDir)
+xcopy /S /Y /I ..\..\UnitTest\TestData\DrawingService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\SDF\*.* $(OutDir)..\UnitTestFiles\
+xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\SHP\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\MapLayer\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\MappingService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\ResourceService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)..\UnitTestFiles\
+copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels_Writeable.sdf
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.gdc $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.mrt $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\CppUnit-1.9.14\include;..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cppunit.lib;MgDesktop.lib;FDO.lib;FDOCommon.lib;ACE.lib;MgFoundation.lib;MgGeometry.lib;MgMdfModel.lib;MgMdfParser.lib;MgPlatformBase.lib;MgRenderers.lib;MgStylization.lib;xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\FDO\Lib;..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration);..\..\Common\lib\$(Configuration);..\Lib\release;..\..\Oem\CppUnit-1.9.14\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>FDO.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /S /Y ..\..\Common\bin\release\*.* $(OutDir)
+xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)Resources\
+xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib\Release\ACE.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\dbxml\bin\Release\xerces-c_3_1mg.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\gd\build\win32\gd\Release\gd.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\FDO\Bin\Release\*.* $(OutDir)FDO\
+xcopy /S /Y /I ..\..\Server\bin\Release\MgGws*.* $(OutDir)
+xcopy /Y ..\MgDesktop\bin\$(Configuration)\*.* $(OutDir)
+xcopy /S /Y /I ..\..\UnitTest\TestData\DrawingService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\SDF\*.* $(OutDir)..\UnitTestFiles\
+xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\SHP\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\MapLayer\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\MappingService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\ResourceService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)..\UnitTestFiles\
+copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels_Writeable.sdf
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.gdc $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.mrt $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
+xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\CppUnit-1.9.14\include;..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cppunit.lib;MgDesktop.lib;FDO.lib;FDOCommon.lib;ACE.lib;MgFoundation.lib;MgGeometry.lib;MgMdfModel.lib;MgMdfParser.lib;MgPlatformBase.lib;MgRenderers.lib;MgStylization.lib;xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;..\..\Common\lib\$(Configuration)64;..\Lib\release64;..\..\Oem\CppUnit-1.9.14\lib64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>FDO.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /S /Y ..\..\Common\bin\release64\*.* $(OutDir)
+xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)Resources\
+xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib64\Release\ACE.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\dbxml\bin64\Release\xerces-c_3_1mg.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\gd\build\win32\gd\Release64\gd.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\FDO\Bin\Release64\*.* $(OutDir)FDO\
+xcopy /S /Y /I ..\..\Server\bin\Release64\MgGws*.* $(OutDir)
+xcopy /Y ..\MgDesktop\bin\release64\*.* $(OutDir)
+xcopy /S /Y /I ..\..\UnitTest\TestData\DrawingService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\SDF\*.* $(OutDir)..\UnitTestFiles\
+xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\SHP\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\MapLayer\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\MappingService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\ResourceService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)..\UnitTestFiles\
+xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)..\UnitTestFiles\
+copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels_Writeable.sdf
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.gdc $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.mrt $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
+xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="TestFeatureService.cpp" />
+    <ClCompile Include="TestKmlService.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="TestLogManager.cpp" />
+    <ClCompile Include="TestLogManagerThread.cpp" />
+    <ClCompile Include="TestMappingService.cpp" />
+    <ClCompile Include="TestPerformance.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="TestProfilingService.cpp" />
+    <ClCompile Include="TestRenderingService.cpp" />
+    <ClCompile Include="TestResourceService.cpp" />
+    <ClCompile Include="TestTileService.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CppUnitExtensions.h" />
+    <ClInclude Include="TestFeatureService.h" />
+    <ClInclude Include="TestKmlService.h" />
+    <ClInclude Include="TestLogManager.h" />
+    <ClInclude Include="TestLogManagerThread.h" />
+    <ClInclude Include="TestMappingService.h" />
+    <ClInclude Include="TestPerformance.h" />
+    <ClInclude Include="TestProfilingService.h" />
+    <ClInclude Include="TestRenderingService.h" />
+    <ClInclude Include="TestResourceService.h" />
+    <ClInclude Include="TestTileService.h" />
+    <ClInclude Include="UnitTesting.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

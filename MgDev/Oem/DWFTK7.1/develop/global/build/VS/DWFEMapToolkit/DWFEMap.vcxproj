@@ -1,0 +1,424 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug (Read-Write LIB)|Win32">
+      <Configuration>Debug (Read-Write LIB)</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug (Read-Write LIB)|x64">
+      <Configuration>Debug (Read-Write LIB)</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug (Read-Write WChar LIB)|Win32">
+      <Configuration>Debug (Read-Write WChar LIB)</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug (Read-Write WChar LIB)|x64">
+      <Configuration>Debug (Read-Write WChar LIB)</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release (Read-Write LIB)|Win32">
+      <Configuration>Release (Read-Write LIB)</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release (Read-Write LIB)|x64">
+      <Configuration>Release (Read-Write LIB)</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release (Read-Write WChar LIB)|Win32">
+      <Configuration>Release (Read-Write WChar LIB)</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release (Read-Write WChar LIB)|x64">
+      <Configuration>Release (Read-Write WChar LIB)</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>DWF EMap Toolkit (1.0.0)</ProjectName>
+    <ProjectGuid>{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}</ProjectGuid>
+    <RootNamespace>DWF EMap Toolkit (1.0.0)</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|Win32'">../../../lib/static/debug/vc8.0\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|Win32'">./obj/static/debug/read-write\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|x64'">../../../lib/static/debug64/vc8.0\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|x64'">./obj/static/debug64/read-write\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|Win32'">../../../lib/static/Release/vc8.0\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|Win32'">./obj/static/release/read-write\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|x64'">../../../lib/static/Release64/vc8.0\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|x64'">./obj/static/release64/read-write\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|Win32'">../../../lib/static//debug/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|Win32'">./obj/static/debug/read-write-wt\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|x64'">../../../lib/static/debug64/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|x64'">./obj/static/debug64/read-write-wt\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|Win32'">../../../lib/static//release/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|Win32'">./obj/static/release/read-write-wt\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|x64'">../../../lib/static/release64/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|x64'">./obj/static/release64/read-write-wt\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|Win32'">emaptk.1.0.0</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|x64'">emaptk.1.0.0</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|x64'">emaptk_wt.1.0.0</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|Win32'">emaptk_wt.1.0.0</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|Win32'">emaptk.1.0.0</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|x64'">emaptk.1.0.0</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|x64'">emaptk_wt.1.0.0</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|Win32'">emaptk_wt.1.0.0</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../../src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPAT_STATIC;DWFTK_STATIC;DWFCORE_STATIC;DWFTK_EXPORT_API;DWFTK_BUILD_EXPAT;DWFCORE_BUILD_ZLIB;BSTREAM_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)emaptk.1.0.0.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write LIB)|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../../src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPAT_STATIC;DWFTK_STATIC;DWFCORE_STATIC;DWFTK_EXPORT_API;DWFTK_BUILD_EXPAT;DWFCORE_BUILD_ZLIB;BSTREAM_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)emaptk.1.0.0.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>../../../src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;EXPAT_STATIC;DWFTK_STATIC;DWFCORE_STATIC;DWFTK_EXPORT_API;DWFTK_BUILD_EXPAT;DWFCORE_BUILD_ZLIB;BSTREAM_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)emaptk.1.0.0.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write LIB)|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>../../../src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;EXPAT_STATIC;DWFTK_STATIC;DWFCORE_STATIC;DWFTK_EXPORT_API;DWFTK_BUILD_EXPAT;DWFCORE_BUILD_ZLIB;BSTREAM_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)emaptk.1.0.0.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../../src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPAT_STATIC;DWFTK_STATIC;DWFCORE_STATIC;DWFTK_EXPORT_API;DWFTK_BUILD_EXPAT;DWFCORE_BUILD_ZLIB;BSTREAM_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)emaptk_wt.1.0.0.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write WChar LIB)|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../../src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_WINDOWS;_USRDLL;EXPAT_STATIC;DWFTK_STATIC;DWFCORE_STATIC;DWFTK_EXPORT_API;DWFTK_BUILD_EXPAT;DWFCORE_BUILD_ZLIB;BSTREAM_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)emaptk_wt.1.0.0.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>../../../src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;EXPAT_STATIC;DWFTK_STATIC;DWFCORE_STATIC;DWFTK_EXPORT_API;DWFTK_BUILD_EXPAT;DWFCORE_BUILD_ZLIB;BSTREAM_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)emaptk_wt.1.0.0.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>../../../src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;_WINDOWS;EXPAT_STATIC;DWFTK_STATIC;DWFCORE_STATIC;DWFTK_EXPORT_API;DWFTK_BUILD_EXPAT;DWFCORE_BUILD_ZLIB;BSTREAM_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)emaptk_wt.1.0.0.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\dwfemap\package\Background.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\Bounds.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\CoordinateSpace.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\EMapConstants.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\EMapGlobalSection.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\EMapInterface.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\EMapSection.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\EMapSectionDescriptorReader.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\EMapUtility.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\Layer.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\LayerGroup.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\LinearUnit.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\ScaleRange.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\UIGraphic.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\View.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\AddLayer.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\AddLayerGroup.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\Command.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\RemoveLayer.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\RemoveLayerGroup.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\TransactionSection.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\TransactionSectionDescriptorReader.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\UpdateLayer.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\UpdateLayerGroup.cpp" />
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\UpdateUIGraphic.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\dwfemap\EMapToolkit.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\EMapVersion.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\Background.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\Bounds.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\CoordinateSpace.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\EMapConstants.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\EMapGlobalSection.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\EMapInterface.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\EMapSection.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\EMapSectionDescriptorReader.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\EMapUtility.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\Layer.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\LayerGroup.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\LinearUnit.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\ScaleRange.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\UIGraphic.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\View.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\AddLayer.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\AddLayerGroup.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\Command.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\RemoveLayer.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\RemoveLayerGroup.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\TransactionSection.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\TransactionSectionDescriptorReader.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\UpdateLayer.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\UpdateLayerGroup.h" />
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\UpdateUIGraphic.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

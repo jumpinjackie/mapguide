@@ -1,0 +1,396 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Ops">
+      <UniqueIdentifier>{39e65ecf-1254-474b-8b14-a6083361da49}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="FeatureOperation.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureOperationFactory.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpAddSavePoint.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpApplySchema.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpBeginTransaction.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpCloseDataReader.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpCloseFeatureReader.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpCloseSqlReader.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpCommitTransaction.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpCreateFeatureSource.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpDescribeSchema.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpDescribeSchemaAsXml.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpDescribeWfsFeatureType.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateDataStores.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpExecuteSqlNonQuery.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpExecuteSqlQuery.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetCapabilities.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetClassDefinition.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetClasses.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetConnectionPropertyValues.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetDataRows.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetFdoCacheInfo.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetFeatureProviders.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetFeatures.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetIdentityProperties.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetLongTransactions.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetRaster.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetSchemaMapping.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetSchemas.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetSpatialContexts.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetSqlRows.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetWfsFeature.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpReleaseSavePoint.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRollbackSavePoint.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRollbackTransaction.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpSchemaToXml.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpSelectFeatures.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpSelectFeaturesSpatial.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpSetLongTransaction.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpTestConnection.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpTestFeatureSourceConnection.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpUpdateFeatures.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpUpdateFeaturesWithTransaction.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpXmlToSchema.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="ByteSourceRasterStreamImpl.cpp" />
+    <ClCompile Include="..\..\Common\Dll.cpp" />
+    <ClCompile Include="FdoFeatureReader.cpp" />
+    <ClCompile Include="FdoFilterCollection.cpp" />
+    <ClCompile Include="FdoReaderCollection.cpp" />
+    <ClCompile Include="FeatureDistribution.cpp" />
+    <ClCompile Include="FeatureGeometricFunctions.cpp" />
+    <ClCompile Include="FeatureManipulationCommand.cpp" />
+    <ClCompile Include="FeatureNumericFunctions.cpp" />
+    <ClCompile Include="FeatureServiceCommand.cpp" />
+    <ClCompile Include="FeatureServiceHandler.cpp" />
+    <ClCompile Include="FeatureStringFunctions.cpp" />
+    <ClCompile Include="FilterUtil.cpp" />
+    <ClCompile Include="GwsConnectionPool.cpp" />
+    <ClCompile Include="JoinFeatureReader.cpp" />
+    <ClCompile Include="MgCSTrans.cpp" />
+    <ClCompile Include="SelectAggregateCommand.cpp" />
+    <ClCompile Include="SelectCommand.cpp" />
+    <ClCompile Include="ServerApplySchema.cpp" />
+    <ClCompile Include="ServerCreateFeatureSource.cpp" />
+    <ClCompile Include="ServerDataReader.cpp" />
+    <ClCompile Include="ServerDataReaderPool.cpp" />
+    <ClCompile Include="ServerDeleteCommand.cpp" />
+    <ClCompile Include="ServerDescribeSchema.cpp" />
+    <ClCompile Include="ServerEnumerateDataStores.cpp" />
+    <ClCompile Include="ServerFdoFeatureReader.cpp" />
+    <ClCompile Include="ServerFeatureConnection.cpp" />
+    <ClCompile Include="ServerFeatureReader.cpp" />
+    <ClCompile Include="ServerFeatureReaderPool.cpp" />
+    <ClCompile Include="ServerFeatureService.cpp" />
+    <ClCompile Include="ServerFeatureServiceBuild.cpp" />
+    <ClCompile Include="ServerFeatureTransaction.cpp" />
+    <ClCompile Include="ServerFeatureTransactionPool.cpp" />
+    <ClCompile Include="ServerFeatureUtil.cpp" />
+    <ClCompile Include="ServerGetConnectionPropertyValues.cpp" />
+    <ClCompile Include="ServerGetFeatureProviders.cpp" />
+    <ClCompile Include="ServerGetLongTransactions.cpp" />
+    <ClCompile Include="ServerGetProviderCapabilities.cpp" />
+    <ClCompile Include="ServerGetSchemaMapping.cpp" />
+    <ClCompile Include="ServerGetSpatialContexts.cpp" />
+    <ClCompile Include="ServerGwsFeatureReader.cpp" />
+    <ClCompile Include="ServerInsertCommand.cpp" />
+    <ClCompile Include="ServerSelectFeatures.cpp" />
+    <ClCompile Include="ServerSqlCommand.cpp" />
+    <ClCompile Include="ServerSqlDataReader.cpp" />
+    <ClCompile Include="ServerSqlDataReaderPool.cpp" />
+    <ClCompile Include="ServerUpdateCommand.cpp" />
+    <ClCompile Include="ServerUpdateFeatures.cpp" />
+    <ClCompile Include="TransformCache.cpp" />
+    <ClCompile Include="FdoForcedOneToOneFeatureReader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FeatureOperation.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureOperationFactory.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpAddSavePoint.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpApplySchema.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpBeginTransaction.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpCloseDataReader.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpCloseFeatureReader.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpCloseSqlReader.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpCommitTransaction.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpCreateFeatureSource.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpDescribeSchema.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpDescribeSchemaAsXml.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpDescribeWfsFeatureType.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateDataStores.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpExecuteSqlNonQuery.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpExecuteSqlQuery.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetCapabilities.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetClassDefinition.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetClasses.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetConnectionPropertyValues.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetDataRows.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetFdoCacheInfo.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetFeatureProviders.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetFeatures.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetIdentityProperties.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetLongTransactions.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetRaster.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetSchemaMapping.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetSchemas.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetSpatialContexts.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetSqlRows.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetWfsFeature.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRollbackSavePoint.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpReleaseSavePoint.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRollbackTransaction.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpSchemaToXml.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpSelectFeatures.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpSelectFeaturesSpatial.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpSetLongTransaction.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpTestConnection.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpTestFeatureSourceConnection.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpUpdateFeatures.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpUpdateFeaturesWithTransaction.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpXmlToSchema.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="BooleanDataReaderCreator.h" />
+    <ClInclude Include="ByteDataReaderCreator.h" />
+    <ClInclude Include="ByteSourceRasterStreamImpl.h" />
+    <ClInclude Include="DataReaderCreator.h" />
+    <ClInclude Include="DateTimeDataReaderCreator.h" />
+    <ClInclude Include="DoubleDataReaderCreator.h" />
+    <ClInclude Include="FdoFeatureReader.h" />
+    <ClInclude Include="FdoFilterCollection.h" />
+    <ClInclude Include="FdoReaderCollection.h" />
+    <ClInclude Include="FeatureDistribution.h" />
+    <ClInclude Include="FeatureGeometricFunctions.h" />
+    <ClInclude Include="FeatureManipulationCommand.h" />
+    <ClInclude Include="FeatureNumericFunctions.h" />
+    <ClInclude Include="FeatureServiceCommand.h" />
+    <ClInclude Include="FeatureServiceHandler.h" />
+    <ClInclude Include="FeatureStringFunctions.h" />
+    <ClInclude Include="FilterUtil.h" />
+    <ClInclude Include="GeometryDataReaderCreator.h" />
+    <ClInclude Include="Int16DataReaderCreator.h" />
+    <ClInclude Include="Int32DataReaderCreator.h" />
+    <ClInclude Include="Int64DataReaderCreator.h" />
+    <ClInclude Include="JoinFeatureReader.h" />
+    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="MgCSTrans.h" />
+    <ClInclude Include="SelectAggregateCommand.h" />
+    <ClInclude Include="SelectCommand.h" />
+    <ClInclude Include="ServerApplySchema.h" />
+    <ClInclude Include="ServerCreateFeatureSource.h" />
+    <ClInclude Include="ServerDataReader.h" />
+    <ClInclude Include="ServerDataReaderPool.h" />
+    <ClInclude Include="ServerDeleteCommand.h" />
+    <ClInclude Include="ServerDescribeSchema.h" />
+    <ClInclude Include="ServerEnumerateDataStores.h" />
+    <ClInclude Include="ServerFdoFeatureReader.h" />
+    <ClInclude Include="ServerFeatureConnection.h" />
+    <ClInclude Include="ServerFeatureDllExport.h" />
+    <ClInclude Include="ServerFeatureReader.h" />
+    <ClInclude Include="ServerFeatureReaderPool.h" />
+    <ClInclude Include="ServerFeatureService.h" />
+    <ClInclude Include="ServerFeatureServiceDefs.h" />
+    <ClInclude Include="ServerFeatureServiceExceptionDef.h" />
+    <ClInclude Include="ServerFeatureTransaction.h" />
+    <ClInclude Include="ServerFeatureTransactionPool.h" />
+    <ClInclude Include="ServerFeatureUtil.h" />
+    <ClInclude Include="ServerGetConnectionPropertyValues.h" />
+    <ClInclude Include="ServerGetFeatureProviders.h" />
+    <ClInclude Include="ServerGetLongTransactions.h" />
+    <ClInclude Include="ServerGetProviderCapabilities.h" />
+    <ClInclude Include="ServerGetSchemaMapping.h" />
+    <ClInclude Include="ServerGetSpatialContexts.h" />
+    <ClInclude Include="ServerInsertCommand.h" />
+    <ClInclude Include="ServerSelectFeatures.h" />
+    <ClInclude Include="ServerSqlCommand.h" />
+    <ClInclude Include="ServerSqlDataReader.h" />
+    <ClInclude Include="ServerSqlDataReaderPool.h" />
+    <ClInclude Include="ServerUpdateCommand.h" />
+    <ClInclude Include="ServerUpdateFeatures.h" />
+    <ClInclude Include="SingleDataReaderCreator.h" />
+    <ClInclude Include="..\..\Common\stdafx.h" />
+    <ClInclude Include="StringDataReaderCreator.h" />
+    <ClInclude Include="TransformCache.h" />
+    <ClInclude Include="UniqueFunction.h" />
+    <ClInclude Include="FdoForcedOneToOneFeatureReader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ServerFeatureService.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuildStep Include="GwsConnectionPool.h" />
+    <CustomBuildStep Include="ServerGwsFeatureReader.h" />
+  </ItemGroup>
+</Project>

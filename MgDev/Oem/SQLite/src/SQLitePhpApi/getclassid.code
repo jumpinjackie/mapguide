@@ -1,0 +1,6 @@
+
+int getClassId(void* ptrObj)
+{
+  return ((SqliteDisposable*)ptrObj)->GetClassId();
+}
+

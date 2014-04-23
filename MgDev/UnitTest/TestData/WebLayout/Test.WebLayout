@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLayout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="WebLayout-1.0.0.xsd">
+  <Title>World countries</Title>
+  <Map>
+    <ResourceId>Library://maps/World.MapDefinition</ResourceId>
+    <InitialView>
+      <CenterX>10.5</CenterX>
+      <CenterY>-15</CenterY>
+      <Scale>100000</Scale>
+    </InitialView>
+    <HyperlinkTarget>TaskPane</HyperlinkTarget>
+  </Map>
+  <ToolBar>
+    <Visible>true</Visible>
+    <Button xsi:type="CommandItemType">
+      <Function>Command</Function>
+      <Command>Select</Command>
+    </Button>
+    <Button xsi:type="SeparatorItemType">
+      <Function>Separator</Function>
+    </Button>
+    <Button xsi:type="CommandItemType">
+      <Function>Command</Function>
+      <Command>Pan</Command>
+    </Button>
+    <Button xsi:type="SeparatorItemType">
+      <Function>Separator</Function>
+    </Button>
+    <Button xsi:type="FlyoutItemType">
+      <Function>Flyout</Function>
+      <Label>Zooms</Label>
+      <ImageURL>stdicons/icon_open.gif</ImageURL>
+      <SubItem xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Zoom Dynamic</Command>
+      </SubItem>
+      <SubItem xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Zoom In</Command>
+      </SubItem>
+      <SubItem xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Zoom Out</Command>
+      </SubItem>
+      <SubItem xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Zoom Rectangle</Command>
+      </SubItem>
+      <SubItem xsi:type="SeparatorItemType">
+        <Function>Separator</Function>
+      </SubItem>
+      <SubItem xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Fit To Window</Command>
+      </SubItem>
+    </Button>
+    <Button xsi:type="SeparatorItemType">
+      <Function>Separator</Function>
+    </Button>
+    <Button xsi:type="FlyoutItemType">
+      <Function>Flyout</Function>
+      <Label>More pans</Label>
+      <ImageURL>stdicons/icon_open.gif</ImageURL>
+      <SubItem xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Pan Left</Command>
+      </SubItem>
+      <SubItem xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Pan Up</Command>
+      </SubItem>
+      <SubItem xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Pan Right</Command>
+      </SubItem>
+      <SubItem xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Pan Down</Command>
+      </SubItem>
+    </Button>
+  </ToolBar>
+  <InformationPane>
+    <Visible>true</Visible>
+    <Width>200</Width>
+    <LegendVisible>true</LegendVisible>
+    <PropertiesVisible>true</PropertiesVisible>
+  </InformationPane>
+  <ContextMenu>
+    <Visible>true</Visible>
+    <MenuItem xsi:type="CommandItemType">
+      <Function>Command</Function>
+      <Command>Select</Command>
+    </MenuItem>
+    <MenuItem xsi:type="SeparatorItemType">
+      <Function>Separator</Function>
+    </MenuItem>
+    <MenuItem xsi:type="CommandItemType">
+      <Function>Command</Function>
+      <Command>Pan</Command>
+    </MenuItem>
+    <MenuItem xsi:type="SeparatorItemType">
+      <Function>Separator</Function>
+    </MenuItem>
+    <MenuItem xsi:type="FlyoutItemType">
+      <Function>Flyout</Function>
+      <Label>Zoom commands</Label>
+      <SubItem xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Zoom Dynamic</Command>
+      </SubItem>
+      <SubItem xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Zoom In</Command>
+      </SubItem>
+      <SubItem xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Zoom Out</Command>
+      </SubItem>
+      <SubItem xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Zoom Rectangle</Command>
+      </SubItem>
+      <SubItem xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Select</Command>
+      </SubItem>
+    </MenuItem>
+  </ContextMenu>
+  <TaskPane>
+    <Visible>true</Visible>
+    <Width>250</Width>
+    <TaskBar>
+      <Visible>true</Visible>
+      <Home>
+        <Name>Home</Name>
+        <Tooltip>Getting started</Tooltip>
+        <Description>Getting started - Help on basic viewer commands</Description>
+      </Home>
+      <Forward>
+        <Name>Forward</Name>
+        <Tooltip>Forward</Tooltip>
+        <Description>Forward to Next page</Description>
+      </Forward>
+      <Back>
+        <Name>Back</Name>
+        <Tooltip>Back</Tooltip>
+        <Description>Back to Previous page</Description>
+      </Back>
+      <Tasks>
+        <Name>Tasks</Name>
+        <Tooltip>Task Menu</Tooltip>
+        <Description>Open the list of available tasks</Description>
+      </Tasks>
+      <MenuButton xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Select</Command>
+      </MenuButton>
+      <MenuButton xsi:type="SeparatorItemType">
+        <Function>Separator</Function>
+      </MenuButton>
+      <MenuButton xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Pan</Command>
+      </MenuButton>
+      <MenuButton xsi:type="SeparatorItemType">
+        <Function>Separator</Function>
+      </MenuButton>
+      <MenuButton xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Zoom Dynamic</Command>
+      </MenuButton>
+      <MenuButton xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Zoom In</Command>
+      </MenuButton>
+      <MenuButton xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Zoom Out</Command>
+      </MenuButton>
+      <MenuButton xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Zoom Rectangle</Command>
+      </MenuButton>
+      <MenuButton xsi:type="CommandItemType">
+        <Function>Command</Function>
+        <Command>Fit To Window</Command>
+      </MenuButton>
+    </TaskBar>
+    <InitialTask>GettingStarted.php</InitialTask>
+  </TaskPane>
+  <StatusBar>
+    <Visible>true</Visible>
+  </StatusBar>
+  <ZoomControl>
+    <Visible>true</Visible>
+  </ZoomControl>
+  <CommandSet>
+    <Command xsi:type="BasicCommandType">
+      <Name>Select</Name>
+      <Label>Label: Select</Label>
+      <Tooltip>Select a feature</Tooltip>
+      <Description>Select a feature</Description>
+      <ImageURL>stdicons/icon_select.gif</ImageURL>
+      <DisabledImageURL>stdicons/icon_select_disabled.gif</DisabledImageURL>
+      <TargetViewer>All</TargetViewer>
+      <Action>Select</Action>
+    </Command>
+    <Command xsi:type="BasicCommandType">
+      <Name>Pan</Name>
+      <Label>Label: Pan</Label>
+      <Tooltip>Pan</Tooltip>
+      <Description>Pan in any direction</Description>
+      <ImageURL>stdicons/icon_pan.gif</ImageURL>
+      <DisabledImageURL>stdicons/icon_pan_disabled.gif</DisabledImageURL>
+      <TargetViewer>All</TargetViewer>
+      <Action>Pan</Action>
+    </Command>
+    <Command xsi:type="BasicCommandType">
+      <Name>Zoom Dynamic</Name>
+      <Label>Label: Zoom Dynamic</Label>
+      <Tooltip>Zoom dynamic</Tooltip>
+      <Description>Zoom in/out by draggin the mouse up/down</Description>
+      <ImageURL>stdicons/icon_zoom.gif</ImageURL>
+      <DisabledImageURL>stdicons/icon_zoom_disabled.gif</DisabledImageURL>
+      <TargetViewer>Dwf</TargetViewer>
+      <Action>Zoom</Action>
+    </Command>
+    <Command xsi:type="BasicCommandType">
+      <Name>Zoom In</Name>
+      <Label>Label: Zoom In</Label>
+      <Tooltip>Zoom In</Tooltip>
+      <Description>Zoom in on the map</Description>
+      <ImageURL>stdicons/icon_zoomin.gif</ImageURL>
+      <DisabledImageURL>stdicons/icon_zoomin_disabled.gif</DisabledImageURL>
+      <TargetViewer>Dwf</TargetViewer>
+      <Action>ZoomIn</Action>
+    </Command>
+    <Command xsi:type="BasicCommandType">
+      <Name>Zoom Out</Name>
+      <Label>Label: Zoom Out</Label>
+      <Tooltip>Zoom Out</Tooltip>
+      <Description>Zoom out on the map</Description>
+      <ImageURL>stdicons/icon_zoomout.gif</ImageURL>
+      <DisabledImageURL>stdicons/icon_zoomout_disabled.gif</DisabledImageURL>
+      <TargetViewer>Dwf</TargetViewer>
+      <Action>ZoomOut</Action>
+    </Command>
+    <Command xsi:type="BasicCommandType">
+      <Name>Zoom Rectangle</Name>
+      <Label>Label: Zoom Rectangle</Label>
+      <Tooltip>Zoom to a rectangle on the map</Tooltip>
+      <Description>Zoom to a rectangle on the map</Description>
+      <ImageURL>stdicons/icon_zoomrect.gif</ImageURL>
+      <DisabledImageURL>stdicons/icon_zoomrect_disabled.gif</DisabledImageURL>
+      <TargetViewer>All</TargetViewer>
+      <Action>ZoomRectangle</Action>
+    </Command>
+    <Command xsi:type="BasicCommandType">
+      <Name>Fit To Window</Name>
+      <Label>Label: Fit To Window</Label>
+      <Tooltip>Zoom to the extents of the map</Tooltip>
+      <Description>Zoom to the extents of the map</Description>
+      <ImageURL>stdicons/icon_fitwindow.gif</ImageURL>
+      <DisabledImageURL>stdicons/icon_fitwindow_disabled.gif</DisabledImageURL>
+      <TargetViewer>All</TargetViewer>
+      <Action>FitToWindow</Action>
+    </Command>
+    <Command xsi:type="BasicCommandType">
+      <Name>Pan Up</Name>
+      <Label>Label: Pan Up</Label>
+      <Tooltip>Pan the map in the north direction</Tooltip>
+      <Description>Pan the map in the north direction</Description>
+      <ImageURL>stdicons/icon_panup.gif</ImageURL>
+      <DisabledImageURL>stdicons/icon_panup_disabled.gif</DisabledImageURL>
+      <TargetViewer>All</TargetViewer>
+      <Action>PanUp</Action>
+    </Command>
+    <Command xsi:type="BasicCommandType">
+      <Name>Pan Down</Name>
+      <Label>Label: Pan Down</Label>
+      <Tooltip>Pan the map in the south direction</Tooltip>
+      <Description>Pan the map in the south direction</Description>
+      <ImageURL>stdicons/icon_pandown.gif</ImageURL>
+      <DisabledImageURL>stdicons/icon_pandown_disabled.gif</DisabledImageURL>
+      <TargetViewer>All</TargetViewer>
+      <Action>PanDown</Action>
+    </Command>
+    <Command xsi:type="BasicCommandType">
+      <Name>Pan Left</Name>
+      <Label>Label: Pan Left</Label>
+      <Tooltip>Pan the map in the west direction</Tooltip>
+      <Description>Pan the map in the west direction</Description>
+      <ImageURL>stdicons/icon_panleft.gif</ImageURL>
+      <DisabledImageURL>stdicons/icon_panleft_disabled.gif</DisabledImageURL>
+      <TargetViewer>All</TargetViewer>
+      <Action>PanLeft</Action>
+    </Command>
+    <Command xsi:type="BasicCommandType">
+      <Name>Pan Right</Name>
+      <Label>Label: Pan Right</Label>
+      <Tooltip>Pan the map in the east direction</Tooltip>
+      <Description>Pan the map in the east direction</Description>
+      <ImageURL>stdicons/icon_panright.gif</ImageURL>
+      <DisabledImageURL>stdicons/icon_panright_disabled.gif</DisabledImageURL>
+      <TargetViewer>All</TargetViewer>
+      <Action>PanRight</Action>
+    </Command>
+  </CommandSet>
+</WebLayout>

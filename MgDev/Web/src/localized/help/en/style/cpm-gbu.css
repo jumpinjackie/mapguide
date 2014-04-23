@@ -1,0 +1,56 @@
+/* GBU Pubs default style overrides. All GBU Pubs books should ref this   */
+/* css. The following rules modify rules defined in the Autodesk default  */
+/* cpm.css.                                                               */
+
+/* hide browse button set */
+div.browse {
+display: none;
+}
+
+/* but keep the product name visible */
+div.nav-group {
+height: 29px;
+}
+
+/* 11/30/2008 Bill Crawford - Adjusted banner styles to improve conform-  */
+/* ance with gator banner spec.                                           */
+
+body {
+margin-left: 20px;
+margin-right: 20px;
+}
+
+/* head region */
+div.head {
+font-family: arial;
+margin-left: -20px;
+margin-right: -20px;
+background-position: 18px 13px;
+border-bottom: 1px solid #3d3d3d;
+}
+
+/* nav group - aw search and browse buttons */
+div.nav-group {
+position: static;
+height: 29px;
+padding-left: 0px;
+}
+
+/* bread crumbs */
+div.ancestry {
+margin-top: 2px;
+padding-top: 1px;
+padding-bottom: 5px;
+padding-left: 20px;
+}
+
+/* head-text region */
+div.head-text {
+padding-left: 20px;
+padding-top: 2px;
+padding-bottom: 2px;
+}
+
+
+
+

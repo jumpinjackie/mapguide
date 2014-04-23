@@ -1,0 +1,1723 @@
+BEGIN TRANSACTION;
+CREATE TABLE TestCase (ExecuteSequence INTEGER, TestName TEXT, ParamSets TEXT, Description TEXT, TestType TEXT, Prerequisite TEXT);
+INSERT INTO "TestCase" VALUES(1, 'Wfs_GetCapabilitiesHttpTest', '0,1,2,3,4,5,6,', 'Tests WFS GetCapabilities operation', 'Http', 'None');
+INSERT INTO "TestCase" VALUES(2, 'Wfs_DescribeFeatureTypeHttpTest', '1000,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,', 'Tests DescribeFeatureType Http operation', 'Http', 'None');
+INSERT INTO "TestCase" VALUES(3, 'Wfs_GetFeatureHttpTest', '2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,', 'Tests GetFeature HTTP operation', 'Http', 'None');
+CREATE TABLE Params (ParamSet INTEGER, ParamName TEXT, ParamValue TEXT);
+INSERT INTO "Params" VALUES(1, 'request', 'GetCapabilities');
+INSERT INTO "Params" VALUES(1, 'service', 'WFS');
+INSERT INTO "Params" VALUES(1, 'OPERATION', 'WfsGetCapabilities');
+INSERT INTO "Params" VALUES(2, 'OPERATION', 'WfsGetCapabilities');
+INSERT INTO "Params" VALUES(2, 'request', 'GetCapabilities');
+INSERT INTO "Params" VALUES(2, 'service', 'WFS');
+INSERT INTO "Params" VALUES(3, 'OPERATION', 'WfsGetCapabilities');
+INSERT INTO "Params" VALUES(3, 'service', 'WFS');
+INSERT INTO "Params" VALUES(3, 'request', 'GetCapabilities');
+INSERT INTO "Params" VALUES(3, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(4, 'OPERATION', 'WfsGetCapabilities');
+INSERT INTO "Params" VALUES(4, 'request', 'GetCapabilities');
+INSERT INTO "Params" VALUES(4, 'service', 'WFS');
+INSERT INTO "Params" VALUES(4, 'version', '1.0.9');
+INSERT INTO "Params" VALUES(5, 'OPERATION', 'WfsGetCapabilities');
+INSERT INTO "Params" VALUES(5, 'service', 'WFS');
+INSERT INTO "Params" VALUES(5, 'request', 'GetCapabilities');
+INSERT INTO "Params" VALUES(5, 'version', '2.0.0');
+INSERT INTO "Params" VALUES(6, 'OPERATION', 'WfsGetCapabilities');
+INSERT INTO "Params" VALUES(6, 'request', 'GetCapabilities');
+INSERT INTO "Params" VALUES(6, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(1001, 'OPERATION', 'SETRESOURCE');
+INSERT INTO "Params" VALUES(1001, 'RESOURCEID', 'Library://Test/Wfs/Sheboygan_CityLimits.FeatureSource');
+INSERT INTO "Params" VALUES(1001, 'CONTENT', '../../TestData/Wfs/Sheboygan_CityLimits_Content.xml');
+INSERT INTO "Params" VALUES(1001, 'HEADER', '../../TestData/Wfs/Sheboygan_CityLimits_Header.xml');
+INSERT INTO "Params" VALUES(1002, 'OPERATION', 'SETRESOURCEDATA');
+INSERT INTO "Params" VALUES(1002, 'RESOURCEID', 'Library://Test/Wfs/Sheboygan_CityLimits.FeatureSource');
+INSERT INTO "Params" VALUES(1002, 'DATANAME', 'Sheboygan_CityLimits.sdf');
+INSERT INTO "Params" VALUES(1002, 'DATATYPE', 'File');
+INSERT INTO "Params" VALUES(1002, 'DATALENGTH', '0');
+INSERT INTO "Params" VALUES(1002, 'DATA', '../../TestData/Wfs/Sheboygan_CityLimits.sdf');
+INSERT INTO "Params" VALUES(1003, 'OPERATION', 'SETRESOURCE');
+INSERT INTO "Params" VALUES(1003, 'RESOURCEID', 'Library://Test/Wfs/Sheboygan_CityLimits.LayerDefinition');
+INSERT INTO "Params" VALUES(1003, 'CONTENT', '../../TestData/Wfs/Sheboygan_CityLimits_Layer_Content.xml');
+INSERT INTO "Params" VALUES(1003, 'HEADER', '../../TestData/Wfs/Sheboygan_CityLimits_Layer_Header.xml');
+INSERT INTO "Params" VALUES(2001, 'OPERATION', 'SETRESOURCE');
+INSERT INTO "Params" VALUES(2001, 'RESOURCEID', 'Library://Test/Wfs/Sheboygan_CityLimits.FeatureSource');
+INSERT INTO "Params" VALUES(2001, 'CONTENT', '../../TestData/Wfs/Sheboygan_CityLimits_Content.xml');
+INSERT INTO "Params" VALUES(2001, 'HEADER', '../../TestData/Wfs/Sheboygan_CityLimits_Header.xml');
+INSERT INTO "Params" VALUES(2002, 'OPERATION', 'SETRESOURCEDATA');
+INSERT INTO "Params" VALUES(2002, 'RESOURCEID', 'Library://Test/Wfs/Sheboygan_CityLimits.FeatureSource');
+INSERT INTO "Params" VALUES(2002, 'DATANAME', 'Sheboygan_CityLimits.sdf');
+INSERT INTO "Params" VALUES(2002, 'DATATYPE', 'File');
+INSERT INTO "Params" VALUES(2002, 'DATALENGTH', '0');
+INSERT INTO "Params" VALUES(2002, 'DATA', '../../TestData/Wfs/Sheboygan_CityLimits.sdf');
+INSERT INTO "Params" VALUES(2003, 'OPERATION', 'SETRESOURCE');
+INSERT INTO "Params" VALUES(2003, 'RESOURCEID', 'Library://Test/Wfs/Sheboygan_CityLimits.LayerDefinition');
+INSERT INTO "Params" VALUES(2003, 'CONTENT', '../../TestData/Wfs/Sheboygan_CityLimits_Layer_Content.xml');
+INSERT INTO "Params" VALUES(2003, 'HEADER', '../../TestData/Wfs/Sheboygan_CityLimits_Layer_Header.xml');
+INSERT INTO "Params" VALUES(1004, 'OPERATION', 'WfsDescribeFeatureType');
+INSERT INTO "Params" VALUES(1004, 'request', 'DescribeFeatureType');
+INSERT INTO "Params" VALUES(1004, 'service', 'WFS');
+INSERT INTO "Params" VALUES(1004, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(1004, 'typeName', 'ns146044037:CityLimits');
+INSERT INTO "Params" VALUES(1005, 'OPERATION', 'WfsDescribeFeatureType');
+INSERT INTO "Params" VALUES(1005, 'request', 'DescribeFeatureType');
+INSERT INTO "Params" VALUES(1005, 'service', 'WFS');
+INSERT INTO "Params" VALUES(1005, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(1005, 'typeName', 'ns59836853:');
+INSERT INTO "Params" VALUES(1006, 'OPERATION', 'WfsDescribeFeatureType');
+INSERT INTO "Params" VALUES(1006, 'request', 'DescribeFeatureType');
+INSERT INTO "Params" VALUES(1006, 'service', 'WFS');
+INSERT INTO "Params" VALUES(1006, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(1006, 'typeName', 'ns59836853:Blah');
+INSERT INTO "Params" VALUES(1007, 'OPERATION', 'WfsDescribeFeatureType');
+INSERT INTO "Params" VALUES(1007, 'request', 'DescribeFeatureType');
+INSERT INTO "Params" VALUES(1007, 'service', 'WFS');
+INSERT INTO "Params" VALUES(1007, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(1007, 'typeName', 'ns59836853');
+INSERT INTO "Params" VALUES(1008, 'OPERATION', 'WfsDescribeFeatureType');
+INSERT INTO "Params" VALUES(1008, 'request', 'DescribeFeatureType');
+INSERT INTO "Params" VALUES(1008, 'service', 'WFS');
+INSERT INTO "Params" VALUES(1008, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(1008, 'typeName', '');
+INSERT INTO "Params" VALUES(1009, 'OPERATION', 'WfsDescribeFeatureType');
+INSERT INTO "Params" VALUES(1009, 'request', 'DescribeFeatureType');
+INSERT INTO "Params" VALUES(1009, 'service', 'WFS');
+INSERT INTO "Params" VALUES(1009, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(1010, 'OPERATION', 'WfsDescribeFeatureType');
+INSERT INTO "Params" VALUES(1010, 'request', 'DescribeFeatureType');
+INSERT INTO "Params" VALUES(1010, 'service', 'WMS');
+INSERT INTO "Params" VALUES(1010, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(1010, 'typeName', 'Test/Wfs/Sheboygan_CityLimits:CityLimits');
+INSERT INTO "Params" VALUES(1011, 'OPERATION', 'WfsDescribeFeatureType');
+INSERT INTO "Params" VALUES(1011, 'request', 'DescribeFeatureType');
+INSERT INTO "Params" VALUES(1011, 'service', 'WFMS');
+INSERT INTO "Params" VALUES(1011, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(1011, 'typeName', 'Test/Wfs/Sheboygan_CityLimits:CityLimits');
+INSERT INTO "Params" VALUES(2004, 'OPERATION', 'WfsGetFeature_GET');
+INSERT INTO "Params" VALUES(2004, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2004, 'service', 'WFS');
+INSERT INTO "Params" VALUES(2004, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2004, 'typeName', 'ns146044037:CityLimits');
+INSERT INTO "Params" VALUES(2005, 'OPERATION', 'WfsGetFeature_GET');
+INSERT INTO "Params" VALUES(2005, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2005, 'service', 'WFS');
+INSERT INTO "Params" VALUES(2005, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2005, 'typeName', 'Test/Wfs/Sheboygan_CityLimits:Blah');
+INSERT INTO "Params" VALUES(2006, 'OPERATION', 'WfsGetFeature_GET');
+INSERT INTO "Params" VALUES(2006, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2006, 'service', 'WFS');
+INSERT INTO "Params" VALUES(2006, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2006, 'typeName', 'Test/Wfs/Sheboygan_CityLimits:');
+INSERT INTO "Params" VALUES(2007, 'OPERATION', 'WfsGetFeature_GET');
+INSERT INTO "Params" VALUES(2007, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2007, 'service', 'WFS');
+INSERT INTO "Params" VALUES(2007, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2007, 'typeName', 'Test/Wfs/Sheboygan_CityLimits');
+INSERT INTO "Params" VALUES(2008, 'OPERATION', 'WfsGetFeature_GET');
+INSERT INTO "Params" VALUES(2008, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2008, 'service', 'WFS');
+INSERT INTO "Params" VALUES(2008, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2009, 'OPERATION', 'WfsGetFeature_GET');
+INSERT INTO "Params" VALUES(2009, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2009, 'service', 'WFS');
+INSERT INTO "Params" VALUES(2009, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2009, 'typeName', '');
+INSERT INTO "Params" VALUES(2010, 'OPERATION', 'WfsGetFeature_GET');
+INSERT INTO "Params" VALUES(2010, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2010, 'service', 'WFSM');
+INSERT INTO "Params" VALUES(2010, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2011, 'OPERATION', 'WfsGetFeature_POST');
+INSERT INTO "Params" VALUES(2011, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2011, 'service', 'WMS');
+INSERT INTO "Params" VALUES(2011, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2012, 'OPERATION', 'WfsGetFeature_POST');
+INSERT INTO "Params" VALUES(2012, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2012, 'service', 'WFS');
+INSERT INTO "Params" VALUES(2012, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2012, 'typeName', 'ns146044037:CityLimits');
+INSERT INTO "Params" VALUES(2013, 'OPERATION', 'WfsGetFeature_POST');
+INSERT INTO "Params" VALUES(2013, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2013, 'service', 'WFS');
+INSERT INTO "Params" VALUES(2013, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2013, 'typeName', 'Test/Wfs/Sheboygan_CityLimits:Blah');
+INSERT INTO "Params" VALUES(2014, 'OPERATION', 'WfsGetFeature_POST');
+INSERT INTO "Params" VALUES(2014, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2014, 'service', 'WFS');
+INSERT INTO "Params" VALUES(2014, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2014, 'typeName', 'Test/Wfs/Sheboygan_CityLimits:');
+INSERT INTO "Params" VALUES(2015, 'OPERATION', 'WfsGetFeature_POST');
+INSERT INTO "Params" VALUES(2015, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2015, 'service', 'WFS');
+INSERT INTO "Params" VALUES(2015, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2015, 'typeName', 'Test/Wfs/Sheboygan_CityLimits');
+INSERT INTO "Params" VALUES(2016, 'OPERATION', 'WfsGetFeature_POST');
+INSERT INTO "Params" VALUES(2016, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2016, 'service', 'WFS');
+INSERT INTO "Params" VALUES(2016, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2017, 'OPERATION', 'WfsGetFeature_POST');
+INSERT INTO "Params" VALUES(2017, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2017, 'service', 'WFS');
+INSERT INTO "Params" VALUES(2017, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2017, 'typeName', '');
+INSERT INTO "Params" VALUES(2018, 'OPERATION', 'WfsGetFeature_POST');
+INSERT INTO "Params" VALUES(2018, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2018, 'service', 'WFSM');
+INSERT INTO "Params" VALUES(2018, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(2019, 'OPERATION', 'WfsGetFeature_POST');
+INSERT INTO "Params" VALUES(2019, 'request', 'GetFeature');
+INSERT INTO "Params" VALUES(2019, 'service', 'WMS');
+INSERT INTO "Params" VALUES(2019, 'version', '1.0.0');
+INSERT INTO "Params" VALUES(0, 'OPERATION', 'DELETERESOURCE');
+INSERT INTO "Params" VALUES(0, 'RESOURCEID', 'Library://Test/');
+INSERT INTO "Params" VALUES(1000, 'OPERATION', 'DELETERESOURCE');
+INSERT INTO "Params" VALUES(1000, 'RESOURCEID', 'Library://Test/');
+INSERT INTO "Params" VALUES(2000, 'OPERATION', 'DELETERESOURCE');
+INSERT INTO "Params" VALUES(2000, 'RESOURCEID', 'Library://Test/');
+INSERT INTO "Params" VALUES(1011, 'ALWAYSPASS', '');
+INSERT INTO "Params" VALUES(2010, 'ALWAYSPASS', '');
+INSERT INTO "Params" VALUES(6, 'ALWAYSPASS', '');
+CREATE TABLE CommonParams (ParamName text, ParamValue text);
+INSERT INTO "CommonParams" VALUES('VERSION', '1.0.0');
+INSERT INTO "CommonParams" VALUES('LOCALE', 'en');
+CREATE TABLE ApiTestResults (Description TEXT, ParamSet INTEGER, ContentType TEXT, Result TEXT);
+CREATE TABLE HttpTestResults (Description TEXT, ParamSet INTEGER, ContentType TEXT, Result BLOB);
+INSERT INTO "HttpTestResults" VALUES('', 1, 'text/xml; charset=utf-8', '
+  <wfs:WFS_Capabilities>
+    <ogc:Filter_Capabilities>
+      <ogc:Id_Capabilities>
+        <ogc:EID></ogc:EID>
+        <ogc:FID></ogc:FID>
+      </ogc:Id_Capabilities>
+      <ogc:Scalar_Capabilities>
+        <ogc:ArithmeticOperators>
+          <ogc:Functions>
+            <ogc:FunctionNames></ogc:FunctionNames></ogc:Functions>
+          <ogc:SimpleArithmetic></ogc:SimpleArithmetic>
+        </ogc:ArithmeticOperators>
+        <ogc:ComparisonOperators>
+          <ogc:ComparisonOperator>Between</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>EqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>GreaterThan</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>GreaterThanEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>LessThan</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>LessThanEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>Like</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>NotEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>NullCheck</ogc:ComparisonOperator>
+        </ogc:ComparisonOperators>
+        <ogc:LogicalOperators></ogc:LogicalOperators>
+      </ogc:Scalar_Capabilities>
+      <ogc:Spatial_Capabilities>
+        <ogc:GeometryOperands>
+          <ogc:GeometryOperand>gml:Envelope</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:LineString</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:Point</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:Polygon</ogc:GeometryOperand>
+        </ogc:GeometryOperands>
+        <ogc:SpatialOperators>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+        </ogc:SpatialOperators>
+      </ogc:Spatial_Capabilities>
+    </ogc:Filter_Capabilities>
+    <ows:OperationsMetadata>
+      <ows:Constraint>
+        <ows:Value>1000</ows:Value></ows:Constraint>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get>
+            <ows:Post></ows:Post>
+          </ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>GML2</ows:Value>
+          <ows:Value>GML3</ows:Value>
+          <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
+          <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>hits</ows:Value>
+          <ows:Value>results</ows:Value>
+        </ows:Parameter>
+      </ows:Operation>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get></ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>1.0.0</ows:Value>
+          <ows:Value>1.1.0</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>FeatureTypeList</ows:Value>
+          <ows:Value>Filter_Capabilities</ows:Value>
+          <ows:Value>OperationsMetadata</ows:Value>
+          <ows:Value>ServiceIdentification</ows:Value>
+          <ows:Value>ServiceProvider</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>text/xml</ows:Value></ows:Parameter>
+      </ows:Operation>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get></ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>GML2</ows:Value>
+          <ows:Value>GML3</ows:Value>
+          <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
+          <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+        </ows:Parameter>
+      </ows:Operation>
+    </ows:OperationsMetadata>
+    <ows:ServiceIdentification>
+      <ows:Abstract>MapGuide WFS Server</ows:Abstract>
+      <ows:AccessConstraints>none</ows:AccessConstraints>
+      <ows:Fees>none</ows:Fees>
+      <ows:Keywords>
+        <ows:Keyword>GIS WFS Server</ows:Keyword></ows:Keywords>
+      <ows:ServiceType>WFS</ows:ServiceType>
+      <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+      <ows:ServiceTypeVersion>1.1.0</ows:ServiceTypeVersion>
+      <ows:Title>MapGuide WFS Server</ows:Title>
+    </ows:ServiceIdentification>
+    <ows:ServiceProvider>
+      <ows:ProviderName></ows:ProviderName>
+      <ows:ProviderSite></ows:ProviderSite>
+      <ows:ServiceContact>
+        <ows:ContactInfo>
+          <ows:Address>
+            <ows:AdministrativeArea></ows:AdministrativeArea>
+            <ows:City></ows:City>
+            <ows:Country></ows:Country>
+            <ows:DeliveryPoint></ows:DeliveryPoint>
+            <ows:ElectronicMailAddress></ows:ElectronicMailAddress>
+            <ows:PostalCode></ows:PostalCode>
+          </ows:Address>
+          <ows:ContactInstructions></ows:ContactInstructions>
+          <ows:HoursOfService>24x7</ows:HoursOfService>
+          <ows:OnlineResource></ows:OnlineResource>
+          <ows:Phone>
+            <ows:Facsimile></ows:Facsimile>
+            <ows:Voice></ows:Voice>
+          </ows:Phone>
+        </ows:ContactInfo>
+        <ows:IndividualName></ows:IndividualName>
+        <ows:PositionName></ows:PositionName>
+        <ows:Role></ows:Role>
+      </ows:ServiceContact>
+    </ows:ServiceProvider>
+    <wfs:FeatureTypeList>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Buildings</ows:Keyword>
+          <ows:Keyword>Outlines</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Building Outlines.</wfs:Abstract>
+        <wfs:DefaultSRS>EPSG:4326</wfs:DefaultSRS>
+        <wfs:Name>ns180401301:BuildingOutlines</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Building Outlines</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>City</ows:Keyword>
+          <ows:Keyword>Limits</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>City Limits</wfs:Abstract>
+        <wfs:DefaultSRS>EPSG:4326</wfs:DefaultSRS>
+        <wfs:Name>ns146044037:CityLimits</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>City Limits</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Hydrogaphic</ows:Keyword>
+          <ows:Keyword>Hydrography</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Hydrographic Polygons</wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns183299621:HydrographicPolygons</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Hydrographic Polygons</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Hydrography</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Hydrographic Lines</wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns152601589:HydrographicLines</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Hydrographic Lines</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Islands</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns192144421:Islands</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Islands</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Parcels</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns34414117:Parcels</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Parcels</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns122354021:Trees</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Trees</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns55197509:VotingDistricts</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Voting Districts</wfs:Title>
+      </wfs:FeatureType>
+    </wfs:FeatureTypeList>
+  </wfs:WFS_Capabilities>');
+INSERT INTO "HttpTestResults" VALUES('', 2, 'text/xml; charset=utf-8', '
+  <wfs:WFS_Capabilities>
+    <ogc:Filter_Capabilities>
+      <ogc:Id_Capabilities>
+        <ogc:EID></ogc:EID>
+        <ogc:FID></ogc:FID>
+      </ogc:Id_Capabilities>
+      <ogc:Scalar_Capabilities>
+        <ogc:ArithmeticOperators>
+          <ogc:Functions>
+            <ogc:FunctionNames></ogc:FunctionNames></ogc:Functions>
+          <ogc:SimpleArithmetic></ogc:SimpleArithmetic>
+        </ogc:ArithmeticOperators>
+        <ogc:ComparisonOperators>
+          <ogc:ComparisonOperator>Between</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>EqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>GreaterThan</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>GreaterThanEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>LessThan</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>LessThanEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>Like</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>NotEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>NullCheck</ogc:ComparisonOperator>
+        </ogc:ComparisonOperators>
+        <ogc:LogicalOperators></ogc:LogicalOperators>
+      </ogc:Scalar_Capabilities>
+      <ogc:Spatial_Capabilities>
+        <ogc:GeometryOperands>
+          <ogc:GeometryOperand>gml:Envelope</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:LineString</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:Point</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:Polygon</ogc:GeometryOperand>
+        </ogc:GeometryOperands>
+        <ogc:SpatialOperators>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+        </ogc:SpatialOperators>
+      </ogc:Spatial_Capabilities>
+    </ogc:Filter_Capabilities>
+    <ows:OperationsMetadata>
+      <ows:Constraint>
+        <ows:Value>1000</ows:Value></ows:Constraint>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get>
+            <ows:Post></ows:Post>
+          </ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>GML2</ows:Value>
+          <ows:Value>GML3</ows:Value>
+          <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
+          <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>hits</ows:Value>
+          <ows:Value>results</ows:Value>
+        </ows:Parameter>
+      </ows:Operation>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get></ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>1.0.0</ows:Value>
+          <ows:Value>1.1.0</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>FeatureTypeList</ows:Value>
+          <ows:Value>Filter_Capabilities</ows:Value>
+          <ows:Value>OperationsMetadata</ows:Value>
+          <ows:Value>ServiceIdentification</ows:Value>
+          <ows:Value>ServiceProvider</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>text/xml</ows:Value></ows:Parameter>
+      </ows:Operation>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get></ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>GML2</ows:Value>
+          <ows:Value>GML3</ows:Value>
+          <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
+          <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+        </ows:Parameter>
+      </ows:Operation>
+    </ows:OperationsMetadata>
+    <ows:ServiceIdentification>
+      <ows:Abstract>MapGuide WFS Server</ows:Abstract>
+      <ows:AccessConstraints>none</ows:AccessConstraints>
+      <ows:Fees>none</ows:Fees>
+      <ows:Keywords>
+        <ows:Keyword>GIS WFS Server</ows:Keyword></ows:Keywords>
+      <ows:ServiceType>WFS</ows:ServiceType>
+      <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+      <ows:ServiceTypeVersion>1.1.0</ows:ServiceTypeVersion>
+      <ows:Title>MapGuide WFS Server</ows:Title>
+    </ows:ServiceIdentification>
+    <ows:ServiceProvider>
+      <ows:ProviderName></ows:ProviderName>
+      <ows:ProviderSite></ows:ProviderSite>
+      <ows:ServiceContact>
+        <ows:ContactInfo>
+          <ows:Address>
+            <ows:AdministrativeArea></ows:AdministrativeArea>
+            <ows:City></ows:City>
+            <ows:Country></ows:Country>
+            <ows:DeliveryPoint></ows:DeliveryPoint>
+            <ows:ElectronicMailAddress></ows:ElectronicMailAddress>
+            <ows:PostalCode></ows:PostalCode>
+          </ows:Address>
+          <ows:ContactInstructions></ows:ContactInstructions>
+          <ows:HoursOfService>24x7</ows:HoursOfService>
+          <ows:OnlineResource></ows:OnlineResource>
+          <ows:Phone>
+            <ows:Facsimile></ows:Facsimile>
+            <ows:Voice></ows:Voice>
+          </ows:Phone>
+        </ows:ContactInfo>
+        <ows:IndividualName></ows:IndividualName>
+        <ows:PositionName></ows:PositionName>
+        <ows:Role></ows:Role>
+      </ows:ServiceContact>
+    </ows:ServiceProvider>
+    <wfs:FeatureTypeList>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Buildings</ows:Keyword>
+          <ows:Keyword>Outlines</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Building Outlines.</wfs:Abstract>
+        <wfs:DefaultSRS>EPSG:4326</wfs:DefaultSRS>
+        <wfs:Name>ns180401301:BuildingOutlines</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Building Outlines</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>City</ows:Keyword>
+          <ows:Keyword>Limits</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>City Limits</wfs:Abstract>
+        <wfs:DefaultSRS>EPSG:4326</wfs:DefaultSRS>
+        <wfs:Name>ns146044037:CityLimits</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>City Limits</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Hydrogaphic</ows:Keyword>
+          <ows:Keyword>Hydrography</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Hydrographic Polygons</wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns183299621:HydrographicPolygons</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Hydrographic Polygons</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Hydrography</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Hydrographic Lines</wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns152601589:HydrographicLines</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Hydrographic Lines</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Islands</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns192144421:Islands</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Islands</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Parcels</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns34414117:Parcels</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Parcels</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns122354021:Trees</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Trees</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns55197509:VotingDistricts</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Voting Districts</wfs:Title>
+      </wfs:FeatureType>
+    </wfs:FeatureTypeList>
+  </wfs:WFS_Capabilities>');
+INSERT INTO "HttpTestResults" VALUES('', 3, 'text/xml; charset=utf-8', '
+  <wfs:WFS_Capabilities>
+    <ogc:Filter_Capabilities>
+      <ogc:Id_Capabilities>
+        <ogc:EID></ogc:EID>
+        <ogc:FID></ogc:FID>
+      </ogc:Id_Capabilities>
+      <ogc:Scalar_Capabilities>
+        <ogc:ArithmeticOperators>
+          <ogc:Functions>
+            <ogc:FunctionNames></ogc:FunctionNames></ogc:Functions>
+          <ogc:SimpleArithmetic></ogc:SimpleArithmetic>
+        </ogc:ArithmeticOperators>
+        <ogc:ComparisonOperators>
+          <ogc:ComparisonOperator>Between</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>EqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>GreaterThan</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>GreaterThanEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>LessThan</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>LessThanEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>Like</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>NotEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>NullCheck</ogc:ComparisonOperator>
+        </ogc:ComparisonOperators>
+        <ogc:LogicalOperators></ogc:LogicalOperators>
+      </ogc:Scalar_Capabilities>
+      <ogc:Spatial_Capabilities>
+        <ogc:GeometryOperands>
+          <ogc:GeometryOperand>gml:Envelope</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:LineString</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:Point</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:Polygon</ogc:GeometryOperand>
+        </ogc:GeometryOperands>
+        <ogc:SpatialOperators>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+        </ogc:SpatialOperators>
+      </ogc:Spatial_Capabilities>
+    </ogc:Filter_Capabilities>
+    <ows:OperationsMetadata>
+      <ows:Constraint>
+        <ows:Value>1000</ows:Value></ows:Constraint>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get>
+            <ows:Post></ows:Post>
+          </ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>GML2</ows:Value>
+          <ows:Value>GML3</ows:Value>
+          <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
+          <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>hits</ows:Value>
+          <ows:Value>results</ows:Value>
+        </ows:Parameter>
+      </ows:Operation>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get></ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>1.0.0</ows:Value>
+          <ows:Value>1.1.0</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>FeatureTypeList</ows:Value>
+          <ows:Value>Filter_Capabilities</ows:Value>
+          <ows:Value>OperationsMetadata</ows:Value>
+          <ows:Value>ServiceIdentification</ows:Value>
+          <ows:Value>ServiceProvider</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>text/xml</ows:Value></ows:Parameter>
+      </ows:Operation>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get></ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>GML2</ows:Value>
+          <ows:Value>GML3</ows:Value>
+          <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
+          <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+        </ows:Parameter>
+      </ows:Operation>
+    </ows:OperationsMetadata>
+    <ows:ServiceIdentification>
+      <ows:Abstract>MapGuide WFS Server</ows:Abstract>
+      <ows:AccessConstraints>none</ows:AccessConstraints>
+      <ows:Fees>none</ows:Fees>
+      <ows:Keywords>
+        <ows:Keyword>GIS WFS Server</ows:Keyword></ows:Keywords>
+      <ows:ServiceType>WFS</ows:ServiceType>
+      <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+      <ows:ServiceTypeVersion>1.1.0</ows:ServiceTypeVersion>
+      <ows:Title>MapGuide WFS Server</ows:Title>
+    </ows:ServiceIdentification>
+    <ows:ServiceProvider>
+      <ows:ProviderName></ows:ProviderName>
+      <ows:ProviderSite></ows:ProviderSite>
+      <ows:ServiceContact>
+        <ows:ContactInfo>
+          <ows:Address>
+            <ows:AdministrativeArea></ows:AdministrativeArea>
+            <ows:City></ows:City>
+            <ows:Country></ows:Country>
+            <ows:DeliveryPoint></ows:DeliveryPoint>
+            <ows:ElectronicMailAddress></ows:ElectronicMailAddress>
+            <ows:PostalCode></ows:PostalCode>
+          </ows:Address>
+          <ows:ContactInstructions></ows:ContactInstructions>
+          <ows:HoursOfService>24x7</ows:HoursOfService>
+          <ows:OnlineResource></ows:OnlineResource>
+          <ows:Phone>
+            <ows:Facsimile></ows:Facsimile>
+            <ows:Voice></ows:Voice>
+          </ows:Phone>
+        </ows:ContactInfo>
+        <ows:IndividualName></ows:IndividualName>
+        <ows:PositionName></ows:PositionName>
+        <ows:Role></ows:Role>
+      </ows:ServiceContact>
+    </ows:ServiceProvider>
+    <wfs:FeatureTypeList>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Buildings</ows:Keyword>
+          <ows:Keyword>Outlines</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Building Outlines.</wfs:Abstract>
+        <wfs:DefaultSRS>EPSG:4326</wfs:DefaultSRS>
+        <wfs:Name>ns180401301:BuildingOutlines</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Building Outlines</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>City</ows:Keyword>
+          <ows:Keyword>Limits</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>City Limits</wfs:Abstract>
+        <wfs:DefaultSRS>EPSG:4326</wfs:DefaultSRS>
+        <wfs:Name>ns146044037:CityLimits</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>City Limits</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Hydrogaphic</ows:Keyword>
+          <ows:Keyword>Hydrography</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Hydrographic Polygons</wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns183299621:HydrographicPolygons</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Hydrographic Polygons</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Hydrography</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Hydrographic Lines</wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns152601589:HydrographicLines</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Hydrographic Lines</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Islands</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns192144421:Islands</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Islands</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Parcels</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns34414117:Parcels</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Parcels</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns122354021:Trees</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Trees</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns55197509:VotingDistricts</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Voting Districts</wfs:Title>
+      </wfs:FeatureType>
+    </wfs:FeatureTypeList>
+  </wfs:WFS_Capabilities>');
+INSERT INTO "HttpTestResults" VALUES('', 4, 'text/xml; charset=utf-8', '
+  <wfs:WFS_Capabilities>
+    <ogc:Filter_Capabilities>
+      <ogc:Id_Capabilities>
+        <ogc:EID></ogc:EID>
+        <ogc:FID></ogc:FID>
+      </ogc:Id_Capabilities>
+      <ogc:Scalar_Capabilities>
+        <ogc:ArithmeticOperators>
+          <ogc:Functions>
+            <ogc:FunctionNames></ogc:FunctionNames></ogc:Functions>
+          <ogc:SimpleArithmetic></ogc:SimpleArithmetic>
+        </ogc:ArithmeticOperators>
+        <ogc:ComparisonOperators>
+          <ogc:ComparisonOperator>Between</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>EqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>GreaterThan</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>GreaterThanEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>LessThan</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>LessThanEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>Like</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>NotEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>NullCheck</ogc:ComparisonOperator>
+        </ogc:ComparisonOperators>
+        <ogc:LogicalOperators></ogc:LogicalOperators>
+      </ogc:Scalar_Capabilities>
+      <ogc:Spatial_Capabilities>
+        <ogc:GeometryOperands>
+          <ogc:GeometryOperand>gml:Envelope</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:LineString</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:Point</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:Polygon</ogc:GeometryOperand>
+        </ogc:GeometryOperands>
+        <ogc:SpatialOperators>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+        </ogc:SpatialOperators>
+      </ogc:Spatial_Capabilities>
+    </ogc:Filter_Capabilities>
+    <ows:OperationsMetadata>
+      <ows:Constraint>
+        <ows:Value>1000</ows:Value></ows:Constraint>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get>
+            <ows:Post></ows:Post>
+          </ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>GML2</ows:Value>
+          <ows:Value>GML3</ows:Value>
+          <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
+          <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>hits</ows:Value>
+          <ows:Value>results</ows:Value>
+        </ows:Parameter>
+      </ows:Operation>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get></ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>1.0.0</ows:Value>
+          <ows:Value>1.1.0</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>FeatureTypeList</ows:Value>
+          <ows:Value>Filter_Capabilities</ows:Value>
+          <ows:Value>OperationsMetadata</ows:Value>
+          <ows:Value>ServiceIdentification</ows:Value>
+          <ows:Value>ServiceProvider</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>text/xml</ows:Value></ows:Parameter>
+      </ows:Operation>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get></ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>GML2</ows:Value>
+          <ows:Value>GML3</ows:Value>
+          <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
+          <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+        </ows:Parameter>
+      </ows:Operation>
+    </ows:OperationsMetadata>
+    <ows:ServiceIdentification>
+      <ows:Abstract>MapGuide WFS Server</ows:Abstract>
+      <ows:AccessConstraints>none</ows:AccessConstraints>
+      <ows:Fees>none</ows:Fees>
+      <ows:Keywords>
+        <ows:Keyword>GIS WFS Server</ows:Keyword></ows:Keywords>
+      <ows:ServiceType>WFS</ows:ServiceType>
+      <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+      <ows:ServiceTypeVersion>1.1.0</ows:ServiceTypeVersion>
+      <ows:Title>MapGuide WFS Server</ows:Title>
+    </ows:ServiceIdentification>
+    <ows:ServiceProvider>
+      <ows:ProviderName></ows:ProviderName>
+      <ows:ProviderSite></ows:ProviderSite>
+      <ows:ServiceContact>
+        <ows:ContactInfo>
+          <ows:Address>
+            <ows:AdministrativeArea></ows:AdministrativeArea>
+            <ows:City></ows:City>
+            <ows:Country></ows:Country>
+            <ows:DeliveryPoint></ows:DeliveryPoint>
+            <ows:ElectronicMailAddress></ows:ElectronicMailAddress>
+            <ows:PostalCode></ows:PostalCode>
+          </ows:Address>
+          <ows:ContactInstructions></ows:ContactInstructions>
+          <ows:HoursOfService>24x7</ows:HoursOfService>
+          <ows:OnlineResource></ows:OnlineResource>
+          <ows:Phone>
+            <ows:Facsimile></ows:Facsimile>
+            <ows:Voice></ows:Voice>
+          </ows:Phone>
+        </ows:ContactInfo>
+        <ows:IndividualName></ows:IndividualName>
+        <ows:PositionName></ows:PositionName>
+        <ows:Role></ows:Role>
+      </ows:ServiceContact>
+    </ows:ServiceProvider>
+    <wfs:FeatureTypeList>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Buildings</ows:Keyword>
+          <ows:Keyword>Outlines</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Building Outlines.</wfs:Abstract>
+        <wfs:DefaultSRS>EPSG:4326</wfs:DefaultSRS>
+        <wfs:Name>ns180401301:BuildingOutlines</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Building Outlines</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>City</ows:Keyword>
+          <ows:Keyword>Limits</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>City Limits</wfs:Abstract>
+        <wfs:DefaultSRS>EPSG:4326</wfs:DefaultSRS>
+        <wfs:Name>ns146044037:CityLimits</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>City Limits</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Hydrogaphic</ows:Keyword>
+          <ows:Keyword>Hydrography</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Hydrographic Polygons</wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns183299621:HydrographicPolygons</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Hydrographic Polygons</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Hydrography</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Hydrographic Lines</wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns152601589:HydrographicLines</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Hydrographic Lines</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Islands</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns192144421:Islands</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Islands</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Parcels</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns34414117:Parcels</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Parcels</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns122354021:Trees</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Trees</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns55197509:VotingDistricts</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Voting Districts</wfs:Title>
+      </wfs:FeatureType>
+    </wfs:FeatureTypeList>
+  </wfs:WFS_Capabilities>');
+INSERT INTO "HttpTestResults" VALUES('', 5, 'text/xml; charset=utf-8', '
+  <wfs:WFS_Capabilities>
+    <ogc:Filter_Capabilities>
+      <ogc:Id_Capabilities>
+        <ogc:EID></ogc:EID>
+        <ogc:FID></ogc:FID>
+      </ogc:Id_Capabilities>
+      <ogc:Scalar_Capabilities>
+        <ogc:ArithmeticOperators>
+          <ogc:Functions>
+            <ogc:FunctionNames></ogc:FunctionNames></ogc:Functions>
+          <ogc:SimpleArithmetic></ogc:SimpleArithmetic>
+        </ogc:ArithmeticOperators>
+        <ogc:ComparisonOperators>
+          <ogc:ComparisonOperator>Between</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>EqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>GreaterThan</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>GreaterThanEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>LessThan</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>LessThanEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>Like</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>NotEqualTo</ogc:ComparisonOperator>
+          <ogc:ComparisonOperator>NullCheck</ogc:ComparisonOperator>
+        </ogc:ComparisonOperators>
+        <ogc:LogicalOperators></ogc:LogicalOperators>
+      </ogc:Scalar_Capabilities>
+      <ogc:Spatial_Capabilities>
+        <ogc:GeometryOperands>
+          <ogc:GeometryOperand>gml:Envelope</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:LineString</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:Point</ogc:GeometryOperand>
+          <ogc:GeometryOperand>gml:Polygon</ogc:GeometryOperand>
+        </ogc:GeometryOperands>
+        <ogc:SpatialOperators>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+          <ogc:SpatialOperator></ogc:SpatialOperator>
+        </ogc:SpatialOperators>
+      </ogc:Spatial_Capabilities>
+    </ogc:Filter_Capabilities>
+    <ows:OperationsMetadata>
+      <ows:Constraint>
+        <ows:Value>1000</ows:Value></ows:Constraint>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get>
+            <ows:Post></ows:Post>
+          </ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>GML2</ows:Value>
+          <ows:Value>GML3</ows:Value>
+          <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
+          <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>hits</ows:Value>
+          <ows:Value>results</ows:Value>
+        </ows:Parameter>
+      </ows:Operation>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get></ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>1.0.0</ows:Value>
+          <ows:Value>1.1.0</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>FeatureTypeList</ows:Value>
+          <ows:Value>Filter_Capabilities</ows:Value>
+          <ows:Value>OperationsMetadata</ows:Value>
+          <ows:Value>ServiceIdentification</ows:Value>
+          <ows:Value>ServiceProvider</ows:Value>
+        </ows:Parameter>
+        <ows:Parameter>
+          <ows:Value>text/xml</ows:Value></ows:Parameter>
+      </ows:Operation>
+      <ows:Operation>
+        <ows:DCP>
+          <ows:HTTP>
+            <ows:Get></ows:Get></ows:HTTP></ows:DCP>
+        <ows:Parameter>
+          <ows:Value>GML2</ows:Value>
+          <ows:Value>GML3</ows:Value>
+          <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
+          <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+        </ows:Parameter>
+      </ows:Operation>
+    </ows:OperationsMetadata>
+    <ows:ServiceIdentification>
+      <ows:Abstract>MapGuide WFS Server</ows:Abstract>
+      <ows:AccessConstraints>none</ows:AccessConstraints>
+      <ows:Fees>none</ows:Fees>
+      <ows:Keywords>
+        <ows:Keyword>GIS WFS Server</ows:Keyword></ows:Keywords>
+      <ows:ServiceType>WFS</ows:ServiceType>
+      <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+      <ows:ServiceTypeVersion>1.1.0</ows:ServiceTypeVersion>
+      <ows:Title>MapGuide WFS Server</ows:Title>
+    </ows:ServiceIdentification>
+    <ows:ServiceProvider>
+      <ows:ProviderName></ows:ProviderName>
+      <ows:ProviderSite></ows:ProviderSite>
+      <ows:ServiceContact>
+        <ows:ContactInfo>
+          <ows:Address>
+            <ows:AdministrativeArea></ows:AdministrativeArea>
+            <ows:City></ows:City>
+            <ows:Country></ows:Country>
+            <ows:DeliveryPoint></ows:DeliveryPoint>
+            <ows:ElectronicMailAddress></ows:ElectronicMailAddress>
+            <ows:PostalCode></ows:PostalCode>
+          </ows:Address>
+          <ows:ContactInstructions></ows:ContactInstructions>
+          <ows:HoursOfService>24x7</ows:HoursOfService>
+          <ows:OnlineResource></ows:OnlineResource>
+          <ows:Phone>
+            <ows:Facsimile></ows:Facsimile>
+            <ows:Voice></ows:Voice>
+          </ows:Phone>
+        </ows:ContactInfo>
+        <ows:IndividualName></ows:IndividualName>
+        <ows:PositionName></ows:PositionName>
+        <ows:Role></ows:Role>
+      </ows:ServiceContact>
+    </ows:ServiceProvider>
+    <wfs:FeatureTypeList>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Buildings</ows:Keyword>
+          <ows:Keyword>Outlines</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Building Outlines.</wfs:Abstract>
+        <wfs:DefaultSRS>EPSG:4326</wfs:DefaultSRS>
+        <wfs:Name>ns180401301:BuildingOutlines</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Building Outlines</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>City</ows:Keyword>
+          <ows:Keyword>Limits</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>City Limits</wfs:Abstract>
+        <wfs:DefaultSRS>EPSG:4326</wfs:DefaultSRS>
+        <wfs:Name>ns146044037:CityLimits</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>City Limits</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Hydrogaphic</ows:Keyword>
+          <ows:Keyword>Hydrography</ows:Keyword>
+        </ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Hydrographic Polygons</wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns183299621:HydrographicPolygons</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Hydrographic Polygons</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Hydrography</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract>Hydrographic Lines</wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns152601589:HydrographicLines</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Hydrographic Lines</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Islands</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns192144421:Islands</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Islands</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:Keywords>
+          <ows:Keyword>Parcels</ows:Keyword></ows:Keywords>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns34414117:Parcels</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Parcels</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns122354021:Trees</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Trees</wfs:Title>
+      </wfs:FeatureType>
+      <wfs:FeatureType>
+        <ows:WGS84BoundingBox>
+          <ows:LowerCorner>-87.74 43.68</ows:LowerCorner>
+          <ows:UpperCorner>-87.69 43.815</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+        <wfs:Abstract></wfs:Abstract>
+        <wfs:DefaultSRS>urn:ogc:def:crs:EPSG::4326</wfs:DefaultSRS>
+        <wfs:Name>ns55197509:VotingDistricts</wfs:Name>
+        <wfs:OutputFormats>
+          <Format>GML2</Format>
+          <Format>GML3</Format>
+          <Format>text/xml; subtype=gml/2.1.2</Format>
+          <Format>text/xml; subtype=gml/3.1.1</Format>
+        </wfs:OutputFormats>
+        <wfs:Title>Voting Districts</wfs:Title>
+      </wfs:FeatureType>
+    </wfs:FeatureTypeList>
+  </wfs:WFS_Capabilities>');
+INSERT INTO "HttpTestResults" VALUES('Missing service parameter', 6, 'application/vnd.ogc.se_xml', '');
+INSERT INTO "HttpTestResults" VALUES('Set resources', 1001, '', '');
+INSERT INTO "HttpTestResults" VALUES('Set resources', 1002, '', '');
+INSERT INTO "HttpTestResults" VALUES('Set resources', 1003, '', '');
+INSERT INTO "HttpTestResults" VALUES('Set resources', 2001, '', '');
+INSERT INTO "HttpTestResults" VALUES('Set resources', 2002, '', '');
+INSERT INTO "HttpTestResults" VALUES('Set resources', 2003, '', '');
+INSERT INTO "HttpTestResults" VALUES('Valid request', 1004, 'text/xml; subtype=gml/2.1.2; charset=utf-8', X'0A20203C78733A736368656D613E0A202020203C78733A636F6D706C6578547970653E0A2020202020203C78733A636F6D706C6578436F6E74656E743E0A20202020202020203C78733A657874656E73696F6E3E0A202020202020202020203C78733A73657175656E63653E0A2020202020202020202020203C78733A656C656D656E743E0A20202020202020202020202020203C78733A616E6E6F746174696F6E3E0A202020202020202020202020202020203C78733A646F63756D656E746174696F6E3E4175746F67656E657261746564206964656E746974792070726F70657274793C2F78733A646F63756D656E746174696F6E3E3C2F78733A616E6E6F746174696F6E3E0A20202020202020202020202020203C78733A73696D706C65547970653E0A202020202020202020202020202020203C78733A7265737472696374696F6E3E3C2F78733A7265737472696374696F6E3E3C2F78733A73696D706C65547970653E0A2020202020202020202020203C2F78733A656C656D656E743E0A2020202020202020202020203C78733A656C656D656E743E0A20202020202020202020202020203C78733A616E6E6F746174696F6E3E0A202020202020202020202020202020203C78733A646F63756D656E746174696F6E3E5468652067656F6D65747279206F6620746865206F626A6563743C2F78733A646F63756D656E746174696F6E3E3C2F78733A616E6E6F746174696F6E3E3C2F78733A656C656D656E743E0A2020202020202020202020203C78733A656C656D656E743E0A20202020202020202020202020203C78733A73696D706C65547970653E0A202020202020202020202020202020203C78733A7265737472696374696F6E3E3C2F78733A7265737472696374696F6E3E3C2F78733A73696D706C65547970653E3C2F78733A656C656D656E743E0A2020202020202020202020203C78733A656C656D656E743E0A20202020202020202020202020203C78733A73696D706C65547970653E0A202020202020202020202020202020203C78733A7265737472696374696F6E3E3C2F78733A7265737472696374696F6E3E3C2F78733A73696D706C65547970653E3C2F78733A656C656D656E743E0A2020202020202020202020203C78733A656C656D656E743E0A20202020202020202020202020203C78733A73696D706C65547970653E0A202020202020202020202020202020203C78733A7265737472696374696F6E3E3C2F78733A7265737472696374696F6E3E3C2F78733A73696D706C65547970653E3C2F78733A656C656D656E743E0A202020202020202020203C2F78733A73657175656E63653E3C2F78733A657874656E73696F6E3E3C2F78733A636F6D706C6578436F6E74656E743E3C2F78733A636F6D706C6578547970653E0A202020203C78733A656C656D656E743E0A2020202020203C78733A6B65793E0A20202020202020203C78733A6669656C643E3C2F78733A6669656C643E0A20202020202020203C78733A73656C6563746F723E3C2F78733A73656C6563746F723E0A2020202020203C2F78733A6B65793E3C2F78733A656C656D656E743E0A20203C2F78733A736368656D613E');
+INSERT INTO "HttpTestResults" VALUES('', 2004, 'text/xml; subtype=gml/2.1.2; charset=utf-8', '
+  <wfs:FeatureCollection>
+    <gml:featureMember>
+      <ns146044037:CityLimits>
+        <ns146044037:Autogenerated_SDF_ID>1</ns146044037:Autogenerated_SDF_ID>
+        <ns146044037:ID>P4M003tz150</ns146044037:ID>
+        <ns146044037:SHPGEOM>
+          <gml:Polygon>
+            <gml:outerBoundaryIs>
+              <gml:LinearRing>
+                <gml:coordinates>-87.748656,43.694598 -87.749507,43.692691 -87.754622,43.692746 -87.754670,43.694721 -87.748656,43.694598</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ns146044037:SHPGEOM>
+      </ns146044037:CityLimits></gml:featureMember>
+    <gml:featureMember>
+      <ns146044037:CityLimits>
+        <ns146044037:Autogenerated_SDF_ID>2</ns146044037:Autogenerated_SDF_ID>
+        <ns146044037:ID>P4M003tz151</ns146044037:ID>
+        <ns146044037:SHPGEOM>
+          <gml:Polygon>
+            <gml:outerBoundaryIs>
+              <gml:LinearRing>
+                <gml:coordinates>-87.717062,43.697401 -87.717052,43.694535 -87.719528,43.694549 -87.719526,43.695880 -87.719412,43.695880 -87.719420,43.697429 -87.717062,43.697401</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ns146044037:SHPGEOM>
+      </ns146044037:CityLimits></gml:featureMember>
+    <gml:featureMember>
+      <ns146044037:CityLimits>
+        <ns146044037:Autogenerated_SDF_ID>3</ns146044037:Autogenerated_SDF_ID>
+        <ns146044037:ID>P4M003tz152</ns146044037:ID>
+        <ns146044037:SHPGEOM>
+          <gml:Polygon>
+            <gml:outerBoundaryIs>
+              <gml:LinearRing>
+                <gml:coordinates>-87.703905,43.712098 -87.708067,43.712173 -87.710158,43.713901 -87.710070,43.716646 -87.713460,43.716640 -87.714399,43.717420 -87.714667,43.717242 -87.715041,43.717234 -87.715063,43.716636 -87.714026,43.716639 -87.714365,43.714640 -87.713594,43.714572 -87.713656,43.714146 -87.713674,43.714020 -87.713579,43.713890 -87.713897,43.711926 -87.712732,43.711933 -87.712892,43.707741 -87.712157,43.707477 -87.712101,43.707344 -87.712042,43.707253 -87.711824,43.707226 -87.711667,43.707118 -87.711555,43.707023 -87.711571,43.706880 -87.711634,43.706769 -87.711621,43.706578 -87.711444,43.706476 -87.711349,43.706440 -87.711305,43.706340 -87.711426,43.706164 -87.711387,43.706003 -87.711141,43.705936 -87.710986,43.705812 -87.710748,43.705593 -87.710556,43.705477 -87.710672,43.701860 -87.713061,43.701875 -87.713018,43.703350 -87.714289,43.703359 -87.714281,43.703633 -87.713010,43.703624 -87.712994,43.704173 -87.712651,43.704170 -87.712580,43.706130 -87.714557,43.706159 -87.714576,43.705473 -87.713677,43.705460 -87.713713,43.704472 -87.715479,43.704490 -87.715493,43.703941 -87.714386,43.703934 -87.714393,43.703660 -87.715501,43.703667 -87.715583,43.701920 -87.718096,43.701940 -87.718130,43.699989 -87.715605,43.699956 -87.715640,43.698310 -87.715792,43.698206 -87.716803,43.698224 -87.716793,43.697690 -87.718267,43.697723 -87.718265,43.698242 -87.718770,43.698251 -87.718763,43.698976 -87.720632,43.699008 -87.720630,43.699466 -87.721269,43.699478 -87.721273,43.699210 -87.722013,43.699223 -87.722006,43.699689 -87.722478,43.699698 -87.722471,43.700195 -87.723601,43.700209 -87.723592,43.700758 -87.724391,43.700772 -87.724391,43.700720 -87.725637,43.700736 -87.725636,43.701193 -87.727770,43.701227 -87.727752,43.702018 -87.727745,43.702089 -87.726332,43.702068 -87.726321,43.702452 -87.725638,43.702442 -87.725626,43.703217 -87.724885,43.703200 -87.724871,43.703749 -87.724369,43.703741 -87.724357,43.704181 -87.723629,43.704170 -87.723640,43.703730 -87.724142,43.703738 -87.724170,43.702641 -87.722935,43.702617 -87.722920,43.703322 -87.720663,43.703289 -87.720609,43.705516 -87.721573,43.705526 -87.721575,43.705892 -87.720600,43.705878 -87.720616,43.706308 -87.720263,43.706290 -87.720256,43.706468 -87.719179,43.706439 -87.719185,43.706269 -87.718466,43.706260 -87.718457,43.706557 -87.719176,43.706569 -87.719158,43.707161 -87.720230,43.707181 -87.720243,43.706825 -87.719751,43.706811 -87.719756,43.706633 -87.720607,43.706656 -87.720613,43.706427 -87.721614,43.706438 -87.721596,43.707117 -87.721461,43.707211 -87.721093,43.707207 -87.721088,43.707372 -87.721211,43.707373 -87.721191,43.707782 -87.720577,43.707775 -87.720565,43.708184 -87.721662,43.708196 -87.721645,43.708558 -87.721418,43.708556 -87.721387,43.709177 -87.722842,43.709192 -87.722883,43.708377 -87.723497,43.708386 -87.723513,43.708057 -87.722785,43.708049 -87.722801,43.707720 -87.722301,43.707714 -87.722331,43.706841 -87.721831,43.706835 -87.721841,43.706462 -87.722341,43.706468 -87.722349,43.706188 -87.721732,43.706181 -87.721742,43.705528 -87.722442,43.705536 -87.722420,43.706024 -87.723080,43.706037 -87.723078,43.706141 -87.723579,43.706147 -87.723555,43.707041 -87.724055,43.707047 -87.724050,43.707240 -87.725891,43.707246 -87.725907,43.706670 -87.726663,43.706681 -87.726647,43.707257 -87.727249,43.707268 -87.727200,43.709235 -87.730160,43.709282 -87.730263,43.704042 -87.729617,43.704031 -87.729652,43.702473 -87.728601,43.702460 -87.728512,43.702224 -87.728515,43.701160 -87.729538,43.701009 -87.729304,43.700612 -87.729022,43.700320 -87.728659,43.700092 -87.728292,43.699948 -87.728054,43.699893 -87.728271,43.699248 -87.727981,43.699211 -87.727993,43.698313 -87.730470,43.698345 -87.730469,43.701923 -87.732065,43.701957 -87.732047,43.702558 -87.732803,43.702566 -87.732815,43.701944 -87.735495,43.701983 -87.735441,43.704318 -87.735289,43.704316 -87.735277,43.705183 -87.735446,43.705192 -87.735439,43.705712 -87.731816,43.705663 -87.731735,43.709297 -87.742080,43.709502 -87.741731,43.710313 -87.739939,43.710249 -87.739928,43.710778 -87.740250,43.710675 -87.740479,43.710762 -87.741289,43.710749 -87.740798,43.711865 -87.741036,43.711913 -87.740302,43.713527 -87.739296,43.713507 -87.739280,43.714047 -87.739830,43.714056 -87.739325,43.715211 -87.739153,43.715171 -87.738114,43.717490 -87.737345,43.717504 -87.737863,43.715959 -87.730126,43.715885 -87.730084,43.717652 -87.732598,43.717623 -87.732582,43.719366 -87.737492,43.719357 -87.737733,43.718806 -87.736875,43.718826 -87.736870,43.718949 -87.736804,43.718948 -87.736804,43.719000 -87.736304,43.719001 -87.736304,43.719070 -87.734844,43.719030 -87.734903,43.717628 -87.738367,43.717624 -87.739848,43.714336 -87.741211,43.714340 -87.741204,43.713938 -87.740195,43.713939 -87.741175,43.711719 -87.742606,43.711948 -87.741986,43.713938 -87.748812,43.713938 -87.748792,43.710588 -87.742941,43.710360 -87.743300,43.709552 -87.743671,43.709566 -87.743692,43.708747 -87.742305,43.708695 -87.742050,43.709276 -87.740328,43.709210 -87.740336,43.705228 -87.735427,43.705135 -87.735444,43.704371 -87.740205,43.704415 -87.740203,43.702826 -87.739706,43.702817 -87.739707,43.702590 -87.739878,43.702593 -87.739887,43.702140 -87.739333,43.702126 -87.739329,43.702585 -87.738438,43.702573 -87.738442,43.702113 -87.738134,43.702108 -87.738135,43.702569 -87.735520,43.702533 -87.735532,43.701980 -87.737401,43.702007 -87.737402,43.701274 -87.740234,43.701307 -87.740347,43.701309 -87.740350,43.700788 -87.740995,43.700788 -87.740996,43.700377 -87.741126,43.700377 -87.741128,43.699804 -87.740336,43.699802 -87.740341,43.698804 -87.741130,43.698805 -87.741131,43.698233 -87.740468,43.698232 -87.740472,43.696290 -87.741136,43.696307 -87.741142,43.695734 -87.740348,43.695715 -87.740408,43.694619 -87.742602,43.694633 -87.742603,43.693549 -87.740409,43.693535 -87.740410,43.691398 -87.749678,43.691720 -87.748845,43.693587 -87.745401,43.693567 -87.745394,43.695851 -87.745146,43.695844 -87.745099,43.697828 -87.747041,43.697922 -87.746372,43.699450 -87.746203,43.699446 -87.746101,43.699678 -87.745949,43.699675 -87.745661,43.699524 -87.745432,43.699424 -87.745380,43.699443 -87.745375,43.700562 -87.744667,43.700398 -87.744387,43.701037 -87.745439,43.701279 -87.745456,43.701241 -87.746674,43.701309 -87.746912,43.700578 -87.745774,43.700515 -87.745719,43.700641 -87.745413,43.700571 -87.745418,43.699460 -87.745626,43.699534 -87.745936,43.699703 -87.746129,43.699706 -87.746230,43.699474 -87.749718,43.699561 -87.759714,43.699774 -87.759822,43.702878 -87.760184,43.710196 -87.759887,43.710180 -87.760091,43.714180 -87.759742,43.714720 -87.760078,43.714732 -87.759978,43.715771 -87.759451,43.717589 -87.759553,43.720526 -87.758425,43.728443 -87.758054,43.731042 -87.754905,43.731064 -87.754906,43.730905 -87.752902,43.730921 -87.752899,43.731407 -87.751396,43.731419 -87.750992,43.731268 -87.751045,43.731194 -87.750624,43.731088 -87.749868,43.731094 -87.749875,43.730259 -87.751802,43.730243 -87.753130,43.728903 -87.753310,43.729004 -87.754914,43.728991 -87.754919,43.728441 -87.753876,43.728449 -87.753688,43.728358 -87.754133,43.727817 -87.754464,43.727306 -87.754713,43.726806 -87.755411,43.724765 -87.739840,43.724882 -87.739808,43.728564 -87.743883,43.728540 -87.743845,43.731974 -87.749850,43.731938 -87.749847,43.732120 -87.750290,43.732117 -87.749838,43.732850 -87.749820,43.735655 -87.747898,43.736649 -87.747787,43.737136 -87.747414,43.737533 -87.746138,43.738197 -87.745248,43.738020 -87.744539,43.738386 -87.744553,43.736383 -87.741825,43.737174 -87.741811,43.738738 -87.742884,43.739196 -87.742916,43.739410 -87.741806,43.739450 -87.741811,43.739798 -87.740787,43.740042 -87.740785,43.740247 -87.740596,43.740248 -87.740584,43.740723 -87.739354,43.741001 -87.739360,43.740442 -87.739780,43.740348 -87.739801,43.738055 -87.737983,43.738698 -87.737987,43.738989 -87.739236,43.738983 -87.739212,43.741011 -87.738007,43.741294 -87.737975,43.741200 -87.737882,43.741236 -87.737878,43.740900 -87.737575,43.740902 -87.737576,43.740962 -87.737330,43.740964 -87.737364,43.742834 -87.738492,43.742790 -87.738756,43.742764 -87.738929,43.742747 -87.739161,43.742691 -87.739390,43.742554 -87.739487,43.742467 -87.739553,43.742397 -87.739553,43.742158 -87.739586,43.741839 -87.739739,43.741726 -87.740226,43.741432 -87.740691,43.741178 -87.741054,43.740998 -87.741791,43.740731 -87.741784,43.740306 -87.742274,43.740203 -87.743006,43.739919 -87.743781,43.739877 -87.744302,43.739871 -87.744780,43.739912 -87.745134,43.739921 -87.745534,43.739928 -87.745568,43.739650 -87.748922,43.739767 -87.748903,43.739726 -87.749861,43.739617 -87.750350,43.739654 -87.750635,43.739698 -87.751003,43.739787 -87.750995,43.737835 -87.750206,43.737837 -87.750203,43.736978 -87.750512,43.736170 -87.751386,43.736409 -87.751867,43.736291 -87.752421,43.735803 -87.752420,43.735606 -87.757371,43.735596 -87.757337,43.735955 -87.757315,43.736587 -87.757317,43.736976 -87.757342,43.737378 -87.757380,43.737993 -87.757523,43.738655 -87.757662,43.739342 -87.757906,43.739961 -87.758007,43.740264 -87.758185,43.740623 -87.758457,43.741283 -87.757834,43.741276 -87.757660,43.741139 -87.757354,43.741159 -87.756858,43.741228 -87.756390,43.741328 -87.755972,43.741345 -87.755269,43.741429 -87.754909,43.741369 -87.754302,43.741346 -87.753723,43.741327 -87.753093,43.741407 -87.752712,43.741366 -87.752391,43.741276 -87.752023,43.741185 -87.751852,43.741097 -87.751789,43.741231 -87.751519,43.740999 -87.751244,43.740598 -87.751017,43.740313 -87.750715,43.740135 -87.750406,43.740053 -87.750082,43.740013 -87.749725,43.740014 -87.749438,43.740034 -87.748857,43.740140 -87.748463,43.740265 -87.748015,43.740418 -87.747539,43.740574 -87.747052,43.740682 -87.746342,43.740792 -87.745954,43.740837 -87.745083,43.742414 -87.744874,43.742967 -87.744783,43.742966 -87.744745,43.746014 -87.745206,43.746659 -87.745476,43.746963 -87.745840,43.747201 -87.746391,43.747780 -87.744641,43.748657 -87.744641,43.749005 -87.744058,43.749007 -87.744049,43.749987 -87.744635,43.749985 -87.744633,43.751767 -87.744045,43.751767 -87.744043,43.752665 -87.744356,43.752621 -87.744356,43.752232 -87.744676,43.752232 -87.744679,43.748672 -87.746411,43.747804 -87.746914,43.748330 -87.747485,43.748545 -87.747480,43.749046 -87.748554,43.750177 -87.748852,43.750219 -87.749023,43.750421 -87.753571,43.750136 -87.753562,43.751987 -87.754087,43.751925 -87.755428,43.751673 -87.756252,43.751393 -87.756252,43.750859 -87.756034,43.750452 -87.755906,43.750113 -87.756860,43.750129 -87.756847,43.751090 -87.757448,43.750730 -87.757784,43.750504 -87.757794,43.749800 -87.758398,43.749787 -87.758356,43.750327 -87.758246,43.750381 -87.758244,43.751432 -87.757771,43.751472 -87.757676,43.751476 -87.757675,43.751540 -87.756868,43.751546 -87.756872,43.751311 -87.756221,43.751631 -87.756207,43.752680 -87.755414,43.752685 -87.755413,43.752780 -87.754582,43.752790 -87.754542,43.755701 -87.755330,43.755700 -87.755982,43.755559 -87.756005,43.755486 -87.756232,43.755483 -87.757534,43.755362 -87.757534,43.755053 -87.758661,43.755054 -87.758660,43.754709 -87.759649,43.754705 -87.760309,43.754121 -87.760782,43.753355 -87.760714,43.753052 -87.761224,43.752287 -87.761788,43.751190 -87.761345,43.751191 -87.761344,43.749394 -87.761121,43.749401 -87.762133,43.749021 -87.764016,43.754022 -87.764695,43.755670 -87.764856,43.756174 -87.764987,43.758083 -87.761336,43.758051 -87.761338,43.757328 -87.759537,43.757337 -87.759535,43.755862 -87.758526,43.755862 -87.754718,43.756610 -87.754497,43.756648 -87.754537,43.759154 -87.754288,43.759071 -87.754304,43.761045 -87.753915,43.761056 -87.753897,43.763439 -87.754469,43.763428 -87.754473,43.761715 -87.755216,43.761709 -87.755217,43.761411 -87.754703,43.761421 -87.754704,43.761037 -87.757160,43.760989 -87.757169,43.761475 -87.757672,43.761466 -87.757678,43.761795 -87.757176,43.761804 -87.757191,43.762625 -87.756634,43.762635 -87.756458,43.762638 -87.756464,43.762967 -87.755947,43.762976 -87.755951,43.763304 -87.756469,43.763295 -87.756478,43.763786 -87.757214,43.763777 -87.757220,43.764106 -87.757723,43.764100 -87.757733,43.764647 -87.757000,43.764657 -87.756998,43.764601 -87.754465,43.764665 -87.754472,43.765176 -87.754585,43.765173 -87.754617,43.767354 -87.755147,43.767343 -87.755147,43.767614 -87.756136,43.767595 -87.756136,43.767565 -87.757205,43.767545 -87.757203,43.767832 -87.758348,43.767816 -87.758336,43.768835 -87.758357,43.768835 -87.758357,43.769101 -87.756954,43.769100 -87.756954,43.769071 -87.756050,43.769085 -87.756049,43.769278 -87.756010,43.769278 -87.756007,43.770129 -87.757176,43.770109 -87.757178,43.769980 -87.760208,43.769995 -87.760211,43.770519 -87.760703,43.770523 -87.760702,43.771809 -87.759721,43.771801 -87.759725,43.772279 -87.758264,43.772299 -87.758263,43.771876 -87.757879,43.771882 -87.757878,43.771280 -87.757179,43.771290 -87.757178,43.771893 -87.754553,43.771934 -87.754563,43.772356 -87.758062,43.772302 -87.758067,43.773197 -87.759632,43.773177 -87.759824,43.782624 -87.757193,43.782676 -87.757209,43.783085 -87.757463,43.783081 -87.757471,43.783317 -87.757736,43.783311 -87.757805,43.785106 -87.755123,43.785139 -87.755024,43.782700 -87.754153,43.782715 -87.753932,43.775494 -87.754655,43.775482 -87.754587,43.774013 -87.752151,43.774048 -87.752160,43.774445 -87.752047,43.774446 -87.752054,43.774579 -87.751293,43.774592 -87.751286,43.773824 -87.751759,43.773724 -87.751420,43.772877 -87.751408,43.772498 -87.751210,43.772502 -87.751208,43.771986 -87.750382,43.771999 -87.750509,43.772311 -87.749325,43.772329 -87.749318,43.772015 -87.749487,43.772012 -87.749488,43.771848 -87.747153,43.771877 -87.747068,43.771878 -87.746844,43.771926 -87.745430,43.772197 -87.745421,43.771699 -87.744675,43.771706 -87.744672,43.771981 -87.744559,43.771982 -87.744530,43.773145 -87.745137,43.773140 -87.745138,43.772811 -87.745895,43.772806 -87.745895,43.772902 -87.746406,43.772898 -87.746408,43.772180 -87.747150,43.772041 -87.749079,43.772016 -87.749087,43.772360 -87.750520,43.772338 -87.750590,43.772511 -87.751100,43.772503 -87.751544,43.773600 -87.751071,43.773700 -87.751153,43.773929 -87.751171,43.773988 -87.751203,43.774129 -87.751220,43.774233 -87.751247,43.774621 -87.752054,43.774607 -87.752096,43.775520 -87.749563,43.775561 -87.749815,43.782769 -87.746423,43.782835 -87.746052,43.783166 -87.745591,43.783406 -87.745124,43.783591 -87.744713,43.783629 -87.744480,43.783640 -87.744155,43.783697 -87.743608,43.783683 -87.743115,43.783633 -87.742663,43.783615 -87.742254,43.783664 -87.741288,43.784009 -87.740796,43.784155 -87.740359,43.784219 -87.740178,43.784240 -87.739882,43.784102 -87.739876,43.783983 -87.739737,43.783869 -87.739473,43.783891 -87.739086,43.784034 -87.738915,43.784137 -87.738890,43.784265 -87.738976,43.784439 -87.738916,43.784576 -87.738588,43.784602 -87.738347,43.784484 -87.738018,43.784400 -87.737759,43.784334 -87.737085,43.784129 -87.736569,43.784146 -87.736389,43.784229 -87.736324,43.784408 -87.736232,43.784500 -87.736005,43.784560 -87.736321,43.784885 -87.736831,43.784739 -87.737396,43.784785 -87.737811,43.784756 -87.738192,43.784805 -87.738837,43.785000 -87.739864,43.784997 -87.739935,43.786667 -87.741595,43.786636 -87.741564,43.785449 -87.742407,43.785440 -87.742818,43.785486 -87.743491,43.785690 -87.743368,43.786297 -87.743658,43.786398 -87.743745,43.785981 -87.744060,43.786050 -87.744017,43.786531 -87.744410,43.786658 -87.744902,43.786656 -87.744871,43.785812 -87.745389,43.785565 -87.745508,43.785724 -87.745648,43.785783 -87.745849,43.785954 -87.746177,43.785958 -87.746239,43.786147 -87.747294,43.786122 -87.747306,43.786437 -87.746795,43.786449 -87.746820,43.787175 -87.746081,43.787192 -87.746060,43.786628 -87.745549,43.786640 -87.745588,43.787707 -87.746327,43.787690 -87.746344,43.788187 -87.746855,43.788177 -87.746923,43.790091 -87.748171,43.790062 -87.748174,43.790145 -87.750048,43.790101 -87.750263,43.797329 -87.740276,43.797520 -87.740183,43.793899 -87.745169,43.793805 -87.745119,43.791995 -87.740137,43.792088 -87.740119,43.791375 -87.742693,43.791327 -87.742673,43.790520 -87.741537,43.790247 -87.741462,43.788678 -87.740041,43.788717 -87.740088,43.790273 -87.735252,43.790277 -87.735259,43.791025 -87.735090,43.791022 -87.735102,43.792171 -87.733657,43.792184 -87.733652,43.791096 -87.732688,43.791110 -87.732685,43.790690 -87.732309,43.790665 -87.731984,43.790668 -87.731545,43.790821 -87.731212,43.790313 -87.733140,43.790288 -87.733107,43.789383 -87.732066,43.789392 -87.732053,43.789047 -87.732277,43.788962 -87.731958,43.788526 -87.730214,43.789176 -87.730011,43.788905 -87.729261,43.790184 -87.729206,43.790327 -87.723667,43.790387 -87.723664,43.790186 -87.723171,43.790099 -87.721135,43.790055 -87.720685,43.790027 -87.720415,43.789989 -87.719766,43.789771 -87.719699,43.787608 -87.720407,43.787234 -87.720817,43.787087 -87.721170,43.786968 -87.721798,43.786970 -87.721809,43.786679 -87.722398,43.786149 -87.722611,43.786189 -87.722597,43.787259 -87.722920,43.787265 -87.723353,43.787201 -87.723604,43.787008 -87.723923,43.786921 -87.724253,43.786938 -87.725192,43.787174 -87.727228,43.787266 -87.727896,43.787071 -87.728355,43.787734 -87.727665,43.787996 -87.728123,43.788627 -87.729427,43.788133 -87.728391,43.786713 -87.728009,43.786023 -87.727669,43.785201 -87.728797,43.785154 -87.729036,43.786056 -87.729689,43.785765 -87.730484,43.785577 -87.730741,43.785401 -87.731133,43.785270 -87.731619,43.785190 -87.731977,43.785212 -87.734290,43.784642 -87.734193,43.784434 -87.733972,43.784384 -87.733392,43.783083 -87.733016,43.783083 -87.732973,43.782902 -87.730293,43.777152 -87.728157,43.777176 -87.728133,43.775659 -87.724857,43.775671 -87.724990,43.777359 -87.724504,43.777364 -87.724505,43.777397 -87.724251,43.777397 -87.724251,43.777526 -87.724872,43.777526 -87.724902,43.778330 -87.724252,43.778330 -87.724254,43.779044 -87.730923,43.779058 -87.732697,43.782901 -87.732694,43.783082 -87.731730,43.783082 -87.731729,43.783439 -87.731484,43.783439 -87.731510,43.784209 -87.731485,43.784372 -87.730888,43.784443 -87.730961,43.784739 -87.730924,43.784744 -87.730851,43.784448 -87.730310,43.784534 -87.730313,43.783590 -87.729874,43.783591 -87.729797,43.783408 -87.730291,43.783409 -87.730292,43.783080 -87.729571,43.783079 -87.729570,43.783408 -87.729482,43.783593 -87.728995,43.783589 -87.728971,43.783535 -87.728998,43.783528 -87.729006,43.783078 -87.724623,43.783037 -87.724633,43.783364 -87.724117,43.783360 -87.724109,43.783033 -87.722613,43.783022 -87.722630,43.784258 -87.721763,43.784250 -87.721777,43.785262 -87.722646,43.785256 -87.722653,43.785651 -87.721947,43.785714 -87.721143,43.785721 -87.720201,43.785779 -87.720206,43.786143 -87.719672,43.786146 -87.719700,43.787351 -87.718991,43.787663 -87.719015,43.786717 -87.719323,43.785563 -87.718237,43.785576 -87.718247,43.786529 -87.716820,43.786510 -87.716802,43.785419 -87.716030,43.785426 -87.716008,43.784090 -87.716075,43.784089 -87.716046,43.782984 -87.715285,43.782968 -87.715309,43.784968 -87.714896,43.784071 -87.714264,43.784223 -87.714085,43.783833 -87.714037,43.783845 -87.713794,43.783313 -87.712643,43.783437 -87.712663,43.782754 -87.713312,43.782764 -87.713239,43.782415 -87.712637,43.782411 -87.712605,43.783441 -87.712002,43.783512 -87.711963,43.783463 -87.710948,43.783706 -87.710502,43.782991 -87.711470,43.782726 -87.711283,43.782407 -87.711723,43.782280 -87.711400,43.781694 -87.709925,43.782113 -87.708612,43.779998 -87.707566,43.777781 -87.707018,43.776393 -87.706795,43.775966 -87.706695,43.775580 -87.706413,43.774893 -87.706073,43.774319 -87.705844,43.773971 -87.705630,43.773589 -87.705468,43.773288 -87.705370,43.773109 -87.705310,43.772997 -87.705223,43.772803 -87.705102,43.772596 -87.704983,43.772434 -87.704900,43.772346 -87.704820,43.772286 -87.704755,43.772204 -87.704748,43.772139 -87.704666,43.772018 -87.704571,43.771920 -87.704401,43.771697 -87.704224,43.771490 -87.704051,43.771292 -87.703869,43.771042 -87.703724,43.770826 -87.703375,43.770323 -87.703091,43.769955 -87.702830,43.769614 -87.702666,43.769413 -87.702434,43.769109 -87.702105,43.768751 -87.701837,43.768486 -87.701681,43.768331 -87.701562,43.768209 -87.701477,43.768143 -87.701403,43.768134 -87.701355,43.768141 -87.701207,43.768027 -87.700900,43.767767 -87.700645,43.767543 -87.700537,43.767441 -87.700389,43.767363 -87.700307,43.767302 -87.700214,43.767205 -87.700117,43.767142 -87.700078,43.767068 -87.699924,43.766981 -87.699779,43.766898 -87.699636,43.766762 -87.699477,43.766609 -87.699358,43.766494 -87.699237,43.766392 -87.699192,43.766336 -87.699210,43.766240 -87.699227,43.766160 -87.699201,43.766046 -87.699161,43.765938 -87.699100,43.765829 -87.699089,43.765717 -87.699078,43.765672 -87.699003,43.765621 -87.698873,43.765535 -87.698719,43.765434 -87.698388,43.765252 -87.698186,43.765160 -87.697957,43.765065 -87.697715,43.764996 -87.697487,43.764971 -87.697227,43.764964 -87.697087,43.764972 -87.697006,43.765022 -87.697002,43.765044 -87.696952,43.765062 -87.696920,43.765089 -87.696824,43.765108 -87.696559,43.765234 -87.696455,43.765246 -87.696439,43.765284 -87.696423,43.765446 -87.696318,43.765472 -87.696212,43.765533 -87.696156,43.765551 -87.696112,43.765571 -87.696035,43.765555 -87.695961,43.765554 -87.695886,43.765557 -87.695835,43.765538 -87.695792,43.765499 -87.695725,43.765470 -87.695717,43.765430 -87.695721,43.765399 -87.695795,43.765341 -87.695836,43.765337 -87.695870,43.765327 -87.695872,43.765304 -87.695892,43.765243 -87.695905,43.765221 -87.695947,43.765216 -87.695982,43.765185 -87.696003,43.765085 -87.695981,43.765060 -87.695979,43.764970 -87.695944,43.764921 -87.695903,43.764848 -87.695845,43.764789 -87.695749,43.764662 -87.695694,43.764601 -87.695645,43.764550 -87.695616,43.764493 -87.695611,43.764431 -87.695595,43.764360 -87.695534,43.764305 -87.695522,43.764226 -87.695542,43.764168 -87.695627,43.763984 -87.695748,43.763707 -87.695825,43.763492 -87.695872,43.763310 -87.695906,43.763148 -87.695939,43.762979 -87.695938,43.762896 -87.695917,43.762854 -87.695914,43.762817 -87.695936,43.762781 -87.696016,43.762758 -87.696083,43.762749 -87.696138,43.762722 -87.696213,43.762704 -87.696273,43.762685 -87.696414,43.762602 -87.696555,43.762518 -87.696664,43.762467 -87.696840,43.762388 -87.697179,43.762260 -87.697501,43.762142 -87.697784,43.762045 -87.697913,43.762001 -87.698083,43.761968 -87.698182,43.761965 -87.698340,43.761965 -87.698416,43.761958 -87.698526,43.761935 -87.698651,43.761888 -87.698785,43.761839 -87.698926,43.761802 -87.699239,43.761744 -87.699539,43.761682 -87.699704,43.761624 -87.699833,43.761571 -87.700004,43.761471 -87.700091,43.761412 -87.700168,43.761345 -87.700241,43.761284 -87.700283,43.761248 -87.700388,43.761193 -87.700566,43.761110 -87.700759,43.760975 -87.700914,43.760839 -87.701086,43.760697 -87.701247,43.760565 -87.701340,43.760447 -87.701353,43.760406 -87.701373,43.760351 -87.701401,43.760326 -87.701521,43.760250 -87.701580,43.760194 -87.701718,43.760044 -87.701892,43.759829 -87.701995,43.759648 -87.702059,43.759535 -87.702171,43.759372 -87.702243,43.759353 -87.702304,43.759321 -87.702415,43.759216 -87.702544,43.759083 -87.702647,43.758939 -87.702705,43.758805 -87.702756,43.758684 -87.702816,43.758589 -87.702886,43.758411 -87.702945,43.758209 -87.703029,43.757966 -87.703090,43.757756 -87.703119,43.757586 -87.703155,43.757375 -87.703161,43.757202 -87.703151,43.756975 -87.703157,43.756655 -87.703161,43.756443 -87.703145,43.756305 -87.703116,43.756143 -87.703022,43.755809 -87.702903,43.755417 -87.702840,43.755222 -87.702777,43.755069 -87.702779,43.754976 -87.702649,43.754945 -87.702565,43.753643 -87.702691,43.752202 -87.702956,43.750947 -87.703130,43.750606 -87.703124,43.750543 -87.703146,43.750474 -87.703139,43.750381 -87.703131,43.750316 -87.703123,43.750264 -87.703145,43.750172 -87.703207,43.750041 -87.703194,43.749980 -87.703178,43.749916 -87.703171,43.749857 -87.703171,43.749787 -87.703178,43.749674 -87.703140,43.749579 -87.703097,43.749516 -87.702247,43.748533 -87.702397,43.748525 -87.702467,43.748518 -87.702511,43.748480 -87.702570,43.748405 -87.702731,43.748223 -87.702940,43.748025 -87.703263,43.747688 -87.703438,43.747510 -87.703614,43.747320 -87.703776,43.747113 -87.703934,43.746911 -87.704069,43.746713 -87.704155,43.746601 -87.704185,43.746562 -87.704297,43.746509 -87.704379,43.746451 -87.704495,43.746306 -87.704635,43.746070 -87.704744,43.745888 -87.704831,43.745743 -87.704933,43.745492 -87.704993,43.745354 -87.705057,43.745204 -87.705114,43.745152 -87.705336,43.745073 -87.705480,43.745014 -87.705578,43.744985 -87.705785,43.744972 -87.705918,43.744959 -87.706007,43.744963 -87.706141,43.744968 -87.706203,43.744930 -87.706290,43.744784 -87.706405,43.744591 -87.706527,43.744448 -87.706752,43.744208 -87.707020,43.743857 -87.707387,43.743322 -87.707582,43.743064 -87.707743,43.742800 -87.707830,43.742614 -87.708590,43.741297 -87.708883,43.740714 -87.709141,43.740168 -87.709273,43.739678 -87.709354,43.739316 -87.709486,43.738060 -87.709656,43.736443 -87.709808,43.735001 -87.709724,43.732911 -87.709677,43.731632 -87.709699,43.731171 -87.709589,43.730930 -87.709679,43.730728 -87.709645,43.730382 -87.709552,43.729978 -87.709432,43.729692 -87.709427,43.729367 -87.709396,43.729040 -87.709364,43.728725 -87.709302,43.728504 -87.709263,43.728138 -87.709217,43.727661 -87.709087,43.727220 -87.709010,43.726940 -87.709027,43.726499 -87.708983,43.726111 -87.708881,43.725592 -87.708797,43.725301 -87.708786,43.724995 -87.708683,43.724693 -87.708558,43.724332 -87.708460,43.724093 -87.708411,43.723734 -87.708375,43.723480 -87.708296,43.723243 -87.708131,43.722989 -87.708068,43.722843 -87.707960,43.722681 -87.708000,43.722331 -87.707871,43.722041 -87.707658,43.721697 -87.707426,43.721246 -87.707131,43.720539 -87.706934,43.720010 -87.706752,43.719342 -87.706555,43.718959 -87.706379,43.718504 -87.706278,43.718277 -87.706177,43.717904 -87.705951,43.717311 -87.705718,43.716858 -87.705511,43.716532 -87.705343,43.716358 -87.705295,43.715984 -87.705121,43.715786 -87.705051,43.715559 -87.704904,43.715337 -87.704877,43.715146 -87.704787,43.714986 -87.704783,43.714831 -87.704661,43.714661 -87.704445,43.714251 -87.704143,43.713518 -87.704087,43.713159 -87.704005,43.712626 -87.703905,43.712098</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ns146044037:SHPGEOM>
+      </ns146044037:CityLimits></gml:featureMember>
+  </wfs:FeatureCollection>');
+INSERT INTO "HttpTestResults" VALUES('', 0, '', '');
+INSERT INTO "HttpTestResults" VALUES('Clean up', 1000, '', '');
+INSERT INTO "HttpTestResults" VALUES('', 2000, '', '');
+INSERT INTO "HttpTestResults" VALUES('Invalid request. Blank feature', 1005, 'text/xml; charset=utf-8', X'0A20203C53657276696365457863657074696F6E5265706F72743E0A202020203C53657276696365457863657074696F6E3E526571756573743D4465736372696265466561747572655479706520726573756C74656420696E20616E20657863657074696F6E3A2045787065637465642076616C696420747970654E616D6520617267756D656E742C20617320656E756D657261746564206279204765744361706162696C69746965732E2028496E73746561642C20666F756E6420747970654E616D653D276E7335393833363835333A272E293C2F53657276696365457863657074696F6E3E3C2F53657276696365457863657074696F6E5265706F72743E');
+INSERT INTO "HttpTestResults" VALUES('DescribeFeatureType. Invalid feature', 1006, 'text/xml; charset=utf-8', X'0A20203C53657276696365457863657074696F6E5265706F72743E0A202020203C53657276696365457863657074696F6E3E526571756573743D4465736372696265466561747572655479706520726573756C74656420696E20616E20657863657074696F6E3A2045787065637465642076616C696420747970654E616D6520617267756D656E742C20617320656E756D657261746564206279204765744361706162696C69746965732E2028496E73746561642C20666F756E6420747970654E616D653D276E7335393833363835333A426C6168272E293C2F53657276696365457863657074696F6E3E3C2F53657276696365457863657074696F6E5265706F72743E');
+INSERT INTO "HttpTestResults" VALUES('', 1007, 'text/xml; charset=utf-8', X'0A20203C53657276696365457863657074696F6E5265706F72743E0A202020203C53657276696365457863657074696F6E3E526571756573743D4465736372696265466561747572655479706520726573756C74656420696E20616E20657863657074696F6E3A2045787065637465642076616C696420747970654E616D6520617267756D656E742C20617320656E756D657261746564206279204765744361706162696C69746965732E2028496E73746561642C20666F756E6420747970654E616D653D276E733539383336383533272E293C2F53657276696365457863657074696F6E3E3C2F53657276696365457863657074696F6E5265706F72743E');
+INSERT INTO "HttpTestResults" VALUES('DescribeFeatureType. Blank typeName', 1008, 'text/xml; subtype=gml/2.1.2; charset=utf-8', X'0A20203C78733A736368656D613E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A20203C2F78733A736368656D613E');
+INSERT INTO "HttpTestResults" VALUES('DescribeFeatureType. Missing typeName', 1009, 'text/xml; subtype=gml/2.1.2; charset=utf-8', X'0A20203C78733A736368656D613E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A202020203C78733A696D706F72743E3C2F78733A696D706F72743E0A20203C2F78733A736368656D613E');
+INSERT INTO "HttpTestResults" VALUES('DescribeFeatureType. Invalid service string', 1010, 'text/plain', X'4D67496E76616C69644F7065726174696F6E457863657074696F6E0D0A');
+INSERT INTO "HttpTestResults" VALUES('DescribeFeatureType. Invalid service string. Commented for now', 1011, '', '');
+INSERT INTO "HttpTestResults" VALUES('', 2008, 'text/xml; charset=utf-8', '
+  <ServiceExceptionReport>
+    <ServiceException>Request=GetFeature resulted in an exception: A WFS GetFeature request requires at least one feature type to be specified.</ServiceException></ServiceExceptionReport>');
+INSERT INTO "HttpTestResults" VALUES('', 2009, 'text/xml; charset=utf-8', '
+  <ServiceExceptionReport>
+    <ServiceException>Request=GetFeature resulted in an exception: A WFS GetFeature request requires at least one feature type to be specified.</ServiceException></ServiceExceptionReport>');
+INSERT INTO "HttpTestResults" VALUES('GetFeature. Invalid service parameter.', 2010, '', '');
+INSERT INTO "HttpTestResults" VALUES('', 2011, 'text/plain', 'MgInvalidOperationException
+');
+INSERT INTO "HttpTestResults" VALUES('', 2019, 'text/plain', 'MgInvalidOperationException
+');
+INSERT INTO "HttpTestResults" VALUES('', 2012, 'text/xml; subtype=gml/2.1.2; charset=utf-8', '
+  <wfs:FeatureCollection>
+    <gml:featureMember>
+      <ns146044037:CityLimits>
+        <ns146044037:Autogenerated_SDF_ID>1</ns146044037:Autogenerated_SDF_ID>
+        <ns146044037:ID>P4M003tz150</ns146044037:ID>
+        <ns146044037:SHPGEOM>
+          <gml:Polygon>
+            <gml:outerBoundaryIs>
+              <gml:LinearRing>
+                <gml:coordinates>-87.748656,43.694598 -87.749507,43.692691 -87.754622,43.692746 -87.754670,43.694721 -87.748656,43.694598</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ns146044037:SHPGEOM>
+      </ns146044037:CityLimits></gml:featureMember>
+    <gml:featureMember>
+      <ns146044037:CityLimits>
+        <ns146044037:Autogenerated_SDF_ID>2</ns146044037:Autogenerated_SDF_ID>
+        <ns146044037:ID>P4M003tz151</ns146044037:ID>
+        <ns146044037:SHPGEOM>
+          <gml:Polygon>
+            <gml:outerBoundaryIs>
+              <gml:LinearRing>
+                <gml:coordinates>-87.717062,43.697401 -87.717052,43.694535 -87.719528,43.694549 -87.719526,43.695880 -87.719412,43.695880 -87.719420,43.697429 -87.717062,43.697401</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ns146044037:SHPGEOM>
+      </ns146044037:CityLimits></gml:featureMember>
+    <gml:featureMember>
+      <ns146044037:CityLimits>
+        <ns146044037:Autogenerated_SDF_ID>3</ns146044037:Autogenerated_SDF_ID>
+        <ns146044037:ID>P4M003tz152</ns146044037:ID>
+        <ns146044037:SHPGEOM>
+          <gml:Polygon>
+            <gml:outerBoundaryIs>
+              <gml:LinearRing>
+                <gml:coordinates>-87.703905,43.712098 -87.708067,43.712173 -87.710158,43.713901 -87.710070,43.716646 -87.713460,43.716640 -87.714399,43.717420 -87.714667,43.717242 -87.715041,43.717234 -87.715063,43.716636 -87.714026,43.716639 -87.714365,43.714640 -87.713594,43.714572 -87.713656,43.714146 -87.713674,43.714020 -87.713579,43.713890 -87.713897,43.711926 -87.712732,43.711933 -87.712892,43.707741 -87.712157,43.707477 -87.712101,43.707344 -87.712042,43.707253 -87.711824,43.707226 -87.711667,43.707118 -87.711555,43.707023 -87.711571,43.706880 -87.711634,43.706769 -87.711621,43.706578 -87.711444,43.706476 -87.711349,43.706440 -87.711305,43.706340 -87.711426,43.706164 -87.711387,43.706003 -87.711141,43.705936 -87.710986,43.705812 -87.710748,43.705593 -87.710556,43.705477 -87.710672,43.701860 -87.713061,43.701875 -87.713018,43.703350 -87.714289,43.703359 -87.714281,43.703633 -87.713010,43.703624 -87.712994,43.704173 -87.712651,43.704170 -87.712580,43.706130 -87.714557,43.706159 -87.714576,43.705473 -87.713677,43.705460 -87.713713,43.704472 -87.715479,43.704490 -87.715493,43.703941 -87.714386,43.703934 -87.714393,43.703660 -87.715501,43.703667 -87.715583,43.701920 -87.718096,43.701940 -87.718130,43.699989 -87.715605,43.699956 -87.715640,43.698310 -87.715792,43.698206 -87.716803,43.698224 -87.716793,43.697690 -87.718267,43.697723 -87.718265,43.698242 -87.718770,43.698251 -87.718763,43.698976 -87.720632,43.699008 -87.720630,43.699466 -87.721269,43.699478 -87.721273,43.699210 -87.722013,43.699223 -87.722006,43.699689 -87.722478,43.699698 -87.722471,43.700195 -87.723601,43.700209 -87.723592,43.700758 -87.724391,43.700772 -87.724391,43.700720 -87.725637,43.700736 -87.725636,43.701193 -87.727770,43.701227 -87.727752,43.702018 -87.727745,43.702089 -87.726332,43.702068 -87.726321,43.702452 -87.725638,43.702442 -87.725626,43.703217 -87.724885,43.703200 -87.724871,43.703749 -87.724369,43.703741 -87.724357,43.704181 -87.723629,43.704170 -87.723640,43.703730 -87.724142,43.703738 -87.724170,43.702641 -87.722935,43.702617 -87.722920,43.703322 -87.720663,43.703289 -87.720609,43.705516 -87.721573,43.705526 -87.721575,43.705892 -87.720600,43.705878 -87.720616,43.706308 -87.720263,43.706290 -87.720256,43.706468 -87.719179,43.706439 -87.719185,43.706269 -87.718466,43.706260 -87.718457,43.706557 -87.719176,43.706569 -87.719158,43.707161 -87.720230,43.707181 -87.720243,43.706825 -87.719751,43.706811 -87.719756,43.706633 -87.720607,43.706656 -87.720613,43.706427 -87.721614,43.706438 -87.721596,43.707117 -87.721461,43.707211 -87.721093,43.707207 -87.721088,43.707372 -87.721211,43.707373 -87.721191,43.707782 -87.720577,43.707775 -87.720565,43.708184 -87.721662,43.708196 -87.721645,43.708558 -87.721418,43.708556 -87.721387,43.709177 -87.722842,43.709192 -87.722883,43.708377 -87.723497,43.708386 -87.723513,43.708057 -87.722785,43.708049 -87.722801,43.707720 -87.722301,43.707714 -87.722331,43.706841 -87.721831,43.706835 -87.721841,43.706462 -87.722341,43.706468 -87.722349,43.706188 -87.721732,43.706181 -87.721742,43.705528 -87.722442,43.705536 -87.722420,43.706024 -87.723080,43.706037 -87.723078,43.706141 -87.723579,43.706147 -87.723555,43.707041 -87.724055,43.707047 -87.724050,43.707240 -87.725891,43.707246 -87.725907,43.706670 -87.726663,43.706681 -87.726647,43.707257 -87.727249,43.707268 -87.727200,43.709235 -87.730160,43.709282 -87.730263,43.704042 -87.729617,43.704031 -87.729652,43.702473 -87.728601,43.702460 -87.728512,43.702224 -87.728515,43.701160 -87.729538,43.701009 -87.729304,43.700612 -87.729022,43.700320 -87.728659,43.700092 -87.728292,43.699948 -87.728054,43.699893 -87.728271,43.699248 -87.727981,43.699211 -87.727993,43.698313 -87.730470,43.698345 -87.730469,43.701923 -87.732065,43.701957 -87.732047,43.702558 -87.732803,43.702566 -87.732815,43.701944 -87.735495,43.701983 -87.735441,43.704318 -87.735289,43.704316 -87.735277,43.705183 -87.735446,43.705192 -87.735439,43.705712 -87.731816,43.705663 -87.731735,43.709297 -87.742080,43.709502 -87.741731,43.710313 -87.739939,43.710249 -87.739928,43.710778 -87.740250,43.710675 -87.740479,43.710762 -87.741289,43.710749 -87.740798,43.711865 -87.741036,43.711913 -87.740302,43.713527 -87.739296,43.713507 -87.739280,43.714047 -87.739830,43.714056 -87.739325,43.715211 -87.739153,43.715171 -87.738114,43.717490 -87.737345,43.717504 -87.737863,43.715959 -87.730126,43.715885 -87.730084,43.717652 -87.732598,43.717623 -87.732582,43.719366 -87.737492,43.719357 -87.737733,43.718806 -87.736875,43.718826 -87.736870,43.718949 -87.736804,43.718948 -87.736804,43.719000 -87.736304,43.719001 -87.736304,43.719070 -87.734844,43.719030 -87.734903,43.717628 -87.738367,43.717624 -87.739848,43.714336 -87.741211,43.714340 -87.741204,43.713938 -87.740195,43.713939 -87.741175,43.711719 -87.742606,43.711948 -87.741986,43.713938 -87.748812,43.713938 -87.748792,43.710588 -87.742941,43.710360 -87.743300,43.709552 -87.743671,43.709566 -87.743692,43.708747 -87.742305,43.708695 -87.742050,43.709276 -87.740328,43.709210 -87.740336,43.705228 -87.735427,43.705135 -87.735444,43.704371 -87.740205,43.704415 -87.740203,43.702826 -87.739706,43.702817 -87.739707,43.702590 -87.739878,43.702593 -87.739887,43.702140 -87.739333,43.702126 -87.739329,43.702585 -87.738438,43.702573 -87.738442,43.702113 -87.738134,43.702108 -87.738135,43.702569 -87.735520,43.702533 -87.735532,43.701980 -87.737401,43.702007 -87.737402,43.701274 -87.740234,43.701307 -87.740347,43.701309 -87.740350,43.700788 -87.740995,43.700788 -87.740996,43.700377 -87.741126,43.700377 -87.741128,43.699804 -87.740336,43.699802 -87.740341,43.698804 -87.741130,43.698805 -87.741131,43.698233 -87.740468,43.698232 -87.740472,43.696290 -87.741136,43.696307 -87.741142,43.695734 -87.740348,43.695715 -87.740408,43.694619 -87.742602,43.694633 -87.742603,43.693549 -87.740409,43.693535 -87.740410,43.691398 -87.749678,43.691720 -87.748845,43.693587 -87.745401,43.693567 -87.745394,43.695851 -87.745146,43.695844 -87.745099,43.697828 -87.747041,43.697922 -87.746372,43.699450 -87.746203,43.699446 -87.746101,43.699678 -87.745949,43.699675 -87.745661,43.699524 -87.745432,43.699424 -87.745380,43.699443 -87.745375,43.700562 -87.744667,43.700398 -87.744387,43.701037 -87.745439,43.701279 -87.745456,43.701241 -87.746674,43.701309 -87.746912,43.700578 -87.745774,43.700515 -87.745719,43.700641 -87.745413,43.700571 -87.745418,43.699460 -87.745626,43.699534 -87.745936,43.699703 -87.746129,43.699706 -87.746230,43.699474 -87.749718,43.699561 -87.759714,43.699774 -87.759822,43.702878 -87.760184,43.710196 -87.759887,43.710180 -87.760091,43.714180 -87.759742,43.714720 -87.760078,43.714732 -87.759978,43.715771 -87.759451,43.717589 -87.759553,43.720526 -87.758425,43.728443 -87.758054,43.731042 -87.754905,43.731064 -87.754906,43.730905 -87.752902,43.730921 -87.752899,43.731407 -87.751396,43.731419 -87.750992,43.731268 -87.751045,43.731194 -87.750624,43.731088 -87.749868,43.731094 -87.749875,43.730259 -87.751802,43.730243 -87.753130,43.728903 -87.753310,43.729004 -87.754914,43.728991 -87.754919,43.728441 -87.753876,43.728449 -87.753688,43.728358 -87.754133,43.727817 -87.754464,43.727306 -87.754713,43.726806 -87.755411,43.724765 -87.739840,43.724882 -87.739808,43.728564 -87.743883,43.728540 -87.743845,43.731974 -87.749850,43.731938 -87.749847,43.732120 -87.750290,43.732117 -87.749838,43.732850 -87.749820,43.735655 -87.747898,43.736649 -87.747787,43.737136 -87.747414,43.737533 -87.746138,43.738197 -87.745248,43.738020 -87.744539,43.738386 -87.744553,43.736383 -87.741825,43.737174 -87.741811,43.738738 -87.742884,43.739196 -87.742916,43.739410 -87.741806,43.739450 -87.741811,43.739798 -87.740787,43.740042 -87.740785,43.740247 -87.740596,43.740248 -87.740584,43.740723 -87.739354,43.741001 -87.739360,43.740442 -87.739780,43.740348 -87.739801,43.738055 -87.737983,43.738698 -87.737987,43.738989 -87.739236,43.738983 -87.739212,43.741011 -87.738007,43.741294 -87.737975,43.741200 -87.737882,43.741236 -87.737878,43.740900 -87.737575,43.740902 -87.737576,43.740962 -87.737330,43.740964 -87.737364,43.742834 -87.738492,43.742790 -87.738756,43.742764 -87.738929,43.742747 -87.739161,43.742691 -87.739390,43.742554 -87.739487,43.742467 -87.739553,43.742397 -87.739553,43.742158 -87.739586,43.741839 -87.739739,43.741726 -87.740226,43.741432 -87.740691,43.741178 -87.741054,43.740998 -87.741791,43.740731 -87.741784,43.740306 -87.742274,43.740203 -87.743006,43.739919 -87.743781,43.739877 -87.744302,43.739871 -87.744780,43.739912 -87.745134,43.739921 -87.745534,43.739928 -87.745568,43.739650 -87.748922,43.739767 -87.748903,43.739726 -87.749861,43.739617 -87.750350,43.739654 -87.750635,43.739698 -87.751003,43.739787 -87.750995,43.737835 -87.750206,43.737837 -87.750203,43.736978 -87.750512,43.736170 -87.751386,43.736409 -87.751867,43.736291 -87.752421,43.735803 -87.752420,43.735606 -87.757371,43.735596 -87.757337,43.735955 -87.757315,43.736587 -87.757317,43.736976 -87.757342,43.737378 -87.757380,43.737993 -87.757523,43.738655 -87.757662,43.739342 -87.757906,43.739961 -87.758007,43.740264 -87.758185,43.740623 -87.758457,43.741283 -87.757834,43.741276 -87.757660,43.741139 -87.757354,43.741159 -87.756858,43.741228 -87.756390,43.741328 -87.755972,43.741345 -87.755269,43.741429 -87.754909,43.741369 -87.754302,43.741346 -87.753723,43.741327 -87.753093,43.741407 -87.752712,43.741366 -87.752391,43.741276 -87.752023,43.741185 -87.751852,43.741097 -87.751789,43.741231 -87.751519,43.740999 -87.751244,43.740598 -87.751017,43.740313 -87.750715,43.740135 -87.750406,43.740053 -87.750082,43.740013 -87.749725,43.740014 -87.749438,43.740034 -87.748857,43.740140 -87.748463,43.740265 -87.748015,43.740418 -87.747539,43.740574 -87.747052,43.740682 -87.746342,43.740792 -87.745954,43.740837 -87.745083,43.742414 -87.744874,43.742967 -87.744783,43.742966 -87.744745,43.746014 -87.745206,43.746659 -87.745476,43.746963 -87.745840,43.747201 -87.746391,43.747780 -87.744641,43.748657 -87.744641,43.749005 -87.744058,43.749007 -87.744049,43.749987 -87.744635,43.749985 -87.744633,43.751767 -87.744045,43.751767 -87.744043,43.752665 -87.744356,43.752621 -87.744356,43.752232 -87.744676,43.752232 -87.744679,43.748672 -87.746411,43.747804 -87.746914,43.748330 -87.747485,43.748545 -87.747480,43.749046 -87.748554,43.750177 -87.748852,43.750219 -87.749023,43.750421 -87.753571,43.750136 -87.753562,43.751987 -87.754087,43.751925 -87.755428,43.751673 -87.756252,43.751393 -87.756252,43.750859 -87.756034,43.750452 -87.755906,43.750113 -87.756860,43.750129 -87.756847,43.751090 -87.757448,43.750730 -87.757784,43.750504 -87.757794,43.749800 -87.758398,43.749787 -87.758356,43.750327 -87.758246,43.750381 -87.758244,43.751432 -87.757771,43.751472 -87.757676,43.751476 -87.757675,43.751540 -87.756868,43.751546 -87.756872,43.751311 -87.756221,43.751631 -87.756207,43.752680 -87.755414,43.752685 -87.755413,43.752780 -87.754582,43.752790 -87.754542,43.755701 -87.755330,43.755700 -87.755982,43.755559 -87.756005,43.755486 -87.756232,43.755483 -87.757534,43.755362 -87.757534,43.755053 -87.758661,43.755054 -87.758660,43.754709 -87.759649,43.754705 -87.760309,43.754121 -87.760782,43.753355 -87.760714,43.753052 -87.761224,43.752287 -87.761788,43.751190 -87.761345,43.751191 -87.761344,43.749394 -87.761121,43.749401 -87.762133,43.749021 -87.764016,43.754022 -87.764695,43.755670 -87.764856,43.756174 -87.764987,43.758083 -87.761336,43.758051 -87.761338,43.757328 -87.759537,43.757337 -87.759535,43.755862 -87.758526,43.755862 -87.754718,43.756610 -87.754497,43.756648 -87.754537,43.759154 -87.754288,43.759071 -87.754304,43.761045 -87.753915,43.761056 -87.753897,43.763439 -87.754469,43.763428 -87.754473,43.761715 -87.755216,43.761709 -87.755217,43.761411 -87.754703,43.761421 -87.754704,43.761037 -87.757160,43.760989 -87.757169,43.761475 -87.757672,43.761466 -87.757678,43.761795 -87.757176,43.761804 -87.757191,43.762625 -87.756634,43.762635 -87.756458,43.762638 -87.756464,43.762967 -87.755947,43.762976 -87.755951,43.763304 -87.756469,43.763295 -87.756478,43.763786 -87.757214,43.763777 -87.757220,43.764106 -87.757723,43.764100 -87.757733,43.764647 -87.757000,43.764657 -87.756998,43.764601 -87.754465,43.764665 -87.754472,43.765176 -87.754585,43.765173 -87.754617,43.767354 -87.755147,43.767343 -87.755147,43.767614 -87.756136,43.767595 -87.756136,43.767565 -87.757205,43.767545 -87.757203,43.767832 -87.758348,43.767816 -87.758336,43.768835 -87.758357,43.768835 -87.758357,43.769101 -87.756954,43.769100 -87.756954,43.769071 -87.756050,43.769085 -87.756049,43.769278 -87.756010,43.769278 -87.756007,43.770129 -87.757176,43.770109 -87.757178,43.769980 -87.760208,43.769995 -87.760211,43.770519 -87.760703,43.770523 -87.760702,43.771809 -87.759721,43.771801 -87.759725,43.772279 -87.758264,43.772299 -87.758263,43.771876 -87.757879,43.771882 -87.757878,43.771280 -87.757179,43.771290 -87.757178,43.771893 -87.754553,43.771934 -87.754563,43.772356 -87.758062,43.772302 -87.758067,43.773197 -87.759632,43.773177 -87.759824,43.782624 -87.757193,43.782676 -87.757209,43.783085 -87.757463,43.783081 -87.757471,43.783317 -87.757736,43.783311 -87.757805,43.785106 -87.755123,43.785139 -87.755024,43.782700 -87.754153,43.782715 -87.753932,43.775494 -87.754655,43.775482 -87.754587,43.774013 -87.752151,43.774048 -87.752160,43.774445 -87.752047,43.774446 -87.752054,43.774579 -87.751293,43.774592 -87.751286,43.773824 -87.751759,43.773724 -87.751420,43.772877 -87.751408,43.772498 -87.751210,43.772502 -87.751208,43.771986 -87.750382,43.771999 -87.750509,43.772311 -87.749325,43.772329 -87.749318,43.772015 -87.749487,43.772012 -87.749488,43.771848 -87.747153,43.771877 -87.747068,43.771878 -87.746844,43.771926 -87.745430,43.772197 -87.745421,43.771699 -87.744675,43.771706 -87.744672,43.771981 -87.744559,43.771982 -87.744530,43.773145 -87.745137,43.773140 -87.745138,43.772811 -87.745895,43.772806 -87.745895,43.772902 -87.746406,43.772898 -87.746408,43.772180 -87.747150,43.772041 -87.749079,43.772016 -87.749087,43.772360 -87.750520,43.772338 -87.750590,43.772511 -87.751100,43.772503 -87.751544,43.773600 -87.751071,43.773700 -87.751153,43.773929 -87.751171,43.773988 -87.751203,43.774129 -87.751220,43.774233 -87.751247,43.774621 -87.752054,43.774607 -87.752096,43.775520 -87.749563,43.775561 -87.749815,43.782769 -87.746423,43.782835 -87.746052,43.783166 -87.745591,43.783406 -87.745124,43.783591 -87.744713,43.783629 -87.744480,43.783640 -87.744155,43.783697 -87.743608,43.783683 -87.743115,43.783633 -87.742663,43.783615 -87.742254,43.783664 -87.741288,43.784009 -87.740796,43.784155 -87.740359,43.784219 -87.740178,43.784240 -87.739882,43.784102 -87.739876,43.783983 -87.739737,43.783869 -87.739473,43.783891 -87.739086,43.784034 -87.738915,43.784137 -87.738890,43.784265 -87.738976,43.784439 -87.738916,43.784576 -87.738588,43.784602 -87.738347,43.784484 -87.738018,43.784400 -87.737759,43.784334 -87.737085,43.784129 -87.736569,43.784146 -87.736389,43.784229 -87.736324,43.784408 -87.736232,43.784500 -87.736005,43.784560 -87.736321,43.784885 -87.736831,43.784739 -87.737396,43.784785 -87.737811,43.784756 -87.738192,43.784805 -87.738837,43.785000 -87.739864,43.784997 -87.739935,43.786667 -87.741595,43.786636 -87.741564,43.785449 -87.742407,43.785440 -87.742818,43.785486 -87.743491,43.785690 -87.743368,43.786297 -87.743658,43.786398 -87.743745,43.785981 -87.744060,43.786050 -87.744017,43.786531 -87.744410,43.786658 -87.744902,43.786656 -87.744871,43.785812 -87.745389,43.785565 -87.745508,43.785724 -87.745648,43.785783 -87.745849,43.785954 -87.746177,43.785958 -87.746239,43.786147 -87.747294,43.786122 -87.747306,43.786437 -87.746795,43.786449 -87.746820,43.787175 -87.746081,43.787192 -87.746060,43.786628 -87.745549,43.786640 -87.745588,43.787707 -87.746327,43.787690 -87.746344,43.788187 -87.746855,43.788177 -87.746923,43.790091 -87.748171,43.790062 -87.748174,43.790145 -87.750048,43.790101 -87.750263,43.797329 -87.740276,43.797520 -87.740183,43.793899 -87.745169,43.793805 -87.745119,43.791995 -87.740137,43.792088 -87.740119,43.791375 -87.742693,43.791327 -87.742673,43.790520 -87.741537,43.790247 -87.741462,43.788678 -87.740041,43.788717 -87.740088,43.790273 -87.735252,43.790277 -87.735259,43.791025 -87.735090,43.791022 -87.735102,43.792171 -87.733657,43.792184 -87.733652,43.791096 -87.732688,43.791110 -87.732685,43.790690 -87.732309,43.790665 -87.731984,43.790668 -87.731545,43.790821 -87.731212,43.790313 -87.733140,43.790288 -87.733107,43.789383 -87.732066,43.789392 -87.732053,43.789047 -87.732277,43.788962 -87.731958,43.788526 -87.730214,43.789176 -87.730011,43.788905 -87.729261,43.790184 -87.729206,43.790327 -87.723667,43.790387 -87.723664,43.790186 -87.723171,43.790099 -87.721135,43.790055 -87.720685,43.790027 -87.720415,43.789989 -87.719766,43.789771 -87.719699,43.787608 -87.720407,43.787234 -87.720817,43.787087 -87.721170,43.786968 -87.721798,43.786970 -87.721809,43.786679 -87.722398,43.786149 -87.722611,43.786189 -87.722597,43.787259 -87.722920,43.787265 -87.723353,43.787201 -87.723604,43.787008 -87.723923,43.786921 -87.724253,43.786938 -87.725192,43.787174 -87.727228,43.787266 -87.727896,43.787071 -87.728355,43.787734 -87.727665,43.787996 -87.728123,43.788627 -87.729427,43.788133 -87.728391,43.786713 -87.728009,43.786023 -87.727669,43.785201 -87.728797,43.785154 -87.729036,43.786056 -87.729689,43.785765 -87.730484,43.785577 -87.730741,43.785401 -87.731133,43.785270 -87.731619,43.785190 -87.731977,43.785212 -87.734290,43.784642 -87.734193,43.784434 -87.733972,43.784384 -87.733392,43.783083 -87.733016,43.783083 -87.732973,43.782902 -87.730293,43.777152 -87.728157,43.777176 -87.728133,43.775659 -87.724857,43.775671 -87.724990,43.777359 -87.724504,43.777364 -87.724505,43.777397 -87.724251,43.777397 -87.724251,43.777526 -87.724872,43.777526 -87.724902,43.778330 -87.724252,43.778330 -87.724254,43.779044 -87.730923,43.779058 -87.732697,43.782901 -87.732694,43.783082 -87.731730,43.783082 -87.731729,43.783439 -87.731484,43.783439 -87.731510,43.784209 -87.731485,43.784372 -87.730888,43.784443 -87.730961,43.784739 -87.730924,43.784744 -87.730851,43.784448 -87.730310,43.784534 -87.730313,43.783590 -87.729874,43.783591 -87.729797,43.783408 -87.730291,43.783409 -87.730292,43.783080 -87.729571,43.783079 -87.729570,43.783408 -87.729482,43.783593 -87.728995,43.783589 -87.728971,43.783535 -87.728998,43.783528 -87.729006,43.783078 -87.724623,43.783037 -87.724633,43.783364 -87.724117,43.783360 -87.724109,43.783033 -87.722613,43.783022 -87.722630,43.784258 -87.721763,43.784250 -87.721777,43.785262 -87.722646,43.785256 -87.722653,43.785651 -87.721947,43.785714 -87.721143,43.785721 -87.720201,43.785779 -87.720206,43.786143 -87.719672,43.786146 -87.719700,43.787351 -87.718991,43.787663 -87.719015,43.786717 -87.719323,43.785563 -87.718237,43.785576 -87.718247,43.786529 -87.716820,43.786510 -87.716802,43.785419 -87.716030,43.785426 -87.716008,43.784090 -87.716075,43.784089 -87.716046,43.782984 -87.715285,43.782968 -87.715309,43.784968 -87.714896,43.784071 -87.714264,43.784223 -87.714085,43.783833 -87.714037,43.783845 -87.713794,43.783313 -87.712643,43.783437 -87.712663,43.782754 -87.713312,43.782764 -87.713239,43.782415 -87.712637,43.782411 -87.712605,43.783441 -87.712002,43.783512 -87.711963,43.783463 -87.710948,43.783706 -87.710502,43.782991 -87.711470,43.782726 -87.711283,43.782407 -87.711723,43.782280 -87.711400,43.781694 -87.709925,43.782113 -87.708612,43.779998 -87.707566,43.777781 -87.707018,43.776393 -87.706795,43.775966 -87.706695,43.775580 -87.706413,43.774893 -87.706073,43.774319 -87.705844,43.773971 -87.705630,43.773589 -87.705468,43.773288 -87.705370,43.773109 -87.705310,43.772997 -87.705223,43.772803 -87.705102,43.772596 -87.704983,43.772434 -87.704900,43.772346 -87.704820,43.772286 -87.704755,43.772204 -87.704748,43.772139 -87.704666,43.772018 -87.704571,43.771920 -87.704401,43.771697 -87.704224,43.771490 -87.704051,43.771292 -87.703869,43.771042 -87.703724,43.770826 -87.703375,43.770323 -87.703091,43.769955 -87.702830,43.769614 -87.702666,43.769413 -87.702434,43.769109 -87.702105,43.768751 -87.701837,43.768486 -87.701681,43.768331 -87.701562,43.768209 -87.701477,43.768143 -87.701403,43.768134 -87.701355,43.768141 -87.701207,43.768027 -87.700900,43.767767 -87.700645,43.767543 -87.700537,43.767441 -87.700389,43.767363 -87.700307,43.767302 -87.700214,43.767205 -87.700117,43.767142 -87.700078,43.767068 -87.699924,43.766981 -87.699779,43.766898 -87.699636,43.766762 -87.699477,43.766609 -87.699358,43.766494 -87.699237,43.766392 -87.699192,43.766336 -87.699210,43.766240 -87.699227,43.766160 -87.699201,43.766046 -87.699161,43.765938 -87.699100,43.765829 -87.699089,43.765717 -87.699078,43.765672 -87.699003,43.765621 -87.698873,43.765535 -87.698719,43.765434 -87.698388,43.765252 -87.698186,43.765160 -87.697957,43.765065 -87.697715,43.764996 -87.697487,43.764971 -87.697227,43.764964 -87.697087,43.764972 -87.697006,43.765022 -87.697002,43.765044 -87.696952,43.765062 -87.696920,43.765089 -87.696824,43.765108 -87.696559,43.765234 -87.696455,43.765246 -87.696439,43.765284 -87.696423,43.765446 -87.696318,43.765472 -87.696212,43.765533 -87.696156,43.765551 -87.696112,43.765571 -87.696035,43.765555 -87.695961,43.765554 -87.695886,43.765557 -87.695835,43.765538 -87.695792,43.765499 -87.695725,43.765470 -87.695717,43.765430 -87.695721,43.765399 -87.695795,43.765341 -87.695836,43.765337 -87.695870,43.765327 -87.695872,43.765304 -87.695892,43.765243 -87.695905,43.765221 -87.695947,43.765216 -87.695982,43.765185 -87.696003,43.765085 -87.695981,43.765060 -87.695979,43.764970 -87.695944,43.764921 -87.695903,43.764848 -87.695845,43.764789 -87.695749,43.764662 -87.695694,43.764601 -87.695645,43.764550 -87.695616,43.764493 -87.695611,43.764431 -87.695595,43.764360 -87.695534,43.764305 -87.695522,43.764226 -87.695542,43.764168 -87.695627,43.763984 -87.695748,43.763707 -87.695825,43.763492 -87.695872,43.763310 -87.695906,43.763148 -87.695939,43.762979 -87.695938,43.762896 -87.695917,43.762854 -87.695914,43.762817 -87.695936,43.762781 -87.696016,43.762758 -87.696083,43.762749 -87.696138,43.762722 -87.696213,43.762704 -87.696273,43.762685 -87.696414,43.762602 -87.696555,43.762518 -87.696664,43.762467 -87.696840,43.762388 -87.697179,43.762260 -87.697501,43.762142 -87.697784,43.762045 -87.697913,43.762001 -87.698083,43.761968 -87.698182,43.761965 -87.698340,43.761965 -87.698416,43.761958 -87.698526,43.761935 -87.698651,43.761888 -87.698785,43.761839 -87.698926,43.761802 -87.699239,43.761744 -87.699539,43.761682 -87.699704,43.761624 -87.699833,43.761571 -87.700004,43.761471 -87.700091,43.761412 -87.700168,43.761345 -87.700241,43.761284 -87.700283,43.761248 -87.700388,43.761193 -87.700566,43.761110 -87.700759,43.760975 -87.700914,43.760839 -87.701086,43.760697 -87.701247,43.760565 -87.701340,43.760447 -87.701353,43.760406 -87.701373,43.760351 -87.701401,43.760326 -87.701521,43.760250 -87.701580,43.760194 -87.701718,43.760044 -87.701892,43.759829 -87.701995,43.759648 -87.702059,43.759535 -87.702171,43.759372 -87.702243,43.759353 -87.702304,43.759321 -87.702415,43.759216 -87.702544,43.759083 -87.702647,43.758939 -87.702705,43.758805 -87.702756,43.758684 -87.702816,43.758589 -87.702886,43.758411 -87.702945,43.758209 -87.703029,43.757966 -87.703090,43.757756 -87.703119,43.757586 -87.703155,43.757375 -87.703161,43.757202 -87.703151,43.756975 -87.703157,43.756655 -87.703161,43.756443 -87.703145,43.756305 -87.703116,43.756143 -87.703022,43.755809 -87.702903,43.755417 -87.702840,43.755222 -87.702777,43.755069 -87.702779,43.754976 -87.702649,43.754945 -87.702565,43.753643 -87.702691,43.752202 -87.702956,43.750947 -87.703130,43.750606 -87.703124,43.750543 -87.703146,43.750474 -87.703139,43.750381 -87.703131,43.750316 -87.703123,43.750264 -87.703145,43.750172 -87.703207,43.750041 -87.703194,43.749980 -87.703178,43.749916 -87.703171,43.749857 -87.703171,43.749787 -87.703178,43.749674 -87.703140,43.749579 -87.703097,43.749516 -87.702247,43.748533 -87.702397,43.748525 -87.702467,43.748518 -87.702511,43.748480 -87.702570,43.748405 -87.702731,43.748223 -87.702940,43.748025 -87.703263,43.747688 -87.703438,43.747510 -87.703614,43.747320 -87.703776,43.747113 -87.703934,43.746911 -87.704069,43.746713 -87.704155,43.746601 -87.704185,43.746562 -87.704297,43.746509 -87.704379,43.746451 -87.704495,43.746306 -87.704635,43.746070 -87.704744,43.745888 -87.704831,43.745743 -87.704933,43.745492 -87.704993,43.745354 -87.705057,43.745204 -87.705114,43.745152 -87.705336,43.745073 -87.705480,43.745014 -87.705578,43.744985 -87.705785,43.744972 -87.705918,43.744959 -87.706007,43.744963 -87.706141,43.744968 -87.706203,43.744930 -87.706290,43.744784 -87.706405,43.744591 -87.706527,43.744448 -87.706752,43.744208 -87.707020,43.743857 -87.707387,43.743322 -87.707582,43.743064 -87.707743,43.742800 -87.707830,43.742614 -87.708590,43.741297 -87.708883,43.740714 -87.709141,43.740168 -87.709273,43.739678 -87.709354,43.739316 -87.709486,43.738060 -87.709656,43.736443 -87.709808,43.735001 -87.709724,43.732911 -87.709677,43.731632 -87.709699,43.731171 -87.709589,43.730930 -87.709679,43.730728 -87.709645,43.730382 -87.709552,43.729978 -87.709432,43.729692 -87.709427,43.729367 -87.709396,43.729040 -87.709364,43.728725 -87.709302,43.728504 -87.709263,43.728138 -87.709217,43.727661 -87.709087,43.727220 -87.709010,43.726940 -87.709027,43.726499 -87.708983,43.726111 -87.708881,43.725592 -87.708797,43.725301 -87.708786,43.724995 -87.708683,43.724693 -87.708558,43.724332 -87.708460,43.724093 -87.708411,43.723734 -87.708375,43.723480 -87.708296,43.723243 -87.708131,43.722989 -87.708068,43.722843 -87.707960,43.722681 -87.708000,43.722331 -87.707871,43.722041 -87.707658,43.721697 -87.707426,43.721246 -87.707131,43.720539 -87.706934,43.720010 -87.706752,43.719342 -87.706555,43.718959 -87.706379,43.718504 -87.706278,43.718277 -87.706177,43.717904 -87.705951,43.717311 -87.705718,43.716858 -87.705511,43.716532 -87.705343,43.716358 -87.705295,43.715984 -87.705121,43.715786 -87.705051,43.715559 -87.704904,43.715337 -87.704877,43.715146 -87.704787,43.714986 -87.704783,43.714831 -87.704661,43.714661 -87.704445,43.714251 -87.704143,43.713518 -87.704087,43.713159 -87.704005,43.712626 -87.703905,43.712098</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ns146044037:SHPGEOM>
+      </ns146044037:CityLimits></gml:featureMember>
+  </wfs:FeatureCollection>');
+INSERT INTO "HttpTestResults" VALUES('', 2013, 'text/xml; subtype=gml/2.1.2; charset=utf-8', '
+  <ServiceExceptionReport>
+    <ServiceException>Request=GetFeature resulted in an exception: Invalid argument(s):
+Could not resolve the Feature Source from the given WFS Type Name: Test/Wfs/Sheboygan_CityLimits:Blah</ServiceException></ServiceExceptionReport>');
+INSERT INTO "HttpTestResults" VALUES('', 2014, 'text/xml; subtype=gml/2.1.2; charset=utf-8', '
+  <ServiceExceptionReport>
+    <ServiceException>Request=GetFeature resulted in an exception: Invalid argument(s):
+Could not resolve the Feature Source from the given WFS Type Name: Test/Wfs/Sheboygan_CityLimits:</ServiceException></ServiceExceptionReport>');
+INSERT INTO "HttpTestResults" VALUES('', 2015, 'text/xml; subtype=gml/2.1.2; charset=utf-8', '
+  <ServiceExceptionReport>
+    <ServiceException>Request=GetFeature resulted in an exception: Encountered malformed typeName in request</ServiceException></ServiceExceptionReport>');
+INSERT INTO "HttpTestResults" VALUES('', 2016, 'text/xml; charset=utf-8', '
+  <ServiceExceptionReport>
+    <ServiceException>Request=GetFeature resulted in an exception: A WFS GetFeature request requires at least one feature type to be specified.</ServiceException></ServiceExceptionReport>');
+INSERT INTO "HttpTestResults" VALUES('', 2017, 'text/xml; charset=utf-8', '
+  <ServiceExceptionReport>
+    <ServiceException>Request=GetFeature resulted in an exception: A WFS GetFeature request requires at least one feature type to be specified.</ServiceException></ServiceExceptionReport>');
+INSERT INTO "HttpTestResults" VALUES('', 2018, 'text/plain; charset=utf-8', 'You must enter a valid login ID and password to access this site
+');
+INSERT INTO "HttpTestResults" VALUES('', 2005, 'text/xml; subtype=gml/2.1.2; charset=utf-8', '
+  <ServiceExceptionReport>
+    <ServiceException>Request=GetFeature resulted in an exception: Invalid argument(s):
+Could not resolve the Feature Source from the given WFS Type Name: Test/Wfs/Sheboygan_CityLimits:Blah</ServiceException></ServiceExceptionReport>');
+INSERT INTO "HttpTestResults" VALUES('', 2006, 'text/xml; subtype=gml/2.1.2; charset=utf-8', '
+  <ServiceExceptionReport>
+    <ServiceException>Request=GetFeature resulted in an exception: Invalid argument(s):
+Could not resolve the Feature Source from the given WFS Type Name: Test/Wfs/Sheboygan_CityLimits:</ServiceException></ServiceExceptionReport>');
+INSERT INTO "HttpTestResults" VALUES('', 2007, 'text/xml; subtype=gml/2.1.2; charset=utf-8', '
+  <ServiceExceptionReport>
+    <ServiceException>Request=GetFeature resulted in an exception: Encountered malformed typeName in request</ServiceException></ServiceExceptionReport>');
+COMMIT;

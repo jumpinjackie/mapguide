@@ -1,0 +1,395 @@
+API Changelog:
+
+ - Fix: Port legend image rendering fixes from MapGuide
+ - Fix: No-op UPDATEREPOSITORY operations in a package manifest. Packages containing such operations can now be loaded without errors
+
+Viewer Changelog:
+
+ - New Generic Redlining component
+ - Fix: Incorrect display of layers with multiple styles and/or composite styles in legend.
+
+2.5.1.7768 (16 Aug 2013)
+========================
+
+API Changelog:
+
+ - Fix: MgdResourceService::SetResource not properly flushing out in-memory cached content
+ - Fix: Guard against duplicate extended feature classes 
+
+Viewer Changelog:
+
+ - Fix: Infinite loop on background thread in legend control when loading a map with one or more groups not set to display in the legend
+ - Fix: Improper display ordering of layers and groups in legend control (ie. It does not reflect the layer/group structure you would see in Maestro/AJAX/Fusion viewer)
+
+2.5.0.7449 (Apr 06 2013)
+========================
+
+API Changelog:
+
+ - New experimental Java wrapper API using same SWIG configuration and enhancements introduced with MapGuide RFC 129
+ - New behavior flag (8 = RenderBaseLayers) for MgdRenderingService::RenderDynamicOverlay, allows base layers to be rendered to a map overlay image
+
+Viewer Changelog:
+
+ - Base Layers now included by default for any map overlay images rendered. Eliminates the need to use the UseRenderMapIfTiledLayersExist or ConvertTiledGroupsToNonTiled viewer properties and allows for pre-rendering hooks to be used with Tiled Maps.
+ - New overload of SelectByGeometry() that allows for a custom selection callback to be specified. This bypasses the normal selection notification mechanisms.
+
+2.4.0.7152 (Oct 24 2012)
+========================
+
+Viewer Changelog:
+
+ - Query component now supports a LayerList property allowing the list of queryable layers in the UI to be restricted to what is in this list.
+ - AppLayout component definitions can have their labels overridden by specifying a <Label> element in the ComponentDefinition.
+ - AppLayout engine support for string array property values
+ - Fix issue when selecting objects from a layer with no property display mappings.
+
+2.4.0.7096 (Oct 9 2012)
+=======================
+
+API Changelog:
+
+ - MgdPlatform::Terminate() did not call MgdFdoConnectionPool::Cleanup() leaving that to the static initializer to cleanup. This caused problems for the GDAL provider if connection pooling is enabled. The call has been put into MgdPlatform::Terminate() and connection pooling for the GDAL provider has been re-enabled in Platform.ini
+ - Add support for MapGuide's PreCacheMaps configuration property in Platform.ini
+ - MgMapViewer is now an IMapComponent, and any properties tagged with MgComponentPropertyAttribute can be dynamically set by the AppLayout engine.
+ - New MapToScreenUnits viewer API to complement the existing ScreenToMapUnits API.
+
+Viewer Changelog:
+ - Support for Localization
+ - New Viewer properties to support display of Tiled Maps:
+    - UseRenderMapIfTiledLayersExist (if true will use the RenderMap API, which includes tiled layers in the rendered image)
+    - RespectFiniteDisplayScales (if true will cause all zooms to snap to the nearest finite display scale)
+ - NOTE: Because RenderMap pre-fills the map's background color into the final image, setting the viewer to use the RenderMap API makes it impossible to use the viewer's Pre-Rendering hook as the rendered image will be drawn completely over it.
+ - MgQueryResultsDialog now allows for unbounded size in search results (passing a limit of -1 will instruct the dialog to spin through the entire feature reader)
+ - Fix legend node display for tiled layers (checkboxes should not show)
+ - Fix illegal attempts to fetch theme icons at scales where they're not applicable.
+ - New simple search component. Similar to the search command in the AJAX/Fusion viewer
+ - AppLayout schema change to accomodate dynamic assignment of viewer properties. See updated AppLayout examples.
+ - Improve performance of MgMapViewerProvider
+
+2.4.0.6971 (Aug 30 2012)
+========================
+
+API Changelog:
+
+ - Massive breaking changes. *Every* mg-desktop API class is now prefixed with "Mgd" instead of "Mg" to eliminate any chance of confusion. If it starts with "Mgd", you now can be certain the class is from mg-desktop. This opens the possibility to write code against mg-desktop and the official MapGuide API without any possibility of naming collisions.
+ - Resource contents are now cached in-memory to avoid disk seeks for subsequent calls for the same resource.
+
+Viewer Changelog:
+
+ - Tooltip and mouse selection now uses QueryMapFeatures API instead of a custom implementation. Several methods from MgMapViewerProvider have been removed as a result.
+ - Add viewer paint hooks before and after the map is rendered. The SampleExtension has been updated to demonstrate this
+ - Fix crashy behaviour when Visual Styles is disabled (eg. You're running the Windows Classic theme)
+ - Improved Legend performance
+ - Mouse events are no longer handled when the map is busy
+ - Tooltip queries now have a momentary delay (like the AJAX and Fusion viewers). Delay can be configured through the TooltipDelayInterval viewer property.
+
+Other:
+ - Samples are now included in the zip distribution instead of being a separate download
+ - NuGet package for this release is also available (.net 4.0 only)
+
+20 July 2012
+============
+
+API Changes:
+
+ - Replaced most of the existing MgFeatureService implementation in mg-desktop with the same implementation from the MapGuide Server codebase. This ensures consistent behavior in the feature service APIs from both mg-desktop and MapGuide Server.
+ - Aggregate queries on extended feature classes now supported (same restrictions/behaviour as MapGuide Server)
+ - Updated connection pooling due to the above changes.
+
+Viewer Changes: None
+
+NOTE: If your mg-desktop application crashes on exit, it is usually due to any of the following:
+
+ - You have enabled connection pooling for the GDAL provider (disabled by default)
+ - You have all logs enabled with full internal tracing (only access/errors are logged by default)
+
+These crashes are not fatal
+
+15 July 2012
+============
+
+API Changes:
+ - Add lots of internal traces in mg-desktop codebase
+ - Fix MgFeatureService::GetClasses() API
+ - Fix MgFeatureService::GetClasses() and MgFeatureService::GetClassDefinition() to work with extended feature classes
+ - MgResourceService::SetResource() now does basic content validation for XML well-formedness and root element name matching the type of the resource identifier
+ - New MgdResourceService::SetResourceCredentials() API for setting secured credentials for a Feature Source (that contains %MG_USERNAME% and %MG_PASSWORD% tokens)
+ - Any caches for affected resources in a CopyResource or MoveResource operation are now properly invalidated.
+
+Viewer Changes:
+ - AppLayout sample extension now includes all MapGuide Developer's Guide examples ported over to use in mg-desktop. Source code available in a separate download
+ - Fix NullReferenceException when mouse wheel scrolling when no map is loaded
+ - Selectability toggling now only applied to layers initially marked as selectable in the map definition
+ - Added CancelDigitization() to IMapViewer, to allow for programmatic cancellation of digitization, instead of needing to hit ESC
+ - Expandable custom-drawn nodes now properly have expanders rendered
+ - MgControlImpl class renamed to MgControlView
+ - Fix incorrect minimum required ordinates when using Ctrl-Z during linestring/polygon digitization
+ - AppLayout shell class is now a singleton, accessible by the Shell.Instance property
+ - New MgTransientMapState class (available with MgMapViewerProvider.CreateTransientState() method) which follows IDisposable pattern and allows for temporary display parameters (x, y, scale, width, height, dpi) to be applied to the runtime map for purposes of rendering at custom views.
+ - New RenderMap convenience method in MgMapViewerProvider
+ - MgPrintComponent modified to use the new transient state API for map rendering (instead of warping the existing map view image) and now allows the user to specify the DPI to use
+
+28 June 2012
+============
+
+API/Backend Changes:
+ - Logging infrastructure ported from MapGuide Server. API access, internal traces and errors can now be logged
+ - Connection pooling fixes
+ - Improved exception message quality
+ - Mapping Service APIs are now moved into its own MgdMappingService class like it's official MapGuide API counterpart.
+ - All service classes are now prefixed with "Mgd". For reference:
+    - MgResourceService -> MgdResourceService
+    - MgFeatureService -> MgdFeatureService
+    - MgRenderingService -> MgdMappingService
+    - MgDrawingService -> MgdDrawingService
+    - MgMappingService -> MgdMappingService
+    - MgProfilingService -> MgdProfilingService
+ - Migrated QueryFeatures() API into MgdRenderingService
+
+Viewer Changes:
+ - Viewer now supports mouse wheel zooming!
+ - Polygon/LineString digitization now supports undoing of previously digitized segments via Ctrl-Z during digitization of a Polygon/LineString
+ - Fixes for display of raster layers
+ - New viewer APIs for
+    - View History traversal and interrogation
+    - Setting/Getting Min/Max view scale
+    - Digitizing with custom prompts
+ - New Zoom Next and Zoom Previous components
+ - Theme component fixed to display proper rule counts for individual distributions and to only show polygon layers in the list of themable layers.
+ - MgLayerSelectionHandler now passes a MgSelectionSet instead of MgFeatureReader for the SelectionMade event
+ - Legend control can now display and toggle layer selectability
+ - Can now specify the Legend's ThemeCompressionLimit in the AppLayout document
+
+17 May 2012
+===========
+
+API changes:
+ - New GetSpatialContexts() convenience method for MgdLayer
+ - Added missing support for theming and distribution functions
+
+Viewer changes:
+  - Implement what is effectively the mg-desktop version of an AJAX Viewer WebLayout
+    - Introduce a new MgComponentPropertyAttribute which we use to tag all viewer component properties with
+    - Introduce a new IMapComponent interface which allows for dynamic get/set of MgComponentProperty tagged properties by their name
+    - Introduce a new AppLayout class. This is effectively our version of the WebLayout with structurally similar syntax
+    - We declare component definitions instead of commands
+    - Each component definition specifies
+        - A unique name/id
+        - The fully qualified .net class name of the component to instantiate
+        - If not from the OSGeo.MapGuide.Viewer assembly, the path to the assembly containing the implementation of the specified class
+        - A list of key-value pairs denoting component properties to set. The AppLayout engine will use these key-value pairs, in conjunction with the IMapComponent interface to set the appropriate properties during initialization
+            - We use a special prefixing scheme in the string values to hint to the AppLayout engine as to what type of object the string value should be deserialized into.
+        - Like the WebLayout, we reference these components through toolbar/menu item entries
+        - Unlike the WebLayout, we offer also the ability to:
+            - Specify a custom icon for the application
+            - Specify a component to invoke on startup
+            - Set viewer properties (same properties available via the Viewer Options component)
+    - Add a new Shell class. This is the main window that is driven by the AppLayout.
+    - Add a new MgAppLayout exe project, this executable accepts a single parameter: The path to the AppLayout document.
+    - Add a new SampleExtension project, this contains some sample external components. The included Sheboygan.AppLayout demonstrates how external components are consumed by the AppLayout engine.
+ - Fix inability to select and display tooltips for objects that have been re-projected
+ - Fix incorrect persistence of selection color in Viewer Options component
+ - New components:
+   - Theme component (same as Fusion widget)
+   - MgLayerSelectionHandler component allows for simple custom handling of map selections
+   - MgLoadMapComponent which loads a specific map definition into the viewer when invoked
+   - MgQuitComponent for exiting the application.
+ - MgLoadPackageComponent now accepts a MgLoadMapComponent that will be invoked when the package has been loaded
+ - Allow deferred map loading (initialize viewer with MgMapViewerProvider, load the map later on)
+ - Simplified constructor for MgDesktopMapViewerProvider
+ - MgComponent subclasses can indicate whether they can operate without a loaded map.
+ - IMapViewer.ViewerInitialized event changed to IMapViewer.MapLoaded
+
+8 May 2012
+==========
+
+Viewer Changelog:
+ - New component-based design for all map functionality. All map functions now inherit from MgComponent and can be dragged and dropped from the Visual Studio Toolbox. MgComponent is akin to a command in the AJAX viewer and a widget in Fusion.
+ - New MgTaskPane control which serves as a generic contextual UI container for components that wish to display their UI in the task pane.
+ - New MgInvokeComponentButton and MgInvokeComponentMenuItem items which are available when designing menus and toolstrips. These are specializations of ToolStripItem and ToolStripMenuItem which contain a TargetComponent property. Point this to an existing dropped component to inherit label/icon/tooltip from the targeted component. This is akin to a menu/toolbar item in the AJAX/Fusion viewer.
+ - MapViewerTest.exe updated to demonstrate the component-based approach
+ - New components
+   - Print
+   - Viewer Options
+   - Load Package
+   - Zoom to Selection
+
+1 May 2012
+==========
+
+API Changelog:
+
+- Merged in MgProfilingService from MapGuide Open Source 2.4
+
+Viewer Changelog:
+
+- Small optimization in layer toggling
+- Viewer can have ContextMenuStrips attached to them
+- New user controls for map interaction
+  - Buffer
+  - Measure (by tracing multiple line segments)
+  - Generic Query
+
+16 Jan 2012
+===========
+
+Viewer Changelog:
+ - Fix exceptions when loading a map with broken layers
+ - Add a new ZoomOutMode property to MgDefaultToolbar that controls the behaviour of the zoom out command
+ - Tweak the display of MgPropertyPane
+
+4 Jan 2012
+==========
+
+API Changelog:
+ - Folder deletes now properly purge any cached connections under it
+ - OSGeo.MapGuide.Desktop.dll is no longer monolithic. It is modular, and now references the existing .net platform assemblies (OSGeo.MapGuide.Foundation.dll, OSGeo.MapGuide.Geometry.dll and OSGeo.MapGuide.PlatformBase.dll). Thus these assemblies also need to be referenced in addition to OSGeo.MapGuide.Desktop.dll
+
+Viewer Changelog:
+ - Viewer now operates against MgPlatformBase. Instead of initializing the viewer with a MgdMap, you now initialize it with a MgMapViewerProvider (which currently has one implementation: MgDesktopMapViewerProvider). This is to allow for other MgPlatformBase derived libraries to work with the viewer in the future (eg. The official MapGuide API)
+ - Fix exceptions when querying for tooltips over visible layers that are initially not visible.
+
+NOTE: All OSGeo.MapGuide.* assemblies used by mg-desktop are signed. Take note of this when building libraries on top of these assemblies.
+
+22 Dec 2011
+===========
+
+API Changelog:
+ - Dramatically improved Feature Joins for joins involving SDF and SHP data sources
+ - Added support for pooling FDO connections with APIs for interrogating connection pool status
+
+Viewer Changelog:
+ - Fix incorrect display of layers (we were adding visible layers and not potentially visible layers)
+ - Layer and Group expansion state is persisted through legend refreshes.
+ - Only refresh the legend when map scale has changed and not when map has refreshed
+ - Updated text for tooltip toggle button in default toolbar
+ - Theme compression support for legend control. Cut-off point controllable via the new ThemeCompressionLimit property in MgLegend
+
+24 Nov 2011
+===========
+
+API Changelog:
+ - Tweaked FDO join performance
+
+Viewer Changelog:
+ - Smarter handling of refresh when resizing
+ - Fire off async selection rendering *before* raising the SelectionChanged event and not after
+ - New boolean viewer property to convert tiled map groups to normal map groups. This is a workaround to show tiled map groups in the viewer. These groups/layers will behave like normal groups/layers
+
+27 Oct 2011
+===========
+
+API Changelog:
+ - Feature Join Optimization using FDO join APIs
+
+9 Oct 2011
+==========
+
+API Changelog:
+ - Support for unmanaged aliases
+ - Improved exception safety in various APIs
+ - Calling APIs with NULL string parameters when passed in from .net are automatically coalesced into empty strings by the SWIG glue library
+
+Viewer Changelog:
+ - MgLegend control allows attaching of context menus. Usage demonstrated in test application
+ - Small UI fixes for MgDefaultToolbar
+
+21 Sep 2011
+===========
+
+API Changelog:
+
+ - Default namespace for viewer components now reside under OSGeo.MapGuide.Viewer instead of MapViewer
+
+Viewer Changelog:
+
+ - Viewer APIs that would trigger a map refresh will instead queue that operation if an existing rendering operation is in progress. If such an operation is already queued, then nothing is done
+
+16 Sep 2011
+===========
+
+API changelog:
+
+ - Support for SelectFeatures() with the coordinate system parameter. If specified, geometries that are read are transformed to the specified coordinate system.
+ - New InsertFeatures() API that accepts a series of features to be inserted instead of a single feature.
+
+Viewer changelog:
+
+ - Viewer components have better support and interaction with the WinForms designer in Visual Studio
+ - A control/form that embeds this viewer no longer requires a legend or property pane if setting up via the MapViewerController
+ - Point/Box selection now considers existing layer filter when selecting objects.
+ - Additional viewer commands in default toolbar:
+   - Select Polygon
+   - Select Radius
+   - Copy Map (image) to clipboard
+ - Default toolbar now uses slate fusion template icon set.
+ - New viewer properties:
+   - Selection color
+   - New ShowVertexCoordinatesWhenDigitizing property to indicate whether geometries being digitized also display the vertex coordinates.
+
+13 Sep 2011
+===========
+
+API Changelog:
+
+- MgServiceFactory changed 
+- Cached MgClassDefinition and MgFeatureSchema objects are cloned when returned by MgFeatureService
+- DWF plotting APIs added to MgRenderingService
+
+Viewer Changelog:
+
+- Maps and Selections are rendered separately. This allows for more responsive selection
+- Support pressing ESC to cancel digitiztation
+- Support holding CTRL + select to append features to current selection set
+- New default toolbar component
+- New DWF plotting command in test application
+- Fix connection leak in selection processing
+
+5 Sep 2011
+==========
+
+API Changelog:
+
+ - Schema and Class Definitions elements are now cached
+
+Viewer Changelog:
+
+ - Support for themes in the legend control
+ - Support for display property mappings
+ - Fixes for raster and drawing layers
+ - Added navigation toolbar to property pane
+ - Fixes for circle digitization
+ - API cleanup
+
+2 Sep 2011
+==========
+
+Viewer Changes:
+ - Support for digitizing geometries
+ - Support for feature tooltips
+ - Support for display names in property pane
+
+31 Aug 2011
+===========
+
+Changelog:
+
+ - A more functional and feature filled Map Viewer
+ - Bugfixes and improvements from the 25 August build
+
+PDBs have been stripped from this release to reduce download size
+
+25 Aug 2011
+===========
+
+Built against trunk MapGuide/FDO (1 week old)
+
+Requires .net Framework 3.5 and Visual C++ 2008 SP1 Runtime Library
+
+Includes the following executables:
+
+ * DotNetHarness.exe - an interactive test harness for the Desktop API similar to the mapagent test pages
+ * UnitTest.exe - a CppUnit test runner for the Desktop API
+ * DotNetUnitTest.exe - a .net test runner for the .net Desktop API
+ * MapViewerTest.exe - a *very* rudimentary map viewer (requires the Sheboygan dataset, loaded via DotNetHarness.exe)

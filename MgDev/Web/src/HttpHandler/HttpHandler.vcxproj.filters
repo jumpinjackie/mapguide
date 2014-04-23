@@ -1,0 +1,764 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Service">
+      <UniqueIdentifier>{e0cdb24b-1afb-46b2-abd5-628a3d23d6c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Feature Service">
+      <UniqueIdentifier>{37ee3daa-2ede-44de-8c34-f1290ec23c68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Drawing Service">
+      <UniqueIdentifier>{eddadd6d-5441-4b4b-a822-d73d57995482}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mapping Service">
+      <UniqueIdentifier>{0e7b5eae-1011-4125-878d-a12ce219faad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Site Service">
+      <UniqueIdentifier>{0ea0b12e-47f6-44ca-b2d8-163d203578cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other">
+      <UniqueIdentifier>{233e402e-583d-4a55-8a33-17f3c2c5a298}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering Service">
+      <UniqueIdentifier>{22ae6dc4-9663-4a43-aa29-c5057c9aa634}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ogc">
+      <UniqueIdentifier>{cc36091d-232c-442e-a672-af8eb6824b17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tile Service">
+      <UniqueIdentifier>{3ca32fb4-7bd8-4ea3-9548-0567ec6f3afe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kml Service">
+      <UniqueIdentifier>{a17d1002-f86b-4cfa-9545-ddc080f1ce4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Coordinate System">
+      <UniqueIdentifier>{d81bcb03-fefe-4d18-b4a1-77d242e64583}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Web Applications">
+      <UniqueIdentifier>{e21c5925-6c01-4fe4-89d2-1e95e2b3d79e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Byte Source Adapters">
+      <UniqueIdentifier>{0f2e34d9-18f7-49af-b11f-8d3c874192ec}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="HttpApplyResourcePackage.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpChangeResourceOwner.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpCopyResource.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpCreateRepository.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpDeleteRepository.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpDeleteResource.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpDeleteResourceData.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpEnumerateRepositories.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpEnumerateResourceData.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpEnumerateResourceReferences.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpEnumerateResources.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpEnumerateUnmanagedData.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetRepositoryContent.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetRepositoryHeader.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetResourceContent.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetResourceData.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetResourceHeader.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpInheritPermissionsFrom.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpMoveResource.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpRenameResourceData.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpResourceExists.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpSetResource.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpSetResourceData.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpUpdateRepository.cpp">
+      <Filter>Resource Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpDescribeSchema.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpEnumerateDataStores.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetCapabilities.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetClassDefinition.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetClasses.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetConnectionPropertyValues.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetFdoCacheInfo.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetFeatureProviders.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetIdentityProperties.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetLongTransactions.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetSchemaMapping.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetSchemas.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetSessionTimeout.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetSpatialContexts.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpSelectFeatures.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpSelectFeaturesSpatially.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpTestConnection.cpp">
+      <Filter>Feature Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpDescribeDrawing.cpp">
+      <Filter>Drawing Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpEnumerateDrawingLayers.cpp">
+      <Filter>Drawing Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpEnumerateDrawingSectionResources.cpp">
+      <Filter>Drawing Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpEnumerateDrawingSections.cpp">
+      <Filter>Drawing Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetDrawing.cpp">
+      <Filter>Drawing Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetDrawingCoordinateSpace.cpp">
+      <Filter>Drawing Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetDrawingLayer.cpp">
+      <Filter>Drawing Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetDrawingSection.cpp">
+      <Filter>Drawing Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetDrawingSectionResource.cpp">
+      <Filter>Drawing Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetFeatureSetEnvelope.cpp">
+      <Filter>Mapping Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetLegendImage.cpp">
+      <Filter>Mapping Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetMap.cpp">
+      <Filter>Mapping Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetMapUpdate.cpp">
+      <Filter>Mapping Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetPlot.cpp">
+      <Filter>Mapping Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpEnumerateGroups.cpp">
+      <Filter>Site Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpEnumerateUsers.cpp">
+      <Filter>Site Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetSiteInfo.cpp">
+      <Filter>Site Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetSiteStatus.cpp">
+      <Filter>Site Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetSiteVersion.cpp">
+      <Filter>Site Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpCreateSession.cpp">
+      <Filter>Other</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetDwfViewerPage.cpp">
+      <Filter>Other</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetHtmlViewerPage.cpp">
+      <Filter>Other</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetDynamicMapOverlayImage.cpp">
+      <Filter>Rendering Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetMapImage.cpp">
+      <Filter>Rendering Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetMapLegendImage.cpp">
+      <Filter>Rendering Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetVisibleMapExtent.cpp">
+      <Filter>Rendering Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpQueryMapFeatures.cpp">
+      <Filter>Rendering Service</Filter>
+    </ClCompile>
+    <ClCompile Include="Dictionary.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpRequestParameters.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpWfsDescribeFeatureType.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpWfsGetCapabilities.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpWfsGetFeature.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpWmsGetCapabilities.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpWmsGetFeatureInfo.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpWmsGetMap.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="NameStringValueCollection.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="NameValueCollection.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="OgcServer.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="OgcWfsException.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="OgcWfsServer.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="OgcWmsException.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="OgcWmsServer.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="WfsFeatureDefinitions.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="WfsGetFeatureParams.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="WmsFeatureInfo.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="WmsFeatureProperties.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="WmsLayerDefinitions.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="WmsMapUtil.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="XmlParser.cpp">
+      <Filter>Ogc</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpClearTileCache.cpp">
+      <Filter>Tile Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetDefaultTileSizeX.cpp">
+      <Filter>Tile Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetDefaultTileSizeY.cpp">
+      <Filter>Tile Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGetTileImage.cpp">
+      <Filter>Tile Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpKmlGetFeatures.cpp">
+      <Filter>Kml Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpKmlGetLayer.cpp">
+      <Filter>Kml Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpKmlGetMap.cpp">
+      <Filter>Kml Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpCsConvertCoordinateSystemCodeToWkt.cpp">
+      <Filter>Coordinate System</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpCsConvertEpsgCodeToWkt.cpp">
+      <Filter>Coordinate System</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpCsConvertWktToCoordinateSystemCode.cpp">
+      <Filter>Coordinate System</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpCsConvertWktToEpsgCode.cpp">
+      <Filter>Coordinate System</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpCsEnumerateCategories.cpp">
+      <Filter>Coordinate System</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpCsEnumerateCoordinateSystems.cpp">
+      <Filter>Coordinate System</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpCsGetBaseLibrary.cpp">
+      <Filter>Coordinate System</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpCsIsValid.cpp">
+      <Filter>Coordinate System</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpEnumerateApplicationContainers.cpp">
+      <Filter>Web Applications</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpEnumerateApplicationTemplates.cpp">
+      <Filter>Web Applications</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpEnumerateApplicationWidgets.cpp">
+      <Filter>Web Applications</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpHandlerBuild.cpp" />
+    <ClCompile Include="HttpHeader.cpp" />
+    <ClCompile Include="HttpPrimitiveValue.cpp" />
+    <ClCompile Include="HttpRequest.cpp" />
+    <ClCompile Include="HttpRequestMetadata.cpp" />
+    <ClCompile Include="HttpRequestParam.cpp" />
+    <ClCompile Include="HttpRequestResponseHandler.cpp" />
+    <ClCompile Include="HttpResourceStrings.cpp" />
+    <ClCompile Include="HttpResponse.cpp" />
+    <ClCompile Include="HttpResult.cpp" />
+    <ClCompile Include="HttpUtil.cpp" />
+    <ClCompile Include="JsonDoc.cpp" />
+    <ClCompile Include="XmlJsonConvert.cpp" />
+    <ClCompile Include="HttpReaderStreamer.cpp" />
+    <ClCompile Include="HttpCreateRuntimeMap.cpp">
+      <Filter>Mapping Service</Filter>
+    </ClCompile>
+    <ClCompile Include="ReaderByteSourceImpl.cpp">
+      <Filter>Byte Source Adapters</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="HttpApplyResourcePackage.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpChangeResourceOwner.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpCopyResource.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpCreateRepository.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpDeleteRepository.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpDeleteResource.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpDeleteResourceData.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpEnumerateRepositories.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpEnumerateResourceData.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpEnumerateResourceReferences.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpEnumerateResources.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpEnumerateUnmanagedData.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetRepositoryContent.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetRepositoryHeader.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetResourceContent.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetResourceData.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetResourceHeader.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpInheritPermissionsFrom.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpMoveResource.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpRenameResourceData.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpResourceExists.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpSetResource.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpSetResourceData.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpUpdateRepository.h">
+      <Filter>Resource Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpDescribeSchema.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpEnumerateDataStores.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetCapabilities.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetClassDefinition.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetClasses.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetConnectionPropertyValues.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetFdoCacheInfo.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetFeatureProviders.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetIdentityProperties.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetLongTransactions.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetSchemaMapping.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetSchemas.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetSessionTimeout.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetSpatialContexts.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpSelectFeatures.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpSelectFeaturesSpatially.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpTestConnection.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpDescribeDrawing.h">
+      <Filter>Drawing Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpEnumerateDrawingLayers.h">
+      <Filter>Drawing Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpEnumerateDrawingSectionResources.h">
+      <Filter>Drawing Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpEnumerateDrawingSections.h">
+      <Filter>Drawing Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetDrawing.h">
+      <Filter>Drawing Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetDrawingCoordinateSpace.h">
+      <Filter>Drawing Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetDrawingLayer.h">
+      <Filter>Drawing Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetDrawingSection.h">
+      <Filter>Drawing Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetDrawingSectionResource.h">
+      <Filter>Drawing Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetFeatureSetEnvelope.h">
+      <Filter>Mapping Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetLegendImage.h">
+      <Filter>Mapping Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetMap.h">
+      <Filter>Mapping Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetMapUpdate.h">
+      <Filter>Mapping Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetPlot.h">
+      <Filter>Mapping Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpEnumerateGroups.h">
+      <Filter>Site Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpEnumerateUsers.h">
+      <Filter>Site Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetSiteInfo.h">
+      <Filter>Site Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetSiteStatus.h">
+      <Filter>Site Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetSiteVersion.h">
+      <Filter>Site Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpCreateSession.h">
+      <Filter>Other</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetDwfViewerPage.h">
+      <Filter>Other</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetHtmlViewerPage.h">
+      <Filter>Other</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetDynamicMapOverlayImage.h">
+      <Filter>Rendering Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetMapImage.h">
+      <Filter>Rendering Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetMapLegendImage.h">
+      <Filter>Rendering Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetVisibleMapExtent.h">
+      <Filter>Rendering Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpQueryMapFeatures.h">
+      <Filter>Rendering Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Dictionary.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpRequestParameters.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpWfsDescribeFeatureType.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpWfsGetCapabilities.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpWfsGetFeature.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpWmsGetCapabilities.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpWmsGetFeatureInfo.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpWmsGetMap.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="NameStringValueCollection.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="NameValueCollection.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="OgcDataAccessor.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="OgcException.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="OgcFramework.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="OgcServer.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="OgcWfsException.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="OgcWfsServer.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="OgcWmsException.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="OgcWmsServer.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="ResponseStream.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="Stream.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="StringStream.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="WfsFeatureDefinitions.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="WfsGetFeatureParams.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="WmsFeatureInfo.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="WmsFeatureProperties.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="WmsLayerDefinitions.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="WmsMapUtil.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="XmlElementEmitter.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="XmlParser.h">
+      <Filter>Ogc</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpClearTileCache.h">
+      <Filter>Tile Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetDefaultTileSizeX.h">
+      <Filter>Tile Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetDefaultTileSizeY.h">
+      <Filter>Tile Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGetTileImage.h">
+      <Filter>Tile Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpKmlGetFeatures.h">
+      <Filter>Kml Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpKmlGetLayer.h">
+      <Filter>Kml Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpKmlGetMap.h">
+      <Filter>Kml Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpCsConvertCoordinateSystemCodeToWkt.h">
+      <Filter>Coordinate System</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpCsConvertEpsgCodeToWkt.h">
+      <Filter>Coordinate System</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpCsConvertWktToCoordinateSystemCode.h">
+      <Filter>Coordinate System</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpCsConvertWktToEpsgCode.h">
+      <Filter>Coordinate System</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpCsEnumerateCategories.h">
+      <Filter>Coordinate System</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpCsEnumerateCoordinateSystems.h">
+      <Filter>Coordinate System</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpCsGetBaseLibrary.h">
+      <Filter>Coordinate System</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpCsIsValid.h">
+      <Filter>Coordinate System</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpEnumerateApplicationContainers.h">
+      <Filter>Web Applications</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpEnumerateApplicationTemplates.h">
+      <Filter>Web Applications</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpEnumerateApplicationWidgets.h">
+      <Filter>Web Applications</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpHandler.h" />
+    <ClInclude Include="HttpHandlerApiDllExport.h" />
+    <ClInclude Include="HttpHandlerClassId.h" />
+    <ClInclude Include="HttpHeader.h" />
+    <ClInclude Include="HttpPrimitiveValue.h" />
+    <ClInclude Include="HttpPrimitiveValueTypes.h" />
+    <ClInclude Include="HttpRequest.h" />
+    <ClInclude Include="HttpRequestMetadata.h" />
+    <ClInclude Include="HttpRequestParam.h" />
+    <ClInclude Include="HttpRequestResponseHandler.h" />
+    <ClInclude Include="HttpResourceStrings.h" />
+    <ClInclude Include="HttpResponse.h" />
+    <ClInclude Include="HttpResult.h" />
+    <ClInclude Include="HttpStatusCodes.h" />
+    <ClInclude Include="HttpUtil.h" />
+    <ClInclude Include="JsonDoc.h" />
+    <ClInclude Include="XmlJsonConvert.h" />
+    <ClInclude Include="HttpReaderStreamer.h" />
+    <ClInclude Include="HttpCreateRuntimeMap.h">
+      <Filter>Mapping Service</Filter>
+    </ClInclude>
+    <ClInclude Include="ReaderByteSourceImpl.h">
+      <Filter>Byte Source Adapters</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="HttpHandler.rc" />
+  </ItemGroup>
+</Project>

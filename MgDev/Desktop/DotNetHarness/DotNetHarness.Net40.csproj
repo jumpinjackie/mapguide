@@ -1,0 +1,502 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A5881D59-BD24-4A3A-A707-F18A25724D29}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DotNetHarness</RootNamespace>
+    <AssemblyName>DotNetHarness</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OSGeo.MapGuide.Desktop, Version=2.4.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="OSGeo.MapGuide.Foundation, Version=1.0.0.1, Culture=neutral, PublicKeyToken=f526c48929fda856, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.Foundation.dll</HintPath>
+    </Reference>
+    <Reference Include="OSGeo.MapGuide.Geometry, Version=1.0.0.1, Culture=neutral, PublicKeyToken=f526c48929fda856, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.Geometry.dll</HintPath>
+    </Reference>
+    <Reference Include="OSGeo.MapGuide.PlatformBase, Version=1.0.0.1, Culture=neutral, PublicKeyToken=f526c48929fda856, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.PlatformBase.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Feature\CreateFeatureSourceCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Feature\CreateFeatureSourceCtrl.Designer.cs">
+      <DependentUpon>CreateFeatureSourceCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\GetSchemaMappingCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Feature\GetSchemaMappingCtrl.Designer.cs">
+      <DependentUpon>GetSchemaMappingCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\RegisterProviderCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Feature\RegisterProviderCtrl.Designer.cs">
+      <DependentUpon>RegisterProviderCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\SelectAggregatesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Feature\SelectAggregatesControl.Designer.cs">
+      <DependentUpon>SelectAggregatesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\EnumerateDataStoresControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Feature\EnumerateDataStoresControl.Designer.cs">
+      <DependentUpon>EnumerateDataStoresControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\ExecuteSqlControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Feature\ExecuteSqlControl.Designer.cs">
+      <DependentUpon>ExecuteSqlControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\ExecuteSqlNonQueryControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Feature\ExecuteSqlNonQueryControl.Designer.cs">
+      <DependentUpon>ExecuteSqlNonQueryControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\GetCapabilitiesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Feature\GetCapabilitiesControl.Designer.cs">
+      <DependentUpon>GetCapabilitiesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\GetClassesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Feature\GetClassesControl.Designer.cs">
+      <DependentUpon>GetClassesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\GetFeatureProvidersControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Feature\GetFeatureProvidersControl.Designer.cs">
+      <DependentUpon>GetFeatureProvidersControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\GetSchemasControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Feature\GetSchemasControl.Designer.cs">
+      <DependentUpon>GetSchemasControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\GetSpatialContextsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Feature\GetSpatialContextsControl.Designer.cs">
+      <DependentUpon>GetSpatialContextsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\SelectFeaturesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Feature\SelectFeaturesControl.Designer.cs">
+      <DependentUpon>SelectFeaturesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\TestConnectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Feature\TestConnectionControl.Designer.cs">
+      <DependentUpon>TestConnectionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImageResponseDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImageResponseDialog.Designer.cs">
+      <DependentUpon>ImageResponseDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Feature\CreateFeatureSourceCtrl.resx">
+      <DependentUpon>CreateFeatureSourceCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Feature\GetSchemaMappingCtrl.resx">
+      <DependentUpon>GetSchemaMappingCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Feature\RegisterProviderCtrl.resx">
+      <DependentUpon>RegisterProviderCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Feature\SelectAggregatesControl.resx">
+      <DependentUpon>SelectAggregatesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Feature\EnumerateDataStoresControl.resx">
+      <DependentUpon>EnumerateDataStoresControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Feature\ExecuteSqlControl.resx">
+      <DependentUpon>ExecuteSqlControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Feature\ExecuteSqlNonQueryControl.resx">
+      <DependentUpon>ExecuteSqlNonQueryControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Feature\GetCapabilitiesControl.resx">
+      <DependentUpon>GetCapabilitiesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Feature\GetClassesControl.resx">
+      <DependentUpon>GetClassesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Feature\GetFeatureProvidersControl.resx">
+      <DependentUpon>GetFeatureProvidersControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Feature\GetSchemasControl.resx">
+      <DependentUpon>GetSchemasControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Feature\GetSpatialContextsControl.resx">
+      <DependentUpon>GetSpatialContextsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Feature\SelectFeaturesControl.resx">
+      <DependentUpon>SelectFeaturesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Feature\TestConnectionControl.resx">
+      <DependentUpon>TestConnectionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImageResponseDialog.resx">
+      <DependentUpon>ImageResponseDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReaderResponseDialog.resx">
+      <DependentUpon>ReaderResponseDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Rendering\RenderDynamicOverlayControl.resx">
+      <DependentUpon>RenderDynamicOverlayControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Rendering\RenderMapControl.resx">
+      <DependentUpon>RenderMapControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Rendering\RenderTileControl.resx">
+      <DependentUpon>RenderTileControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\ApplyResourcePackageControl.resx">
+      <DependentUpon>ApplyResourcePackageControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\CopyResourceControl.resx">
+      <DependentUpon>CopyResourceControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\DeleteResourceControl.resx">
+      <DependentUpon>DeleteResourceControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\DeleteResourceDataControl.resx">
+      <DependentUpon>DeleteResourceDataControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\EnumerateResourceDataControl.resx">
+      <DependentUpon>EnumerateResourceDataControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\EnumerateResourcesControl.resx">
+      <DependentUpon>EnumerateResourcesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\EnumerateUnmanagedDataControl.resx">
+      <DependentUpon>EnumerateUnmanagedDataControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\GetResourceContentControl.resx">
+      <DependentUpon>GetResourceContentControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\GetResourceDataControl.resx">
+      <DependentUpon>GetResourceDataControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\MoveResourceControl.resx">
+      <DependentUpon>MoveResourceControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\RenameResourceDataControl.resx">
+      <DependentUpon>RenameResourceDataControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\ResourceExistsControl.resx">
+      <DependentUpon>ResourceExistsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\SetResourceControl.resx">
+      <DependentUpon>SetResourceControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\SetResourceDataControl.resx">
+      <DependentUpon>SetResourceDataControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SpatialContextResultDialog.resx">
+      <DependentUpon>SpatialContextResultDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tile\GetTileControl.resx">
+      <DependentUpon>GetTileControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XmlResponseDialog.resx">
+      <DependentUpon>XmlResponseDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="..\MgDesktop\Platform.ini">
+      <Link>Platform.ini</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="ReaderResponseDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReaderResponseDialog.Designer.cs">
+      <DependentUpon>ReaderResponseDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Rendering\RenderDynamicOverlayControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Rendering\RenderDynamicOverlayControl.Designer.cs">
+      <DependentUpon>RenderDynamicOverlayControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Rendering\RenderMapControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Rendering\RenderMapControl.Designer.cs">
+      <DependentUpon>RenderMapControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Rendering\RenderTileControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Rendering\RenderTileControl.Designer.cs">
+      <DependentUpon>RenderTileControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\ApplyResourcePackageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\ApplyResourcePackageControl.Designer.cs">
+      <DependentUpon>ApplyResourcePackageControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\CopyResourceControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\CopyResourceControl.Designer.cs">
+      <DependentUpon>CopyResourceControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\DeleteResourceControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\DeleteResourceControl.Designer.cs">
+      <DependentUpon>DeleteResourceControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\DeleteResourceDataControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\DeleteResourceDataControl.Designer.cs">
+      <DependentUpon>DeleteResourceDataControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\EnumerateResourceDataControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\EnumerateResourceDataControl.Designer.cs">
+      <DependentUpon>EnumerateResourceDataControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\EnumerateResourcesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\EnumerateResourcesControl.Designer.cs">
+      <DependentUpon>EnumerateResourcesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\EnumerateUnmanagedDataControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\EnumerateUnmanagedDataControl.Designer.cs">
+      <DependentUpon>EnumerateUnmanagedDataControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\GetResourceContentControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\GetResourceContentControl.Designer.cs">
+      <DependentUpon>GetResourceContentControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\GetResourceDataControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\GetResourceDataControl.Designer.cs">
+      <DependentUpon>GetResourceDataControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\MoveResourceControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\MoveResourceControl.Designer.cs">
+      <DependentUpon>MoveResourceControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\MultiGetResourceContentControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\MultiGetResourceContentControl.Designer.cs">
+      <DependentUpon>MultiGetResourceContentControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\RenameResourceDataControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\RenameResourceDataControl.Designer.cs">
+      <DependentUpon>RenameResourceDataControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\ResourceExistsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\ResourceExistsControl.Designer.cs">
+      <DependentUpon>ResourceExistsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\SetResourceControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\SetResourceControl.Designer.cs">
+      <DependentUpon>SetResourceControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resource\SetResourceDataControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resource\SetResourceDataControl.Designer.cs">
+      <DependentUpon>SetResourceDataControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SpatialContextResultDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SpatialContextResultDialog.Designer.cs">
+      <DependentUpon>SpatialContextResultDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tile\GetTileControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tile\GetTileControl.Designer.cs">
+      <DependentUpon>GetTileControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XmlResponseDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XmlResponseDialog.Designer.cs">
+      <DependentUpon>XmlResponseDialog.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

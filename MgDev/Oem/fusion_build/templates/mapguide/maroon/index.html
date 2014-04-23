@@ -1,0 +1,256 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Maroon</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="../../../lib/fusionSF-compressed.js"></script>
+<link rel="stylesheet" href="../../../lib/jxLib/themes/delicious/jxtheme.css" type="text/css" media="screen" charset="utf-8">
+<link rel="stylesheet" href="maroon.css" type="text/css" media="screen" charset="utf-8">
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="ie6.css" type="text/css" media="screen" charset="utf-8">
+<![endif]-->
+<!--[if IE 7]>
+<link rel="stylesheet" href="ie7.css" type="text/css" media="screen" charset="utf-8">
+<![endif]-->
+<link rel="stylesheet" href="icons.css" type="text/css" media="screen" charset="utf-8">
+
+<script type="text/javascript">
+
+var panel1;
+var panel2;
+var panel3;
+var panel4;
+var panelman;
+var COLLAPSED_SIDEBAR_WIDTH = 8;
+
+window.onload = function() {
+    Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
+
+    var main = new Jx.Layout('AppContainer');
+    new Jx.Layout('FileMenu', {
+        left: 5, 
+        right: 5, 
+        top: 5, 
+        height: 25
+    });
+    new Jx.Layout('Toolbar', {
+        left: 5, 
+        right: 5, 
+        top: 30, 
+        height: 24
+    });
+    new Jx.Layout('ToolbarVertical', {
+        left: 5, 
+        width: 28, 
+        top: 54, 
+        bottom: 21
+    });
+    new Jx.Layout('SplitterArea', {
+        left: 33, 
+        top: 54, 
+        right: 5, 
+        bottom: 22
+    });
+  
+    new Jx.Layout('MapArea');
+    new Jx.Layout('Map');
+    
+    new Jx.Layout('StatusbarContainer', {
+        height: 22, 
+        bottom: 0,
+        top: null
+    });
+    new Jx.Layout('Statusbar', {
+        right: 159
+    });
+
+    var splitter = new Jx.Splitter('SplitterArea', {
+        splitInto:2,
+        elements:[$('MapArea'),$('Sidebar')],
+        layout:'horizontal',
+        containerOptions: [{},{minWidth:COLLAPSED_SIDEBAR_WIDTH, width: 218}],
+        barOptions: [
+            {
+                snap: 'after', 
+                snapElement: $('SidebarCollapse'), 
+                snapEvents: ['click']
+            }
+        ]
+    });
+
+  /* create dynamic content */
+  panel1 = new Jx.Panel({
+      label: OpenLayers.i18n('legendTitle'),
+      collapse: true,
+      maximize: true,
+      contentId: 'Legend'});
+  panel1.content.id = 'Legend';
+
+  panel2 = new Jx.Panel({
+      label: OpenLayers.i18n('selectionPanelTitle'),
+      collapse: true,
+      maximize: true,
+      contentId: 'SelectionPanel'});
+
+  panel3 = new Jx.Panel({
+      label: OpenLayers.i18n('taskPaneTitle'),
+      collapse: true,
+      maximize: true,
+      contentId: 'TaskPane'});
+
+  panel4 = new Jx.Panel({
+      label: OpenLayers.i18n('ovmapTitle'),
+      collapse: true,
+      maximize: true,
+      contentId: 'OverviewMap'});
+
+  panelman = new Jx.PanelSet({parent: splitter.elements[1], panels: [panel1, panel2, panel3, panel4]});
+
+  main.resize();
+
+  Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
+  Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
+  Fusion.initialize();
+}
+
+var fusionError = function(eventId, error) {
+    var errorMessage = error.toString();
+    var readableMessage = '';
+
+    //Case 1: For dealing with Function: convertXML (fusion.js)
+    //******************************************
+    //        xml2json: function(callback, r, json) {
+    //      if (json) {
+    //        var o;
+    //        eval("o="+r.responseText);
+    //        callback(o);
+    //      } else {
+    //      if (r.status >= 400) {
+    //          Fusion.reportError(new Fusion.Error(Fusion.Error.FATAL,
+    //              'xml2json: invalid XML document: ' + r.transport.responseText + " : " + r.request.url));
+    //          return;
+    //      }
+    //******************************************
+    var tagStart = '<h2>';
+    var tagEnd = '</h2>';
+    var indexStart = errorMessage.indexOf(tagStart);
+    var indexEnd = errorMessage.indexOf(tagEnd, tagStart);
+    if (indexStart != -1 && indexEnd != -1) {
+        readableMessage = errorMessage.substring(indexStart + tagStart.length, indexEnd);
+        readableMessage = readableMessage.replace(/\\n/g, '\n');
+        readableMessage = readableMessage.replace(/\\t/g, '\t');
+        readableMessage = readableMessage.replace(/\\'/g, '\'');
+    }
+
+    //Case 2: For dealing with Function: ajaxException. (fusion.js)
+    //******************************************
+    //        ajaxException: function(r, e) {
+    //        this.reportError(new Fusion.Error(Fusion.Error.WARNING, 
+    //            OpenLayers.i18n('ajaxError', {'exception':e.message, 
+    //                                          'filename':e.fileName, 
+    //                                          'line':e.lineNumber,
+    //                                          'response': r.transport.responseText
+    //                                          })));
+    //    },
+    //******************************************
+    if (readableMessage == '') {
+        var ajaxCallback = 'WARNING: Exception occurred in AJAX callback.';
+        var responseError = 'Response: ERROR: ';
+        var indexAjaxCallback = errorMessage.indexOf(ajaxCallback);
+        var indexResponseError = errorMessage.indexOf(responseError);
+        if (indexAjaxCallback != -1 && indexResponseError != -1) {
+            var indexReturn = errorMessage.indexOf('\n', indexResponseError);
+            if (indexReturn != -1) {
+                readableMessage = errorMessage.substring(indexResponseError + responseError.length, indexReturn);
+                readableMessage = readableMessage.replace(/\\n/g, '\n');
+                readableMessage = readableMessage.replace(/\\t/g, '\t');
+                readableMessage = readableMessage.replace(/\\'/g, '\'');
+            }
+        }
+    }
+
+    if (readableMessage != '') {
+        alert(readableMessage);
+    }
+    else {
+        alert('Fusion Error: \n' + errorMessage);
+    }
+    console.log('Fusion Error: \n' + errorMessage);
+}
+
+var fusionInitialized = function() {
+    $('AppContainer').resize({forceResize: true});
+    var mapWidget = Fusion.getMapById('Map');
+    mapWidget.registerForEvent(Fusion.Event.MAP_LOADED, initPanelHandler);
+}
+
+var isTaskPaneRegistered = false;
+
+var initPanelHandler = function() {
+    if(isTaskPaneRegistered) return;
+    //register this with MAP_LOADED so that the initial layout will remain
+    Fusion.registerForEvent(Fusion.Event.TASK_PANE_LOADED, showTaskPane);
+    isTaskPaneRegistered = true;
+}
+
+var showSidebarIfCollapsed = function() {
+    if ($("Sidebar").getWidth() <= (COLLAPSED_SIDEBAR_WIDTH + 1)) //Template-specific
+        $("SidebarCollapse").fireEvent("click");
+};
+
+var showOverviewMap = function() {
+    showSidebarIfCollapsed();
+    panelman.maximizePanel(panel4);
+}
+
+var showTaskPane = function() {
+    showSidebarIfCollapsed();
+    panelman.maximizePanel(panel3);
+}
+
+var showLegend = function() {
+    showSidebarIfCollapsed();
+    panelman.maximizePanel(panel1);
+}
+
+var showSelectionPanel = function() {
+    showSidebarIfCollapsed();
+    panelman.maximizePanel(panel2);
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div id="AppContainer">
+
+  <div id="FileMenu"></div>
+
+  <div id="SplitterArea">
+    <div id="MapArea">
+      <div id="Map"></div>
+      <div id="Navigator"></div>
+    </div>
+    <div id="Sidebar">
+      <!-- Collapse Sidebar -->
+      <div id="SidebarCollapse">
+          <a id="SidebarCollapseButton" href="#"></a>
+      </div>
+    </div>
+  </div>
+
+  <div id="Toolbar"></div>
+  <div id="ToolbarVertical"></div>
+  <div id="StatusbarContainer">
+    <div id="Statusbar"></div>
+    <div id="pbmg"><img src="images/pbmg.gif" alt=""></div>
+  </div>
+
+</div>
+
+<div id="Maptip"></div>
+
+</body>
+</html>

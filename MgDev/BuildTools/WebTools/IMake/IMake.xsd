@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Parameters">
+    <xs:annotation>
+      <xs:documentation>Parameters for SWIG interface file generation</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="Module">
+          <xs:complexType>
+            <xs:attribute name="name" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="CustomFile">
+          <xs:complexType>
+            <xs:attribute name="path" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Target">
+          <xs:complexType>
+            <xs:attribute name="path" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="CppInline" minOccurs="0" />
+        <xs:element name="TypeReplacements" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="TypeReplacement" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="oldtype" type="xs:string" />
+                  <xs:attribute name="newtype" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Typedefs" minOccurs="0" />
+        <xs:element name="SwigInline" minOccurs="0" />
+        <xs:element name="Headers" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Header" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="path" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Ops">
+      <UniqueIdentifier>{1bf6fd6d-6dc3-40ca-99b1-7c002eb0f77b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="OpAddGroup.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpAddServer.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpAddUser.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpAuthenticate.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpCreateSession.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpDeleteGroups.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpDeleteUsers.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpDestroySession.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateGroups.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateRoles.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateServers.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateUsers.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetSessionTimeout.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetUserForSession.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGrantGroupMembershipsToUsers.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGrantRoleMembershipsToGroups.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGrantRoleMembershipsToUsers.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRemoveServer.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRequestServer.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRevokeGroupMembershipsFromUsers.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRevokeRoleMembershipsFromGroups.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRevokeRoleMembershipsFromUsers.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpUpdateGroup.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpUpdateServer.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpUpdateUser.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="SiteOperation.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="SiteOperationFactory.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Dll.cpp" />
+    <ClCompile Include="ServerSiteService.cpp" />
+    <ClCompile Include="ServerSiteServiceBuild.cpp" />
+    <ClCompile Include="SiteServiceHandler.cpp" />
+    <ClCompile Include="SiteServiceUtil.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="OpAddGroup.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpAddServer.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpAddUser.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpAuthenticate.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpCreateSession.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpDeleteGroups.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpDeleteUsers.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpDestroySession.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateGroups.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateRoles.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateServers.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateUsers.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetSessionTimeout.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetUserForSession.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGrantGroupMembershipsToUsers.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGrantRoleMembershipsToGroups.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGrantRoleMembershipsToUsers.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRemoveServer.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRequestServer.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRevokeGroupMembershipsFromUsers.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRevokeRoleMembershipsFromGroups.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRevokeRoleMembershipsFromUsers.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpUpdateGroup.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpUpdateServer.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpUpdateUser.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="SiteOperation.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="SiteOperationFactory.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerSiteDllExport.h" />
+    <ClInclude Include="ServerSiteService.h" />
+    <ClInclude Include="SiteServiceDefs.h" />
+    <ClInclude Include="SiteServiceHandler.h" />
+    <ClInclude Include="SiteServiceUtil.h" />
+    <ClInclude Include="..\..\Common\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ServerSiteService.rc" />
+  </ItemGroup>
+</Project>

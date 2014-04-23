@@ -1,0 +1,29 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="setactiontarget.js" >
+</script>
+</head>
+<body>
+<form name="input" action="" method="get" enctype="multipart/form-data">
+<b>Operation:</b>
+<input type="text" name="OPERATION" value="MOVERESOURCE" size="50">
+<p> Version:
+<input type="text" name="VERSION" value="2.2.0" size="10">
+<p> Locale:
+<input type="text" name="LOCALE" value="en" size="10">
+<p> Client Agent:
+<input type="text" name="CLIENTAGENT" value="MapGuide Developer" size="100">
+<p> Source Resource ID:
+<input type="text" name="SOURCE" value="Library://Test/Sources/World.FeatureSource" size="100">
+<p> Destination Resource ID:
+<input type="text" name="DESTINATION" value="Library://Test/Sources/World2.FeatureSource" size="100">
+<p> Overwrite:
+<input type="text" name="OVERWRITE" value="0" size="10">
+<p> Cascade:
+<input type="text" name="CASCADE" value="1" size="10">
+<p>
+<input type="submit" value="Submit" onclick="SetActionTarget()"> <input type="reset">
+</form>
+</body>
+</html>

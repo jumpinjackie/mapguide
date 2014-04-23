@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <MapDefinition version="1.0.0">
+    <Name>New Map</Name>
+    <CoordinateSystem>LOCALCS[&quot;Non-Earth (Meter)&quot;,LOCAL_DATUM[&quot;Local Datum&quot;,0],UNIT[&quot;Meter&quot;, 1],AXIS[&quot;X&quot;,EAST],AXIS[&quot;Y&quot;,NORTH]]</CoordinateSystem>
+    <Extents>
+      <MinX>0</MinX>
+      <MaxX>0</MaxX>
+      <MinY>0</MinY>
+      <MaxY>0</MaxY>
+    </Extents>
+    <BackgroundColor>FFFFFFFF</BackgroundColor>
+    <Metadata>&lt;MapDescription&gt;Test map&lt;/MapDescription&gt;</Metadata>
+    <MapLayer>
+      <Name>NewSdfInt</Name>
+      <ResourceId>Library://TrevorWekel/NewSdfInt.LayerDefinition</ResourceId>
+      <Group></Group>
+      <Visible>true</Visible>
+      <Selectable>true</Selectable>
+      <ShowInLegend>true</ShowInLegend>
+      <LegendLabel>NewSdfInt</LegendLabel>
+      <ExpandInLegend>true</ExpandInLegend>
+    </MapLayer>
+  </MapDefinition>

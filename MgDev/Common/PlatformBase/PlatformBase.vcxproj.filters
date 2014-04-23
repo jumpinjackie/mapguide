@@ -1,0 +1,743 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Data">
+      <UniqueIdentifier>{c998d541-b8ef-434e-8be3-ec2660bb9c7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Exception">
+      <UniqueIdentifier>{b129b7be-89b1-4995-a47d-e092302b4eae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Services">
+      <UniqueIdentifier>{23ebfbb2-7b3a-49f3-b894-7c930d568034}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Services\PrintLayoutService">
+      <UniqueIdentifier>{e6e367b0-7730-453b-9163-e10f234ecb67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MapLayer">
+      <UniqueIdentifier>{c73f7955-b35a-49b3-8b1b-45f823b8d57f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Data\BlobProperty.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\BooleanProperty.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ByteProperty.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ClobProperty.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Color.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\DateTimeProperty.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\DoubleProperty.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Int16Property.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Int32Property.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Int64Property.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\IntCollection.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Margin.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Point3D.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\PropertyDefinitionCollection.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\SerializableCollection.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\SingleProperty.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Size2D.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\StringPropertyCollection.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Vector3D.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ArrayTypeMismatchException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DuplicateResourceDataException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DuplicateResourceException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\EmptyFeatureSetException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\FdoException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\FeatureServiceException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidLayerDefinitionException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidMapDefinitionException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidRepositoryNameException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidRepositoryTypeException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidResourceDataNameException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidResourceDataTypeException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidResourceNameException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidResourcePathException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidResourcePreProcessingTypeException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidResourceTypeException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidSymbolDefinitionException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidWatermarkDefinitionException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\LayerNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ResourceBusyException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ResourceDataNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ResourceNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ServiceNotAvailableException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ServiceNotSupportedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\UserNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\BaseServiceDefs.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ClassDefinition.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ClassDefinitionCollection.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\CreateSdfParams.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\DataPropertyDefinition.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\DataReader.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\DeleteFeatures.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\FeatureAggregateOptions.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\FeatureCommandCollection.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\FeatureDefs.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\FeatureProperty.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\FeatureQueryOptions.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\FeatureReader.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\FeatureSchema.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\FeatureSchemaCollection.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\FeatureService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\FeatureSet.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\FeatureSourceParams.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\FileFeatureSourceParams.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\GeometricPropertyDefinition.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\GeometryProperty.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\GeometryTypeInfo.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\InsertFeatures.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\LockFeatures.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\LongTransactionData.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\LongTransactionReader.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ObjectPropertyDefinition.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\Parameter.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ParameterCollection.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\Raster.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\RasterProperty.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\RasterPropertyDefinition.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\RasterTypes.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\Resource.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ResourceDefs.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ResourceIdentifier.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ResourceService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\Service.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ServiceRegistry.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\SpatialContextData.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\SpatialContextReader.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\SqlDataReader.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\Transaction.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\UnlockFeatures.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\UpdateFeatures.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\Warnings.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\PrintLayoutService\MapView.cpp">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\PrintLayoutService\MapViewportBase.cpp">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\PrintLayoutService\PrintLayoutBase.cpp">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\PrintLayoutService\PrintLayoutDefs.cpp">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\PrintLayoutService\PrintLayoutElementBase.cpp">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\PrintLayoutService\PrintLayoutElementCollection.cpp">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\PrintLayoutService\PrintLayoutElementFactoryBase.cpp">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\PrintLayoutService\PrintLayoutServiceBase.cpp">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\PrintLayoutService\PropertyMapping.cpp">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\PrintLayoutService\PropertyMappingCollection.cpp">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer\ChangeList.cpp">
+      <Filter>MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer\LayerBase.cpp">
+      <Filter>MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer\LayerCollection.cpp">
+      <Filter>MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer\LayerGroup.cpp">
+      <Filter>MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer\LayerGroupCollection.cpp">
+      <Filter>MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer\MapBase.cpp">
+      <Filter>MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer\MapCollection.cpp">
+      <Filter>MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer\ObjectChange.cpp">
+      <Filter>MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer\ReadOnlyLayerCollection.cpp">
+      <Filter>MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer\SelectionBase.cpp">
+      <Filter>MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer\Watermark.cpp">
+      <Filter>MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformBaseBuild.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Data\BlobProperty.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\BooleanProperty.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\ByteProperty.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\ClobProperty.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Color.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\DateTimeProperty.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\DoubleProperty.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Int16Property.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Int32Property.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Int64Property.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\IntCollection.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Margin.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Point3D.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\PropertyDefinitionCollection.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\SerializableCollection.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\SingleProperty.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Size2D.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\StringPropertyCollection.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Vector3D.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ArrayTypeMismatchException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DuplicateResourceDataException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DuplicateResourceException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\EmptyFeatureSetException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\FdoException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\FeatureServiceException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidLayerDefinitionException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidMapDefinitionException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidRepositoryNameException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidRepositoryTypeException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidResourceDataNameException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidResourceDataTypeException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidResourceNameException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidResourcePathException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidResourcePreProcessingTypeException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidResourceTypeException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidSymbolDefinitionException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidWatermarkDefinitionException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\LayerNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ResourceBusyException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ResourceDataNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ResourceNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ServiceNotAvailableException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ServiceNotSupportedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\UserNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\BaseService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\BaseServiceDefs.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ClassDefinition.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ClassDefinitionCollection.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\CreateSdfParams.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\DataPropertyDefinition.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\DataReader.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\DeleteFeatures.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureAggregateOptions.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureCommand.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureCommandCollection.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureCommandType.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureDefs.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureGeometricType.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureProperty.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureQueryOptions.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureReader.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureSchema.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureSchemaCollection.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureServiceCommon.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureSet.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureSourceParams.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureSpatialOperations.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FileFeatureSourceParams.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\GeometricPropertyDefinition.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\GeometryProperty.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\GeometryTypeInfo.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\GwsFeatureReader.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\InsertFeatures.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\LockFeatures.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\LongTransactionData.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\LongTransactionReader.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ObjectPropertyDefinition.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ObjectPropertyType.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\OrderingOption.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Parameter.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ParameterCollection.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ParameterDirection.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\PlatformBaseClassId.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Raster.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\RasterProperty.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\RasterPropertyDefinition.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\RasterTypes.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Reader.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ReaderType.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Resource.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ResourceDefs.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ResourceIdentifier.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ResourceService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Service.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ServiceRegistry.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\SpatialContextData.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\SpatialContextExtentType.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\SpatialContextReader.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\SqlDataReader.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Transaction.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\UnlockFeatures.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\UpdateFeatures.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Warnings.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\PrintLayoutService\MapView.h">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\PrintLayoutService\MapViewportBase.h">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\PrintLayoutService\PrintLayoutBase.h">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\PrintLayoutService\PrintLayoutDefs.h">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\PrintLayoutService\PrintLayoutElementBase.h">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\PrintLayoutService\PrintLayoutElementCollection.h">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\PrintLayoutService\PrintLayoutElementFactoryBase.h">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\PrintLayoutService\PrintLayoutServiceBase.h">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\PrintLayoutService\PropertyMapping.h">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\PrintLayoutService\PropertyMappingCollection.h">
+      <Filter>Services\PrintLayoutService</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\ChangeList.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\LayerBase.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\LayerCollection.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\LayerGroup.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\LayerGroupCollection.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\LayerGroupType.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\LayerType.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\MapBase.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\MapCollection.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\ObjectChange.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\ReadOnlyLayerCollection.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\SelectionBase.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\Watermark.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformBase.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PlatformBase.rc" />
+  </ItemGroup>
+</Project>

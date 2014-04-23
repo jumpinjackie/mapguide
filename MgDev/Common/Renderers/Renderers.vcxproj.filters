@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="CSTransformers">
+      <UniqueIdentifier>{b08c2fd6-9fea-4ce3-9ecf-006822957739}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DWFRenderers">
+      <UniqueIdentifier>{8b46facf-dc03-4213-8f2c-9dc00b1c8547}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GDRenderer">
+      <UniqueIdentifier>{18e77f59-0972-4d40-9546-188f62b18c49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mesh">
+      <UniqueIdentifier>{f451c1e3-40e1-4a05-a00e-22d2a2bd70fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KmlRenderer">
+      <UniqueIdentifier>{1cba4c6e-438e-46f2-a8c6-a343cdd191db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FontEngine">
+      <UniqueIdentifier>{dcbd7b18-5be9-4904-a9c6-07792d3fcfdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AGGRenderer">
+      <UniqueIdentifier>{737455e1-014f-4212-b295-d535728637bc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SymbolTrans.cpp">
+      <Filter>CSTransformers</Filter>
+    </ClCompile>
+    <ClCompile Include="DWFRenderer.cpp">
+      <Filter>DWFRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="EMapRenderer.cpp">
+      <Filter>DWFRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="EMapUpdateRenderer.cpp">
+      <Filter>DWFRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="EPlotRenderer.cpp">
+      <Filter>DWFRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="W2DRewriter.cpp">
+      <Filter>DWFRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="complex_polygon_gd.cpp">
+      <Filter>GDRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GDFillPatterns.cpp">
+      <Filter>GDRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GDRenderer.cpp">
+      <Filter>GDRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GDUtils.cpp">
+      <Filter>GDRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GDW2DRewriter.cpp">
+      <Filter>GDRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="RS_ByteData.cpp">
+      <Filter>GDRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="ObservationMesh.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="KmlContent.cpp">
+      <Filter>KmlRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="KmlIconStyle.cpp">
+      <Filter>KmlRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="KmlLineStyle.cpp">
+      <Filter>KmlRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="KmlPolyStyle.cpp">
+      <Filter>KmlRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="KmlRenderer.cpp">
+      <Filter>KmlRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="FontManager.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Oem\agg-2.4\src\agg_curves.cpp">
+      <Filter>AGGRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Oem\agg-2.4\font_freetype\agg_font_freetype.cpp">
+      <Filter>AGGRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Oem\agg-2.4\src\agg_line_aa_basics.cpp">
+      <Filter>AGGRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Oem\agg-2.4\src\agg_line_profile_aa.cpp">
+      <Filter>AGGRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Oem\agg-2.4\src\agg_sqrt_tables.cpp">
+      <Filter>AGGRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Oem\agg-2.4\src\agg_trans_affine.cpp">
+      <Filter>AGGRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Oem\agg-2.4\src\agg_vcgen_contour.cpp">
+      <Filter>AGGRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Oem\agg-2.4\src\agg_vcgen_stroke.cpp">
+      <Filter>AGGRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="AGGFillPatterns.cpp">
+      <Filter>AGGRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="AGGImageIO.cpp">
+      <Filter>AGGRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="AGGRenderer.cpp">
+      <Filter>AGGRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="AGGW2DRewriter.cpp">
+      <Filter>AGGRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="CriticalSection.cpp" />
+    <ClCompile Include="MapQuantization.cpp" />
+    <ClCompile Include="RenderUtil.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SymbolTrans.h">
+      <Filter>CSTransformers</Filter>
+    </ClInclude>
+    <ClInclude Include="DWFRenderer.h">
+      <Filter>DWFRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="DWFRSInputStream.h">
+      <Filter>DWFRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="EMapRenderer.h">
+      <Filter>DWFRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="EMapUpdateRenderer.h">
+      <Filter>DWFRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="EPlotRenderer.h">
+      <Filter>DWFRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="RSDWFInputStream.h">
+      <Filter>DWFRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="RSDWFOutputStream.h">
+      <Filter>DWFRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="W2DRewriter.h">
+      <Filter>DWFRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="whip_fill_library.h">
+      <Filter>DWFRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="whip_hatch_library.h">
+      <Filter>DWFRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="complex_polygon_gd.h">
+      <Filter>GDRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="GDFillPatterns.h">
+      <Filter>GDRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="GDRenderer.h">
+      <Filter>GDRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="GDUtils.h">
+      <Filter>GDRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="GDW2DRewriter.h">
+      <Filter>GDRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="RS_ByteData.h">
+      <Filter>GDRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ObservationMesh.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="KmlContent.h">
+      <Filter>KmlRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="KmlIconStyle.h">
+      <Filter>KmlRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="KmlLineStyle.h">
+      <Filter>KmlRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="KmlPolyStyle.h">
+      <Filter>KmlRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="KmlRenderer.h">
+      <Filter>KmlRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="FontManager.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="agg_context.h">
+      <Filter>AGGRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="agg_mg_overloads.h">
+      <Filter>AGGRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="AGGFillPatterns.h">
+      <Filter>AGGRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="AGGImageIO.h">
+      <Filter>AGGRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="AGGRenderer.h">
+      <Filter>AGGRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="AGGW2DRewriter.h">
+      <Filter>AGGRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="CriticalSection.h" />
+    <ClInclude Include="MapQuantization.h" />
+    <ClInclude Include="Renderers.h" />
+    <ClInclude Include="RenderUtil.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Renderers.rc" />
+  </ItemGroup>
+</Project>
