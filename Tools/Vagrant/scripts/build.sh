@@ -96,21 +96,10 @@ BUILD_COMPONENT="LinuxApt"
 check_build
 popd
 
-# Need an ubuntu-flavoured build_oem.sh if we're doing ubuntu
-if [ ${UBUNTU} -eq 1 ]
-then
-    cp ${BUILDROOT}/build_oem_ubuntu.sh .
-    chmod +x build_oem_ubuntu.sh
-    echo "Building Oem (Ubuntu)"
-    BUILD_COMPONENT="Oem (Ubuntu)"
-    ./build_oem_ubuntu.sh --prefix ${INSTALLROOT}
-    check_build
-else
-    echo "Building Oem (Regular)"
-    BUILD_COMPONENT="Oem (Regular)"
-    ./build_oem.sh --prefix ${INSTALLROOT}
-    check_build
-fi
+echo "Building Oem"
+BUILD_COMPONENT="Oem"
+./build_oem.sh --prefix ${INSTALLROOT}
+check_build
 
 echo "Building Fusion"
 pushd ${MGSOURCE}/Oem/fusion

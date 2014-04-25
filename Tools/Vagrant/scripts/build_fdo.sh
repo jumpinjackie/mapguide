@@ -150,7 +150,7 @@ else
 			rm -rf ${FDO_BUILD_AREA}
 			if [ ${LOCALSVN} -eq 1 ] 
 			then
-				svn export ${FDO_SRC} ${FDO_BUILD_AREA}
+				svn export -q ${FDO_SRC} ${FDO_BUILD_AREA}
 				modify_sdk_paths
 			else
 				echo "[info]: Performing fresh SVN export of ${FDO_SRC} (r${REVISION}) to ${FDO_BUILD_AREA}"
@@ -163,7 +163,7 @@ else
 		echo "[info]: Exporting svn revision ${REVISION}"
 		if [ ${LOCALSVN} -eq 1 ] 
 		then
-			svn export ${FDO_SRC} ${FDO_BUILD_AREA}
+			svn export -q ${FDO_SRC} ${FDO_BUILD_AREA}
 			modify_sdk_paths
 		else
 			echo "[info]: Performing fresh SVN export of ${FDO_SRC} (r${REVISION}) to ${FDO_BUILD_AREA}"
