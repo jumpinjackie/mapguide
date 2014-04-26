@@ -640,7 +640,7 @@ $(LEXERFILE): $(LEXTEMPLATE) $(LEXSKEL)
 	$(LEX) -BUs -Pxq -S$(LEXSKEL) -o$(LEXERFILE) $(LEXTEMPLATE) # This can take a long time
 
 $(PARSERCPP) $(PARSERHPP): $(PARSERFILE)
-	$(YACC) -d -v -o $(PARSERCPP) $(PARSERFILE)
+	if [ ! -f $(PARSERCPP) ]; then $(YACC) -d -v -o $(PARSERCPP) $(PARSERFILE); fi;
 
 .PHONY: test docs
 
