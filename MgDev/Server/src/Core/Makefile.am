@@ -91,6 +91,7 @@ noinst_HEADERS = $(include_SOURCES) \
 
 mgserver_LDADD = \
   -lACE \
+  -ldl \
   -ldb_cxx \
   -ldbxml \
   -ldwfcore \
