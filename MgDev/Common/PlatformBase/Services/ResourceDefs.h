@@ -264,6 +264,17 @@ PUBLISHED_API:
     ///
     static const STRING ApplicationDefinition;          ///\if INTERNAL value("ApplicationDefinition") \endif
 
+    ////////////////////////////////////////////////////////////////
+    /// \brief
+    /// This resource is a watermark definition.
+    ///
+    /// \remarks
+    /// It represents the watermark rendered in a map.
+    ///
+    /// \see \ref WatermarkDefinition_schema "WatermarkDefinition schema"
+    ///
+    static const STRING WatermarkDefinition;    ///\if INTERNAL value("WatermarkDefinition") \endif
+
 INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
@@ -281,17 +292,6 @@ INTERNAL_API:
     /// \see \ref PrintLayoutElementDefinition_schema "PrintLayoutElementDefinition schema"
     ///
     static const STRING PrintLayoutElementDefinition;        ///\if INTERNAL value("PrintLayoutElementDefinition") \endif
-
-    ////////////////////////////////////////////////////////////////
-    /// \brief
-    /// This resource is a watermark definition.
-    ///
-    /// \remarks
-    /// It represents the watermark rendered in a map.
-    ///
-    /// \see \ref WatermarkDefinition_schema "WatermarkDefinition schema"
-    ///
-    static const STRING WatermarkDefinition;    ///\if INTERNAL value("WatermarkDefinition") \endif
 
 
 INTERNAL_API:
