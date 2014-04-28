@@ -631,7 +631,7 @@ clean_csmap()
 #**********************************************************
 
 pushd Oem
-for lib in ace dwfcore dwftk dwfemap geos swigex bdbxml cppunit imake zlib libpng jpeg freetype gd agg json csmap;
+for lib in ace dwfcore dwftk dwfemap geos bdbxml cppunit imake zlib libpng jpeg freetype gd agg json csmap;
 do
     echo "$lib: Initialization..........................."
     init_"$lib"
