@@ -1,0 +1,13 @@
+Ubuntu 12.04
+------------
+
+build-essential bison automake libtool libpng-dev libjpeg62-dev libxslt-dev libfreetype6-dev libpcre3-dev openjdk-7-jdk subversion lintian ant scons dos2unix liboss4-salsa-dev libldap-dev libssl-dev libcurl4-openssl-dev libexpat-dev libmysqlclient-dev unixODBC-dev python-dev libpq-dev libcppunit-dev
+libboost-thread1.46-dev (for non-internal boost for cmake)
+libboost-date-time-dev
+
+Ubuntu 14.04
+------------
+
+Need atomic.h copied to /usr/include/asm/atomic.h
+
+build-essential bison automake libtool libpng-dev libjpeg62-dev libxslt-dev libfreetype6-dev libpcre3-dev openjdk-7-jdk subversion lintian ant scons dos2unix libldap-dev libssl-dev libcurl4-openssl-dev libexpat-dev libmysqlclient-dev unixODBC-dev python-dev libpq-dev libcppunit-dev

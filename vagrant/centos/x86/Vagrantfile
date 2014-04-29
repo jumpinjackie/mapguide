@@ -1,0 +1,247 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # All Vagrant configuration is done here. The most common configuration
+  # options are documented and commented below. For a complete reference,
+  # please see the online documentation at vagrantup.com.
+
+  # Every Vagrant virtual environment requires a box to build off of.
+  config.vm.box = "vagrant-centos64-x86"
+
+  # The url from where the 'config.vm.box' box will be fetched if it
+  # doesn't already exist on the user's system.
+  # config.vm.box_url = "http://domain.com/path/to/above.box"
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing "localhost:8080" will access port 80 on the guest machine.
+  # config.vm.network :forwarded_port, guest: 80, host: 8080
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  # config.vm.network :private_network, ip: "192.168.33.10"
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network :public_network
+
+  # If true, then any SSH connections made will enable agent forwarding.
+  # Default value: false
+  # config.ssh.forward_agent = true
+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  config.vm.synced_folder "../../sources", "/mapguide_sources"
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+  # config.vm.provider :virtualbox do |vb|
+  #   # Don't boot with headless mode
+  #   vb.gui = true
+  #
+  #   # Use VBoxManage to customize the VM. For example to change memory:
+  #   vb.customize ["modifyvm", :id, "--memory", "1024"]
+  # end
+  #
+  # View the documentation for the provider you're using for more
+  # information on available options.
+
+  # Enable provisioning with Puppet stand alone.  Puppet manifests
+  # are contained in a directory path relative to this Vagrantfile.
+  # You will need to create the manifests directory and a manifest in
+  # the file centos6.4-x86-mapguide.pp in the manifests_path directory.
+  #
+  # An example Puppet manifest to provision the message of the day:
+  #
+  # # group { "puppet":
+  # #   ensure => "present",
+  # # }
+  # #
+  # # File { owner => 0, group => 0, mode => 0644 }
+  # #
+  # # file { '/etc/motd':
+  # #   content => "Welcome to your Vagrant-built virtual machine!
+  # #               Managed by Puppet.\n"
+  # # }
+  #
+  # config.vm.provision :puppet do |puppet|
+  #   puppet.manifests_path = "manifests"
+  #   puppet.manifest_file  = "site.pp"
+  # end
+
+  # Enable provisioning with chef solo, specifying a cookbooks path, roles
+  # path, and data_bags path (all relative to this Vagrantfile), and adding
+  # some recipes and/or roles.
+  #
+  # config.vm.provision :chef_solo do |chef|
+  #   chef.cookbooks_path = "../my-recipes/cookbooks"
+  #   chef.roles_path = "../my-recipes/roles"
+  #   chef.data_bags_path = "../my-recipes/data_bags"
+  #   chef.add_recipe "mysql"
+  #   chef.add_role "web"
+  #
+  #   # You may also specify custom JSON attributes:
+  #   chef.json = { :mysql_password => "foo" }
+  # end
+
+  # Enable provisioning with chef server, specifying the chef server URL,
+  # and the path to the validation key (relative to this Vagrantfile).
+  #
+  # The Opscode Platform uses HTTPS. Substitute your organization for
+  # ORGNAME in the URL and validation key.
+  #
+  # If you have your own Chef Server, use the appropriate URL, which may be
+  # HTTP instead of HTTPS depending on your configuration. Also change the
+  # validation key to validation.pem.
+  #
+  # config.vm.provision :chef_client do |chef|
+  #   chef.chef_server_url = "https://api.opscode.com/organizations/ORGNAME"
+  #   chef.validation_key_path = "ORGNAME-validator.pem"
+  # end
+  #
+  # If you're using the Opscode platform, your validator client is
+  # ORGNAME-validator, replacing ORGNAME with your organization name.
+  #
+  # If you have your own Chef Server, the default validation client name is
+  # chef-validator, unless you changed the configuration.
+  #
+  #   chef.validation_client_name = "ORGNAME-validator"
+  
+  $script = <<SCRIPT
+BUILD_COMPONENT=
+check_build()
+{
+	error=$?
+	if [ $error -ne 0 ]; then
+		echo "[error]: ${BUILD_COMPONENT} - Error build failed ($error)"
+		exit $error
+	fi
+}
+if hash scons 2>/dev/null; then
+	echo [provision]: We have scons
+else
+	echo [provision]: We do not have scons. Installing it
+	sudo rpm -Uvh /mapguide_sources/scons-2.3.0-1.noarch.rpm
+	check_build
+fi
+cd ~
+echo [provision]: Home directory is `pwd`
+echo [provision]: Checking directories
+HAVE_FDO=0
+HAVE_FDO_LIBS=0
+HAVE_MAPGUIDE=0
+MG_UNIT_TEST=0
+SCRIPT_ROOT=~/scripts
+FDO_SRC_ROOT=~/fdo
+FDO_SRC=$FDO_SRC_ROOT/trunk
+FDO_LIB_SRC=~/fdo_rdbms_thirdparty
+MG_SRC_ROOT=~/mapguide/trunk
+MG_SRC=$MG_SRC_ROOT/MgDev
+if [ -d $FDO_SRC ]; 
+then
+    HAVE_FDO=1
+fi
+if [ -d $FDO_LIB_SRC ];
+then
+    HAVE_FDO_LIBS=1
+fi
+if [ -d $MG_SRC ];
+then
+    HAVE_MAPGUIDE=1
+fi
+echo [provision]: Checking all tools and libs are in place
+yum install -y gcc-* gd-* automake bison byacc flex doxygen expat expat-devel libtool libjpeg-devel libpng libpng-devel libxml2 libxml2-devel openssl curl curl-devel libxslt libxslt-devel subversion java-1.7.0-openjdk java-1.7.0-openjdk-devel ant dos2unix openssh-server openldap-devel alsa-lib-devel pcre-devel unixODBC-devel libcom_err-devel krb5-devel openssl-devel mysql-devel postgresql-devel unixODBC
+echo [provision]: Copying shell scripts
+mkdir -p $SCRIPT_ROOT
+cp -f /vagrant/*.sh $SCRIPT_ROOT
+cp -f /vagrant/*.pl $SCRIPT_ROOT
+echo [provision]: Flip Ubuntu switch
+cd $SCRIPT_ROOT
+sed -i 's/UBUNTU=1/UBUNTU=0/g' build.sh
+sed -i 's/UBUNTU=1/UBUNTU=0/g' build_fdo.sh
+sed -i 's/FDO_PLATFORM=64/FDO_PLATFORM=32/g' build_fdo.sh
+sed -i 's/FDO_CPU=x64/FDO_CPU=x86/g' build_fdo.sh
+sed -i 's/FDO_BUILD_CPU=amd64/FDO_BUILD_CPU=i386/g' build_fdo.sh
+sed -i 's/LIB_DIRNAME=lib64/LIB_DIRNAME=lib/g' build_fdo.sh
+if [ $HAVE_FDO_LIBS -eq 0 ];
+then
+    echo [provision]: Extracting FDO thirdparty libs
+    tar -zxf /mapguide_sources/fdo_rdbms_thirdparty.tar.gz -C ~
+fi
+if [ $HAVE_FDO -eq 0 ];
+then
+    echo [provision]: Extracting FDO trunk working copy
+    mkdir -p ~/fdo
+    tar -zxf /mapguide_sources/fdo-checkout.tar.gz -C ~/fdo
+fi
+if [ $HAVE_MAPGUIDE -eq 0 ];
+then
+    echo [provision]: Extracting MapGuide trunk working copy
+    mkdir -p $MG_SRC_ROOT
+    tar -zxf /mapguide_sources/mapguide-checkout.tar.gz -C $MG_SRC_ROOT
+fi
+echo [provision]: svn update FDO
+BUILD_COMPONENT="svn update FDO"
+svn update $FDO_SRC
+check_build
+echo [provision]: svn update MapGuide
+BUILD_COMPONENT="svn update MapGuide"
+svn update $MG_SRC
+check_build
+if [ -d /mapguide_sources/patches/fdo ];
+then
+    echo [provision]: Applying FDO source patches
+    cp -R /mapguide_sources/patches/fdo/* $FDO_SRC
+fi
+if [ -d /mapguide_sources/patches/mapguide ];
+then
+    echo [provision]: Applying MapGuide source patches
+    cp -R /mapguide_sources/patches/mapguide/* $MG_SRC
+fi
+cd ~/scripts
+BUILD_COMPONENT="FDO"
+sudo -E ./build_fdo.sh 2>&1 | tee ~/fdo_build.log
+check_build
+BUILD_COMPONENT="MapGuide"
+sudo -E ./build.sh 2>&1 | tee ~/mapguide_build.log
+check_build
+if [ $MG_UNIT_TEST -eq 1 ];
+then
+    echo [provision]: Unit test MapGuide
+    cd $SCRIPT_ROOT/mgdev
+    sudo make check 2>&1 | tee ~/mapguide_unit_test.log
+fi
+cd $SCRIPT_ROOT
+sudo mkdir -p /vagrant/build
+sudo mv -f ~/*.log /vagrant/build
+sudo cp bin/*.tar.gz /vagrant/build
+sudo cp fdosdk*.tar.gz /vagrant/build
+if [ ! -d /mapguide_sources/updated ]; then
+    sudo mkdir -p /mapguide_sources/updated
+    cd ~/mapguide/trunk
+    echo [provision]: Updating mapguide source tarball
+    tar -zcf mapguide-checkout.tar.gz MgDev
+    sudo mv mapguide-checkout.tar.gz /mapguide_sources/updated
+    cd ~/fdo
+    echo [provision]: Updating fdo source tarball
+    tar -zcf fdo-checkout.tar.gz trunk
+    sudo mv fdo-checkout.tar.gz /mapguide_sources/updated
+else
+    echo [provision]: Updated tarballs already exist. Doing nothing
+fi
+echo [provision]: Build complete
+SCRIPT
+  
+  config.vm.provision "shell",
+    privileged: false,
+    inline: $script
+end
