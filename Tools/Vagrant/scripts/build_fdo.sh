@@ -18,6 +18,7 @@ UBUNTU=0
 FDO_CPU=x86
 FDO_PLATFORM=32
 FDO_BUILD_CPU=i386
+LIB_DIRNAME=lib
 
 # FDO install directory
 FDO_VER_FULL=${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}
@@ -97,12 +98,76 @@ FDO_SRC=/home/vagrant/fdo/trunk
 FDO_BUILD_AREA=${BUILDROOT}/fdo_build_area
 FDO_FILELIST=${FDO_BUILD_AREA}/install/filelist
 
+shim_thirdparty_lib_paths()
+{
+    echo "[info]: Shimming include/lib paths"
+    # Note:
+    #
+    # FDO assumes you're going to be linking against an SDK whose directory structure
+    # is different from how system dev libraries are installed on Ubuntu, so we leverage the
+    # power of symlinks to set up the expected directory structure that points to the system
+    # headers and libraries, and modify setenvironment.sh to point to this shimmed directory
+    # structure
+    #
+    # This structure assumes you've apt-get installed the following:
+    #
+    #   libmysqlclient-dev libpq-dev
+    #
+    mkdir -p ~/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU
+    # PostgreSQL include path
+    if [ ! -d ~/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/include ];
+    then
+        ln -s /usr/include/postgresql ~/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/include
+        echo "[info]: Symlinked PostgreSQL include path"
+    else
+        echo "[info]: PostgreSQL include path already symlinked"
+    fi
+    # PostgreSQL lib path
+    if [ ! -d ~/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME ];
+    then
+        ln -s /usr/lib ~/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME
+        echo "[info]: Symlinked PostgreSQL lib path"
+    else
+        echo "[info]: PostgreSQL lib path already symlinked"
+    fi
+    mkdir -p ~/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU
+    # MySQL include path
+    if [ ! -d ~/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/include ];
+    then
+        ln -s /usr/include/mysql ~/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/include
+        echo "[info]: Symlinked MySQL include path"
+    else
+        echo "[info]: MySQL include path already symlinked"
+    fi
+    # MySQL lib path
+    if [ ! -d ~/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$LIB_DIRNAME ];
+    then
+        if [ ${FDO_PLATFORM} -eq 32 ]; 
+        then
+            ln -s /usr/lib/i386-linux-gnu ~/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$LIB_DIRNAME
+            echo "[info]: Symlinked MySQL lib path (x86)"
+        else
+            ln -s /usr/lib/x86_64-linux-gnu ~/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$LIB_DIRNAME
+            echo "[info]: Symlinked MySQL lib path (x64)"
+        fi
+    else
+        echo "[info]: MySQL lib path already symlinked"
+    fi
+}
+
 modify_sdk_paths()
 {
-	echo "[info]: Updating setenvironment.sh"
-	# Note: Change your paths here if they're different
-	sed -i 's/export FDOMYSQL=$FDOTHIRDPARTY\/mysql\/rhlinux/export FDOMYSQL=\/home\/vagrant\/fdo_rdbms_thirdparty\/mysql\/'"$FDO_CPU"'/g' ${FDO_BUILD_AREA}/setenvironment.sh
-	sed -i 's/export FDOPOSTGRESQL=$FDOTHIRDPARTY\/pgsql/export FDOPOSTGRESQL=\/home\/vagrant\/fdo_rdbms_thirdparty\/pgsql/g' ${FDO_BUILD_AREA}/setenvironment.sh
+    if [ ${UBUNTU} -eq 1 ];
+    then
+        echo "[info]: Updating setenvironment.sh"
+	    sed -i 's/export FDOMYSQL=$FDOTHIRDPARTY\/mysql\/rhlinux/export FDOMYSQL=\/home\/vagrant\/fdo_rdbms_thirdparty_system\/mysql\/'"$FDO_CPU"'/g' ${FDO_BUILD_AREA}/setenvironment.sh
+	    sed -i 's/export FDOPOSTGRESQL=$FDOTHIRDPARTY\/pgsql/export FDOPOSTGRESQL=\/home\/vagrant\/fdo_rdbms_thirdparty_system\/pgsql\/'"$FDO_CPU"'/g' ${FDO_BUILD_AREA}/setenvironment.sh
+    else
+        echo "[info]: Updating setenvironment.sh"
+	    # Note: Change your paths here if they're different
+	    sed -i 's/export FDOMYSQL=$FDOTHIRDPARTY\/mysql\/rhlinux/export FDOMYSQL=\/home\/vagrant\/fdo_rdbms_thirdparty\/mysql\/'"$FDO_CPU"'/g' ${FDO_BUILD_AREA}/setenvironment.sh
+	    sed -i 's/export FDOPOSTGRESQL=$FDOTHIRDPARTY\/pgsql/export FDOPOSTGRESQL=\/home\/vagrant\/fdo_rdbms_thirdparty\/pgsql/g' ${FDO_BUILD_AREA}/setenvironment.sh
+    fi
 	echo "export FDOORACLE=/home/vagrant/fdo_rdbms_thirdparty/oracle/${FDO_CPU}/instantclient_11_2/sdk" >> ${FDO_BUILD_AREA}/setenvironment.sh
 }
 
@@ -124,6 +189,11 @@ echo " Re-use previous build area: ${PRESERVE_BUILD_ROOT}"
 echo "***********************************************************"
 start_time=`date +%s`
 REVISION=`svn info ${FDO_SRC} | perl revnum.pl`
+
+if [ ${UBUNTU} -eq 1 ];
+then
+    shim_thirdparty_lib_paths
+fi
 
 if [ -d ${FDO_INST} ];
 then

@@ -139,6 +139,7 @@ echo [provision]: Checking directories
 HAVE_FDO=0
 HAVE_FDO_LIBS=0
 HAVE_MAPGUIDE=0
+MG_UNIT_TEST=0
 SCRIPT_ROOT=~/scripts
 FDO_SRC_ROOT=~/fdo
 FDO_SRC=$FDO_SRC_ROOT/trunk
@@ -170,6 +171,7 @@ sed -i 's/UBUNTU=1/UBUNTU=0/g' build_fdo.sh
 sed -i 's/FDO_PLATFORM=32/FDO_PLATFORM=64/g' build_fdo.sh
 sed -i 's/FDO_CPU=x86/FDO_CPU=x64/g' build_fdo.sh
 sed -i 's/FDO_BUILD_CPU=i386/FDO_BUILD_CPU=amd64/g' build_fdo.sh
+sed -i 's/LIB_DIRNAME=lib/LIB_DIRNAME=lib64/g' build_fdo.sh
 if [ $HAVE_FDO_LIBS -eq 0 ];
 then
     echo [provision]: Extracting FDO thirdparty libs
@@ -195,6 +197,16 @@ echo [provision]: svn update MapGuide
 BUILD_COMPONENT="svn update MapGuide"
 svn update $MG_SRC
 check_build
+if [ -d /mapguide_sources/patches/fdo ];
+then
+    echo [provision]: Applying FDO source patches
+    cp -R /mapguide_sources/patches/fdo/* $FDO_SRC
+fi
+if [ -d /mapguide_sources/patches/mapguide ];
+then
+    echo [provision]: Applying MapGuide source patches
+    cp -R /mapguide_sources/patches/mapguide/* $MG_SRC
+fi
 cd ~/scripts
 BUILD_COMPONENT="FDO"
 sudo -E ./build_fdo.sh 2>&1 | tee ~/fdo_build.log
@@ -202,9 +214,12 @@ check_build
 BUILD_COMPONENT="MapGuide"
 sudo -E ./build.sh 2>&1 | tee ~/mapguide_build.log
 check_build
-echo [provision]: Unit test MapGuide
-cd $SCRIPT_ROOT/mgdev
-sudo make check 2>&1 | tee ~/mapguide_unit_test.log
+if [ $MG_UNIT_TEST -eq 1 ];
+then
+    echo [provision]: Unit test MapGuide
+    cd $SCRIPT_ROOT/mgdev
+    sudo make check 2>&1 | tee ~/mapguide_unit_test.log
+fi
 cd $SCRIPT_ROOT
 sudo mkdir -p /vagrant/build
 sudo mv -f ~/*.log /vagrant/build

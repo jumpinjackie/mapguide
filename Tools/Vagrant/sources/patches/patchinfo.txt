@@ -1,0 +1,2 @@
+http://trac.osgeo.org/csmap/ticket/172
+http://trac.osgeo.org/fdo/ticket/888
