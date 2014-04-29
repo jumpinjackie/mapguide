@@ -5375,7 +5375,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES
 $(LEXERFILE): $(LEXTEMPLATE) $(LEXSKEL)
 
 $(PARSERCPP) $(PARSERHPP): $(PARSERFILE)
-	$(YACC) -d -v -o $(PARSERCPP) $(PARSERFILE)
+	if [ ! -f $(PARSERCPP) ]; then $(YACC) -d -v -o $(PARSERCPP) $(PARSERFILE); fi;
 
 .PHONY: test docs
 

@@ -118,7 +118,10 @@ init_dwfcore()
 build_dwfcore()
 {
     pushd DWFTK7.1/develop/global/src/dwfcore
+    aclocal
     libtoolize --copy --force
+    automake --add-missing --copy
+    autoconf
     sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
     make
     check_build
@@ -151,7 +154,10 @@ init_dwftk()
 build_dwftk()
 {
     pushd DWFTK7.1/develop/global/src/dwf
+    aclocal
     libtoolize --copy --force
+    automake --add-missing --copy
+    autoconf
     sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
     make
     check_build
@@ -184,7 +190,10 @@ init_dwfemap()
 build_dwfemap()
 {
     pushd DWFTK7.1/develop/global/src/dwfemap
+    aclocal
     libtoolize --copy --force
+    automake --add-missing --copy
+    autoconf
     sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
     make
     check_build
@@ -622,7 +631,7 @@ clean_csmap()
 #**********************************************************
 
 pushd Oem
-for lib in ace dwfcore dwftk dwfemap geos swigex bdbxml cppunit imake zlib libpng jpeg freetype gd agg json csmap;
+for lib in ace dwfcore dwftk dwfemap geos bdbxml cppunit imake zlib libpng jpeg freetype gd agg json csmap;
 do
     echo "$lib: Initialization..........................."
     init_"$lib"

@@ -79,8 +79,8 @@ public:
   AnyAtomicType::Ptr createInstance(const XMLCh* value,
                                     const DynamicContext* context) const
   {
-    return createInstanceNoCheck(DatatypeFactoryTemplate<TYPE>::getPrimitiveTypeURI(),
-                                 DatatypeFactoryTemplate<TYPE>::getPrimitiveTypeName(), value, context);
+    return this->createInstanceNoCheck(DatatypeFactoryTemplate<TYPE>::getPrimitiveTypeURI(),
+                                       DatatypeFactoryTemplate<TYPE>::getPrimitiveTypeName(), value, context);
   }
 
   bool checkInstance(const XMLCh* value,
