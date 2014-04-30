@@ -1,9 +1,0 @@
-.olControlOverviewMapRectReplacement,
-.olControlOverviewMapExtentRectangle {
-    overflow: hidden;
-    background-image: url("blank.gif");
-    cursor: move;
-    border: 2px dotted red;
-}
-
-
