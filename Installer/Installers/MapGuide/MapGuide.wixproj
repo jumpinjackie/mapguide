@@ -79,7 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Lang\MapGuide_en-US.wxl" />
-    <EmbeddedResource Include="Lang\MapGuide_es-ES.wxl" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixUtilExtension">

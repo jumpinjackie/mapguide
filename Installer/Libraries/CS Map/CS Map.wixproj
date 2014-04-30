@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Lang\CSMap_en-US.wxl" />
-    <EmbeddedResource Include="Lang\CSMap_es-ES.wxl" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--
