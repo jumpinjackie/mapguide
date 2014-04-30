@@ -129,41 +129,48 @@ namespace Wintellect.Paraffin
 
         internal static Int32 Main ( string [] args )
         {
-            LoadProcessFeatureMap();
-            
-            directoryNumber = 0;
-            componentNumber = 0;
-            errorMessage = String.Empty;
-
             // Think positive that everything will run completely.
             Int32 returnValue = 0;
-            argValues = new ParaffinArgParser ( );
-            if ( args.Length > 0 )
+            try
             {
-                Boolean parsed = argValues.Parse ( args );
-                if ( true == parsed )
+                LoadProcessFeatureMap();
+
+                directoryNumber = 0;
+                componentNumber = 0;
+                errorMessage = String.Empty;
+
+                argValues = new ParaffinArgParser();
+                if (args.Length > 0)
                 {
-                    if ( true == argValues.Update )
+                    Boolean parsed = argValues.Parse(args);
+                    if (true == parsed)
                     {
-                        returnValue = UpdateExistingFile ( );
-                    }
-                    else
-                    {
-                        returnValue = CreateNewFile ( );
+                        if (true == argValues.Update)
+                        {
+                            returnValue = UpdateExistingFile();
+                        }
+                        else
+                        {
+                            returnValue = CreateNewFile();
+                        }
                     }
                 }
-            }
-            else
-            {
-                argValues.OnUsage ( String.Empty );
-                returnValue = 1;
-            }
+                else
+                {
+                    argValues.OnUsage(String.Empty);
+                    returnValue = 1;
+                }
 
-            if ( false == String.IsNullOrEmpty ( errorMessage ) )
-            {
-                Console.WriteLine ( errorMessage );
+                if (false == String.IsNullOrEmpty(errorMessage))
+                {
+                    Console.WriteLine(errorMessage);
+                }
             }
-
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                returnValue = -1;
+            }
             return ( returnValue );
         }
 
@@ -216,7 +223,7 @@ namespace Wintellect.Paraffin
 
             ProcessFeatureMap(doc, Path.GetFileNameWithoutExtension(argValues.FileName) );
 
-            GenerateCreateFolderElements(doc, ".svn", argValues.Win64);
+            ProcessFeaturePatternMap(doc);
 
             // We're done, save it!
             doc.Save ( argValues.FileName );
@@ -225,6 +232,7 @@ namespace Wintellect.Paraffin
 
         private static Dictionary<string, string> _identifierOverrides = new Dictionary<string, string>();
         private static Dictionary<string, string> _featureMap = new Dictionary<string, string>();
+        private static Dictionary<Regex, string> _featurePatternMap = new Dictionary<Regex, string>();
 
         private static void LoadProcessFeatureMap()
         {
@@ -240,6 +248,15 @@ namespace Wintellect.Paraffin
                 foreach (var m in mappings)
                     _featureMap[m.Name] = m.Suffix;
 
+                var patterns = from item in doc.Descendants("FeaturePattern")
+                               select new
+                               {
+                                   Pattern = item.Attribute("Pattern").Value,
+                                   Feature = item.Attribute("Feature").Value
+                               };
+                foreach (var m in patterns)
+                    _featurePatternMap[new Regex(m.Pattern)] = m.Feature;
+
                 var overrides = from item in doc.Descendants("IdentifierOverride")
                                 select new
                                 {
@@ -248,39 +265,6 @@ namespace Wintellect.Paraffin
                                 };
                 foreach (var o in overrides)
                     _identifierOverrides[o.Pattern] = o.Identifier;
-            }
-        }
-
-        static int createEmptyFolderCounter = 1;
-
-        /// <summary>
-        /// Generates <CreateFolder/> elements for all empty directory elements under the specified name
-        /// </summary>
-        /// <param name="doc"></param>
-        /// <param name="rootDirName"></param>
-        private static void GenerateCreateFolderElements(XDocument doc, string rootDirName, bool win64)
-        {
-            var matches = doc.Descendants("{" + nsWiX3 + "}Directory").Where(x => x.Attribute("Name").Value == rootDirName);
-            foreach (var dir in matches)
-            {
-                int count = 0;
-                Console.WriteLine("\tChecking Directory (Id=" + dir.Attribute("Id") + ") for empty directories");
-                foreach (var emptyDir in dir.Descendants("{" + nsWiX3 + "}Directory").Where(x => !x.HasElements))
-                {
-                    //If you just so happen to have a component named CreateEmptyFolderComponent, well ... too bad :P
-                    var componentId = (emptyDir.Attribute("Id").Value + "CreateEmptyFolderComponent" + createEmptyFolderCounter).Replace(" ", string.Empty);
-                    var el = new XElement("{" + nsWiX3 + "}Component",
-                        new XAttribute("Id", componentId),
-                        new XAttribute("Win64", win64 ? "yes" : "no"),
-                        new XAttribute("Feature", "SvnMetadataFeature"),
-                        new XAttribute("Guid", Guid.NewGuid().ToString()),
-                        new XElement("{" + nsWiX3 + "}CreateFolder")
-                    );
-                    emptyDir.Add(el);
-                    createEmptyFolderCounter++;
-                    count++;
-                }
-                Console.WriteLine(count + " CreateFolder elements generated");
             }
         }
 
@@ -349,7 +333,69 @@ namespace Wintellect.Paraffin
             {
                 el.Remove();
             }
-            Console.WriteLine("Moved {0} elements to new ComponentGroup. Removed {1} elements from original ComponentGroup", moved, remove.Count);
+            if (moved > 0 || remove.Count > 0)
+                Console.WriteLine("Moved {0} elements to new ComponentGroup. Removed {1} elements from original ComponentGroup", moved, remove.Count);
+        }
+
+        private static void ProcessFeaturePatternMap(XDocument doc)
+        {
+            Dictionary<string, HashSet<string>> componentMaps = new Dictionary<string, HashSet<string>>();
+
+            foreach (var pattern in _featurePatternMap.Keys)
+            {
+                var featureName = _featurePatternMap[pattern];
+                if (!componentMaps.ContainsKey(featureName))
+                    componentMaps[featureName] = new HashSet<string>();
+                //Console.WriteLine("Checking if any elements match: " + pattern);
+                var directories = doc.Descendants("{" + nsWiX3 + "}Directory");
+                foreach (var dir in directories)
+                {
+                    //Console.WriteLine("\tProcessing Directory (Id=" + dir.Attribute("Id") + ")");
+                    foreach (var comp in dir.Descendants("{" + nsWiX3 + "}Component"))
+                    {
+                        var fileDesc = comp.Descendants("{" + nsWiX3 + "}File").FirstOrDefault();
+                        if (fileDesc != null)
+                        {
+                            string source = fileDesc.Attribute("Source").Value;
+                            var matches = pattern.Matches(source);
+                            if (matches.Count >= 1)
+                            {
+                                //Console.WriteLine("{0} matched {1}", source, pattern);
+                                Console.WriteLine("Set Component Feature (" + comp.Attribute("Id") + ") to use feature (" + featureName + ")");
+                                componentMaps[featureName].Add(comp.Attribute("Id").Value);
+                                comp.SetAttributeValue("Feature", featureName);
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Remove these collected ids from the existing component group
+            var currentGroup = doc.Descendants("{" + nsWiX3 + "}ComponentGroup").First();
+            var remove = new List<XElement>();
+
+            int removed = 0;
+            //Remove these components from the component grup
+            foreach (var pattern in _featurePatternMap.Keys)
+            {
+                var featureName = _featurePatternMap[pattern];
+                if (componentMaps[featureName].Count > 0)
+                {
+                    foreach (var cid in componentMaps[featureName])
+                    {
+                        //Console.WriteLine("Removing component id {0} from ComponentGroup", cid);
+                        var matches = currentGroup.Descendants("{" + nsWiX3 + "}ComponentRef").Where(x => x.Attribute("Id").Value == cid).ToArray();
+                        foreach (var r in matches)
+                        {
+                            r.Remove();
+                            removed++;
+                        }
+                    }
+                }
+            }
+            if (removed > 0)
+                Console.WriteLine("{0} elements detached from ComponentGroup", removed);
+            //Console.WriteLine("Moved {0} elements to new ComponentGroup. Removed {1} elements from original ComponentGroup", moved, remove.Count);
         }
 
         /// <summary>
@@ -430,7 +476,7 @@ namespace Wintellect.Paraffin
 
                 ProcessFeatureMap(outputDoc, Path.GetFileNameWithoutExtension(outputFile));
 
-                GenerateCreateFolderElements(outputDoc, ".svn", argValues.Win64);
+                ProcessFeaturePatternMap(outputDoc);
 
                 // All OK, Jumpmaster!
                 outputDoc.Save ( outputFile );

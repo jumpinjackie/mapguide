@@ -84,15 +84,24 @@
            Directory="MapGuideOpenSourceMenuLocation"
            Name="!(loc.Shortcut_SiteAdmin)"
            Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/mapadmin/login.php" />
-          <util:InternetShortcut Id="ApacheMapAgent"
-            Directory="MapGuideOpenSourceMenuLocation"
-            Name="!(loc.Shortcut_MapAgent)"
-            Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/mapagent/index.html" />
           <util:InternetShortcut Id="ApacheGetMaestro"
             Directory="MapGuideOpenSourceMenuLocation"
             Name="!(loc.Shortcut_GetMaestro)"
             Target="http://trac.osgeo.org/mapguide/wiki/maestro" />
           <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ApacheShortcut">
+            <RegistryValue
+              Value="Installed"
+              Type="string"
+              KeyPath="yes" />
+          </RegistryKey>
+        </Component>
+        <Component Id="WebApacheMapAgentShortcutComponent" Win64="$(var.Win64)" Guid="BB57DB3F-73E3-4DAD-8899-33A4DC398579">
+          <Condition>MGWEB_CONFIG=&quot;APACHE&quot;</Condition>
+          <util:InternetShortcut Id="ApacheMapAgent"
+            Directory="MapGuideOpenSourceMenuLocation"
+            Name="!(loc.Shortcut_MapAgent)"
+            Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/mapagent/index.html" />
+          <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ApacheMapAgentShortcut">
             <RegistryValue
               Value="Installed"
               Type="string"
@@ -187,15 +196,24 @@
            Directory="MapGuideOpenSourceMenuLocation"
            Name="!(loc.Shortcut_SiteAdmin)"
            Target="http://localhost/[VIRTUALDIR]/mapadmin/login.php" />
-          <util:InternetShortcut Id="IISMapAgent"
-            Directory="MapGuideOpenSourceMenuLocation"
-            Name="!(loc.Shortcut_MapAgent)"
-            Target="http://localhost/[VIRTUALDIR]/mapagent/index.html" />
           <util:InternetShortcut Id="IISGetMaestro"
             Directory="MapGuideOpenSourceMenuLocation"
             Name="!(loc.Shortcut_GetMaestro)"
             Target="http://trac.osgeo.org/mapguide/wiki/maestro" />
           <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISShortcut">
+            <RegistryValue
+              Value="Installed"
+              Type="string"
+              KeyPath="yes" />
+          </RegistryKey>
+        </Component>
+        <Component Id="WebIISMapAgentShortcutComponent" Win64="$(var.Win64)" Guid="BEB5E02C-8D04-46FB-91E4-6EDB033414F3">
+          <Condition>MGWEB_CONFIG=&quot;IIS&quot;</Condition>
+          <util:InternetShortcut Id="IISMapAgent"
+            Directory="MapGuideOpenSourceMenuLocation"
+            Name="!(loc.Shortcut_MapAgent)"
+            Target="http://localhost/[VIRTUALDIR]/mapagent/index.html" />
+          <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISMapAgentShortcut">
             <RegistryValue
               Value="Installed"
               Type="string"

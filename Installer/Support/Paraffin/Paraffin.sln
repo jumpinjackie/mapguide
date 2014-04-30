@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Windows Desktop
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paraffin", "Paraffin.csproj", "{69CEBB42-4C4B-4546-9DEE-A5183E989214}"
 EndProject
 Global

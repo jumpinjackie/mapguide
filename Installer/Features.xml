@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <FeatureMap>
-  <DirectorySearch Name=".svn" Suffix="_SVNMETADATA" />
+  <FeaturePattern Pattern="www\\mapagent\\(.*\.html|.*\.php|.*\.js)" Feature="WebExtMapAgentTestPagesFeature" />
+  <FeaturePattern Pattern="www\\mapviewernet\\serveradminhelper.aspx" Feature="WebExtMapAgentTestPagesFeature" />
+  <FeaturePattern Pattern="www\\mapviewernet\\serveradminhelper.php" Feature="WebExtMapAgentTestPagesFeature" />
+  <FeaturePattern Pattern="www\\mapviewernet\\serveradminhelper.jsp" Feature="WebExtMapAgentTestPagesFeature" />
   <IdentifierOverride Pattern="Server\bin\mgserver.exe" Identifier="MGSERVER_EXE" />
   <IdentifierOverride Pattern="Apache24\bin\httpd.exe" Identifier="HTTPD_EXE" />
   <IdentifierOverride Pattern="Tomcat\bin\service.bat" Identifier="TOMCAT_SERVICE_BAT" />
