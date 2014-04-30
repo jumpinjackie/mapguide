@@ -274,25 +274,25 @@ if "%TYPECOMPONENT%"=="web" goto quit
 echo [install]: web Tier
 
 echo [install]: Web Tier - localized
-%XCOPY% "%MG_WEB_SRC%\localized" "%MG_OUTPUT_WEB%\www\localized" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\localized" "%MG_OUTPUT_WEB%\www\localized" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapadmin
-%XCOPY% "%MG_WEB_SRC%\mapadmin" "%MG_OUTPUT_WEB%\www\mapadmin" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\mapadmin" "%MG_OUTPUT_WEB%\www\mapadmin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapagent
 %XCOPY% "%MG_BUILD_MAPAGENT_PATH%" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:svn_excludes.txt+mapagent_excludes.txt+%TYPEBUILD%_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - MapGuide API unmanaged binaries
 %XCOPY% "%MG_WEB_BIN%\%TYPEBUILD%" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:php_excludes.txt+dotnetapi_excludes.txt+dotnetxml_excludes.txt+java_excludes.txt+svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapagent test forms
-%XCOPY% "%MG_UNIT_TEST%\WebTier\MapAgent\MapAgentForms" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_UNIT_TEST%\WebTier\MapAgent\MapAgentForms" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - stdicons
-%XCOPY% "%MG_WEB_SRC%\stdicons" "%MG_OUTPUT_WEB%\www\stdicons" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\stdicons" "%MG_OUTPUT_WEB%\www\stdicons" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - viewerfiles
-%XCOPY% "%MG_WEB_SRC%\viewerfiles" "%MG_OUTPUT_WEB%\www\viewerfiles" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\viewerfiles" "%MG_OUTPUT_WEB%\www\viewerfiles" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - schemareport
-%XCOPY% "%MG_WEB_SRC%\schemareport" "%MG_OUTPUT_WEB%\www\schemareport" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\schemareport" "%MG_OUTPUT_WEB%\www\schemareport" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - webconfig.ini
 copy /Y "%MG_WEB_SRC%\webconfig.ini" "%MG_OUTPUT_WEB%\www"
 echo [install]: Web Tier - mapviewerphp
-%XCOPY% "%MG_WEB_SRC%\mapviewerphp" "%MG_OUTPUT_WEB%\www\mapviewerphp" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\mapviewerphp" "%MG_OUTPUT_WEB%\www\mapviewerphp" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - Tomcat - MapGuide API unmanaged binaries
 %XCOPY% "%MG_WEB_BIN%\%TYPEBUILD%" "%MG_OUTPUT_WEB%\Tomcat\bin"/EXCLUDE:java_excludes.txt+dotnetapi_excludes.txt+dotnetxml_excludes.txt+svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - php - MapGuide API unmanaged binaries
@@ -300,18 +300,25 @@ echo [install]: Web Tier - php - MapGuide API unmanaged binaries
 echo [install]: Web Tier - php ext - MapGuide API unmanaged binaries
 %XCOPY% "%MG_WEB_BIN%\%TYPEBUILD%" "%MG_OUTPUT_WEB%\Php\ext" /EXCLUDE:php_excludes.txt+dotnetapi_excludes.txt+dotnetxml_excludes.txt+svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapviewernet
-%XCOPY% "%MG_WEB_SRC%\mapviewernet" "%MG_OUTPUT_WEB%\www\mapviewernet" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\mapviewernet" "%MG_OUTPUT_WEB%\www\mapviewernet" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapviewernet - MapGuide API unmanaged binaries
-%XCOPY% "%MG_WEB_BIN%\%TYPEBUILD%" "%MG_OUTPUT_WEB%\www\mapviewernet\bin" /EXCLUDE:dotnet_excludes.txt+%TYPEBUILD%_excludes.txt+%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_WEB_BIN%\%TYPEBUILD%" "%MG_OUTPUT_WEB%\www\mapviewernet\bin" /EXCLUDE:svn_excludes.txt+dotnet_excludes.txt+%TYPEBUILD%_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapviewerjava
-%XCOPY% "%MG_WEB_SRC%\mapviewerjava" "%MG_OUTPUT_WEB%\www\mapviewerjava" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\mapviewerjava" "%MG_OUTPUT_WEB%\www\mapviewerjava" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapviewerjava - WEB-INF
 %XCOPY% "%MG_WEB_SRC%\WEB-INF" "%MG_OUTPUT_WEB%\www\WEB-INF" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 REM Required for Web Tier unit tests
 copy /Y "%MG_BUILD_SQLITE_PHP_API%" "%MG_OUTPUT_WEB%\Php\ext"
+echo [build]: Web Tier - Clean fusion
+call %ANT% clean -f "%MG_OEM%\fusion\build.xml"
+echo [build]: Web Tier - Build Fusion API docs
+call %ANT% docs -f "%MG_OEM%\fusion\build.xml"
 echo [install]: Web Tier - fusion
-call build_fusion.bat
-%XCOPY% "%MG_OEM%\fusion_build" "%MG_OUTPUT_WEB%\www\fusion" /EXCLUDE:%CONFIGURATION%_excludes.txt
+call %ANT% deploy -Ddeploy.home="%MG_OUTPUT_WEB%\www\fusion" -f "%MG_OEM%\fusion\build.xml"
+echo [install]: Fusion - build pack
+call %ANT% selfbuild -Dselfbuild.home="%MG_OUTPUT%\fusion-selfbuild" -f "%MG_OEM%\fusion\build.xml"
+echo [install]: Web Tier - fusion templates
+%XCOPY% "%MG_OEM%\fusionMG" "%MG_OUTPUT_WEB%\www\fusion" /EXCLUDE:svn_excludes.txt+%CONFIGURATION%_excludes.txt
 echo [install]: Web Tier - Apache module
 if not exist "%MG_OUTPUT_WEB%\Apache24\modules" mkdir "%MG_OUTPUT_WEB%\Apache24\modules"
 %XCOPY% /F "%MG_BUILD_MAPAGENT%" "%MG_OUTPUT_WEB%\Apache24\modules"
@@ -324,23 +331,23 @@ echo [install]: Documentation
 echo [install]: MapGuide Developer's Guide
 %XCOPY% "%MG_DOC%\devguide\build\html" "%MG_OUTPUT_WEB%\www\help\devguide" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Developer's Guide Sample Code (PHP)
-%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\phpsamples" "%MG_OUTPUT_WEB%\www\phpsamples" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\phpsamples" "%MG_OUTPUT_WEB%\www\phpsamples" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Developer's Guide Sample Code (Java)
-%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\javasamples" "%MG_OUTPUT_WEB%\www\javasamples" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\javasamples" "%MG_OUTPUT_WEB%\www\javasamples" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Developer's Guide Sample Code (DotNet)
-%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\dotnetsamples" "%MG_OUTPUT_WEB%\www\dotnetsamples" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\dotnetsamples" "%MG_OUTPUT_WEB%\www\dotnetsamples" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Developer's Guide Sample Code (PHP)
-%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\phpviewersample" "%MG_OUTPUT_WEB%\www\phpviewersample" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\phpviewersample" "%MG_OUTPUT_WEB%\www\phpviewersample" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Developer's Guide Sample Code (Java)
-%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\javaviewersample" "%MG_OUTPUT_WEB%\www\javaviewersample" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\javaviewersample" "%MG_OUTPUT_WEB%\www\javaviewersample" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Developer's Guide Sample Code (DotNet)
-%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\dotnetviewersample" "%MG_OUTPUT_WEB%\www\dotnetviewersample" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\dotnetviewersample" "%MG_OUTPUT_WEB%\www\dotnetviewersample" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: OpenLayers Samples
-%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\ol2samples" "%MG_OUTPUT_WEB%\www\ol2samples" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\ol2samples" "%MG_OUTPUT_WEB%\www\ol2samples" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Samples landing page
 copy /Y "%MG_DOC_DEVGUIDE_SAMPLES%\samples.php" "%MG_OUTPUT_WEB%\www"
 echo [install]: Viewer API documentation
-%XCOPY% "%MG_DOC%\viewerapi" "%MG_OUTPUT_WEB%\www\help\viewerapi" /EXCLUDE:%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_DOC%\viewerapi" "%MG_OUTPUT_WEB%\www\help\viewerapi" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Copy dlls into .net samples
 %XCOPY% "%MG_OUTPUT_WEB%\www\mapviewernet\bin\*.dll" "%MG_OUTPUT_WEB%\www\dotnetsamples\bin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 %XCOPY% "%MG_OUTPUT_WEB%\www\mapviewernet\bin\*.dll" "%MG_OUTPUT_WEB%\www\dotnetviewersample\bin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
