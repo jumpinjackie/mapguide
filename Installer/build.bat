@@ -320,14 +320,11 @@ echo [build]: Installer
 if "%errorlevel%"=="1" goto error
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Copying vcredist
-copy /Y vcredist_2008_%PLATFORM_CLR%.exe "%INSTALLER_OUTPUT%\vcredist_2008_%PLATFORM_CLR%.exe"
-copy /Y vcredist_2010_%PLATFORM_CLR%.exe "%INSTALLER_OUTPUT%\vcredist_2010_%PLATFORM_CLR%.exe"
 copy /Y vcredist_2012_%PLATFORM_CLR%.exe "%INSTALLER_OUTPUT%\vcredist_2012_%PLATFORM_CLR%.exe"
 popd
 if "%errorlevel%"=="1" goto error
-rem if "%MAX_COMPRESSION%"=="YES" goto build_max_compress
-rem goto build_min_compress
-goto quit
+if "%MAX_COMPRESSION%"=="YES" goto build_max_compress
+goto build_min_compress
 
 :build_min_compress
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
