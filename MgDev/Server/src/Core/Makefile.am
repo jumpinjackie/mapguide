@@ -214,6 +214,12 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/FeatureService/SHP/Redding_Parcels.dbf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/FeatureService/SHP/Redding_Parcels.shx ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_AllElements.pl ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MappingService/UT_MultiCTS.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MappingService/UT_MultiCTSWithTheme.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MappingService/UT_MultiFTS.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MappingService/UT_MultiFTSSingleCTS.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MappingService/UT_MultiFTSWithTheme.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MappingService/UT_SingleFTSMultiCTS.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_NoLegend.pl ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_SymbolMart.sl ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_Symbols.dwf ../UnitTestFiles
