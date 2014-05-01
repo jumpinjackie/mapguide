@@ -185,6 +185,9 @@ namespace InstantSetup.Core
                 }
             }
 
+            if (!Directory.Exists(this.BatchFileOutputDirectory))
+                Directory.CreateDirectory(this.BatchFileOutputDirectory);
+
             //Process serverconfig.ini
 
             string serverConfigIni = Path.Combine(this.ServerBinDir, "serverconfig.ini");

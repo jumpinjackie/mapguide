@@ -60,6 +60,7 @@
             this.tabControl1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -102,7 +103,7 @@
             this.TAB_IIS7.Location = new System.Drawing.Point(4, 22);
             this.TAB_IIS7.Name = "TAB_IIS7";
             this.TAB_IIS7.Padding = new System.Windows.Forms.Padding(3);
-            this.TAB_IIS7.Size = new System.Drawing.Size(466, 397);
+            this.TAB_IIS7.Size = new System.Drawing.Size(572, 402);
             this.TAB_IIS7.TabIndex = 2;
             this.TAB_IIS7.Text = "IIS7";
             this.TAB_IIS7.UseVisualStyleBackColor = true;
@@ -118,8 +119,8 @@
             // 
             // txtServiceName
             // 
-            this.txtServiceName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtServiceName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtServiceName.Location = new System.Drawing.Point(156, 61);
             this.txtServiceName.Name = "txtServiceName";
             this.txtServiceName.Size = new System.Drawing.Size(745, 20);
@@ -137,8 +138,8 @@
             // 
             // txtSourceDirectory
             // 
-            this.txtSourceDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSourceDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSourceDirectory.Location = new System.Drawing.Point(156, 9);
             this.txtSourceDirectory.Name = "txtSourceDirectory";
             this.txtSourceDirectory.Size = new System.Drawing.Size(710, 20);
@@ -182,8 +183,8 @@
             // 
             // txtBatchOutput
             // 
-            this.txtBatchOutput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtBatchOutput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBatchOutput.Location = new System.Drawing.Point(156, 35);
             this.txtBatchOutput.Name = "txtBatchOutput";
             this.txtBatchOutput.Size = new System.Drawing.Size(710, 20);
@@ -205,9 +206,10 @@
             this.chkWriteMentorDictPath.AutoSize = true;
             this.chkWriteMentorDictPath.Location = new System.Drawing.Point(116, 567);
             this.chkWriteMentorDictPath.Name = "chkWriteMentorDictPath";
-            this.chkWriteMentorDictPath.Size = new System.Drawing.Size(271, 17);
+            this.chkWriteMentorDictPath.Size = new System.Drawing.Size(466, 17);
             this.chkWriteMentorDictPath.TabIndex = 11;
-            this.chkWriteMentorDictPath.Text = "Write MENTOR_DICTIONARY_PATH to batch files";
+            this.chkWriteMentorDictPath.Text = "Write MENTOR_DICTIONARY_PATH to batch files (for MapGuide Open Source 2.2 or olde" +
+    "r)";
             this.chkWriteMentorDictPath.UseVisualStyleBackColor = true;
             this.chkWriteMentorDictPath.CheckedChanged += new System.EventHandler(this.chkWriteMentorDictPath_CheckedChanged);
             // 
@@ -254,20 +256,20 @@
             // 
             // label7
             // 
-            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.Location = new System.Drawing.Point(19, 386);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(257, 45);
             this.label7.TabIndex = 8;
             this.label7.Text = "NOTE: Some providers (eg. MySQL) require 3rd party external dependencies in order" +
-                " to sucessfully register";
+    " to sucessfully register";
             // 
             // chkProviders
             // 
-            this.chkProviders.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkProviders.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkProviders.CheckOnClick = true;
             this.chkProviders.FormattingEnabled = true;
             this.chkProviders.HorizontalScrollbar = true;
@@ -310,8 +312,8 @@
             // 
             // txtFdoRegUtilPath
             // 
-            this.txtFdoRegUtilPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFdoRegUtilPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFdoRegUtilPath.Location = new System.Drawing.Point(20, 88);
             this.txtFdoRegUtilPath.Name = "txtFdoRegUtilPath";
             this.txtFdoRegUtilPath.Size = new System.Drawing.Size(223, 20);
@@ -328,8 +330,8 @@
             // 
             // txtFdoDir
             // 
-            this.txtFdoDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFdoDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFdoDir.Location = new System.Drawing.Point(20, 43);
             this.txtFdoDir.Name = "txtFdoDir";
             this.txtFdoDir.Size = new System.Drawing.Size(223, 20);
@@ -347,9 +349,9 @@
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer1.Location = new System.Drawing.Point(17, 110);
             this.splitContainer1.Name = "splitContainer1";
@@ -391,6 +393,7 @@
             this.groupBox2.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
