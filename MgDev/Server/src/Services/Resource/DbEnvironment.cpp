@@ -236,7 +236,7 @@ MgDbEnvironment::~MgDbEnvironment()
         }
         catch (...)
         {
-            assert(false);
+            //assert(false);
         }
     }
 }
