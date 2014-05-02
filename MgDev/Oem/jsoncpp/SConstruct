@@ -91,6 +91,11 @@ else:
     print "UNSUPPORTED PLATFORM."
     env.Exit(1)
 
+# Override C++ compiler if CXX set
+if (os.environ.get("CXX") != None):
+    env['CXX'] = os.environ.get("CXX")
+    print "Using custom compiler of: " + os.environ.get("CXX")
+
 #env.Tool('doxygen')
 env.Tool('substinfile')
 env.Tool('targz')
