@@ -437,6 +437,8 @@ init_jpeg()
 build_jpeg()
 {
     pushd gd/jpeg
+    # A jconfig.h that is not modifed by ./configure will trip up make, so nuke it first
+    rm -f jconfig.h
     if [ $BUILD_CPU -eq 64 ]; then
         sh ./configure --enable-static --disable-shared
         #--with-pic does nothing (probably ancient configure script), so do some sed trickery
