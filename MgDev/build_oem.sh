@@ -14,6 +14,7 @@ echo "MapGuide Open Source build script for OEM components"
 INSTALLDIR=/usr/local/mapguideopensource
 CLEAN_FLAG=0
 BUILD_CPU=32
+BUILD_CONFIG=release
 while [ $# -gt 0 ]; do    # Until you run out of parameters...
     case "$1" in
         -prefix|--prefix)
@@ -28,12 +29,17 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
             BUILD_CPU=$2
             shift
             ;;
+        -config|--config)
+            BUILD_CONFIG=$2
+            shift
+            ;;
         -help|--help)
             echo "Usage: $0 (options)"
             echo "Options:"
             echo "  --prefix [installation directory]"
             echo "  --clean [clean all objects and binaries in Oem]"
             echo "  --build [32(default)|64]"
+            echo "  --config [release(default)|debug]"
             echo "  --help [Display usage]"
             exit
             ;;
@@ -122,7 +128,11 @@ build_dwfcore()
     libtoolize --copy --force
     automake --add-missing --copy
     autoconf
-    sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
+    if [ $BUILD_CONFIG = "debug" ]; then
+        sh ./configure --disable-optimized --enable-silent-rules --prefix="${INSTALLDIR}"
+    else
+        sh ./configure --enable-optimized --enable-silent-rules --prefix="${INSTALLDIR}"
+    fi
     make
     check_build
     popd
@@ -158,7 +168,11 @@ build_dwftk()
     libtoolize --copy --force
     automake --add-missing --copy
     autoconf
-    sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
+    if [ $BUILD_CONFIG = "debug" ]; then
+        sh ./configure --disable-optimized --enable-silent-rules --prefix="${INSTALLDIR}"
+    else
+        sh ./configure --enable-optimized --enable-silent-rules --prefix="${INSTALLDIR}"
+    fi
     make
     check_build
     popd
@@ -194,7 +208,11 @@ build_dwfemap()
     libtoolize --copy --force
     automake --add-missing --copy
     autoconf
-    sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
+    if [ $BUILD_CONFIG = "debug" ]; then
+        sh ./configure --disable-optimized --enable-silent-rules --prefix="${INSTALLDIR}"
+    else
+        sh ./configure --enable-optimized --enable-silent-rules --prefix="${INSTALLDIR}"
+    fi
     make
     check_build
     popd
@@ -221,6 +239,10 @@ init_geos()
 build_geos()
 {
     pushd geos-2.2.0
+    aclocal
+    libtoolize --copy --force
+    automake --add-missing --copy
+    autoconf
     if [ $BUILD_CPU -eq 64 ]; then
         sh ./configure --with-pic --prefix="${INSTALLDIR}"
     else
@@ -322,7 +344,7 @@ build_cppunit()
     autoconf
     automake --add-missing --copy --force-missing
     # -ldl is to prevent undefined reference to dlsym/dlopen/dlclose
-    sh ./configure --prefix="${INSTALLDIR}" LDFLAGS="-ldl"
+    sh ./configure --enable-silent-rules --prefix="${INSTALLDIR}" LDFLAGS="-ldl"
     make
     check_build
     popd
@@ -505,10 +527,14 @@ init_gd()
 build_gd()
 {
     pushd gd/gd
+    aclocal
+    libtoolize --copy --force
+    automake --add-missing --copy
+    autoconf
     if [ $BUILD_CPU -eq 64 ]; then
-        sh ./configure --enable-static --disable-shared --without-fontconfig --with-pic
+        sh ./configure --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-pic
     else
-        sh ./configure --enable-static --disable-shared --without-fontconfig
+        sh ./configure --enable-static --disable-shared --without-fontconfig --enable-silent-rules
     fi
     make
     check_build
