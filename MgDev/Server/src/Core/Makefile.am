@@ -91,7 +91,6 @@ noinst_HEADERS = $(include_SOURCES) \
 
 mgserver_LDADD = \
   -lACE \
-  -ldl \
   -ldb_cxx \
   -ldbxml \
   -ldwfcore \
@@ -126,6 +125,7 @@ mgserver_LDADD = \
   -lMgMdfParser \
   -lMgStylization \
   -lMgRenderers \
+  -ldl \
   ../../../Common/Security/libMgSecurity.a
 
 mgserver_LDFLAGS = \
