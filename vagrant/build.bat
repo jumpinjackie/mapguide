@@ -9,6 +9,12 @@ SET TEARDOWN_CENTOS_32=1
 SET TEARDOWN_CENTOS_64=0
 SET ROOT=%CD%
 SET COMPONENT=
+echo **************** Build Summary *********************
+echo Building Ubuntu (32-bit): %BUILD_UBUNTU_32% (teardown=%TEARDOWN_UBUNTU_32%)
+echo Building Ubuntu (64-bit): %BUILD_UBUNTU_64% (teardown=%TEARDOWN_UBUNTU_64%)
+echo Building CentOS (32-bit): %BUILD_CENTOS_32% (teardown=%TEARDOWN_CENTOS_32%)
+echo Building CentOS (64-bit): %BUILD_CENTOS_64% (teardown=%TEARDOWN_CENTOS_64%)
+echo ****************************************************
 :prepare
 echo [build]: Prepare scripts for provisioning
 if %BUILD_CENTOS_32% == 1 copy /Y scripts\*.* %ROOT%\centos\x86

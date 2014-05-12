@@ -1,6 +1,9 @@
 @echo off
 SET ROOT=%CD%
 SET COMPONENT=
+pushd sources
+rd /S /Q updated
+popd
 pushd ubuntu\x86
 SET COMPONENT=Ubuntu Build 32-bit
 echo [clean]: MapGuide Ubuntu build 32-bit
