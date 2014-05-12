@@ -15,12 +15,12 @@
         <hudson.model.StringParameterDefinition>
           <name>FDO_BUILD_SRC</name>
           <description>FDO Source directory</description>
-          <defaultValue>C:\working\sources\fdo-trunk</defaultValue>
+          <defaultValue>C:\working\sources\fdo-3.9</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>FDO_VERSION</name>
           <description>FDO Version Number (major.minor.rev)</description>
-          <defaultValue>3.10.0</defaultValue>
+          <defaultValue>3.9.0</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>CLEAR_WORKING_AREA</name>
@@ -30,8 +30,13 @@
         <hudson.model.StringParameterDefinition>
           <name>FDO_STAMP_FILE_SOURCE</name>
           <description></description>
-          <defaultValue>C:\working\sources\fdo_trunk_revision.txt</defaultValue>
+          <defaultValue>C:\working\sources\fdo_39_revision.txt</defaultValue>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>FDO_RUN_UNIT_TESTS</name>
+          <description></description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
@@ -41,7 +46,7 @@
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <jdk>(Default)</jdk>
-  <triggers class="vector"/>
+  <triggers/>
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.BatchFile>
@@ -112,6 +117,7 @@ echo [build]: Overlaying FDO extras to build artifacts
 pushd %FDO_BIN_EXTRAS%
 copy /Y *.* %FDO_BUILD_OUTPUT%\Fdo\Bin
 popd
+
 :pack
 echo [build]: Pack files
 rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=fdo -b=%REVISION% -r=%FDO_VERSION%
@@ -128,7 +134,29 @@ rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT
 rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=ogr -b=%REVISION% -r=%FDO_VERSION%
 rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT%\Fdo -o=%FDO_BUILD_OUTPUT%\dist -w=sqlite -b=%REVISION% -r=%FDO_VERSION%
 popd
+
+if &quot;%FDO_RUN_UNIT_TESTS%&quot;==&quot;false&quot; goto end
+:fdo_unit_tests
+pushd %FDO_WORKING_AREA%\Fdo\Unmanaged\Bin\Win32\Release
+UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT%\fdocore_unittest.log
+popd
+pushd %FDO_WORKING_AREA%\Providers\SHP\Src\UnitTest
+..\..\Bin\Win32\Release\UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT%\shp_unittest.log
+popd
+pushd %FDO_WORKING_AREA%\Providers\SDF\Src\UnitTest
+..\..\Bin\Win32\Release\UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT%\sdf_unittest.log
+popd
+pushd %FDO_WORKING_AREA%\Providers\SQLite\Src\UnitTest
+..\..\Bin\Win32\Release\UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT%\sqlite_unittest.log
+popd
+pushd %FDO_WORKING_AREA%\Providers\GDAL\Src\UnitTest
+..\..\Bin\Win32\Release\UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT%\gdal_unittest.log
+popd
+pushd %FDO_WORKING_AREA%\Providers\WMS\Src\UnitTest
+..\..\Bin\Win32\Release\UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT%\wms_unittest.log
+popd
 goto end
+
 :error
 echo An error occurred while building FDO: %BUILD_ACTION%
 exit /b 1
@@ -137,12 +165,19 @@ exit /b 0</command>
     </hudson.tasks.BatchFile>
   </builders>
   <publishers>
+    <hudson.plugins.textfinder.TextFinderPublisher plugin="text-finder@1.10">
+      <regexp>!!!FAILURES!!!</regexp>
+      <succeedIfFound>false</succeedIfFound>
+      <unstableIfFound>true</unstableIfFound>
+      <alsoCheckConsoleOutput>true</alsoCheckConsoleOutput>
+    </hudson.plugins.textfinder.TextFinderPublisher>
     <hudson.tasks.BuildTrigger>
-      <childProjects>MapGuide Open Source x86</childProjects>
+      <childProjects>MapGuide Open Source 2.6 x86</childProjects>
       <threshold>
-        <name>SUCCESS</name>
-        <ordinal>0</ordinal>
-        <color>BLUE</color>
+        <name>UNSTABLE</name>
+        <ordinal>1</ordinal>
+        <color>YELLOW</color>
+        <completeBuild>true</completeBuild>
       </threshold>
     </hudson.tasks.BuildTrigger>
   </publishers>
