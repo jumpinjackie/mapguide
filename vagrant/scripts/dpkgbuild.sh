@@ -14,7 +14,13 @@ gzip -9 ${ROOT}/usr/share/doc/${PACKAGENAME}/changelog.Debian
 for dirname in ${DIRLIST}
 do
   mkdir -p ${CPROOT}/${dirname}
-  cp -ar /${MGINST}/${dirname} ${CPROOT}
+  #cp -ar /${MGINST}/${dirname} ${CPROOT}
+  echo "[rsync] From: /${MGINST}/${dirname}/ To: ${CPROOT}/${dirname}/"
+  if [ -z ${EXCLUDEFILE} ]; then
+    rsync -a /${MGINST}/${dirname}/ ${CPROOT}/${dirname}/
+  else
+    rsync -a --exclude-from=${EXCLUDEFILE} /${MGINST}/${dirname}/ ${CPROOT}/${dirname}/
+  fi
 done
 
 # Remove all files in the REMOVELIST
@@ -46,9 +52,10 @@ pushd ${BUILDROOT}
 # Shared library symlinks point back to install directory
 # Add install directory to path to compensate
 # Also add FDO libs to path
-export LD_LIBRARY_PATH=/usr/local/fdo-3.5.0/lib:${CPROOT}/lib:/${MGINST}/lib
+export LD_LIBRARY_PATH=/usr/local/fdo-${FDOBUILD}/lib:${CPROOT}/lib:/${MGINST}/lib
+echo "Using LD_LIBRARY_PATH of $LD_LIBRARY_PATH"
 dpkg-shlibdeps -p${PACKAGEDIR} --ignore-missing-info ${CPROOT}/lib/*.so
-dpkg-gensymbols -p"${PACKAGENAME}" -P"debian/${PACKAGEDIR}"
+dpkg-gensymbols -q -p"${PACKAGENAME}" -P"debian/${PACKAGEDIR}"
 export LD_LIBRARY_PATH=
 
 # Now generate a filled in control file for the binary package
@@ -57,7 +64,7 @@ dpkg-gencontrol -p"${PACKAGENAME}" -P"debian/${PACKAGEDIR}"
 
 # Build binary package from ROOT
 # And move resulting debian package and lintian results to build directory
-dpkg-deb --build ${ROOT}
+dpkg-deb -Zlzma --build ${ROOT}
 lintian -i debian/${PACKAGEDIR}.deb > tmp/${PACKAGEDIR}.lintian
 mv debian/${PACKAGEDIR}.deb bin/${PACKAGENAME}_${MGBUILD}-${BUILDNUM}_${ARCH}.deb
 popd

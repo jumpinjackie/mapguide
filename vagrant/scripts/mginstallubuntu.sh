@@ -1,7 +1,7 @@
 #!/bin/bash
 TEMPDIR=/tmp/build_mapguide
-URL="http://download.osgeo.org/mapguide/releases/2.6/Beta1/ubuntu14"
-#URL="http://192.168.0.5/downloads/ubuntu14"
+URL="http://download.osgeo.org/mapguide/releases/2.6/RC1/ubuntu12"
+#URL="http://192.168.0.5/downloads/ubuntu12"
 FDOVER_MAJOR_MINOR=3.9
 FDOVER_MAJOR_MINOR_REV=${FDOVER_MAJOR_MINOR}.0
 FDOBUILD=0
@@ -310,7 +310,7 @@ start_install()
 install_mapguide_packages()
 {
 	# Download Ubuntu packages for MapGuide
-	for file in common server webextensions httpd
+	for file in platformbase coordsys common server webextensions httpd
 	do
 	  echo "Downloading: ${URL}/mapguideopensource-${file}_${MGVER}.deb"
 	  wget -N ${URL}/mapguideopensource-${file}_${MGVER}.deb
