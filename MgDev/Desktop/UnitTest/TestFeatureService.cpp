@@ -3190,8 +3190,7 @@ void TestFeatureService::TestCase_BenchmarkSelectFeatures()
             reader->Close();
             CPPUNIT_ASSERT(nFeatures == 17565);
         }
-        clock_t lEnd = clock();
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (Average of %d runs): = %6.4f (s)\n"), iterations, ((lEnd-lStart)/CLOCKS_PER_SEC)/(double)iterations ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (Average of %d runs): = %6.4f (s)\n"), iterations, ((clock()-lStart)/(double)CLOCKS_PER_SEC)/(double)iterations ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("TestCase_BenchmarkSelectFeatures - END\n")));
     }
     catch(MgException* e)
@@ -3647,8 +3646,7 @@ void TestFeatureService::TestCase_BenchmarkSdfJoin()
         }
         reader->Close();
 
-        clock_t lEnd = clock();
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((lEnd-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSdfJoin() - Left Outer Join \n")));
         
         lStart = clock();
@@ -3661,8 +3659,7 @@ void TestFeatureService::TestCase_BenchmarkSdfJoin()
         }
         reader->Close();
 
-        lEnd = clock();
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((lEnd-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSdfJoin() - Inner Join (Forced 1:1) \n")));
         
         lStart = clock();
@@ -3675,8 +3672,7 @@ void TestFeatureService::TestCase_BenchmarkSdfJoin()
         }
         reader->Close();
 
-        lEnd = clock();
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((lEnd-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSdfJoin() - Left Outer Join (Forced 1:1) \n")));
         lStart = clock();
         total = 0L;
@@ -3688,8 +3684,7 @@ void TestFeatureService::TestCase_BenchmarkSdfJoin()
         }
         reader->Close();
 
-        lEnd = clock();
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((lEnd-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
     }
     catch(MgException* e)
     {
@@ -3754,7 +3749,7 @@ void TestFeatureService::TestCase_BenchmarkSqliteJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSqliteJoin() - Left Outer Join \n")));
         lStart = clock();
         total = 0L;
@@ -3766,7 +3761,7 @@ void TestFeatureService::TestCase_BenchmarkSqliteJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSqliteJoin() - Inner Join (Forced 1:1) \n")));
         lStart = clock();
         total = 0L;
@@ -3778,7 +3773,7 @@ void TestFeatureService::TestCase_BenchmarkSqliteJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSqliteJoin() - Left Outer Join (Forced 1:1) \n")));
         lStart = clock();
         total = 0L;
@@ -3790,7 +3785,7 @@ void TestFeatureService::TestCase_BenchmarkSqliteJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
     }
     catch(MgException* e)
     {
@@ -3853,7 +3848,7 @@ void TestFeatureService::TestCase_BenchmarkSqliteAggregateJoin()
         reader->Close();
         CPPUNIT_ASSERT(iterations == 1);
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSqliteAggregateJoin() - Left Outer Join \n")));
         lStart = clock();
         iterations = 0L;
@@ -3868,7 +3863,7 @@ void TestFeatureService::TestCase_BenchmarkSqliteAggregateJoin()
         reader->Close();
         CPPUNIT_ASSERT(iterations == 1L);
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSqliteAggregateJoin() - Inner Join (Forced 1:1) \n")));
         lStart = clock();
         iterations = 0L;
@@ -3883,7 +3878,7 @@ void TestFeatureService::TestCase_BenchmarkSqliteAggregateJoin()
         reader->Close();
         CPPUNIT_ASSERT(iterations == 1L);
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSqliteAggregateJoin() - Left Outer Join (Forced 1:1) \n")));
         lStart = clock();
         iterations = 0L;
@@ -3898,7 +3893,7 @@ void TestFeatureService::TestCase_BenchmarkSqliteAggregateJoin()
         reader->Close();
         CPPUNIT_ASSERT(iterations == 1L);
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
     }
     catch(MgException* e)
     {
@@ -3966,7 +3961,7 @@ void TestFeatureService::TestCase_BenchmarkMergeSortJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkMergeSortJoin() - Left Outer Join \n")));
         lStart = clock();
         total = 0L;
@@ -3986,7 +3981,7 @@ void TestFeatureService::TestCase_BenchmarkMergeSortJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkMergeSortJoin() - Inner Join (Forced 1:1) \n")));
         lStart = clock();
         total = 0L;
@@ -4006,7 +4001,7 @@ void TestFeatureService::TestCase_BenchmarkMergeSortJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkMergeSortJoin() - Left Outer Join (Forced 1:1) \n")));
         lStart = clock();
         total = 0L;
@@ -4026,7 +4021,7 @@ void TestFeatureService::TestCase_BenchmarkMergeSortJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
     }
     catch(MgException* e)
     {
@@ -4094,7 +4089,7 @@ void TestFeatureService::TestCase_BenchmarkBatchSortedBlockJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkBatchSortedBlockJoin() - Left Outer Join \n")));
         lStart = clock();
         total = 0L;
@@ -4114,7 +4109,7 @@ void TestFeatureService::TestCase_BenchmarkBatchSortedBlockJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkBatchSortedBlockJoin() - Inner Join (Forced 1:1) \n")));
         lStart = clock();
         total = 0L;
@@ -4134,7 +4129,7 @@ void TestFeatureService::TestCase_BenchmarkBatchSortedBlockJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkBatchSortedBlockJoin() - Left Outer Join (Forced 1:1) \n")));
         lStart = clock();
         total = 0L;
@@ -4154,7 +4149,7 @@ void TestFeatureService::TestCase_BenchmarkBatchSortedBlockJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
     }
     catch(MgException* e)
     {
@@ -4222,7 +4217,7 @@ void TestFeatureService::TestCase_BenchmarkNestedLoopsSortedBlockJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkNestedLoopsSortedBlockJoin() - Left Outer Join \n")));
         lStart = clock();
         total = 0L;
@@ -4242,7 +4237,7 @@ void TestFeatureService::TestCase_BenchmarkNestedLoopsSortedBlockJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkNestedLoopsSortedBlockJoin() - Inner Join (Forced 1:1) \n")));
         lStart = clock();
         total = 0L;
@@ -4262,7 +4257,7 @@ void TestFeatureService::TestCase_BenchmarkNestedLoopsSortedBlockJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkNestedLoopsSortedBlockJoin() - Left Outer Join (Forced 1:1) \n")));
         lStart = clock();
         total = 0L;
@@ -4282,7 +4277,7 @@ void TestFeatureService::TestCase_BenchmarkNestedLoopsSortedBlockJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
     }
     catch(MgException* e)
     {
@@ -4582,7 +4577,7 @@ void TestFeatureService::TestCase_BenchmarkNestedLoopsJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkNestedLoopsJoin() - Left Outer Join \n")));
         lStart = clock();
         total = 0L;
@@ -4602,7 +4597,7 @@ void TestFeatureService::TestCase_BenchmarkNestedLoopsJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkNestedLoopsJoin() - Inner Join (Forced 1:1) \n")));
         lStart = clock();
         total = 0L;
@@ -4622,7 +4617,7 @@ void TestFeatureService::TestCase_BenchmarkNestedLoopsJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkNestedLoopsJoin() - Left Outer Join (Forced 1:1) \n")));
         lStart = clock();
         total = 0L;
@@ -4642,7 +4637,7 @@ void TestFeatureService::TestCase_BenchmarkNestedLoopsJoin()
         }
         reader->Close();
 
-        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
     }
     catch(MgException* e)
     {

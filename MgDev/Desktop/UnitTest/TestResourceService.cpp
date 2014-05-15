@@ -1162,7 +1162,7 @@ void TestResourceService::TestCase_BenchmarkGetResourceContents()
 			Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resources->GetItem(i));
 			Ptr<MgByteReader> content = pService->GetResourceContent(resId);
 		}
-		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((clock()-lStart)/CLOCKS_PER_SEC) ));
+		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
 		ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
 
 		lStart = clock();
@@ -1172,7 +1172,7 @@ void TestResourceService::TestCase_BenchmarkGetResourceContents()
 			Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resources->GetItem(i));
 			Ptr<MgByteReader> content = pService->GetResourceContent(resId);
 		}
-		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((clock()-lStart)/CLOCKS_PER_SEC) ));
+		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
 		ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
 
         //Evict all cached copies to avoid distortion of results due to caching
@@ -1184,7 +1184,7 @@ void TestResourceService::TestCase_BenchmarkGetResourceContents()
 		contents = pService->GetResourceContents(resources, NULL);
 		CPPUNIT_ASSERT(NULL != contents.p);
 		CPPUNIT_ASSERT(contents->GetCount() == resources->GetCount());
-		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((clock()-lStart)/CLOCKS_PER_SEC) ));
+		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
 		ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
 
 		lStart = clock();
@@ -1192,7 +1192,7 @@ void TestResourceService::TestCase_BenchmarkGetResourceContents()
 		contents = pService->GetResourceContents(resources, NULL);
 		CPPUNIT_ASSERT(NULL != contents.p);
 		CPPUNIT_ASSERT(contents->GetCount() == resources->GetCount());
-		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((clock()-lStart)/CLOCKS_PER_SEC) ));
+		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((clock()-lStart)/(double)CLOCKS_PER_SEC) ));
 		ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
 	}
     catch(MgException* e)
