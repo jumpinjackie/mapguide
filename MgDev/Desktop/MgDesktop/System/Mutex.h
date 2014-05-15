@@ -69,7 +69,7 @@ private:
 
     ~MgdMutex()
     {
-        pthread_MgdMutex_destroy(&m_CritSect);
+        pthread_mutex_destroy(&m_CritSect);
     }
 
     void Initialize()
@@ -77,26 +77,26 @@ private:
         if(!m_bInitialized)
         {
             m_bInitialized = true;
-            pthread_MgdMutexattr_init(&m_attributes);
-            pthread_MgdMutexattr_settype(&m_attributes, PTHREAD_MgdMutex_RECURSIVE);
-            pthread_MgdMutex_init(&m_CritSect, &m_attributes);
-            pthread_MgdMutexattr_destroy(&m_attributes);
+            pthread_mutexattr_init(&m_attributes);
+            pthread_mutexattr_settype(&m_attributes, PTHREAD_MUTEX_RECURSIVE);
+            pthread_mutex_init(&m_CritSect, &m_attributes);
+            pthread_mutexattr_destroy(&m_attributes);
         }
     }
 
     void Enter()
     {
-        pthread_MgdMutex_lock(&m_CritSect);
+        pthread_mutex_lock(&m_CritSect);
     }
 
     void Leave()
     {
-        pthread_MgdMutex_unlock(&m_CritSect);
+        pthread_mutex_unlock(&m_CritSect);
     }
 
 private:
-    pthread_MgdMutex_t m_CritSect;
-    pthread_MgdMutexattr_t m_attributes;
+    pthread_mutex_t m_CritSect;
+    pthread_mutexattr_t m_attributes;
 
 #endif //_WIN32
 
@@ -108,17 +108,17 @@ private:
 class ScopedLock
 {
 public:
-    ScopedLock(MgdMutex& MgdMutex):m_MgdMutex(MgdMutex)
+    ScopedLock(MgdMutex& mutex):m_mutex(mutex)
     {
-        m_MgdMutex.Enter();
+        m_mutex.Enter();
     }
     ~ScopedLock()
     {
-        m_MgdMutex.Leave();
+        m_mutex.Leave();
     }
 private:
     ScopedLock();
-    MgdMutex& m_MgdMutex;
+    MgdMutex& m_mutex;
 };
 
 #endif

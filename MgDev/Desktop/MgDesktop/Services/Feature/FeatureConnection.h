@@ -5,7 +5,6 @@ class FdoIConnection;
 class MgResourceIdentifier;
 class MgdFdoConnectionPool;
 
-template class Ptr<MgResourceIdentifier>;
 /// \cond INTERNAL
 class MgdFeatureConnection : public MgGuardDisposable
 {

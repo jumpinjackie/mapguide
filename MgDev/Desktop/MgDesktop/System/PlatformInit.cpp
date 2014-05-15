@@ -61,6 +61,9 @@ void MgdPlatform::Initialize(CREFSTRING configFile)
                                    mentorDictPath, 
                                    MgdConfigProperties::DefaultGeneralPropertyMentorDictionaryPath);
 
+    Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+    Ptr<MgCoordinateSystemCatalog> csCatalog = csFactory->GetCatalog();
+
     #ifdef WIN32
     HMODULE hlib = NULL;
 
@@ -87,9 +90,6 @@ void MgdPlatform::Initialize(CREFSTRING configFile)
         // Dump the paths to the trace log
         MG_LOG_TRACE_ENTRY(L"PATH = " + updatedPath);
     }
-
-    Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
-    Ptr<MgCoordinateSystemCatalog> csCatalog = csFactory->GetCatalog();
 
     //If specified in config inject this path into MENTOR_DICTIONARY_PATH
     if (!mentorDictPath.empty())
@@ -127,7 +127,9 @@ void MgdPlatform::Initialize(CREFSTRING configFile)
     {
         if (MgFileUtil::IsDirectory(mentorDictPath))
         {
-            setenv("MENTOR_DICTIONARY_PATH", mentorDictPath.c_str(), 1);
+            //std::string mbDictPath = MgUtil::WideCharToMultiByte(mentorDictPath);
+            //setenv("MENTOR_DICTIONARY_PATH", mbDictPath.c_str(), 1);
+            csCatalog->SetDictionaryDir(mentorDictPath);
         }
     }
     #endif

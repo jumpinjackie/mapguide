@@ -390,7 +390,7 @@ BYTE_ARRAY_OUT MgdFeatureReader::GetGeometry(CREFSTRING propertyName, INT32& len
     try
     {
         FdoInt32 len = 0;
-        data = m_reader->GetGeometry(propertyName.c_str(), &length);
+        data = m_reader->GetGeometry(propertyName.c_str(), &len);
         length = len;
     }
     catch(...)

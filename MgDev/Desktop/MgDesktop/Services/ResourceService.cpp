@@ -9,6 +9,14 @@
 #include "Services/Feature/FdoConnectionPool.h"
 #include "CryptographyUtil.h"
 
+static void XmlChToWideChar(const XMLCh* ch, REFSTRING wStr)
+{
+    char* mbCh = XMLString::transcode(ch);
+    std::string mbStr = mbCh;
+    MgUtil::MultiByteToWideChar(mbStr, wStr);
+    XMLString::release(&mbCh);
+}
+
 static int MgDirEntrySelector(const ACE_DIRENT *d)
 {
     return (0 != ACE_OS::strcmp(d->d_name, ACE_TEXT(".")) &&
@@ -342,7 +350,8 @@ void MgdResourceService::SetResource(MgResourceIdentifier* resource, MgByteReade
             STRING resType = resource->GetResourceType();
             DOMElement* docEl = doc->getDocumentElement();
             CHECKNULL(docEl, L"MgdResourceService::SetResource");
-            STRING docElName = docEl->getNodeName();
+            STRING docElName;
+            XmlChToWideChar(docEl->getNodeName(), docElName);
 
             //Now make sure it's the right type of XML document
 
@@ -368,7 +377,8 @@ void MgdResourceService::SetResource(MgResourceIdentifier* resource, MgByteReade
         }
         catch (const SAXParseException& e)
         {
-            STRING msg = e.getMessage();
+            STRING msg;
+            XmlChToWideChar(e.getMessage(), msg);
             XMLFileLoc lineNum = e.getLineNumber();
             XMLFileLoc colNum = e.getColumnNumber();
 
@@ -377,10 +387,10 @@ void MgdResourceService::SetResource(MgResourceIdentifier* resource, MgByteReade
 
             STRING pubIdStr;
             if (NULL != pubId)
-                pubIdStr = pubId;
+                XmlChToWideChar(pubId, pubIdStr);
             STRING sysIdStr;
             if (NULL != sysId)
-                sysIdStr = sysId;
+                XmlChToWideChar(sysId, sysIdStr);
 
             STRING lineNumStr;
             STRING colNumStr;
