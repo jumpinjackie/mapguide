@@ -5,6 +5,12 @@
 #   control - generated all packages control file with subst params
 #   changelog - generated changelog file
 #   substvars - subst params created by dpkg-shlibdeps
+#   mapguideplatformbase/ - packaging directory for common MapGuide components
+#     usr/local/mapguideopensource-2.6.0/ - copied tree for common components
+#     DEBIAN/
+#       control - control file generated from dpkg-gencontrol
+#       symbols - symbols file generated from dpkg-gensymbols
+#
 #   mapguidecommon/ - packaging directory for common MapGuide components
 #     usr/local/mapguideopensource-2.6.0/ - copied tree for common components
 #     DEBIAN/
@@ -12,6 +18,12 @@
 #       symbols - symbols file generated from dpkg-gensymbols
 #
 #   mapguidecoordsys/ - packaging directory for CS-Map coordinate system dictionaries
+#     usr/local/mapguideopensource-2.6.0/ - copied tree for common components
+#     DEBIAN/
+#       control - control file generated from dpkg-gencontrol
+#       symbols - symbols file generated from dpkg-gensymbols
+#
+#   mapguidecoordsyslite/ - packaging directory for CS-Map coordinate system dictionaries
 #     usr/local/mapguideopensource-2.6.0/ - copied tree for common components
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
@@ -34,9 +46,7 @@
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
-# 
 #
-# Make sure setvars.sh is called first before running this script
 
 BUILDROOT=`pwd`
 MGBUILD=2.6.0
@@ -116,6 +126,13 @@ Priority: optional
 Depends: \${mapguidecoordsys:Depends}
 Description:  CS-Map Coordinate System Dictionary data files
 
+Package: mapguideopensource-coordsys-lite
+Architecture: ${ARCH}
+Section: msic
+Priority: optional
+Depends: \${mapguidecoordsys:Depends}
+Description:  CS-Map Coordinate System Dictionary data files. Lite version. Excludes country-specific grid files
+
 Package: mapguideopensource-server
 Architecture: ${ARCH}
 Section: misc
@@ -193,6 +210,8 @@ REMOVELIST="\.a\$ \.la\$ \.c\$ \.o\$ \.mak\$ \.nmk\$"
 STRIPLIST="\.so\$"
 
 source ./dpkgbuild.sh
+
+source ./csmap_optimize.sh
 
 MGINST=usr/local/mapguideopensource-${MGBUILD}/server
 ROOT=${BUILDROOT}/debian/mapguideserver

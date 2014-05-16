@@ -12,6 +12,28 @@ MGVER_MAJOR_MINOR_REV=${MGVER_MAJOR_MINOR}.0
 MGBUILD=0
 MGARCH=i386
 MGVER=${MGVER_MAJOR_MINOR_REV}-${MGBUILD}_${MGARCH}
+INSTALLER_TITLE="MapGuide Open Source Ubuntu installer"
+
+DEFAULT_SERVER_IP="127.0.0.1"
+
+DEFAULT_ADMIN_PORT=2810
+DEFAULT_CLIENT_PORT=2811
+DEFAULT_SITE_PORT=2812
+
+DEFAULT_HTTPD_PORT=8008
+DEFAULT_TOMCAT_PORT=8009
+
+csmap_choice="full"
+
+server_ip="127.0.0.1"
+webtier_server_ip="127.0.0.1"
+
+admin_port=2810
+client_port=2811
+site_port=2812
+
+httpd_port=8008
+tomcat_port=8009
 
 # Must have root
 if [[ $EUID -ne 0 ]]; then
@@ -28,14 +50,59 @@ main()
 {
 	dialog_welcome
 	dialog_fdo_provider
-	start_install
+    dialog_server
+    dialog_webtier
+    dialog_coordsys
+    #dump_configuration
+	install_fdo
 	install_mapguide_packages
 	post_install
 }
 
+set_server_vars()
+{
+    set -- $(<$1)
+    server_ip=$1
+    admin_port=$2
+    client_port=$3
+    site_port=$4
+}
+
+set_webtier_vars()
+{
+    set -- $(<$1)
+    webtier_server_ip=$1
+    httpd_port=$2
+    tomcat_port=$3
+}
+
+dump_configuration()
+{
+    echo "********* Configuration Summary ************"
+    echo " Default Ports (Server)"
+    echo "  Admin: ${DEFAULT_ADMIN_PORT}"
+    echo "  Client: ${DEFAULT_CLIENT_PORT}"
+    echo "  Site: ${DEFAULT_SITE_PORT}"
+    echo " Default Ports (WebTier)"
+    echo "  Apache: ${DEFAULT_HTTPD_PORT}"
+    echo "  Tomcat: ${DEFAULT_TOMCAT_PORT}"
+    echo " Configured Ports (Server)"
+    echo "  Admin: ${admin_port}"
+    echo "  Client: ${client_port}"
+    echo "  Site: ${site_port}"
+    echo " Configured Ports (WebTier)"
+    echo "  Apache: ${httpd_port}"
+    echo "  Tomcat: ${tomcat_port}"
+    echo " Other choices"
+    echo "  FDO: ${fdo_provider_choice}"
+    echo "  CS-Map: ${csmap_choice}"
+    echo "  Server IP: ${server_ip}"
+    echo "********************************************"
+}
+
 dialog_welcome()
 {
-	$DIALOG --backtitle "MapGuide Open Source Ubuntu installer" \
+	$DIALOG --backtitle "$INSTALLER_TITLE" \
 	        --title "Welcome" --clear \
         	--yesno "Welcome to the MapGuide Open Source Ubuntu installer. Would you like to proceed?" 10 30
 
@@ -56,7 +123,7 @@ dialog_fdo_provider()
 
 	#arcsde    	"OSGeo FDO Provider for ArcSDE" off \
 	# Disable RDBMS provider selection by default
-	$DIALOG --backtitle "MapGuide Open Source Ubuntu installer" \
+	$DIALOG --backtitle "$INSTALLER_TITLE" \
 			--title "FDO Providers" --clear \
 		    --checklist "Check the FDO Providers you want to install" 20 61 5 \
 		    sdf  		"OSGeo FDO Provider for SDF" ON \
@@ -65,11 +132,11 @@ dialog_fdo_provider()
 		    gdal    	"OSGeo FDO Provider for GDAL" ON \
    		    ogr    		"OSGeo FDO Provider for OGR" ON \
    		    kingoracle  "OSGeo FDO Provider for Oracle" off \
-		    rdbms	"RDBMS FDO Providers (ODBC, MySQL, PostgreSQL)" off \
+		    rdbms	    "RDBMS FDO Providers (ODBC, MySQL, PostgreSQL)" off \
    		    wfs    		"OSGeo FDO Provider for WFS" ON \
 		    wms   		"OSGeo FDO Provider for WMS" ON  2> $tempfile
 
-	choice=`cat $tempfile | sed s/\"//g`
+	fdo_provider_choice=`cat $tempfile | sed s/\"//g`
 	case $? in
 	  1)
 		echo "Cancelled"
@@ -80,7 +147,67 @@ dialog_fdo_provider()
 	esac
 }
 
-start_install()
+dialog_server()
+{
+    dialog --backtitle "$INSTALLER_TITLE" --title "Server Configuration" \
+            --form "\nSet the port numbers that the MapGuide Server will listen on" 25 60 16 \
+            "Server IP:"   1 1 "${DEFAULT_SERVER_IP}"   1 25 25 30 \
+            "Admin Port:"  2 1 "${DEFAULT_ADMIN_PORT}"  2 25 25 30 \
+            "Client Port:" 3 1 "${DEFAULT_CLIENT_PORT}" 3 25 25 30 \
+            "Site Port:"   4 1 "${DEFAULT_SITE_PORT}"   4 25 25 30 2>/tmp/form.$$
+    case $? in
+      1)
+	    echo "Cancelled"
+	    exit 1;;
+      255)
+	    echo "Cancelled"
+	    exit 255;;
+    esac
+    set_server_vars "/tmp/form.$$"
+    rm /tmp/form.$$
+}
+
+dialog_webtier()
+{
+    dialog --backtitle "$INSTALLER_TITLE" --title "Web Tier Configuration" \
+            --form "\nSet the port numbers that Apache/Tomcat will listen on" 25 60 16 \
+            "Connect to Server IP:" 1 1 "${DEFAULT_SERVER_IP}"   1 25 25 30 \
+            "Apache Port:"          2 1 "${DEFAULT_HTTPD_PORT}"  2 25 25 30 \
+            "Tomcat Port:"          3 1 "${DEFAULT_TOMCAT_PORT}" 3 25 25 30 2>/tmp/form.$$
+    case $? in
+      1)
+	    echo "Cancelled"
+	    exit 1;;
+      255)
+	    echo "Cancelled"
+	    exit 255;;
+    esac
+    set_webtier_vars "/tmp/form.$$"
+    rm /tmp/form.$$
+}
+
+dialog_coordsys()
+{
+    tempfile=`tempfile 2>/dev/null` || tempfile=/tmp/test$$
+    trap "rm -f $tempfile" 0 1 2 5 15
+
+    dialog --backtitle "$INSTALLER_TITLE" \
+	        --title "Coordinate System Configuration" --clear \
+            --radiolist "Choose the CS-Map profile you want for this MapGuide Installation" 20 80 5 \
+            "full" "Download/Install the full set of data files" ON \
+            "lite" "Download/Install the lite configuration (no grid files)" off  2> $tempfile
+    csmap_choice=`cat $tempfile`
+    case $? in
+      1)
+        echo "Cancelled"
+        exit 1;;
+      255)
+        echo "Cancelled"
+        exit 255;;
+    esac
+}
+
+install_fdo()
 {
 	# set initial registration state
 	arcsde_registered=0
@@ -95,9 +222,9 @@ start_install()
 	wms_registered=0
 
 	# Include core and rdbms packages regardless of choice.
-	choice="core rdbms $choice"
+	fdo_provider_choice="core rdbms $fdo_provider_choice"
 	# Download and install Ubuntu packages for FDO
-	for file in $choice
+	for file in $fdo_provider_choice
 	do
 	  #echo "Downloading ${URL}/fdo-${file}_${FDOVER}.deb"
 	  wget -N ${URL}/fdo-${file}_${FDOVER}.deb
@@ -109,7 +236,7 @@ start_install()
 	providersxml=/usr/local/fdo-${FDOVER_MAJOR_MINOR_REV}/lib/providers.xml
 	echo -ne "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\" ?>" > ${providersxml}
 	echo -ne "\n<FeatureProviderRegistry>" >> ${providersxml}
-	for file in $choice
+	for file in $fdo_provider_choice
 	do
 		case $file in
 		  arcsde)
@@ -310,17 +437,38 @@ start_install()
 install_mapguide_packages()
 {
 	# Download Ubuntu packages for MapGuide
-	for file in platformbase coordsys common server webextensions httpd
+    mapguide_packages="platformbase coordsys common server webextensions httpd"
+    if [ $csmap_choice = "lite" ]; then
+        mapguide_packages="platformbase coordsys-lite common server webextensions httpd"
+    fi
+	for file in $mapguide_packages
 	do
-	  echo "Downloading: ${URL}/mapguideopensource-${file}_${MGVER}.deb"
+	  echo "[download]: ${URL}/mapguideopensource-${file}_${MGVER}.deb"
 	  wget -N ${URL}/mapguideopensource-${file}_${MGVER}.deb
- 	  echo "Installing: mapguideopensource-${file}_${MGVER}.deb"
+ 	  echo "[install]: mapguideopensource-${file}_${MGVER}.deb"
    	  dpkg -E -G --install mapguideopensource-${file}_${MGVER}.deb
 	done
 }
 
 post_install()
 {
+    echo "[config]: Updating serverconfig.ini with configuration choices"
+    sed -i 's/MachineIp.*= '"${DEFAULT_SERVER_IP}"'/MachineIp = '"${server_ip}"'/g' /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin/serverconfig.ini
+    sed -i 's/IpAddress.*= '"${DEFAULT_SERVER_IP}"'/IpAddress = '"${server_ip}"'/g' /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin/serverconfig.ini
+    sed -i 's/Port.*= '"${DEFAULT_ADMIN_PORT}"'/Port = '"${admin_port}"'/g' /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin/serverconfig.ini
+    sed -i 's/Port.*= '"${DEFAULT_CLIENT_PORT}"'/Port = '"${client_port}"'/g' /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin/serverconfig.ini
+    sed -i 's/Port.*= '"${DEFAULT_SITE_PORT}"'/Port = '"${site_port}"'/g' /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin/serverconfig.ini
+    echo "[config]: Updating webconfig.ini with configuration choices"
+    sed -i 's/IpAddress.*= '"${DEFAULT_SERVER_IP}"'/IpAddress = '"${webtier_server_ip}"'/g' /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/www/webconfig.ini
+    sed -i 's/Port.*= '"${DEFAULT_ADMIN_PORT}"'/Port = '"${admin_port}"'/g' /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/www/webconfig.ini
+    sed -i 's/Port.*= '"${DEFAULT_CLIENT_PORT}"'/Port = '"${client_port}"'/g' /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/www/webconfig.ini
+    sed -i 's/Port.*= '"${DEFAULT_SITE_PORT}"'/Port = '"${site_port}"'/g' /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/www/webconfig.ini
+    echo "[config]: Updating httpd.conf with configuration choices"
+    sed -i 's/Listen '"${DEFAULT_HTTPD_PORT}"'/Listen '"${httpd_port}"'/g' /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/conf/httpd.conf
+    sed -i 's/worker.worker1.port='"${DEFAULT_TOMCAT_PORT}"'/worker.worker1.port='"${tomcat_port}"'/g' /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/conf/workers.properties
+    sed -i 's/Connector port=\"'"${DEFAULT_TOMCAT_PORT}"'\"/Connector port=\"'"${tomcat_port}"'\"/g' /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/tomcat/conf/server.xml
+    echo "[config]: Updating tomcat configs with configuration choices"
+
 	echo "Creating lock file directory for MapGuide Server"
 	# Create lock file directory for Server
 	if [ ! -d /var/lock/mgserver ]; then
@@ -329,6 +477,10 @@ post_install()
 	echo "Starting httpd"
 	pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/bin
 	./apachectl start
+	popd
+    echo "Starting tomcat"
+	pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/tomcat/bin
+    sh ./startup.sh
 	popd
 	echo "Starting mgserver"
 	pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin

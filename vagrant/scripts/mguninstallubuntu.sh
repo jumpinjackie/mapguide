@@ -7,7 +7,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Remove Ubuntu packages for MapGuide
-for file in server webextensions httpd coordsys common platformbase
+for file in server webextensions httpd coordsys coordsys-lite common platformbase
 do
   dpkg --remove mapguideopensource-${file}
 done
