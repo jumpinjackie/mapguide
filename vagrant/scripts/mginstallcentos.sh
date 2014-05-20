@@ -20,8 +20,8 @@ FDO_URL=${URL}/${FDO_TARBALL}
 
 # Must have root
 if [[ $EUID -ne 0 ]]; then
-	echo "You must run this script with superuser privileges"
-	exit 1
+    echo "You must run this script with superuser privileges"
+    exit 1
 fi
 
 if [ ! -f ${FDO_TARBALL} ]; then
@@ -30,49 +30,63 @@ fi
 
 #tar -C / -zxvf ${FDO_TARBALL}
 mkdir -p /usr/local/fdo-${FDOVER_MAJOR_MINOR_REV}
+echo "[install]: Extracting FDO"
 tar -C /usr/local/fdo-${FDOVER_MAJOR_MINOR_REV}/ -zxf ${FDO_TARBALL}
 
 if [ ! -f ${MG_TARBALL} ]; then
 wget -N ${MG_URL}
 fi
 
+echo "[install]: Extracting MapGuide"
 tar -C / -zxf ${MG_TARBALL}
 
 # All of this is to make SELinux happy
 pushd /usr/local/fdo-${FDOVER_MAJOR_MINOR_REV}/lib
+echo "[config]: Making binaries SELinux compatible"
 chcon -t textrel_shlib_t *.so
 popd
 
 pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin
+echo "[config]: Making binaries SELinux compatible"
 chcon -t textrel_shlib_t *.so
 chcon -t textrel_shlib_t mgserver
 popd
 
 pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/lib
+echo "[config]: Making binaries SELinux compatible"
 chcon -t textrel_shlib_t *.so
 popd
 
 pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/lib
+echo "[config]: Making binaries SELinux compatible"
 chcon -t textrel_shlib_t *.so
 popd
 
 pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/lib
+echo "[config]: Making binaries SELinux compatible"
 chcon -t textrel_shlib_t *.so
 popd
 
 pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/lib
+echo "[config]: Making binaries SELinux compatible"
 chcon -t textrel_shlib_t *.so
 popd
 
 pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/modules
+echo "[config]: Making binaries SELinux compatible"
 chcon -t textrel_shlib_t *.so
 popd
 
+echo "[config]: Fixing permissions for certain folders"
+chmod 777 /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/www/TempDir
+
 pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/bin
+echo "[install]: Starting httpd"
 ./apachectl start
 popd
 
 pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin
+echo "[install]: Starting mgserver"
 ./mgserverd.sh
 popd
 
