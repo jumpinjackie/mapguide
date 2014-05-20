@@ -176,28 +176,28 @@ else
         if test $enable_64bit = no; then
             AC_MSG_NOTICE([Using 32-bit CXXFLAGS])
             CXXFLAGS="-O2 -g -pipe -march=i686 -mtune=i686 -fno-use-cxa-atexit -fexceptions"
-            AC_SUBST(CXXFLAGS, ["-O2 -g -pipe -march=i686 -mtune=i686 -fno-use-cxa-atexit -fexceptions"])            
+            AC_SUBST(CXXFLAGS, ["-O2 -g -pipe -march=i686 -mtune=i686 -fno-use-cxa-atexit -fexceptions -Wno-write-strings"])            
         else
             #TODO: Review. i686 is not a valid march/mtune value for 64-bit compilation
             #TODO: Sticking -fPIC globally is probably a bit of a thermonuclear solution, but we
             # *absolutely* must be sure this flag is used when compiling static libraries
             AC_MSG_NOTICE([Using 64-bit CXXFLAGS])
             CXXFLAGS="-O2 -g -pipe -m64 -fPIC -fno-use-cxa-atexit -fexceptions"
-            AC_SUBST(CXXFLAGS, ["-O2 -g -pipe -m64 -fPIC -fno-use-cxa-atexit -fexceptions"])
+            AC_SUBST(CXXFLAGS, ["-O2 -g -pipe -m64 -fPIC -fno-use-cxa-atexit -fexceptions -Wno-write-strings"])
         fi
     else
         AC_MSG_NOTICE([this gcc version is not actively supported.])
         if test $enable_64bit = no; then
             AC_MSG_NOTICE([Using 32-bit CXXFLAGS])
             CXXFLAGS="-O2 -g -pipe -march=i686 -mtune=i686 -fno-use-cxa-atexit -fexceptions"
-            AC_SUBST(CXXFLAGS, ["-O2 -g -pipe -march=i686 -mtune=i686 -fno-use-cxa-atexit -fexceptions"])
+            AC_SUBST(CXXFLAGS, ["-O2 -g -pipe -march=i686 -mtune=i686 -fno-use-cxa-atexit -fexceptions -Wno-write-strings"])
         else
             #TODO: Review. i686 is not a valid march/mtune value for 64-bit compilation
             #TODO: Sticking -fPIC globally is probably a bit of a thermonuclear solution, but we
             # *absolutely* must be sure this flag is used when compiling static libraries
             AC_MSG_NOTICE([Using 64-bit CXXFLAGS])
             CXXFLAGS="-O2 -g -pipe -m64 -fPIC -fno-use-cxa-atexit -fexceptions"
-            AC_SUBST(CXXFLAGS, ["-O2 -g -pipe -m64 -fPIC -fno-use-cxa-atexit -fexceptions"])
+            AC_SUBST(CXXFLAGS, ["-O2 -g -pipe -m64 -fPIC -fno-use-cxa-atexit -fexceptions -Wno-write-strings"])
         fi
     fi
 fi
