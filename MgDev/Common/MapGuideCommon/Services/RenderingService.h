@@ -39,9 +39,12 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
-    /// Returns the specified base map tile for the given map.  If a cached tile
-    /// image exists it will return it, otherwise the tile is rendered and added
-    /// to the cache.
+    /// Returns the specified base map tile for the given map.
+    ///
+    /// \remarks
+    /// This method only renders the given tile. No tile caching is performed
+    /// by this method. To render and cache the tile, use the 
+    /// \link MgTileService::GetTile GetTile \endlink method instead
     ///
     /// \param map
     /// Input
