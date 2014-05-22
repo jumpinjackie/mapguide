@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SymbolLibrary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SymbolLibrary-1.0.0.xsd">
+  <Symbol>
+    <Name>CityLogo</Name>
+    <Resource>CityLogo</Resource>
+  </Symbol>
+</SymbolLibrary>
