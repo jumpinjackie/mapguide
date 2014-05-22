@@ -44,6 +44,19 @@ void TestFeatureService::TestStart()
 {
     ACE_DEBUG((LM_INFO, ACE_TEXT("\nRunning Feature Service tests.\n")));
 
+#ifdef _WIN32
+    //If the FDO we're using has a full providers.xml and we haven't met the dependencies
+    //of some providers (eg. OCI.dll for King.Oracle), then it's going to show a message box
+    //in our face about this that has to be manually dismissed. Not something you want to have 
+    //happen when trying to run tests in an automated fashion. This test suite only covers the
+    //SDF, SHP and SQLite providers so having such message boxes show up is intrusive.
+    //
+    //This call will suppress such message boxes when loading dlls with unmet depdendencies. It's
+    //okay to do this here because mgserver.exe would not be running as a service or long-running process
+    //when running its test suite, so this will only take effect for the duration of the test run
+    SetErrorMode(SEM_FAILCRITICALERRORS);
+#endif
+
     try
     {
         #ifdef _DEBUG
