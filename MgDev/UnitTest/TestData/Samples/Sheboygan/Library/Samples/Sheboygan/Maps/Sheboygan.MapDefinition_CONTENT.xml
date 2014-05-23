@@ -10,6 +10,16 @@
   </Extents>
   <BackgroundColor>ffcdbd9c</BackgroundColor>
   <MapLayer>
+    <Name>Trees</Name>
+    <ResourceId>Library://Samples/Sheboygan/Layers/Trees.LayerDefinition</ResourceId>
+    <Selectable>false</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>Trees</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>true</Visible>
+    <Group>Municipal</Group>
+  </MapLayer>
+  <MapLayer>
     <Name>Roads</Name>
     <ResourceId>Library://Samples/Sheboygan/Layers/Roads.LayerDefinition</ResourceId>
     <Selectable>false</Selectable>
@@ -77,6 +87,16 @@
     <LegendLabel>Hydrography</LegendLabel>
     <ExpandInLegend>true</ExpandInLegend>
     <Visible>true</Visible>
+    <Group>Base Map</Group>
+  </MapLayer>
+  <MapLayer>
+    <Name>Soils</Name>
+    <ResourceId>Library://Samples/Sheboygan/Layers/Soils.LayerDefinition</ResourceId>
+    <Selectable>false</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>Soils</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>false</Visible>
     <Group>Base Map</Group>
   </MapLayer>
   <MapLayer>

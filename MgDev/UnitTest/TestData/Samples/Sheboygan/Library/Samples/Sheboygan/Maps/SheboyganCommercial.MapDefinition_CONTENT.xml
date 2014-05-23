@@ -10,6 +10,16 @@
   </Extents>
   <BackgroundColor>ffcdbd9c</BackgroundColor>
   <MapLayer>
+    <Name>Trees</Name>
+    <ResourceId>Library://Samples/Sheboygan/Layers/Trees.LayerDefinition</ResourceId>
+    <Selectable>false</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>Trees</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>true</Visible>
+    <Group>Municipal</Group>
+  </MapLayer>
+  <MapLayer>
     <Name>Roads</Name>
     <ResourceId>Library://Samples/Sheboygan/Layers/Roads.LayerDefinition</ResourceId>
     <Selectable>false</Selectable>
@@ -80,6 +90,16 @@
     <Group>Base Map</Group>
   </MapLayer>
   <MapLayer>
+    <Name>Soils</Name>
+    <ResourceId>Library://Samples/Sheboygan/Layers/Soils.LayerDefinition</ResourceId>
+    <Selectable>false</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>Soils</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>false</Visible>
+    <Group>Base Map</Group>
+  </MapLayer>
+  <MapLayer>
     <Name>CityLimits</Name>
     <ResourceId>Library://Samples/Sheboygan/Layers/CityLimits.LayerDefinition</ResourceId>
     <Selectable>false</Selectable>
@@ -113,5 +133,10 @@
     <LegendLabel>Transportation</LegendLabel>
     <Group/>
   </MapLayerGroup>
-  <Watermarks/>
+  <Watermarks>
+    <Watermark>
+      <Name>MapText</Name>
+      <ResourceId>Library://Samples/Sheboygan/Watermarks/MapText.WatermarkDefinition</ResourceId>
+    </Watermark>
+  </Watermarks>
 </MapDefinition>
