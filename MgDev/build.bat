@@ -223,6 +223,10 @@ echo [build]: MapGuide Developer's Guide
 pushd %MG_DOC%\devguide
 call make.bat html
 popd
+echo [build]: Sheboygan Sample data set
+pushd %MG_DEV%\UnitTest\TestData\Samples\Sheboygan
+call build.bat
+popd
 goto quit
 
 rem =======================================================
@@ -351,6 +355,13 @@ echo [install]: Viewer API documentation
 echo [install]: Copy dlls into .net samples
 %XCOPY% "%MG_OUTPUT_WEB%\www\mapviewernet\bin\*.dll" "%MG_OUTPUT_WEB%\www\dotnetsamples\bin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 %XCOPY% "%MG_OUTPUT_WEB%\www\mapviewernet\bin\*.dll" "%MG_OUTPUT_WEB%\www\dotnetviewersample\bin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+if not exist "%MG_DEV%\UnitTest\TestData\Samples\Sheboygan\Sheboygan.mgp" (
+    echo [build]: Sheboygan Sample data set
+    pushd %MG_DEV%\UnitTest\TestData\Samples\Sheboygan
+    call build.bat
+    popd
+)
+copy /Y "%MG_DEV%\UnitTest\TestData\Samples\Sheboygan\Sheboygan.mgp" "%MG_OUTPUT%"
 goto quit
 
 :error

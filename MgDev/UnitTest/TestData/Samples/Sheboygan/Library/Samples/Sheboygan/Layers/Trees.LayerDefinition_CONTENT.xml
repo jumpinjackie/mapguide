@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LayerDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0.0" xsi:noNamespaceSchemaLocation="LayerDefinition-1.0.0.xsd">
+  <VectorLayerDefinition>
+    <ResourceId>Library://Samples/Sheboygan/Data/Trees.FeatureSource</ResourceId>
+    <FeatureName>SHP_Schema:Trees</FeatureName>
+    <FeatureNameType>FeatureClass</FeatureNameType>
+    <Geometry>SHPGEOM</Geometry>
+    <VectorScaleRange>
+      <MaxScale>12000</MaxScale>
+      <PointTypeStyle>
+        <DisplayAsText>false</DisplayAsText>
+        <AllowOverpost>false</AllowOverpost>
+        <PointRule>
+          <LegendLabel/>
+          <PointSymbolization2D>
+            <Mark>
+              <Unit>Points</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
+              <SizeX>5</SizeX>
+              <SizeY>5</SizeY>
+              <Rotation>0</Rotation>
+              <Shape>Circle</Shape>
+              <Fill>
+                <FillPattern>Solid</FillPattern>
+                <ForegroundColor>FF008000</ForegroundColor>
+                <BackgroundColor>ffffffff</BackgroundColor>
+              </Fill>
+              <Edge>
+                <LineStyle>Solid</LineStyle>
+                <Thickness>1</Thickness>
+                <Color>ff000000</Color>
+                <Unit>Points</Unit>
+              </Edge>
+            </Mark>
+          </PointSymbolization2D>
+        </PointRule>
+      </PointTypeStyle>
+    </VectorScaleRange>
+  </VectorLayerDefinition>
+</LayerDefinition>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SymbolLibrary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SymbolLibrary-1.0.0.xsd">
+  <Symbol>
+    <Name>PushPin</Name>
+    <Resource>PushPin</Resource>
+  </Symbol>
+  <Symbol>
+    <Name>PushPin - Blue</Name>
+    <Resource>PushPin - Blue</Resource>
+  </Symbol>
+</SymbolLibrary>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LayerDefinition version="1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LayerDefinition-1.0.0.xsd">
+  <VectorLayerDefinition>
+    <ResourceId>Library://Samples/Sheboygan/Data/Rail.FeatureSource</ResourceId>
+    <FeatureName>SHP_Schema:Rail</FeatureName>
+    <FeatureNameType>FeatureClass</FeatureNameType>
+    <Geometry>SHPGEOM</Geometry>
+    <VectorScaleRange>
+      <MaxScale>24000</MaxScale>
+      <LineTypeStyle>
+        <LineRule>
+          <LegendLabel/>
+          <LineSymbolization2D>
+            <LineStyle>Rail</LineStyle>
+            <Thickness>0</Thickness>
+            <Color>FF646464</Color>
+            <Unit>Inches</Unit>
+          </LineSymbolization2D>
+        </LineRule>
+      </LineTypeStyle>
+    </VectorScaleRange>
+  </VectorLayerDefinition>
+</LayerDefinition>

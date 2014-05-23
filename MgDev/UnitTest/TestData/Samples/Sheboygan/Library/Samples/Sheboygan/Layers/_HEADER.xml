@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ResourceFolderHeader xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ResourceFolderHeader-1.0.0.xsd">
+	<Security xsi:noNamespaceSchemaLocation="ResourceSecurity-1.0.0.xsd">
+		<Inherited>true</Inherited>
+	</Security>
+</ResourceFolderHeader>
