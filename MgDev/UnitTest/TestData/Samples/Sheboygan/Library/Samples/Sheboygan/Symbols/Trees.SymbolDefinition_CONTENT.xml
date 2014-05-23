@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SimpleSymbolDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="SymbolDefinition-2.4.0.xsd" version="2.4.0">
+  <Name>Circle</Name>
+  <Description>Default Point Symbol</Description>
+  <Graphics>
+    <Path>
+      <Geometry>M -1,0 A 1,1 0 1 1 1,0 A 1,1 0 1 1 -1,0</Geometry>
+      <ScaleX>%StyleEditorGenerated_ScaleX_0%</ScaleX>
+      <ScaleY>%StyleEditorGenerated_ScaleY_0%</ScaleY>
+      <FillColor>%FILLCOLOR%</FillColor>
+      <LineColor>%LINECOLOR%</LineColor>
+      <LineWeight>%LINEWEIGHT%</LineWeight>
+      <LineCap>%StyleEditorGenerated_LineCap_0%</LineCap>
+      <LineJoin>%StyleEditorGenerated_LineJoin_0%</LineJoin>
+    </Path>
+  </Graphics>
+  <PointUsage>
+    <Angle>%ROTATION%</Angle>
+  </PointUsage>
+  <ParameterDefinition>
+    <Parameter>
+      <Identifier>FILLCOLOR</Identifier>
+      <DefaultValue>0xffffffff</DefaultValue>
+      <DisplayName>&amp;Fill Color</DisplayName>
+      <Description>Fill Color</Description>
+      <DataType>FillColor</DataType>
+    </Parameter>
+    <Parameter>
+      <Identifier>LINECOLOR</Identifier>
+      <DefaultValue>0xff000000</DefaultValue>
+      <DisplayName>Line &amp;Color</DisplayName>
+      <Description>Line Color</Description>
+      <DataType>LineColor</DataType>
+    </Parameter>
+    <Parameter>
+      <Identifier>LINEWEIGHT</Identifier>
+      <DefaultValue>0.0</DefaultValue>
+      <DisplayName>Line &amp;Thickness</DisplayName>
+      <Description>Line Thickness</Description>
+      <DataType>LineWeight</DataType>
+    </Parameter>
+    <Parameter>
+      <Identifier>ROTATION</Identifier>
+      <DefaultValue>0.0</DefaultValue>
+      <DisplayName>&amp;Rotation</DisplayName>
+      <Description>Rotation</Description>
+      <DataType>Angle</DataType>
+    </Parameter>
+    <Parameter>
+      <Identifier>StyleEditorGenerated_ScaleX_0</Identifier>
+      <DefaultValue>1.0</DefaultValue>
+      <DisplayName>Path ScaleX</DisplayName>
+      <Description>Path ScaleX</Description>
+      <DataType>Real</DataType>
+    </Parameter>
+    <Parameter>
+      <Identifier>StyleEditorGenerated_ScaleY_0</Identifier>
+      <DefaultValue>1.0</DefaultValue>
+      <DisplayName>Path ScaleY</DisplayName>
+      <Description>Path ScaleY</Description>
+      <DataType>Real</DataType>
+    </Parameter>
+    <Parameter>
+      <Identifier>StyleEditorGenerated_LineCap_0</Identifier>
+      <DefaultValue>'Round'</DefaultValue>
+      <DisplayName>Line Cap</DisplayName>
+      <Description>The cap type to use at the ends of each segment in the path outline.  This must evaluate to one of: None, Round (default), Triangle, or Square.</Description>
+      <DataType>String</DataType>
+    </Parameter>
+    <Parameter>
+      <Identifier>StyleEditorGenerated_LineJoin_0</Identifier>
+      <DefaultValue>'Round'</DefaultValue>
+      <DisplayName>Line Join</DisplayName>
+      <Description>The join type to use at each vertex in the path outline.  This must evaluate to one of: None, Bevel, Round (default), or Miter.</Description>
+      <DataType>String</DataType>
+    </Parameter>
+  </ParameterDefinition>
+</SimpleSymbolDefinition>

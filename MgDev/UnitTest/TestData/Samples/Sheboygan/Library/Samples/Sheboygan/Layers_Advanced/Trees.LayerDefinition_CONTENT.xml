@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LayerDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="2.4.0" xsi:noNamespaceSchemaLocation="LayerDefinition-2.4.0.xsd">
+  <VectorLayerDefinition>
+    <ResourceId>Library://Samples/Sheboygan/Data/Trees.FeatureSource</ResourceId>
+    <Watermarks/>
+    <FeatureName>SHP_Schema:Trees</FeatureName>
+    <FeatureNameType>FeatureClass</FeatureNameType>
+    <Geometry>SHPGEOM</Geometry>
+    <VectorScaleRange>
+      <MaxScale>12000</MaxScale>
+      <CompositeTypeStyle>
+        <CompositeRule>
+          <LegendLabel/>
+          <CompositeSymbolization>
+            <SymbolInstance>
+              <ResourceId>Library://Samples/Sheboygan/Symbols/Trees.SymbolDefinition</ResourceId>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Circle</SymbolName>
+                  <ParameterIdentifier>FILLCOLOR</ParameterIdentifier>
+                  <ParameterValue>0xff008000</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+            </SymbolInstance>
+          </CompositeSymbolization>
+        </CompositeRule>
+      </CompositeTypeStyle>
+    </VectorScaleRange>
+  </VectorLayerDefinition>
+</LayerDefinition>

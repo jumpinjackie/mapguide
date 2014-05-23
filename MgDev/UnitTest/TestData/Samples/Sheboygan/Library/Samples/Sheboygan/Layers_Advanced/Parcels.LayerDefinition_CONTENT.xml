@@ -1,0 +1,736 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LayerDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="2.4.0" xsi:noNamespaceSchemaLocation="LayerDefinition-2.4.0.xsd">
+  <VectorLayerDefinition>
+    <ResourceId>Library://Samples/Sheboygan/Data/Parcels.FeatureSource</ResourceId>
+    <Watermarks/>
+    <FeatureName>SHP_Schema:Parcels</FeatureName>
+    <FeatureNameType>FeatureClass</FeatureNameType>
+    <PropertyMapping>
+      <Name>RLDESCR1</Name>
+      <Value>Description1</Value>
+    </PropertyMapping>
+    <PropertyMapping>
+      <Name>RTYPE</Name>
+      <Value>Zone</Value>
+    </PropertyMapping>
+    <PropertyMapping>
+      <Name>RACRE</Name>
+      <Value>Acreage</Value>
+    </PropertyMapping>
+    <PropertyMapping>
+      <Name>RLOT</Name>
+      <Value>Lot Dimensions</Value>
+    </PropertyMapping>
+    <PropertyMapping>
+      <Name>RNAME</Name>
+      <Value>Owner</Value>
+    </PropertyMapping>
+    <PropertyMapping>
+      <Name>RLDESCR2</Name>
+      <Value>Description2</Value>
+    </PropertyMapping>
+    <PropertyMapping>
+      <Name>RLDESCR3</Name>
+      <Value>Description3</Value>
+    </PropertyMapping>
+    <PropertyMapping>
+      <Name>RBILAD</Name>
+      <Value>Billing Address</Value>
+    </PropertyMapping>
+    <PropertyMapping>
+      <Name>RSQFT</Name>
+      <Value>Lot Size (SqFt)</Value>
+    </PropertyMapping>
+    <PropertyMapping>
+      <Name>RLDESCR4</Name>
+      <Value>Description4</Value>
+    </PropertyMapping>
+    <Geometry>SHPGEOM</Geometry>
+    <ToolTip>concat('Parcel\nName: ', concat(RNAME, concat('\nAddress: ', RBILAD)))</ToolTip>
+    <VectorScaleRange>
+      <MaxScale>10000</MaxScale>
+      <CompositeTypeStyle>
+        <CompositeRule>
+          <LegendLabel>Zone: AGR</LegendLabel>
+          <Filter>"RTYPE" = 'AGR'</Filter>
+          <CompositeSymbolization>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Fill</Name>
+                <Description>Default Area Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 h 100.0 v 100.0 h -100.0 z</Geometry>
+                    <FillColor>%FILLCOLOR%</FillColor>
+                  </Path>
+                </Graphics>
+                <AreaUsage>
+                  <RepeatX>100.0</RepeatX>
+                  <RepeatY>100.0</RepeatY>
+                </AreaUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>FILLCOLOR</Identifier>
+                    <DefaultValue>0xffc19e6a</DefaultValue>
+                    <DisplayName>&amp;amp;Fill Color</DisplayName>
+                    <Description>Fill Color</Description>
+                    <DataType>FillColor</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Fill</SymbolName>
+                  <ParameterIdentifier>FILLCOLOR</ParameterIdentifier>
+                  <ParameterValue>0xffc19e6a</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Line</Name>
+                <Description>Default Line Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 L 1.0,0.0</Geometry>
+                    <LineColor>%LINECOLOR%</LineColor>
+                    <LineWeight>%LINEWEIGHT%</LineWeight>
+                    <LineWeightScalable>false</LineWeightScalable>
+                  </Path>
+                </Graphics>
+                <LineUsage>
+                  <Repeat>1.0</Repeat>
+                </LineUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>LINECOLOR</Identifier>
+                    <DefaultValue>0xff808080</DefaultValue>
+                    <DisplayName>Line &amp;amp;Color</DisplayName>
+                    <Description>Line Color</Description>
+                    <DataType>LineColor</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>LINEWEIGHT</Identifier>
+                    <DefaultValue>0.0</DefaultValue>
+                    <DisplayName>Line &amp;amp; Thickness</DisplayName>
+                    <Description>Line Thickness</Description>
+                    <DataType>LineWeight</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINECOLOR</ParameterIdentifier>
+                  <ParameterValue>0xff808080</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINEWEIGHT</ParameterIdentifier>
+                  <ParameterValue>0.0</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+          </CompositeSymbolization>
+        </CompositeRule>
+        <CompositeRule>
+          <LegendLabel>Zone: EXM</LegendLabel>
+          <Filter>"RTYPE" = 'EXM'</Filter>
+          <CompositeSymbolization>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Fill</Name>
+                <Description>Default Area Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 h 100.0 v 100.0 h -100.0 z</Geometry>
+                    <FillColor>%FILLCOLOR%</FillColor>
+                  </Path>
+                </Graphics>
+                <AreaUsage>
+                  <RepeatX>100.0</RepeatX>
+                  <RepeatY>100.0</RepeatY>
+                </AreaUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>FILLCOLOR</Identifier>
+                    <DefaultValue>0xffb9a670</DefaultValue>
+                    <DisplayName>&amp;amp;Fill Color</DisplayName>
+                    <Description>Fill Color</Description>
+                    <DataType>FillColor</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Fill</SymbolName>
+                  <ParameterIdentifier>FILLCOLOR</ParameterIdentifier>
+                  <ParameterValue>0xffb9a670</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Line</Name>
+                <Description>Default Line Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 L 1.0,0.0</Geometry>
+                    <LineColor>%LINECOLOR%</LineColor>
+                    <LineWeight>%LINEWEIGHT%</LineWeight>
+                    <LineWeightScalable>false</LineWeightScalable>
+                  </Path>
+                </Graphics>
+                <LineUsage>
+                  <Repeat>1.0</Repeat>
+                </LineUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>LINECOLOR</Identifier>
+                    <DefaultValue>0xff808080</DefaultValue>
+                    <DisplayName>Line &amp;amp;Color</DisplayName>
+                    <Description>Line Color</Description>
+                    <DataType>LineColor</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>LINEWEIGHT</Identifier>
+                    <DefaultValue>0.0</DefaultValue>
+                    <DisplayName>Line &amp;amp; Thickness</DisplayName>
+                    <Description>Line Thickness</Description>
+                    <DataType>LineWeight</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINECOLOR</ParameterIdentifier>
+                  <ParameterValue>0xff808080</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINEWEIGHT</ParameterIdentifier>
+                  <ParameterValue>0.0</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+          </CompositeSymbolization>
+        </CompositeRule>
+        <CompositeRule>
+          <LegendLabel>Zone: MER</LegendLabel>
+          <Filter>"RTYPE" = 'MER'</Filter>
+          <CompositeSymbolization>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Fill</Name>
+                <Description>Default Area Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 h 100.0 v 100.0 h -100.0 z</Geometry>
+                    <FillColor>%FILLCOLOR%</FillColor>
+                  </Path>
+                </Graphics>
+                <AreaUsage>
+                  <RepeatX>100.0</RepeatX>
+                  <RepeatY>100.0</RepeatY>
+                </AreaUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>FILLCOLOR</Identifier>
+                    <DefaultValue>0xffb2ae77</DefaultValue>
+                    <DisplayName>&amp;amp;Fill Color</DisplayName>
+                    <Description>Fill Color</Description>
+                    <DataType>FillColor</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Fill</SymbolName>
+                  <ParameterIdentifier>FILLCOLOR</ParameterIdentifier>
+                  <ParameterValue>0xffb2ae77</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Line</Name>
+                <Description>Default Line Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 L 1.0,0.0</Geometry>
+                    <LineColor>%LINECOLOR%</LineColor>
+                    <LineWeight>%LINEWEIGHT%</LineWeight>
+                    <LineWeightScalable>false</LineWeightScalable>
+                  </Path>
+                </Graphics>
+                <LineUsage>
+                  <Repeat>1.0</Repeat>
+                </LineUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>LINECOLOR</Identifier>
+                    <DefaultValue>0xff808080</DefaultValue>
+                    <DisplayName>Line &amp;amp;Color</DisplayName>
+                    <Description>Line Color</Description>
+                    <DataType>LineColor</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>LINEWEIGHT</Identifier>
+                    <DefaultValue>0.0</DefaultValue>
+                    <DisplayName>Line &amp;amp; Thickness</DisplayName>
+                    <Description>Line Thickness</Description>
+                    <DataType>LineWeight</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINECOLOR</ParameterIdentifier>
+                  <ParameterValue>0xff808080</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINEWEIGHT</ParameterIdentifier>
+                  <ParameterValue>0.0</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+          </CompositeSymbolization>
+        </CompositeRule>
+        <CompositeRule>
+          <LegendLabel>Zone: MFG</LegendLabel>
+          <Filter>"RTYPE" = 'MFG'</Filter>
+          <CompositeSymbolization>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Fill</Name>
+                <Description>Default Area Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 h 100.0 v 100.0 h -100.0 z</Geometry>
+                    <FillColor>%FILLCOLOR%</FillColor>
+                  </Path>
+                </Graphics>
+                <AreaUsage>
+                  <RepeatX>100.0</RepeatX>
+                  <RepeatY>100.0</RepeatY>
+                </AreaUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>FILLCOLOR</Identifier>
+                    <DefaultValue>0xffabb67e</DefaultValue>
+                    <DisplayName>&amp;amp;Fill Color</DisplayName>
+                    <Description>Fill Color</Description>
+                    <DataType>FillColor</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Fill</SymbolName>
+                  <ParameterIdentifier>FILLCOLOR</ParameterIdentifier>
+                  <ParameterValue>0xffabb67e</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Line</Name>
+                <Description>Default Line Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 L 1.0,0.0</Geometry>
+                    <LineColor>%LINECOLOR%</LineColor>
+                    <LineWeight>%LINEWEIGHT%</LineWeight>
+                    <LineWeightScalable>false</LineWeightScalable>
+                  </Path>
+                </Graphics>
+                <LineUsage>
+                  <Repeat>1.0</Repeat>
+                </LineUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>LINECOLOR</Identifier>
+                    <DefaultValue>0xff808080</DefaultValue>
+                    <DisplayName>Line &amp;amp;Color</DisplayName>
+                    <Description>Line Color</Description>
+                    <DataType>LineColor</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>LINEWEIGHT</Identifier>
+                    <DefaultValue>0.0</DefaultValue>
+                    <DisplayName>Line &amp;amp; Thickness</DisplayName>
+                    <Description>Line Thickness</Description>
+                    <DataType>LineWeight</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINECOLOR</ParameterIdentifier>
+                  <ParameterValue>0xff808080</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINEWEIGHT</ParameterIdentifier>
+                  <ParameterValue>0.0</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+          </CompositeSymbolization>
+        </CompositeRule>
+        <CompositeRule>
+          <LegendLabel>Zone: RES</LegendLabel>
+          <Filter>"RTYPE" = 'RES'</Filter>
+          <CompositeSymbolization>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Fill</Name>
+                <Description>Default Area Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 h 100.0 v 100.0 h -100.0 z</Geometry>
+                    <FillColor>%FILLCOLOR%</FillColor>
+                  </Path>
+                </Graphics>
+                <AreaUsage>
+                  <RepeatX>100.0</RepeatX>
+                  <RepeatY>100.0</RepeatY>
+                </AreaUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>FILLCOLOR</Identifier>
+                    <DefaultValue>0xffa4be85</DefaultValue>
+                    <DisplayName>&amp;amp;Fill Color</DisplayName>
+                    <Description>Fill Color</Description>
+                    <DataType>FillColor</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Fill</SymbolName>
+                  <ParameterIdentifier>FILLCOLOR</ParameterIdentifier>
+                  <ParameterValue>0xffa4be85</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Line</Name>
+                <Description>Default Line Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 L 1.0,0.0</Geometry>
+                    <LineColor>%LINECOLOR%</LineColor>
+                    <LineWeight>%LINEWEIGHT%</LineWeight>
+                    <LineWeightScalable>false</LineWeightScalable>
+                  </Path>
+                </Graphics>
+                <LineUsage>
+                  <Repeat>1.0</Repeat>
+                </LineUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>LINECOLOR</Identifier>
+                    <DefaultValue>0xff808080</DefaultValue>
+                    <DisplayName>Line &amp;amp;Color</DisplayName>
+                    <Description>Line Color</Description>
+                    <DataType>LineColor</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>LINEWEIGHT</Identifier>
+                    <DefaultValue>0.0</DefaultValue>
+                    <DisplayName>Line &amp;amp; Thickness</DisplayName>
+                    <Description>Line Thickness</Description>
+                    <DataType>LineWeight</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINECOLOR</ParameterIdentifier>
+                  <ParameterValue>0xff808080</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINEWEIGHT</ParameterIdentifier>
+                  <ParameterValue>0.0</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+          </CompositeSymbolization>
+        </CompositeRule>
+        <CompositeRule>
+          <LegendLabel>Zone: S&amp;W</LegendLabel>
+          <Filter>"RTYPE" = 'S&amp;W'</Filter>
+          <CompositeSymbolization>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Fill</Name>
+                <Description>Default Area Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 h 100.0 v 100.0 h -100.0 z</Geometry>
+                    <FillColor>%FILLCOLOR%</FillColor>
+                  </Path>
+                </Graphics>
+                <AreaUsage>
+                  <RepeatX>100.0</RepeatX>
+                  <RepeatY>100.0</RepeatY>
+                </AreaUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>FILLCOLOR</Identifier>
+                    <DefaultValue>0xff9dc68c</DefaultValue>
+                    <DisplayName>&amp;amp;Fill Color</DisplayName>
+                    <Description>Fill Color</Description>
+                    <DataType>FillColor</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Fill</SymbolName>
+                  <ParameterIdentifier>FILLCOLOR</ParameterIdentifier>
+                  <ParameterValue>0xff9dc68c</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Line</Name>
+                <Description>Default Line Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 L 1.0,0.0</Geometry>
+                    <LineColor>%LINECOLOR%</LineColor>
+                    <LineWeight>%LINEWEIGHT%</LineWeight>
+                    <LineWeightScalable>false</LineWeightScalable>
+                  </Path>
+                </Graphics>
+                <LineUsage>
+                  <Repeat>1.0</Repeat>
+                </LineUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>LINECOLOR</Identifier>
+                    <DefaultValue>0xff808080</DefaultValue>
+                    <DisplayName>Line &amp;amp;Color</DisplayName>
+                    <Description>Line Color</Description>
+                    <DataType>LineColor</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>LINEWEIGHT</Identifier>
+                    <DefaultValue>0.0</DefaultValue>
+                    <DisplayName>Line &amp;amp; Thickness</DisplayName>
+                    <Description>Line Thickness</Description>
+                    <DataType>LineWeight</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINECOLOR</ParameterIdentifier>
+                  <ParameterValue>0xff808080</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINEWEIGHT</ParameterIdentifier>
+                  <ParameterValue>0.0</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+          </CompositeSymbolization>
+        </CompositeRule>
+        <CompositeRule>
+          <LegendLabel>Zone: WTC</LegendLabel>
+          <Filter>"RTYPE" = 'WTC'</Filter>
+          <CompositeSymbolization>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Fill</Name>
+                <Description>Default Area Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 h 100.0 v 100.0 h -100.0 z</Geometry>
+                    <FillColor>%FILLCOLOR%</FillColor>
+                  </Path>
+                </Graphics>
+                <AreaUsage>
+                  <RepeatX>100.0</RepeatX>
+                  <RepeatY>100.0</RepeatY>
+                </AreaUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>FILLCOLOR</Identifier>
+                    <DefaultValue>0xff96ce93</DefaultValue>
+                    <DisplayName>&amp;amp;Fill Color</DisplayName>
+                    <Description>Fill Color</Description>
+                    <DataType>FillColor</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Fill</SymbolName>
+                  <ParameterIdentifier>FILLCOLOR</ParameterIdentifier>
+                  <ParameterValue>0xff96ce93</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Line</Name>
+                <Description>Default Line Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 L 1.0,0.0</Geometry>
+                    <LineColor>%LINECOLOR%</LineColor>
+                    <LineWeight>%LINEWEIGHT%</LineWeight>
+                    <LineWeightScalable>false</LineWeightScalable>
+                  </Path>
+                </Graphics>
+                <LineUsage>
+                  <Repeat>1.0</Repeat>
+                </LineUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>LINECOLOR</Identifier>
+                    <DefaultValue>0xff808080</DefaultValue>
+                    <DisplayName>Line &amp;amp;Color</DisplayName>
+                    <Description>Line Color</Description>
+                    <DataType>LineColor</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>LINEWEIGHT</Identifier>
+                    <DefaultValue>0.0</DefaultValue>
+                    <DisplayName>Line &amp;amp; Thickness</DisplayName>
+                    <Description>Line Thickness</Description>
+                    <DataType>LineWeight</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINECOLOR</ParameterIdentifier>
+                  <ParameterValue>0xff808080</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINEWEIGHT</ParameterIdentifier>
+                  <ParameterValue>0.0</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+          </CompositeSymbolization>
+        </CompositeRule>
+        <CompositeRule>
+          <LegendLabel>Zone: Other</LegendLabel>
+          <Filter/>
+          <CompositeSymbolization>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Fill</Name>
+                <Description>Default Area Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 h 100.0 v 100.0 h -100.0 z</Geometry>
+                    <FillColor>%FILLCOLOR%</FillColor>
+                  </Path>
+                </Graphics>
+                <AreaUsage>
+                  <RepeatX>100.0</RepeatX>
+                  <RepeatY>100.0</RepeatY>
+                </AreaUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>FILLCOLOR</Identifier>
+                    <DefaultValue>0xffd4d4d4</DefaultValue>
+                    <DisplayName>&amp;amp;Fill Color</DisplayName>
+                    <Description>Fill Color</Description>
+                    <DataType>FillColor</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Fill</SymbolName>
+                  <ParameterIdentifier>FILLCOLOR</ParameterIdentifier>
+                  <ParameterValue>0xffd4d4d4</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Line</Name>
+                <Description>Default Line Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 L 1.0,0.0</Geometry>
+                    <LineColor>%LINECOLOR%</LineColor>
+                    <LineWeight>%LINEWEIGHT%</LineWeight>
+                    <LineWeightScalable>false</LineWeightScalable>
+                  </Path>
+                </Graphics>
+                <LineUsage>
+                  <Repeat>1.0</Repeat>
+                </LineUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>LINECOLOR</Identifier>
+                    <DefaultValue>0xff000000</DefaultValue>
+                    <DisplayName>Line &amp;amp;Color</DisplayName>
+                    <Description>Line Color</Description>
+                    <DataType>LineColor</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>LINEWEIGHT</Identifier>
+                    <DefaultValue>0.0</DefaultValue>
+                    <DisplayName>Line &amp;amp; Thickness</DisplayName>
+                    <Description>Line Thickness</Description>
+                    <DataType>LineWeight</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINECOLOR</ParameterIdentifier>
+                  <ParameterValue>0xff000000</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINEWEIGHT</ParameterIdentifier>
+                  <ParameterValue>0.0</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+          </CompositeSymbolization>
+        </CompositeRule>
+      </CompositeTypeStyle>
+    </VectorScaleRange>
+  </VectorLayerDefinition>
+</LayerDefinition>
