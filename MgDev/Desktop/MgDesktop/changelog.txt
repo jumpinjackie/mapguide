@@ -1,5 +1,13 @@
 API Changelog:
 
+ - Support aliases in configuration documents
+ - Fix: Don't render watermarks attached to layers that are not visible
+
+2.5.2.7949 (4 Dec 2013)
+=======================
+
+API Changelog:
+
  - Fix: Port legend image rendering fixes from MapGuide
  - Fix: No-op UPDATEREPOSITORY operations in a package manifest. Packages containing such operations can now be loaded without errors
 
