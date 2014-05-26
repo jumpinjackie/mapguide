@@ -23,7 +23,7 @@
 /// \{
 
 ///////////////////////////////////////////////////////////////////////////////
-/// <summary>
+/// \brief
 /// An enumeration of the supported values for the <c>m_Orientation</c> member
 /// of several objects related to grids and graticules. <p>
 /// This value is used to qualify objects which are of the "iso" type.  I.e. a
@@ -34,25 +34,24 @@
 /// points which share a common <b>easting</b> value, and the "m_Value" element
 /// of that object will be an <b>easting</b> value.  Note that in this example,
 /// the line is typically a vertical line.
-/// </summary>
 class MG_GEOMETRY_API MgCoordinateSystemGridOrientation
 {
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////
-    /// \brief Not specified yet, initialize to this value.
-    ///
+    /// \brief
+    /// Not specified yet, initialize to this value.
     static const INT8 None = 0;
     ///////////////////////////////////////////////////////////////////////////
-    /// \brief The object represents a constant easting value.
-    ///
+    /// \brief
+    /// The object represents a constant easting value.
     static const INT8 EastWest = 1;         // generally indicates a vertical grid line
     ///////////////////////////////////////////////////////////////////////////
-    /// \brief The object represents a constant northing value.
-    ///
+    /// \brief
+    /// The object represents a constant northing value.
     static const INT8 NorthSouth = 2;       // generally indicates a horizontal grid line
     ///////////////////////////////////////////////////////////////////////////
-    /// \brief Indicates the failure of an algorithm or other problem.
-    ///
+    /// \brief
+    /// Indicates the failure of an algorithm or other problem.
     static const INT8 Unknown = 3;          // indicates a failure of an algorithm
 };
 

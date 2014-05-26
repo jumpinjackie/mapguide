@@ -29,9 +29,11 @@
 class MgSpatialContextExtentType
 {
 PUBLISHED_API:
+    /// \brief
     /// The spatial extent of the context is static and must be specified
     /// when the context is created.
     static const int scStatic = 0;
+    /// \brief
     /// The spatial extent of the context is dynamic and changes as data is
     /// added and removed from the context.
     static const int scDynamic = 1;

@@ -31,18 +31,23 @@ class MgFeatureCommandType
 {
 PUBLISHED_API:
     /////////////////////////////////////////////////////
+    /// \brief
     /// Specifies the type of an MgInsertFeatures object.
     static const int InsertFeatures = 0;
     /////////////////////////////////////////////////////
+    /// \brief
     /// Specifies the type of an MgUpdateFeatures object.
     static const int UpdateFeatures = 1;
     /////////////////////////////////////////////////////
+    /// \brief
     /// Specifies the type of an MgDeleteFeatures object.
     static const int DeleteFeatures = 2;
     /////////////////////////////////////////////////////
+    /// \brief
     /// Specifies the type of an MgLockFeatures object.
     static const int LockFeatures = 3;
     /////////////////////////////////////////////////////
+    /// \brief
     /// Specifies the type of an MgUnlockFeatures object.
     static const int UnlockFeatures = 4;
 INTERNAL_API:

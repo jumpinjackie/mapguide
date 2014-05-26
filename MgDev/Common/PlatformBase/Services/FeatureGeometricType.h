@@ -35,21 +35,25 @@ class MgFeatureGeometricType
 {
 PUBLISHED_API:
     /////////////////////////////////////////////////////////////
+    /// \brief
     /// Represents zero-dimensional geometric primitives, such as
     /// MgPoint.
     static const int Point      =  1;
 
     ////////////////////////////////////////////////////////////
+    /// \brief
     /// Represents one-dimensional geometric primitives, such as
     /// MgLineString and MgCurveString.
     static const int Curve      =  2;
 
     ////////////////////////////////////////////////////////////
+    /// \brief
     /// Represents two-dimensional geometric primitives, such as
     /// MgPolygon and MgCurvePolygon.
     static const int Surface    =  4;
 
     //////////////////////////////////////////////////////////////
+    /// \brief
     /// Represents three-dimensional geometric primitives, such as
     /// Cubes.
     static const int Solid      =  8;

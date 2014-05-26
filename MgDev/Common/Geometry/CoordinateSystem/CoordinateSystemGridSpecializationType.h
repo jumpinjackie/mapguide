@@ -23,7 +23,7 @@
 /// \{
 
 ///////////////////////////////////////////////////////////////////////////////
-/// <summary>
+/// \brief
 /// An enumeration of the various types of specialized grids/graticules
 /// currently supported.  A specialized grid is one for which specific
 /// standards exist to which the results of this feature are compliant with.
@@ -33,7 +33,6 @@
 /// with similar features and is currently entirely arbitrary.  Using a
 /// numeric literal instead of thes names of the defined constants is a sure
 /// way to write code that will get broken in the future.
-/// </summary>
 class MG_GEOMETRY_API MgCoordinateSystemGridSpecializationType
 {
 PUBLISHED_API:

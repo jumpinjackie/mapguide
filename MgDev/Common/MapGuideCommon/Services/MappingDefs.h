@@ -37,9 +37,11 @@ PUBLISHED_API:
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
     /// \endif
 
+    /// \brief
     /// Page units are in inches.
     static const STRING Inches;           ///\if INTERNAL value("in") \endif
 
+    /// \brief
     /// Page units are in millimeters.
     static const STRING Millimeters;      ///\if INTERNAL value("mm") \endif
 };

@@ -29,9 +29,11 @@ PUBLISHED_API:
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
     /// \endif
 
+    /// \brief
     /// US English.
     static const STRING USEnglish;  ///\if INTERNAL value("US-English") \endif
 
+    /// \brief
     /// Metric.
     static const STRING Metric;     ///\if INTERNAL value("Metric") \endif
 };

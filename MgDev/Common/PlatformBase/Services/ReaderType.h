@@ -36,12 +36,15 @@ class MgReaderType
 {
 PUBLISHED_API:
     /////////////////////////////////////////////////////////
+    /// \brief
     /// Signifies that the object is of type MgFeatureReader.
     static const int FeatureReader = 0;
     //////////////////////////////////////////////////////
+    /// \brief
     /// Signifies that the object is of type MgDataReader.
     static const int DataReader = 1;
     /////////////////////////////////////////////////////////
+    /// \brief
     /// Signifies that the object is of type MgSqlDataReader.
     static const int SqlDataReader = 2;
 INTERNAL_API:
