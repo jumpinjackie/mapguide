@@ -12,7 +12,7 @@ enum Language
     java
 };
 
-static char version[] = "1.2";
+static char version[] = "1.2.1";
 
 static string module;
 static string customPath;
@@ -540,6 +540,24 @@ bool isAllSlashes(const string& str)
     return str.length() > 3; //A "///" does not count
 }
 
+bool stringReplace(string& str, const string& find, const string& replace)
+{
+    size_t start_pos = str.find(find);
+    if(start_pos == string::npos)
+        return false;
+    str.replace(start_pos, find.length(), replace);
+    return true;
+}
+
+void xmlEscapeString(string& str)
+{
+    stringReplace(str, "&", "&amp;");
+    stringReplace(str, "'", "&apos;");
+    stringReplace(str, "\"", "&quot;");
+    stringReplace(str, "<", "&lt;");
+    stringReplace(str, ">", "&gt;");
+}
+
 string linkifyCSharpDocFragment(const string& str)
 {
     // Explode the fragment into a space delimited list.
@@ -555,6 +573,7 @@ string linkifyCSharpDocFragment(const string& str)
         //interfere with doxygen directive translation
         if (item == "\\link" || item == "\\endlink")
             continue;
+        xmlEscapeString(item);
         elems.push_back(item);
     }
 
