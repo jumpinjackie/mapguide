@@ -65,6 +65,7 @@
   <Class name="MgPageUnitsType" />
   <Class name="MgCoordinateSpace" />
   <Class name="MgConfigProperties" />
+  <Class name="MgImageFormats" />
   <Class name="MgMapPlotInstruction" />
   <Class name="MgUnitType" />
   <Class name="MgLogFileType" />
@@ -79,6 +80,7 @@
 <Headers>
 
   <!-- API -->
+  <Header path="../../../../Common/MapGuideCommon/Services/ImageFormats.h" />
   <Header path="../../../../Common/MapGuideCommon/Services/MappingDefs.h" />
   <Header path="../../../../Common/MapGuideCommon/Services/MapPlotInstruction.h" />
   <Header path="../../../../Common/MapGuideCommon/Services/ServerAdminDefs.h" />

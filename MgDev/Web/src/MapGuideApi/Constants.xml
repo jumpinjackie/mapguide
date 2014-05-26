@@ -123,6 +123,7 @@
   <Class name="MgCoordinateSystemGeodeticAnalyticalTransformationMethod" />
   <Class name="MgCoordinateSystemGeodeticMultipleRegressionTransformationMethod" />
   <Class name="MgCoordinateSystemGeodeticTransformGridFileFormat" />
+  <Class name="MgImageFormats" />
   <Class name="MgMapPlotInstruction" />
   <Class name="MgUnitType" />
   <Class name="MgPackageStatus" />
@@ -181,6 +182,7 @@
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformationMethod.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformGridFileFormat.h" />
 
+    <Header path="../../../Common/MapGuideCommon/Services/ImageFormats.h" />
     <Header path="../../../Common/MapGuideCommon/Services/MappingDefs.h" />
     <Header path="../../../Common/MapGuideCommon/Services/MapPlotInstruction.h" />
     <Header path="../../../Common/MapGuideCommon/Services/ServerAdminDefs.h" />
