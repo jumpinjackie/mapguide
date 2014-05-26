@@ -138,14 +138,23 @@ popd
 
 echo "Building Oem"
 BUILD_COMPONENT="Oem"
-if [ ${MGDEBUG} -eq 1 ]; then
-    ./build_oem.sh --prefix ${INSTALLROOT} --config debug
-    check_build
+if [ $(uname -m) = "x86_64" ]; then
+    if [ ${MGDEBUG} -eq 1 ]; then
+        ./build_oem.sh --prefix ${INSTALLROOT} --build 64 --config debug
+        check_build
+    else
+        ./build_oem.sh --prefix ${INSTALLROOT} --build 64
+        check_build
+    fi
 else
-    ./build_oem.sh --prefix ${INSTALLROOT}
-    check_build
+    if [ ${MGDEBUG} -eq 1 ]; then
+        ./build_oem.sh --prefix ${INSTALLROOT} --config debug
+        check_build
+    else
+        ./build_oem.sh --prefix ${INSTALLROOT}
+        check_build
+    fi
 fi
-
 
 echo "Building Fusion"
 pushd ${MGSOURCE}/Oem/fusion

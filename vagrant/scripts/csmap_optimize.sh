@@ -20,7 +20,7 @@ STRIPLIST="\.so\$"
 CSMAP_OUT=/tmp/csmap_build_area/share/gis/coordsys
 
 if [ ! -d /tmp/csmap_build_area ]; then
-    mkdir -p ~/tmp/csmap_build_area
+    mkdir -p /tmp/csmap_build_area
 fi
 
 comment_gdc()
@@ -42,8 +42,8 @@ comment_gdc()
 # Copy CS-Map files to build area. We rely on the fact that the MapGuide build system
 # also leaves a copy of the CS_Comp executable in this directory which we'll use to 
 # re-compile our dictionary files after some modifications
-cp -R /${MGINST}/share/gis/coordsys/* ~/csmap_build_area
-pushd ~/csmap_build_area
+cp -R /${MGINST}/share/gis/coordsys/* /tmp/csmap_build_area
+pushd /tmp/csmap_build_area
     # Comment out grid file entries in all gdc files
     for gdcf in *.gdc
     do
