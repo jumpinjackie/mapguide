@@ -21,6 +21,11 @@
             <xs:attribute name="path" type="xs:string" use="required" />
           </xs:complexType>
         </xs:element>
+        <xs:element name="DocTarget">
+          <xs:complexType>
+            <xs:attribute name="path" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
         <xs:element name="CppInline" minOccurs="0" />
         <xs:element name="TypeReplacements" minOccurs="0">
           <xs:complexType>
