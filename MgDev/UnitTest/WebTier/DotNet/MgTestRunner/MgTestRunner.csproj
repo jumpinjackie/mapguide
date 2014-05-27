@@ -99,7 +99,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)Libs\*.*" "$(TargetDir)"
-xcopy /S /Y /I $(SolutionDir)..\..\..\Common\MapGuideCommon\Resources "$(TargetDir)\Resources"</PostBuildEvent>
+xcopy /S /Y /I "$(SolutionDir)..\..\..\Common\MapGuideCommon\Resources" "$(TargetDir)\Resources"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>call "$(SolutionDir)prebuild.bat" "$(ConfigurationName)" "$(PlatformName)"</PreBuildEvent>

@@ -22,6 +22,8 @@ SET RUN_SERVER_TESTS=1
 SET RUN_PHP_TESTS=1
 SET RUN_DOTNET_TESTS=1
 
+SET RETURN_CODE=0
+
 echo *************** TEST SUMMARY ******************
 echo Platform: %PLAT%
 echo Configuration: %CONF%
@@ -45,7 +47,10 @@ if "%RUN_DOTNET_TESTS%" == "1" (
     SET TEST_COMPONENT=Build DotNet test runner
     pushd UnitTest\WebTier\DotNet
     msbuild /p:Configuration=%CONFIG%;Platform=%PLAT% /fl /flp:logfile=build.log DotNet.sln
-    if %ERRORLEVEL% neq 0 goto error
+    if "%ERRORLEVEL%" == "1" (
+        set RETURN_CODE=%ERRORLEVEL%
+        goto error
+    )
     popd
 )
 :start_mgserver
@@ -64,7 +69,10 @@ if "%START_MGSERVER%" == "1" (
 pushd UnitTest
 SET TEST_COMPONENT=Prepare webtier test suites
 php -n -d display_errors=Off -d extension_dir="%PHP_EXT_DIR%" -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -d extension=php_SQLitePhpApi.dll prepare.php
-if %ERRORLEVEL% neq 0 goto error
+if %ERRORLEVEL% neq 0 (
+    set RETURN_CODE=%ERRORLEVEL%
+    goto error
+)
 popd
 :start_php_webserver
 if "%START_WEBSERVER%" == "1" (
@@ -129,7 +137,7 @@ if "%START_WEBSERVER%" == "1" (
 )
 goto done
 :error
-echo [error]: An error occured with %TEST_COMPONENT%
+echo [error]: An error occured with %TEST_COMPONENT% (exit code: %RETURN_CODE%)
 goto quit
 :done
 
