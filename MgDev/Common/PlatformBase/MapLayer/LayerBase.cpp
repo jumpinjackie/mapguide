@@ -297,7 +297,6 @@ void MgLayerBase::SetLayerDefinition(MgResourceIdentifier* layerDefinition, MgRe
         return;
 
     m_definition = SAFE_ADDREF((MgResourceIdentifier*)layerDefinition);
-    m_name = m_definition->GetName();
 
     m_forceReadFromServer = true;
     GetLayerInfoFromDefinition(resourceService);

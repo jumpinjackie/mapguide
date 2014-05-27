@@ -468,6 +468,10 @@ PUBLISHED_API:
     /// ResourceId of the altered layer definition in the session
     /// repository.
     ///
+    /// From 2.7 onwards, this method will no longer modify the layer name. Previous
+    /// versions will set the layer's name based on the name of the Layer Definition
+    /// resource ID
+    ///
     /// \note
     /// If you change the layer's definition, you must also
     /// change the cached scale ranges and force an update of any
