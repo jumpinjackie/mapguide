@@ -59,6 +59,7 @@ PUBLISHED_API:
     static const int AssociationProperty    =  103;
 
     ///////////////////////////////////////////////////
+    /// \brief
     /// Type name for a raster property definition. See
     /// MgRasterPropertyDefinition.
     static const int RasterProperty         =  104;

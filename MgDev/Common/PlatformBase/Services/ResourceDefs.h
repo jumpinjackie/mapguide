@@ -52,10 +52,12 @@ PUBLISHED_API:
     /// \endif
 
     ////////////////////////////////////////////////////////////////
+    /// \brief
     /// The repository is the \link library library \endlink.
     static const STRING Library;      ///\if INTERNAL value("Library") \endif
 
     ////////////////////////////////////////////////////////////////
+    /// \brief
     /// The repository is a \link session_repository session repository \endlink,
     /// used to store temporary data.
     /// \note1
@@ -492,12 +494,15 @@ PUBLISHED_API:
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
     /// \endif
 
+    /// \brief
     /// No Access permission.
     static const STRING NoAccess;       ///\if INTERNAL value("n") \endif
 
+    /// \brief
     /// Read-Only permission.
     static const STRING ReadOnly;       ///\if INTERNAL value("r") \endif
 
+    /// \brief
     /// Read/Write permission.
     static const STRING ReadWrite;      ///\if INTERNAL value("r,w") \endif
 };
@@ -549,12 +554,15 @@ PUBLISHED_API:
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
     /// \endif
 
+    /// \brief
     /// Return folders only
     static const STRING Folders;     ///\if INTERNAL value("Folders") \endif
 
+    /// \brief
     /// Return files only
     static const STRING Files;       ///\if INTERNAL value("Files") \endif
 
+    /// \brief
     /// Return both files and folders
     static const STRING Both;        ///\if INTERNAL value("Both") \endif
 };

@@ -29,39 +29,47 @@ class MG_PLATFORMBASE_API MgServiceType
 {
 PUBLISHED_API:
     ////////////////////////////////////////////////////////////////
+    /// \brief
     /// Resource Service
     static const INT16 ResourceService      = 0;
 
 
     ////////////////////////////////////////////////////////////////
+    /// \brief
     /// DWF Drawing Service
     static const INT16 DrawingService       = 1;
 
 
     ////////////////////////////////////////////////////////////////
+    /// \brief
     /// FDO Feature Service
     static const INT16 FeatureService       = 2;
 
 
     ////////////////////////////////////////////////////////////////
+    /// \brief
     /// Mapping Service
     static const INT16 MappingService       = 3;
 
 
     ////////////////////////////////////////////////////////////////
+    /// \brief
     /// Rendering Service
     static const INT16 RenderingService     = 4;
 
 
     ////////////////////////////////////////////////////////////////
+    /// \brief
     /// Tile Service
     static const INT16 TileService          = 5;
 
     ////////////////////////////////////////////////////////////////
+    /// \brief
     /// Kml Service
     static const INT16 KmlService           = 6;
 
     ////////////////////////////////////////////////////////////////
+    /// \brief
     /// Profiling Service
     static const INT16 ProfilingService     = 10;
 

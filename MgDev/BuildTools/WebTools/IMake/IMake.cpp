@@ -12,7 +12,8 @@ enum Language
     java
 };
 
-static char version[] = "1.2";
+static char version[] = "1.2.2";
+static char EXTERNAL_API_DOCUMENTATION[] = "(NOTE: This API is not officially supported and may be subject to removal in a future release without warning. Use with caution.)";
 
 static string module;
 static string customPath;
@@ -540,6 +541,35 @@ bool isAllSlashes(const string& str)
     return str.length() > 3; //A "///" does not count
 }
 
+bool stringReplace(string& str, const string& find, const string& replace)
+{
+    size_t start_pos = str.find(find);
+    if(start_pos == string::npos)
+        return false;
+    str.replace(start_pos, find.length(), replace);
+    return true;
+}
+
+void stripHtml(string& str)
+{
+    //NOTE: We're only stripping tags known to exist in some bits of API documentation
+    stringReplace(str, "<p>", "");
+    stringReplace(str, "<b>", "");
+    stringReplace(str, "<c>", "");
+    stringReplace(str, "</p>", "");
+    stringReplace(str, "</b>", "");
+    stringReplace(str, "</c>", "");
+}
+
+void xmlEscapeString(string& str)
+{
+    stringReplace(str, "&", "&amp;");
+    stringReplace(str, "'", "&apos;");
+    stringReplace(str, "\"", "&quot;");
+    stringReplace(str, "<", "&lt;");
+    stringReplace(str, ">", "&gt;");
+}
+
 string linkifyCSharpDocFragment(const string& str)
 {
     // Explode the fragment into a space delimited list.
@@ -555,6 +585,8 @@ string linkifyCSharpDocFragment(const string& str)
         //interfere with doxygen directive translation
         if (item == "\\link" || item == "\\endlink")
             continue;
+        stripHtml(item);
+        xmlEscapeString(item);
         elems.push_back(item);
     }
 
@@ -665,7 +697,7 @@ string linkifyJavaDocFragment(const string& str)
     return output;
 }
 
-string doxygenToJavaDoc(const string& commentStr)
+string doxygenToJavaDoc(const string& commentStr, bool isPublished)
 {
     // Doxygen documentation translation overview:
     //
@@ -810,6 +842,11 @@ string doxygenToJavaDoc(const string& commentStr)
     std::string javaDoc = "\n/**\n";
 
     if (descriptionParts.size() > 0) {
+        if (!isPublished) {
+            javaDoc.append(" * ");
+            javaDoc.append(EXTERNAL_API_DOCUMENTATION);
+            javaDoc.append("\n");
+        }
         for (int i = 0; i < descriptionParts.size(); i++) {
             javaDoc.append(" *");
             javaDoc.append(linkifyJavaDocFragment(descriptionParts[i]));    
@@ -817,7 +854,13 @@ string doxygenToJavaDoc(const string& commentStr)
         }
         javaDoc.append(" *\n");
     } else {
-        javaDoc.append(" * TODO: API Documentation is missing or failed to translate doxygen brief directive (message inserted by IMake.exe)\n");
+        if (!isPublished) {
+            javaDoc.append(" * ");
+            javaDoc.append(EXTERNAL_API_DOCUMENTATION);
+            javaDoc.append("\n");
+        } else {
+            javaDoc.append(" * TODO: API Documentation is missing or failed to translate doxygen brief directive (message inserted by IMake.exe)\n");
+        }
     }
 
     if (paramParts.size() > 0) {
@@ -858,7 +901,7 @@ string doxygenToJavaDoc(const string& commentStr)
     return javaDoc;
 }
 
-string doxygenToCsharpDoc(const string& commentStr)
+string doxygenToCsharpDoc(const string& commentStr, bool isPublished)
 {
     //See doxygenToJavaDoc for how we do this sorcery
 
@@ -961,6 +1004,11 @@ string doxygenToCsharpDoc(const string& commentStr)
     std::string csharpDoc = "\n///<summary>\n";
 
     if (descriptionParts.size() > 0) {
+        if (!isPublished) {
+            csharpDoc.append("/// ");
+            csharpDoc.append(EXTERNAL_API_DOCUMENTATION);
+            csharpDoc.append("\n");
+        }
         for (int i = 0; i < descriptionParts.size(); i++) {
             csharpDoc.append("///");
             csharpDoc.append(linkifyCSharpDocFragment(descriptionParts[i]));    
@@ -968,13 +1016,23 @@ string doxygenToCsharpDoc(const string& commentStr)
         }
         csharpDoc.append("///</summary>\n");
     } else {
-        csharpDoc.append("///TODO: API Documentation is missing or failed to translate doxygen brief directive (message inserted by IMake.exe)\n///</summary>\n");
+        if (!isPublished) {
+            csharpDoc.append("/// ");
+            csharpDoc.append(EXTERNAL_API_DOCUMENTATION);
+            csharpDoc.append("\n");
+        } else {
+            csharpDoc.append("///TODO: API Documentation is missing or failed to translate doxygen brief directive (message inserted by IMake.exe)\n///</summary>\n");
+        }
     }
 
     if (paramParts.size() > 0) {
         for (int i = 0; i < paramParts.size(); i++) {
+            std::string paramPart = paramParts[i];
+            stripHtml(paramPart);
+            xmlEscapeString(paramPart);
+
             std::vector<std::string> pelems;
-            std::stringstream pss(linkifyCSharpDocFragment(paramParts[i]));
+            std::stringstream pss(linkifyCSharpDocFragment(paramPart));
             std::string pitem;
             while(std::getline(pss, pitem, ' ')) {
                 if (!pitem.empty())
@@ -998,7 +1056,9 @@ string doxygenToCsharpDoc(const string& commentStr)
     if (returnParts.size() > 0) {
         csharpDoc.append("///<returns>");
         for (int i = 0; i < returnParts.size(); i++) {
-            csharpDoc.append(linkifyCSharpDocFragment(returnParts[i]));
+            string retPart = returnParts[i];
+            stripHtml(retPart);
+            csharpDoc.append(linkifyCSharpDocFragment(retPart));
             if (i < returnParts.size() - 1)
                 csharpDoc.append("\n/// ");
         }
@@ -1035,7 +1095,7 @@ string doxygenToCsharpDoc(const string& commentStr)
     }
 
     // ---------------------- csharpDoc END ------------------------ //
-    csharpDoc.append("///\n");
+    //csharpDoc.append("///\n");
     if (isDeprecated)
         csharpDoc.append("[Obsolete(\"This method is deprecated\")]\n");
     return csharpDoc;
@@ -1049,15 +1109,15 @@ void outputClassDoc(const string& className, const string& commentStr)
 
     string convertedDoc;
     if (language == java) {
-        convertedDoc = doxygenToJavaDoc(commentStr);
+        convertedDoc = doxygenToJavaDoc(commentStr, true); //EXTERNAL_API only applies to class members, so treat this fragment as PUBLISHED_API
         fprintf(docOutFile, "\n%%typemap(javaclassmodifiers) %s %%{%s public%%}\n", className.c_str(), convertedDoc.c_str());
     } else if(language == csharp) {
-        convertedDoc = doxygenToCsharpDoc(commentStr);
+        convertedDoc = doxygenToCsharpDoc(commentStr, true); //EXTERNAL_API only applies to class members, so treat this fragment as PUBLISHED_API
         fprintf(docOutFile, "\n%%typemap(csclassmodifiers) %s %%{%s public%%}\n", className.c_str(), convertedDoc.c_str());
     }
 }
 
-void outputMethodDoc(const string& className, const string& methodDecl, const string& commentStr)
+void outputMethodDoc(const string& className, const string& methodDecl, const string& commentStr, bool isPublished)
 {
     //Nothing for PHP
     if (language == php)
@@ -1113,15 +1173,15 @@ void outputMethodDoc(const string& className, const string& methodDecl, const st
     swigMethodDecl += methodName;
 
     if (language == java) {
-        convertedDoc = doxygenToJavaDoc(commentStr);
+        convertedDoc = doxygenToJavaDoc(commentStr, isPublished);
         fprintf(docOutFile, "\n%%javamethodmodifiers %s %%{%s public%%}\n", swigMethodDecl.c_str(), convertedDoc.c_str());
     } else if(language == csharp) {
-        convertedDoc = doxygenToCsharpDoc(commentStr);
+        convertedDoc = doxygenToCsharpDoc(commentStr, isPublished);
         fprintf(docOutFile, "\n%%csmethodmodifiers %s %%{%s public%%}\n", swigMethodDecl.c_str(), convertedDoc.c_str());
     }
 }
 
-void processExternalApiSection(string& className, vector<string>& tokens, int begin, int end)
+void processExternalApiSection(string& className, vector<string>& tokens, int begin, int end, bool isPublished)
 {
     //until we find a problem with that, we output whatever we find in this section. In the
     //process we perform type substitution if required
@@ -1204,10 +1264,10 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
                 {
                     string convertedDoc;
                     if (language == java) {
-                        convertedDoc = doxygenToJavaDoc(commentStr);
+                        convertedDoc = doxygenToJavaDoc(commentStr, isPublished);
                         fprintf(outfile, "%s\n   ", convertedDoc.c_str());
                     } else if (language == csharp) {
-                        convertedDoc = doxygenToCsharpDoc(commentStr);
+                        convertedDoc = doxygenToCsharpDoc(commentStr, isPublished);
                         fprintf(outfile, "%s\n   ", convertedDoc.c_str());
                     }
                     commentStr.clear();
@@ -1366,7 +1426,7 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
         if(token[0] == ';' || assignmentAdded)
         {
             if (!translateMode) {
-                outputMethodDoc(className, methodDecl, commentStr);
+                outputMethodDoc(className, methodDecl, commentStr, isPublished);
             }
             commentStr.clear();
             methodDecl.clear();
@@ -1485,10 +1545,10 @@ void processHeaderFile(string header)
                 {
                     string convertedDoc;
                     if (language == java) {
-                        convertedDoc = doxygenToJavaDoc(commentStr);
+                        convertedDoc = doxygenToJavaDoc(commentStr, true);
                         fprintf(outfile, "%s", convertedDoc.c_str());
                     } else if (language == csharp) {
-                        convertedDoc = doxygenToCsharpDoc(commentStr);
+                        convertedDoc = doxygenToCsharpDoc(commentStr, true);
                         fprintf(outfile, "%s", convertedDoc.c_str());
                     }
                 }
@@ -1545,7 +1605,7 @@ void processHeaderFile(string header)
         {
             string sectionName = tokens[sections[k] - 1];
             if(sectionName == "EXTERNAL_API" || sectionName == "PUBLISHED_API")
-                processExternalApiSection(className, tokens, sections[k] + 1, sections[k + 1] - (k < (int)sections.size() - 2? 2: 1));
+                processExternalApiSection(className, tokens, sections[k] + 1, sections[k + 1] - (k < (int)sections.size() - 2? 2: 1), (sectionName == "PUBLISHED_API"));
             else if(sectionName == "CLASS_ID" && !translateMode)
                 processClassIdSection(tokens, sections[k] + 1, sections[k + 1] - (k < (int)sections.size() - 2? 2: 1));
         }

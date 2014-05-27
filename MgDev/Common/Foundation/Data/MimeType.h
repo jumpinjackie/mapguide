@@ -32,42 +32,55 @@ PUBLISHED_API:
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
     /// \endif
 
+    /// \brief
     /// application/agf
     static const STRING Agf;      ///\if INTERNAL value("application/agf") \endif
 
+    /// \brief
     /// application/octet-stream
     static const STRING Binary;   ///\if INTERNAL value("application/octet-stream") \endif
 
+    /// \brief
     /// model/vnd.dwf
     static const STRING Dwf;      ///\if INTERNAL value("model/vnd.dwf") \endif
 
+    /// \brief
     /// image/gif
     static const STRING Gif;      ///\if INTERNAL value("image/gif") \endif
 
+    /// \brief
     /// image/jpeg
     static const STRING Jpeg;     ///\if INTERNAL value("image/jpeg") \endif
 
+    /// \brief
     /// image/png
     static const STRING Png;      ///\if INTERNAL value("image/png") \endif
 
+    /// \brief
     /// text/plain
     static const STRING Text;     ///\if INTERNAL value("text/plain") \endif
 
+    /// \brief
     /// image/tiff
     static const STRING Tiff;     ///\if INTERNAL value("image/tiff") \endif
 
+    /// \brief
     /// text/xml
     static const STRING Xml;      ///\if INTERNAL value("text/xml") \endif
 
+    /// \brief
     /// application/json
     static const STRING Json;      ///\if INTERNAL value("application/json") \endif
 
+    /// \brief
     /// text/html
     static const STRING Html;     ///\if INTERNAL value("text/html") \endif
 
+    /// \brief
     /// application/vnd.google-earth.kml+xml
     static const STRING Kml;      ///\if INTERNAL value("application/vnd.google-earth.kml+xml") \endif
 
+    /// \brief
     /// application/vnd.google-earth.kmz
     static const STRING Kmz;      ///\if INTERNAL value("application/vnd.google-earth.kmz") \endif
 };

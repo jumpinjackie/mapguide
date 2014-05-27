@@ -24,8 +24,8 @@
 
 ///////////////////////////////////////////////////////////////
 /// \brief
-/// Defines the type of an MgObjectPropertionDefinition object
-/// property, that is, whether the property ccontains a single
+/// Defines the type of an \link MgObjectPropertionDefinition \endlink object
+/// property, that is, whether the property contains a single
 /// feature class object, or an unordered or ordered collection
 /// of them.
 ///
@@ -33,21 +33,23 @@ class MgObjectPropertyType
 {
 PUBLISHED_API:
     ////////////////////////////////////////////////////////////////
+    /// \brief
     /// Signifies that the object property contains a single feature
     /// class object.
     static const int Value = 0;
     //////////////////////////////////////////////////////////////
+    /// \brief
     /// Signifies that the object property contains more than one
     /// feature class object. The collection of objects is in no
     /// particular order relative to the identity property defined
-    /// for the collection. See
-    /// MgObjectPropertyDefinition::GetIdentityProperty.
+    /// for the collection. See \link MgObjectPropertyDefinition::GetIdentityProperty \endlink
     static const int Collection = 1;
     /////////////////////////////////////////////////////////////////
+    /// \brief
     /// Signifies that the object property contains more than one
     /// feature class object in ascending or descending order
     /// relative to the identity property defined for the collection.
-    /// See MgObjectPropertyDefinition::GetIdentityProperty.
+    /// See \link MgObjectPropertyDefinition::GetIdentityProperty \endlink
     static const int OrderedCollection = 2;
 INTERNAL_API:
 

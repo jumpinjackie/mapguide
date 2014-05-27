@@ -1891,6 +1891,7 @@ CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_FeatureService;
 };
 
+///\cond INTERNAL
 #define MG_CHECK_FEATURE_SET_COUNT(pointer, methodname)                       \
 if (0 == pointer->GetCount())                                                 \
 {                                                                             \
@@ -1904,6 +1905,7 @@ if (property != type)                                                         \
     throw new MgInvalidPropertyTypeException(methodname,                      \
         __LINE__, __WFILE__, NULL, L"", NULL);                                \
 }
+///\endcond
 
 /// \}
 

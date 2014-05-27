@@ -24,6 +24,7 @@
 
 ///////////////////////////////////////////////////////////////
 /// \brief
+/// Defines the type of a geodetic transformation method
 ///
 class MG_GEOMETRY_API MgCoordinateSystemGeodeticTransformationMethod
 {

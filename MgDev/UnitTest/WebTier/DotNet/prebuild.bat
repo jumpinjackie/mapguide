@@ -22,7 +22,7 @@ echo Files already exist. Nothing to do
 goto done
 
 :copy
-if "%PLAT%"=="x64" (
+if %PLAT%=="x64" (
     echo Copying x64 binaries from %SLN_DIR%..\..\..\Web\bin\%CFG%64
     copy /Y %SLN_DIR%..\..\..\Web\bin\%CFG%64\*.* "%SLN_DIR%Libs\"
     echo Copying x64 SqliteDotNet.dll

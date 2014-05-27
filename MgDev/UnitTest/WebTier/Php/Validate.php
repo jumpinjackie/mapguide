@@ -138,8 +138,12 @@ class Validate
 
                     if ($_POST['testExecutionMode'] == "validate")
                     {
+                        //Normalize line endings so comparisons don't fall over due to incorrect line endings when expected results were entered in SQLite GUI
+                        $normResultData = str_replace("\r\n", "\n", $resultData);
+                        $normExpectedResult = str_replace("\r\n", "\n", $expectedResult);
+                    
                         //If the results are different and special validation fails then the operation failed ->mark it red
-                        if (strncasecmp($resultData, $expectedResult, strlen($resultData . $expectedResult)) && !(ValidateUtils::SpecialValidation($operation, $resultData, $expectedResult)))
+                        if (strncasecmp($normResultData, $normExpectedResult, strlen($normResultData . $normExpectedResult)) && !(ValidateUtils::SpecialValidation($operation, $resultData, $expectedResult)))
                         {
                             $outcome="fail";
                             $exitStatus=1;

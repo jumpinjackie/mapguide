@@ -412,7 +412,11 @@ namespace OSGeo.MapGuide.Test.Web
                             {
                                 if (strExpectedResult != null && strResultData != null)
                                 {
-                                    bEqual = strResultData.Equals(strExpectedResult, StringComparison.InvariantCultureIgnoreCase);
+                                    //Normalize line endings on LF before comparsion (in case the SQLite GUI recorded CRLFs)
+                                    string normStrResultData = strResultData.Replace("\r\n", "\n");
+                                    string normStrExpectedResult = strExpectedResult.Replace("\r\n", "\n");
+
+                                    bEqual = normStrResultData.Equals(normStrExpectedResult, StringComparison.InvariantCultureIgnoreCase);
                                 }
                                 else if (bExpected != null && bActual != null)
                                 {

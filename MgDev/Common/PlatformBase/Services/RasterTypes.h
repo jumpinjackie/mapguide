@@ -32,27 +32,34 @@ PUBLISHED_API:
 
     // These correspond to FDO RasterDataModelType definitions
 
+    /// \brief
     /// Data is organized in an unknown or provider specific manner.
     static const INT32 Unknown;     /// value(0)
 
+    /// \brief
     /// Data is rectangular grid, floating point data model.
     static const INT32 Data;        /// value(1)
 
+    /// \brief
     /// Data is one bit (black/white - bitonal) pixels.
     static const INT32 Bitonal;     /// value(2)
 
+    /// \brief
     /// Data is monochrome (black->gray->white) pixels.
     /// It is necessary to know the BitsPerPixel value to interpret the data.
     static const INT32 Gray;        /// value(3)
 
+    /// \brief
     /// Data is red/green/blue (in that order) pixels.
     /// It is necessary to know the BitsPerPixel value to interpret the data.
     static const INT32 RGB;         /// value(4)
 
+    /// \brief
     /// Data is red/green/blue/alpha (in that order) pixels; RGB with transparency.
     /// It is necessary to know the BitsPerPixel value to interpret the data.
     static const INT32 RGBA;        /// value(5)
 
+    /// \brief
     /// Data is monochrome but backed by a pallette (value->pallette->colour) pixels.
     /// It is necessary to know the BitsPerPixel value to interpret the data.
     static const INT32 Palette;     /// value(6)
