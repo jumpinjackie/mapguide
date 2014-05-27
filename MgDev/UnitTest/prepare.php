@@ -10,20 +10,24 @@ if (!file_exists($mgp)) {
 }
 if (!file_exists($file)) {
     $src = dirname(__FILE__)."/../Web/src/webconfig.ini";
-    $csMapDir = realpath(dirname(__FILE__)."/../Oem/CsMap/Dictionaries");
-    $resDir = realpath(dirname(__FILE__)."/../Web/src/mapagent/Resources");
+    $csMapDir = dirname(__FILE__)."/../Oem/CsMap/Dictionaries";
+    $resDir = dirname(__FILE__)."/../Common/MapGuideCommon/Resources";
     
     $ini = file($src);
     $newlines = array();
     foreach ($ini as $lineNum => $line) {
         $write = "";
-        if (strpos($line, 'MentorDictionaryPath') !== FALSE)
+        $mdp = strpos($line, 'MentorDictionaryPath');
+        $rp = strpos($line, 'ResourcesPath');
+        if ($mdp !== FALSE && $mdp == 0)
             $write = "MentorDictionaryPath = $csMapDir";
-        else if (strpos($line, 'ResourcesPath') !== FALSE)
+        else if ($rp !== FALSE && $rp == 0)
             $write = "ResourcesPath = $resDir";
         else
-            $write = $line;
-        array_push($newlines, $write);
+            $write = trim($line);
+
+        if ($write != "")
+            array_push($newlines, $write);
     }
     
     file_put_contents($file, implode("\n", $newlines));
