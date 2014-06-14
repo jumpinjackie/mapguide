@@ -287,8 +287,8 @@ MAN_LINKS              = NO
 #---------------------------------------------------------------------------
 # configuration options related to the XML output
 #---------------------------------------------------------------------------
-GENERATE_XML           = YES
-XML_OUTPUT             = mgopensource_xml
+GENERATE_XML           = NO
+XML_OUTPUT             = xml
 XML_SCHEMA             =
 XML_DTD                =
 XML_PROGRAMLISTING     = YES
