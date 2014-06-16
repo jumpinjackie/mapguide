@@ -65,6 +65,27 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTransformMesh").makeTest());
         }
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("AllExceptCoordSys")) == 0)
+        {
+            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests - Excluding Performance and CoordinateSystem. <<<<<\n\n")));
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestFeatureService").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestGeometry").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestLogManager").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMdfModel").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestKmlService").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMappingService").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMisc").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestRenderingService").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestProfilingService").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServerAdminService").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServerManager").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTransformMesh").makeTest());
+        }
         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestListTests)) == 0)
         {
             // Title
@@ -76,6 +97,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
 #else
             ACE_OS::printf("  All - Excluding Performance\n");
 #endif
+            ACE_OS::printf("  AllExceptCoordSys\n");
             ACE_OS::printf("  CoordinateSystem\n");
             ACE_OS::printf("  FeatureService\n");
             ACE_OS::printf("  Geometry\n");
