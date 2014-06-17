@@ -1432,6 +1432,8 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                     }
 
                     selRenderer->StartLayer(&layerinfo, &fcinfo);
+                    //Pass current layer xformer to renderer so it can transform any bbox data
+                    selRenderer->SetLayerToMapTransform(xformer);
                     ds.StylizeVectorLayer(vl, selRenderer, rsrdr.get(), NULL, scale, StylizeThatMany, selRenderer);
 
                     // Clear the readers in case they are reused below

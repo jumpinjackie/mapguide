@@ -237,6 +237,11 @@ public:
 
     void SetSelected();
 
+    void SetLayerToMapTransform(CSysTransformer* tx)
+    {
+        m_currentTransform = tx;
+    }
+
 protected:
     //common to FeaturePropRenderer and FeatureInfoRenderer
     RS_String m_layerId;
@@ -260,6 +265,7 @@ protected:
     double m_dpi;
     double m_scale;
 
+    CSysTransformer* m_currentTransform; //From stack-allocated TransformCacheMap. DO NOT FREE
 private:
     //specific to FeatureInfoRenderer
     RS_String m_url;

@@ -37,7 +37,8 @@ FeatureInfoRenderer::FeatureInfoRenderer(MgSelection* selection, int maxFeatures
   m_layerInfo(NULL),
   m_fcInfo(NULL),
   m_pointTest(false),
-  m_impRenderer(impRenderer)
+  m_impRenderer(impRenderer),
+  m_currentTransform(NULL)
 {
     m_selection = SAFE_ADDREF(selection);
     m_keyEncode = new KeyEncode();
@@ -56,7 +57,7 @@ FeatureInfoRenderer::~FeatureInfoRenderer()
 {
     SAFE_RELEASE(m_props);
     SAFE_RELEASE(m_selection);
-
+    m_currentTransform = NULL;
     delete m_keyEncode;
 }
 
@@ -184,6 +185,8 @@ void FeatureInfoRenderer::EndMap()
 void FeatureInfoRenderer::StartLayer(RS_LayerUIInfo*      layerInfo,
                                      RS_FeatureClassInfo* classInfo)
 {
+    m_currentTransform = NULL;
+
     // remember the layer/feature info
     m_layerInfo = layerInfo;
     m_fcInfo = classInfo;
