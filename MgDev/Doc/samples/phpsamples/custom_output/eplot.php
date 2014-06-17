@@ -34,12 +34,8 @@ try
   $siteConnection = new MgSiteConnection();
   $siteConnection->Open($userInfo);
 
-  // Create an instance of ResourceService and use that to open the
-  // current map instance stored in session state.
-
-  $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
-  $map = new MgMap();
-  $map->Open($resourceService, $mapName);
+  $map = new MgMap($siteConnection);
+  $map->Open($mapName);
 
   $mappingService = $siteConnection->CreateService(MgServiceType::MappingService);
 

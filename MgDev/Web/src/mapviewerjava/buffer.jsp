@@ -101,8 +101,8 @@ String locale;
 
         //load the map runtime state
         //
-        MgMap map = new MgMap();
-        map.Open(resourceSrvc, mapName);
+        MgMap map = new MgMap(site);
+        map.Open(mapName);
 
         //locate the buffer layer in the map. It might or might not already exist
         //
@@ -351,7 +351,7 @@ String locale;
         // Save the new map state
         //
         layer.ForceRefresh();
-        map.Save(resourceSrvc);
+        map.Save();
 
         //build report message
         String title = MgLocalizer.GetString("BUFFERREPORTTITLE", locale);

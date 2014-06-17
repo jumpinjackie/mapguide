@@ -198,7 +198,6 @@ try
         $siteConn = new MgSiteConnection();
         $siteConn->Open($userInfo);
 
-        $resourceService = $siteConn->CreateService(MgServiceType::ResourceService);
         $profilingService = $siteConn->CreateService(MgServiceType::ProfilingService);
 
         //the profiling result is saved as xml file, the file name is unique
@@ -207,8 +206,8 @@ try
 
         $resourceID = new MgResourceIdentifier($mapResourceId);
         // Get a runtime map from a map definition
-        $map = new MgMap();
-        $map->Create($resourceService, $resourceID, $newXmlFileId);
+        $map = new MgMap($siteConn);
+        $map->Create($resourceID, $newXmlFileId);
 
         //The result will not show base layers
         RemoveBaseLayers($map);

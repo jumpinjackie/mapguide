@@ -56,7 +56,8 @@ function CreateBufferLayer($resourceService, $bufferFeatureResId, $sessionId)
     // modify its content to reference the temporary
     // feature source.
 
-    $doc = DOMDocument::load('bufferlayerdefinition.xml');
+    $doc = new DOMDocument();
+    $doc->load('bufferlayerdefinition.xml');
     $featureSourceNode = $doc->getElementsByTagName('ResourceId')->item(0);
     $featureSourceNode->nodeValue = $bufferFeatureResId->ToString();
 
@@ -125,7 +126,8 @@ function CreateParcelMarkerLayer($resourceService, $parcelMarkerDataResId, $sess
     // modify its content to reference the temporary
     // feature source.
 
-    $doc = DOMDocument::load('parcelmarker.xml');
+    $doc = new DOMDocument();
+    $doc->load('parcelmarker.xml');
     $featureSourceNode = $doc->getElementsByTagName('ResourceId')->item(0);
     $featureSourceNode->nodeValue = $parcelMarkerDataResId->ToString();
 

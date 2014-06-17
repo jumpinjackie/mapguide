@@ -79,8 +79,8 @@
 
         //Load the map runtime state.
         //
-        $map = new MgMap();
-        $map->Open($resourceSrvc, $mapName);
+        $map = new MgMap($site);
+        $map->Open($mapName);
 
         $layerMap = null;
         $tree = BuildLayerTree($map, $resourceSrvc);

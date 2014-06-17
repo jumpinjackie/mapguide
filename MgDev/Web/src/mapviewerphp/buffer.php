@@ -69,8 +69,8 @@
 
         //load the map runtime state
         //
-        $map = new MgMap();
-        $map->Open($resourceSrvc, $mapName);
+        $map = new MgMap($site);
+        $map->Open($mapName);
 
         //locate the buffer layer in the map. It might or might not already exist
         //
@@ -317,7 +317,7 @@
         // Save the new map state
         //
         $layer->ForceRefresh();
-        $map->Save($resourceSrvc);
+        $map->Save();
 
         //build report message
         $title = GetLocalizedString( "BUFFERREPORTTITLE", $locale );

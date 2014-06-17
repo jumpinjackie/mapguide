@@ -82,10 +82,10 @@ else
 
         $resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
 
-        $map = new MgMap();
+        $map = new MgMap($site);
         $resId = new MgResourceIdentifier($mapDefinition);
         $mapName = $resId->GetName();
-        $map->Create($resourceSrvc, $resId, $mapName);
+        $map->Create($resId, $mapName);
 
         //create an empty selection object and store it in the session repository
         $sel = new MgSelection($map);

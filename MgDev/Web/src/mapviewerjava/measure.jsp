@@ -96,8 +96,8 @@ String dataSource;
 
         //load the map runtime state and locate the measure layer
         //
-        MgMap map = new MgMap();
-        map.Open(resourceSrvc, mapName);
+        MgMap map = new MgMap(site);
+        map.Open(mapName);
         MgLayerCollection layers = map.GetLayers();
         srs = GetMapSrs(map);
 
@@ -242,7 +242,7 @@ String dataSource;
 
         if(layer != null)
             layer.ForceRefresh();
-        map.Save(resourceSrvc);
+        map.Save();
     }
     catch(MgException exc)
     {

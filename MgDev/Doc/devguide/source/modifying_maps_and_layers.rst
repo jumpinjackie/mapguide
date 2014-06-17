@@ -92,8 +92,8 @@ the *MapGuide Web API Reference*.
 
     // (initialization etc. not shown here)
     // Open the map
-    $map = new MgMap();
-    $map->Open($resourceService, $mapName);
+    $map = new MgMap($siteConnection);
+    $map->Open($mapName);
     // --------------------------------------------------//
     // Load a layer from XML, and use the DOM to change it
     // Load the prototype layer definition into

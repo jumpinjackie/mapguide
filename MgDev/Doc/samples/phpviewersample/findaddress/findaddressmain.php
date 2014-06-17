@@ -30,12 +30,12 @@
     <script language="javascript">
     function Submit()
     {
-    	var addressForm = document.getElementById("addressForm");
-    	var addressValue = document.getElementById("addressValue");
-    	var addressInput = document.getElementById("addressInput");
+        var addressForm = document.getElementById("addressForm");
+        var addressValue = document.getElementById("addressValue");
+        var addressInput = document.getElementById("addressInput");
 
-    	addressValue.value = addressInput.value;
-    	addressForm.submit();
+        addressValue.value = addressInput.value;
+        addressForm.submit();
     }
     </script>
 </head>
@@ -60,13 +60,8 @@
         $siteConnection = new MgSiteConnection();
         $siteConnection->Open($userInfo);
 
-        // Create a ReserviceService object and use it to open the Map
-        // object from the sessions repository. Use the Map object to
-        // determine if the "AddressMarker" layer is visible.
-
-        $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
-        $map = new MgMap();
-        $map->Open($resourceService, 'Sheboygan');
+        $map = new MgMap($siteConnection);
+        $map->Open('Sheboygan');
         $addressLayer = GetLayerByName($map, 'AddressMarker');
 
         if ($addressLayer != null)

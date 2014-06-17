@@ -34,12 +34,12 @@
     <script language="javascript">
     function Submit()
     {
-    	var addressForm = document.getElementById("addressForm");
-    	var addressValue = document.getElementById("addressValue");
-    	var addressInput = document.getElementById("addressInput");
-    	
-    	addressValue.value = addressInput.value;
-    	addressForm.submit();
+        var addressForm = document.getElementById("addressForm");
+        var addressValue = document.getElementById("addressValue");
+        var addressInput = document.getElementById("addressInput");
+        
+        addressValue.value = addressInput.value;
+        addressForm.submit();
     }
     </script>
 </head>
@@ -66,9 +66,8 @@
         // object from the sessions repository. Use the Map object to
         // determine if the "AddressMarker" layer is visible.
 
-        MgResourceService resourceService = (MgResourceService)siteConnection.CreateService(MgServiceType.ResourceService);
-        MgMap map = new MgMap();
-        map.Open(resourceService, "Sheboygan");
+        MgMap map = new MgMap(siteConnection);
+        map.Open("Sheboygan");
         MgLayer addressLayer = GetLayerByName(map, "AddressMarker");
 
         if (addressLayer != null)

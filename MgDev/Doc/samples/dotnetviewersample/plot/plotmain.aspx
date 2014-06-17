@@ -87,14 +87,8 @@ try
     MgSiteConnection siteConnection = new MgSiteConnection();
     siteConnection.Open(userInfo);
 
-    // Create a ReserviceService object and use it to open the Map
-    // object from the sessions repository. Use the Map object to
-    // determine the current scale of the map for display on this
-    // page.
-
-    MgResourceService resourceService = siteConnection.CreateService(MgServiceType.ResourceService) as MgResourceService;
-    MgMap map = new MgMap();
-    map.Open(resourceService, "Sheboygan");
+    MgMap map = new MgMap(siteConnection);
+    map.Open("Sheboygan");
 
     viewCenter = map.GetViewCenter();
     viewScale = map.GetViewScale();

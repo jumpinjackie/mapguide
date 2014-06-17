@@ -93,8 +93,8 @@ StringBuilder output = new StringBuilder("\nvar layerData = new Array();\n");
 
         //Load the map runtime state.
         //
-        MgMap map = new MgMap();
-        map.Open(resourceSrvc, mapName);
+        MgMap map = new MgMap(site);
+        map.Open(mapName);
 
         int updateType = -1;
 

@@ -54,21 +54,21 @@ try
 
     // --------------------------------------------------//
     // Open the map
-    $map = new MgMap();
-    $map->Open($resourceService, $mapName);
+    $map = new MgMap($siteConnection);
+    $map->Open($mapName);
 
-	// ...
+    // ...
     //---------------------------------------------------//
     // Create a new layer
 
-	$factory = new LayerDefinitionFactory();
+    $factory = new LayerDefinitionFactory();
 
     // Create a line rule.
     $legendLabel = '';
     $filter = '';
     $color = 'FF0000FF';
-	$lineRule = $factory->CreateLineRule(
-	  $legendLabel, $filter, $color);
+    $lineRule = $factory->CreateLineRule(
+      $legendLabel, $filter, $color);
 
     // Create a line type style.
     $lineTypeStyle = $factory->
@@ -86,9 +86,9 @@ try
       . 'HydrographicLines.FeatureSource';
     $featureName = 'SHP_Schema:HydrographicLines';
     $geometry = 'SHPGEOM';
-	$layerDefinition = $factory->
-	  CreateLayerDefinition($featureClass, $featureName,
-	  $geometry, $lineScaleRange);
+    $layerDefinition = $factory->
+      CreateLayerDefinition($featureClass, $featureName,
+      $geometry, $lineScaleRange);
 
     //---------------------------------------------------//
     // ...
@@ -120,9 +120,9 @@ try
 }
 catch (MgException $e)
 {
-	echo "<script language=\"javascript\" type=\"text/javascript\"> \n";
-	echo "    alert(\" " . $e->GetExceptionMessage() . " \"); \n";
-	echo "</script> \n";
+    echo "<script language=\"javascript\" type=\"text/javascript\"> \n";
+    echo "    alert(\" " . $e->GetExceptionMessage() . " \"); \n";
+    echo "</script> \n";
 }
 ?>
 

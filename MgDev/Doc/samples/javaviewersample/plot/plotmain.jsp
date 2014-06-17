@@ -41,8 +41,8 @@
             useLayoutValue.value = "true";
         else
             useLayoutValue.value = "false";
-    	
-    	scaleValue.value = "0";
+        
+        scaleValue.value = "0";
         plotForm.submit();	
     }
     function SubmitAtScale()
@@ -95,9 +95,8 @@
         // determine the current scale of the map for display on this
         // page.
 
-        MgResourceService resourceService = (MgResourceService)siteConnection.CreateService(MgServiceType.ResourceService);
-        MgMap map = new MgMap();
-        map.Open(resourceService, "Sheboygan");
+        MgMap map = new MgMap(siteConnection);
+        map.Open("Sheboygan");
 
         viewCenter = map.GetViewCenter();
         viewScale = map.GetViewScale();

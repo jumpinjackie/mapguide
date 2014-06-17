@@ -34,12 +34,8 @@ try
   $siteConnection = new MgSiteConnection();
   $siteConnection->Open($userInfo);
 
-  // Create an instance of ResourceService and use that to open the
-  // current map instance stored in session state.
-
-  $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
-  $map = new MgMap();
-  $map->Open($resourceService, $mapName);
+  $map = new MgMap($siteConnection);
+  $map->Open($mapName);
 
   $mappingService = $siteConnection->CreateService(MgServiceType::MappingService);
 
@@ -61,8 +57,8 @@ try
   // Create a second map for the second sheet in the DWF. This second sheet uses the print layout
   // to display a page title and legend.
 
-  $map2 = new MgMap();
-  $map2->Create($resourceService, $map->GetMapDefinition(), 'Sheet 2');
+  $map2 = new MgMap($siteConnection);
+  $map2->Create($map->GetMapDefinition(), 'Sheet 2');
   $plot2 = new MgMapPlot($map2, $plotSpec, $layout);
   $plot2->SetCenterAndScale($map->GetViewCenter()->GetCoordinate(), $map->GetViewScale());
   // $plot2 = new MgMapPlot($map2, $map->GetViewCenter()->GetCoordinate(), $map->GetViewScale(), $plotSpec, $layout);

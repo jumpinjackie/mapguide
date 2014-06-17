@@ -31,12 +31,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     <script language="javascript">
     function Submit()
     {
-    	var addressForm = document.getElementById("addressForm");
-    	var addressValue = document.getElementById("addressValue");
-    	var addressInput = document.getElementById("addressInput");
-    	
-    	addressValue.value = addressInput.value;
-    	addressForm.submit();
+        var addressForm = document.getElementById("addressForm");
+        var addressValue = document.getElementById("addressValue");
+        var addressInput = document.getElementById("addressInput");
+        
+        addressValue.value = addressInput.value;
+        addressForm.submit();
     }
     </script>
 </head>
@@ -59,13 +59,8 @@ try
     siteConnection = new MgSiteConnection();
     siteConnection.Open(userInfo);
 
-    // Create a ReserviceService object and use it to open the Map
-    // object from the sessions repository. Use the Map object to
-    // determine if the "AddressMarker" layer is visible.
-
-    MgResourceService resourceService = siteConnection.CreateService(MgServiceType.ResourceService) as MgResourceService;
-    MgMap map = new MgMap();
-    map.Open(resourceService, "Sheboygan");
+    MgMap map = new MgMap(siteConnection);
+    map.Open("Sheboygan");
     MgLayer addressLayer = GetLayerByName(map, "AddressMarker");
 
     if (addressLayer != null)

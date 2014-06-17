@@ -60,11 +60,10 @@
         $site = new MgSiteConnection();
         $site->Open($cred);
         $featureSrvc = $site->CreateService(MgServiceType::FeatureService);
-        $resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
 
         //Create a temporary map runtime object, locate the layer
-        $map = new MgMap();
-        $map->Open($resourceSrvc, $mapName);
+        $map = new MgMap($site);
+        $map->Open($mapName);
         $layers = $map->GetLayers();
         $layer = null;
         for($i = 0; $i < $layers->GetCount(); $i++)
@@ -107,8 +106,7 @@
         $opts = new MgFeatureQueryOptions();
         $opts->SetFilter($filter);
         $featureClassName = $layer->GetFeatureClassName();
-        $srcId = new MgResourceIdentifier($layer->GetFeatureSourceId());
-        $features = $featureSrvc->SelectFeatures($srcId, $featureClassName, $opts);
+        $features = $layer->SelectFeatures($opts);
         $hasResult = $features->ReadNext();
 
         if($hasResult)

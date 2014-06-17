@@ -50,20 +50,14 @@ try
 
     featureService.UpdateFeatures(addressMarkerDataResId, commands, false);
 
-    // Create a ReserviceService object and use it to open the Map
-    // object from the sessions repository. Use the Map object to hide
-    // the "ParcelMarker" layer and then save the updated Map back to
-    // the session.
-
-    MgResourceService resourceService = siteConnection.CreateService(MgServiceType.ResourceService) as MgResourceService;
-    MgMap map = new MgMap();
-    map.Open(resourceService, "Sheboygan");
+    MgMap map = new MgMap(siteConnection);
+    map.Open("Sheboygan");
 
     MgLayer layer = GetLayerByName(map, "AddressMarker");
     layer.SetVisible(false);
     layer.ForceRefresh();
 
-    map.Save(resourceService);
+    map.Save();
 }
 catch (MgException mge)
 {

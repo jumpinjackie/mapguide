@@ -75,12 +75,10 @@ String searchError;
             //connect to the site and get a feature service and a resource service instances
             MgSiteConnection site = new MgSiteConnection();
             site.Open(cred);
-            MgFeatureService featureSrvc = site.CreateService(MgServiceType.FeatureService) as MgFeatureService;
-            MgResourceService resourceSrvc = site.CreateService(MgServiceType.ResourceService) as MgResourceService;
 
             //Create a temporary map runtime object, locate the layer
-            MgMap map = new MgMap();
-            map.Open(resourceSrvc, mapName);
+            MgMap map = new MgMap(site);
+            map.Open(mapName);
             MgLayerCollection layers = map.GetLayers();
             int i = 0;
             MgLayer layer = null;
@@ -108,8 +106,7 @@ String searchError;
             MgFeatureQueryOptions opts = new MgFeatureQueryOptions();
             opts.SetFilter(filter);
             String featureClassName = layer.GetFeatureClassName();
-            MgResourceIdentifier srcId = new MgResourceIdentifier(layer.GetFeatureSourceId());
-            features = featureSrvc.SelectFeatures(srcId, featureClassName, opts);
+            features = layer.SelectFeatures(opts);
             bool hasResult = features.ReadNext();
 
             if (hasResult)

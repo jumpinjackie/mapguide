@@ -503,8 +503,8 @@ class MapLayerAPI
         }
 
         $mapDefId = new MgResourceIdentifier($mapName);
-        $this->map = new MgMap();
-        $this->map->Create($this->resSrvc, $mapDefId, $mapDefId->GetName());
+        $this->map = new MgMap($this->site);
+        $this->map->Create($mapDefId, $mapDefId->GetName());
     }
 }
 ?>

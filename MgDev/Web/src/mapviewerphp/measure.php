@@ -65,8 +65,8 @@
 
         //load the map runtime state and locate the measure layer
         //
-        $map = new MgMap();
-        $map->Open($resourceSrvc, $mapName);
+        $map = new MgMap($site);
+        $map->Open($mapName);
         $layers = $map->GetLayers();
         $srs = GetMapSrs($map);
 
@@ -209,7 +209,7 @@
 
         if($layer != null)
             $layer->ForceRefresh();
-        $map->Save($resourceSrvc);
+        $map->Save();
     }
     catch(MgException $e)
     {

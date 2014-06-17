@@ -19,6 +19,8 @@
 
 //Class that defines static methods that are commonly used in the infrastructure
 
+require_once("SQLiteEngine.php");
+
 if (!defined('WEBCONFIGINI')) {
     if (array_key_exists("WEBCONFIGINI", $_SERVER)) {
         define("WEBCONFIGINI", $_SERVER["WEBCONFIGINI"]);
@@ -246,28 +248,51 @@ class Utils
 
         return $dbPath;
     }
-
-    public static function CreateDumpFile($db)
+    
+    public static function CreateDumpFile($db, $overwrite = false)
     {
         $dbName = $db->GetName();
         $iniFileName = substr($dbName, 0, strpos($dbName, ".db")).".ini";
         $dumpFileName = substr($dbName, 0, strpos($dbName, ".db")).".dump";
 
-        //Clear the stat cache as filemtime may not work correctly
-        clearstatcache();
-
-        //Check if the file exists and is writable before updating it
-        if (!file_exists($dumpFileName) || (is_writable($dumpFileName)&&filemtime($db->GetName())>filemtime($dumpFileName)))
+        if ($overwrite)
         {
+            if (file_exists($dumpFileName))
+                unlink($dumpFileName);
+            
             $iniFileContent =".output ".$dumpFileName;
             file_put_contents($iniFileName, $iniFileContent);
             $db->DumpDatabase($iniFileName);
-            printf("<b>Updated dump file <i>%s</i></b>", $dumpFileName);
+            if (php_sapi_name() == 'cli')
+                printf("Updated dump file: %s\n", $dumpFileName);
+            else
+                printf("<b>Updated dump file <i>%s</i></b>", $dumpFileName);
             unlink($iniFileName);
         }
         else
         {
-            printf("<b>Dump file <i>%s</i> already exists and is read only or is newer than the database. File has not been updated</b>", $dumpFileName);
+            //Clear the stat cache as filemtime may not work correctly
+            clearstatcache();
+
+            //Check if the file exists and is writable before updating it
+            if (!file_exists($dumpFileName) || (is_writable($dumpFileName)&&filemtime($db->GetName())>filemtime($dumpFileName)))
+            {
+                $iniFileContent =".output ".$dumpFileName;
+                file_put_contents($iniFileName, $iniFileContent);
+                $db->DumpDatabase($iniFileName);
+                if (php_sapi_name() == 'cli')
+                    printf("Updated dump file: %s\n", $dumpFileName);
+                else
+                    printf("<b>Updated dump file <i>%s</i></b>", $dumpFileName);
+                unlink($iniFileName);
+            }
+            else
+            {
+                if (php_sapi_name() == 'cli')
+                    printf("Dump file %s already exists and is read only or is newer than the database. File has not been updated\n", $dumpFileName);
+                else
+                    printf("<b>Dump file <i>%s</i> already exists and is read only or is newer than the database. File has not been updated</b>", $dumpFileName);
+            }
         }
     }
 }

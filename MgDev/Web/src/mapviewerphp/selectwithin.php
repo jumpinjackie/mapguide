@@ -42,12 +42,11 @@
         $site->Open($cred);
         $featureSrvc = $site->CreateService(MgServiceType::FeatureService);
         $renderingSrvc = $site->CreateService(MgServiceType::RenderingService);
-        $resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
 
         //load the map runtime state
         //
-        $map = new MgMap();
-        $map->Open($resourceSrvc, $mapName);
+        $map = new MgMap($site);
+        $map->Open($mapName);
 
         $layers = explode(",", $layers);
         if(count($layers) > 0)

@@ -59,13 +59,9 @@
       MgUserInformation userInfo = new MgUserInformation(sessionId);
       MgSiteConnection siteConnection = new MgSiteConnection();
       siteConnection.Open(userInfo);
-  
-      // Get an instance of the required service(s).
-      
-      MgResourceService resourceService = (MgResourceService) siteConnection.CreateService(MgServiceType.ResourceService);
 
-      MgMap map = new MgMap(); 
-      map.Open(resourceService, mapName);
+      MgMap map = new MgMap(siteConnection); 
+      map.Open(mapName);
 
       MgLayerCollection layers = map.GetLayers(); // Get layer collection
 
@@ -82,7 +78,7 @@
       // You must save the updated map or the
       // changes will not be applied
       // Also be sure to refresh the map on page load.
-      map.Save(resourceService);
+      map.Save();
 
       out.println("<p>Layer label has been changed to " + newLabel + ".</p>");
 

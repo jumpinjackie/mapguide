@@ -43,7 +43,7 @@ namespace OSGeo.MapGuide.Test.Web
             var admin = new MgServerAdmin();
             admin.Open(_userInfo);
             var wlCreator = new MgWebLayoutCreator(resSvc);
-            var creator = new MgMapCreator(resSvc);
+            var creator = new MgMapCreator(_conn, resSvc);
             var sessionCreator = new MgSessionCreator(_conn);
             var sessionApply = new MgApplySession(_userInfo);
             var session = new MgSession();
@@ -210,11 +210,13 @@ namespace OSGeo.MapGuide.Test.Web
 
         class MgMapCreator : Operations.IMapCreator
         {
-            private MgResourceService _resSvc;
+            private MgSiteConnection _siteConn;
             private MgMap _map;
+            private MgResourceService _resSvc;
 
-            public MgMapCreator(MgResourceService resSvc)
+            public MgMapCreator(MgSiteConnection siteConn, MgResourceService resSvc)
             {
+                _siteConn = siteConn;
                 _resSvc = resSvc;
             }
 
@@ -225,8 +227,8 @@ namespace OSGeo.MapGuide.Test.Web
                 if (_map != null)
                     return _map;
 
-                _map = new MgMap();
-                _map.Create(_resSvc, resId, resId.GetName());
+                _map = new MgMap(_siteConn);
+                _map.Create(resId, resId.GetName());
                 return _map;
             }
 

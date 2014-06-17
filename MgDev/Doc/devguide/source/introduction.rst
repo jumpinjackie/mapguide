@@ -209,10 +209,15 @@ For example, the following section of code creates an ``MgMap`` named ``Sheboyga
 .. highlight:: php
 .. code-block:: php
 
+    $siteConnection = new MgSiteConnection();
+    $userInfo = new MgUserInformation($sessionId);
+    $siteConnection->Open();
+    $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
+
     $mapDefId = new MgResourceIdentifier("Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition");
-    $map = new MgMap();
+    $map = new MgMap($siteConnection);
     $mapName = $mapDefId->GetName();
-    $map->Create($resourceService, $mapDefId, $mapName);
+    $map->Create($mapDefId, $mapName);
     $mapId = new MgResourceIdentifier("Session:$sessionId//$mapName." . MgResourceType::Map);
     $map->Save($resourceService, $mapId);
 
@@ -222,12 +227,16 @@ For example, the following section of code creates an ``MgMap`` named ``Sheboyga
 .. code-block:: csharp
 
     //Note: This code fragment assumes you have imported the OSGeo.MapGuide namespace
+    MgSiteConnection siteConnection = new MgSiteConnection();
+    MgUserInformation userInfo = new MgUserInformation(sessionId);
+    siteConnection.Open(userInfo);
+    MgResourceService resourceService = (MgResourceService)siteConnection.CreateService(MgServiceType::ResourceService);
 
     MgResourceIdentifier mapDefId = new MgResourceIdentifier("Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition");
-    MgMap map = new MgMap();
+    MgMap map = new MgMap(siteConnection);
     String mapName = mapDefId.GetName();
-    map.Create(resourceService, mapDefId, mapName);
-    MgResourceIdentifier mapId = new MgResourceIdentifier("Session:$sessionId//$mapName." + MgResourceType.Map);
+    map.Create(mapDefId, mapName);
+    MgResourceIdentifier mapId = new MgResourceIdentifier("Session:" + sessionId + "//" + mapName + "." + MgResourceType.Map);
     map.Save(resourceService, mapId);
     
 **Java**
@@ -236,12 +245,16 @@ For example, the following section of code creates an ``MgMap`` named ``Sheboyga
 .. code-block:: java
 
     //Note: This code fragment assumes you have imported the org.osgeo.mapguide package
+    MgSiteConnection siteConnection = new MgSiteConnection();
+    MgUserInformation userInfo = new MgUserInformation(sessionId);
+    siteConnection.Open(userInfo);
+    MgResourceService resourceService = (MgResourceService)siteConnection.CreateService(MgServiceType::ResourceService);
 
     MgResourceIdentifier mapDefId = new MgResourceIdentifier("Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition");
-    MgMap map = new MgMap();
+    MgMap map = new MgMap(siteConnection);
     String mapName = mapDefId.GetName();
-    map.Create(resourceService, mapDefId, mapName);
-    MgResourceIdentifier mapId = new MgResourceIdentifier("Session:$sessionId//$mapName." + MgResourceType.Map);
+    map.Create(mapDefId, mapName);
+    MgResourceIdentifier mapId = new MgResourceIdentifier("Session:" + sessionId + "//" + mapName + "." + MgResourceType.Map);
     map.Save(resourceService, mapId);
 
 .. index::
@@ -490,13 +503,9 @@ in the Viewer.
                 $siteConnection = new MgSiteConnection();
                 $siteConnection->Open($userInfo);
 
-                // Get an instance of the required service(s).
-                $resourceService = $siteConnection->
-                CreateService(MgServiceType::ResourceService);
-
                 // Display the spatial reference system used for the map.
-                $map = new MgMap();
-                $map->Open($resourceService, $mgMapName);
+                $map = new MgMap($siteConnection);
+                $map->Open($mgMapName);
                 $srs = $map->GetMapSRS();
                 echo 'Map <strong>' . $map->GetName() .
                 '</strong> uses this reference system: <br />' . $srs;

@@ -43,8 +43,8 @@
 
         //load the map runtime state
         //
-        $map = new MgMap();
-        $map->Open($resourceSrvc, $mapName);
+        $map = new MgMap($site);
+        $map->Open($mapName);
 
         // Create the selection set and save it
         $sel = new MgSelection($map);

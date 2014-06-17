@@ -56,23 +56,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         
         public ArrayList GetMapLayerNames()
         {
-            MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
             MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
             
-            MgMap map = new MgMap();
-            map.Open(resourceService, GetParameter(this.args, "MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(GetParameter(this.args, "MAPNAME"));
             MgLayerCollection layers = map.GetLayers();
             ArrayList layerNames = new ArrayList();
 
             for(int i=0; i<layers.GetCount(); i++)
             {
-            MgLayer layer = (MgLayer) layers.GetItem(i);
+                MgLayer layer = (MgLayer) layers.GetItem(i);
                 if(!layer.GetName().StartsWith("_") && !layer.GetFeatureSourceId().ToUpper().StartsWith("SESSION"))
                 {
-                    MgResourceIdentifier resId = new MgResourceIdentifier(layer.GetFeatureSourceId());
-                    String[] schemaClass = layer.GetFeatureClassName().Split(new Char[]{':'});
-
-                    MgClassDefinition classDef = featureService.GetClassDefinition(resId, schemaClass[0], schemaClass[1]);
+                    MgClassDefinition classDef = layer.GetClassDefinition();
                     MgPropertyDefinition propDef = classDef.GetProperties().GetItem(layer.GetFeatureGeometryName());
                 
                     if(propDef.GetPropertyType() == MgFeaturePropertyType.GeometricProperty)
@@ -98,15 +94,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             
             MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
             
-            MgMap map = new MgMap();
-            map.Open(resourceService, GetParameter(this.args, "MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(GetParameter(this.args, "MAPNAME"));
             MgLayer layer = (MgLayer) map.GetLayers().GetItem(GetParameter(this.args, "LAYERNAME"));
 
-            MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
-            MgResourceIdentifier resId = new MgResourceIdentifier(layer.GetFeatureSourceId());
-            String[] schemaClass = layer.GetFeatureClassName().Split(new Char[]{':'});
-
-            MgClassDefinition classDef = featureService.GetClassDefinition(resId, schemaClass[0], schemaClass[1]);
+            MgClassDefinition classDef = layer.GetClassDefinition();
 
             for(int i=0; i<classDef.GetProperties().GetCount(); i++)
             {
@@ -167,15 +159,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         {
             ArrayList propertyMinMaxCount = new ArrayList();
             
-            MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
-            
-            MgMap map = new MgMap();
-            map.Open(resourceService, GetParameter(this.args, "MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(GetParameter(this.args, "MAPNAME"));
             MgLayer layer = (MgLayer) map.GetLayers().GetItem(GetParameter(this.args, "LAYERNAME"));
 
-            MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
-            MgResourceIdentifier resId = new MgResourceIdentifier(layer.GetFeatureSourceId());
-            
             String minValue = null;
             String maxValue = null;
             int count = 0;
@@ -183,7 +170,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             MgFeatureQueryOptions queryOptions = new MgFeatureQueryOptions();
             queryOptions.AddFeatureProperty(GetParameter(this.args, "PROPERTYNAME"));
             
-            MgFeatureReader featureReader = featureService.SelectFeatures(resId, layer.GetFeatureClassName(), queryOptions);
+            MgFeatureReader featureReader = layer.SelectFeatures(queryOptions);
             while(featureReader.ReadNext())
             {
                 String value = GetFeaturePropertyValue(featureReader, GetParameter(this.args, "PROPERTYNAME"));
@@ -252,8 +239,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
             MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
 
-            MgMap map = new MgMap();
-            map.Open(resourceService, GetParameter(this.args, "MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(GetParameter(this.args, "MAPNAME"));
             MgLayerCollection layers = map.GetLayers();
             MgLayer layer = (MgLayer) layers.GetItem(GetParameter(this.args, "LAYERNAME"));
             
@@ -301,7 +288,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                 aggregateOptions.AddFeatureProperty(GetParameter(this.args, "PROPERTYNAME"));
                 aggregateOptions.SelectDistinct(true);
                 
-                MgDataReader dataReader = featureService.SelectAggregate(resId, layer.GetFeatureClassName(), aggregateOptions);
+                MgDataReader dataReader = layer.SelectAggregate(aggregateOptions);
                 while(dataReader.ReadNext())
                 {
                     value = GetFeaturePropertyValue(dataReader, GetParameter(this.args, "PROPERTYNAME"));
@@ -332,7 +319,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                 
                 aggregateOptions.AddComputedProperty("THEME_VALUE",
                     GetParameter(this.args, "DISTRO") + "(\"" + GetParameter(this.args, "PROPERTYNAME") + "\"," + GetParameter(this.args, "NUMRULES") + "," + GetParameter(this.args, "MINVALUE") + "," + GetParameter(this.args, "MAXVALUE") + ")");
-                MgDataReader dataReader = featureService.SelectAggregate(resId, layer.GetFeatureClassName(), aggregateOptions);
+                MgDataReader dataReader = layer.SelectAggregate(aggregateOptions);
                 while(dataReader.ReadNext())
                 {
                     value = GetFeaturePropertyValue(dataReader, "THEME_VALUE");
@@ -382,7 +369,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             newLayer.SetSelectable(layer.GetSelectable());
             layers.Insert(layers.IndexOf(layer), newLayer);
             
-            map.Save(resourceService);
+            map.Save();
 
             return uniqueName;
         }

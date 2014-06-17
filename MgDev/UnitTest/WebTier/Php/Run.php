@@ -118,7 +118,7 @@ class Run
         }
         catch (MgException $e)
         {
-            print $e->GetExceptionMessage('en');
+            print $e->GetDetails();
             return false;
         }
         catch (SqliteException $s)

@@ -84,11 +84,10 @@
         $userInfo         = new MgUserInformation($sessionID);
         $siteConnection   = new MgSiteConnection();
         $siteConnection->Open($userInfo);
-        $resourceService  = $siteConnection->CreateService(MgServiceType::ResourceService);
         $renderingService = $siteConnection->CreateService(MgServiceType::RenderingService);
 
-        $map = new MgMap();
-        $map->Open($resourceService, $mapName);
+        $map = new MgMap($siteConnection);
+        $map->Open($mapName);
 
         $selection        = new MgSelection($map);
 

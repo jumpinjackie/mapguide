@@ -51,17 +51,13 @@
       MgSiteConnection siteConnection = new MgSiteConnection();
       siteConnection.Open(userInfo);
 
-      // Get an instance of the required service(s).
-      
-      MgResourceService resourceService = (MgResourceService) siteConnection.CreateService(MgServiceType.ResourceService);
-
       // Finished basic initialization.
       // --------------------------------------------------//
       
       // Query the spatial reference system used for the map.
       
-      MgMap map = new MgMap();
-      map.Open(resourceService, mapName);
+      MgMap map = new MgMap(siteConnection);
+      map.Open(mapName);
       String srs = map.GetMapSRS();
       
       // Format it and display it in the task pane.

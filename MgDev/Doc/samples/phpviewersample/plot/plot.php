@@ -35,14 +35,8 @@ try
     $siteConnection = new MgSiteConnection();
     $siteConnection->Open($userInfo);
 
-    $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
-
-    // Create an instance of ResourceService and use that to open the
-    // current map instance stored in session state.
-
-    $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
-    $map = new MgMap();
-    $map->Open($resourceService, 'Sheboygan');
+    $map = new MgMap($siteConnection);
+    $map->Open('Sheboygan');
 
     // Now create an instance of MappingService and use it to plot the
     // current view of the map.

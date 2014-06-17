@@ -90,9 +90,8 @@
         // determine the current scale of the map for display on this
         // page.
 
-        $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
-        $map = new MgMap();
-        $map->Open($resourceService, 'Sheboygan');
+        $map = new MgMap($siteConnection);
+        $map->Open('Sheboygan');
 
         $viewCenter = $map->GetViewCenter();
         $viewScale = $map->GetViewScale();

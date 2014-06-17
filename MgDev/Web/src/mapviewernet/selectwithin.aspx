@@ -50,12 +50,11 @@ String inputSel = "";
         site.Open(cred);
         MgFeatureService featureSrvc = site.CreateService(MgServiceType.FeatureService) as MgFeatureService;
         MgRenderingService renderingSrvc = site.CreateService(MgServiceType.RenderingService) as MgRenderingService;
-        MgResourceService resourceSrvc = site.CreateService(MgServiceType.ResourceService) as MgResourceService;
 
         //load the map runtime state
         //
-        MgMap map = new MgMap();
-        map.Open(resourceSrvc, mapName);
+        MgMap map = new MgMap(site);
+        map.Open(mapName);
 
         String [] layersList = layers.Split(',');
         if(layersList.Length > 0)

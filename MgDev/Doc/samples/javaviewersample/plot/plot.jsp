@@ -39,12 +39,8 @@
         MgSiteConnection siteConnection = new MgSiteConnection();
         siteConnection.Open(userInfo);
 
-        // Create an instance of ResourceService and use that to open the
-        // current map instance stored in session state.
-
-        MgResourceService resourceService = (MgResourceService)siteConnection.CreateService(MgServiceType.ResourceService);
-        MgMap map = new MgMap();
-        map.Open(resourceService, "Sheboygan");
+        MgMap map = new MgMap(siteConnection);
+        map.Open("Sheboygan");
 
         // Now create an instance of MappingService and use it to plot the
         // current view of the map.

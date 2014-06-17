@@ -57,6 +57,8 @@ class Validate
         //Get the file extension that will be used for a dump
         $actualExtension = ValidateUtils::GetExtension($mimeType);
 
+        $bAlwaysPass = false;
+        $passReason = "";
         //If we have an ALWAYSPASS parameter defined for the operation then skip the whole validation process
         //This parameter should only be used for clean up operations that are no related with the tests
         if ($this->vm->Execute("Select ParamValue from Params where ParamName=\"ALWAYSPASS\" and ParamSet=$paramSet")!=SQLITE_ROW)
@@ -170,6 +172,11 @@ class Validate
                 }
             }
         }
+        else
+        {
+            $bAlwaysPass = true;
+            $passReason = $this->vm->GetString("ParamValue");
+        }
 
         if ($_POST['output']=="html")
         {
@@ -181,7 +188,9 @@ class Validate
             }
             else
             {
-                HtmlPrinter::AddResultRow($operation, $outcome, $paramSet);
+                HtmlPrinter::AddResultRow($operation, $outcome, $paramSet, $resultData, $expectedResult);
+                //$str = sprintf("\n****ACTUAL RESULT****\n%s\n****EXPECTED RESULT****\n%s\n********\n\n\n", $resultData, $expectedResult);
+                //fwrite($file, $str);
             }
         }
         else
@@ -192,6 +201,21 @@ class Validate
                 $str = sprintf("\n****ACTUAL RESULT****\n%s\n****EXPECTED RESULT****\n%s\n********\n\n\n", $resultData, $expectedResult);
                 echo $str;
                 fwrite($file, $str);
+            }
+            else
+            {
+                /*
+                if ($bAlwaysPass)
+                {
+                    echo "Test (ParamSet: $paramSet) set to ALWAYSPASS: ".$passReason;
+                    if (php_sapi_name() == 'cli')
+                        echo "\n";
+                    else
+                        echo "<br/>";
+                }
+                */
+                //$str = sprintf("\n****ACTUAL RESULT****\n%s\n****EXPECTED RESULT****\n%s\n********\n\n\n", $resultData, $expectedResult);
+                //fwrite($file, $str);
             }
         }
         return $exitStatus;
@@ -215,6 +239,8 @@ class Validate
         //Get the extension for the dump file based on the content type of the result
         $actualExtension = ValidateUtils::GetExtension($contentType);
 
+        $bAlwaysPass = false;
+        $passReason = "";
         //If ALWAYSPASS parameter is defined the the whole validation is skipped.
         //This parameter should only be used for clean up operations that are no related to the test
         if ($this->vm->Execute("Select ParamValue from Params where ParamName=\"ALWAYSPASS\" and ParamSet=$paramSet")!=SQLITE_ROW)
@@ -348,6 +374,11 @@ class Validate
                 }
             }
         }
+        else
+        {
+            $bAlwaysPass = true;
+            $passReason = $this->vm->GetString("ParamValue");
+        }
 
         if ($_POST['output']=="html")
         {
@@ -360,6 +391,8 @@ class Validate
             else
             {
                 HtmlPrinter::AddResultRow($operation, $outcome, $paramSet);
+                //$str = sprintf("\n****ACTUAL RESULT****\n%s\n****EXPECTED RESULT****\n%s\n********\n\n\n", $resultData, $expectedResult);
+                //fwrite($file, $str);
             }
         }
         else
@@ -370,6 +403,21 @@ class Validate
                 $str = sprintf("\n****ACTUAL RESULT****\n%s\n****EXPECTED RESULT****\n%s\n********\n\n\n", $resultData, $expectedResult);
                 echo $str;
                 fwrite($file, $str);
+            }
+            else
+            {
+                /*
+                if ($bAlwaysPass)
+                {
+                    echo "Test (ParamSet: $paramSet) set to ALWAYSPASS: ".$passReason;
+                    if (php_sapi_name() == 'cli')
+                        echo "\n";
+                    else
+                        echo "<br/>";
+                }
+                */
+                //$str = sprintf("\n****ACTUAL RESULT****\n%s\n****EXPECTED RESULT****\n%s\n********\n\n\n", $resultData, $expectedResult);
+                //fwrite($file, $str);
             }
         }
         return $exitStatus;

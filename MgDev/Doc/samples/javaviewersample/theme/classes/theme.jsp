@@ -33,91 +33,83 @@
 <%!
     public class Theme
     {
-    	Map<String, String> args = null;
-    	private MgSiteConnection site = null;
-    	private String[] distNameArray = null;
-    	private String[] distValueArray = null;
-    	
-    	public Theme(Map<String, String> incomingArgs) throws MgException
-    	{
-    	    this.args = incomingArgs;
-    	    this.site = new MgSiteConnection();
-    	    this.site.Open(new MgUserInformation(this.args.get("SESSION")));
-    	    this.distNameArray = new String[] {"Individual", "Equal", "Standard Deviation", "Quantile", "Jenks (Natural Breaks)"};
-    	    this.distValueArray = new String[] {"INDIV_DIST", "EQUAL_DIST", "STDEV_DIST", "QUANT_DIST", "JENK_DIST"};
-    	}
-    	
-    	public String getNameArray()
-	{
-	    JSONArray jsonArray = new JSONArray();
-	    for(int i=0;i<5;i++)
-	    {
-		jsonArray.put(distNameArray[i]);
-	    }
-	    return jsonArray.toString();
-	}
-
-	public String getValueArray()
-	{
-	    JSONArray jsonArray = new JSONArray();
-	    for(int i=0;i<5;i++)
-	    {
-		jsonArray.put(distValueArray[i]);
-	    }
-	    return jsonArray.toString();
-	}
+        Map<String, String> args = null;
+        private MgSiteConnection site = null;
+        private String[] distNameArray = null;
+        private String[] distValueArray = null;
         
-        public ArrayList<String> GetMapLayerNames() throws MgException
-	{
-	    MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
-	    MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
-	    
-	    MgMap map = new MgMap();
-	    map.Open(resourceService, this.args.get("MAPNAME"));
-	    MgLayerCollection layers = map.GetLayers();
-	    ArrayList<String> layerNames = new ArrayList<String>();
-
-	    for(int i=0; i<layers.GetCount(); i++)
-	    {
-		MgLayer layer = (MgLayer) layers.GetItem(i);
-		if(!layer.GetName().startsWith("_") && !layer.GetFeatureSourceId().toUpperCase().startsWith("SESSION"))
-		{
-		    MgResourceIdentifier resId = new MgResourceIdentifier(layer.GetFeatureSourceId());
-		    String[] schemaClass = layer.GetFeatureClassName().split(":");
-		
-		    MgClassDefinition classDef = featureService.GetClassDefinition(resId, schemaClass[0], schemaClass[1]);
-		    MgPropertyDefinition propDef = classDef.GetProperties().GetItem(layer.GetFeatureGeometryName());
-		    
-		    if(propDef.GetPropertyType() == MgFeaturePropertyType.GeometricProperty)
-		    {
-			MgGeometricPropertyDefinition geomPropDef = (MgGeometricPropertyDefinition) propDef;
-			
-			if(geomPropDef.GetGeometryTypes() == MgFeatureGeometricType.Surface)
-			    layerNames.add(layer.GetLegendLabel());
-		    }
-		}
-	    }
-	    Collections.sort(layerNames);
-
-	    return layerNames;
+        public Theme(Map<String, String> incomingArgs) throws MgException
+        {
+            this.args = incomingArgs;
+            this.site = new MgSiteConnection();
+            this.site.Open(new MgUserInformation(this.args.get("SESSION")));
+            this.distNameArray = new String[] {"Individual", "Equal", "Standard Deviation", "Quantile", "Jenks (Natural Breaks)"};
+            this.distValueArray = new String[] {"INDIV_DIST", "EQUAL_DIST", "STDEV_DIST", "QUANT_DIST", "JENK_DIST"};
         }
         
-	public LayerInfo GetLayerInfo() throws MgException, ParserConfigurationException, IOException, SAXException
+        public String getNameArray()
+        {
+            JSONArray jsonArray = new JSONArray();
+            for(int i=0;i<5;i++)
+            {
+                jsonArray.put(distNameArray[i]);
+            }
+            return jsonArray.toString();
+        }
+
+        public String getValueArray()
+        {
+            JSONArray jsonArray = new JSONArray();
+            for(int i=0;i<5;i++)
+            {
+            jsonArray.put(distValueArray[i]);
+            }
+            return jsonArray.toString();
+        }
+            
+        public ArrayList<String> GetMapLayerNames() throws MgException
+        {
+            MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
+            
+            MgMap map = new MgMap(this.site);
+            map.Open(this.args.get("MAPNAME"));
+            MgLayerCollection layers = map.GetLayers();
+            ArrayList<String> layerNames = new ArrayList<String>();
+
+            for(int i=0; i<layers.GetCount(); i++)
+            {
+                MgLayer layer = (MgLayer) layers.GetItem(i);
+                if(!layer.GetName().startsWith("_") && !layer.GetFeatureSourceId().toUpperCase().startsWith("SESSION"))
+                {
+                    MgClassDefinition classDef = layer.GetClassDefinition();
+                    MgPropertyDefinition propDef = classDef.GetProperties().GetItem(layer.GetFeatureGeometryName());
+                    
+                    if(propDef.GetPropertyType() == MgFeaturePropertyType.GeometricProperty)
+                    {
+                        MgGeometricPropertyDefinition geomPropDef = (MgGeometricPropertyDefinition) propDef;
+                        
+                        if(geomPropDef.GetGeometryTypes() == MgFeatureGeometricType.Surface)
+                            layerNames.add(layer.GetLegendLabel());
+                    }
+                }
+            }
+            Collections.sort(layerNames);
+
+            return layerNames;
+        }
+            
+        public LayerInfo GetLayerInfo() throws MgException, ParserConfigurationException, IOException, SAXException
         {
             ArrayList<Property> properties = new ArrayList<Property>();
             ArrayList<String> scaleRanges = new ArrayList<String>();
             
             MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
             
-            MgMap map = new MgMap();
-            map.Open(resourceService, this.args.get("MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(this.args.get("MAPNAME"));
             MgLayer layer = (MgLayer) map.GetLayers().GetItem(this.args.get("LAYERNAME"));
 
-            MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
-            MgResourceIdentifier resId = new MgResourceIdentifier(layer.GetFeatureSourceId());
-            String[] schemaClass = layer.GetFeatureClassName().split(":");
-
-            MgClassDefinition classDef = featureService.GetClassDefinition(resId, schemaClass[0], schemaClass[1]);
+            MgClassDefinition classDef = layer.GetClassDefinition();
 
             for(int i=0; i<classDef.GetProperties().GetCount(); i++)
             {
@@ -172,14 +164,9 @@
         {
             ArrayList<String> propertyMinMaxCount = new ArrayList<String>();
             
-            MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
-            
-            MgMap map = new MgMap();
-            map.Open(resourceService, this.args.get("MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(this.args.get("MAPNAME"));
             MgLayer layer = (MgLayer) map.GetLayers().GetItem(this.args.get("LAYERNAME"));
-
-            MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
-            MgResourceIdentifier resId = new MgResourceIdentifier(layer.GetFeatureSourceId());
             
             String minValue = null;
             String maxValue = null;
@@ -189,7 +176,7 @@
             MgFeatureQueryOptions queryOptions = new MgFeatureQueryOptions();
             queryOptions.AddFeatureProperty(this.args.get("PROPERTYNAME"));
             
-            MgFeatureReader featureReader = featureService.SelectFeatures(resId, layer.GetFeatureClassName(), queryOptions);
+            MgFeatureReader featureReader = layer.SelectFeatures(queryOptions);
             while(featureReader.ReadNext())
             {
                 String value = this.GetFeaturePropertyValue(featureReader, this.args.get("PROPERTYNAME"));
@@ -256,12 +243,11 @@
         
         public String ApplyTheme() throws MgException, ParserConfigurationException, IOException, SAXException, TransformerConfigurationException, TransformerException
         {
-    	    MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
-    	    MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
+            MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
 
-    	    MgMap map = new MgMap();
-    	    map.Open(resourceService, this.args.get("MAPNAME"));
-    	    MgLayerCollection layers = map.GetLayers();
+            MgMap map = new MgMap(this.site);
+            map.Open(this.args.get("MAPNAME"));
+            MgLayerCollection layers = map.GetLayers();
             MgLayer layer = (MgLayer) layers.GetItem(this.args.get("LAYERNAME"));
             
             MgResourceIdentifier resId = new MgResourceIdentifier(layer.GetFeatureSourceId());
@@ -315,7 +301,7 @@
                 aggregateOptions.AddFeatureProperty(this.args.get("PROPERTYNAME"));
                 aggregateOptions.SelectDistinct(true);
                 
-                MgDataReader dataReader = featureService.SelectAggregate(resId, layer.GetFeatureClassName(), aggregateOptions);
+                MgDataReader dataReader = layer.SelectAggregate(aggregateOptions);
                 while(dataReader.ReadNext())
                 {
                     value = this.GetFeaturePropertyValue(dataReader, this.args.get("PROPERTYNAME"));
@@ -349,7 +335,7 @@
                 aggregateOptions.AddComputedProperty("THEME_VALUE",
                     this.args.get("DISTRO") + "(\"" + this.args.get("PROPERTYNAME") + "\"," + this.args.get("NUMRULES") + "," + this.args.get("MINVALUE") + "," + this.args.get("MAXVALUE") + ")");
                 
-                MgDataReader dataReader = featureService.SelectAggregate(resId, layer.GetFeatureClassName(), aggregateOptions);
+                MgDataReader dataReader = layer.SelectAggregate(aggregateOptions);
                 while(dataReader.ReadNext())
                 {
                     value = this.GetFeaturePropertyValue(dataReader, "THEME_VALUE");
@@ -377,7 +363,7 @@
 
                     areaNode = doc.importNode(areaDoc.getDocumentElement(), true);
                     areaTypeStyle.appendChild(areaNode);
-		                        
+                                
                     portion = portion + increment;
                 }
             }
@@ -409,7 +395,7 @@
             newLayer.SetSelectable(layer.GetSelectable());
             layers.Insert(layers.IndexOf(layer), newLayer);
             
-            map.Save(resourceService);
+            map.Save();
 
             return uniqueName;
         }

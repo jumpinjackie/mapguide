@@ -77,7 +77,7 @@ popd
 :start_php_webserver
 if "%START_WEBSERVER%" == "1" (
     echo [test]: Starting PHP web server. Waiting %MGSERVER_WAIT%s
-    start php -n -d display_errors=Off -d upload_max_filesize=20M -d extension_dir="%PHP_EXT_DIR%" -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -d extension=php_SQLitePhpApi.dll -S %SERVER_ADDR%:%SERVER_PORT% -t %CD%\UnitTest\WebTier\MapAgent\MapAgentForms %CD%\UnitTest\WebTier\Php\MapAgentShim\index.php
+    start php -n -d display_errors=Off -d upload_max_filesize=20M -d extension_dir="%PHP_EXT_DIR%" -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -S %SERVER_ADDR%:%SERVER_PORT% -t %CD%\UnitTest\WebTier\MapAgent\MapAgentForms %CD%\UnitTest\WebTier\Php\MapAgentShim\index.php
     ping -n %MGSERVER_WAIT% 127.0.0.1 > NUL
 )
 :test_php
@@ -98,7 +98,7 @@ if "%RUN_PHP_TESTS%" == "1" (
     if exist ResourceService\ResourceServiceTest.db del /F ResourceService\ResourceServiceTest.db
     popd
     pushd UnitTest\WebTier\Php
-    php.exe -n -d display_errors=Off -d extension_dir="%PHP_EXT_DIR%" -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -d extension=php_SQLitePhpApi.dll RunTests.php
+    php.exe -n -d display_errors=Off -d extension_dir="%PHP_EXT_DIR%" -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -d extension=php_pdo_sqlite.dll RunTests.php
     popd
 )
 :test_dotnet

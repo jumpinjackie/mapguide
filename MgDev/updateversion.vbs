@@ -247,6 +247,7 @@ Sub FixRcFiles (oVersion)
   "/Common/PlatformBase/PlatformBase.rc", _
   "/Common/Renderers/Renderers.rc", _
   "/Common/Stylization/Stylization.rc", _
+  "/Desktop/DesktopUnmanagedApi/JavaApiEx/JavaApiEx.rc", _
   "/Server/src/Common/Base/ServerBase.rc", _
   "/Server/src/Common/Cache/ServerCache.rc", _
   "/Server/src/Common/Manager/ServerManager.rc", _
@@ -259,6 +260,7 @@ Sub FixRcFiles (oVersion)
   "/Server/src/Services/Feature/ServerFeatureService.rc", _
   "/Server/src/Services/Kml/ServerKmlService.rc", _
   "/Server/src/Services/Mapping/ServerMappingService.rc", _
+  "/Server/src/Services/Profiling/ServerProfilingService.rc", _
   "/Server/src/Services/Rendering/ServerRenderingService.rc", _
   "/Server/src/Services/Resource/ServerResourceService.rc", _
   "/Server/src/Services/ServerAdmin/ServerAdminService.rc", _
@@ -276,6 +278,7 @@ Sub FixRcFiles (oVersion)
   "/Web/src/HttpHandler/HttpHandler.rc", _
   "/Web/src/IsapiAgent/IsapiAgent.rc", _
   "/Web/src/JavaApi/JavaApi.rc", _
+  "/Web/src/JavaApiEx/JavaApiEx.rc", _
   "/Web/src/PhpApi/PhpApi.rc", _
   "/Web/src/WebApp/WebApp.rc" _
   )

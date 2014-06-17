@@ -101,7 +101,8 @@ function CreateAddressMarkerLayer($resourceService, $addressMarkerDataResId, $se
     // modify it's content to reference the temporary
     // feature source.
 
-    $doc = DOMDocument::load(GetXmlPath());
+    $doc = new DOMDocument();
+    $doc->load(GetXmlPath());
     $featureSourceNode = $doc->getElementsByTagName('ResourceId')->item(0);
     $featureSourceNode->nodeValue = $addressMarkerDataResId->ToString();
 

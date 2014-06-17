@@ -103,10 +103,10 @@ int pointBufferSize;
 
             MgResourceService resourceSrvc = (MgResourceService)site.CreateService(MgServiceType.ResourceService);
 
-            MgMap map = new MgMap();
+            MgMap map = new MgMap(site);
             MgResourceIdentifier resId = new MgResourceIdentifier(mapDefinition);
             String mapName = resId.GetName();
-            map.Create(resourceSrvc, resId, mapName);
+            map.Create(resId, mapName);
 
             //create an empty selection object and store it in the session repository
             MgSelection sel = new MgSelection(map);

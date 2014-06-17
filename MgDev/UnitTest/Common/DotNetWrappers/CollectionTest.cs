@@ -448,15 +448,16 @@ namespace OSGeo.MapGuide
         [Test]
         public void MapCollection()
         {
+            MgSiteConnection conn = new MgSiteConnection();
             string coordsys = "GEOGCS[\"LL84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]],AXIS[\"Lat\",NORTH],AXIS[\"Long\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]";
             MgEnvelope env = new MgEnvelope(10,10,20,20);
-            MgMap map1 = new MgMap();
+            MgMap map1 = new MgMap(conn);
             map1.Create(coordsys, env, "map1");
-            MgMap map2 = new MgMap();
+            MgMap map2 = new MgMap(conn);
             map2.Create(coordsys, env, "map2");
-            MgMap map3 = new MgMap();
+            MgMap map3 = new MgMap(conn);
             map3.Create(coordsys, env, "map3");
-            MgMap map4 = new MgMap();
+            MgMap map4 = new MgMap(conn);
             map4.Create(coordsys, env, "map4");
 
             MgMapCollection coll = new MgMapCollection();
@@ -481,15 +482,16 @@ namespace OSGeo.MapGuide
         [Test]
         public void MapPlotCollection()
         {
+            MgSiteConnection conn = new MgSiteConnection();
             string coordsys = "GEOGCS[\"LL84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]],AXIS[\"Lat\",NORTH],AXIS[\"Long\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]";
             MgEnvelope env = new MgEnvelope(10,10,20,20);
-            MgMap map1 = new MgMap();
+            MgMap map1 = new MgMap(conn);
             map1.Create(coordsys, env, "map1");
 
-            MgMap map2 = new MgMap();
+            MgMap map2 = new MgMap(conn);
             map2.Create(coordsys, env, "map2");
 
-            MgMap map3 = new MgMap();
+            MgMap map3 = new MgMap(conn);
             map3.Create(coordsys, env, "map3");
 
             MgPlotSpecification spec = new MgPlotSpecification((float)8.0, (float)11.0, "in", (float)0.0, (float)0.0, (float)5.0, (float)5.0);

@@ -43,15 +43,13 @@ try
 
   // Create the necessary services.
 
-  $resourceService = $siteConnection->
-    CreateService(MgServiceType::ResourceService);
   $renderingService = $siteConnection->
     CreateService(MgServiceType::RenderingService);
 
   // Open the map and get its SRS
 
-  $map = new MgMap();
-  $map->Open($resourceService, $mapName);
+  $map = new MgMap($siteConnection);
+  $map->Open($mapName);
   $srsWkt = $map->GetMapSRS();
   $coordinateSystemFactory = new MgCoordinateSystemFactory();
   $srs = $coordinateSystemFactory->Create($srsWkt);

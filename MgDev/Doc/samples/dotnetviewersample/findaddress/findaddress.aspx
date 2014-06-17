@@ -85,8 +85,8 @@ try
         MgResourceService resourceService = (MgResourceService)siteConnection.CreateService(MgServiceType.ResourceService);
         MgFeatureService featureService = (MgFeatureService)siteConnection.CreateService(MgServiceType.FeatureService);
 
-        MgMap map = new MgMap();
-        map.Open(resourceService, "Sheboygan");
+        MgMap map = new MgMap(siteConnection);
+        map.Open("Sheboygan");
 
         // Check the map for the AddressMarker layer. If it does not
         // exist then create a feature source to store address results
@@ -129,7 +129,7 @@ try
         addressLayer.SetVisible(true);
         addressLayer.ForceRefresh();
 
-        map.Save(resourceService);
+        map.Save();
 
         success = true;
     }

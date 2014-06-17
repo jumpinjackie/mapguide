@@ -44,12 +44,10 @@ try
   // If any parcels have been selected, recenter the image on the first selected parcel.
   if ($xmlSelection != '')
   {
-    $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
-    $featureService = $siteConnection->CreateService(MgServiceType::FeatureService);
     $queryOptions = new MgFeatureQueryOptions();
 
-    $map = new MgMap();
-    $map->Open($resourceService, $mapName);
+    $map = new MgMap($siteConnection);
+    $map->Open($mapName);
 
     $selection = new MgSelection($map, $xmlSelection);
     $layers = $selection->GetLayers();
@@ -65,21 +63,7 @@ try
         if ($layer && $layer->GetName() == 'Parcels')
         {
 
-          // Create a filter containing the IDs of the selected features on this layer
-
-          $layerClassName = $layer->GetFeatureClassName();
-          $selectionString = $selection->GenerateFilter($layer, $layerClassName);
-
-          // Get the feature resource for the selected layer
-
-          $layerFeatureId = $layer->GetFeatureSourceId();
-          $layerFeatureResource = new MgResourceIdentifier($layerFeatureId);
-
-          // Apply the filter to the feature resource for the selected layer. This returns
-          // an MgFeatureReader of all the selected features.
-
-          $queryOptions->SetFilter($selectionString);
-          $featureReader = $featureService->SelectFeatures($layerFeatureResource, $layerClassName, $queryOptions);
+          $featureReader = $selection->GetSelectedFeatures($layer, $layer->GetFeatureClassName(), false);
 
           // Create the report details using the first selected parcel. Position the image so the
           // centroid of the selected parcel is in the center of the map.

@@ -52,8 +52,8 @@ bool queryInfo = false;
 
         //load the map runtime state
         //
-        MgMap map = new MgMap();
-        map.Open(resourceSrvc, mapName);
+        MgMap map = new MgMap(site);
+        map.Open(mapName);
 
         // Create the selection set and save it
         MgSelection sel = new MgSelection(map);

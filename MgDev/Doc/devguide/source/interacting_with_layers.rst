@@ -285,9 +285,6 @@ map for the changes to take effect.
 Example
 """""""
 
-.. todo::
-    Update code samples to not use MgMap() ctor. That is deprecated.
-
 The following example toggles the label of the Roads layer between Roads and
 Streets.
 
@@ -301,10 +298,8 @@ Streets.
     $userInfo = new MgUserInformation($mgSessionId);
     $siteConnection = new MgSiteConnection();
     $siteConnection->Open($userInfo);
-    $resourceService =
-    $siteConnection->CreateService(MgServiceType::ResourceService);
-    $map = new MgMap();
-    $map->Open($resourceService, $mgMapName);
+    $map = new MgMap($siteConnection);
+    $map->Open($mgMapName);
     $layers = $map->GetLayers();
     $roadLayer = $layers->GetItem('Roads');
     $roadLabel = $roadLayer->GetLegendLabel();
@@ -316,7 +311,7 @@ Streets.
     // You must save the updated map or the
     // changes will not be applied
     // Also be sure to refresh the map on page load.
-    $map->Save($resourceService);
+    $map->Save();
     
 **.net (C#)**
 
@@ -328,9 +323,8 @@ Streets.
     MgUserInformation userInfo = new MgUserInformation(mgSessionId);
     MgSiteConnection siteConnection = new MgSiteConnection();
     siteConnection.Open(userInfo);
-    MgResourceService resourceService = (MgResourceService)siteConnection.CreateService(MgServiceType.ResourceService);
-    MgMap map = new MgMap();
-    map.Open(resourceService, mgMapName);
+    MgMap map = new MgMap(siteConnection);
+    map.Open(mgMapName);
     MgLayerCollection layers = map.GetLayers();
     MgLayer roadLayer = layers.GetItem("Roads");
     String roadLabel = roadLayer.GetLegendLabel();
@@ -341,7 +335,7 @@ Streets.
     // You must save the updated map or the
     // changes will not be applied
     // Also be sure to refresh the map on page load.
-    map.Save(resourceService);
+    map.Save();
 
 **Java**
     
@@ -353,9 +347,8 @@ Streets.
     MgUserInformation userInfo = new MgUserInformation(mgSessionId);
     MgSiteConnection siteConnection = new MgSiteConnection();
     siteConnection.Open(userInfo);
-    MgResourceService resourceService = (MgResourceService)siteConnection.CreateService(MgServiceType.ResourceService);
-    MgMap map = new MgMap();
-    map.Open(resourceService, mgMapName);
+    MgMap map = new MgMap(siteConnection);
+    map.Open(mgMapName);
     MgLayerCollection layers = map.GetLayers();
     MgLayer roadLayer = layers.GetItem("Roads");
     String roadLabel = roadLayer.GetLegendLabel();
@@ -366,7 +359,6 @@ Streets.
     // You must save the updated map or the
     // changes will not be applied
     // Also be sure to refresh the map on page load.
-    map.Save(resourceService);
 
 .. index::
     single: Layers; Changing Visibility

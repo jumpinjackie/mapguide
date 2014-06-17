@@ -110,11 +110,10 @@ BufferedImage GenerateMap(Size<Integer> size) throws MgException, IOException
     MgUserInformation userInfo = new MgUserInformation(sessionId);
     MgSiteConnection siteConnection = new MgSiteConnection();
     siteConnection.Open(userInfo);
-    MgResourceService resourceService = (MgResourceService) siteConnection.CreateService(MgServiceType.ResourceService);
     MgRenderingService renderingService = (MgRenderingService) siteConnection.CreateService(MgServiceType.RenderingService);
 
-    MgMap map = new MgMap();
-    map.Open(resourceService, mapName);
+    MgMap map = new MgMap(siteConnection);
+    map.Open(mapName);
 
     MgSelection selection = new MgSelection(map);
 

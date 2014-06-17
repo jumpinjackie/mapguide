@@ -53,20 +53,14 @@
 
         $featureService->UpdateFeatures($addressMarkerDataResId, $commands, false);
 
-        // Create a ReserviceService object and use it to open the Map
-        // object from the sessions repository. Use the Map object to hide
-        // the "ParcelMarker" layer and then save the updated Map back to
-        // the session.
-
-        $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
-        $map = new MgMap();
-        $map->Open($resourceService, 'Sheboygan');
+        $map = new MgMap($siteConnection);
+        $map->Open('Sheboygan');
 
         $layer = GetLayerByName($map, 'AddressMarker');
         $layer->SetVisible(false);
         $layer->ForceRefresh();
 
-        $map->Save($resourceService);
+        $map->Save();
     }
     catch (MgException $e)
     {

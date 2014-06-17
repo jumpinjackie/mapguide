@@ -67,9 +67,8 @@
         
         public ArrayList<String> GetMapLayerNames() throws MgException
         {
-            MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
-            MgMap map = new MgMap();
-            map.Open(resourceService, this.args.get("MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(this.args.get("MAPNAME"));
             MgLayerCollection layers = map.GetLayers();
             ArrayList<String> layerNames = new ArrayList<String>();
 
@@ -90,16 +89,11 @@
         public ArrayList<Property> GetLayerProperties() throws MgException
         {
             ArrayList<Property> properties = new ArrayList<Property>();
-            MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
-            MgMap map = new MgMap();
-            map.Open(resourceService, this.args.get("MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(this.args.get("MAPNAME"));
             MgLayer layer = (MgLayer) map.GetLayers().GetItem(this.args.get("LAYERNAME"));
 
-            MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
-            MgResourceIdentifier resId = new MgResourceIdentifier(layer.GetFeatureSourceId());
-            String[] schemaClass = layer.GetFeatureClassName().split(":");
-
-            MgClassDefinition classDef = featureService.GetClassDefinition(resId, schemaClass[0], schemaClass[1]);
+            MgClassDefinition classDef = layer.GetClassDefinition();
 
             for(int i=0; i<classDef.GetProperties().GetCount(); i++)
             {
@@ -121,9 +115,8 @@
         public boolean ToggleSpatialFilter() throws MgException
         {
             boolean result = true;
-            MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
-            MgMap map = new MgMap();
-            map.Open(resourceService, this.args.get("MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(this.args.get("MAPNAME"));
 
             MgLayerCollection layers = map.GetLayers();
             if(layers.Contains("_QuerySpatialFilter"))
@@ -134,7 +127,7 @@
                 else
                     layer.SetVisible(false);
 
-                map.Save(resourceService);
+                map.Save();
             }
 
             return result;
@@ -150,8 +143,8 @@
 
             MgFeatureCommandCollection updateCommands = new MgFeatureCommandCollection();
 
-            MgMap map = new MgMap();
-            map.Open(resourceService, this.args.get("MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(this.args.get("MAPNAME"));
 
             MgLayer layer = null;
             MgLayerCollection layers = map.GetLayers();
@@ -200,7 +193,7 @@
             // Make the layer visible
 
             layer.SetVisible(true);
-            map.Save(resourceService);
+            map.Save();
 
             // Add the geometry to the filter feature source
 
@@ -221,21 +214,18 @@
         public ArrayList<Feature> Execute() throws MgException
         {
             ArrayList<Feature> result = new ArrayList<Feature>();
-            MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
 
-            MgMap map = new MgMap();
-            map.Open(resourceService, this.args.get("MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(this.args.get("MAPNAME"));
             MgLayer layer = (MgLayer) map.GetLayers().GetItem(this.args.get("LAYERNAME"));
 
             MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
             MgResourceIdentifier resId = new MgResourceIdentifier(layer.GetFeatureSourceId());
-            String featureClass = layer.GetFeatureClassName();
             String featureGeometry = layer.GetFeatureGeometryName();
 
             // Initialize the coordinate system transform
 
-            String[] schemaClass = layer.GetFeatureClassName().split(":");
-            MgClassDefinition classDef = featureService.GetClassDefinition(resId, schemaClass[0], schemaClass[1]);
+            MgClassDefinition classDef = layer.GetClassDefinition();
             MgGeometricPropertyDefinition geomProp = (MgGeometricPropertyDefinition) classDef.GetProperties().GetItem(featureGeometry);
             String spatialContext = geomProp.GetSpatialContextAssociation();
 
@@ -286,7 +276,7 @@
 
             int count = 0;
             MgAgfReaderWriter geometryReaderWriter = new MgAgfReaderWriter();
-            MgFeatureReader featureReader = featureService.SelectFeatures(resId, layer.GetFeatureClassName(), queryOptions);
+            MgFeatureReader featureReader = layer.SelectFeatures(queryOptions);
             String displayValue = null;
             while(featureReader.ReadNext() && (queryMax <= 0 || count < queryMax))
             {
@@ -351,17 +341,13 @@
 
         public String GetSelectionXML() throws MgException, JSONException
         {
-            MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
             MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
 
-            MgMap map = new MgMap();
-            map.Open(resourceService, this.args.get("MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(this.args.get("MAPNAME"));
             MgLayer layer = (MgLayer) map.GetLayers().GetItem(this.args.get("LAYERNAME"));
-            MgResourceIdentifier resId = new MgResourceIdentifier(layer.GetFeatureSourceId());
             String featureClass = layer.GetFeatureClassName();
-
-            String[] schemaClass = layer.GetFeatureClassName().split(":");
-            MgClassDefinition classDef = featureService.GetClassDefinition(resId, schemaClass[0], schemaClass[1]);
+            MgClassDefinition classDef = layer.GetClassDefinition();
 
             MgPropertyCollection properties = new MgPropertyCollection();
             MgDataPropertyDefinition dataPropDef = null;

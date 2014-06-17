@@ -19,10 +19,10 @@
 // -----------------------------------------------------------------------------------
 // Use the following for Windows installations
 // -----------------------------------------------------------------------------------
-$webExtensionsDirectory = 'C:\Program Files\OSGeo\MapGuide\Web\\';
-  
-$MapGuideServerDirectory = 'C:\Program Files\OSGeo\MapGuide\Server\\';
-  
+//$webExtensionsDirectory = 'C:\Program Files\OSGeo\MapGuide\Web\\';
+$webExtensionsDirectory = 'D:\mg-trunk\MgDev\Release\Web\\';
+//$MapGuideServerDirectory = 'C:\Program Files\OSGeo\MapGuide\Server\\';
+$MapGuideServerDirectory = 'D:\mg-trunk\MgDev\Release\Server\\';
 $viewerFilesDirectory = $webExtensionsDirectory . 'www\viewerfiles\\';
   
 $schemaDirectory = $MapGuideServerDirectory . 'Schema\\';

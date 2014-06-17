@@ -61,9 +61,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         
         public ArrayList GetMapLayerNames()
         {
-            MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
-            MgMap map = new MgMap();
-            map.Open(resourceService, GetParameter(this.args, "MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(GetParameter(this.args, "MAPNAME"));
             MgLayerCollection layers = map.GetLayers();
             ArrayList layerNames = new ArrayList();
 
@@ -86,16 +85,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         public ArrayList GetLayerProperties()
         {
             ArrayList properties = new ArrayList();
-            MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
-            MgMap map = new MgMap();
-            map.Open(resourceService, GetParameter(this.args, "MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(GetParameter(this.args, "MAPNAME"));
             MgLayer layer = (MgLayer) map.GetLayers().GetItem(GetParameter(this.args, "LAYERNAME"));
 
-            MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
-            MgResourceIdentifier resId = new MgResourceIdentifier(layer.GetFeatureSourceId());
-            String[] schemaClass = layer.GetFeatureClassName().Split(new Char[]{':'});
-
-            MgClassDefinition classDef = featureService.GetClassDefinition(resId, schemaClass[0], schemaClass[1]);
+            MgClassDefinition classDef = layer.GetClassDefinition();
 
             for(int i=0; i<classDef.GetProperties().GetCount(); i++)
             {
@@ -117,9 +111,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         public bool ToggleSpatialFilter()
         {
             bool result = true;
-            MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
-            MgMap map = new MgMap();
-            map.Open(resourceService, GetParameter(this.args, "MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(GetParameter(this.args, "MAPNAME"));
 
             MgLayerCollection layers = map.GetLayers();
             if(layers.Contains("_QuerySpatialFilter"))
@@ -130,7 +123,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                 else
                     layer.SetVisible(false);
 
-                map.Save(resourceService);
+                map.Save();
             }
 
             return result;
@@ -146,8 +139,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
             MgFeatureCommandCollection updateCommands = new MgFeatureCommandCollection();
 
-            MgMap map = new MgMap();
-            map.Open(resourceService, GetParameter(this.args, "MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(GetParameter(this.args, "MAPNAME"));
 
             MgLayer layer = null;
             MgLayerCollection layers = map.GetLayers();
@@ -207,21 +200,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         public ArrayList Execute()
         {
             ArrayList result = new ArrayList();
-            MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
 
-            MgMap map = new MgMap();
-            map.Open(resourceService, GetParameter(this.args, "MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(GetParameter(this.args, "MAPNAME"));
             MgLayer layer = (MgLayer) map.GetLayers().GetItem(GetParameter(this.args, "LAYERNAME"));
 
             MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
             MgResourceIdentifier resId = new MgResourceIdentifier(layer.GetFeatureSourceId());
-            String featureClass = layer.GetFeatureClassName();
             String featureGeometry = layer.GetFeatureGeometryName();
 
             // Initialize the coordinate system transform
 
             String[] schemaClass = layer.GetFeatureClassName().Split(new Char[]{':'});
-            MgClassDefinition classDef = featureService.GetClassDefinition(resId, schemaClass[0], schemaClass[1]);
+            MgClassDefinition classDef = layer.GetClassDefinition();
             MgGeometricPropertyDefinition geomProp = (MgGeometricPropertyDefinition) classDef.GetProperties().GetItem(featureGeometry);
             String spatialContext = geomProp.GetSpatialContextAssociation();
 
@@ -271,7 +262,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
             int count = 0;
             MgAgfReaderWriter geometryReaderWriter = new MgAgfReaderWriter();
-            MgFeatureReader featureReader = featureService.SelectFeatures(resId, layer.GetFeatureClassName(), queryOptions);
+            MgFeatureReader featureReader = layer.SelectFeatures(queryOptions);
             while(featureReader.ReadNext() && (queryMax <= 0 || count < queryMax))
             {
                 MgByteReader byteReader = featureReader.GetGeometry(featureGeometry);
@@ -289,17 +280,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         
         public String GetSelectionXML()
         {
-            MgResourceService resourceService = (MgResourceService)this.site.CreateService(MgServiceType.ResourceService);
-            MgFeatureService featureService = (MgFeatureService)this.site.CreateService(MgServiceType.FeatureService);
-
-            MgMap map = new MgMap();
-            map.Open(resourceService, GetParameter(this.args, "MAPNAME"));
+            MgMap map = new MgMap(this.site);
+            map.Open(GetParameter(this.args, "MAPNAME"));
             MgLayer layer = (MgLayer) map.GetLayers().GetItem(GetParameter(this.args, "LAYERNAME"));
-            MgResourceIdentifier resId = new MgResourceIdentifier(layer.GetFeatureSourceId());
             String featureClass = layer.GetFeatureClassName();
 
-            String[] schemaClass = layer.GetFeatureClassName().Split(new Char[]{':'});
-            MgClassDefinition classDef = featureService.GetClassDefinition(resId, schemaClass[0], schemaClass[1]);
+            MgClassDefinition classDef = layer.GetClassDefinition();
 
             MgPropertyCollection properties = new MgPropertyCollection();
             MgDataPropertyDefinition dataPropDef = null;

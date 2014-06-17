@@ -44,9 +44,7 @@
 <?php
     include '../utilityfunctions.php';
     include 'findaddressfunctions.php';
-
-    // Include the xmlrpc library.
-    require_once('kd_xmlrpc.php');
+    require_once '../vendor/autoload.php';
 
     $mgSessionId = ($_SERVER['REQUEST_METHOD'] == "POST")? $_POST['SESSION']: $_GET['SESSION'];
     $success = false;
@@ -66,8 +64,10 @@
         $address = $_GET['address'] . ', Sheboygan, WI';
 
         // Make the request to geocoder.us passing the address.
-        list($success, $response) = XMLRPC_request('rpc.geocoder.us', '/service/xmlrpc', 'geocode', array(XMLRPC_prepare($address)));
-
+        $url = 'http://rpc.geocoder.us/service/xmlrpc';
+        $client = new fXmlRpc\Client($url);
+        $response = $client->call('geocode', array($address, true));
+        
         // Stuff the response into a new variable:
         $nested_array = $response;
 
@@ -81,13 +81,13 @@
         // we can't use this to check for errors. Instead, we'll check the values in the
         // array and deem success or failure based on that.
 
-        if (array_key_exists('lat', $geoarray) && array_key_exists('long', $geoarray))
+        if (NULL != $geoarray && array_key_exists('lat', $geoarray) && array_key_exists('long', $geoarray))
         {
             // The geocode successfully returned a location.
 
             $lat = $geoarray['lat'];
             $long = $geoarray['long'];
-
+            
             // Build an address1 and address2 variables from the result.
             $address1 = $geoarray['number'] . ' '
                 . (strlen($geoarray['prefix']) > 0 ? $geoarray['prefix'] . ' ' : '')
@@ -98,7 +98,7 @@
             $address2 = $geoarray['city']
                 . ', ' . $geoarray['state']
                 . '  ' . $geoarray['zip'];
-
+            
             echo '<tr><td><img src="../images/pushpinblue.jpg">';
             echo '<a href="gotopoint.php?X=' . $long . '&Y=' . $lat . '&Scale=2000" target="scriptFrame"> ' . $address1 . '</a></td></tr>';
             echo '<tr><td>' . $address2 . '</td></tr>';
@@ -113,8 +113,8 @@
             $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
             $featureService = $siteConnection->CreateService(MgServiceType::FeatureService);
 
-            $map = new MgMap();
-            $map->Open($resourceService, 'Sheboygan');
+            $map = new MgMap($siteConnection);
+            $map->Open('Sheboygan');
 
             // Check the map for the AddressMarker layer. If it does not
             // exist then create a feature source to store address results
@@ -157,7 +157,7 @@
             $addressLayer->SetVisible(true);
             $addressLayer->ForceRefresh();
 
-            $map->Save($resourceService);
+            $map->Save();
 
             $success = true;
         }

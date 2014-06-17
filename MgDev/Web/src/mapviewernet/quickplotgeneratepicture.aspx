@@ -109,11 +109,10 @@ void GenerateMap(Size size)
     MgUserInformation userInfo = new MgUserInformation(sessionID);
     MgSiteConnection siteConnection = new MgSiteConnection();
     siteConnection.Open(userInfo);
-    MgResourceService resourceService = siteConnection.CreateService(MgServiceType.ResourceService) as MgResourceService;
     MgRenderingService renderingService = siteConnection.CreateService(MgServiceType.RenderingService) as MgRenderingService;
 
-    MgMap map = new MgMap();
-    map.Open(resourceService, mapName);
+    MgMap map = new MgMap(siteConnection);
+    map.Open(mapName);
 
     MgSelection selection = new MgSelection(map);
 

@@ -23,7 +23,7 @@ require_once("Utils.php");
 
 class HtmlPrinter
 {
-    public function PrintHtmlHeader($title)
+    public static function PrintHtmlHeader($title)
     {
         print ("<html>\n");
         print ("<head>\n");
@@ -33,7 +33,7 @@ class HtmlPrinter
         print("<h2>$title</h2>\n");
     }
 
-    public function PrintTestCases($testSuite, $dumpFilePath, $testType)
+    public static function PrintTestCases($testSuite, $dumpFilePath, $testType)
     {
         try
         {
@@ -72,21 +72,21 @@ class HtmlPrinter
         self::printTableEnd();
     }
 
-    public function PrintTestTableHeader($caption="", $c1="", $c2="", $c3="")
+    public static function PrintTestTableHeader($caption="", $c1="", $c2="", $c3="")
     {
         print("<table border=\"1\" cellpadding=\"5\">\n");
         print("<h3><b>$caption</b></h3>");
         print("<tr>\n");
-        printf("<td>&nbsp</td>\n<th>%s</th>\n<th>%s</th><th>%s</th>\n", $c1, $c2, $c3);
+        printf("<td>&nbsp</td>\n<th>%s</th>\n<th>%s</th><th>%s</th><th>&nbsp;</th>\n", $c1, $c2, $c3);
         print("</tr>\n");
     }
 
-    public function printTableEnd()
+    public static function printTableEnd()
     {
         print("</table><br />\n");
     }
 
-    public function PrintSelectTestMode()
+    public static function PrintSelectTestMode()
     {
         print("<h3>Select Test Mode</h3>\n");
         print("<p>\n");
@@ -97,7 +97,7 @@ class HtmlPrinter
         print("</p>\n");
     }
 
-    public function PrintSelectOutput()
+    public static function PrintSelectOutput()
     {
         print("<h3>Select Output</h3>\n");
         print("<p>\n");
@@ -108,25 +108,25 @@ class HtmlPrinter
         print("</p>\n");
     }
 
-    public function PrintHtmlFooter()
+    public static function PrintHtmlFooter()
     {
         print ("</body>\n");
         print ("</html>\n");
     }
 
-    public function PrintFormHeader($target)
+    public static function PrintFormHeader($target)
     {
         print ("<form name=\"input\" action=\"$target\" method=\"POST\" id=\"myform\">\n");
     }
 
-    public function PrintFormFooter($requestType, $action)
+    public static function PrintFormFooter($requestType, $action)
     {
         print("<td><input type=\"hidden\" name=\"requestType\" value=\"$requestType\"></td>\n");
         print ("<input type=\"submit\" value=\"$action\" ID=\"$action\" NAME=\"$action\"> <input type=\"reset\" ID=\"Reset1\" NAME=\"Reset1\">\n");
         print ("</form>\n");
     }
 
-    public function AddResultRow($operation, $outcome, $paramSet, $actualResult="", $expectedResult="")
+    public static function AddResultRow($operation, $outcome, $paramSet, $actualResult="", $expectedResult="")
     {
         $checkBox="<input type=\"checkbox\" name=$paramSet>";
         if ( $outcome=="fail")
@@ -141,16 +141,17 @@ class HtmlPrinter
         print("</tr>");
     }
 
-    public function PrintResultTableHeader($caption="")
+    public static function PrintResultTableHeader($caption="")
     {
         print("<table scroll=\"no\" border=\"1\" cellpadding=\"5\">\n");
         print("<h3><b>$caption</b></h3>");
+        print("<col width=10><col width=20><col width=40><col width=20><col width=180><col width=180><col>");
         print("<tr>\n");
         print("<td>&nbsp</td><th>Param Set</th><th>Operation</th>\n<th>Outcome</th>\n<th>Actual Result</th>\n<th>Expected Result</th>\n");
         print("</tr>\n");
     }
 
-    public function PrintGenerateFormHiddenFields()
+    public static function PrintGenerateFormHiddenFields()
     {
         $output = $_POST['output'];
         $testName = $_POST['testName'];

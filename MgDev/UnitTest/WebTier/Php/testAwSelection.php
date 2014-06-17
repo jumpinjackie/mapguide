@@ -211,8 +211,8 @@ try
     $fsvc->UpdateFeatures($id, $cmdColl, false);
 
     $mapId = new MgResourceIdentifier("Library://TrevorWekel/NewSdf.MapDefinition");
-    $map = new MgMap();
-    $map->Create($rsvc, $mapId, "NewMap");
+    $map = new MgMap($site);
+    $map->Create($mapId, "NewMap");
 
     echo "Building Selection from Add()\n";
     $sel = new MgSelection($map);

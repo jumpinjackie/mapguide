@@ -47,13 +47,9 @@
       MgUserInformation userInfo = new MgUserInformation(sessionId);
       MgSiteConnection siteConnection = new MgSiteConnection();
       siteConnection.Open(userInfo);
-  
-      // Get an instance of the required service(s).
-      
-      MgResourceService resourceService = (MgResourceService) siteConnection.CreateService(MgServiceType.ResourceService);
-  
-      MgMap map = new MgMap();
-      map.Open(resourceService, mapName);
+
+      MgMap map = new MgMap(siteConnection);
+      map.Open(mapName);
 
       MgLayerCollection layers = map.GetLayers(); // Get layer collection
       out.println("<p>Layers, in draw order:</p>");
