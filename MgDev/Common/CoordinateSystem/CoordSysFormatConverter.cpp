@@ -17,7 +17,7 @@
 
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
-#include "csNameMapperSupport.h"
+#include "cs_NameMapperSupport.h"
 #include "CriticalSection.h"
 
 #include "CoordSysWktFailureCache.h"

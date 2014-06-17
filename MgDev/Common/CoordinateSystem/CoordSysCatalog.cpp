@@ -49,7 +49,7 @@
 #include "CoordSysCatalog.h"                //for CCoordinateSystemCatalog
 #include "CoordSysGeodeticTransformation.h" //for CCoordinateSystemGeodeticTransformation
 
-#include "csNameMapper.hpp"                 //for csReleaseNameMapper
+#include "cs_NameMapper.hpp"                 //for csReleaseNameMapper
 #include "cs_map.h"
 
 #ifdef _WIN32
