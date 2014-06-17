@@ -128,28 +128,63 @@ bool FeaturePropRenderer::SupportsHyperlinks()
     return false;
 }
 
+void FeaturePropRenderer::GetGeometryBounds(const LineBuffer* lb, RS_Bounds& bounds)
+{
+    const RS_Bounds& featBounds = lb->bounds();
+    
+    bounds.minx = featBounds.minx;
+    bounds.miny = featBounds.miny;
+    bounds.maxx = featBounds.maxx;
+    bounds.maxy = featBounds.maxy;
+
+    //printf("Current bounds: [%f, %f, %f, %f]\n", bounds.minx, bounds.miny, bounds.maxx, bounds.maxy);
+
+    if (m_currentTransform)
+    {
+        double minx = bounds.minx;
+        double miny = bounds.miny;
+        double maxx = bounds.maxx;
+        double maxy = bounds.maxy;
+
+        m_currentTransform->TransformExtent(minx, miny, maxx, maxy);
+        
+        bounds.minx = minx;
+        bounds.miny = miny;
+        bounds.maxx = maxx;
+        bounds.maxy = maxy;
+
+        //printf("Transformed bounds: [%f, %f, %f, %f]\n", bounds.minx, bounds.miny, bounds.maxx, bounds.maxy);
+    }
+}
+
+void FeaturePropRenderer::SetBBOXProperty(const RS_Bounds& bounds, MgStringProperty* bbox)
+{
+    STRING val;
+    STRING buf;
+    MgUtil::DoubleToString(bounds.minx, buf);
+    val += buf;
+    MgUtil::DoubleToString(bounds.miny, buf);
+    val += L" ";
+    val += buf;
+    MgUtil::DoubleToString(bounds.maxx, buf);
+    val += L" ";
+    val += buf;
+    MgUtil::DoubleToString(bounds.maxy, buf);
+    val += L" ";
+    val += buf;
+    bbox->SetValue(val);
+}
+
 void FeaturePropRenderer::ProcessPolygon(LineBuffer*   lb,
                                          RS_FillStyle& fill)
 {
     if (!m_bIncludeFeatureBBOX)
         return;
 
-    const RS_Bounds& featBounds = lb->bounds();
+    RS_Bounds fbounds(0.0, 0.0, 0.0, 0.0);
+    GetGeometryBounds(lb, fbounds);
     Ptr<MgStringProperty> bbox = dynamic_cast<MgStringProperty*>(m_currentFeature->GetItem(SPECIAL_PROP_BOUNDING_BOX));
-    STRING val;
-    STRING buf;
-    MgUtil::DoubleToString(featBounds.minx, buf);
-    val += buf;
-    MgUtil::DoubleToString(featBounds.miny, buf);
-    val += L" ";
-    val += buf;
-    MgUtil::DoubleToString(featBounds.maxx, buf);
-    val += L" ";
-    val += buf;
-    MgUtil::DoubleToString(featBounds.maxy, buf);
-    val += L" ";
-    val += buf;
-    bbox->SetValue(val);
+    SetBBOXProperty(fbounds, bbox);
 }
 
 void FeaturePropRenderer::ProcessPolyline(LineBuffer*    lb,
@@ -158,22 +193,10 @@ void FeaturePropRenderer::ProcessPolyline(LineBuffer*    lb,
     if (!m_bIncludeFeatureBBOX)
         return;
 
-    const RS_Bounds& featBounds = lb->bounds();
+    RS_Bounds fbounds(0.0, 0.0, 0.0, 0.0);
+    GetGeometryBounds(lb, fbounds);
     Ptr<MgStringProperty> bbox = dynamic_cast<MgStringProperty*>(m_currentFeature->GetItem(SPECIAL_PROP_BOUNDING_BOX));
-    STRING val;
-    STRING buf;
-    MgUtil::DoubleToString(featBounds.minx, buf);
-    val += buf;
-    MgUtil::DoubleToString(featBounds.miny, buf);
-    val += L" ";
-    val += buf;
-    MgUtil::DoubleToString(featBounds.maxx, buf);
-    val += L" ";
-    val += buf;
-    MgUtil::DoubleToString(featBounds.maxy, buf);
-    val += L" ";
-    val += buf;
-    bbox->SetValue(val);
+    SetBBOXProperty(fbounds, bbox);
 }
 
 void FeaturePropRenderer::ProcessMarker(LineBuffer*   lb,
@@ -185,22 +208,10 @@ void FeaturePropRenderer::ProcessMarker(LineBuffer*   lb,
         return;
 
     //Should we inflate this a bit to represent an actual box?
-    const RS_Bounds& featBounds = lb->bounds();
+    RS_Bounds fbounds(0.0, 0.0, 0.0, 0.0);
+    GetGeometryBounds(lb, fbounds);
     Ptr<MgStringProperty> bbox = dynamic_cast<MgStringProperty*>(m_currentFeature->GetItem(SPECIAL_PROP_BOUNDING_BOX));
-    STRING val;
-    STRING buf;
-    MgUtil::DoubleToString(featBounds.minx, buf);
-    val += buf;
-    MgUtil::DoubleToString(featBounds.miny, buf);
-    val += L" ";
-    val += buf;
-    MgUtil::DoubleToString(featBounds.maxx, buf);
-    val += L" ";
-    val += buf;
-    MgUtil::DoubleToString(featBounds.maxy, buf);
-    val += L" ";
-    val += buf;
-    bbox->SetValue(val);
+    SetBBOXProperty(fbounds, bbox);
 }
 
 void FeaturePropRenderer::ProcessPoint(SE_ApplyContext* ctx,
@@ -211,22 +222,10 @@ void FeaturePropRenderer::ProcessPoint(SE_ApplyContext* ctx,
         return;
 
     //Should we inflate this a bit to represent an actual box?
-    const RS_Bounds& featBounds = ctx->geometry->bounds();
+    RS_Bounds fbounds(0.0, 0.0, 0.0, 0.0);
+    GetGeometryBounds(ctx->geometry, fbounds);
     Ptr<MgStringProperty> bbox = dynamic_cast<MgStringProperty*>(m_currentFeature->GetItem(SPECIAL_PROP_BOUNDING_BOX));
-    STRING val;
-    STRING buf;
-    MgUtil::DoubleToString(featBounds.minx, buf);
-    val += buf;
-    MgUtil::DoubleToString(featBounds.miny, buf);
-    val += L" ";
-    val += buf;
-    MgUtil::DoubleToString(featBounds.maxx, buf);
-    val += L" ";
-    val += buf;
-    MgUtil::DoubleToString(featBounds.maxy, buf);
-    val += L" ";
-    val += buf;
-    bbox->SetValue(val);
+    SetBBOXProperty(fbounds, bbox);
 }
 
 void FeaturePropRenderer::ProcessLine(SE_ApplyContext* ctx,
@@ -236,22 +235,10 @@ void FeaturePropRenderer::ProcessLine(SE_ApplyContext* ctx,
         return;
 
     //Should we inflate this a bit to represent an actual box?
-    const RS_Bounds& featBounds = ctx->geometry->bounds();
+    RS_Bounds fbounds(0.0, 0.0, 0.0, 0.0);
+    GetGeometryBounds(ctx->geometry, fbounds);
     Ptr<MgStringProperty> bbox = dynamic_cast<MgStringProperty*>(m_currentFeature->GetItem(SPECIAL_PROP_BOUNDING_BOX));
-    STRING val;
-    STRING buf;
-    MgUtil::DoubleToString(featBounds.minx, buf);
-    val += buf;
-    MgUtil::DoubleToString(featBounds.miny, buf);
-    val += L" ";
-    val += buf;
-    MgUtil::DoubleToString(featBounds.maxx, buf);
-    val += L" ";
-    val += buf;
-    MgUtil::DoubleToString(featBounds.maxy, buf);
-    val += L" ";
-    val += buf;
-    bbox->SetValue(val);
+    SetBBOXProperty(fbounds, bbox);
 }
 
 void FeaturePropRenderer::ProcessArea(SE_ApplyContext* ctx,
@@ -261,20 +248,8 @@ void FeaturePropRenderer::ProcessArea(SE_ApplyContext* ctx,
         return;
 
     //Should we inflate this a bit to represent an actual box?
-    const RS_Bounds& featBounds = ctx->geometry->bounds();
+    RS_Bounds fbounds(0.0, 0.0, 0.0, 0.0);
+    GetGeometryBounds(ctx->geometry, fbounds);
     Ptr<MgStringProperty> bbox = dynamic_cast<MgStringProperty*>(m_currentFeature->GetItem(SPECIAL_PROP_BOUNDING_BOX));
-    STRING val;
-    STRING buf;
-    MgUtil::DoubleToString(featBounds.minx, buf);
-    val += buf;
-    MgUtil::DoubleToString(featBounds.miny, buf);
-    val += L" ";
-    val += buf;
-    MgUtil::DoubleToString(featBounds.maxx, buf);
-    val += L" ";
-    val += buf;
-    MgUtil::DoubleToString(featBounds.maxy, buf);
-    val += L" ";
-    val += buf;
-    bbox->SetValue(val);
+    SetBBOXProperty(fbounds, bbox);
 }

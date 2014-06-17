@@ -71,6 +71,9 @@ public:
     virtual void ProcessArea(SE_ApplyContext* ctx,
                              SE_RenderAreaStyle* style);
 
+    void GetGeometryBounds(const LineBuffer* lb, RS_Bounds& bounds);
+    void SetBBOXProperty(const RS_Bounds& bounds, MgStringProperty* bbox);
+
     MgBatchPropertyCollection* GetProperties()
     {
         return SAFE_ADDREF(m_featprops);
