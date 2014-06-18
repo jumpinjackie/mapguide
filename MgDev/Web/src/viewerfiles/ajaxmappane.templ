@@ -1905,7 +1905,7 @@ function RequestMapImage(reqId, viewParams)
 
 function PutSelectionImageUrl(reqId, url)
 {
-    if(safari || chrome)
+    if(safari)
     {
         LoadAlternateSelectionImage(url, reqId);
     }
