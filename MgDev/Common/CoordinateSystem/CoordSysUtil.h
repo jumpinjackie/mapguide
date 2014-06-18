@@ -22,7 +22,7 @@
 #ifdef min
 #undef min
 #endif
-#include "CS_wktObject.hpp"
+#include "cs_WktObject.hpp"
 #include "cs_wkt.h"
 #include "CsmapVersion.h"
 
