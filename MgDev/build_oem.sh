@@ -624,9 +624,9 @@ build_csmap()
         sed 's/^C_FLG =/C_FLG = -fPIC/g' Library.mak | sed 's/CPP_FLG =/CPP_FLG = -fPIC/g' > Library64.mak
         make -fLibrary64.mak
     else
-        make -fLibrary.mak
+        make -fLibrary.mak PROCESSOR=x86
     fi
-    cp CsMap.a ../.libs/libCsmap.a
+    cp ../lib47/Linux$BUILD_CPU/CsMap.a ../.libs/libCsmap.a
     popd
     pushd Dictionaries
     if [ $BUILD_CPU -eq 64 ]; then
@@ -634,9 +634,9 @@ build_csmap()
         sed 's/^C_FLG =/C_FLG = -fPIC/g' Library.mak | sed 's/CPP_FLG =/CPP_FLG = -fPIC/g' > Compiler64.mak
         make -fCompiler64.mak
     else
-        make -fCompiler.mak
+        make -fCompiler.mak PROCESSOR=x86
     fi
-    ./CS_Comp -b . .
+
     popd
     check_build
     popd
