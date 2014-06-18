@@ -718,13 +718,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgClassDefinition GetClassDefinition(string schemaName);
+    /// virtual MgClassDefinition GetClassDefinition();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgClassDefinition GetClassDefinition(String schemaName);
+    /// virtual MgClassDefinition GetClassDefinition();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgClassDefinition GetClassDefinition(string schemaName);
+    /// virtual MgClassDefinition GetClassDefinition();
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \return
