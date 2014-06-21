@@ -272,10 +272,11 @@ protected:
     /// Assembles the composite QueryMapFeatures result
     ///
     virtual MgByteReader* CollectQueryMapFeaturesResult(MgResourceService* resourceService,
+                                                        MgFeatureService* featureService,
+                                                        MgMapBase* map,
                                                         INT32 requestData, 
                                                         MgFeatureInformation* featInfo,
-                                                        MgSelection* selectionSet,
-                                                        MgBatchPropertyCollection* attributes, 
+                                                        MgSelection* selectionSet, 
                                                         MgByteReader* inlineSelection);
 
     //////////////////////////////////////////////////////////////////
@@ -292,9 +293,15 @@ protected:
 
 private:
     static void WriteSelectedFeatureAttributes(MgResourceService* resourceService,
+                                               MgFeatureService* featureService,
+                                               MgMapBase* map,
                                                MgSelection* selectionSet,
-                                               MgBatchPropertyCollection* attriubtes,
                                                REFSTRING xmlOut);
+
+    static MgCoordinateSystemTransform* GetLayerToMapTransform(MgLayerBase* layer, 
+                                                               MgCoordinateSystem* mapCs, 
+                                                               MgCoordinateSystemFactory* csFactory, 
+                                                               MgFeatureService* featureService);
 
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_MapLayer_ZcvController;
