@@ -20,6 +20,8 @@
 #include "VectorLayerDefinition.h"
 #include "NameStringPair.h"
 
+typedef std::map<STRING, STRING> DisplayNameMap;
+
 #define REQUEST_ATTRIBUTES       1
 #define REQUEST_INLINE_SELECTION 2
 #define REQUEST_TOOLTIP          4
@@ -247,6 +249,7 @@ MgByteReader* MgHtmlController::QueryMapFeatures(
 
     // Create a Resource Service instance
     Ptr<MgResourceService> resourceService = (MgResourceService*)GetService(MgServiceType::ResourceService);
+    Ptr<MgFeatureService> featureService = (MgFeatureService*)GetService(MgServiceType::FeatureService);
 
     // Create MgMap
     Ptr<MgMap> map = new MgMap(m_siteConn);
@@ -289,24 +292,18 @@ MgByteReader* MgHtmlController::QueryMapFeatures(
         inlineSelectionImg = service->RenderDynamicOverlay(map, newSelection, renderOpts);
     }
 
-    // Collect any attributes of selected features
-    if ((requestData & REQUEST_ATTRIBUTES) == REQUEST_ATTRIBUTES)
-    {
-        // This could be chunky for big selections, but client applications can control this via MAXFEATURES, so the onus is on them
-        attributes = service->QueryFeatureProperties(map, layerNames, selectionGeometry, selectionVariant, L"", maxFeatures, layerAttributeFilter, true);
-    }
-
-    result = CollectQueryMapFeaturesResult(resourceService, requestData, featureInfo, newSelection, attributes, inlineSelectionImg);
+    result = CollectQueryMapFeaturesResult(resourceService, featureService, map, requestData, featureInfo, newSelection, inlineSelectionImg);
 
     // Return XML
     return result.Detach();
 }
 
 MgByteReader* MgHtmlController::CollectQueryMapFeaturesResult(MgResourceService* resourceService,
+                                                              MgFeatureService* featureService,
+                                                              MgMapBase* map,
                                                               INT32 requestData,
                                                               MgFeatureInformation* featInfo,
                                                               MgSelection* selectionSet,
-                                                              MgBatchPropertyCollection* attributes, 
                                                               MgByteReader* inlineSelection)
 {
     STRING xml;
@@ -372,10 +369,10 @@ MgByteReader* MgHtmlController::CollectQueryMapFeaturesResult(MgResourceService*
     else
         xml.append(L"<InlineSelectionImage />\n");
 
-    if (((requestData & REQUEST_ATTRIBUTES) == REQUEST_ATTRIBUTES) && NULL != attributes)
+    if ((requestData & REQUEST_ATTRIBUTES) == REQUEST_ATTRIBUTES)
     {
         xml.append(L"<SelectedFeatures>\n");
-        WriteSelectedFeatureAttributes(resourceService, selectionSet, attributes, xml);
+        WriteSelectedFeatureAttributes(resourceService, featureService, map, selectionSet, xml);
         xml.append(L"</SelectedFeatures>\n");
     }
     else
@@ -388,25 +385,56 @@ MgByteReader* MgHtmlController::CollectQueryMapFeaturesResult(MgResourceService*
     return MgUtil::GetByteReader(xmlDoc, &mimeType);
 }
 
+MgCoordinateSystemTransform* MgHtmlController::GetLayerToMapTransform(MgLayerBase* layer, 
+                                                                      MgCoordinateSystem* mapCs, 
+                                                                      MgCoordinateSystemFactory* csFactory, 
+                                                                      MgFeatureService* featureService)
+{
+    Ptr<MgCoordinateSystemTransform> trans;
+
+    MG_TRY()
+
+    Ptr<MgClassDefinition> clsDef = layer->GetClassDefinition();
+    Ptr<MgPropertyDefinitionCollection> clsProps = clsDef->GetProperties();
+    INT32 gidx = clsProps->IndexOf(layer->GetFeatureGeometryName());
+    if (gidx >= 0)
+    {
+        Ptr<MgPropertyDefinition> propDef = clsProps->GetItem(gidx);
+        MgGeometricPropertyDefinition* geomProp = static_cast<MgGeometricPropertyDefinition*>(propDef.p);
+        STRING scName = geomProp->GetSpatialContextAssociation();
+        Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(layer->GetFeatureSourceId());
+        Ptr<MgSpatialContextReader> scReader = featureService->GetSpatialContexts(fsId, false);
+        while(scReader->ReadNext())
+        {
+            if (scReader->GetName() == scName)
+            {
+                Ptr<MgCoordinateSystem> layerCs = csFactory->Create(scReader->GetCoordinateSystemWkt());
+                trans = csFactory->GetTransform(layerCs, mapCs);
+                break;
+            }
+        }
+        scReader->Close();
+    }
+
+    MG_CATCH_AND_RELEASE()
+
+    return trans.Detach();
+}
+
 void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourceService,
+                                                      MgFeatureService* featureService,
+                                                      MgMapBase* map,
                                                       MgSelection* selectionSet,
-                                                      MgBatchPropertyCollection* attributes,
                                                       REFSTRING xmlOut)
 {
-    //Rather than doing a verbatim xml dump of MgBatchPropertyCollection, let's output something
-    //that is more intuitive for client applications using this service operation to understand.
-
-    //We could assume sorted layers in the MgBatchPropertyCollection, but play safe
-    //and store our per-layer XML fragments in a bucket (keyed on layer name) and return 
-    //the merged bucket result at the end
-    std::map<STRING, STRING> bucket;
-
     MgAgfReaderWriter agfRw;
     MgWktReaderWriter wktRw;
+    MgCoordinateSystemFactory csFactory;
 
     Ptr<MgReadOnlyLayerCollection> selLayers = selectionSet->GetLayers();
     if (NULL != selLayers.p)
     {
+        Ptr<MgCoordinateSystem> mapCs = csFactory.Create(map->GetMapSRS());
         // Our structure is as follows
         //
         // [0...n] <SelectedLayer> - A layer containing selected features
@@ -421,218 +449,222 @@ void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourc
         {
             Ptr<MgLayerBase> selLayer = selLayers->GetItem(i);
             STRING layerName = selLayer->GetName();
-            if (bucket.find(layerName) == bucket.end())
+
+            Ptr<MgCoordinateSystemTransform> transform = GetLayerToMapTransform(selLayer, mapCs, &csFactory, featureService);
+
+            xmlOut.append(L"<SelectedLayer id=\"");
+            xmlOut.append(selLayer->GetObjectId());
+            xmlOut.append(L"\" name=\"");
+            xmlOut.append(selLayer->GetName());
+            xmlOut.append(L"\">\n");
+            xmlOut.append(L"<LayerMetadata>\n");
+            Ptr<MgClassDefinition> clsDef = selLayer->GetClassDefinition();
+            Ptr<MgPropertyDefinitionCollection> clsProps = clsDef->GetProperties();
+            Ptr<MgResourceIdentifier> layerId = selLayer->GetLayerDefinition();
+            Ptr<MgStringCollection> propNames = new MgStringCollection();
+            DisplayNameMap displayNameMap;
+            //We need the property mappings of the source layer definition to compile our layer metadata
+            std::auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resourceService, layerId));
+            if (ldf.get() != NULL)
             {
-                STRING xml = L"<SelectedLayer id=\"";
-                xml.append(selLayer->GetObjectId());
-                xml.append(L"\" name=\"");
-                xml.append(selLayer->GetName());
-                xml.append(L"\">\n");
-                xml.append(L"<LayerMetadata>\n");
-                Ptr<MgClassDefinition> clsDef = selLayer->GetClassDefinition();
-                Ptr<MgPropertyDefinitionCollection> clsProps = clsDef->GetProperties();
-                Ptr<MgResourceIdentifier> layerId = selLayer->GetLayerDefinition();
-                //We need the property mappings of the source layer definition to compile our layer metadata
-                std::auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resourceService, layerId));
-                if (ldf.get() != NULL)
+                MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+                if(vl != NULL)
                 {
-                    MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
-                    if(vl != NULL)
+                    MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
+                    for (int j=0; j<pmappings->GetCount(); j++)
                     {
-                        MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
-                        for (int j=0; j<pmappings->GetCount(); j++)
+                        STRING pTypeStr;
+                        MdfModel::NameStringPair* m = pmappings->GetAt(j);
+                        propNames->Add(m->GetName());
+                        displayNameMap.insert(std::make_pair(m->GetName(), m->GetValue()));
+                        INT32 pidx = clsProps->IndexOf(m->GetName());
+                        if (pidx >= 0)
                         {
-                            STRING pTypeStr;
-                            MdfModel::NameStringPair* m = pmappings->GetAt(j);
-                            INT32 pidx = clsProps->IndexOf(m->GetName());
-                            if (pidx >= 0)
+                            Ptr<MgPropertyDefinition> propDef = clsProps->GetItem(pidx);
+                            INT32 pdType = propDef->GetPropertyType();
+                            INT32 pType = MgPropertyType::Null;
+                            if (pdType == MgFeaturePropertyType::DataProperty)
                             {
-                                Ptr<MgPropertyDefinition> propDef = clsProps->GetItem(pidx);
-                                INT32 pdType = propDef->GetPropertyType();
-                                INT32 pType = MgPropertyType::Null;
-                                if (pdType == MgFeaturePropertyType::DataProperty)
-                                {
-                                    pType = ((MgDataPropertyDefinition*)propDef.p)->GetDataType();
-                                }
-                                else if (pdType == MgFeaturePropertyType::GeometricProperty)
-                                {
-                                    pType = MgPropertyType::Geometry;
-                                }
-                                MgUtil::Int32ToString(pType, pTypeStr);
-                                xml.append(L"<Property>\n");
-                                xml.append(L"<Name>");
-                                xml.append(m->GetName());
-                                xml.append(L"</Name>\n");
-                                xml.append(L"<Type>");
-                                xml.append(pTypeStr);
-                                xml.append(L"</Type>\n");
-                                xml.append(L"<DisplayName>");
-                                xml.append(m->GetValue());
-                                xml.append(L"</DisplayName>\n");
-                                xml.append(L"</Property>\n");
+                                pType = ((MgDataPropertyDefinition*)propDef.p)->GetDataType();
                             }
+                            else if (pdType == MgFeaturePropertyType::GeometricProperty)
+                            {
+                                pType = MgPropertyType::Geometry;
+                            }
+                            MgUtil::Int32ToString(pType, pTypeStr);
+                            xmlOut.append(L"<Property>\n");
+                            xmlOut.append(L"<Name>");
+                            xmlOut.append(m->GetName());
+                            xmlOut.append(L"</Name>\n");
+                            xmlOut.append(L"<Type>");
+                            xmlOut.append(pTypeStr);
+                            xmlOut.append(L"</Type>\n");
+                            xmlOut.append(L"<DisplayName>");
+                            xmlOut.append(m->GetValue());
+                            xmlOut.append(L"</DisplayName>\n");
+                            xmlOut.append(L"</Property>\n");
                         }
                     }
                 }
-                xml += L"</LayerMetadata>\n";
-                bucket[layerName] = xml;
             }
-        }
-
-        for (INT32 i = 0; i < attributes->GetCount(); i++)
-        {
-            Ptr<MgPropertyCollection> featProps = attributes->GetItem(i);
-            INT32 lidx = featProps->IndexOf(L"_MgLayerName");
-            INT32 fidx = featProps->IndexOf(L"_MgFeatureBoundingBox");
-
-            //Must have both the _MgLayerName and _MgFeatureBoundingBox
-            if (lidx < 0 || fidx < 0)
-                continue;
-
-            Ptr<MgStringProperty> layerNameProp = (MgStringProperty*)featProps->GetItem(lidx);
-            Ptr<MgStringProperty> boundsProp = (MgStringProperty*)featProps->GetItem(fidx);
-
-            //Locate the matching bucketed fragment to append to
-            STRING layerName = layerNameProp->GetValue();
-            if (bucket.find(layerName) != bucket.end())
+            propNames->Add(selLayer->GetFeatureGeometryName()); //Don't forget geometry
+            xmlOut.append(L"</LayerMetadata>\n");
+            Ptr<MgReader> reader = selectionSet->GetSelectedFeatures(selLayer, selLayer->GetFeatureClassName(), propNames);
+            while(reader->ReadNext())
             {
-                //Good to go, write our feature to this bucketed fragment
-                REFSTRING xml = bucket[layerName];
-                xml.append(L"<Feature>\n");
-                xml.append(L"<Bounds>");
-                xml.append(boundsProp->GetValue());
-                xml.append(L"</Bounds>\n");
-                for (INT32 p = 0; p < featProps->GetCount(); p++)
+                xmlOut.append(L"<Feature>\n");
+                STRING geomPropName = selLayer->GetFeatureGeometryName();
+                if (!reader->IsNull(geomPropName))
                 {
-                    //Skip special properties
-                    if (p == lidx || p == fidx)
+                    try 
+                    {
+                        Ptr<MgByteReader> agf = reader->GetGeometry(geomPropName);
+                        Ptr<MgGeometry> geom = agfRw.Read(agf, transform);
+                        Ptr<MgEnvelope> env = geom->Envelope();
+                        Ptr<MgCoordinate> ll = env->GetLowerLeftCoordinate();
+                        Ptr<MgCoordinate> ur = env->GetUpperRightCoordinate();
+                        xmlOut.append(L"<Bounds>");
+                        STRING str;
+                        MgUtil::DoubleToString(ll->GetX(), str);
+                        xmlOut.append(str);
+                        xmlOut.append(L" ");
+                        MgUtil::DoubleToString(ll->GetY(), str);
+                        xmlOut.append(str);
+                        xmlOut.append(L" ");
+                        MgUtil::DoubleToString(ur->GetX(), str);
+                        xmlOut.append(str);
+                        xmlOut.append(L" ");
+                        MgUtil::DoubleToString(ur->GetY(), str);
+                        xmlOut.append(str);
+                        xmlOut.append(L"</Bounds>\n");
+                    }
+                    catch (MgException* ex) //Bad geom maybe
+                    {
+                        SAFE_RELEASE(ex);
+                    }
+                }
+                
+                for (INT32 i = 0; i < reader->GetPropertyCount(); i++)
+                {
+                    STRING propName = reader->GetPropertyName(i);
+                    DisplayNameMap::iterator it = displayNameMap.find(propName);
+                    //Skip properties without display mappings
+                    if (it == displayNameMap.end())
                         continue;
-                    Ptr<MgNullableProperty> prop = dynamic_cast<MgNullableProperty*>(featProps->GetItem(p));
-                    if (NULL != prop.p)
+                    
+                    xmlOut.append(L"<Property>\n");
+                    xmlOut.append(L"<Name>");
+                    xmlOut.append(it->second);
+                    xmlOut.append(L"</Name>\n");
+                    if (!reader->IsNull(i))
                     {
-                        xml.append(L"<Property>\n");
-                        xml.append(L"<Name>");
-                        xml.append(prop->GetName());
-                        xml.append(L"</Name>\n");
-                        //We'll follow MgProperty spec. Null is represented by omission of <Value>
-                        if (!prop->IsNull())
+                        INT32 ptype = reader->GetPropertyType(i);
+                        switch(ptype)
                         {
-                            INT32 ptype = prop->GetPropertyType();
-                            switch(ptype)
+                        //case MgPropertyType::Blob:
+                        case MgPropertyType::Boolean:
                             {
-                            //case MgPropertyType::Blob:
-                            case MgPropertyType::Boolean:
-                                {
-                                    xml.append(L"<Value>");
-                                    xml.append(((MgBooleanProperty*)prop.p)->GetValue() ? L"true" : L"false");
-                                    xml.append(L"</Value>\n");
-                                }
-                                break;
-                            case MgPropertyType::Byte:
-                                {
-                                    STRING sVal;
-                                    MgUtil::Int32ToString((INT32)((MgByteProperty*)prop.p)->GetValue(), sVal);
-                                    xml.append(L"<Value>");
-                                    xml.append(sVal);
-                                    xml.append(L"</Value>\n");
-                                }
-                                break;
-                            //case MgPropertyType::Clob:
-                            case MgPropertyType::DateTime:
-                                {
-                                    Ptr<MgDateTime> dt = ((MgDateTimeProperty*)prop.p)->GetValue();
-                                    xml.append(L"<Value>");
-                                    xml.append(dt->ToXmlString());
-                                    xml.append(L"</Value>\n");
-                                }
-                                break;
-                            case MgPropertyType::Decimal:
-                            case MgPropertyType::Double:
-                                {
-                                    STRING sVal;
-                                    MgUtil::DoubleToString(((MgDoubleProperty*)prop.p)->GetValue(), sVal);
-                                    xml.append(L"<Value>");
-                                    xml.append(sVal);
-                                    xml.append(L"</Value>\n");
-                                }
-                                break;
-                            case MgPropertyType::Geometry:
-                                {
-                                    try 
-                                    {
-                                        Ptr<MgByteReader> agf = ((MgGeometryProperty*)prop.p)->GetValue();
-                                        Ptr<MgGeometry> geom = agfRw.Read(agf);
-                                        STRING wkt = wktRw.Write(geom);
-                                        xml.append(L"<Value>");
-                                        xml.append(wkt);
-                                        xml.append(L"</Value>\n");
-                                    }
-                                    catch (MgException* ex) //Bad geom maybe
-                                    {
-                                        SAFE_RELEASE(ex);
-                                    }
-                                }
-                                break;
-                            case MgPropertyType::Int16:
-                                {
-                                    STRING sVal;
-                                    MgUtil::Int32ToString((INT32)((MgInt16Property*)prop.p)->GetValue(), sVal);
-                                    xml.append(L"<Value>");
-                                    xml.append(sVal);
-                                    xml.append(L"</Value>\n");
-                                }
-                                break;
-                            case MgPropertyType::Int32:
-                                {
-                                    STRING sVal;
-                                    MgUtil::Int32ToString(((MgInt32Property*)prop.p)->GetValue(), sVal);
-                                    xml.append(L"<Value>");
-                                    xml.append(sVal);
-                                    xml.append(L"</Value>\n");
-                                }
-                                break;
-                            case MgPropertyType::Int64:
-                                {
-                                    STRING sVal;
-                                    MgUtil::Int64ToString(((MgInt64Property*)prop.p)->GetValue(), sVal);
-                                    xml.append(L"<Value>");
-                                    xml.append(sVal);
-                                    xml.append(L"</Value>\n");
-                                }
-                                break;
-                            case MgPropertyType::Single:
-                                {
-                                    STRING sVal;
-                                    MgUtil::SingleToString(((MgSingleProperty*)prop.p)->GetValue(), sVal);
-                                    xml.append(L"<Value>");
-                                    xml.append(sVal);
-                                    xml.append(L"</Value>\n");
-                                }
-                                break;
-                            case MgPropertyType::String:
-                                {
-                                    xml.append(L"<Value>");
-                                    xml.append(MgUtil::ReplaceEscapeCharInXml(((MgStringProperty*)prop.p)->GetValue()));
-                                    xml.append(L"</Value>\n");
-                                }
-                                break;
+                                xmlOut.append(L"<Value>");
+                                xmlOut.append(reader->GetBoolean(i) ? L"true" : L"false");
+                                xmlOut.append(L"</Value>\n");
                             }
+                            break;
+                        case MgPropertyType::Byte:
+                            {
+                                STRING sVal;
+                                MgUtil::Int32ToString((INT32)reader->GetByte(i), sVal);
+                                xmlOut.append(L"<Value>");
+                                xmlOut.append(sVal);
+                                xmlOut.append(L"</Value>\n");
+                            }
+                            break;
+                        //case MgPropertyType::Clob:
+                        case MgPropertyType::DateTime:
+                            {
+                                Ptr<MgDateTime> dt = reader->GetDateTime(i);
+                                xmlOut.append(L"<Value>");
+                                xmlOut.append(dt->ToXmlString());
+                                xmlOut.append(L"</Value>\n");
+                            }
+                            break;
+                        case MgPropertyType::Decimal:
+                        case MgPropertyType::Double:
+                            {
+                                STRING sVal;
+                                MgUtil::DoubleToString(reader->GetDouble(i), sVal);
+                                xmlOut.append(L"<Value>");
+                                xmlOut.append(sVal);
+                                xmlOut.append(L"</Value>\n");
+                            }
+                            break;
+                        case MgPropertyType::Geometry:
+                            {
+                                try 
+                                {
+                                    Ptr<MgByteReader> agf = reader->GetGeometry(i);
+                                    Ptr<MgGeometry> geom = agfRw.Read(agf);
+                                    STRING wkt = wktRw.Write(geom);
+                                    xmlOut.append(L"<Value>");
+                                    xmlOut.append(wkt);
+                                    xmlOut.append(L"</Value>\n");
+                                }
+                                catch (MgException* ex) //Bad geom maybe
+                                {
+                                    SAFE_RELEASE(ex);
+                                }
+                            }
+                            break;
+                        case MgPropertyType::Int16:
+                            {
+                                STRING sVal;
+                                MgUtil::Int32ToString((INT32)reader->GetInt16(i), sVal);
+                                xmlOut.append(L"<Value>");
+                                xmlOut.append(sVal);
+                                xmlOut.append(L"</Value>\n");
+                            }
+                            break;
+                        case MgPropertyType::Int32:
+                            {
+                                STRING sVal;
+                                MgUtil::Int32ToString(reader->GetInt32(i), sVal);
+                                xmlOut.append(L"<Value>");
+                                xmlOut.append(sVal);
+                                xmlOut.append(L"</Value>\n");
+                            }
+                            break;
+                        case MgPropertyType::Int64:
+                            {
+                                STRING sVal;
+                                MgUtil::Int64ToString(reader->GetInt64(i), sVal);
+                                xmlOut.append(L"<Value>");
+                                xmlOut.append(sVal);
+                                xmlOut.append(L"</Value>\n");
+                            }
+                            break;
+                        case MgPropertyType::Single:
+                            {
+                                STRING sVal;
+                                MgUtil::SingleToString(reader->GetSingle(i), sVal);
+                                xmlOut.append(L"<Value>");
+                                xmlOut.append(sVal);
+                                xmlOut.append(L"</Value>\n");
+                            }
+                            break;
+                        case MgPropertyType::String:
+                            {
+                                xmlOut.append(L"<Value>");
+                                xmlOut.append(MgUtil::ReplaceEscapeCharInXml(reader->GetString(i)));
+                                xmlOut.append(L"</Value>\n");
+                            }
+                            break;
                         }
-                        xml.append(L"</Property>\n");
                     }
+                    xmlOut.append(L"</Property>\n");
                 }
-                xml.append(L"</Feature>\n");
+                xmlOut.append(L"</Feature>\n");
             }
-        }
-    
-        //Now merge the bucketed fragments
-        for (std::map<STRING, STRING>::iterator it = bucket.begin(); it != bucket.end(); it++)
-        {
-            //Close off the <SelectedLayer> elements
-            STRING xml = it->second;
-            xml.append(L"</SelectedLayer>");
-            //Good to append to the final result
-            xmlOut.append(xml);
+            reader->Close();
+            xmlOut.append(L"</SelectedLayer>");
         }
     }
 }
