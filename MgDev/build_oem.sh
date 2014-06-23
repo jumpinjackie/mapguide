@@ -75,6 +75,29 @@ check_clean()
 }
 
 #**********************************************************
+# Build Apache/PHP
+# Notes: none
+#**********************************************************
+
+init_linuxapt()
+{
+    LIB_NAME="Apache/PHP/Tomcat"
+}
+
+build_linuxapt()
+{
+    pushd LinuxApt
+    ./build_apt.sh --prefix "${INSTALLDIR}" --with-tomcat
+    check_build
+    popd
+}
+
+clean_linuxapt()
+{
+    echo "Nothing to clean for LinuxApt"
+}
+
+#**********************************************************
 # Build ACE 5.7
 # Notes: none
 #**********************************************************
@@ -655,11 +678,36 @@ clean_csmap()
 }
 
 #**********************************************************
+# Build Fusion
+# Notes: requires Apache Ant
+#**********************************************************
+
+init_fusion()
+{
+    LIB_NAME="Fusion"
+}
+
+build_fusion()
+{
+    pushd fusion
+    ant prepare
+    ant compress
+    popd
+}
+
+clean_fusion()
+{
+    pushd fusion
+    ant clean
+    popd
+}
+
+#**********************************************************
 # Script loop
 #**********************************************************
 
 pushd Oem
-for lib in ace dwfcore dwftk dwfemap geos bdbxml cppunit imake zlib libpng jpeg freetype gd agg json csmap;
+for lib in linuxapt fusion ace dwfcore dwftk dwfemap geos bdbxml cppunit imake zlib libpng jpeg freetype gd agg json csmap;
 do
     echo "$lib: Initialization..........................."
     init_"$lib"
