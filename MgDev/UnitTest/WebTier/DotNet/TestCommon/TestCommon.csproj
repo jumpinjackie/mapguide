@@ -72,6 +72,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiTypes.cs" />
+    <Compile Include="Assert.cs" />
+    <Compile Include="CommonTests.cs" />
+    <Compile Include="ExternalTests\ByteReaderTest.cs" />
+    <Compile Include="ExternalTests\CollectionTests.cs" />
+    <Compile Include="ExternalTests\PropertiesTest.cs" />
     <Compile Include="FeatureService\Operations.cs" />
     <Compile Include="ITestExecutor.cs" />
     <Compile Include="ITestExecutorCollection.cs" />

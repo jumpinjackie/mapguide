@@ -16,6 +16,32 @@ namespace MgTestRunner
         static MgUserInformation userInfo;
         static MgSiteConnection siteConn;
 
+        class PlatformFactory : IPlatformFactory
+        {
+            private MgSiteConnection _siteConn;
+
+            public PlatformFactory(MgSiteConnection siteConn)
+            {
+                _siteConn = siteConn;
+            }
+
+            public MgService CreateService(int serviceType)
+            {
+                return _siteConn.CreateService(serviceType);
+            }
+
+            public MgMapBase CreateMap()
+            {
+                return new MgMap(_siteConn);
+            }
+
+            public MgLayerBase CreateLayer(MgResourceIdentifier resId)
+            {
+                MgResourceService resSvc = (MgResourceService)_siteConn.CreateService(MgServiceType.ResourceService);
+                return new MgLayer(resId, resSvc);
+            }
+        }
+
         //Usage: MgTestRunner.exe <webconfig.ini path> <MENTOR_DICTIONARY_PATH> [test log path]
         static void Main(string[] args)
         {
@@ -38,6 +64,8 @@ namespace MgTestRunner
                     siteConn = new MgSiteConnection();
                     siteConn.Open(userInfo);
 
+                    var factory = new PlatformFactory(siteConn);
+
                     int testsRun = 0;
                     bool isEnterprise = false;
                     failures += ExecuteTest(ApiTypes.Platform, "../../TestData/ResourceService/ResourceServiceTest.dump", ref testsRun, logger, isEnterprise);
@@ -49,6 +77,9 @@ namespace MgTestRunner
                     failures += ExecuteTest(ApiTypes.Platform, "../../TestData/MapLayer/MapLayerTest.dump", ref testsRun, logger, isEnterprise);
                     failures += ExecuteTest(ApiTypes.Platform, "../../TestData/WebLayout/WebLayoutTest.dump", ref testsRun, logger, isEnterprise);
                     failures += ExecuteTest(ApiTypes.Platform, "../../TestData/Unicode/UnicodeTest.dump", ref testsRun, logger, isEnterprise);
+                    //Run auxillary tests not part of the SQLite-defined suite
+                    failures += CommonTests.Execute(factory, logger, ref testsRun);
+                    failures += MapGuideTests.Execute(factory, logger, ref testsRun);
                     logger.Write("\n\nTests failed/run: {0}/{1}\n", failures, testsRun);
                     Console.Write("\n\nTests failed/run: {0}/{1}\n", failures, testsRun);
                     logger.Write("Run ended: {0}\n\n", DateTime.Now.ToString());

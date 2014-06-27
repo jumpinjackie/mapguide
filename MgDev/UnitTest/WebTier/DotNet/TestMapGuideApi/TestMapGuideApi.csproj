@@ -79,6 +79,8 @@
   <ItemGroup>
     <Compile Include="DrawingService\DrawingServiceOperationExecutor.cs" />
     <Compile Include="DrawingService\Operations.cs" />
+    <Compile Include="ExternalTests\CollectionTests.cs" />
+    <Compile Include="MapGuideTests.cs" />
     <Compile Include="MappingService\MappingServiceOperationExecutor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MapGuideTestExecutorCollection.cs" />
