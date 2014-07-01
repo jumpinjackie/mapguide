@@ -15,7 +15,7 @@
         <hudson.model.StringParameterDefinition>
           <name>RELEASE_LABEL</name>
           <description></description>
-          <defaultValue>Beta1</defaultValue>
+          <defaultValue>RC1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>WITH_ARCSDE</name>
@@ -163,7 +163,7 @@ del /Q *.pdb
 
 :build_mapguide
 cd %MG_BUILD_AREA%\MgDev
-echo [build]: Stamp version numbers
+echo [build]: Stamp version numbers %MG_VER_MAJOR%.%MG_VER_MINOR%.%MG_VER_BUILD%.%MG_REVISION%
 SET BUILD_ACTION=Stamp version numbers
 cscript updateversion.vbs /major:%MG_VER_MAJOR% /minor:%MG_VER_MINOR% /point:%MG_VER_BUILD% /build:%MG_REVISION%
 call stampassemblies.bat %MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION%
@@ -188,7 +188,7 @@ if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 REM Move fusion-selfbuild tools out of staging area
 pushd %MG_BUILD_OUTPUT%\fusion-selfbuild
-move /Y fusion-buildtools.zip %MG_BUILD_OUTPUT_ROOT%
+move /Y fusion-%MG_VER_MAJOR_MINOR_BUILD%-buildtools.zip %MG_BUILD_OUTPUT_ROOT%
 popd
 pushd %MG_BUILD_OUTPUT%
 rd /S /Q fusion-selfbuild

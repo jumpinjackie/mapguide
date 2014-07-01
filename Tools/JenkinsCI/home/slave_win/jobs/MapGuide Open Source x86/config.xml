@@ -15,7 +15,7 @@
         <hudson.model.StringParameterDefinition>
           <name>RELEASE_LABEL</name>
           <description></description>
-          <defaultValue>Beta1</defaultValue>
+          <defaultValue>Preview1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>WITH_ARCSDE</name>
@@ -62,6 +62,11 @@
           <description></description>
           <defaultValue>C:\working\sources\mapguide_trunk_revision.txt</defaultValue>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>MG_RUN_UNIT_TESTS</name>
+          <description></description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
@@ -71,7 +76,7 @@
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <jdk>JDK6 32-bit</jdk>
-  <triggers class="vector"/>
+  <triggers/>
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.BatchFile>
@@ -113,6 +118,7 @@ echo MG_STAMP_FILE              = %MG_STAMP_FILE%
 echo INSTANT_SETUP_SRC          = %INSTANT_SETUP_SRC%
 echo JAVA_HOME                  = %JAVA_HOME%
 echo ANT_HOME                   = %ANT_HOME%
+echo MG_RUN_UNIT_TESTS          = %MG_RUN_UNIT_TESTS%
 echo =======================================================================
 
 echo [prepare]: Cleaning out build artifacts
@@ -127,8 +133,6 @@ if &quot;%CLEAR_WORKING_AREA%&quot;==&quot;false&quot; (
     goto build_mapguide
 )
 
-echo [prepare]: Cleaning out SVN metadata in build area
-if exist %MG_BUILD_AREA% for /R %MG_BUILD_AREA% %%X in (.svn) do (RD /S /Q %%X 2&gt;nul)
 echo [prepare]: Cleaning out build area
 if exist %MG_BUILD_AREA% rd /S /Q %MG_BUILD_AREA%
 echo [prepare]: Re-creating output directories
@@ -138,34 +142,13 @@ if not exist %MG_BUILD_ARTIFACT_PATH%\mg-desktop mkdir %MG_BUILD_ARTIFACT_PATH%\
 
 echo [prepare]: Exporting SVN working copy to build area (Installer)
 SET BUILD_ACTION=Exporting SVN working copy to build area (Installer)
-svn export %MG_BUILD_SRC%\Installer %MG_BUILD_AREA%\Installer --force
+svn export %MG_BUILD_SRC%\Installer %MG_BUILD_AREA%\Installer --force -q
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 echo [prepare]: Copying SVN working copy to build area (MgDev)
 SET BUILD_ACTION=Copying SVN working copy to build area (MgDev)
-svn export %MG_BUILD_SRC%\MgDev %MG_BUILD_AREA%\MgDev --force
+svn export %MG_BUILD_SRC%\MgDev %MG_BUILD_AREA%\MgDev --force -q
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
-
-echo [prepare]: Overlaying SVN metadata
-REM Yeah, we&apos;re basically re-copying, but this will include missing SVN metadata that export obviously leaves out
-robocopy %MG_BUILD_SRC%\MgDev\Oem\fusion_build %MG_BUILD_AREA%\MgDev\Oem\fusion_build /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Web\src\localized %MG_BUILD_AREA%\MgDev\Web\src\localized /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Web\src\mapadmin %MG_BUILD_AREA%\MgDev\Web\src\mapadmin /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\UnitTest/WebTier\MapAgent\MapAgentForms %MG_BUILD_AREA%\MgDev\UnitTest/WebTier\MapAgent\MapAgentForms /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Web\src\mapviewerjava %MG_BUILD_AREA%\MgDev\Web\src\mapviewerjava /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Web\src\mapviewernet %MG_BUILD_AREA%\MgDev\Web\src\mapviewernet /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Web\src\mapviewerphp %MG_BUILD_AREA%\MgDev\Web\src\mapviewerphp /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Web\src\schemareport %MG_BUILD_AREA%\MgDev\Web\src\schemareport /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Web\src\stdicons %MG_BUILD_AREA%\MgDev\Web\src\stdicons /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Web\src\viewerfiles %MG_BUILD_AREA%\MgDev\Web\src\viewerfiles /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\dotnetsamples %MG_BUILD_AREA%\MgDev\Doc\samples\dotnetsamples /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\dotnetviewersample %MG_BUILD_AREA%\MgDev\Doc\samples\dotnetviewersample /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\javasamples %MG_BUILD_AREA%\MgDev\Doc\samples\javasamples /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\javaviewersample %MG_BUILD_AREA%\MgDev\Doc\samples\javaviewersample /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\phpsamples %MG_BUILD_AREA%\MgDev\Doc\samples\phpsamples /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\phpviewersample %MG_BUILD_AREA%\MgDev\Doc\samples\phpviewersample /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Doc\samples\ol2samples %MG_BUILD_AREA%\MgDev\Doc\samples\ol2samples /E /NFL /NDL /nc /ns /np /MT
-robocopy %MG_BUILD_SRC%\MgDev\Doc\viewerapi %MG_BUILD_AREA%\MgDev\Doc\viewerapi /E /NFL /NDL /nc /ns /np /MT
 
 echo [prepare]: Setup FDO in Oem
 cd %MG_BUILD_AREA%\MgDev\Oem\FDO
@@ -205,7 +188,7 @@ if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 REM Move fusion-selfbuild tools out of staging area
 pushd %MG_BUILD_OUTPUT%\fusion-selfbuild
-move /Y fusion-buildtools.zip %MG_BUILD_OUTPUT_ROOT%
+move /Y fusion-%MG_VER_MAJOR_MINOR_BUILD%-buildtools.zip %MG_BUILD_OUTPUT_ROOT%
 popd
 pushd %MG_BUILD_OUTPUT%
 rd /S /Q fusion-selfbuild
@@ -312,7 +295,14 @@ if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 move /Y Output\en-US\MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION%-%RELEASE_LABEL%-x86.exe %MG_BUILD_OUTPUT_ROOT%
 popd
+
+if &quot;%MG_RUN_UNIT_TESTS%&quot;==&quot;false&quot; goto end
+:server_unit_test
+pushd %MG_BUILD_AREA%\MgDev\Server\bin\Release
+mgserver.exe test
+popd
 goto end
+
 :error
 echo An error occurred while building MapGuide: %BUILD_ACTION%
 exit /b 1

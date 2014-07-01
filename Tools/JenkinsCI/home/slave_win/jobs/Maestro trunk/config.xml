@@ -15,7 +15,7 @@
         <hudson.model.StringParameterDefinition>
           <name>VersionLabel</name>
           <description>The release version label</description>
-          <defaultValue>6.0a2</defaultValue>
+          <defaultValue>6.0a3</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BASE_VERSION</name>

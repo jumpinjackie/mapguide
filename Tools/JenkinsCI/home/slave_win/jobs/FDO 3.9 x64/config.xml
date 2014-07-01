@@ -84,7 +84,7 @@ if not exist %FDO_WORKING_AREA64% mkdir %FDO_WORKING_AREA64%
 REM Need to supply --force otherwise it won&apos;t export into the dir we made
 echo [prepare]: Exporting SVN working copy to build area
 SET BUILD_ACTION=Exporting SVN working copy to build area
-svn export %FDO_BUILD_SRC64% %FDO_WORKING_AREA64% --force
+svn export %FDO_BUILD_SRC64% %FDO_WORKING_AREA64% --force -q
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 REM Copy non-UAC UpdateVersion
@@ -138,7 +138,7 @@ popd
 if &quot;%FDO_RUN_UNIT_TESTS64%&quot;==&quot;false&quot; goto end
 :fdo_unit_tests
 pushd %FDO_WORKING_AREA64%\Fdo\Unmanaged\Bin\Win64\Release
-UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT%\fdocore_unittest.log
+UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT64%\fdocore_unittest.log
 popd
 pushd %FDO_WORKING_AREA64%\Providers\SHP\Src\UnitTest
 ..\..\Bin\Win64\Release\UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT64%\shp_unittest.log

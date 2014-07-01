@@ -84,7 +84,7 @@ if not exist %FDO_WORKING_AREA% mkdir %FDO_WORKING_AREA%
 REM Need to supply --force otherwise it won&apos;t export into the dir we made
 echo [prepare]: Exporting SVN working copy to build area
 SET BUILD_ACTION=Exporting SVN working copy to build area
-svn export %FDO_BUILD_SRC% %FDO_WORKING_AREA% --force
+svn export %FDO_BUILD_SRC% %FDO_WORKING_AREA% --force -q
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
 REM Copy non-UAC UpdateVersion
