@@ -189,13 +189,13 @@ PUBLISHED_API:
 
     MgPropertyCollection* InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues, MgTransaction* trans);
 
-	int UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter);
+	INT32 UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter);
 
-    int UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans);
+    INT32 UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans);
 
-	int DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter);
+	INT32 DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter);
 
-	int DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans);
+	INT32 DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans);
 
 EXTERNAL_API:
     void PurgeCache(MgResourceIdentifier* resource);

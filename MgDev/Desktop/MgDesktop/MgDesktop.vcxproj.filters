@@ -853,7 +853,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\braindump.txt" />
     <None Include="Platform.ini" />
   </ItemGroup>
 </Project>

@@ -387,9 +387,9 @@ MgPropertyCollection* MgdUpdateFeaturesCommand::ExecuteInsert(MgResourceIdentifi
     return ret.Detach();
 }
 
-int MgdUpdateFeaturesCommand::ExecuteUpdate(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans)
+INT32 MgdUpdateFeaturesCommand::ExecuteUpdate(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans)
 {
-    int updated = 0;
+    INT32 updated = 0;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -444,9 +444,9 @@ int MgdUpdateFeaturesCommand::ExecuteUpdate(MgResourceIdentifier* resource, CREF
     return updated;
 }
 
-int MgdUpdateFeaturesCommand::ExecuteDelete(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans)
+INT32 MgdUpdateFeaturesCommand::ExecuteDelete(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans)
 {
-    int deleted = 0;
+    INT32 deleted = 0;
 
     MG_FEATURE_SERVICE_TRY()
 
