@@ -1,17 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetHarness.Net40", "DotNetHarness\DotNetHarness.Net40.csproj", "{A5881D59-BD24-4A3A-A707-F18A25724D29}"
+# Visual Studio Express 2012 for Windows Desktop
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetHarness", "DotNetHarness\DotNetHarness.csproj", "{A5881D59-BD24-4A3A-A707-F18A25724D29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetUnitTest.Net40", "DotNetUnitTest\DotNetUnitTest.Net40.csproj", "{FDA196F0-3C55-4360-B207-BA5EF6D746F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetUnitTest", "DotNetUnitTest\DotNetUnitTest.csproj", "{FDA196F0-3C55-4360-B207-BA5EF6D746F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapViewer.Net40", "MapViewer\MapViewer.Net40.csproj", "{D46ED17B-329B-4D80-9181-FEF8307EFCBB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapViewer", "MapViewer\MapViewer.csproj", "{D46ED17B-329B-4D80-9181-FEF8307EFCBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapViewer.Desktop.Net40", "MapViewer.Desktop\MapViewer.Desktop.Net40.csproj", "{E2001B46-F226-4F7B-911E-252B9644236E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapViewer.Desktop", "MapViewer.Desktop\MapViewer.Desktop.csproj", "{E2001B46-F226-4F7B-911E-252B9644236E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapViewerTest.Net40", "MapViewerTest\MapViewerTest.Net40.csproj", "{E2FC8B99-0638-4C01-86C4-1B625D966981}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapViewerTest", "MapViewerTest\MapViewerTest.csproj", "{E2FC8B99-0638-4C01-86C4-1B625D966981}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MgAppLayout.Net40", "MgAppLayout\MgAppLayout.Net40.csproj", "{F6054D81-E857-49FB-945F-AC2ECD9BB27A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MgAppLayout", "MgAppLayout\MgAppLayout.csproj", "{F6054D81-E857-49FB-945F-AC2ECD9BB27A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
