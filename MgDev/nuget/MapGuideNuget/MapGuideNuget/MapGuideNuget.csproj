@@ -19,24 +19,11 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="OSGeo.MapGuide.Foundation">
-      <HintPath>..\packages\mapguide-api-base-x86.2.4.0.7093\lib\net40\OSGeo.MapGuide.Foundation.dll</HintPath>
-    </Reference>
-    <Reference Include="OSGeo.MapGuide.Geometry">
-      <HintPath>..\packages\mapguide-api-base-x86.2.4.0.7093\lib\net40\OSGeo.MapGuide.Geometry.dll</HintPath>
-    </Reference>
-    <Reference Include="OSGeo.MapGuide.MapGuideCommon">
-      <HintPath>..\packages\mapguide-api-web-x86.2.4.0.7093\lib\net40\OSGeo.MapGuide.MapGuideCommon.dll</HintPath>
-    </Reference>
-    <Reference Include="OSGeo.MapGuide.PlatformBase">
-      <HintPath>..\packages\mapguide-api-base-x86.2.4.0.7093\lib\net40\OSGeo.MapGuide.PlatformBase.dll</HintPath>
-    </Reference>
-    <Reference Include="OSGeo.MapGuide.Web">
-      <HintPath>..\packages\mapguide-api-web-x86.2.4.0.7093\lib\net40\OSGeo.MapGuide.Web.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -73,7 +60,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -127,9 +113,15 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PostBuildEvent>
-xcopy /s /y "$(SolutionDir)packages\mapguide-api-base-x86.2.4.0.7093\mapguide-api-base\*.*" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)packages\mapguide-api-web-x86.2.4.0.7093\mapguide-api-web\*.*" "$(TargetDir)"</PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

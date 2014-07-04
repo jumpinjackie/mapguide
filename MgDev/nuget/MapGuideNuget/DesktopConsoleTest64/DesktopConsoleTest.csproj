@@ -35,18 +35,6 @@
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OSGeo.MapGuide.Desktop">
-      <HintPath>..\packages\mg-desktop-net40-x64.2.4.0.7093\lib\net40\OSGeo.MapGuide.Desktop.dll</HintPath>
-    </Reference>
-    <Reference Include="OSGeo.MapGuide.Foundation">
-      <HintPath>..\packages\mapguide-api-base-x64.2.4.0.7093\lib\net40\OSGeo.MapGuide.Foundation.dll</HintPath>
-    </Reference>
-    <Reference Include="OSGeo.MapGuide.Geometry">
-      <HintPath>..\packages\mapguide-api-base-x64.2.4.0.7093\lib\net40\OSGeo.MapGuide.Geometry.dll</HintPath>
-    </Reference>
-    <Reference Include="OSGeo.MapGuide.PlatformBase">
-      <HintPath>..\packages\mapguide-api-base-x64.2.4.0.7093\lib\net40\OSGeo.MapGuide.PlatformBase.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -61,16 +49,10 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
-if not exist "$(TargetDir)Dictionaries" md "$(TargetDir)Dictionaries"
-xcopy /s /y "$(SolutionDir)packages\cs-map-dictionaries.2.4.0.7093\dictionaries\*.*" "$(TargetDir)Dictionaries"
-xcopy /s /y "$(SolutionDir)packages\mapguide-api-base-x64.2.4.0.7093\mapguide-api-base\*.*" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)packages\mg-desktop-net40-x64.2.4.0.7093\mg-desktop\*.*" "$(TargetDir)"</PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
