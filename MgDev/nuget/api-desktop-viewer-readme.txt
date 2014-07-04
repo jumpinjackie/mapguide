@@ -1,13 +1,15 @@
-mg-desktop-viewer-net40 README
-==============================
+mg-desktop-viewer README
+========================
 
 This is the NuGet package for the mg-desktop viewer API.
+
+This package was formerly known as mg-desktop-viewer-net40. That package still exists on NuGet and should be considered a legacy package
 
 Dependencies
 ============
 
 - mapguide-api-base
-- mg-desktop-net40
+- mg-desktop
 
 Optional Dependencies
 =====================
