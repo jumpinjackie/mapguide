@@ -143,7 +143,6 @@ else
                     $unitsType,
                     $bgColor,
                     $hlTgt, $hlTgtName,
-                    $vpath . "setselection.php",
                     $showSlider? "true": "false",
                     $locale,
                     $scaleCreationCode,

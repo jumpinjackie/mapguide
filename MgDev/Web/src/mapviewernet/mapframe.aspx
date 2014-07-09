@@ -179,7 +179,6 @@ int pointBufferSize;
                         bgColor,
                         hlTgt,
                         hlTgtName,
-                        vpath + "setselection.aspx",
                         showSlider != 0? "true": "false",
                         locale,
                         scaleCreationCode,
