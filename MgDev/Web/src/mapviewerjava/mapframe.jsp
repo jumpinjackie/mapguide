@@ -177,7 +177,6 @@ int pointBufferSize;
                     bgColor,
                     hlTgt,
                     hlTgtName,
-                    vpath + "setselection.jsp",
                     showSlider != 0? "true": "false",
                     locale,
                     scaleCreationCode,
