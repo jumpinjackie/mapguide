@@ -36,6 +36,9 @@
     $args = ($_SERVER['REQUEST_METHOD'] == "POST")? $_POST : $_GET;
     $sessionId = $args['SESSION'];
     $mapName = $args['MAPNAME'];
+    $selectionXml = '';
+    $idName = "";
+    $geomName = "";
 
     try
     {
@@ -53,17 +56,21 @@
       $map->Open($mapName);
 
       // Get the geometry for the boundaries of District 1
+      $layer = $map->GetLayers()->GetItem('Districts');
+      
+      // Use the layer's class definition to determine its identity property and geometry property name
+      $clsDef = $layer->GetClassDefinition();
+      $idProps = $clsDef->GetIdentityProperties();
+      $idProp = $idProps->GetItem(0);
+      $idName = $idProp->GetName();
+      $geomName = $clsDef->GetDefaultGeometryPropertyName();
 
       $districtQuery = new MgFeatureQueryOptions();
-      $layer = $map->GetLayers()->GetItem('Districts');
-      $classDef = $layer->GetClassDefinition();
-      $clsIdProps = $classDef->GetIdentityProperties();
-      $idProp = $clsIdProps->GetItem(0);      
-      $districtQuery->SetFilter($idProp->GetName()." = 1");
+      $districtQuery->SetFilter("$idName = 1");
 
       $featureReader = $layer->SelectFeatures($districtQuery);
       $featureReader->ReadNext();
-      $districtGeometryData = $featureReader->GetGeometry($layer->GetFeatureGeometryName());
+      $districtGeometryData = $featureReader->GetGeometry($geomName);
 
       // Convert the AGF binary data to MgGeometry.
 
