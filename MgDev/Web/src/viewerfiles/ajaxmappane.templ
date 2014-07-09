@@ -430,9 +430,7 @@ function GetSelectionXML()
 function SetSelectionXML(xmlSet)
 {
     xmlOut = SetSelection(xmlSet, true);
-    xmlDoc = (new DOMParser()).parseFromString(xmlSet, "text/xml");
-    ProcessFeatureInfo(xmlDoc.documentElement, false, 1);
-    ProcessFeatureInfo(xmlOut, false, 2);
+    ProcessFeatureInfo(xmlOut, false, 1 | 2);
 }
 
 function IsEnglishUnits()
@@ -3264,13 +3262,37 @@ function ClearSelection()
 
 function SetSelection(selText, requery)
 {
-    var reqParams = "SESSION=" + sessionId + "&MAPNAME=" + encodeURIComponent(mapName) + "&SEQ=" + Math.random() + "&SELECTION=" + encodeURIComponent(selText) + "&QUERYINFO=" + (requery? "1": "0");
-    reqHandler = CreateRequestHandler();
-    reqHandler.open("POST", setSelScript, false);
-    reqHandler.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    reqHandler.send(reqParams);
-    if(requery)
-        return reqHandler.responseXML;
+    var reqData = 0;
+    //We use the same QUERYMAPFEATURES operation for selection persistence, but omit filter geometry 
+    //and layer names as the selection XML string will drive all of that
+    var reqParams = "OPERATION=QUERYMAPFEATURES&VERSION=2.6.0&PERSIST=1&MAXFEATURES=-1&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random();
+    reqParams += "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
+    reqParams += "&LAYERATTRIBUTEFILTER=0"; //0 = Everything
+    if (requery)
+    {
+        reqData |= 1; //attributes
+        if (msie8plus || !msie)
+            reqData |= 2; //inline selection
+        reqParams += "&SELECTIONCOLOR=" + selectionColor + "&SELECTIONFORMAT=" + selectionImgFormat;
+    }
+    else
+    {
+        //Even though we don't care about the return value, we still have to supply something for REQUESTDATA, so 
+        //request for the smallest piece of data possible: Hyperlinks or Tooltips. This value is for hyperlinks.
+        reqData |= 8;
+    }
+    reqParams += "&REQUESTDATA=" + reqData;
+    //Despite the deceptive name, FEATUREFILTER is for any XML selection string you want to drive the whole
+    //query from, when not specifying input geometry
+    reqParams += "&FEATUREFILTER=" + encodeURIComponent(selText);
+    
+    var selRequest = CreateRequestHandler();
+    selRequest.open("POST", webAgent, false);
+    selRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    selRequest.send(reqParams);
+    
+    if (requery)
+        return selRequest.responseXML;
 }
 
 function ZoomSelection()
