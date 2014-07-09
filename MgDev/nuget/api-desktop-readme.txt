@@ -1,7 +1,9 @@
-mg-desktop-net40 README
-=======================
+mg-desktop README
+=================
 
-This is the NuGet package for the mg-desktop API. This does not include the WinForms-based map viewer control. Install the mg-desktop-viewer-net40 package if you require this component.
+This is the NuGet package for the mg-desktop API. This does not include the WinForms-based map viewer control. Install the mg-desktop-viewer package if you require this component.
+
+This package was formerly known as mg-desktop-net40. That package still exists on NuGet and should be considered a legacy package
 
 Dependencies
 ============

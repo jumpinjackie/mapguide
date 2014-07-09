@@ -1143,9 +1143,9 @@ MgPropertyCollection* MgdFeatureService::InsertFeatures(MgResourceIdentifier* re
     return ret.Detach();
 }
 
-int MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter)
+INT32 MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter)
 {
-    int ret = 0;
+    INT32 ret = 0;
     MG_LOG_OPERATION_MESSAGE(L"UpdateFeatures");
 
     MG_FEATURE_SERVICE_TRY()
@@ -1186,9 +1186,9 @@ int MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING
     return ret;
 }
 
-int MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* batchPropertyValues, CREFSTRING filter, MgTransaction* trans)
+INT32 MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* batchPropertyValues, CREFSTRING filter, MgTransaction* trans)
 {
-    int updated = 0;
+    INT32 updated = 0;
     MG_LOG_OPERATION_MESSAGE(L"UpdateFeatures");
 
     MG_FEATURE_SERVICE_TRY()
@@ -1233,9 +1233,9 @@ int MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING
 	return updated;
 }
 
-int MgdFeatureService::DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter)
+INT32 MgdFeatureService::DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter)
 {
-    int deleted = 0;
+    INT32 deleted = 0;
     MG_LOG_OPERATION_MESSAGE(L"DeleteFeatures");
 
     MG_FEATURE_SERVICE_TRY()
@@ -1275,9 +1275,9 @@ int MgdFeatureService::DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING
     return deleted;
 }
 
-int MgdFeatureService::DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans)
+INT32 MgdFeatureService::DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans)
 {
-    int deleted = 0;
+    INT32 deleted = 0;
     MG_LOG_OPERATION_MESSAGE(L"DeleteFeatures");
 
     MG_FEATURE_SERVICE_TRY()

@@ -1137,7 +1137,6 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
     <ClInclude Include="System\TimerUtil.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\braindump.txt" />
     <None Include="Platform.ini" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

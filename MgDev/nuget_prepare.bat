@@ -119,12 +119,12 @@ call BatchSubstitute.bat MG_VERSION %MG_VERSION% temp.txt > mapguide-api-base-%M
 echo [prepare]: mapguide-api-web
 call BatchSubstitute.bat MG_CPU %MG_CPU% mapguide-api-web.nuspec.tpl > temp.txt
 call BatchSubstitute.bat MG_VERSION %MG_VERSION% temp.txt > mapguide-api-web-%MG_CPU%.nuspec
-echo [prepare]: mg-desktop-net40
-call BatchSubstitute.bat MG_CPU %MG_CPU% mg-desktop-net40.nuspec.tpl > temp.txt
-call BatchSubstitute.bat MG_VERSION %MG_VERSION% temp.txt > mg-desktop-net40-%MG_CPU%.nuspec
-echo [prepare]: mg-desktop-viewer-net40
-call BatchSubstitute.bat MG_CPU %MG_CPU% mg-desktop-viewer-net40.nuspec.tpl > temp.txt
-call BatchSubstitute.bat MG_VERSION %MG_VERSION% temp.txt > mg-desktop-viewer-net40-%MG_CPU%.nuspec
+echo [prepare]: mg-desktop
+call BatchSubstitute.bat MG_CPU %MG_CPU% mg-desktop.nuspec.tpl > temp.txt
+call BatchSubstitute.bat MG_VERSION %MG_VERSION% temp.txt > mg-desktop-%MG_CPU%.nuspec
+echo [prepare]: mg-desktop-viewer
+call BatchSubstitute.bat MG_CPU %MG_CPU% mg-desktop-viewer.nuspec.tpl > temp.txt
+call BatchSubstitute.bat MG_VERSION %MG_VERSION% temp.txt > mg-desktop-viewer-%MG_CPU%.nuspec
 echo [prepare]: cs-map-dictionaries
 call BatchSubstitute.bat MG_CPU %MG_CPU% cs-map-dictionaries.nuspec.tpl > temp.txt
 call BatchSubstitute.bat MG_VERSION %MG_VERSION% temp.txt > cs-map-dictionaries.nuspec

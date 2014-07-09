@@ -29,15 +29,15 @@ PUBLISHED_API:
 
     virtual MgFeatureReader* InsertFeatures(MgPropertyCollection* propertyValues);
 
-	virtual int UpdateFeatures(MgPropertyCollection* propertyValues, CREFSTRING filter);
+	virtual INT32 UpdateFeatures(MgPropertyCollection* propertyValues, CREFSTRING filter);
 
-	virtual int DeleteFeatures(CREFSTRING filter);
+	virtual INT32 DeleteFeatures(CREFSTRING filter);
 
     virtual MgFeatureReader* InsertFeatures(MgPropertyCollection* propertyValues, MgTransaction* trans);
 
-	virtual int UpdateFeatures(MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans);
+	virtual INT32 UpdateFeatures(MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans);
 
-	virtual int DeleteFeatures(CREFSTRING filter, MgTransaction* trans);
+	virtual INT32 DeleteFeatures(CREFSTRING filter, MgTransaction* trans);
 
     virtual bool IsPotentiallyVisibleAtScale(double scale, bool bConsiderParentGroupVisibility);
 

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,11 +10,32 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OSGeo.MapGuide.Viewer</RootNamespace>
     <AssemblyName>OSGeo.MapGuide.Viewer</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,6 +45,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,6 +56,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\OSGeo.MapGuide.Viewer.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OSGeo.MapGuide.Foundation, Version=1.0.0.1, Culture=neutral, processorArchitecture=x86">
@@ -53,9 +76,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Messaging" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -84,10 +105,6 @@
     <Compile Include="IMapViewerComponent.cs" />
     <Compile Include="IMapStatusBar.cs" />
     <Compile Include="IPropertyPane.cs" />
-    <Compile Include="MgLegendControlPresenter.cs" />
-    <Compile Include="MgComponent.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="MgBufferComponent.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -96,6 +113,9 @@
     </Compile>
     <Compile Include="MgBufferControlImpl.Designer.cs">
       <DependentUpon>MgBufferControlImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgComponent.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="MgControlImpl.cs">
       <SubType>UserControl</SubType>
@@ -109,16 +129,20 @@
     <Compile Include="MgInvokeComponent.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="MgLayerSelectionHandler.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgLegendControlPresenter.cs" />
     <Compile Include="MgLineMeasureControlImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="MgLineMeasureControlImpl.Designer.cs">
       <DependentUpon>MgLineMeasureControlImpl.cs</DependentUpon>
     </Compile>
-    <Compile Include="MgLoadPackageComponent.cs">
+    <Compile Include="MgLoadMapComponent.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="MgLoadMapComponent.cs">
+    <Compile Include="MgLoadPackageComponent.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MgMapViewer.cs">
@@ -166,9 +190,6 @@
       <DependentUpon>MgQueryResultsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="MgReadOnlyStream.cs" />
-    <Compile Include="MgLayerSelectionHandler.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="MgRedlineComponent.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -255,11 +276,7 @@
     <Compile Include="Redlining\TextPrompt.Designer.cs">
       <DependentUpon>TextPrompt.cs</DependentUpon>
     </Compile>
-    <Compile Include="Strings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Strings.resx</DependentUpon>
-    </Compile>
+    <Compile Include="Strings.Designer.cs" />
     <Compile Include="Tasks\MgTaskPaneStub.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -279,9 +296,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MgBufferControlImpl.resx">
       <DependentUpon>MgBufferControlImpl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MgControlImpl.resx">
-      <DependentUpon>MgControlImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MgLegend.resx">
       <DependentUpon>MgLegend.cs</DependentUpon>
@@ -335,10 +349,7 @@
     <EmbeddedResource Include="Redlining\TextPrompt.resx">
       <DependentUpon>TextPrompt.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Strings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Strings.resx" />
     <EmbeddedResource Include="Tasks\MgTaskPaneStub.resx">
       <DependentUpon>MgTaskPaneStub.cs</DependentUpon>
     </EmbeddedResource>
@@ -530,44 +541,31 @@
     <None Include="Resources\icon_etc.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\AreaLayerDef.txt" />
-    <None Include="Resources\area_box.templ" />
-    <None Include="Resources\area_cross.templ" />
-    <None Include="Resources\area_dash.templ" />
-    <None Include="Resources\area_dolmit.templ" />
-    <None Include="Resources\area_hex.templ" />
-    <None Include="Resources\area_line.templ" />
-    <None Include="Resources\area_line_135.templ" />
-    <None Include="Resources\area_line_45.templ" />
-    <None Include="Resources\area_line_90.templ" />
-    <None Include="Resources\area_net.templ" />
-    <None Include="Resources\area_sacncr.templ" />
-    <None Include="Resources\area_solid.templ" />
-    <None Include="Resources\area_square.templ" />
-    <None Include="Resources\area_steel.templ" />
-    <None Include="Resources\line_border.templ" />
-    <None Include="Resources\line_dash.templ" />
-    <None Include="Resources\markuplayerdefinition_advanced.xml" />
-    <None Include="Resources\markuplayerdefinition.xml" />
-    <None Include="Resources\markupfeaturesource.xml" />
-    <None Include="Resources\line_dashdot.templ" />
-    <None Include="Resources\line_dashdotdot.templ" />
-    <None Include="Resources\line_divide.templ" />
-    <None Include="Resources\line_dot.templ" />
-    <None Include="Resources\line_fenceline1.templ" />
-    <None Include="Resources\line_rail.templ" />
-    <None Include="Resources\line_solid.templ" />
-    <None Include="Resources\redline.png" />
-    <None Include="Resources\map--minus.png" />
-    <None Include="Resources\map--plus.png" />
-    <None Include="Resources\cross-script.png" />
-    <None Include="Resources\plus.png" />
-    <None Include="Resources\AreaRuleTemplate.txt" />
-    <None Include="Resources\view_log.gif" />
-    <None Include="Resources\monitor_status.gif" />
-    <None Include="Resources\load_package.gif" />
-    <None Include="Resources\icon_home.gif" />
-    <None Include="Resources\icon_tasks.gif" />
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AreaLayerDef.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\icon_home.gif" />
+    <Content Include="Resources\icon_tasks.gif" />
+    <Content Include="Resources\load_package.gif" />
+    <Content Include="Resources\monitor_status.gif" />
+    <Content Include="Resources\view_log.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
