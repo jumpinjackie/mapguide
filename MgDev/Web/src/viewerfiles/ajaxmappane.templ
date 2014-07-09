@@ -3044,7 +3044,10 @@ function QueryFeatureInfo(geom, append, maxfeatures, which)
     if(geom.indexOf("NaN") >= 0) return;
     
     var reqData = 1; //attributes
-    if (msie8plus || !msie)
+    //Only request inline selection if not appending, because we're not smart enough to know how
+    //to merge selection images together. This will cause a follow-up GETDYNAMICMAPOVERLAYIMAGE
+    //for the selection image
+    if (!append && (msie8plus || !msie))
         reqData |= 2; //inline selection
     var reqParams = "OPERATION=QUERYMAPFEATURES&VERSION=2.6.0&PERSIST=1&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random();
     reqParams += "&LAYERNAMES=" + encodeURIComponent(GetVisSelLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=" + queryVariant + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
@@ -3180,7 +3183,7 @@ function ProcessFeatureInfo(xmlIn, append, which)
                 //Check if we have attributes inline
                 var props = xmlIn.getElementsByTagName("SelectedLayer");
                 var resp = ConvertToSelectedFeatureSet(props);
-                ProcessSelectedFeatureSet(resp);
+                ProcessSelectedFeatureSet(resp, append);
             }
             else
             {
@@ -4224,16 +4227,18 @@ function ConvertToSelectedFeatureSet(layerEls)
     return featuresByLayer;
 }
 
-function ProcessSelectedFeatureSet(resp)
+function ProcessSelectedFeatureSet(resp, append)
 {
-    selFeatures = {};
-    selBounds = null;
     if (!resp)
         return;
 
     var selLayers = document.getElementById("selLayers");
-    selLayers.length = 0;
-    GetPropertyCtrl().Clear();
+    if (!append) {
+        selFeatures = {};
+        selBounds = null;
+        selLayers.length = 0;
+        GetPropertyCtrl().Clear();
+    }
     
     //Construct layer list
     for(var layerName in resp)
@@ -4241,15 +4246,33 @@ function ProcessSelectedFeatureSet(resp)
         var opt = new Option();
         opt.text = layerName;
         opt.value = layerName;
-        
-        if(msie)
-            selLayers.add(opt);
-        else
-            selLayers.add(opt, null);
+        var bAddOption = true;
+        if (append) {
+            for (var i = 0; i < selLayers.length; i++) {
+                if (layerName == selLayers[i].value) {
+                    bAddOption = false;
+                    break;
+                }
+            }
+        }
+        if (bAddOption) {
+            if(msie)
+                selLayers.add(opt);
+            else
+                selLayers.add(opt, null);
+        }
  
         //Associates the selected features on layer
-        selFeatures[layerName] = resp[layerName];
-        
+        if (append) {
+            if (typeof(selFeatures[layerName]) == 'undefined')
+                selFeatures[layerName] = [];
+            for (var i = 0; i < resp[layerName].length; i++) {
+                var feat = resp[layerName][i];
+                selFeatures[layerName].push(feat);
+            }
+        } else {
+            selFeatures[layerName] = resp[layerName];
+        }
         //Update selection bounding box
         for (var i = 0; i < resp[layerName].length; i++)
         {
