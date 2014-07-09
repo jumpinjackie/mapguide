@@ -102,10 +102,14 @@ void MgHttpQueryMapFeatures::Execute(MgHttpResponse& hResponse)
     // Create the list of layers to include in the selection
     Ptr<MgStringCollection> layerNames = MgStringCollection::ParseCollection(m_layerNames, L",");
 
-    // Create the selection geometry
-    MgWktReaderWriter wktReader;
-    Ptr<MgGeometry> filterGeometry = wktReader.Read(m_geometry);
-
+    // Create the selection geometry if specified, otherwise we assume this query is driven by XML selection
+    // string that we assume will be provided (server will check for this)
+    Ptr<MgGeometry> filterGeometry;
+    if (!m_geometry.empty())
+    {
+        MgWktReaderWriter wktReader;
+        filterGeometry = wktReader.Read(m_geometry);
+    }
     // Create the selection variant
     INT32 selectionVariant = 0;
     if(m_selectionVariant.length() > 0)

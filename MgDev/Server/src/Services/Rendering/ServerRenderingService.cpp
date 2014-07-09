@@ -1260,6 +1260,15 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
     bool bOnlyVisibleLayers = !((layerAttributeFilter & FILTER_VISIBLE) == 0);
     bool bOnlyTooltipLayers = !((layerAttributeFilter & FILTER_HASTOOLTIPS) == 0);
 
+    //If feature filter was passed in, init a temp MgSelection from so we can build layer filters
+    Ptr<MgSelection> selectionFilter;
+    Ptr<MgReadOnlyLayerCollection> selLayers;
+    if (!featureFilter.empty())
+    {
+        selectionFilter = new MgSelection(map, featureFilter);
+        selLayers = selectionFilter->GetLayers();
+    }
+
     //iterate over all map layers, but only do selection
     //if the layer is in the passed in collection
     for (int p=0; p<layers->GetCount(); p++)
@@ -1288,6 +1297,32 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         {
 //          layer->GetLayerInfoFromDefinition(m_svcResource);
             if (!layer->HasTooltips())
+                continue;
+        }
+
+        //If we have an initialized temp MgSelection, the current layer must be in it as well
+        Ptr<MgLayerBase> selLayer;
+        if (NULL != selLayers.p)
+        {
+            //It'd be nice if MgReadOnlyLayerCollection was indexable/accessible by layer name, but 
+            //it's not. So linear search for the currently looped layer here so we can apply the correct
+            //FDO filter for it later on
+            //
+            //TODO: As a future improvement, the code should be looping on this layer collection instead
+            //of the map's one if a feature filter is passed.
+            for (INT32 s = 0; s < selLayers->GetCount(); s++)
+            {
+                selLayer = selLayers->GetItem(s);
+                //If layer found, break so that the assigned layer remains for the code below
+                if (selLayer->GetName() == layer->GetName())
+                {
+                    break;
+                }
+                //Otherwise, null it so the check below will work if we've reached the end
+                selLayer = NULL;
+            }
+            //Current layer is not in this selection, so skip it
+            if (NULL == selLayer.p)
                 continue;
         }
 
@@ -1357,21 +1392,13 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
             try
             {
-                if (!featureFilter.empty())
+                //Set the feature filter, if any
+                if (NULL != selLayer.p)
                 {
-                    //set the feature filter, if any
-                    MgSelection selectionFilter(map, featureFilter);
-                    Ptr<MgReadOnlyLayerCollection> layers = selectionFilter.GetLayers();
-                    if (layers != NULL)
-                    {
-                        for (int i = 0; i < layers->GetCount(); i++)
-                        {
-                            Ptr<MgLayerBase> layer = layers->GetItem(i);
-                            STRING className = layer->GetFeatureClassName();
-                            STRING filter = selectionFilter.GenerateFilter(layer, className);
-                            options->SetFilter(filter);
-                        }
-                    }
+                    STRING className = selLayer->GetFeatureClassName();
+                    STRING filter = selectionFilter->GenerateFilter(selLayer, className);
+                    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) Set filter for class (%W):\n%W\n\n"), className.c_str(), filter.c_str()));
+                    options->SetFilter(filter);
                 }
                 else if (!vl->GetFilter().empty())
                 {
