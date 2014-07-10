@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LayerDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="2.4.0" xsi:noNamespaceSchemaLocation="LayerDefinition-2.4.0.xsd">
   <VectorLayerDefinition>
     <ResourceId>Library://Samples/Sheboygan/Data/VotingDistricts.FeatureSource</ResourceId>
-    <Watermarks/>
+    <Watermarks />
     <FeatureName>Default:VotingDistricts</FeatureName>
     <FeatureNameType>FeatureClass</FeatureNameType>
     <Geometry>Geometry</Geometry>
@@ -10,7 +10,7 @@
       <MinScale>10000</MinScale>
       <CompositeTypeStyle>
         <CompositeRule>
-          <LegendLabel/>
+          <LegendLabel />
           <CompositeSymbolization>
             <SymbolInstance>
               <SimpleSymbolDefinition>
@@ -192,21 +192,21 @@
                   </Parameter>
                   <Parameter>
                     <Identifier>GHOSTCOLOR</Identifier>
-                    <DefaultValue/>
+                    <DefaultValue />
                     <DisplayName>Ghost Color</DisplayName>
                     <Description>Ghost Color</Description>
                     <DataType>GhostColor</DataType>
                   </Parameter>
                   <Parameter>
                     <Identifier>FRAMELINECOLOR</Identifier>
-                    <DefaultValue/>
+                    <DefaultValue />
                     <DisplayName>Frame Line Color</DisplayName>
                     <Description>Frame Line Color</Description>
                     <DataType>FrameLineColor</DataType>
                   </Parameter>
                   <Parameter>
                     <Identifier>FRAMEFILLCOLOR</Identifier>
-                    <DefaultValue/>
+                    <DefaultValue />
                     <DisplayName>Frame Fill Color</DisplayName>
                     <Description>Frame Fill Color</Description>
                     <DataType>FrameFillColor</DataType>
@@ -259,7 +259,7 @@
                 <Override>
                   <SymbolName>MTEXT</SymbolName>
                   <ParameterIdentifier>CONTENT</ParameterIdentifier>
-                  <ParameterValue>Concat('District ', FeatId)</ParameterValue>
+                  <ParameterValue>Concat('District ', ID)</ParameterValue>
                 </Override>
                 <Override>
                   <SymbolName>MTEXT</SymbolName>

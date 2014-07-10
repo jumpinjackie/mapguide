@@ -55,22 +55,15 @@
       $map = new MgMap($siteConnection);
       $map->Open($mapName);
 
-      // Get the geometry for the boundaries of District 1
+      // Get the geometry for the boundaries of District 6
       $layer = $map->GetLayers()->GetItem('Districts');
       
-      // Use the layer's class definition to determine its identity property and geometry property name
-      $clsDef = $layer->GetClassDefinition();
-      $idProps = $clsDef->GetIdentityProperties();
-      $idProp = $idProps->GetItem(0);
-      $idName = $idProp->GetName();
-      $geomName = $clsDef->GetDefaultGeometryPropertyName();
-
       $districtQuery = new MgFeatureQueryOptions();
-      $districtQuery->SetFilter("$idName = 1");
+      $districtQuery->SetFilter("ID = '6'"); //ID property is string
 
       $featureReader = $layer->SelectFeatures($districtQuery);
       $featureReader->ReadNext();
-      $districtGeometryData = $featureReader->GetGeometry($geomName);
+      $districtGeometryData = $featureReader->GetGeometry($layer->GetFeatureGeometryName());
 
       // Convert the AGF binary data to MgGeometry.
 
@@ -95,7 +88,7 @@
       $selection->AddFeatures($layer, $featureReader, 0);
       $selectionXml = $selection->ToXml();
 
-      echo 'Selecting parcels owned by Schmitt in District&nbsp;1';
+      echo 'Selecting parcels owned by Schmitt in District&nbsp;6';
     }
     catch (MgException $e)
     {
