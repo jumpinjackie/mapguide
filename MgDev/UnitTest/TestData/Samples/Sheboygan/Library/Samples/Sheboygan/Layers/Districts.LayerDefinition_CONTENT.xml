@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LayerDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0.0" xsi:noNamespaceSchemaLocation="LayerDefinition-1.0.0.xsd">
   <VectorLayerDefinition>
     <ResourceId>Library://Samples/Sheboygan/Data/VotingDistricts.FeatureSource</ResourceId>
@@ -9,13 +9,13 @@
       <MinScale>10000</MinScale>
       <AreaTypeStyle>
         <AreaRule>
-          <LegendLabel/>
+          <LegendLabel />
           <Label>
             <Unit>Points</Unit>
             <SizeContext>DeviceUnits</SizeContext>
             <SizeX>0</SizeX>
             <SizeY>10</SizeY>
-            <Text>concat('District ', FeatId)</Text>
+            <Text>concat('District ', ID)</Text>
             <FontName>Verdana</FontName>
             <ForegroundColor>FF625231</ForegroundColor>
             <BackgroundColor>FFFFFFFF</BackgroundColor>

@@ -53,9 +53,11 @@
       $map = new MgMap($siteConnection);
       $map->Open($mapName);
 
-      // Get the geometry for the boundaries of District 1
+      // Get the geometry for the boundaries of District 6
 
       $districtQuery = new MgFeatureQueryOptions();
+      $districtQuery->SetFilter("ID = '6'"); //ID property is string
+
       $layer = $map->GetLayers()->GetItem('Districts');
       $classDef = $layer->GetClassDefinition();
       $clsIdProps = $classDef->GetIdentityProperties();
@@ -90,13 +92,14 @@
       // For each selected feature, display the address.
 
       echo '<p>Properties owned by Schmitt ';
-      echo 'in District 1</p><p>';
+      echo 'in District 6</p><p>';
 
       while ($featureReader->ReadNext())
       {
         $val = $featureReader->GetString('RPROPAD');
         echo $val . '<br />';
       }
+      $featureReader->Close();
       echo '</p>';
     }
     catch (MgException $e)

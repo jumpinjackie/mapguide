@@ -6,6 +6,9 @@ This is the complete set of PHP samples referenced in the MapGuide Developer's G
 Notes
 -----
 
+You must use the Sheboygan sample data set that was released with MapGuide Open Source 2.6 or newer. This dataset has been updated and
+these samples have been updated to work against this version of the data set.
+
 These samples assume that MapGuide Open Source is installed in the default location in
 C:\Program Files\OSGeo\MapGuide
 

@@ -24,7 +24,7 @@
     <script language="javascript">
     function ZoomToDistrict()
     {
-        parent.parent.ZoomToView(-87.726134, 43.770338, 8000, true);
+        parent.parent.ZoomToView(-87.727698, 43.735028, 8000, true);
     }
     function listSelection()
     {
@@ -48,12 +48,12 @@
       ?>
       <ul>
         <li>
-          <a href="#"  onclick="ZoomToDistrict();" >Zoom to District 1</a>
-          <br />Position the map to display parcels in District 1
+          <a href="#"  onclick="ZoomToDistrict();" >Zoom to District 6</a>
+          <br />Position the map to display parcels in District 6
         </li>
         <li>
           <a href="queryfeatures.php?SESSION=<?= $sessionId ?>&MAPNAME=<?= $mapName ?>" >Query features</a>
-          <br />List properties in District 1 owned by Schmitt
+          <br />List properties in District 6 owned by Schmitt
           <br/>
           <?php
           $fileName = 'queryfeatures.php';
@@ -64,7 +64,7 @@
         </li>
         <li>
           <a href="selectfeatures.php?SESSION=<?= $sessionId ?>&MAPNAME=<?= $mapName ?>" >Set active selection</a>
-          <br />Select properties in District 1 owned by Schmitt
+          <br />Select properties in District 6 owned by Schmitt
           <br/>
           <?php
           $fileName = 'selectfeatures.php';

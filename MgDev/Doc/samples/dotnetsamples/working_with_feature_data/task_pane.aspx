@@ -34,7 +34,7 @@ String mapName;
     <script language="javascript">
     function ZoomToDistrict()
     {
-        parent.parent.ZoomToView(-87.726134, 43.770338, 8000, true);
+        parent.parent.ZoomToView(-87.727698, 43.735028, 8000, true);
     }
     function listSelection()
     {
@@ -57,12 +57,12 @@ String mapName;
       %>
       <ul>
         <li>
-          <a href="#"  onclick="ZoomToDistrict();" >Zoom to District 1</a>
-          <br />Position the map to display parcels in District 1
+          <a href="#"  onclick="ZoomToDistrict();" >Zoom to District 6</a>
+          <br />Position the map to display parcels in District 6
         </li>
         <li>
           <a href="queryfeatures.aspx?SESSION=<%= sessionId %>&MAPNAME=<%= mapName %>" >Query features</a>
-          <br />List properties in District 1 owned by Schmitt
+          <br />List properties in District 6 owned by Schmitt
           <br/>
           <%
           String fullPath = Server.MapPath("queryfeatures.aspx");
@@ -71,7 +71,7 @@ String mapName;
         </li>
         <li>
           <a href="selectfeatures.aspx?SESSION=<%= sessionId %>&MAPNAME=<%= mapName %>" >Set active selection</a>
-          <br />Select properties in District 1 owned by Schmitt
+          <br />Select properties in District 6 owned by Schmitt
           <br/>
           <%
           fullPath = Server.MapPath("selectfeatures.aspx");

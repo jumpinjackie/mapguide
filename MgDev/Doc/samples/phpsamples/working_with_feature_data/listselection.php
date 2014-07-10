@@ -110,6 +110,7 @@
               $val = $featureReader->GetString('NAME') . '<br />&nbsp;&nbsp;' . $featureReader->GetString('RPROPAD');
               echo $val . '<br />';
             }
+            $featureReader->Close();
           }
         }
       }
