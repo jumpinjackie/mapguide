@@ -538,6 +538,8 @@ INTERNAL_API:
     ///
     static bool GetLinuxMemoryStatus(MgLinuxMemoryStatus* pMemoryStatus);
 
+    static void PadLeft(REFSTRING str, const size_t numChars, wchar_t ch);
+
     static void Int32ToLocaleSpecificString(INT32 val, string& str);
 
     static void Int32ToString(INT32 val, string& str);
