@@ -583,7 +583,41 @@ void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourc
                             {
                                 Ptr<MgDateTime> dt = reader->GetDateTime(i);
                                 xmlOut.append(L"<Value>");
-                                xmlOut.append(dt->ToXmlString());
+                                //ToXmlString() won't work with dates before Jan 1, 1970, so use yyyy-mm-dd hh:mm:ss
+                                STRING dateStr;
+                                STRING str;
+                                if (dt->IsDate())
+                                {
+                                    MgUtil::Int32ToString(dt->GetYear(), str);
+                                    dateStr += str;
+                                    MgUtil::Int32ToString(dt->GetMonth(), str);
+                                    dateStr += L"-";
+                                    MgUtil::PadLeft(str, 2, L'0');
+                                    dateStr += str;
+                                    MgUtil::Int32ToString(dt->GetDay(), str);
+                                    dateStr += L"-";
+                                    MgUtil::PadLeft(str, 2, L'0');
+                                    dateStr += str;
+                                }
+                                if (dt->IsTime())
+                                {
+                                    if (dt->IsDate())
+                                    {
+                                        dateStr += L" ";
+                                    }
+                                    MgUtil::Int32ToString(dt->GetHour(), str);
+                                    MgUtil::PadLeft(str, 2, L'0');
+                                    dateStr += str;
+                                    MgUtil::Int32ToString(dt->GetMinute(), str);
+                                    dateStr += L":";
+                                    MgUtil::PadLeft(str, 2, L'0');
+                                    dateStr += str;
+                                    MgUtil::Int32ToString(dt->GetSecond(), str);
+                                    dateStr += L":";
+                                    MgUtil::PadLeft(str, 2, L'0');
+                                    dateStr += str;
+                                }
+                                xmlOut.append(dateStr);
                                 xmlOut.append(L"</Value>\n");
                             }
                             break;

@@ -1253,3 +1253,9 @@ void MgUtil::ParseQualifiedClassName(CREFSTRING qualifiedClassName, REFSTRING sc
         className  = qualifiedClassName.substr(index + 1);
     }
 }
+
+void MgUtil::PadLeft(REFSTRING str, const size_t numChars, wchar_t ch)
+{
+    if (numChars > str.size())
+        str.insert(0, numChars - str.size(), ch);
+}
