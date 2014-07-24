@@ -108,7 +108,7 @@ namespace SampleExtension
                 classes.Add(cls);
 
                 //Create the feature source
-                MgCreateSdfParams create = new MgCreateSdfParams("Default", map.GetMapSRS(), schema);
+                MgFileFeatureSourceParams create = new MgFileFeatureSourceParams("OSGeo.SDF", "Default", map.GetMapSRS(), schema);
                 featSvc.CreateFeatureSource(fsId, create);
 
                 //Then the layer definition

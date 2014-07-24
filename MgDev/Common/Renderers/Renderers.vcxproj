@@ -105,7 +105,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;emaptk_wt.1.0.0.lib;gd.lib;freetype235_D.lib;libpngd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;gd.lib;freetype235_D.lib;libpngd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgRenderersd.dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);..\..\Oem\gd\build\win32\gd\$(Configuration);..\..\Oem\gd\freetype\objs\$(Configuration);..\..\Oem\gd\lpng\projects\vs\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -134,7 +134,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;emaptk_wt.1.0.0.lib;gd.lib;freetype235_D.lib;libpngd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;gd.lib;freetype235_D.lib;libpngd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgRenderersd.dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;..\..\Oem\gd\build\win32\gd\$(Configuration)64;..\..\Oem\gd\freetype\objs\$(Configuration)64;..\..\Oem\gd\lpng\projects\vs\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -164,7 +164,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;emaptk_wt.1.0.0.lib;gd.lib;freetype235.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;gd.lib;freetype235.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgRenderers.dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);..\..\Oem\gd\build\win32\gd\$(Configuration);..\..\Oem\gd\freetype\objs\$(Configuration);..\..\Oem\gd\lpng\projects\vs\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -199,7 +199,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;emaptk_wt.1.0.0.lib;gd.lib;freetype235.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;gd.lib;freetype235.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgRenderers.dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;..\..\Oem\gd\build\win32\gd\$(Configuration)64;..\..\Oem\gd\freetype\objs\$(Configuration)64;..\..\Oem\gd\lpng\projects\vs\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -217,8 +217,6 @@
     <ClCompile Include="MapQuantization.cpp" />
     <ClCompile Include="SymbolTrans.cpp" />
     <ClCompile Include="DWFRenderer.cpp" />
-    <ClCompile Include="EMapRenderer.cpp" />
-    <ClCompile Include="EMapUpdateRenderer.cpp" />
     <ClCompile Include="EPlotRenderer.cpp" />
     <ClCompile Include="W2DRewriter.cpp" />
     <ClCompile Include="complex_polygon_gd.cpp" />
@@ -264,8 +262,6 @@
     <ClInclude Include="SymbolTrans.h" />
     <ClInclude Include="DWFRenderer.h" />
     <ClInclude Include="DWFRSInputStream.h" />
-    <ClInclude Include="EMapRenderer.h" />
-    <ClInclude Include="EMapUpdateRenderer.h" />
     <ClInclude Include="EPlotRenderer.h" />
     <ClInclude Include="RSDWFInputStream.h" />
     <ClInclude Include="RSDWFOutputStream.h" />

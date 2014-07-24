@@ -182,7 +182,7 @@ String dataSource;
                     schema.GetClasses().Add(classDef);
 
                     //finally, creation of the feature source
-                    MgCreateSdfParams parameters = new MgCreateSdfParams("MapSrs", srs, schema);
+                    MgFileFeatureSourceParams parameters = new MgFileFeatureSourceParams("OSGeo.SDF", "MapSrs", srs, schema);
                     featureSrvc.CreateFeatureSource(dataSourceId, parameters);
 
                     //build map tip

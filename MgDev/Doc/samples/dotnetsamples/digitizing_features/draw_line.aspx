@@ -162,7 +162,7 @@
 
       // Create the feature source
       String wkt = map.GetMapSRS();
-      MgCreateSdfParams sdfParams = new MgCreateSdfParams("spatial context", wkt, featureSchema);
+      MgFileFeatureSourceParams sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "spatial context", wkt, featureSchema);
       featureService.CreateFeatureSource(resourceIdentifier, sdfParams);
     }
 

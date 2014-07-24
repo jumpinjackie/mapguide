@@ -153,7 +153,6 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_FeatureService_FeatureSchema, MgFeatureSchema::CreateObject);
     fact->Register(PlatformBase_FeatureService_FeatureSchemaCollection, MgFeatureSchemaCollection::CreateObject);
     fact->Register(PlatformBase_FeatureService_ClassDefinitionCollection, MgClassDefinitionCollection::CreateObject);
-    fact->Register(PlatformBase_FeatureService_CreateSdfParams, MgCreateSdfParams::CreateObject);
     fact->Register(PlatformBase_FeatureService_FileFeatureSourceParams, MgFileFeatureSourceParams::CreateObject);
 
     fact->Register(PlatformBase_ResourceService_ResourceIdentifier, MgResourceIdentifier::CreateObject);

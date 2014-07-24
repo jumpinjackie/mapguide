@@ -168,7 +168,7 @@ String locale;
             schema.GetClasses().Add(classDef);
 
             //finally, creation of the feature source
-            MgCreateSdfParams sdfParams = new MgCreateSdfParams("LatLong", srsDefMap, schema);
+            MgFileFeatureSourceParams sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "LatLong", srsDefMap, schema);
             featureSrvc.CreateFeatureSource(dataSourceId, sdfParams);
 
             //Add layer to map

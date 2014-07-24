@@ -118,7 +118,7 @@ namespace OSGeo.MapGuide.Viewer
             var sessionId = Guid.NewGuid().ToString();
 
             var debugFsId = new MgResourceIdentifier("Session:" + sessionId + "//Debug" + Guid.NewGuid().ToString() + ".FeatureSource"); //NOXLATE
-            var createSdf = new MgCreateSdfParams("MapCs", _map.GetMapSRS(), schema); //NOXLATE
+            var createSdf = new MgFileFeatureSourceParams("OSGeo.SDF", "MapCs", _map.GetMapSRS(), schema); //NOXLATE
             var featureSvc = (MgdFeatureService)fact.CreateService(MgServiceType.FeatureService);
             var resSvc = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
             featureSvc.CreateFeatureSource(debugFsId, createSdf);

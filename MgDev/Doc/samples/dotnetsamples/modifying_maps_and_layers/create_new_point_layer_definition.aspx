@@ -126,7 +126,7 @@ try
 	MgResourceIdentifier resourceIdentifier = new MgResourceIdentifier(featureSourceName);
 	//wkt = "LOCALCS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
     String wkt = "GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722293]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]";
-    MgCreateSdfParams sdfParams = new MgCreateSdfParams("LatLong", wkt, featureSchema);
+    MgFileFeatureSourceParams sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "LatLong", wkt, featureSchema);
     featureService.CreateFeatureSource(resourceIdentifier, sdfParams);
 
 	// We need to add some data to the sdf before using it.  The spatial context

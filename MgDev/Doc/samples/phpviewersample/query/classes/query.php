@@ -148,9 +148,7 @@ class Query
             $sdfSchema = $this->CreateFilterSchema();
             $sdfParams = new MgFileFeatureSourceParams('OSGeo.SDF', 'MAPCS', $map->GetMapSRS(), $sdfSchema);
             $featureService->CreateFeatureSource($sdfResId, $sdfParams);
-
             // Create the Layer
-
             $layerResId = new MgResourceIdentifier('Session:' . $this->args['SESSION'] . '//Filter.LayerDefinition');
 
             $layerDefinition = file_get_contents("templates/filterlayerdefinition.xml");

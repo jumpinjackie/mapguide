@@ -74,10 +74,8 @@ include_SOURCES = \
   HttpGetIdentityProperties.cpp \
   HttpGetLegendImage.cpp \
   HttpGetLongTransactions.cpp \
-  HttpGetMap.cpp \
   HttpGetMapLegendImage.cpp \
   HttpGetMapImage.cpp \
-  HttpGetMapUpdate.cpp \
   HttpGetPlot.cpp \
   HttpGetRepositoryContent.cpp \
   HttpGetRepositoryHeader.cpp \
@@ -200,10 +198,8 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpGetIdentityProperties.h \
   HttpGetLegendImage.h \
   HttpGetLongTransactions.h \
-  HttpGetMap.h \
   HttpGetMapLegendImage.h \
   HttpGetMapImage.h \
-  HttpGetMapUpdate.h \
   HttpGetPlot.h \
   HttpGetRepositoryContent.h \
   HttpGetRepositoryHeader.h \

@@ -62,7 +62,6 @@ include_SOURCES = \
   Services/BaseServiceDefs.cpp \
   Services/ClassDefinition.cpp \
   Services/ClassDefinitionCollection.cpp \
-  Services/CreateSdfParams.cpp \
   Services/DataPropertyDefinition.cpp \
   Services/DataReader.cpp \
   Services/DeleteFeatures.cpp \
@@ -175,7 +174,6 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/BaseServiceDefs.h \
   Services/ClassDefinition.h \
   Services/ClassDefinitionCollection.h \
-  Services/CreateSdfParams.h \
   Services/DataPropertyDefinition.h \
   Services/DataReader.h \
   Services/DeleteFeatures.h \

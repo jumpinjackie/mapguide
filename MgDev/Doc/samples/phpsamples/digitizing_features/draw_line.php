@@ -129,7 +129,7 @@
 
       // Create the feature source
       $wkt = $map->GetMapSRS();
-      $sdfParams = new MgCreateSdfParams("spatial context",
+      $sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "spatial context",
         $wkt, $featureSchema);
       $featureService->CreateFeatureSource($resourceIdentifier,
         $sdfParams);

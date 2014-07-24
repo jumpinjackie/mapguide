@@ -32,7 +32,6 @@ int showLegend;
 int showProperties;
 int showSlider;
 String sessionId;
-String type;
 String hlTgt;
 String hlTgtName;
 String selectionColor; 
@@ -45,154 +44,123 @@ int pointBufferSize;
     response.setContentType("text/html; charset=UTF-8");
     request.setCharacterEncoding("UTF-8");
     infoWidth = showLegend = showProperties = 0;
-    hlTgt = hlTgtName = locale = mapDefinition = sessionId = type = "";
+    hlTgt = hlTgtName = locale = mapDefinition = sessionId = "";
 
     MgLocalizer.SetLocalizedFilesPath(getServletContext().getRealPath("/") + "localized/");
     GetRequestParameters(request);
 
-    if (type.equals("DWF"))
+    InitializeWebTier();
+
+    // create the map instance and store it with the session
+    //
+    MgUserInformation userInfo = new MgUserInformation();
+    userInfo.SetMgSessionId(sessionId);
+    userInfo.SetClientIp(GetClientIp(request));
+    userInfo.SetClientAgent(GetClientAgent());
+
+    MgSiteConnection site = new MgSiteConnection();
+    site.Open(userInfo);
+
+    MgTileService tileSrvc = (MgTileService)site.CreateService(MgServiceType.TileService);
+    int tileSizeX = tileSrvc.GetDefaultTileSizeX();
+    int tileSizeY = tileSrvc.GetDefaultTileSizeY();
+
+    MgResourceService resourceSrvc = (MgResourceService)site.CreateService(MgServiceType.ResourceService);
+
+    MgMap map = new MgMap(site);
+    MgResourceIdentifier resId = new MgResourceIdentifier(mapDefinition);
+    String mapName = resId.GetName();
+    map.Create(resId, mapName);
+
+    //create an empty selection object and store it in the session repository
+    MgSelection sel = new MgSelection(map);
+    sel.Save(resourceSrvc, mapName);
+
+    //get the map extent and calculate the scale factor
+    //
+    MgEnvelope mapExtent = map.GetMapExtent();
+    String srs = map.GetMapSRS();
+    double metersPerUnit;
+    String unitsType;
+    if(srs != null && srs.length() > 0)
     {
-        String frameName = "";
-        if(hlTgt.equals("1"))
-        {
-            frameName = "taskPaneFrame";
-        }
-        else if(hlTgt.equals("3"))
-        {
-            frameName = hlTgtName;
-        }
-        else
-        {
-            frameName = "_BLANK";
-        }
-        String mapRequest = GetRootVirtualFolder(request) + "/mapagent/mapagent.fcgi?OPERATION=GETMAP&VERSION=1.0&MAPDEFINITION=" + URLEncoder.encode(mapDefinition, "UTF-8") + "&DWFVERSION=6.01&EMAPVERSION=1.0&LOCALE=" + locale + (sessionId != ""? "&SESSION=" + sessionId: "") + "&reload=true";
-        String vals[] = { mapRequest,
-                      String.valueOf(infoWidth),
-                      showLegend != 0 || showProperties != 0? "true": "false",
-                      showLegend != 0 ? "true": "false",
-                      showProperties != 0 ? "true": "false",
-                      frameName
-                      };
-        //load html template code and format it
-        //
-        String templ = MgLocalizer.Localize(LoadTemplate("/viewerfiles/dwfmappane.templ"), locale, GetClientOS(request));
-        response.getWriter().write(Substitute(templ, vals));
+        MgCoordinateSystemFactory csFactory = new MgCoordinateSystemFactory();
+        MgCoordinateSystem cs = csFactory.Create(srs);
+        metersPerUnit = cs.ConvertCoordinateSystemUnitsToMeters(1.0);
+        unitsType = cs.GetUnits();
     }
     else
     {
-        InitializeWebTier();
-
-        // create the map instance and store it with the session
-        //
-        MgUserInformation userInfo = new MgUserInformation();
-        userInfo.SetMgSessionId(sessionId);
-        userInfo.SetClientIp(GetClientIp(request));
-        userInfo.SetClientAgent(GetClientAgent());
-
-        MgSiteConnection site = new MgSiteConnection();
-        site.Open(userInfo);
-
-        MgTileService tileSrvc = (MgTileService)site.CreateService(MgServiceType.TileService);
-        int tileSizeX = tileSrvc.GetDefaultTileSizeX();
-        int tileSizeY = tileSrvc.GetDefaultTileSizeY();
-
-        MgResourceService resourceSrvc = (MgResourceService)site.CreateService(MgServiceType.ResourceService);
-
-        MgMap map = new MgMap(site);
-        MgResourceIdentifier resId = new MgResourceIdentifier(mapDefinition);
-        String mapName = resId.GetName();
-        map.Create(resId, mapName);
-
-        //create an empty selection object and store it in the session repository
-        MgSelection sel = new MgSelection(map);
-        sel.Save(resourceSrvc, mapName);
-
-        //get the map extent and calculate the scale factor
-        //
-        MgEnvelope mapExtent = map.GetMapExtent();
-        String srs = map.GetMapSRS();
-        double metersPerUnit;
-        String unitsType;
-        if(srs != null && srs.length() > 0)
-        {
-            MgCoordinateSystemFactory csFactory = new MgCoordinateSystemFactory();
-            MgCoordinateSystem cs = csFactory.Create(srs);
-            metersPerUnit = cs.ConvertCoordinateSystemUnitsToMeters(1.0);
-            unitsType = cs.GetUnits();
-        }
-        else
-        {
-            metersPerUnit = 1.0;
-            unitsType = MgLocalizer.GetString("DISTANCEMETERS", locale);
-        }
-
-        MgCoordinate llExtent = mapExtent.GetLowerLeftCoordinate();
-        MgCoordinate urExtent = mapExtent.GetUpperRightCoordinate();
-        String bgColor = map.GetBackgroundColor();
-        if(bgColor.length() == 8)
-        {
-            bgColor = "#" + bgColor.substring(2);
-        }
-        else
-        {
-            bgColor = "white";
-        }
-
-        String scaleCreationCode = "";
-
-        // Create a sorted set of display scales
-        TreeSet scales = new TreeSet();
-        for(int i = 0; i < map.GetFiniteDisplayScaleCount(); i++)
-        {
-            scales.add(new Double(map.GetFiniteDisplayScaleAt(i)));
-        }
-        Iterator iter = scales.iterator();
-        int i = 0;
-        while(iter.hasNext())
-        {
-            scaleCreationCode = scaleCreationCode + "scales[" + i + "]=" + iter.next().toString().replace(',','.') + "; ";
-            i++;
-        }
-        MgResourceIdentifier mapStateId = new MgResourceIdentifier("Session:" + sessionId + "//" + mapName + "." + MgResourceType.Map);
-        map.Save(resourceSrvc, mapStateId);
-
-        //load html template code and format it
-        //
-        String templ = MgLocalizer.Localize(LoadTemplate("/viewerfiles/ajaxmappane.templ"), locale, GetClientOS(request));
-        String vpath = GetSurroundVirtualPath(request);
-        String vals[] = {
-                    String.valueOf(tileSizeX),
-                    String.valueOf(tileSizeY),
-                    GetRootVirtualFolder(request) + "/mapagent/mapagent.fcgi",
-                    mapName,
-                    mapDefinition,
-                    String.valueOf(infoWidth),
-                    showLegend != 0 ? "true": "false",
-                    showProperties != 0 ? "true": "false",
-                    sessionId,
-                    String.valueOf(llExtent.GetX()), String.valueOf(llExtent.GetY()),
-                    String.valueOf(urExtent.GetX()), String.valueOf(urExtent.GetY()),
-                    String.valueOf(metersPerUnit),
-                    unitsType,
-                    bgColor,
-                    hlTgt,
-                    hlTgtName,
-                    showSlider != 0? "true": "false",
-                    locale,
-                    scaleCreationCode,
-                    selectionColor,
-                    mapImgFormat,
-                    selImgFormat,
-                    String.valueOf(pointBufferSize),
-                    vpath + "ajaxviewerabout.jsp",
-                    vpath + "legendctrl.jsp",
-                    URLEncoder.encode(mapName, "UTF-8"),
-                    sessionId,
-                    locale,
-                    vpath + "propertyctrl.jsp",
-                    locale };
-        response.getWriter().write(Substitute(templ, vals));
+        metersPerUnit = 1.0;
+        unitsType = MgLocalizer.GetString("DISTANCEMETERS", locale);
     }
+
+    MgCoordinate llExtent = mapExtent.GetLowerLeftCoordinate();
+    MgCoordinate urExtent = mapExtent.GetUpperRightCoordinate();
+    String bgColor = map.GetBackgroundColor();
+    if(bgColor.length() == 8)
+    {
+        bgColor = "#" + bgColor.substring(2);
+    }
+    else
+    {
+        bgColor = "white";
+    }
+
+    String scaleCreationCode = "";
+
+    // Create a sorted set of display scales
+    TreeSet scales = new TreeSet();
+    for(int i = 0; i < map.GetFiniteDisplayScaleCount(); i++)
+    {
+        scales.add(new Double(map.GetFiniteDisplayScaleAt(i)));
+    }
+    Iterator iter = scales.iterator();
+    int i = 0;
+    while(iter.hasNext())
+    {
+        scaleCreationCode = scaleCreationCode + "scales[" + i + "]=" + iter.next().toString().replace(',','.') + "; ";
+        i++;
+    }
+    MgResourceIdentifier mapStateId = new MgResourceIdentifier("Session:" + sessionId + "//" + mapName + "." + MgResourceType.Map);
+    map.Save(resourceSrvc, mapStateId);
+
+    //load html template code and format it
+    //
+    String templ = MgLocalizer.Localize(LoadTemplate("/viewerfiles/ajaxmappane.templ"), locale, GetClientOS(request));
+    String vpath = GetSurroundVirtualPath(request);
+    String vals[] = {
+                String.valueOf(tileSizeX),
+                String.valueOf(tileSizeY),
+                GetRootVirtualFolder(request) + "/mapagent/mapagent.fcgi",
+                mapName,
+                mapDefinition,
+                String.valueOf(infoWidth),
+                showLegend != 0 ? "true": "false",
+                showProperties != 0 ? "true": "false",
+                sessionId,
+                String.valueOf(llExtent.GetX()), String.valueOf(llExtent.GetY()),
+                String.valueOf(urExtent.GetX()), String.valueOf(urExtent.GetY()),
+                String.valueOf(metersPerUnit),
+                unitsType,
+                bgColor,
+                hlTgt,
+                hlTgtName,
+                showSlider != 0? "true": "false",
+                locale,
+                scaleCreationCode,
+                selectionColor,
+                mapImgFormat,
+                selImgFormat,
+                String.valueOf(pointBufferSize),
+                vpath + "ajaxviewerabout.jsp",
+                vpath + "legendctrl.jsp",
+                URLEncoder.encode(mapName, "UTF-8"),
+                sessionId,
+                locale,
+                vpath + "propertyctrl.jsp",
+                locale };
+    response.getWriter().write(Substitute(templ, vals));
 
 %>
 
@@ -208,7 +176,6 @@ void GetRequestParameters(HttpServletRequest request)
     showLegend = GetIntParameter(request, "SHOWLEGEND");
     showProperties = GetIntParameter(request, "SHOWPROP");
     showSlider = GetIntParameter(request, "SHOWSLIDER");
-    type = GetParameter(request, "TYPE");
     selectionColor = ValidateColorString(GetParameter(request, "SELCOLOR"), 8); 
     mapImgFormat = GetParameter(request, "MAPIMGFORMAT"); 
     selImgFormat = GetParameter(request, "SELIMGFORMAT"); 

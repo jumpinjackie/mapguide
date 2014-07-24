@@ -44,7 +44,7 @@ function CreateBufferFeatureSource($featureService, $wkt, $bufferFeatureResId)
     $bufferSchema = new MgFeatureSchema('BufferLayerSchema', 'temporary schema to hold a buffer');
     $bufferSchema->GetClasses()->Add($bufferClass);
 
-    $sdfParams = new MgCreateSdfParams('defaultSrs', $wkt, $bufferSchema);
+    $sdfParams = new MgFileFeatureSourceParams('OSGeo.SDF', 'defaultSrs', $wkt, $bufferSchema);
 
     $featureService->CreateFeatureSource($bufferFeatureResId, $sdfParams);
 }
@@ -114,7 +114,7 @@ function CreateParcelMarkerFeatureSource($featureService, $wkt, $parcelMarkerDat
     $parcelSchema = new MgFeatureSchema('ParcelLayerSchema', 'temporary schema to hold parcel markers');
     $parcelSchema->GetClasses()->Add($parcelClass);
 
-    $sdfParams = new MgCreateSdfParams('defaultSrs', $wkt, $parcelSchema);
+    $sdfParams = new MgFileFeatureSourceParams('OSGeo.SDF', 'defaultSrs', $wkt, $parcelSchema);
 
     $featureService->CreateFeatureSource($parcelMarkerDataResId, $sdfParams);
 }

@@ -822,7 +822,7 @@ void TestFeatureService::TestCase_GetIdentityProperties()
         STRING wkt = L"LOCAL_CS[\"Non-Earth (Meter)\",LOCAL_DATUM[\"Local Datum\",0],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
 
         Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(L"Library://UnitTests/Data/GetIdentityPropertiesTest.FeatureSource");
-        Ptr<MgCreateSdfParams> createSdf = new MgCreateSdfParams(L"Default", wkt, testSchema);
+        Ptr<MgFileFeatureSourceParams> createSdf = new MgFileFeatureSourceParams(L"OSGeo.SDF", L"Default", wkt, testSchema);
         pService->CreateFeatureSource(fsId, createSdf);
 
         // Now query it - as the HttpHandler does it
@@ -2125,13 +2125,6 @@ void TestFeatureService::TestCase_CreateFeatureSource()
         schemaClasses->Add(classDef);
 
         STRING wkt = L"LOCAL_CS[\"Non-Earth (Meter)\",LOCAL_DATUM[\"Local Datum\",0],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
-
-        // Create SDF feature source using class MgCreateSdfParams
-        Ptr<MgCreateSdfParams> params1 = new MgCreateSdfParams(L"ArbitraryXY", wkt, schema);
-        Ptr<MgResourceIdentifier> resource1 = new MgResourceIdentifier(L"Library://UnitTests/Data/CreateFeatureSourceTest1.FeatureSource");
-        pService->CreateFeatureSource(resource1, params1);
-        // Delete the resource
-        pResourceService->DeleteResource(resource1);
 
         // Create SDF feature source using class MgFeatureSourceParams
         Ptr<MgFileFeatureSourceParams> params2 = new MgFileFeatureSourceParams(L"OSGeo.SDF", L"ArbitraryXY", wkt, schema);

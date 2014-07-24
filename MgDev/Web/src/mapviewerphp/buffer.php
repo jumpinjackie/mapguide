@@ -136,7 +136,7 @@
             $schema->GetClasses()->Add($classDef);
 
             //finally, creation of the feature source
-            $sdfParams = new MgCreateSdfParams("LatLong", $srsDefMap, $schema);
+            $sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "LatLong", $srsDefMap, $schema);
             $featureSrvc->CreateFeatureSource($dataSourceId, $sdfParams);
 
             //Add layer to map

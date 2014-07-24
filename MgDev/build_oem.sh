@@ -210,46 +210,6 @@ clean_dwftk()
 }
 
 #**********************************************************
-# Build DWFEMAP 1.0
-# Notes: none
-#**********************************************************
-
-init_dwfemap()
-{
-    LIB_NAME="DWFEMAP 1.0"
-    pushd DWFTK7.1/develop/global/build/gnu/dwfemap
-    if [ $CLEAN_FLAG -eq 0 ]; then
-    	sh ./build_setup.sh
-    fi
-    popd
-}
-
-build_dwfemap()
-{
-    pushd DWFTK7.1/develop/global/src/dwfemap
-    aclocal
-    libtoolize --copy --force
-    automake --add-missing --copy
-    autoconf
-    if [ $BUILD_CONFIG = "debug" ]; then
-        sh ./configure --disable-optimized --enable-silent-rules --prefix="${INSTALLDIR}"
-    else
-        sh ./configure --enable-optimized --enable-silent-rules --prefix="${INSTALLDIR}"
-    fi
-    make
-    check_build
-    popd
-}
-
-clean_dwfemap()
-{
-    pushd DWFTK7.1/develop/global/src/dwfemap
-    make clean
-    check_clean
-    popd
-}
-
-#**********************************************************
 # Build GEOS 2.2.0
 # Notes: none
 #**********************************************************
@@ -707,7 +667,7 @@ clean_fusion()
 #**********************************************************
 
 pushd Oem
-for lib in linuxapt fusion ace dwfcore dwftk dwfemap geos bdbxml cppunit imake zlib libpng jpeg freetype gd agg json csmap;
+for lib in linuxapt fusion ace dwfcore dwftk geos bdbxml cppunit imake zlib libpng jpeg freetype gd agg json csmap;
 do
     echo "$lib: Initialization..........................."
     init_"$lib"

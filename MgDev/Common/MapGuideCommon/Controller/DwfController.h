@@ -61,59 +61,6 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Processes a GetMap request from the Viewer and returns
-    /// a DWF containing an eMap that fully describes the map
-    /// but does not yet contain any layer graphics
-    ///
-    /// \param mapDefinition
-    /// Id of a map definition in a resource repository
-    /// \param dwfVersion
-    /// DWF version
-    /// \param eMapVersion
-    /// eMap version
-    /// \param language
-    /// Language code
-    /// \param mapViewCommands
-    /// Set of commands to be applied
-    ///
-    /// \return
-    /// A byte reader embedding a DWF containing an eMap
-    ///
-    MgByteReader* GetMap(
-        MgResourceIdentifier* mapDefinition,
-        CREFSTRING dwfVersion,
-        CREFSTRING eMapVersion,
-        MgPropertyCollection* mapViewCommands);
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Processes a GetMapUpdate request from the Viewer and
-    /// returns an eMapTransaction DWF containing updated
-    /// content for the specified map
-    ///
-    /// \param mapName
-    /// Name of the map
-    /// \param seqNo
-    /// Sequence number.
-    /// \param dwfVersion
-    /// DWF version
-    /// \param eMapVersion
-    /// eMap version
-    /// \param mapViewCommands
-    /// Set of commands to be applied
-    ///
-    /// \return
-    /// A byte reader embedding a DWF containing updated
-    /// content for the specified map
-    ///
-    MgByteReader* GetMapUpdate(CREFSTRING mapName,
-        int seqNo,
-        CREFSTRING dwfVersion,
-        CREFSTRING eMapVersion,
-        MgPropertyCollection* mapViewCommands);
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
     /// Processes a GetPlot request from the Viewer and returns either an EPlot for print to scale functionality,
     /// an EPlot DWF for offline use, or an EPlot generated using a specified print layout
     ///

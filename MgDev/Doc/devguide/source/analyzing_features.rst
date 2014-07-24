@@ -443,7 +443,7 @@ is user-defined.
     $bufferClass->SetDefaultGeometryPropertyName('BufferGeometry');
     $bufferSchema = new MgFeatureSchema('BufferLayerSchema', 'temporary schema to hold a buffer');
     $bufferSchema->GetClasses()->Add($bufferClass);
-    $sdfParams = new MgCreateSdfParams('defaultSrs', $wkt, $bufferSchema);
+    $sdfParams = new MgFileFeatureSourceParams('OSGeo.SDF', 'defaultSrs', $wkt, $bufferSchema);
     $featureService->CreateFeatureSource($bufferFeatureResId, $sdfParams);
 
 **.net (C#)**
@@ -477,7 +477,7 @@ is user-defined.
     bufferClass.SetDefaultGeometryPropertyName("BufferGeometry");
     MgFeatureSchema bufferSchema = new MgFeatureSchema("BufferLayerSchema", "temporary schema to hold a buffer");
     bufferSchema.GetClasses().Add(bufferClass);
-    MgCreateSdfParams sdfParams = new MgCreateSdfParams("defaultSrs", wkt, bufferSchema);
+    MgFileFeatureSourceParams sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "defaultSrs", wkt, bufferSchema);
     featureService.CreateFeatureSource(bufferFeatureResId, sdfParams);
 
 **Java**
@@ -511,7 +511,7 @@ is user-defined.
     bufferClass.SetDefaultGeometryPropertyName("BufferGeometry");
     MgFeatureSchema bufferSchema = new MgFeatureSchema("BufferLayerSchema", "temporary schema to hold a buffer");
     bufferSchema.GetClasses().Add(bufferClass);
-    MgCreateSdfParams sdfParams = new MgCreateSdfParams("defaultSrs", wkt, bufferSchema);
+    MgFileFeatureSourceParams sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "defaultSrs", wkt, bufferSchema);
     featureService.CreateFeatureSource(bufferFeatureResId, sdfParams);
 
 To display features from a temporary feature source in a map, create a layer
@@ -1140,7 +1140,7 @@ see :ref:`modifying-maps-and-layers`.
         $bufferClass->SetDefaultGeometryPropertyName('BufferGeometry');
         $bufferSchema = new MgFeatureSchema('BufferLayerSchema', 'temporary schema to hold a buffer');
         $bufferSchema->GetClasses()->Add($bufferClass);
-        $sdfParams = new MgCreateSdfParams('defaultSrs', $wkt, $bufferSchema);
+        $sdfParams = new MgFileFeatureSourceParams('OSGeo.SDF', 'defaultSrs', $wkt, $bufferSchema);
         $featureService->CreateFeatureSource($bufferFeatureResId, $sdfParams);
     }
      
@@ -1222,7 +1222,7 @@ see :ref:`modifying-maps-and-layers`.
             MgFeatureSchema bufferSchema = new MgFeatureSchema("BufferLayerSchema", "temporary schema to hold a buffer");
             bufferSchema.GetClasses().Add(bufferClass);
 
-            MgCreateSdfParams sdfParams = new MgCreateSdfParams("defaultSrs", wkt, bufferSchema);
+            MgFileFeatureSourceParams sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "defaultSrs", wkt, bufferSchema);
 
             featureService.CreateFeatureSource(bufferFeatureResId, sdfParams);
         }

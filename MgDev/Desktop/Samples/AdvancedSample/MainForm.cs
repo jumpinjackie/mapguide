@@ -251,7 +251,7 @@ namespace AdvancedSample
             //Create the feature source with this schema. We use the map's
             //coordinate system for the feature source to ensure features
             //that we create, will line up with the map
-            MgCreateSdfParams create = new MgCreateSdfParams("Default", map.GetMapSRS(), schema);
+            MgFileFeatureSourceParams create = new MgFileFeatureSourceParams("OSGeo.SDF", "Default", map.GetMapSRS(), schema);
             featSvc.CreateFeatureSource(fsId, create);
 
             //Then create the layer definition. RedlineLayer.xml contains the template

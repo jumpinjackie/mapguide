@@ -94,8 +94,6 @@ PUBLISHED_API:
 class MG_MAPGUIDE_API MgMappingServiceOpId
 {
 INTERNAL_API:
-    static const int GenerateMap                = 0x1111EE01;
-    static const int GenerateMapUpdate          = 0x1111EE02;
     static const int GeneratePlot               = 0x1111EE03;
     static const int GeneratePlotWithLayout     = 0x1111EE04;
     static const int GenerateMultiPlot          = 0x1111EE05;

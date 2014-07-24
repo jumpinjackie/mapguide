@@ -159,7 +159,7 @@ Guide samples.
       
     // Create the feature source
     $wkt = $map->GetMapSRS();
-    $sdfParams = new MgCreateSdfParams("spatial context", $wkt, $featureSchema);
+    $sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "spatial context", $wkt, $featureSchema);
     $featureService->CreateFeatureSource($resourceIdentifier, $sdfParams);
 
 **.net (C#)**
@@ -207,7 +207,7 @@ Guide samples.
 
     // Create the feature source
     String wkt = map.GetMapSRS();
-    MgCreateSdfParams sdfParams = new MgCreateSdfParams("spatial context", wkt, featureSchema);
+    MgFileFeatureSourceParams sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "spatial context", wkt, featureSchema);
     featureService.CreateFeatureSource(resourceIdentifier, sdfParams);
 
 **Java**
@@ -255,7 +255,7 @@ Guide samples.
 
     // Create the feature source
     String wkt = map.GetMapSRS();
-    MgCreateSdfParams sdfParams = new MgCreateSdfParams("spatial context", wkt, featureSchema);
+    MgFileFeatureSourceParams sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "spatial context", wkt, featureSchema);
     featureService.CreateFeatureSource(resourceIdentifier, sdfParams);
 
 .. index::

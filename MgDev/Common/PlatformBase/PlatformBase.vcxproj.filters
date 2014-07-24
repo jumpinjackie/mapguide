@@ -159,9 +159,6 @@
     <ClCompile Include="Services\ClassDefinitionCollection.cpp">
       <Filter>Services</Filter>
     </ClCompile>
-    <ClCompile Include="Services\CreateSdfParams.cpp">
-      <Filter>Services</Filter>
-    </ClCompile>
     <ClCompile Include="Services\DataPropertyDefinition.cpp">
       <Filter>Services</Filter>
     </ClCompile>
@@ -496,9 +493,6 @@
       <Filter>Services</Filter>
     </ClInclude>
     <ClInclude Include="Services\ClassDefinitionCollection.h">
-      <Filter>Services</Filter>
-    </ClInclude>
-    <ClInclude Include="Services\CreateSdfParams.h">
       <Filter>Services</Filter>
     </ClInclude>
     <ClInclude Include="Services\DataPropertyDefinition.h">

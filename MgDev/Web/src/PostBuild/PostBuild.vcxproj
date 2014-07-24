@@ -141,10 +141,6 @@
       <Project>{da3459c2-1430-499f-996f-218da3dd755d}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\DotNetApi\DotNetApi.vcxproj">
-      <Project>{557c1767-b4f4-4e96-8699-156bad696802}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\DotNetApi\Foundation\FoundationDotNetApi.vcxproj">
       <Project>{5fe54bf6-2939-46bb-a811-277d46c901c4}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

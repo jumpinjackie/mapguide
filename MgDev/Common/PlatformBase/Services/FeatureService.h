@@ -52,7 +52,6 @@
 #include "FeatureSchemaCollection.h"
 #include "ClassDefinitionCollection.h"
 #include "FeatureSourceParams.h"
-#include "CreateSdfParams.h"
 #include "GwsFeatureReader.h"
 
 class MgIntCollection;
@@ -1493,9 +1492,8 @@ PUBLISHED_API:
     /// \note1
     ///
     /// \remarks
-    /// MgFeatureSourceParams is an abstract class. Currently there
-    /// are two concrete classes MgFileFeatureSourceParams and
-    /// MgCreateSdfParams and SDF, SHP and SQLite feature source can
+    /// MgFeatureSourceParams is an abstract class. MgFileFeatureSourceParams is the only
+    /// concrete class and SDF, SHP and SQLite feature source can
     /// be created only. If no well-know text format coordinate
     /// system is specified in argument sourceParams, this method
     /// will not create spatial context for the feature source. For

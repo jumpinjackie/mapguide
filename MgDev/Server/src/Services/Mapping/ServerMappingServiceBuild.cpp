@@ -24,8 +24,6 @@
 #include "OpCreateRuntimeMap.cpp"
 #include "OpDescribeRuntimeMap.cpp"
 #include "OpGeneratePlot.cpp"
-#include "OpGenerateMap.cpp"
-#include "OpGenerateMapUpdate.cpp"
 #include "OpGenerateMultiPlot.cpp"
 #include "OpGenerateLegendPlot.cpp"
 #include "OpGenerateLegendImage.cpp"

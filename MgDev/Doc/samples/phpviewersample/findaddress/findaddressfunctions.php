@@ -87,7 +87,7 @@ function CreateAddressMarkerFeatureSource($featureService, $addressMarkerDataRes
     $addressSchema->SetName('AddressMarkerSchema');
     $addressSchema->GetClasses()->Add($addressClass);
 
-    $sdfParams = new MgCreateSdfParams('LL84', $ll84Wkt, $addressSchema);
+    $sdfParams = new MgFileFeatureSourceParams('OSGeo.SDF', 'LL84', $ll84Wkt, $addressSchema);
 
     $featureService->CreateFeatureSource($addressMarkerDataResId, $sdfParams);
 }

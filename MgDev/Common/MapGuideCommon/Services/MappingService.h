@@ -51,104 +51,6 @@ class MgEnvelope;
 class MG_MAPGUIDE_API MgMappingService : public MgService
 {
 PUBLISHED_API:
-    ////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Generates an \link eMap eMap \endlink that describes the specified
-    /// map
-    ///
-    /// \deprecated
-    /// This method has been deprecated. eMap DWF support may be removed in a future release of MapGuide
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgByteReader GenerateMap(MgMap map, string mapAgentUri, MgDwfVersion dwfVersion);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgByteReader GenerateMap(MgMap map, String mapAgentUri, MgDwfVersion dwfVersion);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgByteReader GenerateMap(MgMap map, string mapAgentUri, MgDwfVersion dwfVersion);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param map (MgMap)
-    /// Map object describing current state of map
-    /// \param mapAgentUri (String/string)
-    /// Http Uri for map agent
-    /// \param dwfVersion (MgDwfVersion)
-    /// DWF version required by the client. This
-    /// determines the schema and file versions used
-    /// to generate the DWFs sent back to the client.
-    ///
-    /// \return
-    /// Returns an MgByteReader object containing a DWF of the
-    /// legend in eMap format.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// \code
-    /// // Assuming $resourceService and $mappingService have already been
-    /// // initialized.
-    /// // Get a runtime map from a map definition
-    /// $resourceID = new  MgResourceIdentifier('Library://Calgary/Maps/Calgary.MapDefinition');
-    /// $map = new MgMap();
-    /// $map->Create($resourceService, $resourceID, 'Calgary');
-    ///
-    /// // Generate a DWF from the map
-    /// $mapAgentURI = 'http://localhost/phpmapagent/mapAgent.php'; // Replace 'localhost' with your server name
-    /// $dwfVersion = new MgDwfVersion('6.01','1.2');
-    /// $byteReader = $mappingService->GenerateMap($map, $mapAgentURI, $dwfVersion);
-    /// \endcode
-    /// \htmlinclude ExampleBottom.html
-    ///
-    /// \exception MgNullArgumentException
-    ///
-    virtual MgByteReader* GenerateMap(MgMap* map, CREFSTRING mapAgentUri, MgDwfVersion* dwfVersion);
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Generates an \link eMap eMap \endlink that contains any required
-    /// updates to the metadata and layer graphics based on the state
-    /// of the specified map.
-    ///
-    /// \deprecated
-    /// This method has been deprecated. eMap DWF support may be removed in a future release of MapGuide
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgByteReader GenerateMapUpdate(MgMap map, int seqNo, MgDwfVersion dwfVersion);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgByteReader GenerateMapUpdate(MgMap map, int seqNo, MgDwfVersion dwfVersion);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgByteReader GenerateMapUpdate(MgMap map, int seqNo, MgDwfVersion dwfVersion);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param map (MgMap)
-    /// Map object specifying current state of map.
-    /// \param seqNo (int)
-    /// Update sequence number. An arbitrary number which is
-    /// set automatically by the DWF Viewer and used by a
-    /// client to identify a map update request. The client
-    /// passes this number as part of its request for data, and
-    /// that number is returned here so that the client can
-    /// match the response with the request. The MapGuide
-    /// server and the web tier do not make any use of this
-    /// number except sending it back as part of the response.
-    /// \param dwfVersion (MgDwfVersion)
-    /// DWF version required by the client. This determines the
-    /// schema and file versions used to generate the DWFs sent
-    /// back to the client.
-    ///
-    /// \return
-    /// Returns an MgByteReader object containing a DWF of the
-    /// legend in eMap format.
-    ///
-    /// \exception MgNullArgumentException
-    ///
-    ///
-    virtual MgByteReader* GenerateMapUpdate(MgMap* map, INT32 seqNo, MgDwfVersion* dwfVersion) = 0;
-
     ///////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Plot The map to an EPlot DWF using the center and scale from the map.  The
@@ -638,9 +540,6 @@ INTERNAL_API:
     ///
     MgMappingService();
 
-    //TODO: Get rid of sessionId from API once user information is passed to server
-    virtual MgByteReader* GenerateMap(MgMap* map, CREFSTRING sessionId, CREFSTRING mapAgentUri, MgDwfVersion* dwfVersion) = 0;
-
     ///////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Generates an \link ePlot ePlot \endlink containing a legend for the
@@ -714,8 +613,6 @@ public:
     /// Enumerations
     enum OperationId
     {
-        opIdGenerateMap             =  0x1111EE01,
-        opIdGenerateMapUpdate       =  0x1111EE02,
         opIdGeneratePlot            =  0x1111EE03,
         opIdGeneratePlotWithLayout  =  0x1111EE04,
         opIdGenerateMultiPlot       =  0x1111EE05,

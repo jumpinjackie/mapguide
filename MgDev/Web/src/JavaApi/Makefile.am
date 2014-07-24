@@ -293,7 +293,6 @@ MgApi_wrap.cpp : \
     ../../../Common/PlatformBase/Services/ClassDefinition.h \
     ../../../Common/PlatformBase/Services/ClassDefinitionCollection.h \
     ../../../Common/PlatformBase/Services/FileFeatureSourceParams.h \
-    ../../../Common/PlatformBase/Services/CreateSdfParams.h \
     ../../../Common/PlatformBase/Services/DataPropertyDefinition.h \
     ../../../Common/PlatformBase/Services/DataReader.h \
     ../../../Common/PlatformBase/Services/DeleteFeatures.h \

@@ -100,7 +100,6 @@
 #include "Services/ClassDefinition.h"
 #include "Services/ClassDefinitionCollection.h"
 #include "Services/FileFeatureSourceParams.h"
-#include "Services/CreateSdfParams.h"
 #include "Services/DataPropertyDefinition.h"
 #include "Services/DataReader.h"
 #include "Services/DeleteFeatures.h"

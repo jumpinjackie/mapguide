@@ -73,7 +73,6 @@
 #include "Services/BaseServiceDefs.cpp"
 #include "Services/ClassDefinition.cpp"
 #include "Services/ClassDefinitionCollection.cpp"
-#include "Services/CreateSdfParams.cpp"
 #include "Services/DataPropertyDefinition.cpp"
 #include "Services/DataReader.cpp"
 #include "Services/DeleteFeatures.cpp"

@@ -151,7 +151,7 @@
                     $schema->GetClasses()->Add($classDef);
 
                     //finally, creation of the feature source
-                    $params = new MgCreateSdfParams("MapSrs", $srs, $schema);
+                    $params = new MgFileFeatureSourceParams("OSGeo.SDF", "MapSrs", $srs, $schema);
                     $featureSrvc->CreateFeatureSource($dataSourceId, $params);
 
                     //build map tip

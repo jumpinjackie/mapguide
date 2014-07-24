@@ -1268,7 +1268,7 @@ void TestFeatureService::TestCase_SelectFeaturesTransformed()
 
         Ptr<MgGeometryFactory> geomFact = new MgGeometryFactory();
         Ptr<MgAgfReaderWriter> agfRw = new MgAgfReaderWriter();
-        Ptr<MgCreateSdfParams> create = new MgCreateSdfParams(L"Default", srcWkt, fs);
+        Ptr<MgFileFeatureSourceParams> create = new MgFileFeatureSourceParams(L"OSGeo.SDF", L"Default", srcWkt, fs);
         Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(L"Library://UnitTests/Data/TransformTest.FeatureSource");
         pService->CreateFeatureSource(fsId, create);
 
@@ -1655,7 +1655,7 @@ void TestFeatureService::TestCase_InsertFeaturesBatch()
         if (pResSvc->ResourceExists(fsId))
             pResSvc->DeleteResource(fsId);
 
-        Ptr<MgCreateSdfParams> create = new MgCreateSdfParams(L"Default", wkt, fs);
+        Ptr<MgFileFeatureSourceParams> create = new MgFileFeatureSourceParams(L"OSGeo.SDF", L"Default", wkt, fs);
         pService->CreateFeatureSource(fsId, create);
 
         Ptr<MgAgfReaderWriter> agfRW = new MgAgfReaderWriter();
@@ -3091,13 +3091,6 @@ void TestFeatureService::TestCase_CreateFeatureSource()
         Ptr<MgFeatureSchema> schema = new MgFeatureSchema(L"BufferSchema", L"Temporary buffer schema");
         Ptr<MgClassDefinitionCollection> schemaClasses = schema->GetClasses();
         schemaClasses->Add(classDef);
-
-        // Create SDF feature source using class MgCreateSdfParams
-        Ptr<MgCreateSdfParams> params1 = new MgCreateSdfParams(L"ArbitraryXY", wkt, schema);
-        Ptr<MgResourceIdentifier> resource1 = new MgResourceIdentifier(L"Library://UnitTests/Data/CreateFeatureSourceTest1.FeatureSource");
-        pService->CreateFeatureSource(resource1, params1);
-        // Delete the resource
-        pResourceService->DeleteResource(resource1);
 
         // Create SDF feature source using class MgFeatureSourceParams
         Ptr<MgFileFeatureSourceParams> params2 = new MgFileFeatureSourceParams(L"OSGeo.SDF", L"ArbitraryXY", wkt, schema);

@@ -97,7 +97,7 @@ void EmitAddressResults(MgFeatureService featureService, MgResourceIdentifier ad
     addressSchema.SetName("AddressMarkerSchema");
     addressSchema.GetClasses().Add(addressClass);
 
-    MgCreateSdfParams sdfParams = new MgCreateSdfParams("LL84", ll84Wkt, addressSchema);
+    MgFileFeatureSourceParams sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "LL84", ll84Wkt, addressSchema);
 
     featureService.CreateFeatureSource(addressMarkerDataResId, sdfParams);
 }

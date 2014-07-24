@@ -459,63 +459,6 @@ void TestMappingService::TestCase_DescribeRuntimeMap()
     }
 }
 
-void TestMappingService::TestCase_GetMap()
-{
-    try
-    {
-        //make a runtime map
-        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map = new MgMap(m_siteConnection);
-        map->Create(mdfres, L"UnitTestSheboygan");
-
-        Ptr<MgDwfVersion> version = new MgDwfVersion();
-
-        //call the API
-        Ptr<MgByteReader> emap = m_svcMapping->GenerateMap(map, L"blurple", L"clump", version);
-    }
-    catch(MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
-    catch(...)
-    {
-        throw;
-    }
-}
-
-
-void TestMappingService::TestCase_GetMapUpdate()
-{
-    try
-    {
-        //make a runtime map
-        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map = new MgMap(m_siteConnection);
-        map->Create(mdfres, L"UnitTestSheboygan");
-
-        Ptr<MgDwfVersion> version = new MgDwfVersion();
-
-        //call the API
-        Ptr<MgByteReader> emapupdate = m_svcMapping->GenerateMapUpdate(map, 42, version);
-
-        INT64 len = emapupdate->GetLength();
-
-        //CPPUNIT_ASSERT(len == 7000); //TODO: determine correct length
-    }
-    catch(MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
-    catch(...)
-    {
-        throw;
-    }
-}
-
 void TestMappingService::TestCase_SaveMap()
 {
     try

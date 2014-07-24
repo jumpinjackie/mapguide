@@ -25,8 +25,6 @@ libMgRenderers_la_SOURCES = \
   ../../Oem/agg-2.4/font_freetype/agg_font_freetype.cpp \
   CriticalSection.cpp \
   DWFRenderer.cpp \
-  EMapRenderer.cpp \
-  EMapUpdateRenderer.cpp \
   EPlotRenderer.cpp \
   FontManager.cpp \
   GDFillPatterns.cpp \
@@ -56,8 +54,6 @@ noinst_HEADERS = \
   CriticalSection.h \
   DWFRenderer.h \
   DWFRSInputStream.h \
-  EMapRenderer.h \
-  EMapUpdateRenderer.h \
   EPlotRenderer.h \
   FontManager.h \
   GDFillPatterns.h \
@@ -92,10 +88,8 @@ libMgRenderers_la_LIBADD = \
   ../../Oem/gd/lpng/libpng.a \
   ../../Oem/agg-2.4/src/libagg.a \
   -ldwfcore \
-  -ldwftk \
-  -ldwfemap
+  -ldwftk
 
 libMgRenderers_la_LDFLAGS = -release $(PACKAGE_VERSION) \
   -L../../Oem/DWFTK7.1/develop/global/src/dwfcore/.libs \
-  -L../../Oem/DWFTK7.1/develop/global/src/dwf/.libs \
-  -L../../Oem/DWFTK7.1/develop/global/src/dwfemap/.libs
+  -L../../Oem/DWFTK7.1/develop/global/src/dwf/.libs

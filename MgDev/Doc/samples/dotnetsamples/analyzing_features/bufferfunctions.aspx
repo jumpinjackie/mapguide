@@ -59,7 +59,7 @@
             MgFeatureSchema bufferSchema = new MgFeatureSchema("BufferLayerSchema", "temporary schema to hold a buffer");
             bufferSchema.GetClasses().Add(bufferClass);
 
-            MgCreateSdfParams sdfParams = new MgCreateSdfParams("defaultSrs", wkt, bufferSchema);
+            MgFileFeatureSourceParams sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "defaultSrs", wkt, bufferSchema);
 
             featureService.CreateFeatureSource(bufferFeatureResId, sdfParams);
         }
@@ -142,7 +142,7 @@
             MgFeatureSchema parcelSchema = new MgFeatureSchema("ParcelLayerSchema", "temporary schema to hold parcel markers");
             parcelSchema.GetClasses().Add(parcelClass);
 
-            MgCreateSdfParams sdfParams = new MgCreateSdfParams("defaultSrs", wkt, parcelSchema);
+            MgFileFeatureSourceParams sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "defaultSrs", wkt, parcelSchema);
 
             featureService.CreateFeatureSource(parcelMarkerDataResId, sdfParams);
         }

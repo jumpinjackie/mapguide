@@ -25,19 +25,6 @@ MgMappingService::MgMappingService() : MgService()
 {
 }
 
-//////////////////////////////////////////////////////////////////
-///TODO: Get rid of this stub once user info is passed to the server
-MgByteReader* MgMappingService::GenerateMap(MgMap* map, CREFSTRING mapAgentUri, MgDwfVersion* dwfVersion)
-{
-    MG_TRY()
-
-        throw new MgNotImplementedException(L"MgMappingService.GenerateMap", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    MG_CATCH_AND_THROW(L"MgMappingService.GenerateMap")
-
-    return NULL;
-}
-
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Get the class Id

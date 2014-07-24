@@ -25,8 +25,6 @@ class TestMappingService : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(TestMappingService);
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
-    CPPUNIT_TEST(TestCase_GetMap);
-    CPPUNIT_TEST(TestCase_GetMapUpdate);
     CPPUNIT_TEST(TestCase_SaveMap);
     CPPUNIT_TEST(TestCase_GetMultiPlot);
     CPPUNIT_TEST(TestCase_GetPlotUsingCurrentCenterAndScale);
@@ -55,8 +53,6 @@ public:
 
     void TestCase_CreateRuntimeMap();
     void TestCase_DescribeRuntimeMap();
-    void TestCase_GetMap();
-    void TestCase_GetMapUpdate();
     void TestCase_SaveMap();
     void TestCase_GetPlot();
     void TestCase_GetMultiPlot();

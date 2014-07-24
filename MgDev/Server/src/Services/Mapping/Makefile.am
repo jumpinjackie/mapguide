@@ -39,8 +39,6 @@ include_SOURCES = \
   OpDescribeRuntimeMap.cpp \
   OpGenerateLegendImage.cpp \
   OpGenerateLegendPlot.cpp \
-  OpGenerateMap.cpp \
-  OpGenerateMapUpdate.cpp \
   OpGenerateMultiPlot.cpp \
   OpGeneratePlot.cpp \
   OpQueryFeatures.cpp \
@@ -62,8 +60,6 @@ noinst_HEADERS = $(include_SOURCES) \
   OpDescribeRuntimeMap.h \
   OpGenerateLegendImage.h \
   OpGenerateLegendPlot.h \
-  OpGenerateMap.h \
-  OpGenerateMapUpdate.h \
   OpGenerateMultiPlot.h \
   OpGeneratePlot.h \
   OpQueryFeatures.h \

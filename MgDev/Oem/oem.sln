@@ -63,8 +63,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqliteGUI", "SQLite\src\Sql
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWFCore", "DWFTK7.1\develop\global\build\VS\DWFCore\DWFCore.vcxproj", "{8BECE007-1749-4300-87D8-267B613AAE6B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF EMap Toolkit (1.0.0)", "DWFTK7.1\develop\global\build\VS\DWFEMapToolkit\DWFEMap.vcxproj", "{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWFToolkit (7.1.1)", "DWFTK7.1\develop\global\build\VS\DWFToolkit\DWFToolkit.vcxproj", "{2D22C637-6219-4096-8399-EEA4BBD142AA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF W3D Toolkit (1.2.1236)", "DWFTK7.1\develop\global\build\VS\W3DToolkit\W3DToolkit.vcxproj", "{9415DE9A-E01E-47C1-A159-EB1E1D4E518C}"
@@ -306,14 +304,6 @@ Global
 		{8BECE007-1749-4300-87D8-267B613AAE6B}.Release|Win32.Build.0 = Release (Read-Write WChar LIB)|Win32
 		{8BECE007-1749-4300-87D8-267B613AAE6B}.Release|x64.ActiveCfg = Release (Read-Write WChar LIB)|x64
 		{8BECE007-1749-4300-87D8-267B613AAE6B}.Release|x64.Build.0 = Release (Read-Write WChar LIB)|x64
-		{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}.Debug|Win32.ActiveCfg = Debug (Read-Write WChar LIB)|Win32
-		{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}.Debug|Win32.Build.0 = Debug (Read-Write WChar LIB)|Win32
-		{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}.Debug|x64.ActiveCfg = Debug (Read-Write WChar LIB)|x64
-		{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}.Debug|x64.Build.0 = Debug (Read-Write WChar LIB)|x64
-		{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}.Release|Win32.ActiveCfg = Release (Read-Write WChar LIB)|Win32
-		{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}.Release|Win32.Build.0 = Release (Read-Write WChar LIB)|Win32
-		{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}.Release|x64.ActiveCfg = Release (Read-Write WChar LIB)|x64
-		{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}.Release|x64.Build.0 = Release (Read-Write WChar LIB)|x64
 		{2D22C637-6219-4096-8399-EEA4BBD142AA}.Debug|Win32.ActiveCfg = Debug (Read-Write WChar LIB)|Win32
 		{2D22C637-6219-4096-8399-EEA4BBD142AA}.Debug|Win32.Build.0 = Debug (Read-Write WChar LIB)|Win32
 		{2D22C637-6219-4096-8399-EEA4BBD142AA}.Debug|x64.ActiveCfg = Debug (Read-Write WChar LIB)|x64

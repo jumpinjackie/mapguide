@@ -67,11 +67,6 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
 // Methods
 
     public:
-        virtual MgByteReader* GenerateMap(MgMap* map, CREFSTRING sessionId,
-            CREFSTRING mapAgentUri, MgDwfVersion* dwfVersion);
-        virtual MgByteReader* GenerateMapUpdate(MgMap* map, INT32 seqNo,
-            MgDwfVersion* dwfVersion);
-
         virtual MgByteReader* GeneratePlot(
             MgMap* map,
             MgPlotSpecification* plotSpec,

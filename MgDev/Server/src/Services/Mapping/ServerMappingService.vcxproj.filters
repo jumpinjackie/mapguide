@@ -18,12 +18,6 @@
     <ClCompile Include="OpGenerateLegendPlot.cpp">
       <Filter>Ops</Filter>
     </ClCompile>
-    <ClCompile Include="OpGenerateMap.cpp">
-      <Filter>Ops</Filter>
-    </ClCompile>
-    <ClCompile Include="OpGenerateMapUpdate.cpp">
-      <Filter>Ops</Filter>
-    </ClCompile>
     <ClCompile Include="OpGenerateMultiPlot.cpp">
       <Filter>Ops</Filter>
     </ClCompile>
@@ -64,12 +58,6 @@
       <Filter>Ops</Filter>
     </ClInclude>
     <ClInclude Include="OpGenerateLegendPlot.h">
-      <Filter>Ops</Filter>
-    </ClInclude>
-    <ClInclude Include="OpGenerateMap.h">
-      <Filter>Ops</Filter>
-    </ClInclude>
-    <ClInclude Include="OpGenerateMapUpdate.h">
       <Filter>Ops</Filter>
     </ClInclude>
     <ClInclude Include="OpGenerateMultiPlot.h">

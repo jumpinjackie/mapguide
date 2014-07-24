@@ -198,12 +198,6 @@
     <ClCompile Include="HttpGetLegendImage.cpp">
       <Filter>Mapping Service</Filter>
     </ClCompile>
-    <ClCompile Include="HttpGetMap.cpp">
-      <Filter>Mapping Service</Filter>
-    </ClCompile>
-    <ClCompile Include="HttpGetMapUpdate.cpp">
-      <Filter>Mapping Service</Filter>
-    </ClCompile>
     <ClCompile Include="HttpGetPlot.cpp">
       <Filter>Mapping Service</Filter>
     </ClCompile>
@@ -386,6 +380,7 @@
     <ClCompile Include="ReaderByteSourceImpl.cpp">
       <Filter>Byte Source Adapters</Filter>
     </ClCompile>
+    <ClCompile Include="HttpDescribeRuntimeMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HttpApplyResourcePackage.h">
@@ -542,12 +537,6 @@
       <Filter>Mapping Service</Filter>
     </ClInclude>
     <ClInclude Include="HttpGetLegendImage.h">
-      <Filter>Mapping Service</Filter>
-    </ClInclude>
-    <ClInclude Include="HttpGetMap.h">
-      <Filter>Mapping Service</Filter>
-    </ClInclude>
-    <ClInclude Include="HttpGetMapUpdate.h">
       <Filter>Mapping Service</Filter>
     </ClInclude>
     <ClInclude Include="HttpGetPlot.h">
@@ -757,6 +746,7 @@
     <ClInclude Include="ReaderByteSourceImpl.h">
       <Filter>Byte Source Adapters</Filter>
     </ClInclude>
+    <ClInclude Include="HttpDescribeRuntimeMap.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HttpHandler.rc" />

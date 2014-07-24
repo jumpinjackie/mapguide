@@ -133,7 +133,6 @@
 #define PlatformBase_FeatureService_FeatureSchema                   PLATFORMBASE_FEATURESERVICE_ID+28
 #define PlatformBase_FeatureService_FeatureSchemaCollection         PLATFORMBASE_FEATURESERVICE_ID+29
 #define PlatformBase_FeatureService_ClassDefinitionCollection       PLATFORMBASE_FEATURESERVICE_ID+30
-#define PlatformBase_FeatureService_CreateSdfParams                 PLATFORMBASE_FEATURESERVICE_ID+31
 #define PlatformBase_FeatureService_GwsFeatureReader                PLATFORMBASE_FEATURESERVICE_ID+32
 #define PlatformBase_FeatureService_LockFeatures                    PLATFORMBASE_FEATURESERVICE_ID+33
 #define PlatformBase_FeatureService_UnlockFeatures                  PLATFORMBASE_FEATURESERVICE_ID+34

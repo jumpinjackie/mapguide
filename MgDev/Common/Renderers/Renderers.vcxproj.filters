@@ -30,12 +30,6 @@
     <ClCompile Include="DWFRenderer.cpp">
       <Filter>DWFRenderers</Filter>
     </ClCompile>
-    <ClCompile Include="EMapRenderer.cpp">
-      <Filter>DWFRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="EMapUpdateRenderer.cpp">
-      <Filter>DWFRenderers</Filter>
-    </ClCompile>
     <ClCompile Include="EPlotRenderer.cpp">
       <Filter>DWFRenderers</Filter>
     </ClCompile>
@@ -129,12 +123,6 @@
       <Filter>DWFRenderers</Filter>
     </ClInclude>
     <ClInclude Include="DWFRSInputStream.h">
-      <Filter>DWFRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="EMapRenderer.h">
-      <Filter>DWFRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="EMapUpdateRenderer.h">
       <Filter>DWFRenderers</Filter>
     </ClInclude>
     <ClInclude Include="EPlotRenderer.h">

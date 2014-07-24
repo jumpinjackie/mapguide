@@ -158,7 +158,7 @@
                 // Create the Feature Source (SDF)
 
                 MgFeatureSchema sdfSchema = this.CreateFilterSchema();
-                MgCreateSdfParams sdfParams = new MgCreateSdfParams("MAPCS", map.GetMapSRS(), sdfSchema);
+                MgFileFeatureSourceParams sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "MAPCS", map.GetMapSRS(), sdfSchema);
                 featureService.CreateFeatureSource(sdfResId, sdfParams);
 
                 // Create the Layer

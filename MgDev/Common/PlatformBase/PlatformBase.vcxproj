@@ -466,12 +466,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Services\CreateSdfParams.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Services\DataPropertyDefinition.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -901,7 +895,6 @@
     <ClInclude Include="Services\BaseServiceDefs.h" />
     <ClInclude Include="Services\ClassDefinition.h" />
     <ClInclude Include="Services\ClassDefinitionCollection.h" />
-    <ClInclude Include="Services\CreateSdfParams.h" />
     <ClInclude Include="Services\DataPropertyDefinition.h" />
     <ClInclude Include="Services\DataReader.h" />
     <ClInclude Include="Services\DeleteFeatures.h" />

@@ -38,8 +38,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ApacheAgent", "ApacheAgent\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhpMapGuideApiEnvConfig", "PhpMapGuideApiEnvConfig\PhpMapGuideApiEnvConfig.vcxproj", "{D8741687-CBAC-4A3D-9A0D-C7068A9FD3B5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DotNetApi", "DotNetApi\DotNetApi.vcxproj", "{557C1767-B4F4-4E96-8699-156BAD696802}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoundationApi", "DotNetUnmanagedApi\Foundation\FoundationApi.vcxproj", "{A8D4FED3-0AA1-4AE6-B734-A4499A4BB4F2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeometryApi", "DotNetUnmanagedApi\Geometry\GeometryApi.vcxproj", "{7A6EFE8B-A2F8-4C47-87A3-B7D1C4385AC2}"
@@ -240,14 +238,6 @@ Global
 		{D8741687-CBAC-4A3D-9A0D-C7068A9FD3B5}.Release|Win32.Build.0 = Release|Win32
 		{D8741687-CBAC-4A3D-9A0D-C7068A9FD3B5}.Release|x64.ActiveCfg = Release|x64
 		{D8741687-CBAC-4A3D-9A0D-C7068A9FD3B5}.Release|x64.Build.0 = Release|x64
-		{557C1767-B4F4-4E96-8699-156BAD696802}.Debug|Win32.ActiveCfg = Debug|Win32
-		{557C1767-B4F4-4E96-8699-156BAD696802}.Debug|Win32.Build.0 = Debug|Win32
-		{557C1767-B4F4-4E96-8699-156BAD696802}.Debug|x64.ActiveCfg = Debug|x64
-		{557C1767-B4F4-4E96-8699-156BAD696802}.Debug|x64.Build.0 = Debug|x64
-		{557C1767-B4F4-4E96-8699-156BAD696802}.Release|Win32.ActiveCfg = Release|Win32
-		{557C1767-B4F4-4E96-8699-156BAD696802}.Release|Win32.Build.0 = Release|Win32
-		{557C1767-B4F4-4E96-8699-156BAD696802}.Release|x64.ActiveCfg = Release|x64
-		{557C1767-B4F4-4E96-8699-156BAD696802}.Release|x64.Build.0 = Release|x64
 		{A8D4FED3-0AA1-4AE6-B734-A4499A4BB4F2}.Debug|Win32.ActiveCfg = Debug|Win32
 		{A8D4FED3-0AA1-4AE6-B734-A4499A4BB4F2}.Debug|Win32.Build.0 = Debug|Win32
 		{A8D4FED3-0AA1-4AE6-B734-A4499A4BB4F2}.Debug|x64.ActiveCfg = Debug|x64

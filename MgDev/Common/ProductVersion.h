@@ -18,7 +18,7 @@
 #ifndef PRODUCTVERSION_H_
 #define PRODUCTVERSION_H_
 
-const STRING ProductVersion = L"2.6.0.0";
+const STRING ProductVersion = L"3.0.0.0";
 const STRING ApiVersion     = L"2.6";  // Major.Minor only
 
 #endif // PRODUCTVERSION_H_

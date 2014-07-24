@@ -20,8 +20,6 @@
 
 #include "OpCreateRuntimeMap.h"
 #include "OpDescribeRuntimeMap.h"
-#include "OpGenerateMap.h"
-#include "OpGenerateMapUpdate.h"
 #include "OpGeneratePlot.h"
 #include "OpGenerateMultiPlot.h"
 #include "OpGenerateLegendPlot.h"
@@ -77,30 +75,6 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
     MG_TRY()
     switch (operationId)
     {
-    case MgMappingService::opIdGenerateMap:
-        switch (VERSION_NO_PHASE(operationVersion))
-        {
-        case VERSION_SUPPORTED(1,0):
-            handler.reset(new MgOpGenerateMap());
-            break;
-        default:
-            throw new MgInvalidOperationVersionException(
-                L"MgDrawingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        break;
-
-    case MgMappingService::opIdGenerateMapUpdate:
-        switch (VERSION_NO_PHASE(operationVersion))
-        {
-        case VERSION_SUPPORTED(1,0):
-            handler.reset(new MgOpGenerateMapUpdate());
-            break;
-        default:
-            throw new MgInvalidOperationVersionException(
-                L"MgDrawingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        break;
-
     case MgMappingService::opIdGeneratePlot:
         switch (VERSION_NO_PHASE(operationVersion))
         {
