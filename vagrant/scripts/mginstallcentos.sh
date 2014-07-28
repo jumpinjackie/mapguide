@@ -1,5 +1,5 @@
 #!/bin/bash
-URL="http://download.osgeo.org/mapguide/releases/2.6.0/RC2"
+URL="http://download.osgeo.org/mapguide/releases/2.6.0/Release"
 #URL="http://192.168.0.4/downloads"
 FDOVER_MAJOR_MINOR=3.9
 FDOVER_POINT=0
