@@ -95,7 +95,6 @@ mgserver_LDADD = \
   -ldbxml \
   -ldwfcore \
   -ldwftk \
-  -ldwfemap \
   -lexpat \
   -lFDO-3.9.0 \
   -lExpressionEngine \
@@ -133,7 +132,6 @@ mgserver_LDFLAGS = \
   -R$(map_srcdir)/Oem/ACE/ACE_wrappers/ace \
   -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwfcore \
   -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwf \
-  -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwfemap \
   -R$(map_srcdir)/Oem/dbxml/install/lib \
   -R$(map_srcdir)/Common/CoordinateSystem/.libs \
   -R$(map_srcdir)/Common/MdfModel/.libs \
@@ -163,7 +161,6 @@ mgserver_LDFLAGS = \
   -L../../../Oem/ACE/ACE_wrappers/ace \
   -L../../../Oem/DWFTK7.1/develop/global/src/dwfcore \
   -L../../../Oem/DWFTK7.1/develop/global/src/dwf \
-  -L../../../Oem/DWFTK7.1/develop/global/src/dwfemap \
   -L../../../Oem/dbxml/install/lib \
   -L$(top_builddir)/Common/CoordinateSystem \
   -L../../../Common/MdfModel \
