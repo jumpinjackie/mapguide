@@ -126,7 +126,8 @@ function GetFeatureCount($featuresId, $schemaName, $className, $resourceSrvc, $f
     $gotCount = false;
     $fsBr = $resourceSrvc->GetResourceContent($featuresId);
     $fsXml = $fsBr->ToString();
-    $fsDoc = DOMDocument::loadXML($fsXml);
+    $fsDoc = new DOMDocument();
+    $fsDoc->loadXML($fsXml);
     $providerNodeList = $fsDoc->getElementsByTagName("Provider");
     $providerName = $providerNodeList->item(0)->nodeValue;
     $capsBr = $featureSrvc->GetCapabilities($providerName);
