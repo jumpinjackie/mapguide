@@ -3165,8 +3165,8 @@ function ProcessFeatureInfo(xmlIn, append, which)
             var cntEls = xmlIn.getElementsByTagName("Content");
             var bDataUriSupport = (msie8plus || !msie);
             if (bDataUriSupport && mtEls.length == 1 && cntEls.length == 1) {
-                var mt = msie ? mtEls[0].text : mtEls[0].textContent;
-                var cnt = msie ? cntEls[0].text : cntEls[0].textContent;
+                var mt = (msie && !msie10plus) ? mtEls[0].text : mtEls[0].textContent;
+                var cnt = (msie && !msie10plus) ? cntEls[0].text : cntEls[0].textContent;
                 var dataUri = "data:" + mt + ";base64," + cnt;
                 PutSelectionImageUrl(++ selMapId, dataUri);
             } else {
@@ -4206,7 +4206,7 @@ function ConvertToSelectedFeatureSet(layerEls)
             var feat = { values: [] };
             var featEl = featEls[j];
             var bounds = featEl.getElementsByTagName("Bounds")[0];
-            var bbox = (msie ? bounds.text : bounds.textContent).split(" ");
+            var bbox = ((msie && !msie10plus) ? bounds.text : bounds.textContent).split(" ");
             feat.zoom = { minx: parseFloat(bbox[0]), miny: parseFloat(bbox[1]), maxx: parseFloat(bbox[2]), maxy: parseFloat(bbox[3]) };
             
             var propEls = featEl.getElementsByTagName("Property");
@@ -4215,10 +4215,10 @@ function ConvertToSelectedFeatureSet(layerEls)
                 var nameEl = propEls[k].getElementsByTagName("Name")[0];
                 var valueEl = propEls[k].getElementsByTagName("Value");
                 //Name,Value
-                var name = msie ? nameEl.text : nameEl.textContent;
+                var name = (msie && !msie10plus) ? nameEl.text : nameEl.textContent;
                 var value = null;
                 if (valueEl.length == 1)
-                    value = msie ? valueEl[0].text : valueEl[0].textContent;
+                    value = (msie && !msie10plus) ? valueEl[0].text : valueEl[0].textContent;
                 feat.values.push({ name: name, value: value });
             }
             featuresByLayer[layerName].push(feat);
