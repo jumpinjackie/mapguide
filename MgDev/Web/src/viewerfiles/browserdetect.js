@@ -29,6 +29,7 @@ var msie = false;
 var msie7plus = false;
 var msie8plus = false;
 var msie6minus = false;
+var msie10plus = false;
 if(msieIndex != -1)
 {
     msie = true;
@@ -39,10 +40,16 @@ if(msieIndex != -1)
         msie7plus = true;
         msie8plus = false;
     }
-    else if (parseFloat(msieVersion) >= 8)
+    else if (parseFloat(msieVersion) >= 8 &&(parseFloat(msieVersion)) < 10)
     {
         msie7plus = true;
         msie8plus = true;
+    }
+    else if (parseFloat(msieVersion) >= 10)
+    {
+        msie7plus = true;
+        msie8plus = true;
+        msie10plus = true;
     }
     else
     {

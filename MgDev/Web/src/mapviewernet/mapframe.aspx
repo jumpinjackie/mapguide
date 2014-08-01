@@ -46,7 +46,7 @@ int pointBufferSize;
     MgLocalizer.SetLocalizedFilesPath(Request.ServerVariables["APPL_PHYSICAL_PATH"] + "..\\localized\\");
 
     infoWidth = showLegend = showProperties = 0;
-    hlTgt = hlTgtName = locale = mapDefinition = sessionId = type = "";
+    hlTgt = hlTgtName = locale = mapDefinition = sessionId = "";
 
     GetRequestParameters();
     String mapRequest = "";
