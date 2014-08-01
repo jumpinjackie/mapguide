@@ -1,6 +1,5 @@
 bin
 obj
-Lib
 .svn
 _svn
 .suo
