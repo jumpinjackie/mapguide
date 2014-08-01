@@ -3,7 +3,7 @@ mg-desktop samples README
 
 The following samples all require the Sheboygan sample dataset. For these samples to build, copy your mg-desktop files (and its subfolders) into the Lib directory, you must use the correct build of mg-desktop for the version of VS you are using to open this solution file:
 
- - MgDesktopSamples.sln: mg-desktop .net Framework 4.5, VC11 build
+ - MgDesktopSamples.sln: mg-desktop .net Framework 4.0, VC11 build
 
 Note that in order to use mg-desktop, your main executable must have CPU architecture set to x86 (because these are .net wrappers to 32-bit unmanaged dlls). All the executable projects in this solution have their CPU architecture set to x86
 
