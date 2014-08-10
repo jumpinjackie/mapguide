@@ -105,6 +105,16 @@ clean_linuxapt()
 init_ace()
 {
     LIB_NAME="ACE 5.7"
+    ace_buildbits=32
+    ace_debug=0
+    ace_optimize=1
+    if [ $BUILD_CONFIG = "debug" ]; then
+        ace_debug=1
+        ace_optimize=0
+    fi
+    if [ $BUILD_CPU -eq 64 ]; then
+        ace_buildbits=64
+    fi
 }
 
 build_ace()
@@ -112,7 +122,7 @@ build_ace()
     pushd ACE/ACE_wrappers
     ACE_PATH="${PWD}"
     pushd ace
-    env ACE_ROOT="${ACE_PATH}" make
+    env ACE_ROOT="${ACE_PATH}" make buildbits=$ace_buildbits debug=$ace_debug optimize=$ace_optimize
     check_build
     popd
     popd
@@ -123,7 +133,7 @@ clean_ace()
     pushd ACE/ACE_wrappers
     ACE_PATH="${PWD}"
     pushd ace
-    env ACE_ROOT="${ACE_PATH}" make clean
+    env ACE_ROOT="${ACE_PATH}" make clean buildbits=$ace_buildbits debug=$ace_debug optimize=$ace_optimize
     check_clean
     popd
     popd
@@ -295,7 +305,11 @@ build_bdbxml()
     chmod +x s_paths
     popd
     pushd dbxml
-    sh ./buildall.sh
+    if [ $BUILD_CONFIG = "debug" ]; then
+        sh ./buildall.sh --enable-debug
+    else
+        sh ./buildall.sh
+    fi
     check_build
     popd
 }
@@ -412,7 +426,7 @@ build_libpng()
     cp scripts/makefile.std makefile
     if [ $BUILD_CPU -eq 64 ]; then
         #Inject -fPIC to CFLAGS for 64-bit
-        sed 's/^CFLAGS=/CFLAGS= -fPIC /g' makefile > makefile64
+        sed 's/^CFLAGS=/CFLAGS= -fPIC -m64/g' makefile > makefile64
         make -fmakefile64
     else
         make
@@ -448,7 +462,7 @@ build_jpeg()
         sh ./configure --enable-static --disable-shared
         #--with-pic does nothing (probably ancient configure script), so do some sed trickery
         #to inject this flag. Know a better way? Enlighten us :)
-        sed 's/^CFLAGS=/CFLAGS= -fPIC/g' Makefile > Makefile64
+        sed 's/^CFLAGS=/CFLAGS= -fPIC -m64/g' Makefile > Makefile64
         make -fMakefile64
     else
         sh ./configure --enable-static --disable-shared
@@ -546,7 +560,7 @@ build_agg()
 {
     pushd agg-2.4
     if [ $BUILD_CPU -eq 64 ]; then
-        make EXTRACXXFLAGS=-fPIC
+        make EXTRACXXFLAGS=-fPIC -m64
     else
         make
     fi
@@ -603,9 +617,7 @@ build_csmap()
     mkdir -p .libs
     pushd Source
     if [ $BUILD_CPU -eq 64 ]; then
-        #Need to build CS-Map with -fPIC because linking libraries will be built with -fPIC
-        sed 's/^C_FLG =/C_FLG = -fPIC/g' Library.mak | sed 's/CPP_FLG =/CPP_FLG = -fPIC/g' > Library64.mak
-        make -fLibrary64.mak
+        make -fLibrary.mak PROCESSOR=x64
     else
         make -fLibrary.mak PROCESSOR=x86
     fi
@@ -613,9 +625,7 @@ build_csmap()
     popd
     pushd Dictionaries
     if [ $BUILD_CPU -eq 64 ]; then
-        #Need to build CS-Map with -fPIC because linking libraries will be built with -fPIC
-        sed 's/^C_FLG =/C_FLG = -fPIC/g' Library.mak | sed 's/CPP_FLG =/CPP_FLG = -fPIC/g' > Compiler64.mak
-        make -fCompiler64.mak
+        make -fCompiler.mak PROCESSOR=x64
     else
         make -fCompiler.mak PROCESSOR=x86
     fi
@@ -629,9 +639,9 @@ clean_csmap()
 {
     pushd CsMap/Source
     if [ $BUILD_CPU -eq 64 ]; then
-        make clean -fLibrary64.mak
+        make clean -fLibrary.mak PROCESSOR=x64
     else
-        make clean -fLibrary.mak
+        make clean -fLibrary.mak PROCESSOR=x86
     fi
     check_clean
     popd
