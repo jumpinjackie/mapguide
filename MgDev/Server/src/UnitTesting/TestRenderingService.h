@@ -25,6 +25,8 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(TestRenderingService);
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
+    CPPUNIT_TEST(TestCase_RenderTileBaseline);
+
     CPPUNIT_TEST(TestCase_StylizationFunctionsPNG);
 
     CPPUNIT_TEST(TestCase_SymbologyPointsPNG);
@@ -50,6 +52,8 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderLegendMultiFTSSingleCTSPNG);
     CPPUNIT_TEST(TestCase_RenderLegendSingleFTSMultiCTSPNG);
     CPPUNIT_TEST(TestCase_LayerWatermarkPNG);
+    CPPUNIT_TEST(TestCase_RenderTilePNG);
+    CPPUNIT_TEST(TestCase_RenderTileXYZ_PNG);
 
     CPPUNIT_TEST(TestCase_StylizationFunctionsPNG8);
 
@@ -76,6 +80,8 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderLegendMultiFTSSingleCTSPNG8);
     CPPUNIT_TEST(TestCase_RenderLegendSingleFTSMultiCTSPNG8);
     CPPUNIT_TEST(TestCase_LayerWatermarkPNG8);
+    CPPUNIT_TEST(TestCase_RenderTilePNG8);
+    CPPUNIT_TEST(TestCase_RenderTileXYZ_PNG8);
 
     CPPUNIT_TEST(TestCase_StylizationFunctionsGIF);
 
@@ -102,6 +108,8 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderLegendMultiFTSSingleCTSGIF);
     CPPUNIT_TEST(TestCase_RenderLegendSingleFTSMultiCTSGIF);
     CPPUNIT_TEST(TestCase_LayerWatermarkGIF);
+    CPPUNIT_TEST(TestCase_RenderTileGIF);
+    CPPUNIT_TEST(TestCase_RenderTileXYZ_GIF);
 
     CPPUNIT_TEST(TestCase_StylizationFunctionsJPG);
 
@@ -128,6 +136,8 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderLegendMultiFTSSingleCTSJPG);
     CPPUNIT_TEST(TestCase_RenderLegendSingleFTSMultiCTSJPG);
     CPPUNIT_TEST(TestCase_LayerWatermarkJPG);
+    CPPUNIT_TEST(TestCase_RenderTileJPG);
+    CPPUNIT_TEST(TestCase_RenderTileXYZ_JPG);
 
     CPPUNIT_TEST(TestCase_QueryFeatures);
 
@@ -146,6 +156,9 @@ public:
     void TestEnd();
 
     void TestCase_QueryFeatures();
+    void TestCase_RenderTileBaseline();
+    void TestCase_RenderTile(CREFSTRING imageFormat, CREFSTRING extension);
+    void TestCase_RenderTileXYZ(CREFSTRING imageFormat, CREFSTRING extension);
 
     //Parameterized versions that all format-specific tests call into
     void TestCase_RenderDynamicOverlay(CREFSTRING imageFormat, CREFSTRING extension);
@@ -198,6 +211,8 @@ public:
     void TestCase_RenderLegendSingleFTSMultiCTSPNG() { TestCase_RenderLegendSingleFTSMultiCTS(L"PNG", L"png"); }
     void TestCase_StylizationFunctionsPNG() { TestCase_StylizationFunctions(L"PNG", L"png"); }
     void TestCase_LayerWatermarkPNG() { TestCase_LayerWatermark(L"PNG", L"png"); }
+    void TestCase_RenderTilePNG() { TestCase_RenderTile(L"PNG", L"png"); }
+    void TestCase_RenderTileXYZ_PNG() { TestCase_RenderTileXYZ(L"PNG", L"png"); }
 
     //PNG8 output tests
     void TestCase_RenderDynamicOverlayPNG8() { TestCase_RenderDynamicOverlay(L"PNG8", L"png"); }
@@ -222,6 +237,8 @@ public:
     void TestCase_RenderLegendSingleFTSMultiCTSPNG8() { TestCase_RenderLegendSingleFTSMultiCTS(L"PNG8", L"png"); }
     void TestCase_StylizationFunctionsPNG8() { TestCase_StylizationFunctions(L"PNG8", L"png"); }
     void TestCase_LayerWatermarkPNG8() { TestCase_LayerWatermark(L"PNG8", L"png"); }
+    void TestCase_RenderTilePNG8() { TestCase_RenderTile(L"PNG8", L"png"); }
+    void TestCase_RenderTileXYZ_PNG8() { TestCase_RenderTileXYZ(L"PNG8", L"png"); }
 
     //GIF output tests
     void TestCase_RenderDynamicOverlayGIF() { TestCase_RenderDynamicOverlay(L"GIF", L"gif"); }
@@ -246,6 +263,8 @@ public:
     void TestCase_RenderLegendSingleFTSMultiCTSGIF() { TestCase_RenderLegendSingleFTSMultiCTS(L"GIF", L"gif"); }
     void TestCase_StylizationFunctionsGIF() { TestCase_StylizationFunctions(L"GIF", L"gif"); }
     void TestCase_LayerWatermarkGIF() { TestCase_LayerWatermark(L"GIF", L"gif"); }
+    void TestCase_RenderTileGIF() { TestCase_RenderTile(L"GIF", L"gif"); }
+    void TestCase_RenderTileXYZ_GIF() { TestCase_RenderTileXYZ(L"GIF", L"gif"); }
 
     //JPG output tests
     void TestCase_RenderDynamicOverlayJPG() { TestCase_RenderDynamicOverlay(L"JPG", L"jpg"); }
@@ -270,6 +289,8 @@ public:
     void TestCase_RenderLegendSingleFTSMultiCTSJPG() { TestCase_RenderLegendSingleFTSMultiCTS(L"JPG", L"jpg"); }
     void TestCase_StylizationFunctionsJPG() { TestCase_StylizationFunctions(L"JPG", L"jpg"); }
     void TestCase_LayerWatermarkJPG() { TestCase_LayerWatermark(L"JPG", L"jpg"); }
+    void TestCase_RenderTileJPG() { TestCase_RenderTile(L"JPG", L"jpg"); }
+    void TestCase_RenderTileXYZ_JPG() { TestCase_RenderTileXYZ(L"JPG", L"jpg"); }
 
     //void TestCase_RendererPerformance();
 

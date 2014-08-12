@@ -125,6 +125,16 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
                                                INT32 requestedFeatures,
                                                INT32 iconsPerScaleRange);
 
+        virtual MgByteReader* CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                               CREFSTRING targetMapName,
+                                               CREFSTRING sessionId,
+                                               CREFSTRING iconFormat,
+                                               INT32 iconWidth,
+                                               INT32 iconHeight,
+                                               INT32 requestedFeatures,
+                                               INT32 iconsPerScaleRange,
+                                               INT32 schemaVersion);
+
         virtual MgByteReader* DescribeRuntimeMap(MgMap* map,
                                                  INT32 requestedFeatures,
                                                  INT32 iconsPerScaleRange);
@@ -135,6 +145,14 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
                                                  INT32 iconHeight,
                                                  INT32 requestedFeatures,
                                                  INT32 iconsPerScaleRange);
+
+        virtual MgByteReader* DescribeRuntimeMap(MgMap* map,
+                                                 CREFSTRING iconFormat,
+                                                 INT32 iconWidth,
+                                                 INT32 iconHeight,
+                                                 INT32 requestedFeatures,
+                                                 INT32 iconsPerScaleRange,
+                                                 INT32 schemaVersion);
 
         void SetConnectionProperties(MgConnectionProperties* connProp);
 
@@ -149,10 +167,12 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
         void InitializeFeatureService();
         void InitializeResourceService();
         void InitializeDrawingService();
+        void InitializeTileService();
 
         Ptr<MgFeatureService> m_svcFeature;
         Ptr<MgResourceService> m_svcResource;
         Ptr<MgDrawingService> m_svcDrawing;
+        Ptr<MgTileService> m_svcTile;
         Ptr<MgCoordinateSystemFactory> m_pCSFactory;
 
         INT32 m_rasterGridSize;

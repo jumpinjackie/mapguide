@@ -1145,6 +1145,16 @@ void MgServerMappingService::InitializeDrawingService()
     assert(m_svcDrawing != NULL);
 }
 
+//gets an instance of the tile service using the service manager
+void MgServerMappingService::InitializeTileService()
+{
+    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+    assert(NULL != serviceMan);
+
+    m_svcTile = dynamic_cast<MgTileService*>(
+        serviceMan->RequestService(MgServiceType::TileService));
+    assert(m_svcTile != NULL);
+} 
 
 // Returns true if the supplied feature type style is compatible with the
 // supplied geometry type: 1=Point, 2=Line, 3=Area, 4=Composite
@@ -1261,6 +1271,17 @@ MgByteReader* MgServerMappingService::DescribeRuntimeMap(MgMap* map,
                                                          INT32 requestedFeatures,
                                                          INT32 iconsPerScaleRange)
 {
+    return DescribeRuntimeMap(map, iconFormat, iconWidth, iconHeight, requestedFeatures, iconsPerScaleRange, MG_API_VERSION(3, 0, 0) /* Latest and greatest */);
+}
+
+MgByteReader* MgServerMappingService::DescribeRuntimeMap(MgMap* map,
+                                                         CREFSTRING iconFormat,
+                                                         INT32 iconWidth,
+                                                         INT32 iconHeight,
+                                                         INT32 requestedFeatures,
+                                                         INT32 iconsPerScaleRange,
+                                                         INT32 schemaVersion)
+{
     LayerDefinitionMap layerDefinitionMap;
     if (MgImageFormats::Png != iconFormat &&
         MgImageFormats::Gif != iconFormat &&
@@ -1281,10 +1302,14 @@ MgByteReader* MgServerMappingService::DescribeRuntimeMap(MgMap* map,
     STRING sessionId = map->GetSessionId();
     STRING targetMapName = map->GetName();
     Ptr<MgResourceIdentifier> mapDefinition = map->GetMapDefinition();
+    Ptr<MgResourceIdentifier> tileSetDefinition = map->GetTileSetDefinition();
 
     //TODO: Possible future caching opportunity?
     std::string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";  // NOXLATE
-    xml.append("<RuntimeMap xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"RuntimeMap-2.6.0.xsd\">\n");
+    if (schemaVersion == MG_API_VERSION(2, 6, 0))
+        xml.append("<RuntimeMap xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"RuntimeMap-2.6.0.xsd\">\n");
+    else
+        xml.append("<RuntimeMap xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"RuntimeMap-3.0.0.xsd\" version=\"3.0.0\">\n");
     // ------------------------------ Site Version ----------------------------------//
     xml.append("<SiteVersion>");
     MgServerManager* serverMgr = MgServerManager::GetInstance();
@@ -1302,6 +1327,30 @@ MgByteReader* MgServerMappingService::DescribeRuntimeMap(MgMap* map,
     xml.append("<MapDefinition>");
     xml.append(MgUtil::WideCharToMultiByte(mapDefinition->ToString()));
     xml.append("</MapDefinition>\n");
+    //Write tile set definition if requesting a v3.0.0 response
+    if (NULL != (MgResourceIdentifier*)tileSetDefinition && schemaVersion == MG_API_VERSION(3, 0, 0))
+    {
+        if (m_svcTile == NULL)
+            InitializeTileService();
+
+        std::string sWidth;
+        std::string sHeight;
+        MgUtil::Int32ToString(m_svcTile->GetDefaultTileSizeX(tileSetDefinition), sWidth);
+        MgUtil::Int32ToString(m_svcTile->GetDefaultTileSizeY(tileSetDefinition), sHeight);
+
+        // ------------------------------ Tile Set Definition ID --------------------------------- //
+        xml.append("<TileSetDefinition>");
+        xml.append(MgUtil::WideCharToMultiByte(tileSetDefinition->ToString()));
+        xml.append("</TileSetDefinition>\n");
+        // ------------------------------ Tile Width ---------------------------------- //
+        xml.append("<TileWidth>");
+        xml.append(sWidth);
+        xml.append("</TileWidth>\n");
+        // ------------------------------ Tile Height --------------------------------- //
+        xml.append("<TileHeight>");
+        xml.append(sHeight);
+        xml.append("</TileHeight>\n");
+    }
     // ------------------------------ Background Color ---------------------------------- //
     xml.append("<BackgroundColor>");
     xml.append(MgUtil::WideCharToMultiByte(map->GetBackgroundColor()));
@@ -1420,7 +1469,7 @@ MgByteReader* MgServerMappingService::DescribeRuntimeMap(MgMap* map,
         for (INT32 i = 0; i < groups->GetCount(); i++)
         {
             Ptr<MgLayerGroup> group = groups->GetItem(i);
-            if (group->GetLayerGroupType() != MgLayerGroupType::BaseMap)
+            if (group->GetLayerGroupType() != MgLayerGroupType::BaseMap && group->GetLayerGroupType() != MgLayerGroupType::BaseMapFromTileSet)
                 continue;
 
             Ptr<MgLayerGroup> parent = group->GetGroup();
@@ -1481,6 +1530,19 @@ MgByteReader* MgServerMappingService::CreateRuntimeMap(MgResourceIdentifier* map
                                                        INT32 requestedFeatures,
                                                        INT32 iconsPerScaleRange)
 {
+    return CreateRuntimeMap(mapDefinition, targetMapName, sessionId, iconFormat, iconWidth, iconHeight, requestedFeatures, iconsPerScaleRange, MG_API_VERSION(3, 0, 0) /* Latest and greatest */);
+}
+
+MgByteReader* MgServerMappingService::CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                                       CREFSTRING targetMapName,
+                                                       CREFSTRING sessionId,
+                                                       CREFSTRING iconFormat,
+                                                       INT32 iconWidth,
+                                                       INT32 iconHeight,
+                                                       INT32 requestedFeatures,
+                                                       INT32 iconsPerScaleRange,
+                                                       INT32 schemaVersion)
+{
     CHECKARGUMENTNULL(mapDefinition, L"MgServerMappingService.CreateRuntimeMap");
     LayerDefinitionMap layerDefinitionMap;
     if (MgImageFormats::Png != iconFormat &&
@@ -1519,7 +1581,7 @@ MgByteReader* MgServerMappingService::CreateRuntimeMap(MgResourceIdentifier* map
     sel->Save(m_svcResource, sessionId, targetMapName);
     map->Save(m_svcResource, mapStateId);
 
-    byteReader = DescribeRuntimeMap(map, iconFormat, iconWidth, iconHeight, requestedFeatures, iconsPerScaleRange);
+    byteReader = DescribeRuntimeMap(map, iconFormat, iconWidth, iconHeight, requestedFeatures, iconsPerScaleRange, schemaVersion);
 
     MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgServerMappingService.CreateRuntimeMap")
 

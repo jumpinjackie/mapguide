@@ -259,12 +259,14 @@ const STRING MgHttpResourceStrings::opQueryMapFeatures = L"QUERYMAPFEATURES";
 
 // Predefined Tile Service Request Parameters
 const STRING MgHttpResourceStrings::reqTileMapDefinition = L"MAPDEFINITION";
+const STRING MgHttpResourceStrings::reqTileSet = L"TILESET";
 
 // Tile Service Operation Requests
 const STRING MgHttpResourceStrings::opGetTileImage = L"GETTILEIMAGE";
 const STRING MgHttpResourceStrings::opClearTileCache = L"CLEARTILECACHE";
 const STRING MgHttpResourceStrings::opGetDefaultTileSizeX = L"GETDEFAULTTILESIZEX";
 const STRING MgHttpResourceStrings::opGetDefaultTileSizeY = L"GETDEFAULTTILESIZEY";
+const STRING MgHttpResourceStrings::opGetTileProviders = L"GETTILEPROVIDERS";
 
 // Predefined Kml Service Request Parameters
 const STRING MgHttpResourceStrings::reqKmlMapDefinition = L"MAPDEFINITION";

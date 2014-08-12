@@ -164,6 +164,9 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\TEST.FeatureSource \
         ..\..\bin\UnitTestFiles\TEST.sdf \
         ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+        ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
+        ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+        ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
         ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
         ..\..\bin\UnitTestFiles\UT_Parcels.fs \
         ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
@@ -433,6 +436,9 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\TEST.FeatureSource \
         ..\..\bin\UnitTestFiles\TEST.sdf \
         ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+        ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
+        ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+        ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
         ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
         ..\..\bin\UnitTestFiles\UT_Parcels.fs \
         ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
@@ -702,6 +708,9 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\TEST.FeatureSource \
           ..\..\bin\UnitTestFiles\TEST.sdf \
           ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+          ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
+          ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+          ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
           ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
           ..\..\bin\UnitTestFiles\UT_Parcels.fs \
           ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
@@ -971,6 +980,9 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\TEST.FeatureSource \
           ..\..\bin\UnitTestFiles\TEST.sdf \
           ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+          ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
+          ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+          ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
           ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
           ..\..\bin\UnitTestFiles\UT_Parcels.fs \
           ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
@@ -1113,6 +1125,9 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                        del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
@@ -1205,7 +1220,7 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
-    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource		del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource        del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
     del /F   ..\..\bin\debug\*.ilk
@@ -1250,6 +1265,9 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                     del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
@@ -1342,7 +1360,7 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
-    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource		del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource       del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
     del /F   ..\..\bin\debug64\*.ilk
@@ -1387,6 +1405,9 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                     del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
@@ -1522,6 +1543,9 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                     del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
@@ -1614,7 +1638,7 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
-    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource		del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource       del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
 
@@ -1784,6 +1808,9 @@ debug(v100) : ..\..\bin\debug(v100)\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\TEST.FeatureSource \
         ..\..\bin\UnitTestFiles\TEST.sdf \
         ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+        ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
+        ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+        ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
         ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
         ..\..\bin\UnitTestFiles\UT_Parcels.fs \
         ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
@@ -2046,6 +2073,9 @@ debug(v100)64 : ..\..\bin\debug(v100)64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\TEST.FeatureSource \
         ..\..\bin\UnitTestFiles\TEST.sdf \
         ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+        ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
+        ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+        ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
         ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
         ..\..\bin\UnitTestFiles\UT_Parcels.fs \
         ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
@@ -2308,6 +2338,9 @@ release(v100) : ..\..\bin\release(v100)\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\TEST.FeatureSource \
           ..\..\bin\UnitTestFiles\TEST.sdf \
           ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+          ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
+          ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+          ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
           ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
           ..\..\bin\UnitTestFiles\UT_Parcels.fs \
           ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
@@ -2570,6 +2603,9 @@ release(v100)64 : ..\..\bin\release(v100)64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\TEST.FeatureSource \
           ..\..\bin\UnitTestFiles\TEST.sdf \
           ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+          ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
+          ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+          ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
           ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
           ..\..\bin\UnitTestFiles\UT_Parcels.fs \
           ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
@@ -2705,6 +2741,9 @@ cleandebug(v100):
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                        del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
@@ -2790,7 +2829,7 @@ cleandebug(v100):
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
-    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource		del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource        del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
     del /F   ..\..\bin\debug(v100)\*.ilk
@@ -2835,6 +2874,9 @@ cleandebug(v100)64:
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                        del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
@@ -2920,7 +2962,7 @@ cleandebug(v100)64:
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
-    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource		del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource        del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
     del /F   ..\..\bin\debug(v100)64\*.ilk
@@ -2965,6 +3007,9 @@ cleanrelease(v100):
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                        del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
@@ -3093,6 +3138,9 @@ cleanrelease(v100)64:
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                        del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
@@ -3178,7 +3226,7 @@ cleanrelease(v100)64:
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
-    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource		del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource        del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
 
@@ -3228,6 +3276,9 @@ cleanrelease(v100)64:
 "..\..\..\UnitTestFiles\UT_SingleFTSMultiCTS.ldf" :
 "..\..\..\UnitTest\TestData\MappingService\UT_RotatedPointStyles.ldf" :
 "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.mdf" :
+"..\..\..\UnitTest\TestData\TileService\UT_BaseMap.tsd" :
+"..\..\..\UnitTest\TestData\TileService\UT_XYZ.tsd" :
+"..\..\..\UnitTest\TestData\TileService\UT_LinkedTileSet.mdf" :
 "..\..\..\UnitTest\TestData\TileService\UT_StylizationFuncs.mdf" :
 "..\..\..\UnitTest\TestData\TileService\UT_Parcels.fs" :
 "..\..\..\UnitTest\TestData\TileService\UT_Parcels.ldf" :
@@ -3466,6 +3517,18 @@ cleanrelease(v100)64:
 ..\..\bin\UnitTestFiles\UT_BaseMap.mdf : "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.mdf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.mdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_BaseMap.tsd : "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.tsd"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.tsd" xcopy /r /d /y "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.tsd" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_XYZ.tsd : "..\..\..\UnitTest\TestData\TileService\UT_XYZ.tsd"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\TileService\UT_XYZ.tsd" xcopy /r /d /y "..\..\..\UnitTest\TestData\TileService\UT_XYZ.tsd" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf : "..\..\..\UnitTest\TestData\TileService\UT_LinkedTileSet.mdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\TileService\UT_LinkedTileSet.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\TileService\UT_LinkedTileSet.mdf" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf : "..\..\..\UnitTest\TestData\TileService\UT_StylizationFuncs.mdf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles

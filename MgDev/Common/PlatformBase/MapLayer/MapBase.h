@@ -158,7 +158,9 @@ PUBLISHED_API:
     /// Returns the resource identifier that specifies the location
     /// of the map definition that was used to create this map.
     ///
-    /// \note1
+    /// \remarks
+    /// If this map was created from a Tile Set Definition, this method
+    /// will return NULL
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -173,7 +175,8 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns an MgResourceIdentifier that specifies the location
-    /// of the map definition.
+    /// of the map definition. NULL is returned if this map was created
+    /// from a Tile Set Definition
     ///
     virtual MgResourceIdentifier* GetMapDefinition();  /// __get
 

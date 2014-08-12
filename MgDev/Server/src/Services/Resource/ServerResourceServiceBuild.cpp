@@ -39,6 +39,7 @@
 #include "OpDeleteResource.cpp"
 #include "OpDeleteResourceData.cpp"
 #include "OpEnumerateParentMapDefinitions.cpp"
+#include "OpEnumerateParentTileSetDefinitions.cpp"
 #include "OpEnumerateRepositories.cpp"
 #include "OpEnumerateResourceData.cpp"
 #include "OpEnumerateResourceDocuments.cpp"

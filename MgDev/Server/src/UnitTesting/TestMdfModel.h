@@ -28,6 +28,9 @@ class TestMdfModel : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_Serialization);
     CPPUNIT_TEST(TestCase_Versioning);
 
+    CPPUNIT_TEST(TestCase_TileSetDefinitionDefault);
+    CPPUNIT_TEST(TestCase_TileSetDefinitionXYZ);
+
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
 
@@ -42,6 +45,8 @@ public:
 
     void TestCase_Serialization();
     void TestCase_Versioning();
+    void TestCase_TileSetDefinitionDefault();
+    void TestCase_TileSetDefinitionXYZ();
 
 private:
     Ptr<MgResourceService> m_svcResource;

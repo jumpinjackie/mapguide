@@ -82,6 +82,16 @@ void TestMdfModel::TestStart()
         Ptr<MgByteSource> mdfsrc4 = new MgByteSource(L"../UnitTestFiles/MdfTestMap.mdf", false);
         Ptr<MgByteReader> mdfrdr4 = mdfsrc4->GetReader();
         m_svcResource->SetResource(mdfres4, mdfrdr4, NULL);
+
+        Ptr<MgResourceIdentifier> tsdres5 = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestTileSet.TileSetDefinition");
+        Ptr<MgByteSource> tsdsrc5 = new MgByteSource(L"../UnitTestFiles/UT_BaseMap.tsd", false);
+        Ptr<MgByteReader> tsdrdr5 = tsdsrc5->GetReader();
+        m_svcResource->SetResource(tsdres5, tsdrdr5, NULL);
+
+        Ptr<MgResourceIdentifier> tsdres6 = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/XYZTestTileSet.TileSetDefinition");
+        Ptr<MgByteSource> tsdsrc6 = new MgByteSource(L"../UnitTestFiles/UT_XYZ.tsd", false);
+        Ptr<MgByteReader> tsdrdr6 = tsdsrc6->GetReader();
+        m_svcResource->SetResource(tsdres6, tsdrdr6, NULL);
     }
     catch (MgException* e)
     {
@@ -114,6 +124,8 @@ void TestMdfModel::TestEnd()
         m_svcResource->DeleteResource(ldfres3);
         Ptr<MgResourceIdentifier> mdfres4 = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestMap.MapDefinition");
         m_svcResource->DeleteResource(mdfres4);
+        Ptr<MgResourceIdentifier> mdfres5 = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestTileSet.TileSetDefinition");
+        m_svcResource->DeleteResource(mdfres5);
     }
     catch(MgFileIoException* e)
     {
@@ -853,6 +865,196 @@ void TestMdfModel::TestCase_Versioning()
         // Since MapDefinition 1.0.0 doesn't take extended data into consideration, if
         // a MDF 2.3.0 or higher document is saved as version 1.0.0 there will be some
         // information missing.  So here we don't test versioning for map definition.
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
+void TestMdfModel::TestCase_TileSetDefinitionDefault()
+{
+    try
+    {
+        Ptr<MgResourceIdentifier> tsId = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestTileSet.TileSetDefinition");
+        Ptr<MgByteReader> content = m_svcResource->GetResourceContent(tsId);
+        Ptr<MgByteSink> sink = new MgByteSink(content);
+        Ptr<MgByte> bytes = sink->ToBuffer();
+
+        MdfParser::SAX2Parser parser;
+        parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
+
+        CPPUNIT_ASSERT(parser.GetSucceeded());
+        MdfModel::TileSetDefinition* tileset = parser.DetachTileSetDefinition();
+        CPPUNIT_ASSERT(NULL != tileset);
+
+        MdfModel::TileStoreParameters* tilesetParams = tileset->GetTileStoreParameters();
+        CPPUNIT_ASSERT(NULL != tilesetParams);
+        CPPUNIT_ASSERT(MG_TILE_PROVIDER_DEFAULT == tilesetParams->GetTileProvider());
+
+        STRING path;
+        INT32 width;
+        INT32 height;
+        STRING format;
+        FINITESCALES scales;
+
+        MdfModel::NameStringPairCollection* parameters = tilesetParams->GetParameters();
+        for (INT32 i = 0; i < parameters->GetCount(); i++)
+        {
+            MdfModel::NameStringPair* pair = parameters->GetAt(i);
+            if (pair->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_TILEPATH)
+            {
+                path = pair->GetValue();
+            }
+            else if (pair->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_TILEWIDTH)
+            {
+                width = MgUtil::StringToInt32(pair->GetValue());
+            }
+            else if (pair->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_TILEHEIGHT)
+            {
+                height = MgUtil::StringToInt32(pair->GetValue());
+            }
+            else if (pair->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_TILEFORMAT)
+            {
+                format = pair->GetValue();
+            }
+            else if (pair->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_FINITESCALELIST)
+            {
+                Ptr<MgStringCollection> values = MgStringCollection::ParseCollection(pair->GetValue(), L","); //NOXLATE
+                for (INT32 i = 0; i < values->GetCount(); i++)
+                {
+                    double val = MgUtil::StringToDouble(values->GetItem(i));
+                    scales.push_back(val);
+                }
+            }
+        }
+
+        CPPUNIT_ASSERT(256 == width);
+        CPPUNIT_ASSERT(256 == height);
+        CPPUNIT_ASSERT(L"PNG" == format);
+        CPPUNIT_ASSERT(MgResourceTag::TileCachePath == path);
+
+        const MdfModel::Box2D& extents = tileset->GetExtents();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.79786601383196, extents.GetMinX(), 0.00000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.686857862181,   extents.GetMinY(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.66452777186925, extents.GetMaxX(), 0.00000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.8037962206133,  extents.GetMaxY(), 0.0000000000001);
+
+        CPPUNIT_ASSERT(10 == scales.size());
+        CPPUNIT_ASSERT(200000 == scales.at(0));
+        CPPUNIT_ASSERT(100000 == scales.at(1));
+        CPPUNIT_ASSERT(50000 == scales.at(2));
+        CPPUNIT_ASSERT(25000 == scales.at(3));
+        CPPUNIT_ASSERT(12500 == scales.at(4));
+        CPPUNIT_ASSERT(6250 == scales.at(5));
+        CPPUNIT_ASSERT(3125 == scales.at(6));
+        CPPUNIT_ASSERT(1562.5 == scales.at(7));
+        CPPUNIT_ASSERT(781.25 == scales.at(8));
+        CPPUNIT_ASSERT(390.625 == scales.at(9));
+
+        MdfModel::BaseMapLayerGroupCollection* groups = tileset->GetBaseMapLayerGroups();
+        CPPUNIT_ASSERT(1 == groups->GetCount());
+        CPPUNIT_ASSERT(L"BaseLayers" == groups->GetAt(0)->GetName());
+        CPPUNIT_ASSERT(L"Base Layers" == groups->GetAt(0)->GetLegendLabel());
+        CPPUNIT_ASSERT(groups->GetAt(0)->IsShowInLegend());
+        CPPUNIT_ASSERT(groups->GetAt(0)->IsExpandInLegend());
+
+        MdfModel::BaseMapLayerCollection* layers = groups->GetAt(0)->GetLayers();
+        CPPUNIT_ASSERT(2 == layers->GetCount());
+
+        CPPUNIT_ASSERT(L"Parcels" == layers->GetAt(0)->GetName());
+        CPPUNIT_ASSERT(L"Parcels" == layers->GetAt(0)->GetLegendLabel());
+        CPPUNIT_ASSERT(L"Library://UnitTests/Layers/Parcels.LayerDefinition" == layers->GetAt(0)->GetLayerResourceID());
+        CPPUNIT_ASSERT(!layers->GetAt(0)->IsExpandInLegend());
+        CPPUNIT_ASSERT(layers->GetAt(0)->IsShowInLegend());
+        CPPUNIT_ASSERT(layers->GetAt(0)->IsSelectable());
+
+        CPPUNIT_ASSERT(L"VotingDistricts" == layers->GetAt(1)->GetName());
+        CPPUNIT_ASSERT(L"Voting Districts" == layers->GetAt(1)->GetLegendLabel());
+        CPPUNIT_ASSERT(L"Library://UnitTests/Layers/VotingDistricts.LayerDefinition" == layers->GetAt(1)->GetLayerResourceID());
+        CPPUNIT_ASSERT(!layers->GetAt(1)->IsExpandInLegend());
+        CPPUNIT_ASSERT(layers->GetAt(1)->IsShowInLegend());
+        CPPUNIT_ASSERT(layers->GetAt(1)->IsSelectable());
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
+void TestMdfModel::TestCase_TileSetDefinitionXYZ()
+{
+    try
+    {
+        Ptr<MgResourceIdentifier> tsId = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/XYZTestTileSet.TileSetDefinition");
+        Ptr<MgByteReader> content = m_svcResource->GetResourceContent(tsId);
+        Ptr<MgByteSink> sink = new MgByteSink(content);
+        Ptr<MgByte> bytes = sink->ToBuffer();
+
+        MdfParser::SAX2Parser parser;
+        parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
+
+        CPPUNIT_ASSERT(parser.GetSucceeded());
+        MdfModel::TileSetDefinition* tileset = parser.DetachTileSetDefinition();
+        CPPUNIT_ASSERT(NULL != tileset);
+
+        MdfModel::TileStoreParameters* tilesetParams = tileset->GetTileStoreParameters();
+        CPPUNIT_ASSERT(NULL != tilesetParams);
+        CPPUNIT_ASSERT(MG_TILE_PROVIDER_XYZ == tilesetParams->GetTileProvider());
+
+        STRING path;
+        STRING format;
+
+        MdfModel::NameStringPairCollection* parameters = tilesetParams->GetParameters();
+        for (INT32 i = 0; i < parameters->GetCount(); i++)
+        {
+            MdfModel::NameStringPair* pair = parameters->GetAt(i);
+            if (pair->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_TILEPATH)
+            {
+                path = pair->GetValue();
+            }
+            else if (pair->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_TILEFORMAT)
+            {
+                format = pair->GetValue();
+            }
+        }
+
+        CPPUNIT_ASSERT(L"PNG" == format);
+        CPPUNIT_ASSERT(MgResourceTag::TileCachePath == path);
+
+        const MdfModel::Box2D& extents = tileset->GetExtents();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.79786601383196, extents.GetMinX(), 0.00000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.686857862181,   extents.GetMinY(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.66452777186925, extents.GetMaxX(), 0.00000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.8037962206133,  extents.GetMaxY(), 0.0000000000001);
+
+        MdfModel::BaseMapLayerGroupCollection* groups = tileset->GetBaseMapLayerGroups();
+        CPPUNIT_ASSERT(1 == groups->GetCount());
+        CPPUNIT_ASSERT(L"BaseLayers" == groups->GetAt(0)->GetName());
+        CPPUNIT_ASSERT(L"Base Layers" == groups->GetAt(0)->GetLegendLabel());
+        CPPUNIT_ASSERT(groups->GetAt(0)->IsShowInLegend());
+        CPPUNIT_ASSERT(groups->GetAt(0)->IsExpandInLegend());
+
+        MdfModel::BaseMapLayerCollection* layers = groups->GetAt(0)->GetLayers();
+        CPPUNIT_ASSERT(2 == layers->GetCount());
+
+        CPPUNIT_ASSERT(L"Parcels" == layers->GetAt(0)->GetName());
+        CPPUNIT_ASSERT(L"Parcels" == layers->GetAt(0)->GetLegendLabel());
+        CPPUNIT_ASSERT(L"Library://UnitTests/Layers/Parcels.LayerDefinition" == layers->GetAt(0)->GetLayerResourceID());
+        CPPUNIT_ASSERT(!layers->GetAt(0)->IsExpandInLegend());
+        CPPUNIT_ASSERT(layers->GetAt(0)->IsShowInLegend());
+        CPPUNIT_ASSERT(layers->GetAt(0)->IsSelectable());
+
+        CPPUNIT_ASSERT(L"VotingDistricts" == layers->GetAt(1)->GetName());
+        CPPUNIT_ASSERT(L"Voting Districts" == layers->GetAt(1)->GetLegendLabel());
+        CPPUNIT_ASSERT(L"Library://UnitTests/Layers/VotingDistricts.LayerDefinition" == layers->GetAt(1)->GetLayerResourceID());
+        CPPUNIT_ASSERT(!layers->GetAt(1)->IsExpandInLegend());
+        CPPUNIT_ASSERT(layers->GetAt(1)->IsShowInLegend());
+        CPPUNIT_ASSERT(layers->GetAt(1)->IsSelectable());
     }
     catch (MgException* e)
     {

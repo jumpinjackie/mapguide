@@ -47,6 +47,7 @@ MapDefinition::MapDefinition(const MdfString& strName,
 : m_strName(strName)
 , m_strCoordSys(strCoordinateSystem)
 , m_boxExtents(0.0, 0.0)
+, m_tileSourceType(Inline)
 {
     // default values
     this->m_strBkGrnd = L"ffffffff"; // NOXLATE
@@ -217,6 +218,21 @@ DisplayScaleCollection* MapDefinition::GetFiniteDisplayScales()
 BaseMapLayerGroupCollection* MapDefinition::GetBaseMapLayerGroups()
 {
     return &this->m_baseMapLayerGroups;
+}
+
+MapDefinition::TileSourceType MapDefinition::GetTileSourceType() const
+{
+    return this->m_tileSourceType;
+}
+
+void MapDefinition::SetTileSourceType(TileSourceType tileSourceType)
+{
+    this->m_tileSourceType = tileSourceType;
+}
+
+TileSetSource* MapDefinition::GetTileSetSource()
+{
+    return &this->m_tileSetSource;
 }
 
 #ifdef _WIN32

@@ -62,21 +62,41 @@ void MgOpClearCache::Execute()
 
     if (1 == m_packet.m_NumArguments)
     {
-        Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
-        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
-        map->SetDelayedLoadResourceService(m_resourceService);
+        Ptr<MgSerializable> obj = (MgSerializable*)m_stream->GetObject();
+        if (obj->IsOfClass(MapGuide_MapLayer_Map))
+        {
+            Ptr<MgMap> map = SAFE_ADDREF((MgMap*)obj.p);
+            Ptr<MgResourceIdentifier> resource = map->GetResourceId();
+            map->SetDelayedLoadResourceService(m_resourceService);
 
-        BeginExecution();
+            BeginExecution();
 
-        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
-        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+            MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+            MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Validate();
+            Validate();
 
-        m_service->ClearCache(map);
+            m_service->ClearCache(map);
 
-        EndExecution();
+            EndExecution();
+        }
+        else if (obj->IsOfClass(PlatformBase_ResourceService_ResourceIdentifier))
+        {
+            Ptr<MgResourceIdentifier> resource = SAFE_ADDREF((MgResourceIdentifier*)obj.p);
+
+            BeginExecution();
+
+            MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+            MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+            Validate();
+
+            m_service->ClearCache(resource);
+
+            EndExecution();
+        }
     }
     else
     {

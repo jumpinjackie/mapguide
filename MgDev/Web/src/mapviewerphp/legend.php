@@ -231,7 +231,7 @@ function BuildClientSideTree($tree, $parent, $parentName, $fulldata, $container,
                                                         $node->rtObject->GetDisplayInLegend()? "true": "false",
                                                         $node->rtObject->GetObjectId(),
                                                         StrEscape($node->rtObject->GetName()),
-                                                        $node->rtObject->GetLayerGroupType() == MgLayerGroupType::BaseMap? "true": "false");
+                                                        ($node->rtObject->GetLayerGroupType() == MgLayerGroupType::BaseMap || $node->rtObject->GetLayerGroupType() == MgLayerGroupType::BaseMapFromTileSet)? "true": "false");
                     }
                     else
                     {

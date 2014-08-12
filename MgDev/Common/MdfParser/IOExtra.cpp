@@ -38,6 +38,7 @@ IOExtra::IOExtra(Version& version) : SAX2ElementHandler(version)
     this->m_minY = +DBL_MAX;
     this->m_maxY = -DBL_MAX;
     this->m_map  = NULL;
+    this->m_tileset = NULL;
 }
 
 
@@ -48,6 +49,17 @@ IOExtra::IOExtra(MapDefinition* map, Version& version) : SAX2ElementHandler(vers
     this->m_minY = +DBL_MAX;
     this->m_maxY = -DBL_MAX;
     this->m_map  = map;
+    this->m_tileset = NULL;
+}
+
+IOExtra::IOExtra(TileSetDefinition* tileset, Version& version) : SAX2ElementHandler(version)
+{
+    this->m_minX = +DBL_MAX;
+    this->m_maxX = -DBL_MAX;
+    this->m_minY = +DBL_MAX;
+    this->m_maxY = -DBL_MAX;
+    this->m_map  = NULL;
+    this->m_tileset = tileset;
 }
 
 
@@ -97,8 +109,16 @@ void IOExtra::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (this->m_startElemName == name)
     {
-        this->m_map->SetExtents(Box2D(this->m_minX, this->m_minY, this->m_maxX, this->m_maxY));
-        this->m_map = NULL;
+        if (NULL != this->m_map)
+        {
+            this->m_map->SetExtents(Box2D(this->m_minX, this->m_minY, this->m_maxX, this->m_maxY));
+            this->m_map = NULL;
+        }
+        else if (NULL != this->m_tileset)
+        {
+            this->m_tileset->SetExtents(Box2D(this->m_minX, this->m_minY, this->m_maxX, this->m_maxY));
+            this->m_tileset;
+        }
         this->m_startElemName = L"";
         handlerStack->pop();
         delete this;

@@ -116,6 +116,8 @@ extern long GetTickCount();
 #include "Exception/SessionNotFoundException.h"
 #include "Exception/StylizeLayerFailedException.h"
 #include "Exception/UnauthorizedAccessException.h"
+#include "Exception/UnknownTileProviderException.h"
+#include "Exception/UnsupportedTileProviderException.h"
 #include "Exception/UnsupportedProviderThreadModelException.h"
 #include "Exception/UriFormatException.h"
 

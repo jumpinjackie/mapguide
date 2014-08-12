@@ -55,6 +55,7 @@ include_SOURCES = \
   OpDeleteResource.cpp \
   OpDeleteResourceData.cpp \
   OpEnumerateParentMapDefinitions.cpp \
+  OpEnumerateParentTileSetDefinitions.cpp \
   OpEnumerateRepositories.cpp \
   OpEnumerateResourceData.cpp \
   OpEnumerateResourceDocuments.cpp \
@@ -135,6 +136,7 @@ noinst_HEADERS = $(include_SOURCES) \
   OpDeleteResource.h \
   OpDeleteResourceData.h \
   OpEnumerateParentMapDefinitions.h \
+  OpEnumerateParentTileSetDefinitions.h \
   OpEnumerateRepositories.h \
   OpEnumerateResourceData.h \
   OpEnumerateResourceDocuments.h \

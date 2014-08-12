@@ -88,6 +88,8 @@ bool InitializeStaticData()
     EXCEPTION_CLASS_CREATOR(MgSessionExpiredException)
     EXCEPTION_CLASS_CREATOR(MgSessionNotFoundException)
     EXCEPTION_CLASS_CREATOR(MgUnauthorizedAccessException)
+    EXCEPTION_CLASS_CREATOR(MgUnknownTileProviderException)
+    EXCEPTION_CLASS_CREATOR(MgUnsupportedTileProviderException)
     EXCEPTION_CLASS_CREATOR(MgUnsupportedProviderThreadModelException)
     EXCEPTION_CLASS_CREATOR(MgUriFormatException)
 

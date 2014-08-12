@@ -21,68 +21,63 @@
 #include "ServerTileDllExport.h"
 #include "TileCache.h"
 
+namespace MdfModel
+{
+    class TileSetDefinition;
+}
+
 class MG_SERVER_TILE_API MgServerTileService : public MgTileService
 {
     DECLARE_CLASSNAME(MgServerTileService)
-
 public:
     MgServerTileService();
     ~MgServerTileService();
     DECLARE_CREATE_SERVICE()
 
-    virtual MgByteReader* GetTile(MgMap* map,
-                                  CREFSTRING baseMapLayerGroupName,
-                                  INT32 tileColumn,
-                                  INT32 tileRow);
+    virtual MgByteReader* GetTile(
+        MgMap* map,
+        CREFSTRING baseMapLayerGroupName,
+        INT32 tileColumn,
+        INT32 tileRow);
 
-    virtual MgByteReader* GetTile(MgResourceIdentifier* mapDefinition,
-                                  CREFSTRING baseMapLayerGroupName,
-                                  INT32 tileColumn,
-                                  INT32 tileRow,
-                                  INT32 scaleIndex);
-
-    virtual void SetTile(MgByteReader* img,
-                         MgMap* map,
-                         INT32 scaleIndex,
-                         CREFSTRING baseMapLayerGroupName,
-                         INT32 tileColumn,
-                         INT32 tileRow);
+    virtual MgByteReader* GetTile(
+        MgResourceIdentifier* resource,
+        CREFSTRING baseMapLayerGroupName,
+        INT32 tileColumn,
+        INT32 tileRow,
+        INT32 scaleIndex);
 
     virtual void ClearCache(MgMap* map);
+
+    virtual void ClearCache(MgResourceIdentifier* tileSet);
 
     virtual INT32 GetDefaultTileSizeX();
 
     virtual INT32 GetDefaultTileSizeY();
 
+    virtual INT32 GetDefaultTileSizeX(MgResourceIdentifier* tileSet);
+
+    virtual INT32 GetDefaultTileSizeY(MgResourceIdentifier* tileSet);
+
+    virtual MgByteReader* GetTileProviders();
+
+    virtual void SetTile(
+        MgByteReader* img,
+        MgMap* map,
+        INT32 scaleIndex,
+        CREFSTRING baseMapLayerGroupName,
+        INT32 tileColumn,
+        INT32 tileRow);
+
     virtual bool IsTileCacheEmpty() const;
-    virtual bool NotifyResourcesChanged(MgSerializableCollection* resources,
-        bool strict = true);
+
+    virtual bool NotifyResourcesChanged(MgSerializableCollection* resources, bool strict = true);
 
     void SetConnectionProperties(MgConnectionProperties* connProp);
 
 private:
-
-    bool DetectTileLockFile(CREFSTRING lockPathname);
-
-    MgByteReader* GetTile(CREFSTRING tilePathname, MgMap* map, INT32 scaleIndex,
-        CREFSTRING baseMapLayerGroupName, INT32 tileColumn, INT32 tileRow);
-
-    void ClearMapCache(CREFSTRING mapName);
-
-    MgResourceService* GetResourceServiceForMapDef(MgResourceIdentifier* mapDefinition, CREFSTRING funcName);
-
-    // member data
-    Ptr<MgTileCache> m_tileCache;
-
-    typedef std::map<STRING, MgMemoryStreamHelper*> MapCache;
-
-    static ACE_Recursive_Thread_Mutex sm_mutex;
-    static bool sm_initialized;
-    static MapCache sm_mapCache;
-    static bool sm_renderOnly;
-    static INT32 sm_creationCutoffTime;
-    static INT32 sm_pollingInterval;
-    static INT32 sm_mapCacheSize;
+    MgTileCache* GetTileCache(MgResourceIdentifier* resource);
+    MgTileCache* GetTileCache(MgResourceIdentifier* tileSetId, MdfModel::TileSetDefinition* tileset);
 };
 
 #endif

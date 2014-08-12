@@ -36,7 +36,8 @@ MgMap::MgMap()
     m_inSave(false),
     m_unpackedLayersGroups(false),
     m_colorPalette(NULL),        // lazy instantiation
-    m_watermarkUsage(Viewer)
+    m_watermarkUsage(Viewer),
+    m_tileSetId((MgResourceIdentifier*)NULL)
 {
 }
 
@@ -49,7 +50,8 @@ MgMap::MgMap(MgSiteConnection* siteConnection)
     m_inSave(false),
     m_unpackedLayersGroups(false),
     m_colorPalette(NULL),        // lazy instantiation
-    m_watermarkUsage(Viewer)
+    m_watermarkUsage(Viewer),
+    m_tileSetId((MgResourceIdentifier*)NULL)
 {
     if (NULL == siteConnection)
     {
@@ -111,7 +113,35 @@ MgService* MgMap::GetService(INT32 serviceType)
 // Initializes a new Map object.
 // This method is used for Mg Viewers or for offline map production.
 //
-void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* mapDefinition, CREFSTRING mapName)
+void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* resource, CREFSTRING mapName)
+{
+    Create(resourceService, resource, mapName, true);
+}
+
+void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* resource, CREFSTRING mapName, bool strict)
+{
+    MG_TRY()
+
+    if (resource->GetResourceType() == MgResourceType::MapDefinition)
+        CreateFromMapDefinition(resourceService, resource, mapName);
+    else if (resource->GetResourceType() == MgResourceType::TileSetDefinition)
+        CreateFromTileSet(resourceService, resource, mapName, strict);
+    else
+        throw new MgInvalidResourceTypeException(L"MgMap.Create", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    MG_CATCH_AND_THROW(L"MgMap.Create")
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// Initializes a new MgMap object given a map definition and a name for the map.
+/// This method is used for MapGuide Viewers or for offline map production.
+///
+void MgMap::Create(MgResourceIdentifier* mapDefinition, CREFSTRING mapName)
+{
+    Create(NULL, mapDefinition, mapName);
+}
+
+void MgMap::CreateFromMapDefinition(MgResourceService* resourceService, MgResourceIdentifier* mapDefinition, CREFSTRING mapName)
 {
     MG_TRY()
 
@@ -146,22 +176,82 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     }
 
     // build the runtime map object from the parsed definition
+    std::auto_ptr<MdfModel::TileSetDefinition> tdef;
     std::auto_ptr<MdfModel::MapDefinition> mdef(parser.DetachMapDefinition());
     assert(mdef.get() != NULL);
 
     MgGeometryFactory gf;
+    Ptr<MgResourceIdentifier> tileSetDefId;
 
-    const Box2D& extent = mdef->GetExtents();
-    Ptr<MgCoordinate> lowerLeft = gf.CreateCoordinateXY(extent.GetMinX(), extent.GetMinY());
-    Ptr<MgCoordinate> upperRight = gf.CreateCoordinateXY(extent.GetMaxX(), extent.GetMaxY());
-    m_mapExtent = new MgEnvelope(lowerLeft, upperRight);
-    m_dataExtent = new MgEnvelope(lowerLeft, upperRight);
-    m_backColor = mdef->GetBackgroundColor();
+    //If this Map Definition links to a Tile Set Definition, its coordinate system takes precedence
+    if (mdef->GetTileSourceType() == MapDefinition::TileSetDefinition)
+    {
+        // get the tile set definition from the resource repository
+        tileSetDefId = new MgResourceIdentifier(mdef->GetTileSetSource()->GetResourceId());
+        Ptr<MgByteReader> tdContent = m_resourceService->GetResourceContent(tileSetDefId);
+        Ptr<MgByteSink> tdSink = new MgByteSink(tdContent);
+        Ptr<MgByte> tdBytes = tdSink->ToBuffer();
 
-    Ptr<MgCoordinate> coordCenter = gf.CreateCoordinateXY(extent.GetMinX() + (extent.GetMaxX() - extent.GetMinX()) / 2,
-                                                          extent.GetMinY() + (extent.GetMaxY() - extent.GetMinY()) / 2);
-    m_center = gf.CreatePoint(coordCenter);
-    m_srs = mdef->GetCoordinateSystem();
+        // parse the tile set definition
+        MdfParser::SAX2Parser parser;
+        parser.ParseString((const char*)tdBytes->Bytes(), tdBytes->GetLength());
+
+        if (!parser.GetSucceeded())
+        {
+            STRING errorMsg = parser.GetErrorMessage();
+            MgStringCollection arguments;
+            arguments.Add(errorMsg);
+            throw new MgInvalidMapDefinitionException(L"MgMap.Create", __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+
+        tdef.reset(parser.DetachTileSetDefinition());
+        assert(tdef.get() != NULL);
+
+        m_srs = GetCoordinateSystemFromTileSet(tdef.get(), true);
+
+        //If tile CS is not the same as map def CS, then the bounds of the map def need to be transformed
+        if (m_srs != mdef->GetCoordinateSystem())
+        {
+            Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+            Ptr<MgCoordinateSystem> mapCs = csFactory->Create(mdef->GetCoordinateSystem());
+            Ptr<MgCoordinateSystem> tileCs = csFactory->Create(m_srs);
+            Ptr<MgCoordinateSystemTransform> trans = csFactory->GetTransform(mapCs, tileCs);
+
+            const Box2D& extent = mdef->GetExtents();
+            Ptr<MgCoordinate> lowerLeft = gf.CreateCoordinateXY(extent.GetMinX(), extent.GetMinY());
+            Ptr<MgCoordinate> upperRight = gf.CreateCoordinateXY(extent.GetMaxX(), extent.GetMaxY());
+            Ptr<MgEnvelope> mapExtent = new MgEnvelope(lowerLeft, upperRight);
+            Ptr<MgEnvelope> dataExtent = new MgEnvelope(lowerLeft, upperRight);
+
+            m_mapExtent = mapExtent->Transform(trans);
+            m_dataExtent = mapExtent->Transform(trans);
+
+            Ptr<MgCoordinate> ll = mapExtent->GetLowerLeftCoordinate();
+            Ptr<MgCoordinate> ur = mapExtent->GetUpperRightCoordinate();
+            
+            Ptr<MgCoordinate> coordCenter = gf.CreateCoordinateXY(ll->GetX() + (ur->GetX() - ll->GetX()) / 2,
+                                                                  ll->GetY() + (ur->GetY() - ll->GetY()) / 2);
+
+            m_center = gf.CreatePoint(coordCenter);
+        }
+        m_backColor = mdef->GetBackgroundColor();
+        m_tileSetId = SAFE_ADDREF((MgResourceIdentifier*)tileSetDefId);
+    }
+    else
+    {
+        m_srs = mdef->GetCoordinateSystem();
+
+        const Box2D& extent = mdef->GetExtents();
+        Ptr<MgCoordinate> lowerLeft = gf.CreateCoordinateXY(extent.GetMinX(), extent.GetMinY());
+        Ptr<MgCoordinate> upperRight = gf.CreateCoordinateXY(extent.GetMaxX(), extent.GetMaxY());
+        m_mapExtent = new MgEnvelope(lowerLeft, upperRight);
+        m_dataExtent = new MgEnvelope(lowerLeft, upperRight);
+        m_backColor = mdef->GetBackgroundColor();
+
+        Ptr<MgCoordinate> coordCenter = gf.CreateCoordinateXY(extent.GetMinX() + (extent.GetMaxX() - extent.GetMinX()) / 2,
+                                                              extent.GetMinY() + (extent.GetMaxY() - extent.GetMinY()) / 2);
+        m_center = gf.CreatePoint(coordCenter);
+    }
 
     //Calculate the meter per unit for the given coordinate system
     m_metersPerUnit = 1.0; // assume a default value
@@ -187,8 +277,9 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
 
     map<STRING, MgLayerGroup*>::const_iterator itKg;
 
+    //Process dynamic layer groups
     MapLayerGroupCollection* groups = mdef->GetLayerGroups();
-    if(groups)
+    if (groups)
     {
         for(int i = 0; i < groups->GetCount(); i++)
         {
@@ -227,7 +318,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     }
 
     //resolve group links if required
-    if(unresolvedGroupLinks.size() > 0)
+    if (unresolvedGroupLinks.size() > 0)
     {
         map<MgLayerGroup*, STRING>::const_iterator itUnres;
         for(itUnres = unresolvedGroupLinks.begin(); itUnres != unresolvedGroupLinks.end(); ++itUnres)
@@ -255,15 +346,19 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     //Get all the layers (normal layer or base layer) and get the contents of them in a single request.
     Ptr<MgStringCollection> layerIds = new MgStringCollection();
     MapLayerCollection* normalLayers = mdef->GetLayers();
-    if(normalLayers)
+    if (normalLayers)
     {
         for(int i = 0; i < normalLayers->GetCount(); i ++)
         {
             layerIds->Add(normalLayers->GetAt(i)->GetLayerResourceID());
         }
     }
-    BaseMapLayerGroupCollection* baseLayerGroups = mdef->GetBaseMapLayerGroups();
-    if(baseLayerGroups)
+    BaseMapLayerGroupCollection* baseLayerGroups = NULL;
+    if (NULL != tdef.get())
+        baseLayerGroups = tdef->GetBaseMapLayerGroups();
+    else
+        baseLayerGroups = mdef->GetBaseMapLayerGroups();
+    if (baseLayerGroups)
     {
         for(int i = 0; i < baseLayerGroups->GetCount(); i ++)
         {
@@ -279,7 +374,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
         }
     }
     std::map<STRING, STRING> layerContentPair;
-    if(layerIds->GetCount() != 0)
+    if (layerIds->GetCount() != 0)
     {
         Ptr<MgStringCollection> layerContents = m_resourceService->GetResourceContents(layerIds, NULL);
         for(int i = 0; i < layerIds->GetCount(); i ++)
@@ -291,7 +386,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     //build the runtime layers and attach them to their groups
     SCALERANGES scaleRanges;
     MapLayerCollection* layers = mdef->GetLayers();
-    if(layers)
+    if (layers)
     {
         for(int i = 0; i < layers->GetCount(); i++, displayOrder += LAYER_ZORDER_INCR)
         {
@@ -313,7 +408,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
             m_layers->Add(rtLayer);
 
             STRING groupName = layer->GetGroup();
-            if(groupName.length())
+            if (groupName.length())
             {
                 //attach the layer to its group
                 itKg = knownGroups.find(groupName);
@@ -329,8 +424,12 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     knownGroups.clear();
 
     // BaseMapLayerGroups and BaseMapLayers come at the end
-    BaseMapLayerGroupCollection* baseGroups = mdef->GetBaseMapLayerGroups();
-    if(baseGroups)
+    BaseMapLayerGroupCollection* baseGroups = NULL;
+    if (NULL != tdef.get())
+        baseGroups = tdef->GetBaseMapLayerGroups();
+    else
+        baseGroups = mdef->GetBaseMapLayerGroups();
+    if (baseGroups)
     {
         for(int i = 0; i < baseGroups->GetCount(); i++)
         {
@@ -339,8 +438,11 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
             //create a runtime group from this group and add it to the group collection
             STRING groupName = baseGroup->GetName();
             Ptr<MgLayerGroup> rtGroup = new MgLayerGroup(groupName);
+            if (tdef.get() != NULL)
+                rtGroup->SetLayerGroupType(MgLayerGroupType::BaseMapFromTileSet);
+            else
+                rtGroup->SetLayerGroupType(MgLayerGroupType::BaseMap);
             rtGroup->SetVisible(baseGroup->IsVisible());
-            rtGroup->SetLayerGroupType(MgLayerGroupType::BaseMap);
             rtGroup->SetDisplayInLegend(baseGroup->IsShowInLegend());
             rtGroup->SetExpandInLegend(baseGroup->IsExpandInLegend());
             rtGroup->SetLegendLabel(baseGroup->GetLegendLabel());
@@ -402,13 +504,249 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
 
     // build the sorted list of finite display scales
     SORTEDSCALES sortedScales;
-    DisplayScaleCollection* displayScales = mdef->GetFiniteDisplayScales();
-    if(displayScales)
+    MdfModel::DisplayScaleCollection* displayScales = NULL;
+    MdfModel::DisplayScaleCollection dispScalesFromTDef;
+    if (NULL != tdef.get())
     {
-        for(int i = 0; i < displayScales->GetCount(); i++)
+        FINITESCALES fScales;
+        GetFiniteDisplayScalesFromTileSet(tdef.get(), fScales, true);
+        for (FINITESCALES::iterator it = fScales.begin(); it != fScales.end(); it++)
         {
-            DisplayScale* displayScale = displayScales->GetAt(i);
-            double scale = displayScale->GetValue();
+            double scale = *it;
+
+            // skip non-positive scales
+            if (scale <= 0.0)
+                continue;
+
+            // skip duplicate scales
+            SORTEDSCALES::iterator iter = sortedScales.find(scale);
+            if (iter != sortedScales.end())
+                continue;
+
+            // insert the scale (automatically sorted in ascending order)
+            sortedScales.insert(SORTEDSCALES::value_type(scale, scale));
+        }
+    }
+    else
+    {
+        displayScales = mdef->GetFiniteDisplayScales();
+        if (displayScales)
+        {
+            for(int i = 0; i < displayScales->GetCount(); i++)
+            {
+                DisplayScale* displayScale = displayScales->GetAt(i);
+                double scale = displayScale->GetValue();
+
+                // skip non-positive scales
+                if (scale <= 0.0)
+                    continue;
+
+                // skip duplicate scales
+                SORTEDSCALES::iterator iter = sortedScales.find(scale);
+                if (iter != sortedScales.end())
+                    continue;
+
+                // insert the scale (automatically sorted in ascending order)
+                sortedScales.insert(SORTEDSCALES::value_type(scale, scale));
+            }
+        }
+    }
+
+    // load the sorted scales into the vector
+    for (SORTEDSCALES::iterator sIter = sortedScales.begin(); sIter != sortedScales.end(); ++sIter)
+        m_finiteDisplayScales.push_back(sIter->second);
+
+    m_trackChangesDisabled = false;
+
+    // there's nothing to unpack anymore in this case
+    m_unpackedLayersGroups = true;
+
+    MG_CATCH_AND_THROW(L"MgMap.CreateFromMapDefinition")
+}
+
+void MgMap::CreateFromTileSet(MgResourceService* resourceService, MgResourceIdentifier* tileSetDefId, CREFSTRING mapName, bool strict)
+{
+    MG_TRY()
+
+    InitializeResourceService(resourceService);
+    m_trackChangesDisabled = true;
+
+    m_mapDefinitionId = NULL;
+    m_name = mapName;
+    m_tileSetId = SAFE_ADDREF(tileSetDefId);
+
+    // reset the colorlist from our layers (std::list dtor clears the list)
+    delete m_colorPalette;
+    m_colorPalette = NULL;  // initialize to empty (lazy as its only used for 8bit color)
+
+    // generate a unique id for this map
+    MgUtil::GenerateUuid(m_objectId);
+
+    // get the map definition from the resource repository
+    Ptr<MgByteReader> content = m_resourceService->GetResourceContent(tileSetDefId);
+    Ptr<MgByteSink> sink = new MgByteSink(content);
+    Ptr<MgByte> bytes = sink->ToBuffer();
+
+    // parse the map definition
+    MdfParser::SAX2Parser parser;
+    parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
+
+    if (!parser.GetSucceeded())
+    {
+        STRING errorMsg = parser.GetErrorMessage();
+        MgStringCollection arguments;
+        arguments.Add(errorMsg);
+        throw new MgInvalidMapDefinitionException(L"MgMap.Create", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    // build the runtime map object from the parsed definition
+    std::auto_ptr<MdfModel::TileSetDefinition> tdef(parser.DetachTileSetDefinition());
+    assert(tdef.get() != NULL);
+
+    MgGeometryFactory gf;
+
+    const Box2D& extent = tdef->GetExtents();
+    Ptr<MgCoordinate> lowerLeft = gf.CreateCoordinateXY(extent.GetMinX(), extent.GetMinY());
+    Ptr<MgCoordinate> upperRight = gf.CreateCoordinateXY(extent.GetMaxX(), extent.GetMaxY());
+    m_mapExtent = new MgEnvelope(lowerLeft, upperRight);
+    m_dataExtent = new MgEnvelope(lowerLeft, upperRight);
+    m_backColor = L"FFFFFFFF";
+
+    Ptr<MgCoordinate> coordCenter = gf.CreateCoordinateXY(extent.GetMinX() + (extent.GetMaxX() - extent.GetMinX()) / 2,
+                                                          extent.GetMinY() + (extent.GetMaxY() - extent.GetMinY()) / 2);
+    m_center = gf.CreatePoint(coordCenter);
+    m_srs = GetCoordinateSystemFromTileSet(tdef.get(), strict);
+
+    //Calculate the meter per unit for the given coordinate system
+    m_metersPerUnit = 1.0; // assume a default value
+    if (m_srs.length() > 0)
+    {
+        Ptr<MgCoordinateSystemFactory> coordFactory = new MgCoordinateSystemFactory();
+        Ptr<MgCoordinateSystem> coordSys = coordFactory->Create(m_srs);
+        if (coordSys != NULL)
+        {
+            m_metersPerUnit = coordSys->ConvertCoordinateSystemUnitsToMeters(1.0);
+        }
+    }
+
+    // clear the collections
+    m_layers->Clear();
+    m_groups->Clear();
+    m_changeLists->Clear();
+    m_finiteDisplayScales.clear();
+
+    double displayOrder = LAYER_ZORDER_TOP;
+
+    //Get all the layersand get the contents of them in a single request.
+    Ptr<MgStringCollection> layerIds = new MgStringCollection();
+    BaseMapLayerGroupCollection* baseLayerGroups = tdef->GetBaseMapLayerGroups();
+    if (baseLayerGroups)
+    {
+        for(int i = 0; i < baseLayerGroups->GetCount(); i ++)
+        {
+            BaseMapLayerGroup* baseGroup = (BaseMapLayerGroup*)baseLayerGroups->GetAt(i);
+            BaseMapLayerCollection* baseLayers = baseGroup->GetLayers();
+            if(baseLayers)
+            {
+                for(int j = 0; j < baseLayers->GetCount(); j ++)
+                {
+                    layerIds->Add(baseLayers->GetAt(j)->GetLayerResourceID());
+                }
+            }
+        }
+    }
+    std::map<STRING, STRING> layerContentPair;
+    if (layerIds->GetCount() != 0)
+    {
+        Ptr<MgStringCollection> layerContents = m_resourceService->GetResourceContents(layerIds, NULL);
+        for(int i = 0; i < layerIds->GetCount(); i ++)
+        {
+            layerContentPair.insert(std::pair<STRING, STRING>(layerIds->GetItem(i), layerContents->GetItem(i)));
+        }
+    }
+
+    // BaseMapLayerGroups and BaseMapLayers come at the end
+    BaseMapLayerGroupCollection* baseGroups = tdef->GetBaseMapLayerGroups();
+    if (baseGroups)
+    {
+        for(int i = 0; i < baseGroups->GetCount(); i++)
+        {
+            BaseMapLayerGroup* baseGroup = (BaseMapLayerGroup*)baseGroups->GetAt(i);
+
+            //create a runtime group from this group and add it to the group collection
+            STRING groupName = baseGroup->GetName();
+            Ptr<MgLayerGroup> rtGroup;
+            rtGroup = new MgLayerGroup(groupName);
+            rtGroup->SetVisible(baseGroup->IsVisible());
+            rtGroup->SetLayerGroupType(MgLayerGroupType::BaseMapFromTileSet);
+            rtGroup->SetDisplayInLegend(baseGroup->IsShowInLegend());
+            rtGroup->SetExpandInLegend(baseGroup->IsExpandInLegend());
+            rtGroup->SetLegendLabel(baseGroup->GetLegendLabel());
+
+            // NOTE: base groups do not have a parent group
+
+            m_groups->Add(rtGroup);
+
+            // process the base map layers for this group
+            BaseMapLayerCollection* baseLayers = baseGroup->GetLayers();
+            if (baseLayers)
+            {
+                for(int j = 0; j < baseLayers->GetCount(); j++, displayOrder += LAYER_ZORDER_INCR)
+                {
+                    BaseMapLayer* baseLayer = (BaseMapLayer*)baseLayers->GetAt(j);
+
+                    // base layers should always be visible
+                    assert(baseLayer->IsVisible());
+                    if (baseLayer->IsVisible())
+                    {
+                        //create a runtime layer from this base layer and add it to the layer collection
+                        Ptr<MgResourceIdentifier> layerDefId = new MgResourceIdentifier(baseLayer->GetLayerResourceID());
+                        Ptr<MgLayerBase> rtLayer = new MgLayer(layerDefId, m_resourceService, true, false);
+                        rtLayer->SetLayerResourceContent(layerContentPair[layerDefId->ToString()]);
+                        rtLayer->SetName(baseLayer->GetName());
+                        rtLayer->SetVisible(true);
+                        rtLayer->SetLayerType(MgLayerType::BaseMap);
+                        rtLayer->SetDisplayInLegend(baseLayer->IsShowInLegend());
+                        rtLayer->SetExpandInLegend(baseLayer->IsExpandInLegend());
+                        rtLayer->SetLegendLabel(baseLayer->GetLegendLabel());
+                        rtLayer->SetSelectable(baseLayer->IsSelectable());
+                        rtLayer->SetDisplayOrder(displayOrder);
+
+                        m_layers->Add(rtLayer);
+
+                        // attach the layer to its group
+                        rtLayer->SetGroup(rtGroup);
+                    }
+                }
+            }
+        }
+    }
+
+    // Now that we've added all the layers (dynamic and base map) to the m_layers collection,
+    // bulk load the identity properties for all layers
+    Ptr<MgSiteConnection> siteConn;
+    if (m_siteConnection.p != NULL)
+    {
+        siteConn = SAFE_ADDREF((MgSiteConnection*)m_siteConnection);
+    }
+    else
+    {
+        Ptr<MgUserInformation> userInfo = m_resourceService->GetUserInfo();
+        siteConn = new MgSiteConnection();
+        siteConn->Open(userInfo);
+    }
+    Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(siteConn->CreateService(MgServiceType::FeatureService));
+    BulkLoadIdentityProperties(featureService);
+
+    // build the sorted list of finite display scales
+    SORTEDSCALES sortedScales;
+    FINITESCALES displayScales;
+    GetFiniteDisplayScalesFromTileSet(tdef.get(), displayScales, strict);
+    if (displayScales.size() > 0)
+    {
+        for (FINITESCALES::iterator it = displayScales.begin(); it != displayScales.end(); it++)
+        {
+            double scale = *it;
 
             // skip non-positive scales
             if (scale <= 0.0)
@@ -433,16 +771,74 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     // there's nothing to unpack anymore in this case
     m_unpackedLayersGroups = true;
 
-    MG_CATCH_AND_THROW(L"MgMap.Create")
+    MG_CATCH_AND_THROW(L"MgMap.CreateFromTileSet")
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// Initializes a new MgMap object given a map definition and a name for the map.
-/// This method is used for MapGuide Viewers or for offline map production.
-///
-void MgMap::Create(MgResourceIdentifier* mapDefinition, CREFSTRING mapName)
+STRING MgMap::GetCoordinateSystemFromTileSet(MdfModel::TileSetDefinition* tileset, bool strict)
 {
-    Create(NULL, mapDefinition, mapName);
+    //Yes, this is hard-coded against specific providers. Revisit if we do want
+    //to FDO-ize this tile provider concept.
+
+    MdfModel::TileStoreParameters* storeParams = tileset->GetTileStoreParameters();
+    if (storeParams->GetTileProvider() == MG_TILE_PROVIDER_DEFAULT)
+    {
+        MdfModel::NameStringPairCollection* parameters = storeParams->GetParameters();
+        for (INT32 i = 0; i < parameters->GetCount(); i++)
+        {
+            MdfModel::NameStringPair* nsp = parameters->GetAt(i);
+            if (nsp->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_COORDINATESYSTEM)
+            {
+                return nsp->GetValue();
+            }
+        }
+    }
+    else if (storeParams->GetTileProvider() == MG_TILE_PROVIDER_XYZ)
+    {
+        //XYZ is always LL84
+        Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+        return csFactory->ConvertCoordinateSystemCodeToWkt(L"LL84"); //NOXLATE
+    }
+    if (strict)
+    {
+        MgStringCollection args;
+        args.Add(storeParams->GetTileProvider());
+        throw new MgUnsupportedTileProviderException(L"MgMap.GetCoordinateSystemFromTileSet", __LINE__, __WFILE__, &args, L"", NULL);
+    }
+    else
+    {
+        return L"";
+    }
+}
+
+void MgMap::GetFiniteDisplayScalesFromTileSet(MdfModel::TileSetDefinition* tileset, FINITESCALES& scales, bool strict)
+{
+    //Yes, this is hard-coded against specific providers. Revisit if we do want
+    //to FDO-ize this tile provider concept.
+
+    MdfModel::TileStoreParameters* storeParams = tileset->GetTileStoreParameters();
+    if (storeParams->GetTileProvider() == MG_TILE_PROVIDER_DEFAULT) //NOXLATE
+    {
+        MdfModel::NameStringPairCollection* parameters = storeParams->GetParameters();
+        for (INT32 i = 0; i < parameters->GetCount(); i++)
+        {
+            MdfModel::NameStringPair* nsp = parameters->GetAt(i);
+            if (nsp->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_FINITESCALELIST) //NOXLATE
+            {
+                Ptr<MgStringCollection> values = MgStringCollection::ParseCollection(nsp->GetValue(), L","); //NOXLATE
+                for (INT32 i = 0; i < values->GetCount(); i++)
+                {
+                    double val = MgUtil::StringToDouble(values->GetItem(i));
+                    scales.push_back(val);
+                }
+            }
+        }
+    }
+    else if (strict)
+    {
+        MgStringCollection args;
+        args.Add(storeParams->GetTileProvider());
+        throw new MgUnsupportedTileProviderException(L"MgMap.GetFiniteDisplayScalesFromTileSet", __LINE__, __WFILE__, &args, L"", NULL);
+    }
 }
 
 //////////////////////////////////////////////////////////////
@@ -894,6 +1290,9 @@ void MgMap::Serialize(MgStream* stream)
     //watermark usage
     stream->WriteInt32(m_watermarkUsage);
 
+    //tile set definition
+    stream->WriteObject(m_tileSetId);
+
     // Serialize Layers and Groups as a blob.
     if (m_inSave)
     {
@@ -1014,6 +1413,9 @@ void MgMap::Deserialize(MgStream* stream)
 
     //watermark usage
     streamReader->GetInt32(m_watermarkUsage);
+
+    //tile set definition
+    m_tileSetId = (MgResourceIdentifier*)stream->GetObject();
 
     //blob for layers and groups
     INT32 nBytes = 0;
@@ -1169,4 +1571,12 @@ INT32 MgMap::GetWatermarkUsage()
 void MgMap::SetWatermarkUsage(INT32 watermarkUsage)
 {
     m_watermarkUsage = watermarkUsage;
+}
+
+//////////////////////////////////////////////////////////////////
+// Returns the resource id of the Tile Set Definition that this group originates from.
+//
+MgResourceIdentifier* MgMap::GetTileSetDefinition()
+{
+    return SAFE_ADDREF((MgResourceIdentifier*)m_tileSetId);
 }

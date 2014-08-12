@@ -275,6 +275,96 @@ void MgApplicationResourceContentManager::EnumerateParentMapDefinitions(
     MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgApplicationResourceContentManager.EnumerateParentMapDefinitions")
 }
 
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Enumerate all the parent Tile Set Definition resources of the specified
+/// resources.
+///
+/// Note that checking permissions is not required for this operation.
+///
+void MgApplicationResourceContentManager::EnumerateParentTileSetDefinitions(
+    const set<string>& currSearchResources, set<string>& nextSearchResources,
+    set<string>& childResources, set<STRING>& parentResources)
+{
+    MG_RESOURCE_SERVICE_TRY()
+
+    // Reset the next search list.
+
+    nextSearchResources.clear();
+
+    // Do nothing if the current search list is empty.
+
+    if (currSearchResources.empty())
+    {
+        return;
+    }
+
+    // Set up an XQuery.
+
+    string query = "collection('";
+    query += m_container.getName();
+    query += "')";
+    query += "//*/ResourceId[";
+
+    for (set<string>::const_iterator i = currSearchResources.begin();
+        i != currSearchResources.end( ); ++i)
+    {
+        if (i != currSearchResources.begin())
+        {
+            query += " or ";
+        }
+
+        query += ".=\"";
+        query += *i;
+        query += "\"";
+    }
+
+    query += "]";
+
+    // Execute the XQuery.
+
+    XmlManager& xmlMan = m_container.getManager();
+    XmlQueryContext queryContext = xmlMan.createQueryContext();
+    XmlResults results = IsTransacted() ?
+        xmlMan.query(GetXmlTxn(), query, queryContext, 0) :
+        xmlMan.query(query, queryContext, 0);
+    XmlDocument xmlDoc;
+
+    while (results.next(xmlDoc))
+    {
+        string mbResourcePathname = xmlDoc.getName();
+        STRING wcResourcePathname;
+        MgUtil::MultiByteToWideChar(mbResourcePathname, wcResourcePathname);
+        MgResourceIdentifier resource(wcResourcePathname);
+
+        if (!resource.IsFolder())
+        {
+            // Insert the resource into the parent list if it is a Tile Set Definition.
+            // Otherwise, insert it into the child list.
+
+            if (resource.IsResourceTypeOf(MgResourceType::TileSetDefinition))
+            {
+                parentResources.insert(wcResourcePathname);
+            }
+            else
+            {
+                std::pair<set<string>::iterator, bool> i =
+                    childResources.insert(mbResourcePathname);
+
+                // Insert the resource into the next search list if it is not in
+                // the child list.
+
+                if (i.second)
+                {
+                    nextSearchResources.insert(mbResourcePathname);
+                }
+            }
+        }
+    }
+
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgApplicationResourceContentManager.EnumerateParentTileSetDefinitions")
+}
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Enumerates tagged data for the specified resource.

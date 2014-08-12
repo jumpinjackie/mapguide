@@ -54,17 +54,26 @@ try
     $site = new MgSiteConnection();
     $site->Open($userInfo);
 
-    $tileSrvc = $site->CreateService(MgServiceType::TileService);
-
-    $tileSizeX = $tileSrvc->GetDefaultTileSizeX();
-    $tileSizeY = $tileSrvc->GetDefaultTileSizeY();
-
     $resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
 
     $map = new MgMap($site);
     $resId = new MgResourceIdentifier($mapDefinition);
     $mapName = $resId->GetName();
     $map->Create($resId, $mapName);
+    
+    $tileSetId = $map->GetTileSetDefinition();
+    
+    $tileSrvc = $site->CreateService(MgServiceType::TileService);
+    $tileSizeX = $tileSrvc->GetDefaultTileSizeX();
+    $tileSizeY = $tileSrvc->GetDefaultTileSizeY();
+    if (NULL != $tileSetId)
+    {
+        //Overwrite the map definition with tile set id (this is for GETTILE requests) and
+        //use size settings from that tile set
+        $mapDefinition = $tileSetId->ToString();
+        $tileSizeX = $tileSrvc->GetDefaultTileSizeX($tileSetId);
+        $tileSizeY = $tileSrvc->GetDefaultTileSizeY($tileSetId);
+    }
 
     //create an empty selection object and store it in the session repository
     $sel = new MgSelection($map);

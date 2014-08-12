@@ -312,6 +312,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="HttpGetTileProviders.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="HttpInheritPermissionsFrom.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -956,6 +962,7 @@
     <ClInclude Include="HttpGetResourceContent.h" />
     <ClInclude Include="HttpGetResourceData.h" />
     <ClInclude Include="HttpGetResourceHeader.h" />
+    <ClInclude Include="HttpGetTileProviders.h" />
     <ClInclude Include="HttpInheritPermissionsFrom.h" />
     <ClInclude Include="HttpMoveResource.h" />
     <ClInclude Include="HttpRenameResourceData.h" />

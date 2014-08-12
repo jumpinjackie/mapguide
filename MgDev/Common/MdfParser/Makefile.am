@@ -102,6 +102,9 @@ libMgMdfParser_la_SOURCES = \
   IOText.cpp \
   IOTextFrame.cpp \
   IOThemeLabel.cpp \
+  IOTileSetDefinition.cpp \
+  IOTileSetSource.cpp \
+  IOTileStoreParameters.cpp \
   IOTileWatermarkPosition.cpp \
   IOUnknown.cpp \
   IOURLData.cpp \
@@ -213,6 +216,9 @@ noinst_HEADERS = \
   IOText.h \
   IOTextFrame.h \
   IOThemeLabel.h \
+  IOTileSetDefinition.h \
+  IOTileSetSource.h \
+  IOTileStoreParameters.h \
   IOTileWatermarkPosition.h \
   IOUnknown.h \
   IOURLData.h \

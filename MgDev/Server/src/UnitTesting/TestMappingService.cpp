@@ -128,6 +128,16 @@ void TestMappingService::TestStart()
         Ptr<MgByteReader> ldfrdr4 = ldfsrc4->GetReader();
         m_svcResource->SetResource(ldfres4, ldfrdr4, NULL);
 
+        Ptr<MgResourceIdentifier> ldfres5 = new MgResourceIdentifier(L"Library://UnitTests/Layers/RoadCenterLines.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc5 = new MgByteSource(L"../UnitTestFiles/UT_RoadCenterLines.ldf", false);
+        Ptr<MgByteReader> ldfrdr5 = ldfsrc5->GetReader();
+        m_svcResource->SetResource(ldfres5, ldfrdr5, NULL);
+
+        Ptr<MgResourceIdentifier> ldfres6 = new MgResourceIdentifier(L"Library://UnitTests/Layers/VotingDistricts.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc6 = new MgByteSource(L"../UnitTestFiles/UT_VotingDistricts.ldf", false);
+        Ptr<MgByteReader> ldfrdr6 = ldfsrc6->GetReader();
+        m_svcResource->SetResource(ldfres6, ldfrdr6, NULL);
+
         //publish the feature sources
         Ptr<MgResourceIdentifier> fsres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/HydrographicPolygons.FeatureSource");
         Ptr<MgByteSource> fssrc1 = new MgByteSource(L"../UnitTestFiles/UT_HydrographicPolygons.fs", false);
@@ -176,6 +186,16 @@ void TestMappingService::TestStart()
         Ptr<MgByteSource> datasrc = new MgByteSource(L"../UnitTestFiles/UT_Symbols.dwf", false);
         Ptr<MgByteReader> datardr = datasrc->GetReader();
         m_svcResource->SetResourceData(slres1, L"symbols.dwf", L"File", datardr);
+
+        Ptr<MgResourceIdentifier> mapres2 = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinkedTileSet.MapDefinition");
+        Ptr<MgByteSource> mdfsrc2 = new MgByteSource(L"../UnitTestFiles/UT_LinkedTileSet.mdf", false);
+        Ptr<MgByteReader> mdfrdr2 = mdfsrc2->GetReader();
+        m_svcResource->SetResource(mapres2, mdfrdr2, NULL);
+
+        Ptr<MgResourceIdentifier> tilesetres1 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition");
+        Ptr<MgByteSource> tsdsrc1 = new MgByteSource(L"../UnitTestFiles/UT_BaseMap.tsd", false);
+        Ptr<MgByteReader> tsdrdr1 = tsdsrc1->GetReader();
+        m_svcResource->SetResource(tilesetres1, tsdrdr1, NULL);
     }
     catch (MgException* e)
     {
@@ -216,6 +236,12 @@ void TestMappingService::TestEnd()
         Ptr<MgResourceIdentifier> ldfres4 = new MgResourceIdentifier(L"Library://UnitTests/Layers/RotatedPointStyles.LayerDefinition");
         m_svcResource->DeleteResource(ldfres4);
 
+        Ptr<MgResourceIdentifier> ldfres5 = new MgResourceIdentifier(L"Library://UnitTests/Layers/RoadCenterLines.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres5);
+
+        Ptr<MgResourceIdentifier> ldfres6 = new MgResourceIdentifier(L"Library://UnitTests/Layers/VotingDistricts.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres6);
+
         //delete the feature sources
         Ptr<MgResourceIdentifier> fsres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/HydrographicPolygons.FeatureSource");
         m_svcResource->DeleteResource(fsres1);
@@ -236,6 +262,12 @@ void TestMappingService::TestEnd()
         // delete the symbol library
         Ptr<MgResourceIdentifier> slres1 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/SymbolMart.SymbolLibrary");
         m_svcResource->DeleteResource(slres1);
+
+        Ptr<MgResourceIdentifier> mapres2 = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinkedTileSet.MapDefinition");
+        m_svcResource->DeleteResource(mapres2);
+
+        Ptr<MgResourceIdentifier> tilesetres1 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition");
+        m_svcResource->DeleteResource(tilesetres1);
 
         #ifdef _DEBUG
         MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
@@ -459,6 +491,33 @@ void TestMappingService::TestCase_DescribeRuntimeMap()
     }
 }
 
+void TestMappingService::TestCase_CreateAndDescribeLinkedRuntimeMap()
+{
+    try
+    {
+        Ptr<MgResourceIdentifier> mdfId = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinkedTileSet.MapDefinition");
+        STRING format = MgImageFormats::Png;
+        Ptr<MgByteReader> rtMap = m_svcMapping->CreateRuntimeMap(mdfId, L"TestCase_CreateAndDescribeLinkedRuntimeMap", m_session, format, 16, 16, 0, 25);
+        Ptr<MgByteSink> sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/TestCase_CreateLinkedRuntimeMap.xml");
+
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Open(L"TestCase_CreateAndDescribeLinkedRuntimeMap");
+        rtMap = m_svcMapping->DescribeRuntimeMap(map, format, 16, 16, 0, 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/TestCase_DescribeLinkedRuntimeMap.xml");
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
 void TestMappingService::TestCase_SaveMap()
 {
     try

@@ -27,11 +27,15 @@
 class MG_MAPGUIDE_API MgTileServiceOpId
 {
 INTERNAL_API:
-    static const int GetTile    = 0x1111E801;
-    static const int SetTile    = 0x1111E802;
-    static const int ClearCache = 0x1111E803;
+    static const int GetTile              = 0x1111E801;
+    static const int SetTile              = 0x1111E802;
+    static const int ClearCache           = 0x1111E803;
     static const int GetDefaultTileSizeX  = 0x1111E804;
     static const int GetDefaultTileSizeY  = 0x1111E805;
+    static const int ClearCache2          = 0x1111E806;
+    static const int GetDefaultTileSizeX2 = 0x1111E807;
+    static const int GetDefaultTileSizeY2 = 0x1111E808;
+    static const int GetTileProviders     = 0x1111E809;
 };
 /// \endcond
 
@@ -39,7 +43,7 @@ INTERNAL_API:
 /// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Tile parameters.
+/// Default tile parameters.
 /// INTERNAL do not document.
 ///
 class MG_MAPGUIDE_API MgTileParameters
@@ -47,9 +51,20 @@ class MG_MAPGUIDE_API MgTileParameters
 INTERNAL_API:
     static INT32 tileWidth;       // width for all tiles
     static INT32 tileHeight;      // height for all tiles
-    static const INT32 tileDPI;         // assumed DPI for all tiles
+    static const INT32 tileDPI;   // assumed DPI for all tiles
     static STRING tileFormat;     // image format for all tiles
+    static STRING tileCachePath;  // tile cache root path
 };
 /// \endcond
+
+#define MG_TILE_PROVIDER_DEFAULT L"Default"
+#define MG_TILE_PROVIDER_XYZ L"XYZ"
+#define MG_TILE_PROVIDER_COMMON_PARAM_TILEPATH         L"TilePath"
+#define MG_TILE_PROVIDER_COMMON_PARAM_TILEWIDTH        L"TileWidth"
+#define MG_TILE_PROVIDER_COMMON_PARAM_TILEHEIGHT       L"TileHeight"
+#define MG_TILE_PROVIDER_COMMON_PARAM_TILEFORMAT       L"TileFormat"
+#define MG_TILE_PROVIDER_COMMON_PARAM_RENDERONLY       L"RenderOnly"
+#define MG_TILE_PROVIDER_COMMON_PARAM_COORDINATESYSTEM L"CoordinateSystem"
+#define MG_TILE_PROVIDER_COMMON_PARAM_FINITESCALELIST  L"FiniteScaleList"
 
 #endif

@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "Box2D.h"
 #include "MapDefinition.h"
+#include "TileSetDefinition.h"
 #include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -33,6 +34,7 @@ class IOExtra : public SAX2ElementHandler
     public:
         IOExtra(Version& version);
         IOExtra(MapDefinition* map, Version& version);
+        IOExtra(TileSetDefinition* map, Version& version);
         virtual ~IOExtra();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
@@ -47,6 +49,7 @@ class IOExtra : public SAX2ElementHandler
         double m_minY;
         double m_maxY;
         MapDefinition* m_map;
+        TileSetDefinition* m_tileset;
 };
 
 END_NAMESPACE_MDFPARSER

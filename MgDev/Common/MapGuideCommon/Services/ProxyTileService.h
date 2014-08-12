@@ -101,6 +101,18 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Clears the entire tile cache for the given tile set.  Tiles for all base
+    /// map layer groups and finite scales will be removed.
+    ///
+    /// \param map
+    /// Input
+    /// Specifies the map whose tile cache will be cleared.
+    ///
+    /// \since 3.0
+    virtual void ClearCache(MgResourceIdentifier* tileSet);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Returns the default width of a tile.
     ///
     /// \return
@@ -116,6 +128,41 @@ EXTERNAL_API:
     /// Default height of a tile in pixels.
     ///
     virtual INT32 GetDefaultTileSizeY();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the default width of a tile.
+    ///
+    /// \param tileSet
+    /// Input
+    /// Specifies the resource id of the tile set
+    ///
+    /// \return
+    /// Default width of a tile in pixels.
+    ///
+    /// \since 3.0
+    virtual INT32 GetDefaultTileSizeX(MgResourceIdentifier* tileSet);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the default height of a tile.
+    ///
+    /// \param tileSet
+    /// Input
+    /// Specifies the resource id of the tile set
+    ///
+    /// \return
+    /// Default height of a tile in pixels.
+    ///
+    /// \since 3.0
+    virtual INT32 GetDefaultTileSizeY(MgResourceIdentifier* tileSet);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the list of available tile providers, along with supported connection parameters
+    ///
+    /// \since 3.0
+    virtual MgByteReader* GetTileProviders();
 
 INTERNAL_API:
 

@@ -119,6 +119,7 @@ $hasNothing = !$hasDotNet && !$hasPhp && !$hasJava;
                     <li><a href="ol2samples/selection/index.html">Basic Sheboygan un-tiled map example with selection</a></li>
                     <li><a href="ol2samples/mixed/index.html">Basic Sheboygan mixed map (tiled and untiled) example</a></li>
                     <li><a href="ol2samples/commercial/index.html">Sheboygan map with Google/OSM layers</a></li>
+                    <li><a href="ol2samples/xyz/index.html">Sheboygan map as XYZ layer</a></li>
                 </ul>
                 <? } ?>
             <? } ?>

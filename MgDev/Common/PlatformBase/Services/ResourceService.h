@@ -1893,6 +1893,25 @@ INTERNAL_API:
     virtual MgSerializableCollection* EnumerateParentMapDefinitions(
         MgSerializableCollection* resources) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Enumerate all the parent Tile Set Definition resources of the specified
+    /// resources.
+    ///
+    /// This method only works on "Library" and "Session" repositories.
+    //
+    /// \param resources
+    /// Child resources.
+    ///
+    /// \return
+    /// MgResourceIdentifier list of Map Definition resources.
+    ///
+    /// \exception MgInvalidRepositoryTypeException
+    /// \exception MgInvalidResourceTypeException
+    ///
+    virtual MgSerializableCollection* EnumerateParentTileSetDefinitions(
+        MgSerializableCollection* resources) = 0;
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns if permission has been granted for a resource
@@ -2040,6 +2059,7 @@ INTERNAL_API:
         opIdResourceExists                  = 0x1111EF1B,
         opIdEnumerateResourceDocuments      = 0x1111EF1C,
         opIdGetResourceContents             = 0x1111EF1D,
+        opIdEnumerateParentTileSetDefinitions = 0x1111EF1E,
     };
 };
 

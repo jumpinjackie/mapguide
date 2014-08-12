@@ -100,6 +100,50 @@ void MgOpDescribeRuntimeMap::Execute()
 
         EndExecution(byteReader);
     }
+    else if (7 == m_packet.m_NumArguments)
+    {
+        STRING targetMapName;
+        STRING sessionId;
+        STRING iconFormat;
+        INT32 iconWidth, iconHeight, requestedFeatures, iconsPerScaleRange;
+        INT32 schemaVersion;
+
+        Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        map->SetDelayedLoadResourceService(m_resourceService);
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
+
+        m_stream->GetString(iconFormat);
+        m_stream->GetInt32(iconWidth);
+        m_stream->GetInt32(iconHeight);
+        m_stream->GetInt32(requestedFeatures);
+        m_stream->GetInt32(iconsPerScaleRange);
+        m_stream->GetInt32(schemaVersion);
+
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(iconFormat);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(iconWidth);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(iconHeight);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(requestedFeatures);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(iconsPerScaleRange);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(schemaVersion);
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        Ptr<MgByteReader> byteReader =
+            m_service->DescribeRuntimeMap(map, iconFormat, iconWidth, iconHeight, requestedFeatures, iconsPerScaleRange, schemaVersion);
+
+        EndExecution(byteReader);
+    }
     else if (3 == m_packet.m_NumArguments)
     {
         STRING sessionId;

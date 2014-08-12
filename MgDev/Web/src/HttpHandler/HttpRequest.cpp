@@ -89,6 +89,7 @@
 // Http Tile Service operations
 #include "HttpGetTileImage.h"
 #include "HttpClearTileCache.h"
+#include "HttpGetTileProviders.h"
 
 // Http Kml Service operations
 #include "HttpKmlGetMap.h"
@@ -397,6 +398,7 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opQueryMapFeatures] = MgHttpQueryMapFeatures::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetTileImage] = MgHttpGetTileImage::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opClearTileCache] = MgHttpClearTileCache::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetTileProviders] = MgHttpGetTileProviders::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opWmsGetCapabilities] = MgHttpWmsGetCapabilities::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opWmsGetMap] = MgHttpWmsGetMap::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opWmsCapabilities] = MgHttpWmsGetCapabilities::CreateObject;

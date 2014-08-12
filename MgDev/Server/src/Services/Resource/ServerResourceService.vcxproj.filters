@@ -150,6 +150,9 @@
     <ClCompile Include="ZipFileHandler.cpp" />
     <ClCompile Include="ZipFileReader.cpp" />
     <ClCompile Include="ZipFileWriter.cpp" />
+    <ClCompile Include="OpEnumerateParentTileSetDefinitions.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpApplyResourcePackage.h">
@@ -297,6 +300,9 @@
     <ClInclude Include="ZipFileHandler.h" />
     <ClInclude Include="ZipFileReader.h" />
     <ClInclude Include="ZipFileWriter.h" />
+    <ClInclude Include="OpEnumerateParentTileSetDefinitions.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ServerResourceService.rc" />

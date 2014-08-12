@@ -40,6 +40,9 @@
     <Filter Include="ProfileResult">
       <UniqueIdentifier>{117f7c46-7bea-4de3-887b-c162c15359d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TileSetDefinition">
+      <UniqueIdentifier>{e5dae237-fc68-4fca-b0ff-cf0377111684}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AreaUsage.cpp">
@@ -355,6 +358,15 @@
     <ClCompile Include="NameStringPair.cpp" />
     <ClCompile Include="UnicodeString.cpp" />
     <ClCompile Include="Version.cpp" />
+    <ClCompile Include="TileSetSource.cpp">
+      <Filter>TileSetDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="TileSetDefinition.cpp">
+      <Filter>TileSetDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="TileStoreParameters.cpp">
+      <Filter>TileSetDefinition</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaUsage.h">
@@ -683,6 +695,15 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="UnicodeString.h" />
     <ClInclude Include="Version.h" />
+    <ClInclude Include="TileSetDefinition.h">
+      <Filter>TileSetDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="TileSetSource.h">
+      <Filter>TileSetDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="TileStoreParameters.h">
+      <Filter>TileSetDefinition</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MdfModel.rc" />

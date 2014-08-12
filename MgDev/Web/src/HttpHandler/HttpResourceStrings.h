@@ -189,6 +189,7 @@ public:
 
     // PREDEFINED TILE REQUEST PARAMETERS
     static const STRING reqTileMapDefinition;
+    static const STRING reqTileSet;
 
     // PREDEFINED KML REQUEST PARAMETERS
     static const STRING reqKmlMapDefinition;
@@ -317,6 +318,7 @@ public:
     static const STRING opClearTileCache;
     static const STRING opGetDefaultTileSizeX;
     static const STRING opGetDefaultTileSizeY;
+    static const STRING opGetTileProviders;
 
     // Kml services
     static const STRING opGetMapKml;

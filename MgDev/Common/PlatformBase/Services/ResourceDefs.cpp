@@ -54,6 +54,7 @@ const STRING MgResourceType::ApplicationDefinition  = L"ApplicationDefinition";
 const STRING MgResourceType::PrintLayoutDefinition  = L"PrintLayoutDefinition";
 const STRING MgResourceType::PrintLayoutElementDefinition   = L"PrintLayoutElementDefinition";
 const STRING MgResourceType::WatermarkDefinition    = L"WatermarkDefinition";
+const STRING MgResourceType::TileSetDefinition      = L"TileSetDefinition";
 
 
 const STRING MgResourceType::User                   = L"User";
@@ -69,6 +70,7 @@ const STRING MgResourceTag::LoginPassword           = L"%MG_LOGIN_PASSWORD%";
 const STRING MgResourceTag::Username                = L"%MG_USERNAME%";
 const STRING MgResourceTag::Password                = L"%MG_PASSWORD%";
 const STRING MgResourceTag::DataFilePath            = L"%MG_DATA_FILE_PATH%";
+const STRING MgResourceTag::TileCachePath           = L"%MG_TILE_CACHE_PATH%";
 const STRING MgResourceTag::DataPathAliasBegin      = L"%MG_DATA_PATH_ALIAS[";
 const STRING MgResourceTag::DataPathAliasEnd        = L"]%";
 

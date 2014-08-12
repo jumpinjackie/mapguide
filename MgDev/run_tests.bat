@@ -14,13 +14,15 @@ SET SERVER_PORT=8018
 REM SET WEBCONFIGINI=C:\Program Files\OSGeo\MapGuide\Web\www\webconfig.ini
 REM SET SERVER_PORT=80
 SET PHP_TEST_CWD=%CD%\Web\src\mapagent
-SET PHP_EXT_DIR=C:\Program Files\OSGeo\MapGuide\Web\Php\ext
+REM SET PHP_EXT_DIR=C:\Program Files\OSGeo\MapGuide\Web\Php\ext
+SET PHP_EXT_DIR=D:\mg-trunk\MgDev\Release\Web\Php\ext
 
 SET START_MGSERVER=1
 SET START_WEBSERVER=1
+SET PREPARE_PHP_WEBSERVER=1
 SET RUN_SERVER_TESTS=0
 SET RUN_PHP_TESTS=1
-SET RUN_DOTNET_TESTS=1
+SET RUN_DOTNET_TESTS=0
 
 SET RETURN_CODE=0
 
@@ -66,14 +68,16 @@ if "%START_MGSERVER%" == "1" (
     popd
 )
 :prepare_webconfig
-pushd UnitTest
-SET TEST_COMPONENT=Prepare webtier test suites
-php -n -d display_errors=Off -d extension_dir="%PHP_EXT_DIR%" -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -d extension=php_SQLitePhpApi.dll prepare.php
-if %ERRORLEVEL% neq 0 (
-    set RETURN_CODE=%ERRORLEVEL%
-    goto error
+if "%PREPARE_PHP_WEBSERVER%" == "1" (
+    pushd UnitTest
+    SET TEST_COMPONENT=Prepare webtier test suites
+    php -n -d display_errors=Off -d extension_dir="%PHP_EXT_DIR%" -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -d extension=php_SQLitePhpApi.dll prepare.php
+    if %ERRORLEVEL% neq 0 (
+        set RETURN_CODE=%ERRORLEVEL%
+        goto error
+    )
+    popd
 )
-popd
 :start_php_webserver
 if "%START_WEBSERVER%" == "1" (
     echo [test]: Starting PHP web server. Waiting %MGSERVER_WAIT%s

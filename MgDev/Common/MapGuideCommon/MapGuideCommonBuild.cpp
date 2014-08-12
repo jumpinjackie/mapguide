@@ -72,6 +72,8 @@
 #include  "Exception/SessionNotFoundException.cpp"
 #include  "Exception/StylizeLayerFailedException.cpp"
 #include  "Exception/UnauthorizedAccessException.cpp"
+#include  "Exception/UnknownTileProviderException.cpp"
+#include  "Exception/UnsupportedTileProviderException.cpp"
 #include  "Exception/UnsupportedProviderThreadModelException.cpp"
 #include  "Exception/UriFormatException.cpp"
 #include  "MapLayer/Layer.cpp"

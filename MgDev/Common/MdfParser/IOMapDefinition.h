@@ -43,6 +43,7 @@ class IOMapDefinition : public SAX2ElementHandler
     private:
         static bool GetWatermarkDefinitionVersion(Version* mdfVersion, Version& wdVersion);
         MapDefinition* m_map;
+        bool m_bReadBaseMapDef;
 };
 
 END_NAMESPACE_MDFPARSER

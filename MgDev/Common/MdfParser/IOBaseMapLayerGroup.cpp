@@ -44,6 +44,10 @@ IOBaseMapLayerGroup::IOBaseMapLayerGroup(MapDefinition* map, Version& version) :
 {
 }
 
+IOBaseMapLayerGroup::IOBaseMapLayerGroup(TileSetDefinition* tileset, Version& version) : IOMapLayerGroupCommon(tileset, version)
+{
+}
+
 
 IOBaseMapLayerGroup::~IOBaseMapLayerGroup()
 {
@@ -87,7 +91,14 @@ void IOBaseMapLayerGroup::EndElement(const wchar_t* name, HandlerStack* handlerS
     if (this->m_startElemName == name)
     {
         this->m_layerGroup->SetUnknownXml(this->m_unknownXml);
-        this->m_map->GetBaseMapLayerGroups()->Adopt(static_cast<BaseMapLayerGroup*>(this->m_layerGroup));
+        if (NULL != this->m_map)
+        {
+            this->m_map->GetBaseMapLayerGroups()->Adopt(static_cast<BaseMapLayerGroup*>(this->m_layerGroup));
+        }
+        else if (NULL != this->m_tileset)
+        {
+            this->m_tileset->GetBaseMapLayerGroups()->Adopt(static_cast<BaseMapLayerGroup*>(this->m_layerGroup));
+        }
         this->m_map = NULL;
         this->m_layerGroup = NULL;
         this->m_startElemName = L"";

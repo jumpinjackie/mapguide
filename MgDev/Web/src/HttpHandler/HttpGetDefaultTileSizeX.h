@@ -51,7 +51,16 @@ public:
     /// </returns>
     MgRequestClassification GetRequestClassification() { return MgHttpRequestResponseHandler::mrcViewer; }
 
+protected:
+    /// <summary>
+    /// This method is responsible for checking if
+    /// a valid version was given
+    /// </summary>
+    /// <returns>Returns nothing</returns>
+    virtual void ValidateOperationVersion();
+
 private:
+    STRING m_tilesetId;
 };
 
 #endif  // _FS_GET_DEFAULT_TILE_SIZE_X_H

@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "MapLayerGroupCommon.h"
 #include "MapDefinition.h"
+#include "TileSetDefinition.h"
 #include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -35,6 +36,7 @@ class IOMapLayerGroupCommon : public SAX2ElementHandler
 
     public:
         IOMapLayerGroupCommon(MapDefinition* map, Version& version);
+        IOMapLayerGroupCommon(TileSetDefinition* tileset, Version& version);
         virtual ~IOMapLayerGroupCommon();
 
         virtual void ElementChars(const wchar_t* ch);
@@ -44,6 +46,7 @@ class IOMapLayerGroupCommon : public SAX2ElementHandler
     protected:
         MapLayerGroupCommon* m_layerGroup;
         MapDefinition* m_map;
+        TileSetDefinition* m_tileset;
 };
 
 END_NAMESPACE_MDFPARSER

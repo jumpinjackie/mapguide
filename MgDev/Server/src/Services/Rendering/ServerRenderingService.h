@@ -47,6 +47,29 @@ public:
                                      INT32 tileColumn,
                                      INT32 tileRow);
 
+    virtual MgByteReader* RenderTile(MgMap* map,
+                                     CREFSTRING baseMapLayerGroupName,
+                                     INT32 tileColumn,
+                                     INT32 tileRow,
+                                     INT32 tileWidth,
+                                     INT32 tileHeight,
+                                     INT32 tileDpi,
+                                     CREFSTRING tileImageFormat);
+
+    virtual MgByteReader* RenderTileXYZ(MgMap* map,
+                                        CREFSTRING baseMapLayerGroupName,
+                                        INT32 x,
+                                        INT32 y,
+                                        INT32 z);
+
+    virtual MgByteReader* RenderTileXYZ(MgMap* map,
+                                        CREFSTRING baseMapLayerGroupName,
+                                        INT32 x,
+                                        INT32 y,
+                                        INT32 z,
+                                        INT32 dpi,
+                                        CREFSTRING tileImageFormat);
+
     virtual MgByteReader* RenderDynamicOverlay(MgMap* map,
                                                MgSelection* selection,
                                                CREFSTRING format);

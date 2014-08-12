@@ -1597,6 +1597,87 @@ void TestRenderingService::TestCase_SymbologyPolygons(CREFSTRING imageFormat, CR
     }
 }
 
+void TestRenderingService::TestCase_RenderTileBaseline()
+{
+    try
+    {
+        Ptr<MgMap> map = CreateTestTiledMap();
+        map->SetViewScale(12500.0);
+        Ptr<MgByteReader> tile4_6 = m_svcRendering->RenderTile(map, L"BaseLayers", 4, 6);
+        Ptr<MgByteReader> tile4_7 = m_svcRendering->RenderTile(map, L"BaseLayers", 4, 7);
+        Ptr<MgByteReader> tile5_6 = m_svcRendering->RenderTile(map, L"BaseLayers", 5, 6);
+        Ptr<MgByteReader> tile5_7 = m_svcRendering->RenderTile(map, L"BaseLayers", 5, 7);
+
+        tile4_6->ToFile(L"../UnitTestFiles/RenderTile_4_6_Baseline.png");
+        tile4_7->ToFile(L"../UnitTestFiles/RenderTile_4_7_Baseline.png");
+        tile5_6->ToFile(L"../UnitTestFiles/RenderTile_5_6_Baseline.png");
+        tile5_7->ToFile(L"../UnitTestFiles/RenderTile_5_7_Baseline.png");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
+void TestRenderingService::TestCase_RenderTile(CREFSTRING imageFormat, CREFSTRING extension)
+{
+    try
+    {
+        Ptr<MgMap> map = CreateTestTiledMap();
+        map->SetViewScale(12500.0);
+        Ptr<MgByteReader> tile4_6 = m_svcRendering->RenderTile(map, L"BaseLayers", 4, 6, 300, 300, 96, imageFormat);
+        Ptr<MgByteReader> tile4_7 = m_svcRendering->RenderTile(map, L"BaseLayers", 4, 7, 300, 300, 96, imageFormat);
+        Ptr<MgByteReader> tile5_6 = m_svcRendering->RenderTile(map, L"BaseLayers", 5, 6, 300, 300, 96, imageFormat);
+        Ptr<MgByteReader> tile5_7 = m_svcRendering->RenderTile(map, L"BaseLayers", 5, 7, 300, 300, 96, imageFormat);
+
+        tile4_6->ToFile(GetPath(L"../UnitTestFiles/RenderTile_4_6_300x300@96", imageFormat, extension));
+        tile4_7->ToFile(GetPath(L"../UnitTestFiles/RenderTile_4_7_300x300@96", imageFormat, extension));
+        tile5_6->ToFile(GetPath(L"../UnitTestFiles/RenderTile_5_6_300x300@96", imageFormat, extension));
+        tile5_7->ToFile(GetPath(L"../UnitTestFiles/RenderTile_5_7_300x300@96", imageFormat, extension));
+
+        Ptr<MgByteReader> tile11_11 = m_svcRendering->RenderTile(map, L"BaseLayers", 11, 11, 256, 256, 96, imageFormat);
+        Ptr<MgByteReader> tile11_12 = m_svcRendering->RenderTile(map, L"BaseLayers", 11, 12, 256, 256, 96, imageFormat);
+        Ptr<MgByteReader> tile12_11 = m_svcRendering->RenderTile(map, L"BaseLayers", 12, 11, 256, 256, 96, imageFormat);
+        Ptr<MgByteReader> tile12_12 = m_svcRendering->RenderTile(map, L"BaseLayers", 12, 12, 256, 256, 96, imageFormat);
+
+        tile11_11->ToFile(GetPath(L"../UnitTestFiles/RenderTile_11_11_256x256@96", imageFormat, extension));
+        tile11_12->ToFile(GetPath(L"../UnitTestFiles/RenderTile_11_12_256x256@96", imageFormat, extension));
+        tile12_11->ToFile(GetPath(L"../UnitTestFiles/RenderTile_12_11_256x256@96", imageFormat, extension));
+        tile12_12->ToFile(GetPath(L"../UnitTestFiles/RenderTile_12_12_256x256@96", imageFormat, extension));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
+void TestRenderingService::TestCase_RenderTileXYZ(CREFSTRING imageFormat, CREFSTRING extension)
+{
+    try
+    {
+        Ptr<MgMap> map = CreateTestTiledMap();
+        Ptr<MgByteReader> tileTL = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 2099, 2985, 13, 96, imageFormat);
+        Ptr<MgByteReader> tileTR = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 2100, 2985, 13, 96, imageFormat);
+        Ptr<MgByteReader> tileBL = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 2099, 2986, 13, 96, imageFormat);
+        Ptr<MgByteReader> tileBR = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 2100, 2986, 13, 96, imageFormat);
+
+        tileTL->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_TopLeft", imageFormat, extension));
+        tileTR->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_TopRight", imageFormat, extension));
+        tileBL->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_BottomLeft", imageFormat, extension));
+        tileBR->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_BottomRight", imageFormat, extension));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
 STRING TestRenderingService::GetPath(CREFSTRING basePath, CREFSTRING imageFormat, CREFSTRING extension)
 {
 	STRING ret;

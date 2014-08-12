@@ -46,6 +46,8 @@ PUBLISHED_API:
     /// by this method. To render and cache the tile, use the 
     /// \link MgTileService::GetTile GetTile \endlink method instead
     ///
+    /// \deprecated This method is deprecated. Use the RenderTile that acceps width/height/dpi/format
+    ///
     /// \param map
     /// Input
     /// map object containing current state of map.
@@ -67,6 +69,128 @@ PUBLISHED_API:
         CREFSTRING baseMapLayerGroupName,
         INT32 tileColumn,
         INT32 tileRow) = 0;
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the specified base map tile for the given map.
+    ///
+    /// \remarks
+    /// This method only renders the given tile. No tile caching is performed
+    /// by this method. To render and cache the tile, use the 
+    /// \link MgTileService::GetTile GetTile \endlink method instead. However,
+    /// using that method will use default tile width/height/dpi/format specified
+    /// in your MapGuide Server configuration
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param baseMapLayerGroupName
+    /// Input
+    /// Specifies the name of the baseMapLayerGroup for which to render the tile.
+    /// \param tileColumn
+    /// Input
+    /// Specifies the column index of the tile to return.
+    /// \param tileRow
+    /// Input
+    /// Specifies the row index of the tile to return.
+    /// \param tileWidth
+    /// Input
+    /// Specifies the width of the tile to return.
+    /// \param tileHeight
+    /// Input
+    /// Specifies the height of the tile to return.
+    /// \param tileDpi
+    /// Input
+    /// Specifies the dpi the tile to return.
+    /// \param tileImageFormat
+    /// Input
+    /// Specifies the image format of the tile. See \link MgImageFormats \endlink
+    ///
+    /// \return
+    /// A byte reader containing the rendered tile image.
+    ///
+    virtual MgByteReader* RenderTile(
+        MgMap* map,
+        CREFSTRING baseMapLayerGroupName,
+        INT32 tileColumn,
+        INT32 tileRow,
+        INT32 tileWidth,
+        INT32 tileHeight,
+        INT32 tileDpi,
+        CREFSTRING tileImageFormat) = 0;
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the specified map tile for the given map. Tile structure is
+    /// based on the XYZ tiling scheme used by Google Maps, OpenStreetMap, and
+    /// others
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param baseMapLayerGroupName
+    /// Input
+    /// Specifies the name of the baseMapLayerGroup for which to render the tile.
+    /// \param x
+    /// Input
+    /// Specifies the row index of the tile to return.
+    /// \param y
+    /// Input
+    /// Specifies the column index of the tile to return.
+    /// \param z
+    /// Input
+    /// Specifies the zoom level of the tile to return.
+    ///
+    /// \return
+    /// A byte reader containing the rendered tile image.
+    ///
+    /// \since 3.0
+    virtual MgByteReader* RenderTileXYZ(
+        MgMap* map,
+        CREFSTRING baseMapLayerGroupName,
+        INT32 x,
+        INT32 y,
+        INT32 z) = 0;
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the specified map tile for the given map. Tile structure is
+    /// based on the XYZ tiling scheme used by Google Maps, OpenStreetMap, and
+    /// others
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param baseMapLayerGroupName
+    /// Input
+    /// Specifies the name of the baseMapLayerGroup for which to render the tile.
+    /// \param x
+    /// Input
+    /// Specifies the row index of the tile to return.
+    /// \param y
+    /// Input
+    /// Specifies the column index of the tile to return.
+    /// \param z
+    /// Input
+    /// Specifies the zoom level of the tile to return.
+    /// \param dpi
+    /// Input
+    /// Specifies the dpi of the tile to return.
+    /// \param tileImageFormat
+    /// Input
+    /// Specifies the image format of the tile to return.
+    ///
+    /// \return
+    /// A byte reader containing the rendered tile image.
+    ///
+    virtual MgByteReader* RenderTileXYZ(
+        MgMap* map,
+        CREFSTRING baseMapLayerGroupName,
+        INT32 x,
+        INT32 y,
+        INT32 z,
+        INT32 dpi,
+        CREFSTRING tileImageFormat) = 0;
 
     /////////////////////////////////////////////////////////////////
     /// \brief

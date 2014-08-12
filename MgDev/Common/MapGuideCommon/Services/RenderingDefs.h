@@ -40,6 +40,9 @@ INTERNAL_API:
     static const int RenderDynamicOverlay2      = 0x1111E90C;
     static const int RenderMap5                 = 0x1111E90D;
     static const int QueryFeatureProperties2    = 0x1111E90E;
+    static const int RenderTile2                = 0x1111E90F;
+    static const int RenderTileXYZ              = 0x1111E910;
+    static const int RenderTileXYZ2             = 0x1111E911;
 };
 /// \endcond
 

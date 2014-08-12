@@ -302,7 +302,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                                                         rtLayerGroup.GetDisplayInLegend() ? "true" : "false",
                                                         rtLayerGroup.GetObjectId(),
                                                         StrEscape(rtLayerGroup.GetName()),
-                                                        rtLayerGroup.GetLayerGroupType() == MgLayerGroupType.BaseMap? "true": "false"));
+                                                        (rtLayerGroup.GetLayerGroupType() == MgLayerGroupType.BaseMap || rtLayerGroup.GetLayerGroupType() == MgLayerGroupType.BaseMapFromTileSet)? "true": "false"));
                     }
                     else
                     {

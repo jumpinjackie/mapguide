@@ -424,6 +424,40 @@ MgByteReader* MgProxyMappingService::CreateRuntimeMap(MgResourceIdentifier* mapD
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+MgByteReader* MgProxyMappingService::CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                                      CREFSTRING targetMapName,
+                                                      CREFSTRING sessionId,
+                                                      CREFSTRING iconFormat,
+                                                      INT32 iconWidth,
+                                                      INT32 iconHeight,
+                                                      INT32 requestedFeatures,
+                                                      INT32 iconsPerScaleRange,
+                                                      INT32 schemaVersion)
+{
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,
+                       MgCommand::knObject,
+                       MgMappingServiceOpId::CreateRuntimeMap3,
+                       9,
+                       Mapping_Service,
+                       BUILD_VERSION(3,0,0),
+                       MgCommand::knObject,    mapDefinition,
+                       MgCommand::knString,    &targetMapName,
+                       MgCommand::knString,    &sessionId,
+                       MgCommand::knString,    &iconFormat,
+                       MgCommand::knInt32,     iconWidth,
+                       MgCommand::knInt32,     iconHeight,
+                       MgCommand::knInt32,     requestedFeatures,
+                       MgCommand::knInt32,     iconsPerScaleRange,
+                       MgCommand::knInt32,     schemaVersion,
+                       MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Returns an XML-based description of the runtime map
@@ -540,6 +574,36 @@ MgByteReader* MgProxyMappingService::DescribeRuntimeMap(MgMap* map,
                        MgCommand::knInt32,     iconHeight,
                        MgCommand::knInt32,     requestedFeatures,
                        MgCommand::knInt32,     iconsPerScaleRange,
+                       MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
+MgByteReader* MgProxyMappingService::DescribeRuntimeMap(MgMap* map,
+                                                        CREFSTRING iconFormat,
+                                                        INT32 iconWidth,
+                                                        INT32 iconHeight,
+                                                        INT32 requestedFeatures,
+                                                        INT32 iconsPerScaleRange,
+                                                        INT32 schemaVersion)
+{
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,
+                       MgCommand::knObject,
+                       MgMappingServiceOpId::DescribeRuntimeMap3,
+                       7,
+                       Mapping_Service,
+                       BUILD_VERSION(3,0,0),
+                       MgCommand::knObject,    map,
+                       MgCommand::knString,    &iconFormat,
+                       MgCommand::knInt32,     iconWidth,
+                       MgCommand::knInt32,     iconHeight,
+                       MgCommand::knInt32,     requestedFeatures,
+                       MgCommand::knInt32,     iconsPerScaleRange,
+                       MgCommand::knInt32,     schemaVersion,
                        MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());

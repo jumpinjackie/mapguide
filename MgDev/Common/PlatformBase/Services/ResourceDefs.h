@@ -277,6 +277,17 @@ PUBLISHED_API:
     ///
     static const STRING WatermarkDefinition;    ///\if INTERNAL value("WatermarkDefinition") \endif
 
+    ////////////////////////////////////////////////////////////////
+    /// \brief
+    /// This resource is a tile set definition.
+    ///
+    /// \remarks
+    /// It represents a tile cache that can be referenced by a Map Definition.
+    ///
+    /// \see \ref TileSetDefinition_schema "TileSetDefinition schema"
+    ///
+    static const STRING TileSetDefinition;      ///\if INTERNAL value("TileSetDefinition") \endif
+
 INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
@@ -362,6 +373,13 @@ PUBLISHED_API:
     /// given resource. The trailing "/" is included.
     ///
     static const STRING DataFilePath;   ///\if INTERNAL value("%MG_DATA_FILE_PATH%") \endif
+
+    ////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Replaced with the location of tile cache associated with the
+    /// given resource. The trailing "/" is included.
+    ///
+    static const STRING TileCachePath;  ///\if INTERNAL value("%MG_TILE_CACHE_PATH%") \endif
 
     ////////////////////////////////////////////////////////////////
     /// \brief

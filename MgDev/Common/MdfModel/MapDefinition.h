@@ -25,6 +25,7 @@
 #include "MapLayerGroup.h"
 #include "BaseMapLayerGroup.h"
 #include "WatermarkInstance.h"
+#include "TileSetSource.h"
 #include "DisplayScale.h"
 
 BEGIN_NAMESPACE_MDFMODEL
@@ -37,6 +38,13 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API MapDefinition : public MdfRootObject
     {
     public:
+        // Describes the source of the tiled layers
+        enum TileSourceType
+        {
+            Inline,
+            TileSetDefinition
+        };
+
         // Construction, destruction, initialization.
         MapDefinition(const MdfString& strName, const MdfString& strCoordinateSystem);
         virtual ~MapDefinition();
@@ -87,6 +95,15 @@ BEGIN_NAMESPACE_MDFMODEL
         // The base map groups; used to define tiles for the HTML viewer.
         BaseMapLayerGroupCollection* GetBaseMapLayerGroups();
 
+        // Property : TileSetSource
+        // Gets the reference to the external TileSetDefinition
+        TileSetSource* GetTileSetSource();
+
+        // Property : TileSourceType
+        // Indicates the tile source type (inside the Map Definition or referencing a Tile Set Definition)
+        TileSourceType GetTileSourceType() const;
+        void SetTileSourceType(TileSourceType tileSourceType);
+
 //#ifdef _WIN32
 #if _DEBUG
         // for memory leak testing
@@ -111,6 +128,8 @@ BEGIN_NAMESPACE_MDFMODEL
         Box2D m_boxExtents;
         DisplayScaleCollection m_finiteDisplayScales;
         BaseMapLayerGroupCollection m_baseMapLayerGroups;
+        TileSetSource m_tileSetSource;
+        TileSourceType m_tileSourceType;
     };
 
 END_NAMESPACE_MDFMODEL

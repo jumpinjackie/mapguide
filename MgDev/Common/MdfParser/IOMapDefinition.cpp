@@ -23,6 +23,7 @@
 #include "IOMapLayerGroup.h"
 #include "IOWatermarkInstance.h"
 #include "IOBaseMapDefinition.h"
+#include "IOTileSetSource.h"
 #include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -39,17 +40,18 @@ ELEM_MAP_ENTRY(6, Metadata);
 ELEM_MAP_ENTRY(7, MapLayer);
 ELEM_MAP_ENTRY(8, MapLayerGroup);
 ELEM_MAP_ENTRY(9, BaseMapDefinition);
-ELEM_MAP_ENTRY(10, Watermarks);
-ELEM_MAP_ENTRY(11, Watermark);
-ELEM_MAP_ENTRY(12, ExtendedData1);
+ELEM_MAP_ENTRY(10, TileSetSource);
+ELEM_MAP_ENTRY(11, Watermarks);
+ELEM_MAP_ENTRY(12, Watermark);
+ELEM_MAP_ENTRY(13, ExtendedData1);
 
-IOMapDefinition::IOMapDefinition(Version& version) : SAX2ElementHandler(version)
+IOMapDefinition::IOMapDefinition(Version& version) : SAX2ElementHandler(version), m_bReadBaseMapDef(false)
 {
     this->m_map = NULL;
 }
 
 
-IOMapDefinition::IOMapDefinition(MapDefinition* map, Version& version) : SAX2ElementHandler(version)
+IOMapDefinition::IOMapDefinition(MapDefinition* map, Version& version) : SAX2ElementHandler(version), m_bReadBaseMapDef(false)
 {
     this->m_map = map;
 }
@@ -100,6 +102,20 @@ void IOMapDefinition::StartElement(const wchar_t* name, HandlerStack* handlerSta
             IOBaseMapDefinition* IO = new IOBaseMapDefinition(this->m_map, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
+            this->m_map->SetTileSourceType(MapDefinition::Inline);
+            m_bReadBaseMapDef = true;
+        }
+        break;
+
+    case eTileSetSource:
+        {
+            if (!m_bReadBaseMapDef) //Only read this element if no BaseMapDefinition element was read
+            {
+                IOTileSetSource* IO = new IOTileSetSource(this->m_map->GetTileSetSource(), this->m_version);
+                handlerStack->push(IO);
+                IO->StartElement(name, handlerStack);
+                this->m_map->SetTileSourceType(MapDefinition::TileSetDefinition);
+            }
         }
         break;
 
@@ -170,7 +186,7 @@ void IOMapDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack
 
 // Determine which WatermarkDefinition schema version to use based
 // on the supplied MapDefinition version:
-// * MDF version == 2.4.0  =>  WD version 2.4.0
+// * MDF version >= 2.4.0  =>  WD version 2.4.0
 // * MDF version <= 2.3.0  =>  WD version 2.3.0
 bool IOMapDefinition::GetWatermarkDefinitionVersion(Version* mdfVersion, Version& wdVersion)
 {
@@ -189,7 +205,7 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version,
     MdfString strVersion;
     if (version)
     {
-        if ((*version >= Version(1, 0, 0)) && (*version <= Version(2, 4, 0)))
+        if ((*version >= Version(1, 0, 0)) && (*version <= Version(3, 0, 0)))
         {
             // MDF in MapGuide 2006 - current
             strVersion = version->ToString();
@@ -205,7 +221,7 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version,
     else
     {
         // use the current highest version
-        strVersion = L"2.4.0";
+        strVersion = L"3.0.0";
     }
 
     if (!version || (*version > Version(1, 0, 0)))
@@ -248,9 +264,17 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version,
     for (int i=0; i<map->GetLayerGroups()->GetCount(); ++i)
         IOMapLayerGroup::Write(fd, map->GetLayerGroups()->GetAt(i), version, tab);
 
-    // Property: BaseMapDefinition
-    if (map->GetFiniteDisplayScales()->GetCount() > 0)
-        IOBaseMapDefinition::Write(fd, map, version, tab);
+    if (map->GetTileSourceType() == MapDefinition::Inline)
+    {
+        // Property: BaseMapDefinition
+        if (map->GetFiniteDisplayScales()->GetCount() > 0)
+            IOBaseMapDefinition::Write(fd, map, version, tab);
+    }
+    else
+    {
+        // Property: TileSetSource
+        IOTileSetSource::Write(fd, map->GetTileSetSource(), version, tab);
+    }
 
     // Property: Watermarks (optional)
     int watermarkCount = map->GetWatermarks()->GetCount();

@@ -25,10 +25,19 @@ class TestTileService : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(TestTileService);
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
+    CPPUNIT_TEST(TestCase_GetTileProviders);
+    CPPUNIT_TEST(TestCase_MgMap_Inline);
+    CPPUNIT_TEST(TestCase_MgMap_Linked);
+    CPPUNIT_TEST(TestCase_MgMapFromXYZTileSetStrict);
+    CPPUNIT_TEST(TestCase_MgMapFromXYZTileSetLoose);
+    CPPUNIT_TEST(TestCase_MgMapFromTileSet);
     CPPUNIT_TEST(TestCase_GetTile);
     CPPUNIT_TEST(TestCase_SetTile);
     CPPUNIT_TEST(TestCase_GetSetTile);
     CPPUNIT_TEST(TestCase_ClearCache);
+    CPPUNIT_TEST(TestCase_GetTileLinked);
+    CPPUNIT_TEST(TestCase_GetTileXYZ);
+    CPPUNIT_TEST(TestCase_ClearCacheLinked);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -42,13 +51,23 @@ public:
     void TestStart();
     void TestEnd();
 
+    void TestCase_GetTileProviders();
+    void TestCase_MgMap_Inline();
+    void TestCase_MgMap_Linked();
+    void TestCase_MgMapFromXYZTileSetStrict();
+    void TestCase_MgMapFromXYZTileSetLoose();
+    void TestCase_MgMapFromTileSet();
     void TestCase_GetTile();
     void TestCase_SetTile();
     void TestCase_GetSetTile();
+    void TestCase_GetTileXYZ();
     void TestCase_ClearCache();
+    void TestCase_GetTileLinked();
+    void TestCase_ClearCacheLinked();
 
 private:
     MgMap* CreateMap(CREFSTRING mapName = L"");
+    MgMap* CreateMapLinked(CREFSTRING mapName = L"");
     INT32 Rand(INT32 n);
 
 private:

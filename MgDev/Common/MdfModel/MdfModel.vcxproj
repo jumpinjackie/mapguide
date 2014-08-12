@@ -232,6 +232,9 @@
     <ClCompile Include="HillShade.cpp" />
     <ClCompile Include="FeatureSource.cpp" />
     <ClCompile Include="SupplementalSpatialContextInfo.cpp" />
+    <ClCompile Include="TileSetDefinition.cpp" />
+    <ClCompile Include="TileSetSource.cpp" />
+    <ClCompile Include="TileStoreParameters.cpp" />
     <ClCompile Include="URLData.cpp" />
     <ClCompile Include="VectorLayerDefinition.cpp" />
     <ClCompile Include="VectorScaleRange.cpp" />
@@ -347,6 +350,9 @@
     <ClInclude Include="HillShade.h" />
     <ClInclude Include="FeatureSource.h" />
     <ClInclude Include="SupplementalSpatialContextInfo.h" />
+    <ClInclude Include="TileSetDefinition.h" />
+    <ClInclude Include="TileSetSource.h" />
+    <ClInclude Include="TileStoreParameters.h" />
     <ClInclude Include="URLData.h" />
     <ClInclude Include="VectorLayerDefinition.h" />
     <ClInclude Include="VectorScaleRange.h" />

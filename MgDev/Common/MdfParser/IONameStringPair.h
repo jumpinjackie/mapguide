@@ -22,6 +22,7 @@
 #include "NameStringPair.h"
 #include "VectorLayerDefinition.h"
 #include "FeatureSource.h"
+#include "TileStoreParameters.h"
 #include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -35,6 +36,7 @@ class IONameStringPair : public SAX2ElementHandler
         IONameStringPair(Version& version);
         IONameStringPair(VectorLayerDefinition* layer, Version& version);
         IONameStringPair(FeatureSource* featureSource, Version& version);
+        IONameStringPair(TileStoreParameters* params, Version& version);
         virtual ~IONameStringPair();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
@@ -47,6 +49,7 @@ class IONameStringPair : public SAX2ElementHandler
         NameStringPair* m_nameStringPair;
         VectorLayerDefinition* m_layer;
         FeatureSource* m_featureSource;
+        TileStoreParameters* m_tileStoreParams;
         NameStringPairCollection* m_overrides;
 };
 

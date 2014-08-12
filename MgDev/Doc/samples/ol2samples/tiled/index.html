@@ -44,7 +44,7 @@
         function createMap(reqFeatures) {
             $.getJSON(mapAgentUrl, {
                 "OPERATION": "CREATERUNTIMEMAP",
-                "VERSION": "2.6.0",
+                "VERSION": "3.0.0",
                 "MAPDEFINITION": "Library://Samples/Sheboygan/MapsTiled/Sheboygan.MapDefinition",
                 "USERNAME": "Anonymous", //Or you can use "SESSION": "<my session id>"
                 "REQUESTEDFEATURES": reqFeatures,
@@ -149,6 +149,18 @@
                         basemaplayergroupname: group.Name[0]
                     }, {
                         singleTile: false
+                    });
+                    map.addLayer(layer);
+                    tiledLayers[group.Name[0]] = layer;
+                } else if (group.Type[0] == "3") { //MgLayerGroupType.BaseMapFromTileSet
+                    var layer = new OpenLayers.Layer.MapGuide("MapGuide base layer group via CREATERUNTIMEMAP: " + group.Name[0], mapAgentUrl + "?USERNAME=Anonymous", {
+                        mapdefinition: rtMapInfo.RuntimeMap.TileSetDefinition[0],
+                        basemaplayergroupname: group.Name[0]
+                    }, {
+                        singleTile: false,
+                        defaultSize: new OpenLayers.Size(
+                            parseInt(rtMapInfo.RuntimeMap.TileWidth[0]),
+                            parseInt(rtMapInfo.RuntimeMap.TileHeight[0]))
                     });
                     map.addLayer(layer);
                     tiledLayers[group.Name[0]] = layer;

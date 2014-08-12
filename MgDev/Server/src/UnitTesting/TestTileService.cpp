@@ -27,6 +27,10 @@
 // determines the number of requests to make, as a factor of the number of tiles
 #define REQUEST_FACTOR 20
 
+// determines the interval of requests made for the ACE thread manager to wait for the entire thread group to complete
+// (to avoid deadlock issues on Linux)
+#define REQUEST_WAIT_INTERVAL 25
+
 // define thread group for tiling tests
 #define THREAD_GROUP 65535
 
@@ -118,6 +122,21 @@ void TestTileService::TestStart()
         Ptr<MgByteReader> mdfrdr1 = mdfsrc1->GetReader();
         m_svcResource->SetResource(mapres1, mdfrdr1, NULL);
 
+        Ptr<MgResourceIdentifier> mapres2 = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinkedTileSet.MapDefinition");
+        Ptr<MgByteSource> mdfsrc2 = new MgByteSource(L"../UnitTestFiles/UT_LinkedTileSet.mdf", false);
+        Ptr<MgByteReader> mdfrdr2 = mdfsrc2->GetReader();
+        m_svcResource->SetResource(mapres2, mdfrdr2, NULL);
+
+        Ptr<MgResourceIdentifier> tilesetres1 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition");
+        Ptr<MgByteSource> tsdsrc1 = new MgByteSource(L"../UnitTestFiles/UT_BaseMap.tsd", false);
+        Ptr<MgByteReader> tsdrdr1 = tsdsrc1->GetReader();
+        m_svcResource->SetResource(tilesetres1, tsdrdr1, NULL);
+
+        Ptr<MgResourceIdentifier> tilesetres2 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ.TileSetDefinition");
+        Ptr<MgByteSource> tsdsrc2 = new MgByteSource(L"../UnitTestFiles/UT_XYZ.tsd", false);
+        Ptr<MgByteReader> tsdrdr2 = tsdsrc2->GetReader();
+        m_svcResource->SetResource(tilesetres2, tsdrdr2, NULL);
+
         // publish the layer definitions
         Ptr<MgResourceIdentifier> ldfres1 = new MgResourceIdentifier(L"Library://UnitTests/Layers/RoadCenterLines.LayerDefinition");
         Ptr<MgByteSource> ldfsrc1 = new MgByteSource(L"../UnitTestFiles/UT_RoadCenterLines.ldf", false);
@@ -196,6 +215,12 @@ void TestTileService::TestEnd()
         Ptr<MgResourceIdentifier> mapres1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/BaseMap.MapDefinition");
         m_svcResource->DeleteResource(mapres1);
 
+        Ptr<MgResourceIdentifier> mapres2 = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinkedTileSet.MapDefinition");
+        m_svcResource->DeleteResource(mapres2);
+
+        Ptr<MgResourceIdentifier> tilesetres1 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition");
+        m_svcResource->DeleteResource(tilesetres1);
+
         // delete the layer definitions
         Ptr<MgResourceIdentifier> ldfres1 = new MgResourceIdentifier(L"Library://UnitTests/Layers/RoadCenterLines.LayerDefinition");
         m_svcResource->DeleteResource(ldfres1);
@@ -251,6 +276,8 @@ struct TileThreadData
     Ptr<MgMap> map;
     INT32 tileRow;
     INT32 tileCol;
+    INT32 tileScale;
+    STRING tileSetId;
 };
 
 
@@ -422,7 +449,7 @@ void TestTileService::TestCase_GetTile()
                 break;
 
             // under Linux we get a deadlock if we don't call this every once in a while
-            if (nRequest % 25 == 0)
+            if (nRequest % REQUEST_WAIT_INTERVAL == 0)
                 manager->wait_grp(THREAD_GROUP);
             else
             {
@@ -451,6 +478,197 @@ void TestTileService::TestCase_GetTile()
     }
 }
 
+// the method which gets executed by the ACE worker thread
+ACE_THR_FUNC_RETURN GetTileLinkedWorker(void* param)
+{
+    // get the data for this thread
+    TileThreadData* threadData = (TileThreadData*)param;
+    INT32 threadId = threadData->threadId;
+    INT32 tileRow  = threadData->tileRow;
+    INT32 tileCol  = threadData->tileCol;
+    INT32 tileScale = threadData->tileScale;
+    bool saveTile  = threadData->saveTile;
+    Ptr<MgResourceIdentifier> tsId = new MgResourceIdentifier(threadData->tileSetId);
+    #ifdef _DEBUG
+    printf("> thread %d started, tile %d,%d\n", threadId, tileRow, tileCol);
+    #endif
+
+    try
+    {
+        // set user info
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
+        userInfo->SetLocale(TEST_LOCALE);
+        MgUserInformation::SetCurrentUserInfo(userInfo);
+
+        // get the tile service instance
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        Ptr<MgTileService> svcTile = dynamic_cast<MgTileService*>(
+            serviceManager->RequestService(MgServiceType::TileService));
+        assert(svcTile != NULL);
+
+        // get the tile
+        Ptr<MgByteReader> img = svcTile->GetTile(tsId, L"BaseLayers", tileCol, tileRow, tileScale);
+        CHECKNULL((MgByteReader*)img, L"GetTileLinkedWorker");
+
+        // save the image to a file if necessary
+        if (saveTile)
+        {
+            wchar_t imgName[PATH_LEN] = { 0 };
+            swprintf(imgName, PATH_LEN, L"./temp_tiles/tile%d_%d.png", tileRow, tileCol);
+            (MgByteSink(img)).ToFile(imgName);
+        }
+
+        // clear the user info to prevent leaks
+        MgUserInformation::SetCurrentUserInfo(NULL);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+
+    #ifdef _DEBUG
+//  printf("> thread %d done\n", threadId);
+    #endif
+
+    threadData->done = true;
+    return 0;
+}
+
+void TestTileService::TestCase_GetTileLinked()
+{
+    // specify the number of threads to use
+    const INT32 numThreads = MG_TEST_THREADS;
+    TileThreadData threadData[numThreads];
+
+    // define the range of tiles to get
+    INT32 tileRowMin =  0;
+    INT32 tileRowMax = 12;
+    INT32 tileColMin =  3;
+    INT32 tileColMax = 11;
+
+    try
+    {
+        // need a thread manager
+        ACE_Thread_Manager* manager = ACE_Thread_Manager::instance();
+
+        // make the runtime map
+        Ptr<MgMap> map = CreateMapLinked();
+        Ptr<MgResourceIdentifier> tsId;
+        Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
+        Ptr<MgLayerGroup> group = groups->GetItem(L"BaseLayers");
+        tsId = map->GetTileSetDefinition();
+
+        // set up the tile indices
+        INT32 numTileRows = tileRowMax - tileRowMin + 1;
+        INT32 numTileCols = tileColMax - tileColMin + 1;
+        INT32 numTiles    = numTileRows * numTileCols;
+
+        INT32* tileRows = new INT32[numTiles];
+        INT32* tileCols = new INT32[numTiles];
+
+        INT32 nRequest = 0;
+        for (INT32 tileRow = tileRowMin; tileRow <= tileRowMax; ++tileRow)
+        {
+            for (INT32 tileCol = tileColMin; tileCol <= tileColMax; ++tileCol)
+            {
+                tileRows[nRequest] = tileRow;
+                tileCols[nRequest] = tileCol;
+                nRequest++;
+            }
+        }
+
+        // initialize the thread data
+        for (INT32 i=0; i<numThreads; i++)
+        {
+            // each thread works with its own instance of the map
+            threadData[i].threadId = i;
+            threadData[i].done     = true;
+            threadData[i].saveTile = false;
+            threadData[i].tileRow  = 0;
+            threadData[i].tileCol  = 0;
+            threadData[i].tileScale = 4;
+            threadData[i].tileSetId = tsId->ToString().c_str();
+        }
+
+        // execute the requests to randomly access the tiles
+        #ifdef _DEBUG
+        printf("\n");
+        #endif
+        nRequest = 0;
+        for (;;)
+        {
+            INT32 dc = 0;
+            for (INT32 i=0; i<numThreads; i++)
+            {
+                // check if the thread is available
+                if (threadData[i].done)
+                {
+                    // if we're not yet done then give the thread a new request
+                    if (nRequest < REQUEST_FACTOR*numTiles)
+                    {
+                        // pick a random request to execute...
+                        INT32 nTile = Rand(numTiles);
+
+                        // ... but make every REQUEST_FACTOR-th tile non-random to
+                        // ensure we get each tile at least once
+                        if (nRequest % REQUEST_FACTOR == 0)
+                            nTile = nRequest / REQUEST_FACTOR;
+
+                        threadData[i].done     = false;
+                        threadData[i].saveTile = (nRequest % REQUEST_FACTOR == 0);
+                        threadData[i].tileRow  = tileRows[nTile];
+                        threadData[i].tileCol  = tileCols[nTile];
+
+                        // spawn a new thread using a specific group id
+                        int thid = manager->spawn(ACE_THR_FUNC(GetTileLinkedWorker), &threadData[i], 0, NULL, NULL, 0, THREAD_GROUP);
+                        nRequest++;
+                    }
+
+                    // keep a tally of all the done threads
+                    if (threadData[i].done)
+                        ++dc;
+                }
+            }
+
+            // move on if all threads are done
+            if (dc == numThreads)
+                break;
+
+            // under Linux we get a deadlock if we don't call this every once in a while
+            if (nRequest % REQUEST_WAIT_INTERVAL == 0)
+                manager->wait_grp(THREAD_GROUP);
+            else
+            {
+                // pause briefly (10ms) before checking again
+                ACE_Time_Value t(0, 10000);
+                ACE_OS::sleep(t);
+            }
+        }
+
+        // make sure all threads in the group have completed
+        manager->wait_grp(THREAD_GROUP);
+
+        // done with the tile indices
+        delete [] tileRows;
+        delete [] tileCols;
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
 
 ////////////////////////////////////////////////////////////////
 /// SetTile methods
@@ -617,7 +835,7 @@ void TestTileService::TestCase_SetTile()
                 break;
 
             // under Linux we get a deadlock if we don't call this every once in a while
-            if (nRequest % 25 == 0)
+            if (nRequest % REQUEST_WAIT_INTERVAL == 0)
                 manager->wait_grp(THREAD_GROUP);
             else
             {
@@ -680,7 +898,7 @@ void TestTileService::TestCase_SetTile()
                 break;
 
             // under Linux we get a deadlock if we don't call this every once in a while
-            if (nRequest % 25 == 0)
+            if (nRequest % REQUEST_WAIT_INTERVAL == 0)
                 manager->wait_grp(THREAD_GROUP);
             else
             {
@@ -815,7 +1033,230 @@ void TestTileService::TestCase_GetSetTile()
                 break;
 
             // under Linux we get a deadlock if we don't call this every once in a while
-            if (nRequest % 25 == 0)
+            if (nRequest % REQUEST_WAIT_INTERVAL == 0)
+                manager->wait_grp(THREAD_GROUP);
+            else
+            {
+                // pause briefly (10ms) before checking again
+                ACE_Time_Value t(0, 10000);
+                ACE_OS::sleep(t);
+            }
+        }
+
+        // make sure all threads in the group have completed
+        manager->wait_grp(THREAD_GROUP);
+
+        // done with the tile indices
+        delete [] tileRows;
+        delete [] tileCols;
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+////////////////////////////////////////////////////////////////
+/// ClearCache methods
+////////////////////////////////////////////////////////////////
+
+
+void TestTileService::TestCase_ClearCache()
+{
+    try
+    {
+        // call the API with a NULL argument
+        CPPUNIT_ASSERT_THROW_MG(m_svcTile->ClearCache((MgMap*)NULL), MgNullArgumentException*);
+
+        // call the API with a map having a different name
+        Ptr<MgMap> map = CreateMap(L"blah");
+        m_svcTile->ClearCache(map);
+
+        // call the API with the run time map
+        map = CreateMap();
+        m_svcTile->ClearCache(map);
+
+        // call the API again on the same map
+        m_svcTile->ClearCache(map);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+// the method which gets executed by the ACE worker thread
+ACE_THR_FUNC_RETURN GetTileXYZWorker(void* param)
+{
+    // get the data for this thread
+    TileThreadData* threadData = (TileThreadData*)param;
+    INT32 threadId = threadData->threadId;
+    INT32 tileRow  = threadData->tileRow;
+    INT32 tileCol  = threadData->tileCol;
+    INT32 tileScale = threadData->tileScale;
+    bool saveTile  = threadData->saveTile;
+    Ptr<MgResourceIdentifier> tsId = new MgResourceIdentifier(threadData->tileSetId);
+    #ifdef _DEBUG
+    printf("> thread %d started, tile %d,%d\n", threadId, tileRow, tileCol);
+    #endif
+
+    try
+    {
+        // set user info
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
+        userInfo->SetLocale(TEST_LOCALE);
+        MgUserInformation::SetCurrentUserInfo(userInfo);
+
+        // get the tile service instance
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        Ptr<MgTileService> svcTile = dynamic_cast<MgTileService*>(
+            serviceManager->RequestService(MgServiceType::TileService));
+        assert(svcTile != NULL);
+
+        // get the tile
+        Ptr<MgByteReader> img = svcTile->GetTile(tsId, L"BaseLayers", tileCol, tileRow, tileScale);
+        CHECKNULL((MgByteReader*)img, L"GetTileXYZWorker");
+
+        // save the image to a file if necessary
+        if (saveTile)
+        {
+            wchar_t imgName[PATH_LEN] = { 0 };
+            swprintf(imgName, PATH_LEN, L"./temp_tiles/tile%d_%d.png", tileRow, tileCol);
+            (MgByteSink(img)).ToFile(imgName);
+        }
+
+        // clear the user info to prevent leaks
+        MgUserInformation::SetCurrentUserInfo(NULL);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+
+    #ifdef _DEBUG
+//  printf("> thread %d done\n", threadId);
+    #endif
+
+    threadData->done = true;
+    return 0;
+}
+
+
+void TestTileService::TestCase_GetTileXYZ()
+{
+    // specify the number of threads to use
+    const INT32 numThreads = MG_TEST_THREADS;
+    TileThreadData threadData[numThreads];
+
+    // define the range of tiles to get
+    INT32 tileRowMin = 33587;
+    INT32 tileRowMax = 33601;
+    INT32 tileColMin = 47766;
+    INT32 tileColMax = 47784;
+
+    try
+    {
+        // need a thread manager
+        ACE_Thread_Manager* manager = ACE_Thread_Manager::instance();
+
+        // make the runtime map
+        Ptr<MgMap> map = CreateMap();
+
+        // set up the tile indices
+        INT32 numTileRows = tileRowMax - tileRowMin + 1;
+        INT32 numTileCols = tileColMax - tileColMin + 1;
+        INT32 numTiles    = numTileRows * numTileCols;
+
+        INT32* tileRows = new INT32[numTiles];
+        INT32* tileCols = new INT32[numTiles];
+
+        INT32 nRequest = 0;
+        for (INT32 tileRow = tileRowMin; tileRow <= tileRowMax; ++tileRow)
+        {
+            for (INT32 tileCol = tileColMin; tileCol <= tileColMax; ++tileCol)
+            {
+                tileRows[nRequest] = tileRow;
+                tileCols[nRequest] = tileCol;
+                nRequest++;
+            }
+        }
+
+        // initialize the thread data
+        for (INT32 i=0; i<numThreads; i++)
+        {
+            threadData[i].threadId = i;
+            threadData[i].done     = true;
+            threadData[i].saveTile = false;
+            threadData[i].tileSetId = L"Library://UnitTests/TileSets/XYZ.TileSetDefinition";
+            threadData[i].tileRow  = 0;
+            threadData[i].tileCol  = 0;
+            threadData[i].tileScale = 17; //z
+        }
+
+        // execute the requests to randomly access the tiles
+        #ifdef _DEBUG
+        printf("\n");
+        #endif
+        nRequest = 0;
+        for (;;)
+        {
+            INT32 dc = 0;
+            for (INT32 i=0; i<numThreads; i++)
+            {
+                // check if the thread is available
+                if (threadData[i].done)
+                {
+                    // if we're not yet done then give the thread a new request
+                    if (nRequest < REQUEST_FACTOR*numTiles)
+                    {
+                        // pick a random request to execute...
+                        INT32 nTile = Rand(numTiles);
+
+                        // ... but make every REQUEST_FACTOR-th tile non-random to
+                        // ensure we get each tile at least once
+                        if (nRequest % REQUEST_FACTOR == 0)
+                            nTile = nRequest / REQUEST_FACTOR;
+
+                        threadData[i].done     = false;
+                        threadData[i].saveTile = (nRequest % REQUEST_FACTOR == 0);
+                        threadData[i].tileRow  = tileRows[nTile];
+                        threadData[i].tileCol  = tileCols[nTile];
+
+                        // spawn a new thread using a specific group id
+                        int thid = manager->spawn(ACE_THR_FUNC(GetTileXYZWorker), &threadData[i], 0, NULL, NULL, 0, THREAD_GROUP);
+                        nRequest++;
+                    }
+
+                    // keep a tally of all the done threads
+                    if (threadData[i].done)
+                        ++dc;
+                }
+            }
+
+            // move on if all threads are done
+            if (dc == numThreads)
+                break;
+
+            // under Linux we get a deadlock if we don't call this every once in a while
+            if (nRequest % REQUEST_WAIT_INTERVAL == 0)
                 manager->wait_grp(THREAD_GROUP);
             else
             {
@@ -845,28 +1286,15 @@ void TestTileService::TestCase_GetSetTile()
 }
 
 
-////////////////////////////////////////////////////////////////
-/// ClearCache methods
-////////////////////////////////////////////////////////////////
-
-
-void TestTileService::TestCase_ClearCache()
+void TestTileService::TestCase_ClearCacheLinked()
 {
     try
     {
         // call the API with a NULL argument
-        CPPUNIT_ASSERT_THROW_MG(m_svcTile->ClearCache(NULL), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(m_svcTile->ClearCache((MgResourceIdentifier*)NULL), MgNullArgumentException*);
 
-        // call the API with a map having a different name
-        Ptr<MgMap> map = CreateMap(L"blah");
-        m_svcTile->ClearCache(map);
-
-        // call the API with the run time map
-        map = CreateMap();
-        m_svcTile->ClearCache(map);
-
-        // call the API again on the same map
-        m_svcTile->ClearCache(map);
+        Ptr<MgResourceIdentifier> tsId = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition");
+        m_svcTile->ClearCache(tsId);
     }
     catch (MgException* e)
     {
@@ -880,6 +1308,329 @@ void TestTileService::TestCase_ClearCache()
     }
 }
 
+
+void TestTileService::TestCase_MgMap_Inline()
+{
+    try
+    {
+        STRING mapName = L"TestCase_MgMap_Inline";
+        Ptr<MgMap> map = CreateMap(mapName);
+
+        Ptr<MgEnvelope> extents = map->GetMapExtent();
+        Ptr<MgCoordinate> ll = extents->GetLowerLeftCoordinate();
+        Ptr<MgCoordinate> ur = extents->GetUpperRightCoordinate();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.79786601383196, ll->GetX(), 0.00000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.686857862181,   ll->GetY(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.66452777186925, ur->GetX(), 0.00000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.8037962206133,  ur->GetY(), 0.0000000000001);
+        Ptr<MgResourceIdentifier> tsId = map->GetTileSetDefinition();
+        CPPUNIT_ASSERT(NULL == (MgResourceIdentifier*)tsId);
+
+        Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
+        for (INT32 i = 0; i < groups->GetCount(); i++)
+        {
+            Ptr<MgLayerGroup> group = groups->GetItem(i);
+            CPPUNIT_ASSERT(MgLayerGroupType::BaseMap == group->GetLayerGroupType());
+        }
+
+        // Initialize service objects.
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        Ptr<MgServerSiteService> svcSite = dynamic_cast<MgServerSiteService*>(serviceManager->RequestService(MgServiceType::SiteService));
+        Ptr<MgResourceService> svcRes = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
+        assert(svcSite != NULL);
+        assert(svcRes != NULL);
+        // Set the current MgUserInformation
+        // This must be done before calling CreateSession()
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(
+            L"Administrator", L"admin");
+        userInfo->SetLocale(TEST_LOCALE);
+        MgUserInformation::SetCurrentUserInfo(userInfo);
+        STRING session = svcSite->CreateSession();
+
+        Ptr<MgResourceIdentifier> mapStateId = new MgResourceIdentifier(MgRepositoryType::Session, session, L"", map->GetName(), MgResourceType::Map);
+        map->Save(svcRes, mapStateId);
+
+        map = NULL;
+
+        Ptr<MgSiteConnection> siteConn = new MgSiteConnection();
+        userInfo = new MgUserInformation(session);
+        siteConn->Open(userInfo);
+        map = new MgMap(siteConn);
+        map->Open(mapName);
+
+        //Re-check. All should be the same
+        extents = map->GetMapExtent();
+        ll = extents->GetLowerLeftCoordinate();
+        ur = extents->GetUpperRightCoordinate();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.79786601383196, ll->GetX(), 0.00000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.686857862181,   ll->GetY(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.66452777186925, ur->GetX(), 0.00000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.8037962206133,  ur->GetY(), 0.0000000000001);
+        tsId = map->GetTileSetDefinition();
+        CPPUNIT_ASSERT(NULL == (MgResourceIdentifier*)tsId);
+
+        groups = map->GetLayerGroups();
+        for (INT32 i = 0; i < groups->GetCount(); i++)
+        {
+            Ptr<MgLayerGroup> group = groups->GetItem(i);
+            CPPUNIT_ASSERT(MgLayerGroupType::BaseMap == group->GetLayerGroupType());
+        }
+
+        svcSite->DestroySession(session);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestTileService::TestCase_MgMap_Linked()
+{
+    try
+    {
+        STRING mapName = L"TestCase_MgMap_Linked";
+        Ptr<MgMap> map = CreateMapLinked(mapName);
+
+        //Bounds should be that of the tile set
+        Ptr<MgEnvelope> extents = map->GetMapExtent();
+        Ptr<MgCoordinate> ll = extents->GetLowerLeftCoordinate();
+        Ptr<MgCoordinate> ur = extents->GetUpperRightCoordinate();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.797866013831, ll->GetX(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.686857862181, ll->GetY(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.664527771869, ur->GetX(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.803796220613, ur->GetY(), 0.000000000001);
+        Ptr<MgResourceIdentifier> tsId = map->GetTileSetDefinition();
+        CPPUNIT_ASSERT(NULL != (MgResourceIdentifier*)tsId);
+        CPPUNIT_ASSERT(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition" == tsId->ToString());
+
+        Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
+        for (INT32 i = 0; i < groups->GetCount(); i++)
+        {
+            Ptr<MgLayerGroup> group = groups->GetItem(i);
+            CPPUNIT_ASSERT(MgLayerGroupType::BaseMapFromTileSet == group->GetLayerGroupType());
+        }
+
+        // Initialize service objects.
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        Ptr<MgServerSiteService> svcSite = dynamic_cast<MgServerSiteService*>(serviceManager->RequestService(MgServiceType::SiteService));
+        Ptr<MgResourceService> svcRes = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
+        assert(svcSite != NULL);
+        assert(svcRes != NULL);
+        // Set the current MgUserInformation
+        // This must be done before calling CreateSession()
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(
+            L"Administrator", L"admin");
+        userInfo->SetLocale(TEST_LOCALE);
+        MgUserInformation::SetCurrentUserInfo(userInfo);
+        STRING session = svcSite->CreateSession();
+
+        Ptr<MgResourceIdentifier> mapStateId = new MgResourceIdentifier(MgRepositoryType::Session, session, L"", map->GetName(), MgResourceType::Map);
+        map->Save(svcRes, mapStateId);
+
+        map = NULL;
+
+        Ptr<MgSiteConnection> siteConn = new MgSiteConnection();
+        userInfo = new MgUserInformation(session);
+        siteConn->Open(userInfo);
+        map = new MgMap(siteConn);
+        map->Open(mapName);
+
+        //Re-check. All should be the same
+        extents = map->GetMapExtent();
+        ll = extents->GetLowerLeftCoordinate();
+        ur = extents->GetUpperRightCoordinate();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.797866013831, ll->GetX(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.686857862181, ll->GetY(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.664527771869, ur->GetX(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.803796220613, ur->GetY(), 0.000000000001);
+        tsId = map->GetTileSetDefinition();
+        CPPUNIT_ASSERT(NULL != (MgResourceIdentifier*)tsId);
+        CPPUNIT_ASSERT(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition" == tsId->ToString());
+
+        groups = map->GetLayerGroups();
+        for (INT32 i = 0; i < groups->GetCount(); i++)
+        {
+            Ptr<MgLayerGroup> group = groups->GetItem(i);
+            CPPUNIT_ASSERT(MgLayerGroupType::BaseMapFromTileSet == group->GetLayerGroupType());
+        }
+
+        svcSite->DestroySession(session);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestTileService::TestCase_MgMapFromXYZTileSetStrict()
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgResourceIdentifier> tsdres = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ.TileSetDefinition");
+        MgMap* map = new MgMap(m_siteConnection);
+        map->Create(tsdres, L"XYZTileSet");
+
+        CPPUNIT_FAIL("MgUnsupportedTileProviderException should've been thrown");
+    }
+    catch (MgException* e)
+    {
+        bool isCorrectException = e->IsOfClass(MapGuide_Exception_MgUnsupportedTileProviderException);
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_ASSERT_MESSAGE(MG_WCHAR_TO_CHAR(message), isCorrectException);
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestTileService::TestCase_MgMapFromXYZTileSetLoose()
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgResourceIdentifier> tsdres = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ.TileSetDefinition");
+        MgMap* map = new MgMap(m_siteConnection);
+        map->Create(m_svcResource, tsdres, L"XYZTileSet", false);
+
+        CPPUNIT_ASSERT(0 == map->GetFiniteDisplayScaleCount());
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestTileService::TestCase_MgMapFromTileSet()
+{
+    try
+    {
+        STRING mapName = L"TestCase_MgMapFromTileSet";
+
+        // make a runtime map
+        Ptr<MgResourceIdentifier> tsdres = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition");
+        MgMap* map = new MgMap(m_siteConnection);
+        map->Create(tsdres, mapName);
+
+        Ptr<MgResourceIdentifier> mdfId = map->GetMapDefinition();
+        CPPUNIT_ASSERT(NULL == (MgResourceIdentifier*)mdfId);
+
+        //Bounds should be that of the tile set
+        Ptr<MgEnvelope> extents = map->GetMapExtent();
+        Ptr<MgCoordinate> ll = extents->GetLowerLeftCoordinate();
+        Ptr<MgCoordinate> ur = extents->GetUpperRightCoordinate();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.797866013831, ll->GetX(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.686857862181, ll->GetY(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.664527771869, ur->GetX(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.803796220613, ur->GetY(), 0.000000000001);
+        Ptr<MgResourceIdentifier> tsId = map->GetTileSetDefinition();
+        CPPUNIT_ASSERT(NULL != (MgResourceIdentifier*)tsId);
+        CPPUNIT_ASSERT(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition" == tsId->ToString());
+
+        Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
+        for (INT32 i = 0; i < groups->GetCount(); i++)
+        {
+            Ptr<MgLayerGroup> group = groups->GetItem(i);
+            CPPUNIT_ASSERT(MgLayerGroupType::BaseMapFromTileSet == group->GetLayerGroupType());
+        }
+
+        // Initialize service objects.
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        Ptr<MgServerSiteService> svcSite = dynamic_cast<MgServerSiteService*>(serviceManager->RequestService(MgServiceType::SiteService));
+        Ptr<MgResourceService> svcRes = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
+        assert(svcSite != NULL);
+        assert(svcRes != NULL);
+        // Set the current MgUserInformation
+        // This must be done before calling CreateSession()
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(
+            L"Administrator", L"admin");
+        userInfo->SetLocale(TEST_LOCALE);
+        MgUserInformation::SetCurrentUserInfo(userInfo);
+        STRING session = svcSite->CreateSession();
+
+        Ptr<MgResourceIdentifier> mapStateId = new MgResourceIdentifier(MgRepositoryType::Session, session, L"", map->GetName(), MgResourceType::Map);
+        map->Save(svcRes, mapStateId);
+
+        map = NULL;
+
+        Ptr<MgSiteConnection> siteConn = new MgSiteConnection();
+        userInfo = new MgUserInformation(session);
+        siteConn->Open(userInfo);
+        map = new MgMap(siteConn);
+        map->Open(mapName);
+
+        //Re-check. All should be the same
+        extents = map->GetMapExtent();
+        ll = extents->GetLowerLeftCoordinate();
+        ur = extents->GetUpperRightCoordinate();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.797866013831, ll->GetX(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.686857862181, ll->GetY(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.664527771869, ur->GetX(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 43.803796220613, ur->GetY(), 0.000000000001);
+        tsId = map->GetTileSetDefinition();
+        CPPUNIT_ASSERT(NULL != (MgResourceIdentifier*)tsId);
+        CPPUNIT_ASSERT(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition" == tsId->ToString());
+
+        groups = map->GetLayerGroups();
+        for (INT32 i = 0; i < groups->GetCount(); i++)
+        {
+            Ptr<MgLayerGroup> group = groups->GetItem(i);
+            CPPUNIT_ASSERT(MgLayerGroupType::BaseMapFromTileSet == group->GetLayerGroupType());
+        }
+
+        svcSite->DestroySession(session);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestTileService::TestCase_GetTileProviders()
+{
+    try
+    {
+        Ptr<MgByteReader> content = m_svcTile->GetTileProviders();
+        Ptr<MgByteSink> sink = new MgByteSink(content);
+        sink->ToFile(L"../UnitTestFiles/GetTileProviders_Result.xml");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
 
 ////////////////////////////////////////////////////////////////
 /// Helpers
@@ -910,6 +1661,30 @@ MgMap* TestTileService::CreateMap(CREFSTRING mapName)
     return map;
 }
 
+
+MgMap* TestTileService::CreateMapLinked(CREFSTRING mapName)
+{
+    // set a default name if not supplied
+    STRING name = (mapName.empty())? L"UnitTestBaseMapLinked" : mapName;
+
+    // make a runtime map
+    Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinkedTileSet.MapDefinition");
+    MgMap* map = new MgMap(m_siteConnection);
+    map->Create(mdfres, name);
+
+    // set the view
+    Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-87.723636, 43.715015);
+    Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
+    map->SetViewCenter(ptNewCenter);
+    map->SetDisplayDpi(96);
+    map->SetDisplayWidth(1024);
+    map->SetDisplayHeight(1024);
+
+    // render at a scale of 1:12500
+    map->SetViewScale(12500.0);
+
+    return map;
+}
 
 // returns a random integer in the range 0 to n-1
 INT32 TestTileService::Rand(INT32 n)

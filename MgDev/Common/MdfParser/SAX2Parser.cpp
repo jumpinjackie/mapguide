@@ -23,6 +23,7 @@
 #include "IOGridLayerDefinition.h"
 #include "IOSimpleSymbolDefinition.h"
 #include "IOCompoundSymbolDefinition.h"
+#include "IOTileSetDefinition.h"
 #include "UnicodeString.h"
 #include "PrintLayout/IOPrintLayoutDefinition.h"
 #include "PrintLayout/IOPrintLayoutElementDefinition.h"
@@ -263,6 +264,13 @@ ProfileResult* SAX2Parser::DetachProfileResult()
 {
     ProfileResult* ret = m_profileResult;
     m_profileResult = NULL;
+    return ret;
+}
+
+TileSetDefinition* SAX2Parser::DetachTileSetDefinition()
+{
+    TileSetDefinition* ret = m_tileset;
+    m_tileset = NULL;
     return ret;
 }
 
@@ -547,6 +555,16 @@ std::string SAX2Parser::SerializeToXML(ProfileResult* profileResult, Version* ve
     return fd.str();
 }
 
+std::string SAX2Parser::SerializeToXML(TileSetDefinition* tileset, MdfModel::Version* version)
+{
+    MdfStringStream fd;
+    MgTab tab;
+
+    if (NULL != tileset)
+        IOTileSetDefinition::Write(fd, tileset, version, tab);
+
+    return fd.str();
+}
 
 void SAX2Parser::startElement(const XMLCh* const uri,
                               const XMLCh* const localname,
@@ -659,6 +677,17 @@ void SAX2Parser::startElement(const XMLCh* const uri,
             _ASSERT(m_watermark == NULL); // otherwise we leak
             m_watermark = new WatermarkDefinition();
             IOWatermarkDefinition* IO = new IOWatermarkDefinition(m_watermark, m_version);
+            m_handlerStack->push(IO);
+            IO->StartElement(str.c_str(), m_handlerStack);
+        }
+        else if (str == L"TileSetDefinition") // NOXLATE
+        {
+            // set the version
+            SetTileSetDefinitionVersion(attributes);
+
+            _ASSERT(m_map == NULL); // otherwise we leak
+            m_tileset = new TileSetDefinition();
+            IOTileSetDefinition* IO = new IOTileSetDefinition(m_tileset, m_version);
             m_handlerStack->push(IO);
             IO->StartElement(str.c_str(), m_handlerStack);
         }
@@ -889,6 +918,31 @@ void SAX2Parser::SetProfileResultVersion(const Attributes& attributes)
     }
 }
 
+void SAX2Parser::SetTileSetDefinitionVersion(const Attributes& attributes)
+{
+    // Although right now we only have 3.0.0 here, this function is still
+    // needed for future expansion.
+
+    // check for a version attribute
+    int index = attributes.getIndex(W2X(L"version"));
+    const XMLCh* verValue = (index >= 0)? attributes.getValue(index) : NULL;
+
+    // according to the schema profile result elements require a version
+    // attribute, but users may generate XML which is missing this attribute
+    if (verValue)
+    {
+        std::wstring version = X2W(verValue);
+
+        if (_wcsicmp(version.c_str(), L"3.0.0") == 0)
+            m_version = MdfModel::Version(3, 0, 0);
+    }
+    else
+    {
+        // assume the latest version if the attribute is missing
+        m_version = MdfModel::Version(3, 0, 0);
+    }
+}
+
 
 MapDefinition* SAX2Parser::CreateClone(MapDefinition* map)
 {
@@ -992,4 +1046,19 @@ ProfileResult* SAX2Parser::CreateClone(ProfileResult* profileResult)
     parser.ParseString(xmlOfWD.c_str(), xmlOfWD.size());
 
     return parser.DetachProfileResult();
+}
+
+
+TileSetDefinition* SAX2Parser::CreateClone(TileSetDefinition* tileset)
+{
+    _ASSERT(NULL != tileset);
+    if (NULL == tileset)
+        return NULL;
+
+    SAX2Parser parser;
+    std::string xmlOfTD("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");   // NOXLATE
+    xmlOfTD.append(parser.SerializeToXML(tileset, NULL));
+    parser.ParseString(xmlOfTD.c_str(), xmlOfTD.size());
+
+    return parser.DetachTileSetDefinition();
 }

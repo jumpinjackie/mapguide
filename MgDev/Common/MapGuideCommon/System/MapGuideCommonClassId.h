@@ -89,6 +89,8 @@
 #define MapGuide_Exception_MgUnsupportedProviderThreadModelException    MAPGUIDE_EXCEPTION_ID+53
 #define MapGuide_Exception_MgAllProviderConnectionsUsedException        MAPGUIDE_EXCEPTION_ID+54
 #define MapGuide_Exception_MgRasterTransformationNotSupportedException  MAPGUIDE_EXCEPTION_ID+55
+#define MapGuide_Exception_MgUnknownTileProviderException               MAPGUIDE_EXCEPTION_ID+56
+#define MapGuide_Exception_MgUnsupportedTileProviderException           MAPGUIDE_EXCEPTION_ID+57
 
 
 // MapLayer API

@@ -26,6 +26,7 @@ MgLayerGroup::MgLayerGroup()
     : m_type(MgLayerGroupType::Normal),
       m_name(L""),
       m_group((MgLayerGroup*)NULL),
+      m_tileSetId((MgResourceIdentifier*)NULL),
       m_visible(true),
       m_displayInLegend(false),
       m_expandInLegend(false),
@@ -51,7 +52,6 @@ MgLayerGroup::MgLayerGroup(CREFSTRING name)
     //Generate a unique id for this group
     MgUtil::GenerateUuid(m_objectId);
 }
-
 
 //////////////////////////////////////////////////////////////
 // Returns the group name

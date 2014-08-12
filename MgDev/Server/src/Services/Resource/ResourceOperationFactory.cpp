@@ -39,6 +39,7 @@
 #include "OpGetResourceModifiedDate.h"
 #include "OpEnumerateResourceReferences.h"
 #include "OpEnumerateParentMapDefinitions.h"
+#include "OpEnumerateParentTileSetDefinitions.h"
 #include "OpChangeResourceOwner.h"
 #include "OpInheritPermissionsFrom.h"
 // Resource Data Management APIs
@@ -333,6 +334,18 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpEnumerateParentMapDefinitions());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgResourceOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgResourceService::opIdEnumerateParentTileSetDefinitions:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
+            handler.reset(new MgOpEnumerateParentTileSetDefinitions());
             break;
         default:
             throw new MgInvalidOperationVersionException(

@@ -29,6 +29,11 @@ class MgMap;
 class MgSiteConnection;
 template class MG_MAPGUIDE_API Ptr<MgMap>;
 
+namespace MdfModel
+{
+    class TileSetDefinition;
+}
+
 #ifdef _WIN32
 #undef CreateService
 #endif
@@ -276,9 +281,14 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Initializes a new MgMap object given a map definition
-    /// and a name for the map. This method is used for
+    /// Initializes a new MgMap object given a map definition or tile set
+    /// definition and a name for the map. This method is used for
     /// MapGuide Viewers or for offline map production.
+    ///
+    /// \remarks
+    /// If creating a MgMap object from a tile set definition, only "Default" is the
+    /// acceptable tile provider. Any other provider will cause this method to
+    /// throw a MgUnsupportedTileProviderException
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -291,7 +301,7 @@ PUBLISHED_API:
     /// void Create(MgResourceIdentifier mapDefinition, string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param mapDefinition
+    /// \param resource
     /// An MgResourceIdentifier that specifies the
     /// location of the map definition in a resource
     /// repository.
@@ -311,7 +321,7 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-    virtual void Create(MgResourceIdentifier* mapDefinition, CREFSTRING mapName);
+    virtual void Create(MgResourceIdentifier* resource, CREFSTRING mapName);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -411,6 +421,31 @@ PUBLISHED_API:
     /// The integer value
     ///
     INT32 GetWatermarkUsage();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the resource id of the Tile Set Definition that created 
+    /// this map, or the Tile Set Definition linked from the Map Definition 
+    /// used to created this map. If it was created from a Map Definition and 
+    /// that does not link to a Tile Set Definition, then NULL is returned.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgResourceIdentifier GetTileSetDefinition();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgResourceIdentifier GetTileSetDefinition();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgResourceIdentifier GetTileSetDefinition();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \since 3.0
+    ///
+    /// \return
+    /// Returns the resource id of the Tile Set Definition. NULL if created from a Map Definition that does not link
+    /// to a Tile Set
+    MgResourceIdentifier* GetTileSetDefinition();
 
 INTERNAL_API:
 
@@ -619,6 +654,8 @@ INTERNAL_API:
     ///
     virtual void SetWatermarkUsage(INT32 watermarkUsage);
 
+    virtual void Create(MgResourceService* resourceService, MgResourceIdentifier* mapDefinition, CREFSTRING mapName, bool strict);
+
 protected:
 
     //////////////////////////////////////////////////////////////////
@@ -661,6 +698,11 @@ CLASS_ID:
     static const INT32 m_cls_id = MapGuide_MapLayer_Map;
 
 private:
+    void CreateFromMapDefinition(MgResourceService* resourceService, MgResourceIdentifier* resource, CREFSTRING mapName);
+    void CreateFromTileSet(MgResourceService* resourceService, MgResourceIdentifier* resource, CREFSTRING mapName, bool strict);
+
+    STRING GetCoordinateSystemFromTileSet(MdfModel::TileSetDefinition* tileset, bool strict);
+    void GetFiniteDisplayScalesFromTileSet(MdfModel::TileSetDefinition* tileset, FINITESCALES& scales, bool strict);
 
     // Version for serialization
     static const int m_serializeVersion = (4<<16) + 0;
@@ -669,6 +711,7 @@ private:
     Ptr<MgSiteConnection> m_siteConnection;
     Ptr<MgMemoryStreamHelper> m_layerGroupHelper;
     Ptr<MgResourceService> m_resourceService;
+    Ptr<MgResourceIdentifier> m_tileSetId;
     bool m_inSave;
     bool m_unpackedLayersGroups;
     ColorStringList* m_colorPalette;

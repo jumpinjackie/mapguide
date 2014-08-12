@@ -90,6 +90,7 @@
 #include "HttpGetSiteVersion.cpp"
 #include "HttpGetSpatialContexts.cpp"
 #include "HttpGetTileImage.cpp"
+#include "HttpGetTileProviders.cpp"
 #include "HttpGetVisibleMapExtent.cpp"
 #include "HttpHeader.cpp"
 #include "HttpInheritPermissionsFrom.cpp"

@@ -29,11 +29,13 @@
 #include "LegendPlotUtil.h"
 #include "TransformCache.h"
 #include "Box2D.h"
+#include <cmath>
 
 // Profile
 #include "ProfileRenderMapResult.h"
 
-
+#define XYZ_TILE_WIDTH 256
+#define XYZ_TILE_HEIGHT 256
 
 // the maximum number of allowed pixels for rendered images
 static const INT32 MAX_PIXELS = 16384*16384;
@@ -150,6 +152,33 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
 
     MG_TRY()
 
+    ret = RenderTile(map, 
+                     baseMapLayerGroupName,
+                     tileColumn,
+                     tileRow,
+                     MgTileParameters::tileWidth,
+                     MgTileParameters::tileHeight,
+                     MgTileParameters::tileDPI,
+                     MgTileParameters::tileFormat);
+
+    MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTile")
+
+    return ret.Detach();
+}
+
+MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
+                                                   CREFSTRING baseMapLayerGroupName,
+                                                   INT32 tileColumn,
+                                                   INT32 tileRow,
+                                                   INT32 tileWidth,
+                                                   INT32 tileHeight,
+                                                   INT32 tileDpi,
+                                                   CREFSTRING tileImageFormat)
+{
+    Ptr<MgByteReader> ret;
+
+    MG_TRY()
+
     if (NULL == map || baseMapLayerGroupName.empty())
         throw new MgNullArgumentException(L"MgServerRenderingService.RenderTile", __LINE__, __WFILE__, NULL, L"", NULL);
 
@@ -178,7 +207,7 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
     scale = map->GetFiniteDisplayScaleAt(scaleIndex);
 
     // ensure the tile DPI is set on the map
-    map->SetDisplayDpi(MgTileParameters::tileDPI);
+    map->SetDisplayDpi(tileDpi);
 
     // ------------------------------------------------------
     // the upper left corner of tile (0,0) corresponds to the
@@ -194,9 +223,9 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
     double mapMaxY = rs_max(pt00->GetY(), pt11->GetY());
 
     double metersPerUnit  = map->GetMetersPerUnit();
-    double metersPerPixel = METERS_PER_INCH / MgTileParameters::tileDPI;
-    double tileWidthMCS   = (double)MgTileParameters::tileWidth  * metersPerPixel * scale / metersPerUnit;
-    double tileHeightMCS  = (double)MgTileParameters::tileHeight * metersPerPixel * scale / metersPerUnit;
+    double metersPerPixel = METERS_PER_INCH / tileDpi;
+    double tileWidthMCS   = (double)tileWidth  * metersPerPixel * scale / metersPerUnit;
+    double tileHeightMCS  = (double)tileHeight * metersPerPixel * scale / metersPerUnit;
 
     double tileMinX = mapMinX + (double)(tileColumn  ) * tileWidthMCS;  // left edge
     double tileMaxX = mapMinX + (double)(tileColumn+1) * tileWidthMCS;  // right edge
@@ -204,14 +233,196 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
     double tileMaxY = mapMaxY - (double)(tileRow     ) * tileHeightMCS; // top edge
 
     // make the call to render the tile
-    ret = RenderTile(map, baseGroup, scaleIndex, MgTileParameters::tileWidth, MgTileParameters::tileHeight, scale,
-                     tileMinX, tileMaxX, tileMinY, tileMaxY, MgTileParameters::tileFormat);
+    ret = RenderTile(map, baseGroup, scaleIndex, tileWidth, tileHeight, scale,
+                     tileMinX, tileMaxX, tileMinY, tileMaxY, tileImageFormat);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTile")
 
     return ret.Detach();
 }
 
+MgByteReader* MgServerRenderingService::RenderTileXYZ(MgMap* map,
+                                                      CREFSTRING baseMapLayerGroupName,
+                                                      INT32 x,
+                                                      INT32 y,
+                                                      INT32 z)
+{
+    Ptr<MgByteReader> ret;
+
+    MG_TRY()
+
+    ret = RenderTileXYZ(map, baseMapLayerGroupName, x, y, z, MgTileParameters::tileDPI, MgTileParameters::tileFormat);
+
+    MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTileXYZ")
+
+    return ret.Detach();
+}
+
+MgByteReader* MgServerRenderingService::RenderTileXYZ(MgMap* map,
+                                                      CREFSTRING baseMapLayerGroupName,
+                                                      INT32 x,
+                                                      INT32 y,
+                                                      INT32 z,
+                                                      INT32 dpi,
+                                                      CREFSTRING tileImageFormat)
+{
+    Ptr<MgByteReader> ret;
+
+    MG_TRY()
+
+    if (NULL == map || baseMapLayerGroupName.empty())
+        throw new MgNullArgumentException(L"MgServerRenderingService.RenderTileXYZ", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    // get the layer group associated with the name
+    Ptr<MgLayerGroupCollection> layerGroups = map->GetLayerGroups();
+    Ptr<MgLayerGroup> baseGroup = layerGroups->GetItem(baseMapLayerGroupName);
+    if (baseGroup == NULL)
+    {
+        MgStringCollection arguments;
+        arguments.Add(L"2");
+        arguments.Add(baseMapLayerGroupName);
+
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderTileXYZ",
+            __LINE__, __WFILE__, &arguments, L"MgMapLayerGroupNameNotFound", NULL);
+    }
+
+    //Set the dpi
+    map->SetDisplayDpi(dpi);
+
+    int width = XYZ_TILE_WIDTH;
+    int height = XYZ_TILE_HEIGHT;
+
+    //XYZ to lat/lon math. From this we can convert to the bounds in the map's CS
+    //
+    //Source: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+    double nMin = M_PI - 2.0 * M_PI * y / pow(2.0, z);
+    double nMax = M_PI - 2.0 * M_PI * (y + 1) / pow(2.0, z);
+    double lonMin = x / pow(2.0, z) * 360.0 - 180;
+	double latMin = 180.0 / M_PI * atan(0.5 * (exp(nMin) - exp(-nMin)));
+    double lonMax = (x + 1) / pow(2.0, z) * 360.0 - 180;
+	double latMax = 180.0 / M_PI * atan(0.5 * (exp(nMax) - exp(-nMax)));
+
+    double mcsMinX = std::min(lonMin, lonMax);
+    double mcsMinY = std::min(latMin, latMax);
+    double mcsMaxX = std::max(lonMin, lonMax);
+    double mcsMaxY = std::max(latMin, latMax);
+
+    STRING mapCsWkt = map->GetMapSRS();
+    Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+    Ptr<MgCoordinateSystem> mapCs = csFactory->Create(mapCsWkt);
+    if (mapCs->GetCsCode() != L"LL84")
+    {
+        //Set up LL to map transform and transform the bounds into map space
+        Ptr<MgCoordinateSystem> llCs = csFactory->CreateFromCode(L"LL84");
+        Ptr<MgCoordinateSystemTransform> trans = csFactory->GetTransform(llCs, mapCs);
+
+        Ptr<MgCoordinate> ul = trans->Transform(lonMin, latMin);
+        Ptr<MgCoordinate> lr = trans->Transform(lonMax, latMax);
+
+        mcsMinX = std::min(lr->GetX(), ul->GetX());
+        mcsMinY = std::min(lr->GetY(), ul->GetY());
+        mcsMaxX = std::max(lr->GetX(), ul->GetX());
+        mcsMaxY = std::max(lr->GetY(), ul->GetY());
+    }
+
+    // Inlining same logic from RenderTile() overload below as we want the same logic, but we want to pass scale
+    // instead of scale index
+
+    // get map extent that corresponds to tile extent
+    RS_Bounds extent(mcsMinX, mcsMinY, mcsMaxX, mcsMaxY);
+
+    // use the map's background color, but always make it fully transparent
+    RS_Color bgColor;
+    StylizationUtil::ParseColor(map->GetBackgroundColor(), bgColor);
+    bgColor.alpha() = 0;
+
+    // the label renderer needs to know the tile extent offset parameter
+    double tileExtentOffset = 0.0;
+    MgConfiguration* pConf = MgConfiguration::GetInstance();
+    pConf->GetDoubleValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyTileExtentOffset,
+                          tileExtentOffset,
+                          MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset);
+    if (tileExtentOffset < 0.0)
+        tileExtentOffset = MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
+    
+    // Image scaling logic ripped verbatim from RenderMap() overload that takes MgEnvelope
+    //
+    // If we need to scale the image (because of request for non-square
+    // pixels) we will need to draw at one image size and then save at
+    // another scaled size.  Here we will compute the correct map scale
+    // and render size for a requested extent and image size.
+    double screenAR = (double)width / (double)height;
+    double mapAR = extent.width() / extent.height();
+
+    int drawWidth = width;
+    int drawHeight = height;
+    double scale = 0.0;
+
+    if (mapAR >= screenAR)
+    {
+        scale = extent.width() * map->GetMetersPerUnit() / METERS_PER_INCH * (double)dpi / (double)width;
+
+        // we based map scale on the image width, so adjust rendering
+        // height to match the map aspect ratio
+        drawHeight = (int)(width / mapAR);
+
+        // ignore small perturbations in order to avoid rescaling the
+        // end image in cases where the rescaling of width is less than
+        // a pixel or so
+        if (abs(drawHeight - height) <= 1)
+            drawHeight = height;
+    }
+    else
+    {
+        scale = extent.height() * map->GetMetersPerUnit() / METERS_PER_INCH * (double)dpi / (double)height;
+
+        // we based map scale on the image height, so adjust rendering
+        // height to match the map aspect ratio
+        drawWidth = (int)(height * mapAR);
+
+        // ignore small perturbations, in order to avoid rescaling the
+        // end image in cases where the rescaling of width is less than
+        // a pixel or so
+        if (abs(drawWidth - width) <= 1)
+            drawWidth = width;
+    }
+
+    //printf("XYZ(%d, %d, %d) -> [%f, %f] [%f, %f] at %f -- (w: %d, h: %d, mpu: %f)\n", x, y, z, mcsMinX, mcsMinY, mcsMaxX, mcsMaxY, scale, width, height, map->GetMetersPerUnit());
+
+    // sanity check - number of image pixels cannot exceed MAX_PIXELS
+    if (drawWidth * drawHeight > MAX_PIXELS)
+        throw new MgOutOfRangeException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
+
+    // initialize the renderer (set clipping to false so that we label
+    // the unclipped geometry)
+    auto_ptr<SE_Renderer> dr(CreateRenderer(drawWidth, drawHeight, bgColor, false, true, tileExtentOffset));
+
+    // create a temporary collection containing all the layers for the base group
+    Ptr<MgLayerCollection> layers = map->GetLayers();
+    Ptr<MgReadOnlyLayerCollection> roLayers = new MgReadOnlyLayerCollection();
+    for (int i=0; i<layers->GetCount(); i++)
+    {
+        Ptr<MgLayerBase> layer = layers->GetItem(i);
+        Ptr<MgLayerGroup> parentGroup = layer->GetGroup();
+        if (parentGroup == baseGroup)
+            roLayers->Add(layer);
+    }
+
+    // of course the group has to also be visible
+    bool groupVisible = baseGroup->GetVisible();
+    baseGroup->SetVisible(true);
+
+    // call the internal helper API to do all the stylization overhead work
+    ret = RenderMapInternal(map, NULL, roLayers, dr.get(), drawWidth, drawHeight, width, height, tileImageFormat, scale, extent, true, true, false);
+
+    // restore the base group's visibility
+    baseGroup->SetVisible(groupVisible);
+
+    MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTileXYZ")
+
+    return ret.Detach();
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 /// render a map using all layers from the baseGroup

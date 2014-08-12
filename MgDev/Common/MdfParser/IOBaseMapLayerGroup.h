@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "BaseMapLayerGroup.h"
 #include "MapDefinition.h"
+#include "TileSetDefinition.h"
 #include "IOMapLayerGroupCommon.h"
 #include "Version.h"
 
@@ -34,6 +35,7 @@ class IOBaseMapLayerGroup : public IOMapLayerGroupCommon
     public:
         IOBaseMapLayerGroup(Version& version);
         IOBaseMapLayerGroup(MapDefinition* map, Version& version);
+        IOBaseMapLayerGroup(TileSetDefinition* tileset, Version& version);
         virtual ~IOBaseMapLayerGroup();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

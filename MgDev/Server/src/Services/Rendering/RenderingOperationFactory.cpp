@@ -73,6 +73,42 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
         }
         break;
 
+    case MgRenderingServiceOpId::RenderTile2:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
+            handler.reset(new MgOpRenderTile());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgRenderingServiceOpId::RenderTileXYZ:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
+            handler.reset(new MgOpRenderTileXYZ());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgRenderingServiceOpId::RenderTileXYZ2:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
+            handler.reset(new MgOpRenderTileXYZ());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
     case MgRenderingServiceOpId::RenderDynamicOverlay:
         switch (VERSION_NO_PHASE(operationVersion))
         {
@@ -85,6 +121,7 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
                 L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         break;
+
     case MgRenderingServiceOpId::RenderDynamicOverlay2:
         switch (VERSION_NO_PHASE(operationVersion))
         {

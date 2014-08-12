@@ -502,6 +502,8 @@ void MgServiceManager::DispatchResourceChangeNotifications()
             {
                 affectedResources = resourceService->EnumerateParentMapDefinitions(changedResources);
                 tileService->NotifyResourcesChanged(affectedResources, false);
+                affectedResources = resourceService->EnumerateParentTileSetDefinitions(changedResources);
+                tileService->NotifyResourcesChanged(affectedResources, false);
             }
 
             // Dispatch resource change notifications to support servers.

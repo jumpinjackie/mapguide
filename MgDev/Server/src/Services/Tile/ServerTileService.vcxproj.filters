@@ -32,6 +32,12 @@
     <ClCompile Include="ServerTileServiceBuild.cpp" />
     <ClCompile Include="TileCache.cpp" />
     <ClCompile Include="TileServiceHandler.cpp" />
+    <ClCompile Include="TileCacheDefault.cpp" />
+    <ClCompile Include="TileCacheDefaultProvider.cpp" />
+    <ClCompile Include="OpGetTileProviders.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="TileCacheXYZProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpClearCache.h">
@@ -60,6 +66,12 @@
     <ClInclude Include="..\..\Common\stdafx.h" />
     <ClInclude Include="TileCache.h" />
     <ClInclude Include="TileServiceHandler.h" />
+    <ClInclude Include="TileCacheDefault.h" />
+    <ClInclude Include="TileCacheDefaultProvider.h" />
+    <ClInclude Include="OpGetTileProviders.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="TileCacheXYZProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ServerTileService.rc" />

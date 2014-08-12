@@ -394,6 +394,10 @@
     <ClCompile Include="Util\TimerUtil.cpp">
       <Filter>Util</Filter>
     </ClCompile>
+    <ClCompile Include="Exception\UnknownTileProviderException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\UnsupportedTileProviderException.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MapLayer\Layer.h">
@@ -769,6 +773,10 @@
     <ClInclude Include="Util\TimerUtil.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="Exception\UnknownTileProviderException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\UnsupportedTileProviderException.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MapGuideCommon.rc" />

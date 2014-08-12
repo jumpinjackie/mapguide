@@ -426,6 +426,17 @@ MgUserFullNameWmsUser                                 = WMS User
 # T I L E  S E R V I C E
 # *****************************************************************************
 [TileService]
+MgTileProvider_Default_DisplayName                     = Default Tile Provider
+MgTileProvider_Default_Description                     = Default tile access provided by MapGuide. Supports MapGuide-managed tile path or user-defined path
+MgTileProvider_XYZ_DisplayName                         = XYZ Tile Provider
+MgTileProvider_XYZ_Description                         = XYZ tile access provided by MapGuide. Grid scheme is compatible with Google Maps and Open Street Map. Rendered tiles are 256x256. Layers must be convertible from lat/lon coordinates. Under this scheme, Row = X, Column = Y, Scale = Z for accessing tiles. Supports MapGuide-managed tile path or user-defined path
+MgTileProvider_Common_Property_TilePath_LocalizedName  = Tile Path
+MgTileProvider_Common_Property_TileWidth_LocalizedName = Tile Width
+MgTileProvider_Common_Property_TileHeight_LocalizedName = Tile Height
+MgTileProvider_Common_Property_TileFormat_LocalizedName = Tile Format
+MgTileProvider_Common_Property_RenderOnly_LocalizedName = Render Tiles Only (do not cache)
+MgTileProvider_Common_Property_CoordinateSystem_LocalizedName = Coordinate System
+MgTileProvider_Common_Property_FiniteScaleList_LocalizedName = Finite Display Scale List
 
 # *****************************************************************************
 # S T Y L I Z A T I O N

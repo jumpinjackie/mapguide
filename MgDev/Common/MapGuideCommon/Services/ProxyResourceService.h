@@ -175,6 +175,25 @@ INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
+    /// Enumerate all the parent Tile Set Definition resources of the specified
+    /// resources.
+    ///
+    /// This method only works on "Library" and "Session" repositories.
+    //
+    /// \param resources
+    /// Child resources.
+    ///
+    /// \return
+    /// MgResourceIdentifier list of Map Definition resources.
+    ///
+    /// \exception MgInvalidRepositoryTypeException
+    /// \exception MgInvalidResourceTypeException
+    ///
+    virtual MgSerializableCollection* EnumerateParentTileSetDefinitions(
+        MgSerializableCollection* resources);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
     /// Enumerate the resource documents in the specified repository.
     ///
     /// \remarks

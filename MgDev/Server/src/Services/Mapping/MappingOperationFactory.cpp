@@ -75,7 +75,7 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
     MG_TRY()
     switch (operationId)
     {
-    case MgMappingService::opIdGeneratePlot:
+    case MgMappingServiceOpId::GeneratePlot:
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(1,0):
@@ -87,7 +87,7 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         }
         break;
 
-    case MgMappingService::opIdGeneratePlot2:
+    case MgMappingServiceOpId::GeneratePlot2:
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(1,0):
@@ -99,7 +99,7 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         }
         break;
 
-    case MgMappingService::opIdGeneratePlot3:
+    case MgMappingServiceOpId::GeneratePlot3:
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(1,0):
@@ -111,7 +111,7 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         }
         break;
 
-    case MgMappingService::opIdGenerateMultiPlot:
+    case MgMappingServiceOpId::GenerateMultiPlot:
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(1,0):
@@ -123,7 +123,7 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         }
         break;
 
-    case MgMappingService::opIdGenerateLegendPlot:
+    case MgMappingServiceOpId::GenerateLegendPlot:
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(1,0):
@@ -135,7 +135,7 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         }
         break;
 
-    case MgMappingService::opIdGenerateLegendImage:
+    case MgMappingServiceOpId::GenerateLegendImage:
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(1,0):
@@ -147,7 +147,7 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         }
         break;
 
-    case MgMappingService::opIdQueryFeatures:
+    case MgMappingServiceOpId::QueryFeatures:
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(1,0):
@@ -159,7 +159,7 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         }
         break;
 
-    case MgMappingService::opIdQueryFeaturesWms:
+    case MgMappingServiceOpId::QueryFeatures2:
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(1,0):
@@ -171,7 +171,7 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         }
         break;
 
-    case MgMappingService::opIdCreateRuntimeMap:
+    case MgMappingServiceOpId::CreateRuntimeMap:
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(2,6):
@@ -183,7 +183,7 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         }
         break;
 
-    case MgMappingService::opIdCreateRuntimeMap2:
+    case MgMappingServiceOpId::CreateRuntimeMap2:
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(2,6):
@@ -195,7 +195,19 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         }
         break;
 
-    case MgMappingService::opIdDescribeRuntimeMap:
+    case MgMappingServiceOpId::CreateRuntimeMap3:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
+            handler.reset(new MgOpCreateRuntimeMap());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgDrawingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgMappingServiceOpId::DescribeRuntimeMap:
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(2,6):
@@ -207,10 +219,22 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         }
         break;
 
-    case MgMappingService::opIdDescribeRuntimeMap2:
+    case MgMappingServiceOpId::DescribeRuntimeMap2:
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(2,6):
+            handler.reset(new MgOpDescribeRuntimeMap());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgDrawingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgMappingServiceOpId::DescribeRuntimeMap3:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
             handler.reset(new MgOpDescribeRuntimeMap());
             break;
         default:

@@ -107,6 +107,9 @@ INTERNAL_API:
     static const int CreateRuntimeMap2          = 0x1111EE0F;
     static const int DescribeRuntimeMap         = 0x1111EE10;
     static const int DescribeRuntimeMap2        = 0x1111EE11;
+    static const int CreateRuntimeMap3          = 0x1111EE12;
+    static const int DescribeRuntimeMap3        = 0x1111EE13;
+
 };
 /// \endcond
 

@@ -260,3 +260,83 @@ void MgProxyTileService::SetConnectionProperties(MgConnectionProperties* connPro
 {
     m_connProp = SAFE_ADDREF(connProp);
 }
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Clears the entire tile cache for the given tile set.  Tiles for all base
+/// map layer groups and finite scales will be removed.
+///
+/// \param map
+/// Input
+/// Specifies the map whose tile cache will be cleared.
+///
+void MgProxyTileService::ClearCache(MgResourceIdentifier* tileSet)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+                        MgCommand::knVoid,                              // Return type expected
+                        MgTileServiceOpId::ClearCache2,                 // Command Code
+                        1,                                              // No of arguments
+                        Tile_Service,                                   // Service Id
+                        BUILD_VERSION(3,0,0),                           // Operation version
+                        MgCommand::knObject, tileSet,                   // Argument#1
+                        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+}
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns the default width of a tile.
+INT32 MgProxyTileService::GetDefaultTileSizeX(MgResourceIdentifier* tileSet)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+                        MgCommand::knInt32,                             // Return type expected
+                        MgTileServiceOpId::GetDefaultTileSizeX2,        // Command Code
+                        1,                                              // No of arguments
+                        Tile_Service,                                   // Service Id
+                        BUILD_VERSION(3,0,0),                           // Operation version
+                        MgCommand::knObject, tileSet,                   // Argument#1
+                        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return cmd.GetReturnValue().val.m_i32;
+}
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns the default height of a tile.
+INT32 MgProxyTileService::GetDefaultTileSizeY(MgResourceIdentifier* tileSet)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+                        MgCommand::knInt32,                             // Return type expected
+                        MgTileServiceOpId::GetDefaultTileSizeY2,        // Command Code
+                        1,                                              // No of arguments
+                        Tile_Service,                                   // Service Id
+                        BUILD_VERSION(3,0,0),                           // Operation version
+                        MgCommand::knObject, tileSet,                   // Argument#1
+                        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return cmd.GetReturnValue().val.m_i32;
+}
+
+MgByteReader* MgProxyTileService::GetTileProviders()
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+                        MgCommand::knObject,                            // Return type expected
+                        MgTileServiceOpId::GetTileProviders,            // Command Code
+                        0,                                              // No of arguments
+                        Tile_Service,                                   // Service Id
+                        BUILD_VERSION(3,0,0),                           // Operation version
+                        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}

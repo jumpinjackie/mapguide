@@ -61,13 +61,18 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
-    /// Returns the specified base map tile for the given map.  If a cached tile
-    /// image exists it will return it, otherwise the tile is rendered and added
-    /// to the cache.
+    /// Returns the specified base map tile for the given map or tile set.  
+    /// If a cached tile image exists it will return it, otherwise the tile 
+    /// is rendered and added to the cache. 
     ///
-    /// \param mapDefinition
+    /// \remarks
+    /// If retrieving a tile from a tile set, the row, column and scale index 
+    /// may take on different meaning depending on the tile provider specified
+    /// in the tile set
+    ///
+    /// \param resource
     /// Input
-    /// Resource identifier for the map definition
+    /// Resource identifier for the map definition or Tile Set Definition
     /// \param baseMapLayerGroupName
     /// Input
     /// Specifies the name of the baseMapLayerGroup for which to render the tile.
@@ -85,7 +90,7 @@ PUBLISHED_API:
     /// A byte reader containing the rendered tile image.
     ///
     virtual MgByteReader* GetTile(
-        MgResourceIdentifier* mapDefinition,
+        MgResourceIdentifier* resource,
         CREFSTRING baseMapLayerGroupName,
         INT32 tileColumn,
         INT32 tileRow,
@@ -101,6 +106,18 @@ PUBLISHED_API:
     /// Specifies the map whose tile cache will be cleared.
     ///
     virtual void ClearCache(MgMap* map) = 0;
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Clears the entire tile cache for the given tile set.  Tiles for all base
+    /// map layer groups and finite scales will be removed.
+    ///
+    /// \param map
+    /// Input
+    /// Specifies the map whose tile cache will be cleared.
+    ///
+    /// \since 3.0
+    virtual void ClearCache(MgResourceIdentifier* tileSet) = 0;
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -121,6 +138,45 @@ PUBLISHED_API:
     ///
     /// \since 1.2
     virtual INT32 GetDefaultTileSizeY() = 0;
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the default width of a tile.
+    ///
+    /// \param tileSet
+    /// Input
+    /// Specifies the resource id of the tile set
+    ///
+    /// \return
+    /// Default width of a tile in pixels.
+    ///
+    /// \since 3.0
+    virtual INT32 GetDefaultTileSizeX(MgResourceIdentifier* tileSet) = 0;
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the default height of a tile.
+    ///
+    /// \param tileSet
+    /// Input
+    /// Specifies the resource id of the tile set
+    ///
+    /// \return
+    /// Default height of a tile in pixels.
+    ///
+    /// \since 3.0
+    virtual INT32 GetDefaultTileSizeY(MgResourceIdentifier* tileSet) = 0;
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the XML description of available tile providers, along with supported connection parameters. This provides
+    /// sufficient information for client applications to build rich editor user interfaces for editing Tile Set Definitions
+    ///
+    /// \return
+    /// The XML description of available tile providers
+    ///
+    /// \since 3.0
+    virtual MgByteReader* GetTileProviders() = 0;
 
 INTERNAL_API:
 

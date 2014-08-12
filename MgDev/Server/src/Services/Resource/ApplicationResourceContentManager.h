@@ -53,6 +53,9 @@ public:
     void EnumerateParentMapDefinitions(
         const set<string>& currSearchResources, set<string>& nextSearchResources,
         set<string>& childResources, set<STRING>& parentResources);
+    void EnumerateParentTileSetDefinitions(
+        const set<string>& currSearchResources, set<string>& nextSearchResources,
+        set<string>& childResources, set<STRING>& parentResources);
 
     // Resource Data Management APIs
 

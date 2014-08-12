@@ -98,6 +98,18 @@ IMgOperationHandler* MgTileOperationFactory::GetOperation(
         }
         break;
 
+    case MgTileServiceOpId::ClearCache2:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
+            handler.reset(new MgOpClearCache());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgTileOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
     case MgTileServiceOpId::GetDefaultTileSizeX:
         switch (VERSION_NO_PHASE(operationVersion))
         {
@@ -115,6 +127,42 @@ IMgOperationHandler* MgTileOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,2):
             handler.reset(new MgOpGetDefaultTileSizeY());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgTileOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgTileServiceOpId::GetDefaultTileSizeX2:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
+            handler.reset(new MgOpGetDefaultTileSizeX());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgTileOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgTileServiceOpId::GetDefaultTileSizeY2:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
+            handler.reset(new MgOpGetDefaultTileSizeY());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgTileOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgTileServiceOpId::GetTileProviders:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
+            handler.reset(new MgOpGetTileProviders());
             break;
         default:
             throw new MgInvalidOperationVersionException(

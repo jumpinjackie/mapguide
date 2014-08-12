@@ -27,6 +27,7 @@ IOMapLayerGroupCommon::IOMapLayerGroupCommon(Version& version) : SAX2ElementHand
 {
     this->m_layerGroup = NULL;
     this->m_map = NULL;
+    this->m_tileset = NULL;
 }
 
 
@@ -34,6 +35,15 @@ IOMapLayerGroupCommon::IOMapLayerGroupCommon(MapDefinition* map, Version& versio
 {
     this->m_layerGroup = NULL;
     this->m_map = map;
+    this->m_tileset = NULL;
+}
+
+
+IOMapLayerGroupCommon::IOMapLayerGroupCommon(TileSetDefinition* tileset, Version& version) : SAX2ElementHandler(version)
+{
+    this->m_layerGroup = NULL;
+    this->m_map = NULL;
+    this->m_tileset = tileset;
 }
 
 

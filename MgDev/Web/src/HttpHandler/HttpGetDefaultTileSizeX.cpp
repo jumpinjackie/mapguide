@@ -35,6 +35,11 @@ MgHttpGetDefaultTileSizeX::MgHttpGetDefaultTileSizeX(MgHttpRequest *hRequest)
     InitializeCommonParameters(hRequest);
 
     Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version == MG_API_VERSION(3,0,0))
+    {
+        m_tilesetId = params->GetParameterValue(MgHttpResourceStrings::reqTileSet);
+    }
 }
 
 /// <summary>
@@ -55,13 +60,44 @@ void MgHttpGetDefaultTileSizeX::Execute(MgHttpResponse& hResponse)
 
     // Get Proxy Tile Service instance
     Ptr<MgTileService> service = (MgTileService*)(CreateService(MgServiceType::TileService));
-    INT32 size = service->GetDefaultTileSizeX();
-
-    Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(size);
+    Ptr<MgHttpPrimitiveValue> value;
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version == MG_API_VERSION(3, 0, 0) && !m_tilesetId.empty())
+    {
+        Ptr<MgResourceIdentifier> tileSetId = new MgResourceIdentifier(m_tilesetId);
+        INT32 size = service->GetDefaultTileSizeX(tileSetId);
+        value = new MgHttpPrimitiveValue(size);
+    }
+    else
+    {
+        INT32 size = service->GetDefaultTileSizeX();
+        value = new MgHttpPrimitiveValue(size);
+    }
     if(!value)
         throw new MgOutOfMemoryException(L"", __LINE__, __WFILE__, NULL, L"", NULL);
 
     hResult->SetResultObject(value, MgMimeType::Text);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetDefaultTileSizeX.Execute")
+}
+
+/// <summary>
+/// This method is responsible for checking if
+/// a valid version was given
+/// </summary>
+/// <returns>Returns nothing</returns>
+void MgHttpGetDefaultTileSizeX::ValidateOperationVersion()
+{
+    MG_HTTP_HANDLER_TRY()
+
+    // There are multiple supported versions
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version != MG_API_VERSION(1,0,0) &&
+        version != MG_API_VERSION(3,0,0))
+    {
+        throw new MgInvalidOperationVersionException(
+        L"MgHttpGetDefaultTileSizeX.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    MG_HTTP_HANDLER_CATCH_AND_THROW(L"MgHttpGetDefaultTileSizeX.ValidateOperationVersion");
 }

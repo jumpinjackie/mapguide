@@ -254,6 +254,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="OpEnumerateParentTileSetDefinitions.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="OpEnumerateRepositories.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -691,6 +697,7 @@
     <ClInclude Include="OpDeleteResource.h" />
     <ClInclude Include="OpDeleteResourceData.h" />
     <ClInclude Include="OpEnumerateParentMapDefinitions.h" />
+    <ClInclude Include="OpEnumerateParentTileSetDefinitions.h" />
     <ClInclude Include="OpEnumerateRepositories.h" />
     <ClInclude Include="OpEnumerateResourceData.h" />
     <ClInclude Include="OpEnumerateResourceDocuments.h" />

@@ -102,6 +102,9 @@ libMgMdfModel_la_SOURCES = \
   TextFrame.cpp \
   TextSymbol.cpp \
   ThemeLabel.cpp \
+  TileSetDefinition.cpp \
+  TileSetSource.cpp \
+  TileStoreParameters.cpp \
   TileWatermarkPosition.cpp \
   UnicodeString.cpp \
   URLData.cpp \
@@ -223,6 +226,9 @@ noinst_HEADERS = \
   TextFrame.h \
   TextSymbol.h \
   ThemeLabel.h \
+  TileSetDefinition.h \
+  TileSetSource.h \
+  TileStoreParameters.h \
   TileWatermarkPosition.h \
   UnicodeString.h \
   URLData.h \

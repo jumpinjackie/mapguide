@@ -40,6 +40,16 @@ PUBLISHED_API:
     /// it contains base map layers).
     ///
     static const INT32 BaseMap = 2;
+    /////////////////////////////////////////////////
+    /// \brief
+    /// Specifies that the layer is a base map layer from a TileSetDefinition resource.
+    ///
+    /// \remarks
+    /// From a client application perspective, a layer group with of this type should be treated
+    /// the same as layer group of type \link MgLayerGroupType::BaseMap BaseMap \endlink
+    ///
+    /// \since 3.0
+    static const INT32 BaseMapFromTileSet = 3;
 };
 /// \}
 

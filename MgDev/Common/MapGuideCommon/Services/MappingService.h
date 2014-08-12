@@ -540,6 +540,24 @@ INTERNAL_API:
     ///
     MgMappingService();
 
+    virtual MgByteReader* DescribeRuntimeMap(MgMap* map,
+                                             CREFSTRING iconFormat,
+                                             INT32 iconWidth,
+                                             INT32 iconHeight,
+                                             INT32 requestedFeatures,
+                                             INT32 iconsPerScaleRange,
+                                             INT32 schemaVersion) = 0;
+
+    virtual MgByteReader* CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                           CREFSTRING targetMapName,
+                                           CREFSTRING sessionId,
+                                           CREFSTRING iconFormat,
+                                           INT32 iconWidth,
+                                           INT32 iconHeight,
+                                           INT32 requestedFeatures,
+                                           INT32 iconsPerScaleRange,
+                                           INT32 schemaVersion) = 0;
+
     ///////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Generates an \link ePlot ePlot \endlink containing a legend for the

@@ -36,6 +36,9 @@
     <ClCompile Include="RenderingServiceHandler.cpp" />
     <ClCompile Include="ServerRenderingService.cpp" />
     <ClCompile Include="ServerRenderingServiceBuild.cpp" />
+    <ClCompile Include="OpRenderTileXYZ.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpQueryFeatureProperties.h">
@@ -68,6 +71,9 @@
     <ClInclude Include="ServerRenderingDllExport.h" />
     <ClInclude Include="ServerRenderingService.h" />
     <ClInclude Include="..\..\Common\stdafx.h" />
+    <ClInclude Include="OpRenderTileXYZ.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ServerRenderingService.rc" />

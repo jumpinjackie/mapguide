@@ -1160,13 +1160,39 @@ MgSerializableCollection* MgProxyResourceService::EnumerateParentMapDefinitions(
         MgResourceService::opIdEnumerateParentMapDefinitions, // Command code
         1,                                                  // Number of arguments
         Resource_Service,                                   // Service ID
-        BUILD_VERSION(1,0,0),                               // Operation version
+        BUILD_VERSION(3,0,0),                               // Operation version
         MgCommand::knObject, resources,                     // Argument #1
         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
 
     MG_CATCH_AND_THROW(L"MgProxyResourceService.EnumerateParentMapDefinitions")
+
+    return (MgSerializableCollection*)cmd.GetReturnValue().val.m_obj;
+}
+
+MgSerializableCollection* MgProxyResourceService::EnumerateParentTileSetDefinitions(
+    MgSerializableCollection* resources)
+{
+    MgCommand cmd;
+
+    MG_TRY()
+
+    assert(m_connProp != NULL);
+
+    cmd.ExecuteCommand(
+        m_connProp,                                         // Connection
+        MgCommand::knObject,                                // Return type
+        MgResourceService::opIdEnumerateParentTileSetDefinitions, // Command code
+        1,                                                  // Number of arguments
+        Resource_Service,                                   // Service ID
+        BUILD_VERSION(1,0,0),                               // Operation version
+        MgCommand::knObject, resources,                     // Argument #1
+        MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+
+    MG_CATCH_AND_THROW(L"MgProxyResourceService.EnumerateParentTileSetDefinitions")
 
     return (MgSerializableCollection*)cmd.GetReturnValue().val.m_obj;
 }

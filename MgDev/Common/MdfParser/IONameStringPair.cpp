@@ -35,6 +35,7 @@ IONameStringPair::IONameStringPair(Version& version) : SAX2ElementHandler(versio
     this->m_nameStringPair = NULL;
     this->m_layer = NULL;
     this->m_overrides = NULL;
+    this->m_tileStoreParams = NULL;
 }
 
 
@@ -44,6 +45,7 @@ IONameStringPair::IONameStringPair(VectorLayerDefinition* layer, Version& versio
     this->m_nameStringPair = NULL;
     this->m_layer = layer;
     this->m_overrides = NULL;
+    this->m_tileStoreParams = NULL;
 }
 
 
@@ -53,6 +55,16 @@ IONameStringPair::IONameStringPair(FeatureSource* featureSource, Version& versio
     this->m_nameStringPair = NULL;
     this->m_layer = NULL;
     this->m_overrides = NULL;
+    this->m_tileStoreParams = NULL;
+}
+
+IONameStringPair::IONameStringPair(TileStoreParameters* params, Version& version) : SAX2ElementHandler(version)
+{
+    this->m_featureSource = NULL;
+    this->m_nameStringPair = NULL;
+    this->m_layer = NULL;
+    this->m_overrides = NULL;
+    this->m_tileStoreParams = params;
 }
 
 
@@ -82,7 +94,7 @@ void IONameStringPair::StartElement(const wchar_t* name, HandlerStack* handlerSt
             ParseUnknownXml(name, handlerStack);
         }
     }
-    else if (this->m_featureSource)
+    else if (this->m_featureSource || this->m_tileStoreParams)
     {
         if (this->m_currElemName == L"Parameter") // NOXLATE
         {
@@ -126,10 +138,13 @@ void IONameStringPair::EndElement(const wchar_t* name, HandlerStack* handlerStac
             this->m_layer->GetPropertyMappings()->Adopt(this->m_nameStringPair);
         else if (this->m_featureSource)
             this->m_featureSource->GetParameters()->Adopt(this->m_nameStringPair);
+        else if (this->m_tileStoreParams)
+            this->m_tileStoreParams->GetParameters()->Adopt(this->m_nameStringPair);
 
         this->m_layer = NULL;
         this->m_featureSource = NULL;
         this->m_nameStringPair = NULL;
+        this->m_tileStoreParams = NULL;
         this->m_startElemName = L"";
         handlerStack->pop();
         delete this;

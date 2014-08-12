@@ -75,10 +75,26 @@ int pointBufferSize;
         String mapName = resId.GetName();
         map.Create(resId, mapName);
 
+        MgMap map = new MgMap(site);
+        MgResourceIdentifier resId = new MgResourceIdentifier(mapDefinition);
+        String mapName = resId.GetName();
+        map.Create(resId, mapName);
+        
+        MgTileService tileSrvc = (MgTileService)site.CreateService(MgServiceType.TileService);
+        int tileSizeX = tileSrvc.GetDefaultTileSizeX();
+        int tileSizeY = tileSrvc.GetDefaultTileSizeY();
+        if (null != tileSetId)
+        {
+            //Overwrite the map definition with tile set id (this is for GETTILE requests) and
+            //use size settings from that tile set
+            mapDefinition = tileSetId.ToString();
+            tileSizeX = tileSrvc.GetDefaultTileSizeX(tileSetId);
+            tileSizeY = tileSrvc.GetDefaultTileSizeY(tileSetId);
+        }
+        
         //create an empty selection object and store it in the session repository
         MgSelection sel = new MgSelection(map);
         sel.Save(resourceSrvc, mapName);
-
 
         //get the map extent and calculate the scale factor
         //

@@ -522,6 +522,7 @@ private:
     STRING              m_objectId;
     INT32               m_type;
     Ptr<MgLayerGroup>   m_group;
+    Ptr<MgResourceIdentifier> m_tileSetId;
     bool                m_visible;
     bool                m_displayInLegend;
     bool                m_expandInLegend;

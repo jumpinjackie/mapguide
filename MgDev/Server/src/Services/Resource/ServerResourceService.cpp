@@ -1541,6 +1541,135 @@ MgSerializableCollection* MgServerResourceService::EnumerateParentMapDefinitions
     return mapDefinitions.Detach();
 }
 
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Enumerate all the parent Tile Set Definition resources of the specified
+/// resources.
+///
+MgSerializableCollection* MgServerResourceService::EnumerateParentTileSetDefinitions(MgSerializableCollection* resources)
+{
+    Ptr<MgSerializableCollection> tileSetDefinitions;
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateParentTileSetDefinitions()");
+
+    if (NULL == resources)
+    {
+        throw new MgNullArgumentException(
+            L"MgServerResourceService.EnumerateParentTileSetDefinitions",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    // Check if the resources come from the Library or Session repository.
+
+    set<string> childResources;
+    INT32 libraryResources = 0;
+    INT32 numResources = resources->GetCount();
+
+    for (INT32 i = 0; i < numResources; ++i)
+    {
+        Ptr<MgSerializable> serializableObj = resources->GetItem(i);
+        MgResourceIdentifier* resource = dynamic_cast<MgResourceIdentifier*>(
+            serializableObj.p);
+
+        if (NULL == resource)
+        {
+            throw new MgInvalidCastException(
+                L"MgServerResourceService.EnumerateParentTileSetDefinitions",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        if (!resource->IsFolder())
+        {
+            if (resource->IsRepositoryTypeOf(MgRepositoryType::Library))
+            {
+                childResources.insert(MgUtil::WideCharToMultiByte(
+                    resource->ToString()));
+                ++libraryResources;
+            }
+            else if (resource->IsRepositoryTypeOf(MgRepositoryType::Session))
+            {
+                childResources.insert(MgUtil::WideCharToMultiByte(
+                    resource->ToString()));
+            }
+            else
+            {
+                throw new MgInvalidRepositoryTypeException(
+                    L"MgServerResourceService.EnumerateParentTileSetDefinitions",
+                    __LINE__, __WFILE__, NULL, L"", NULL);
+            }
+        }
+    }
+
+    // Note that a Session resource may reference a Library resource but not
+    // the other way around, therefore:
+    //
+    // 1. If the resource comes from the Session repository, then we need to
+    //    perform this operation on only the Session repository.
+    // 2. If the resource comes from the Library repository, then we need to
+    //    perform this operation on both the Library and Session repositories.
+
+    set<STRING> parentResources;
+    numResources = static_cast<INT32>(childResources.size());
+
+    if (numResources > 0)
+    {
+        if (libraryResources > 0)
+        {
+            MgLibraryRepositoryManager libraryRepositoryMan(*sm_libraryRepository);
+
+            libraryRepositoryMan.Initialize(true);
+            libraryRepositoryMan.EnumerateParentTileSetDefinitions(childResources,
+                parentResources);
+            libraryRepositoryMan.Terminate();
+        }
+
+        if(sm_bSingleSessionRepository)
+        {
+            MgSessionRepositoryManager sessionRepositoryMan(*sm_sessionRepository);
+
+            sessionRepositoryMan.Initialize(true);
+            sessionRepositoryMan.EnumerateParentTileSetDefinitions(childResources,
+                parentResources);
+            sessionRepositoryMan.Terminate();
+        }
+        else
+        {
+            for (std::map<STRING, MgSessionRepository* >::iterator i = sm_sessionRepositories.begin();i != sm_sessionRepositories.end(); ++i)
+            {
+                MgSessionRepository* sessionRepository = i->second;
+                if(NULL != sessionRepository)
+                {
+                    MgSessionRepositoryManager sessionRepositoryMan(*sessionRepository);
+
+                    sessionRepositoryMan.Initialize(true);
+                    sessionRepositoryMan.EnumerateParentTileSetDefinitions(childResources,
+                        parentResources);
+                    sessionRepositoryMan.Terminate();
+                }
+            }
+        }
+    }
+
+    if (!parentResources.empty())
+    {
+        tileSetDefinitions = new MgSerializableCollection();
+
+        for (set<STRING>::const_iterator i = parentResources.begin();
+            i != parentResources.end( ); ++i)
+        {
+            Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(*i);
+
+            tileSetDefinitions->Add(resource.p);
+        }
+    }
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateParentTileSetDefinitions")
+
+    return tileSetDefinitions.Detach();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Enumerate the resource documents in the specified repository.

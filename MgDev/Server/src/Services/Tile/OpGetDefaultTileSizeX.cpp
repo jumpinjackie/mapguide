@@ -73,6 +73,22 @@ void MgOpGetDefaultTileSizeX::Execute()
 
         EndExecution(size);
     }
+    else if (1 == m_packet.m_NumArguments)
+    {
+        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
+
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        INT32 size = m_service->GetDefaultTileSizeX(resource);
+
+        EndExecution(size);
+    }
     else
     {
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();

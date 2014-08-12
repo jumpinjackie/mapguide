@@ -71,6 +71,8 @@ public:
     MgByteReader* EnumerateReferences(MgResourceIdentifier* resource);
     void EnumerateParentMapDefinitions(
         set<string>& childResources, set<STRING>& parentResources);
+    void EnumerateParentTileSetDefinitions(
+        set<string>& childResources, set<STRING>& parentResources);
 
     // Resource Data Management APIs
 

@@ -380,7 +380,12 @@
     <ClCompile Include="ReaderByteSourceImpl.cpp">
       <Filter>Byte Source Adapters</Filter>
     </ClCompile>
-    <ClCompile Include="HttpDescribeRuntimeMap.cpp" />
+    <ClCompile Include="HttpGetTileProviders.cpp">
+      <Filter>Tile Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpDescribeRuntimeMap.cpp">
+      <Filter>Mapping Service</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HttpApplyResourcePackage.h">
@@ -746,7 +751,12 @@
     <ClInclude Include="ReaderByteSourceImpl.h">
       <Filter>Byte Source Adapters</Filter>
     </ClInclude>
-    <ClInclude Include="HttpDescribeRuntimeMap.h" />
+    <ClInclude Include="HttpGetTileProviders.h">
+      <Filter>Tile Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpDescribeRuntimeMap.h">
+      <Filter>Mapping Service</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HttpHandler.rc" />

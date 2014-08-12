@@ -747,6 +747,61 @@ void MgApplicationRepositoryManager::EnumerateParentMapDefinitions(
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationRepositoryManager.EnumerateParentMapDefinitions")
 }
 
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Enumerate all the parent Map Definition resources of the specified
+/// resources.
+///
+/// Note that child list will also be updated with additional members during
+/// the search.
+///
+void MgApplicationRepositoryManager::EnumerateParentTileSetDefinitions(
+    set<string>& childResources, set<STRING>& parentResources)
+{
+    MG_RESOURCE_SERVICE_TRY()
+
+    // If the child list contains some Map Definition resources, then
+    // insert them into the parent list.
+
+    for (set<string>::const_iterator i = childResources.begin();
+        i != childResources.end( ); ++i)
+    {
+        string mbResourcePathname = *i;
+        STRING wcResourcePathname;
+        MgUtil::MultiByteToWideChar(mbResourcePathname, wcResourcePathname);
+        MgResourceIdentifier resource(wcResourcePathname);
+
+        if (resource.IsResourceTypeOf(MgResourceType::TileSetDefinition))
+        {
+            parentResources.insert(wcResourcePathname);
+        }
+    }
+
+    MgApplicationResourceContentManager* resourceContentMan =
+        GetApplicationResourceContentManager();
+
+    // Scan through the repository tree to search for all the parent Map
+    // Definition resources that reference the specified child resources.
+
+    set<string> *prevSearchResources, *currSearchResources, *nextSearchResources;
+    set<string> inputResources, outputResources;
+
+    inputResources = childResources;
+    currSearchResources = &inputResources;
+    nextSearchResources = &outputResources;
+
+    while (!currSearchResources->empty())
+    {
+        resourceContentMan->EnumerateParentTileSetDefinitions(*currSearchResources,
+            *nextSearchResources, childResources, parentResources);
+        prevSearchResources = currSearchResources;
+        currSearchResources = nextSearchResources;
+        nextSearchResources = prevSearchResources;
+    }
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationRepositoryManager.EnumerateParentTileSetDefinitions")
+}
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Enumerates tagged data for the specified resource.

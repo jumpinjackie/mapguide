@@ -118,7 +118,7 @@ void MgHttpCreateRuntimeMap::Execute(MgHttpResponse& hResponse)
     }
 
     Ptr<MgMappingService> mappingService = (MgMappingService*)CreateService(MgServiceType::MappingService);
-    byteReader = mappingService->CreateRuntimeMap(mdfId, mapName, sessionId, m_iconFormat, m_iconWidth, m_iconHeight, m_requestDataMask, m_iconLimitPerScaleRange);
+    byteReader = mappingService->CreateRuntimeMap(mdfId, mapName, sessionId, m_iconFormat, m_iconWidth, m_iconHeight, m_requestDataMask, m_iconLimitPerScaleRange, m_userInfo->GetApiVersion());
     // Convert to requested response format, if necessary
     ProcessFormatConversion(byteReader);
 
@@ -138,7 +138,8 @@ void MgHttpCreateRuntimeMap::ValidateOperationVersion()
 
     // There are multiple supported versions
     INT32 version = m_userInfo->GetApiVersion();
-    if (version != MG_API_VERSION(2,6,0))
+    if (version != MG_API_VERSION(2,6,0) &&
+        version != MG_API_VERSION(3,0,0))
     {
         throw new MgInvalidOperationVersionException(
         L"MgHttpCreateRuntimeMap.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);

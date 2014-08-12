@@ -434,6 +434,24 @@ INTERNAL_API:
 
     DECLARE_CREATE_SERVICE()
 
+    virtual MgByteReader* DescribeRuntimeMap(MgMap* map,
+                                             CREFSTRING iconFormat,
+                                             INT32 iconWidth,
+                                             INT32 iconHeight,
+                                             INT32 requestedFeatures,
+                                             INT32 iconsPerScaleRange,
+                                             INT32 schemaVersion);
+
+    virtual MgByteReader* CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                           CREFSTRING targetMapName,
+                                           CREFSTRING sessionId,
+                                           CREFSTRING iconFormat,
+                                           INT32 iconWidth,
+                                           INT32 iconHeight,
+                                           INT32 requestedFeatures,
+                                           INT32 iconsPerScaleRange,
+                                           INT32 schemaVersion);
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets the connection properties for the Proxy Service.  This

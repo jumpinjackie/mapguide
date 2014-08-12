@@ -90,6 +90,7 @@ include_SOURCES = \
   HttpGetSiteVersion.cpp \
   HttpGetSpatialContexts.cpp \
   HttpGetTileImage.cpp \
+  HttpGetTileProviders.cpp \
   HttpGetVisibleMapExtent.cpp \
   HttpKmlGetMap.cpp \
   HttpKmlGetLayer.cpp \
@@ -214,6 +215,7 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpGetSiteVersion.h \
   HttpGetSpatialContexts.h \
   HttpGetTileImage.h \
+  HttpGetTileProviders.h \
   HttpGetVisibleMapExtent.h \
   HttpHandler.h \
   HttpHandlerApiDllExport.h \

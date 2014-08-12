@@ -67,20 +67,30 @@ void MgHttpClearTileCache::Execute(MgHttpResponse& hResponse)
     }
 
     // Need a resource identifier
-    Ptr<MgResourceIdentifier> mapDefinition = new MgResourceIdentifier(m_mapDefinition);
+    Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(m_mapDefinition);
 
-    // Get Resource Service instance
-    Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
+    if (resource->IsResourceTypeOf(MgResourceType::MapDefinition))
+    {
+        // Get Resource Service instance
+        Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
 
-    // Create MgMap
-    Ptr<MgMap> map = new MgMap();
-    map->Create(resourceService, mapDefinition, mapDefinition->GetName());
+        // Create MgMap
+        Ptr<MgMap> map = new MgMap();
+        map->Create(resourceService, resource, resource->GetName());
 
-    // Get Proxy Tile Service instance
-    Ptr<MgTileService> service = (MgTileService*)(CreateService(MgServiceType::TileService));
+        // Get Proxy Tile Service instance
+        Ptr<MgTileService> service = (MgTileService*)(CreateService(MgServiceType::TileService));
 
-    // Call the C++ API
-    service->ClearCache(map);
+        // Call the C++ API
+        service->ClearCache(map);
+    }
+    else if (resource->IsResourceTypeOf(MgResourceType::TileSetDefinition))
+    {
+        // Get Proxy Tile Service instance
+        Ptr<MgTileService> service = (MgTileService*)(CreateService(MgServiceType::TileService));
 
+        // Call the C++ API
+        service->ClearCache(resource);
+    }
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpClearTileCache.Execute")
 }

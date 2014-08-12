@@ -267,6 +267,9 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_Annotation3.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_Annotation3.mdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_BaseMap.mdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/TileService/UT_BaseMap.tsd ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/TileService/UT_XYZ.tsd ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/TileService/UT_LinkedTileSet.mdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_StylizationFuncs.mdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_Parcels.fs ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_Parcels.ldf ../UnitTestFiles

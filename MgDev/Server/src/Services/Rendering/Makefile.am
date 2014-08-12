@@ -35,6 +35,7 @@ include_SOURCES = \
   OpRenderDynamicOverlay.cpp \
   OpRenderMap.cpp \
   OpRenderTile.cpp \
+  OpRenderTileXYZ.cpp \
   OpQueryFeatures.cpp \
   OpQueryFeatureProperties.cpp \
   FeatureInfoRenderer.cpp \
@@ -50,6 +51,7 @@ noinst_HEADERS = $(include_SOURCES) \
   OpRenderDynamicOverlay.h \
   OpRenderMap.h \
   OpRenderTile.h \
+  OpRenderTileXYZ.h \
   OpQueryFeatures.h \
   OpQueryFeatureProperties.h \
   FeatureInfoRenderer.h \
