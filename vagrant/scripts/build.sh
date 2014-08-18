@@ -114,8 +114,8 @@ then
     #echo ".PHONY : clean" >> ${MGSOURCE}/Oem/agg-2.4/Makefile.in.Linux
 else
     echo "[info]: Performing CentOS-specific modifications"
-    sed -i 's/sh .\/buildall.sh/sh .\/buildall.sh --with-xerces-conf=--enable-transcoder-iconv/g' ${MGSOURCE}/build_oem.sh
-    sed -i 's/sh .\/buildall.sh --with-xerces-conf=--enable-transcoder-iconv --clean/sh .\/buildall.sh --clean/g' ${MGSOURCE}/build_oem.sh
+    #sed -i 's/sh .\/buildall.sh/sh .\/buildall.sh --with-xerces-conf=--enable-transcoder-iconv/g' ${MGSOURCE}/build_oem.sh
+    #sed -i 's/sh .\/buildall.sh --with-xerces-conf=--enable-transcoder-iconv --clean/sh .\/buildall.sh --clean/g' ${MGSOURCE}/build_oem.sh
 fi
 
 start_time=`date +%s`
