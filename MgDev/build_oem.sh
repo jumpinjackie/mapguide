@@ -232,10 +232,6 @@ init_geos()
 build_geos()
 {
     pushd geos-2.2.0
-    aclocal
-    libtoolize --copy --force
-    automake --add-missing --copy
-    autoconf
     if [ $BUILD_CPU -eq 64 ]; then
         sh ./configure --with-pic --prefix="${INSTALLDIR}"
     else
@@ -524,10 +520,6 @@ init_gd()
 build_gd()
 {
     pushd gd/gd
-    aclocal
-    libtoolize --copy --force
-    automake --add-missing --copy
-    autoconf
     if [ $BUILD_CPU -eq 64 ]; then
         sh ./configure --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-pic
     else
