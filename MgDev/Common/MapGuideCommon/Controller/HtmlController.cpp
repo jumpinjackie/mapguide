@@ -434,7 +434,9 @@ void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourc
     Ptr<MgReadOnlyLayerCollection> selLayers = selectionSet->GetLayers();
     if (NULL != selLayers.p)
     {
-        Ptr<MgCoordinateSystem> mapCs = csFactory.Create(map->GetMapSRS());
+        Ptr<MgCoordinateSystem> mapCs;
+        if (map->GetMapSRS() != L"")
+            mapCs = csFactory.Create(map->GetMapSRS());
         // Our structure is as follows
         //
         // [0...n] <SelectedLayer> - A layer containing selected features
@@ -450,7 +452,9 @@ void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourc
             Ptr<MgLayerBase> selLayer = selLayers->GetItem(i);
             STRING layerName = selLayer->GetName();
 
-            Ptr<MgCoordinateSystemTransform> transform = GetLayerToMapTransform(selLayer, mapCs, &csFactory, featureService);
+            Ptr<MgCoordinateSystemTransform> transform;
+            if (mapCs)
+                transform = GetLayerToMapTransform(selLayer, mapCs, &csFactory, featureService);
 
             xmlOut.append(L"<SelectedLayer id=\"");
             xmlOut.append(selLayer->GetObjectId());
