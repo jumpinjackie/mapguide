@@ -150,7 +150,7 @@ void SE_Renderer::SetBufferPool(SE_BufferPool* pool)
 ///////////////////////////////////////////////////////////////////////////////
 void SE_Renderer::SetRenderSelectionMode(bool mode)
 {
-    SetRenderSelectionMode(mode, 0x0000FF00);
+    SetRenderSelectionMode(mode, 0x0000FFFF);
 }
 
 
