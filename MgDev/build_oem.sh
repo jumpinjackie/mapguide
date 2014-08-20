@@ -422,7 +422,7 @@ build_libpng()
     cp scripts/makefile.std makefile
     if [ $BUILD_CPU -eq 64 ]; then
         #Inject -fPIC to CFLAGS for 64-bit
-        sed 's/^CFLAGS=/CFLAGS= -fPIC -m64/g' makefile > makefile64
+        sed 's/^CFLAGS=/CFLAGS= -fPIC -m64 /g' makefile > makefile64
         make -fmakefile64
     else
         make
@@ -458,7 +458,7 @@ build_jpeg()
         sh ./configure --enable-static --disable-shared
         #--with-pic does nothing (probably ancient configure script), so do some sed trickery
         #to inject this flag. Know a better way? Enlighten us :)
-        sed 's/^CFLAGS=/CFLAGS= -fPIC -m64/g' Makefile > Makefile64
+        sed 's/^CFLAGS=/CFLAGS= -fPIC -m64 /g' Makefile > Makefile64
         make -fMakefile64
     else
         sh ./configure --enable-static --disable-shared
@@ -552,7 +552,7 @@ build_agg()
 {
     pushd agg-2.4
     if [ $BUILD_CPU -eq 64 ]; then
-        make EXTRACXXFLAGS=-fPIC -m64
+        make EXTRACXXFLAGS="-fPIC -m64"
     else
         make
     fi
