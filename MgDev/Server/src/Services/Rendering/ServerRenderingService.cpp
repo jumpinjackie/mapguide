@@ -295,11 +295,11 @@ MgByteReader* MgServerRenderingService::RenderTileXYZ(MgMap* map,
     //XYZ to lat/lon math. From this we can convert to the bounds in the map's CS
     //
     //Source: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
-    double nMin = M_PI - 2.0 * M_PI * y / pow((double)2.0, z);
-    double nMax = M_PI - 2.0 * M_PI * (y + 1) / pow((double)2.0, z);
-    double lonMin = x / pow((double)2.0, z) * 360.0 - 180;
+    double nMin = M_PI - 2.0 * M_PI * y / pow(2.0, (int)z);
+    double nMax = M_PI - 2.0 * M_PI * (y + 1) / pow(2.0, (int)z);
+    double lonMin = x / pow(2.0, (int)z) * 360.0 - 180;
 	double latMin = 180.0 / M_PI * atan(0.5 * (exp(nMin) - exp(-nMin)));
-    double lonMax = (x + 1) / pow((double)2.0, z) * 360.0 - 180;
+    double lonMax = (x + 1) / pow(2.0, (int)z) * 360.0 - 180;
 	double latMax = 180.0 / M_PI * atan(0.5 * (exp(nMax) - exp(-nMax)));
 
     double mcsMinX = std::min(lonMin, lonMax);
