@@ -1529,7 +1529,7 @@ double GDRenderer::_MeterToMapSize(RS_Units unit, double number)
 
 void GDRenderer::SetRenderSelectionMode(bool mode)
 {
-    SetRenderSelectionMode(mode, 0x0000FF00);
+    SetRenderSelectionMode(mode, 0x0000FFFF);
 }
 
 
