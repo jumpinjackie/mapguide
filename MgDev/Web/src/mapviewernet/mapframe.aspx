@@ -64,10 +64,6 @@ int pointBufferSize;
         MgSiteConnection site = new MgSiteConnection();
         site.Open(userInfo);
 
-        MgTileService tileSrvc = (MgTileService)site.CreateService(MgServiceType.TileService);
-        int tileSizeX = tileSrvc.GetDefaultTileSizeX();
-        int tileSizeY = tileSrvc.GetDefaultTileSizeY();
-
         MgResourceService resourceSrvc = (MgResourceService)site.CreateService(MgServiceType.ResourceService);
 
         MgMap map = new MgMap(site);
@@ -75,11 +71,8 @@ int pointBufferSize;
         String mapName = resId.GetName();
         map.Create(resId, mapName);
 
-        MgMap map = new MgMap(site);
-        MgResourceIdentifier resId = new MgResourceIdentifier(mapDefinition);
-        String mapName = resId.GetName();
-        map.Create(resId, mapName);
-        
+        MgResourceIdentifier tileSetId = map.GetTileSetDefinition();
+
         MgTileService tileSrvc = (MgTileService)site.CreateService(MgServiceType.TileService);
         int tileSizeX = tileSrvc.GetDefaultTileSizeX();
         int tileSizeY = tileSrvc.GetDefaultTileSizeY();
