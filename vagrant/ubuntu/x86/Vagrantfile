@@ -185,6 +185,8 @@ then
         FDO_UNIT_TEST=0
         echo [provision]: Using FDO SDK. Not building from source. Not running FDO unit tests.
     fi
+else
+    echo [provision]: FDO SDK not found. Building FDO from source.
 fi
 if [ -f /usr/include/asm/atomic.h ];
 then

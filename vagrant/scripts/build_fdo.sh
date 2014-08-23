@@ -103,16 +103,16 @@ LOCALSVN=1
 PRESERVE_BUILD_ROOT=1
 CMAKE=0
 
-FDO_SRC=/home/vagrant/fdo/branches/3.9
+MY_HOME_DIR=/home/vagrant
+FDO_SRC=${MY_HOME_DIR}/fdo/branches/3.9
 #FDO_SRC=http://svn.osgeo.org/fdo/trunk
 FDO_BUILD_AREA=${BUILDROOT}/fdo_build_area
 FDO_FILELIST=${FDO_BUILD_AREA}/install/filelist
 
 shim_thirdparty_lib_paths()
 {
+    # Note: This is an Ubuntu-only code path
     echo "[info]: Shimming include/lib paths"
-    # Note:
-    #
     # FDO assumes you're going to be linking against an SDK whose directory structure
     # is different from how system dev libraries are installed on Ubuntu, so we leverage the
     # power of symlinks to set up the expected directory structure that points to the system
@@ -123,41 +123,47 @@ shim_thirdparty_lib_paths()
     #
     #   libmysqlclient-dev libpq-dev
     #
-    mkdir -p ~/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU
+    mkdir -p ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU
     # PostgreSQL include path
-    if [ ! -d ~/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/include ];
+    if [ ! -d ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/include ];
     then
-        ln -s /usr/include/postgresql ~/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/include
+        ln -s /usr/include/postgresql ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/include
         echo "[info]: Symlinked PostgreSQL include path"
     else
         echo "[info]: PostgreSQL include path already symlinked"
     fi
     # PostgreSQL lib path
-    if [ ! -d ~/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME ];
+    if [ ! -d ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME ];
     then
-        ln -s /usr/lib ~/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME
-        echo "[info]: Symlinked PostgreSQL lib path"
+        if [ ${FDO_PLATFORM} -eq 32 ];
+        then 
+            ln -s /usr/lib ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME
+            echo "[info]: Symlinked PostgreSQL lib path (x86)"
+        else
+            ln -s /usr/lib64 ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME
+            echo "[info]: Symlinked PostgreSQL lib path (x64)"
+        fi
     else
         echo "[info]: PostgreSQL lib path already symlinked"
     fi
-    mkdir -p ~/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU
+    mkdir -p ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU
     # MySQL include path
-    if [ ! -d ~/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/include ];
+    if [ ! -d ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/include ];
     then
-        ln -s /usr/include/mysql ~/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/include
+        ln -s /usr/include/mysql ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/include
         echo "[info]: Symlinked MySQL include path"
     else
         echo "[info]: MySQL include path already symlinked"
     fi
     # MySQL lib path
-    if [ ! -d ~/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$LIB_DIRNAME ];
+    if [ ! -d ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$LIB_DIRNAME ];
     then
         if [ ${FDO_PLATFORM} -eq 32 ]; 
         then
-            ln -s /usr/lib/i386-linux-gnu ~/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$LIB_DIRNAME
+            ln -s /usr/lib/i386-linux-gnu ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$LIB_DIRNAME
             echo "[info]: Symlinked MySQL lib path (x86)"
         else
-            ln -s /usr/lib/x86_64-linux-gnu ~/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$LIB_DIRNAME
+            ln -s /usr/lib/x86_64-linux-gnu ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$LIB_DIRNAME
             echo "[info]: Symlinked MySQL lib path (x64)"
         fi
     else
@@ -167,12 +173,171 @@ shim_thirdparty_lib_paths()
 
 modify_sdk_paths()
 {
+    rm -f $FDO_BUILD_AREA/setenvironment.sh
+
     if [ ${UBUNTU} -eq 1 ];
     then
-        echo "[info]: Updating setenvironment.sh"
-        sed -i 's/export FDOMYSQL=$FDOTHIRDPARTY\/mysql\/rhlinux/export FDOMYSQL=\/home\/vagrant\/fdo_rdbms_thirdparty_system\/mysql\/'"$FDO_CPU"'/g' ${FDO_BUILD_AREA}/setenvironment.sh
-        sed -i 's/export FDOPOSTGRESQL=$FDOTHIRDPARTY\/pgsql/export FDOPOSTGRESQL=\/home\/vagrant\/fdo_rdbms_thirdparty_system\/pgsql\/'"$FDO_CPU"'/g' ${FDO_BUILD_AREA}/setenvironment.sh
+        # GCC 4.8 is causing too much instability, so downgrade one version
+        #GCCVER=4.7
+        #export GCCVER
+        #CC=gcc-$GCCVER
+        #export CC
+        #CXX=g++-$GCCVER
+        #export CXX
+        #echo "[info]: Using GCC $GCCVER for Ubuntu"
+        shim_thirdparty_lib_paths
+        
+        # Nuke the existing copies of openssl and libcurl and replace them with directories
+        # that symlink to system-installed headers/libs
+        rm -rf $FDO_BUILD_AREA/Thirdparty/openssl
+        rm -rf $FDO_BUILD_AREA/Thirdparty/libcurl
+        
+        # symlink libcurl to system installed copy
+        mkdir -p $FDO_BUILD_AREA/Thirdparty/libcurl/include
+        if [ ! -e $FDO_BUILD_AREA/Thirdparty/libcurl/include/curl ];
+        then
+            ln -s /usr/include/curl $FDO_BUILD_AREA/Thirdparty/libcurl/include/curl
+        fi
+        # Stub build.sh for libcurl
+        echo "#!/bin/bash" > $FDO_BUILD_AREA/Thirdparty/libcurl/build.sh
+        echo "exit 0" >> $FDO_BUILD_AREA/Thirdparty/libcurl/build.sh
+        mkdir -p $FDO_BUILD_AREA/Thirdparty/libcurl/lib
+        if [ ! -e $FDO_BUILD_AREA/Thirdparty/libcurl/lib/linux ];
+        then
+            ln -s /usr/lib/i386-linux-gnu $FDO_BUILD_AREA/Thirdparty/libcurl/lib/linux
+        fi
 
+        # symlink openssl to system installed copy
+        mkdir -p $FDO_BUILD_AREA/Thirdparty/openssl/include
+        if [ ! -e $FDO_BUILD_AREA/Thirdparty/openssl/include/openssl ];
+        then
+            ln -s /usr/include/openssl $FDO_BUILD_AREA/Thirdparty/openssl/include/openssl
+        fi
+        # Stub openssl for libcurl
+        echo "#!/bin/bash" > $FDO_BUILD_AREA/Thirdparty/openssl/build.sh
+        echo "exit 0" >> $FDO_BUILD_AREA/Thirdparty/openssl/build.sh
+        mkdir -p $FDO_BUILD_AREA/Thirdparty/openssl/lib
+        if [ ! -e $FDO_BUILD_AREA/Thirdparty/openssl/lib/linux ];
+        then
+            ln -s /usr/lib/i386-linux-gnu $FDO_BUILD_AREA/Thirdparty/openssl/lib/linux
+        fi
+        echo "[info]: Replace internal openssl/libcurl with symlinks to Ubuntu-installed copies"
+    fi
+
+    # Rather than going through the hassle of modifying setenvironment.sh
+    # Let's just inline the logic here and make the distro-specific changes
+    echo "[info]: Setting environment variables for FDO"
+
+    # Fully-qualfied location of the FDO files
+    export FDO=$FDO_BUILD_AREA/Fdo
+    if test ! -e "$FDO"; then
+       echo ""
+       echo "Invalid FDO path provided. "
+       echo "The setenvironment script sets the default value to: "
+       echo "$FDO"
+       echo "Please modify the setenvironment.sh script with a valid path."
+       echo ""
+    fi
+
+    # Fully-qualfied location of the FDO Utility files
+    export FDOUTILITIES=$FDO_BUILD_AREA/Utilities
+    if test ! -e "$FDOUTILITIES"; then
+       echo ""
+       echo "Invalid FDO Utilities path provided. "
+       echo "The setenvironment script sets the default value to: "
+       echo "$FDOUTILITIES" 
+       echo ""
+    fi
+
+    # Fully-qualfied location of the FDO Thirdparty files
+    #
+    # Note: This value is completely disregarded and rewritten by FDO's configure script
+    # but we still set it here as it forms the basis of other env vars below
+    export FDOTHIRDPARTY=$FDO_BUILD_AREA/Thirdparty
+    if test ! -e "$FDOTHIRDPARTY"; then
+       echo ""
+       echo "Invalid FDO Thirdparty path provided. "
+       echo "The setenvironment script sets the default value to: "
+       echo "$FDOTHIRDPARTY"
+       echo ""
+    fi
+
+    # Fully-qualfied location of the ESRI ArcSDE SDK
+    export SDEHOME=$FDOTHIRDPARTY/ESRI/ArcSDEClient931/Linux
+    if test ! -e "$SDEHOME"; then
+       echo ""
+       echo "NOTE: The default location for the ArcSDE client SDK files"
+       echo "was not found. The setenvironment script sets the default value to: "
+       echo "$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux. "
+       echo ""
+    fi
+
+    # Fully-qualfied location of the GDAL Installation
+    export FDOGDAL=$FDOTHIRDPARTY/gdal
+       echo ""
+       echo "NOTE: The setenvironment.sh script sets the installation location for "
+       echo "the GDAL SDK files to $FDOTHIRDPARTY/gdal. "
+       echo "If this value remains unchanged, the FDO build process will"
+       echo "build the version of GDAL located in Thirdparty/gdal and will "
+       echo "install the resulting libraries in /usr/local/fdo-3.9.0. The FDO build"
+       echo "process will then use that location when building the GDAL and"
+       echo "WMS providers. If you wish to build the FDO GDAL or WMS Providers"
+       echo "using a previously installed version of GDAL, modify the setenvironment.sh "
+       echo "script and set FDOGDAL to point to the existing GDAL installation."
+       echo "For example: /user/local (The default GDAL installation path)."
+    echo ""
+
+    # Fully-qualfied location of the ODBC SDK
+    export FDOODBC=/usr
+    if test ! -e "$FDOODBC"; then
+       echo ""
+       echo "NOTE: The default path for the ODBC SDK files was not found. "
+       echo "The setenvironment script sets the default value to: "
+       echo "$FDOODBC"
+       echo ""
+    fi
+
+    # Location of the PYTHON lib files. Typically in /usr/lib/pythonXXX
+    export PYTHON_LIB_PATH=/usr/lib/python2.4
+    if test ! -e "$PYTHON_LIB_PATH"; then
+       echo ""
+       echo "NOTE: The default path for the Python SDK lib files was not found. "
+       echo "The setenvironment script sets the default value to: "
+       echo "$PYTHON_LIB_PATH"
+       echo "lib files."
+       echo ""
+    fi
+
+    # Location of the PYTHON include files. Typically in /usr/include/pythonXXX
+    export PYTHON_INCLUDE_PATH=/usr/include/python2.4
+    if test ! -e "$PYTHON_INCLUDE_PATH"; then
+       echo ""
+       echo "NOTE: The default path for the Python SDK header files was not found. "
+       echo "The setenvironment script sets the default value to: "
+       echo "$PYTHON_INCLUDE_PATH"
+       echo "include files."
+       echo ""
+    fi
+
+    # Buildbot hack (mloskot): if the script is called with single dummy
+    # parameter no installation directory is created, ie.:
+    # $ source ./setenvironment.sh --noinstall
+    if test ! $# -eq 1; then
+        mkdir -p "/usr/local/fdo-${FDO_VER_FULL}/lib"
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-${FDO_VER_FULL}/lib:$SDEHOME/lib
+    fi
+
+    export XERCESCROOT=$FDOTHIRDPARTY/apache/xerces
+    export XALANCROOT=$FDOTHIRDPARTY/apache/xalan
+    export NLSDIR=$XALANCROOT/src/xalanc/NLS
+    export FDOORACLE=${MY_HOME_DIR}/fdo_rdbms_thirdparty/oracle/${FDO_CPU}/instantclient_11_2/sdk
+
+    # Depending on distro, MySQL and PostgreSQL take different paths here
+    if [ ${UBUNTU} -eq 1 ];
+    then
+        export FDOMYSQL=${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/mysql/${FDO_CPU}
+        export FDOPOSTGRESQL=${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/${FDO_CPU}
+        
         # Also need to patch some FDO thirdparty build scripts to accept our non-default compiler
         #echo "[info]: Patching mkcatdefs build script"
         #sed -i 's/gcc -DLINUX -g/'"$CC"' -DLINUX -g/g' ${FDO_BUILD_AREA}/Thirdparty/linux/mkcatdefs/src/build
@@ -182,12 +347,48 @@ modify_sdk_paths()
         #sed -i 's/# using gcc : 3.2 : g++-3.2 ;/using gcc : '"$GCCVER"' : '"$CXX"' ;/g' ${FDO_BUILD_AREA}/Thirdparty/boost/tools/build/v2/user-config.jam
         #sed -i 's/.\/b2 toolset=gcc/.\/b2 toolset='"$CC"'/g' ${FDO_BUILD_AREA}/Thirdparty/boost/build.sh
     else
-        echo "[info]: Updating setenvironment.sh"
         # Note: Change your paths here if they're different
-        sed -i 's/export FDOMYSQL=$FDOTHIRDPARTY\/mysql\/rhlinux/export FDOMYSQL=\/home\/vagrant\/fdo_rdbms_thirdparty\/mysql\/'"$FDO_CPU"'/g' ${FDO_BUILD_AREA}/setenvironment.sh
-        sed -i 's/export FDOPOSTGRESQL=$FDOTHIRDPARTY\/pgsql/export FDOPOSTGRESQL=\/home\/vagrant\/fdo_rdbms_thirdparty\/pgsql/g' ${FDO_BUILD_AREA}/setenvironment.sh
+        export FDOMYSQL=${MY_HOME_DIR}/fdo_rdbms_thirdparty/mysql/${FDO_CPU}
+        export FDOPOSTGRESQL=${MY_HOME_DIR}/fdo_rdbms_thirdparty/pgsql
     fi
-    echo "export FDOORACLE=/home/vagrant/fdo_rdbms_thirdparty/oracle/${FDO_CPU}/instantclient_11_2/sdk" >> ${FDO_BUILD_AREA}/setenvironment.sh
+
+    # Check MySQL path
+    if test ! -e "$FDOMYSQL"; then
+       echo ""
+       echo "NOTE: The default location for the MySQL SDK files "
+       echo "was not found. The setenvironment script sets the default value to: "
+       echo "$FDOTHIRDPARTY/mysql/rhlinux "
+       echo "Your configured path was: $FDOMYSQL"
+       echo ""
+    fi
+
+    # Check PostgreSQL path
+    if test ! -e "$FDOPOSTGRESQL"; then
+       echo ""
+       echo "NOTE: The default path for the PostgreSQL SDK files was not found. "
+       echo "The setenvironment script sets the default value to: "
+       echo "$FDOPOSTGRESQL"
+       echo "Your configured path was: $FDOPOSTGRESQL"
+       echo ""
+    fi
+
+    echo "******* Environment variable summary *********"
+    echo "FDO: $FDO"
+    echo "FDOUTILITIES: $FDOUTILITIES"
+    echo "FDOTHIRDPARTY: $FDOTHIRDPARTY"
+    echo "SDEHOME: $SDEHOME"
+    echo "FDOGDAL: $FDOGDAL"
+    echo "FDOODBC: $FDOODBC"
+    echo "PYTHON_LIB_PATH: $PYTHON_LIB_PATH"
+    echo "PYTHON_INCLUDE_PATH: $PYTHON_INCLUDE_PATH"
+    echo "XERCESCROOT: $XERCESCROOT"
+    echo "XALANCROOT: $XALANCROOT"
+    echo "NLSDIR: $NLSDIR"
+    echo "FDOORACLE: $FDOORACLE"
+    echo "FDOMYSQL: $FDOMYSQL"
+    echo "FDOPOSTGRESQL: $FDOPOSTGRESQL"
+    echo "**********************************************"
+    echo ""
 }
 
 # Must have root
@@ -209,19 +410,6 @@ echo " Re-use previous build area: ${PRESERVE_BUILD_ROOT}"
 echo "***********************************************************"
 start_time=`date +%s`
 REVISION=`svn info ${FDO_SRC} | perl revnum.pl`
-
-if [ ${UBUNTU} -eq 1 ];
-then
-    # GCC 4.8 is causing too much instability, so downgrade one version
-    #GCCVER=4.7
-    #export GCCVER
-    #CC=gcc-$GCCVER
-    #export CC
-    #CXX=g++-$GCCVER
-    #export CXX
-    #echo "[info]: Using GCC $GCCVER for Ubuntu"
-    shim_thirdparty_lib_paths
-fi
 
 if [ -d ${FDO_INST} ];
 then
@@ -273,12 +461,6 @@ fi
 
 echo "[info]: Building FDO (${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}) rev (${REVISION})"
 cd ${FDO_BUILD_AREA}
-source ./setenvironment.sh
-if [ ! -d ${FDO_INST} ];
-then
-    echo "[error]: FDO install directory ${FDO_INST} doesn't exist. setenvironment.sh should've created this directory. Ensure the FDO version number in this script is correct"
-    exit 1;
-fi
 
 FDO_BUILD_COMPONENT="FDO Thirdparty"
 ./build_thirdparty.sh -b ${FDO_PLATFORM} ${FDO_BUILD_FLAGS}

@@ -129,6 +129,7 @@ echo 'const STRING ProductVersion = L"'${BUILDNUM}'.'${REVISION}'";' >> ${VERFIL
 echo 'const STRING ApiVersion     = L"'${APIVERSION}'";' >> ${VERFILE}
 echo '#endif' >> ${VERFILE}
 
+# Note: Remove for trunk as this has been included into build_oem.sh
 echo "Building LinuxApt"
 pushd ${MGSOURCE}/Oem/LinuxApt
 BUILD_COMPONENT="LinuxApt"
@@ -156,6 +157,7 @@ else
     fi
 fi
 
+# Note: Remove for trunk as this has been included into build_oem.sh
 echo "Building Fusion"
 pushd ${MGSOURCE}/Oem/fusion
 BUILD_COMPONENT="Fusion"
