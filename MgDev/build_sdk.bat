@@ -306,8 +306,8 @@ rem Due to ACE headers being leaked out in public MG headers, we need these too
 %XCOPY% /S "%MG_OEM%\ACE\ACE_wrappers\ace\*.cpp" "%MG_SDK_INC%\ACE_wrappers\ACE" /EXCLUDE:svn_excludes.txt
 echo [install]: SDK - Oem (GEOS)
 rem Same with GEOS
-copy /Y "%MG_OEM%\geos-2.2.0\VisualStudio\%TYPEBUILD%\GEOS.dll" "%MG_SDK_BIN%"
-copy /Y "%MG_OEM%\geos-2.2.0\VisualStudio\%TYPEBUILD%\GEOS.pdb" "%MG_SDK_BIN%"
+copy /Y "%MG_OEM%\geos\VisualStudio\%TYPEBUILD%\GEOS.dll" "%MG_SDK_BIN%"
+copy /Y "%MG_OEM%\geos\VisualStudio\%TYPEBUILD%\GEOS.pdb" "%MG_SDK_BIN%"
 echo [install]: SDK - Oem (xerces)
 rem Same with xerces
 copy /Y "%MG_OEM%\dbxml\xerces-c-src\Build\Win32\VC9\%TYPEBUILD%\xerces-c_3_1mg.dll" "%MG_SDK_BIN%"

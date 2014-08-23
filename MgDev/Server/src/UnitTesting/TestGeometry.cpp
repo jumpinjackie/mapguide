@@ -1546,19 +1546,29 @@ void TestGeometry::TestCase_SymetricDifference()
         MgWktReaderWriter readerWriter;
         MgGeometryFactory factory;
 
+        //NOTE: Somewhere between GEOS 2.2.0 and GEOS 3.4.2 the result of a symetric difference 
+        //is sensitive to the order of the operand geometries. For tests where we're comparing 
+        //against an expected result, the operands have been flipped to provide the correct result 
+        // 
+        //eg. TEST 1 (GEOS 2.2.0) 
+        //Ptr<MgGeometry> geom = point->SymetricDifference(pointCoord); 
+        // 
+        //eg. TEST 1 (GEOS 3.4.2) 
+        //Ptr<MgGeometry> geom = pointCoord->SymetricDifference(point); 
+
         //TEST 1
         STRING base = L"MULTIPOINT (4 8, 5 3)";
         Ptr<MgPoint> point = CreatePoint();
         Ptr<MgCoordinate> coord = factory.CreateCoordinateXY(4.0, 8.0);
         Ptr<MgPoint> pointCoord = factory.CreatePoint(coord);
-        Ptr<MgGeometry> geom = point->SymetricDifference(pointCoord);
+        Ptr<MgGeometry> geom = pointCoord->SymetricDifference(point);
         STRING found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 2
         base = L"GEOMETRYCOLLECTION (POINT (5 3), LINESTRING (0 1, 2 3, 4 5))";
         Ptr<MgLineString> lineString = CreateLineString();
-        geom = lineString->SymetricDifference(point);
+        geom = point->SymetricDifference(lineString);
         found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(found, base));
 
@@ -1566,32 +1576,32 @@ void TestGeometry::TestCase_SymetricDifference()
         base = L"POLYGON ((4 5, 5 5, 5 0, 0 0, 0 1, 0 5, 4 5), (1 1, 2 1, 2 2, 1 1),"
                L" (3 3, 4 3, 4 4, 3 3))";
         Ptr<MgPolygon> polygon = CreatePolygon();
-        geom = polygon->SymetricDifference(lineString);
+        geom = lineString->SymetricDifference(polygon);
         found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 4
         base = L"GEOMETRYCOLLECTION (LINESTRING (0 0, -0.049331651274742601 0.18445058333395731, -0.076070558282857095 0.37350258771831019, -0.0798268075493902 0.5643992092210961, -0.060545624501699299 0.75435674523904783, -0.018508172206062701 0.94060518714990526, 0 0.99246192690647705, 1.5 1.5, 2 1), POLYGON ((3 0, 0 0, 0 0.99246192690647705, 0 5, 5 5, 5 0, 3 0), (1 1, 2 1, 2 2, 1.5 1.5, 1 1), (3 3, 4 3, 4 4,3 3)))";
         Ptr<MgCurveString> curveString = CreateCurveString(0.0);
-        geom = curveString->SymetricDifference(polygon);
+        geom = polygon->SymetricDifference(curveString);
         found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 5
         Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
-        geom = curvePolygon->SymetricDifference(pointCoord);
+        geom = pointCoord->SymetricDifference(curvePolygon);
 
         //TEST 6
         base = L"MULTIPOINT (1 2, 4 5, 5 3, 7 8)";
         Ptr<MgMultiPoint> multiPoint = CreateMultiPoint();
-        geom = multiPoint->SymetricDifference(point);
+        geom = point->SymetricDifference(multiPoint);
         found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 7
         base = L"GEOMETRYCOLLECTION (POINT (7 8), LINESTRING (0 1, 3 4, 6 7, 9 10, 12 13, 15 16))";
         Ptr<MgMultiLineString> multiLineString = CreateMultiLineString();
-        geom = multiLineString->SymetricDifference(multiPoint);
+        geom = multiPoint->SymetricDifference(multiLineString);
         found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(found, base));
 
@@ -1600,7 +1610,7 @@ void TestGeometry::TestCase_SymetricDifference()
                L" POLYGON ((5 0, 0 0, 0 1, 0 5, 4 5, 5 5, 5 0), (1 1, 2 1, 2 2, 1 1),"
                L" (3 3, 4 3, 4 4, 3 3)))";
         Ptr<MgMultiPolygon> multiPolygon = CreateMultiPolygon();
-        geom = multiPolygon->SymetricDifference(multiLineString);
+        geom = multiLineString->SymetricDifference(multiPolygon);
         found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(found, base));
 
@@ -1609,17 +1619,17 @@ void TestGeometry::TestCase_SymetricDifference()
                L" LINESTRING (100 100, 100 101, 101 102, 103 100, 103 102, 200 200, 200 201,"
                L" 201 202, 203 200, 203 202, 300 300, 300 301, 301 302, 303 300, 303 302))";
         Ptr<MgMultiCurveString> multiCurveString = CreateMultiCurveString();
-        geom = multiCurveString->SymetricDifference(multiPoint);
+        geom = multiPoint->SymetricDifference(multiCurveString);
         found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 10
         Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
-        geom = multiCurvePolygon->SymetricDifference(curvePolygon);
+        geom = curvePolygon->SymetricDifference(multiCurvePolygon);
 
         //TEST 11
         Ptr<MgMultiGeometry> multiGeometry = CreateMultiGeometry();
-        geom = multiGeometry->SymetricDifference(multiCurvePolygon);
+        geom = multiCurvePolygon->SymetricDifference(multiGeometry);
     }
     catch (MgException* e)
     {
@@ -2175,7 +2185,7 @@ void TestGeometry::TestCase_GetArea()
         //TEST 12
         Ptr<MgMultiGeometry> multiGeometry = CreateMultiGeometry();
         area = multiGeometry->GetArea();
-        CPPUNIT_ASSERT(area == 23.375);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(area, 23.375, 0.0001);
 
         //TEST 13
         Ptr<MgCoordinate> coord1 = factory.CreateCoordinateXYZ(-45.0, -45.0, 1.0);

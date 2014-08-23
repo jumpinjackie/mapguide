@@ -220,32 +220,35 @@ clean_dwftk()
 }
 
 #**********************************************************
-# Build GEOS 2.2.0
+# Build GEOS 3.4.2
 # Notes: none
 #**********************************************************
 
 init_geos()
 {
-    LIB_NAME="GEOS 2.2.0"
+    LIB_NAME="GEOS 3.4.2"
 }
 
 build_geos()
 {
-    pushd geos-2.2.0
+    pushd geos
+    # For this version of GEOS, don't run the aclocal/libtoolize/automake/autoconf quartet as we normally do, as it
+    # may produce an unusable configure script. Just run autoreconf to regenerate the configure script from configure.in
+    autoreconf
     if [ $BUILD_CPU -eq 64 ]; then
-        sh ./configure --with-pic --prefix="${INSTALLDIR}"
+        sh ./configure --with-pic --enable-silent-rules --prefix="${INSTALLDIR}"
     else
-        sh ./configure --prefix="${INSTALLDIR}"
+        sh ./configure --enable-silent-rules --prefix="${INSTALLDIR}"
     fi
     make
     # The check build is disabled as the build will fail with automake version < 2.59
-    # check_build
+    check_build
     popd
 }
 
 clean_geos()
 {
-    pushd geos-2.2.0
+    pushd geos
     make clean
     check_clean
     popd

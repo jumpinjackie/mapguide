@@ -445,7 +445,7 @@ INCLUDES = \
   -I../Foundation \
   -I../Geometry \
   -I../../Oem/ACE/ACE_wrappers \
-  -I../../Oem/geos-2.2.0/source/headers \
+  -I../../Oem/geos/include \
   -I../../Oem/dbxml/xerces-c-src/src \
   -I../../Oem/CsMap/Include \
   -I../../Common/CoordinateSystem
@@ -454,7 +454,7 @@ libMgGeometry_la_LIBADD = \
   -lACE \
   -lMgFoundation \
   ../../Oem/CsMap/.libs/libCsmap.a \
-  ../../Oem/geos-2.2.0/source/geom/.libs/libgeos.a
+  ../../Oem/geos/src/.libs/libgeos.a
 
 libMgGeometry_la_LDFLAGS = -release $(PACKAGE_VERSION) \
   -L../../Oem/ACE/ACE_wrappers/ace \

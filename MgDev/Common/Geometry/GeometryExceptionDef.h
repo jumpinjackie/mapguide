@@ -19,17 +19,20 @@
 #ifndef MG_GEOMETRY_EXCEPTION_DEF_H
 #define MG_GEOMETRY_EXCEPTION_DEF_H
 
+// NOTE: Semantic change with GEOS (since 3.0.0). GEOSException now inherits from 
+// std::exception and is caught by const reference 
+
 #define MG_GEOMETRY_TRY()                                                     \
     MG_TRY()                                                                  \
 
 #define MG_GEOMETRY_CATCH(methodName)                                         \
     }                                                                         \
-    catch (GEOSException* e)                                                  \
+    catch (const geos::util::GEOSException& e)                                \
     {                                                                         \
         MgStringCollection arguments;                                         \
-        arguments.Add(MgUtil::MultiByteToWideChar(e->toString()));            \
-        mgException = NULL; \
-        delete e;                                                             \
+        std::string sWhat = e.what();                                         \
+        arguments.Add(MgUtil::MultiByteToWideChar(sWhat));                    \
+        mgException = NULL;                                                   \
                                                                               \
     MG_CATCH(methodName)                                                      \
 

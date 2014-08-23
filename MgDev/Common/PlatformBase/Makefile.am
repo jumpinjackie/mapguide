@@ -248,7 +248,7 @@ INCLUDES = \
   -I../Foundation \
   -I../Geometry \
   -I../../Oem/ACE/ACE_wrappers \
-  -I../../Oem/geos-2.2.0/source/headers \
+  -I../../Oem/geos/source/headers \
   -I../../Oem/dbxml/xerces-c-src/src
 
 libMgPlatformBase_la_LIBADD = \

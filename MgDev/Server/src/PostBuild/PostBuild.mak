@@ -58,11 +58,11 @@
 ..\..\bin\debug\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\Debug\gd.pdb
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\Debug\gd.pdb ..\..\bin\debug\
 
-..\..\bin\debug\GEOSd.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll ..\..\bin\debug\
+..\..\bin\debug\GEOSd.dll : ..\..\..\Oem\geos\VisualStudio\Debug\GEOSd.dll
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\Debug\GEOSd.dll ..\..\bin\debug\
 
-..\..\bin\debug\GEOSd.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.pdb
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.pdb ..\..\bin\debug\
+..\..\bin\debug\GEOSd.pdb : ..\..\..\Oem\geos\VisualStudio\Debug\GEOSd.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\Debug\GEOSd.pdb ..\..\bin\debug\
 
 ..\..\bin\debug\libdb48d.dll : ..\..\..\Oem\dbxml\bin\debug\libdb48d.dll
     xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug\libdb48d.dll ..\..\bin\debug\
@@ -330,11 +330,11 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
 ..\..\bin\debug64\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\debug64\gd.pdb
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\debug64\gd.pdb ..\..\bin\debug64\
 
-..\..\bin\debug64\GEOSd.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.dll
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.dll ..\..\bin\debug64\
+..\..\bin\debug64\GEOSd.dll : ..\..\..\Oem\geos\VisualStudio\Debug64\GEOSd.dll
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\Debug64\GEOSd.dll ..\..\bin\debug64\
 
-..\..\bin\debug64\GEOSd.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.pdb
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.pdb ..\..\bin\debug64\
+..\..\bin\debug64\GEOSd.pdb : ..\..\..\Oem\geos\VisualStudio\Debug64\GEOSd.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\Debug64\GEOSd.pdb ..\..\bin\debug64\
 
 ..\..\bin\debug64\libdb48d.dll : ..\..\..\Oem\dbxml\bin64\debug\libdb48d.dll
     xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug\libdb48d.dll ..\..\bin\debug64\
@@ -602,11 +602,11 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
 ..\..\bin\release\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\Release\gd.pdb
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\Release\gd.pdb ..\..\bin\release\
 
-..\..\bin\release\GEOS.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.dll
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.dll ..\..\bin\release\
+..\..\bin\release\GEOS.dll : ..\..\..\Oem\geos\VisualStudio\Release\GEOS.dll
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\Release\GEOS.dll ..\..\bin\release\
 
-..\..\bin\release\GEOS.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.pdb
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.pdb ..\..\bin\release\
+..\..\bin\release\GEOS.pdb : ..\..\..\Oem\geos\VisualStudio\Release\GEOS.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\Release\GEOS.pdb ..\..\bin\release\
 
 ..\..\bin\release\libdb48.dll : ..\..\..\Oem\dbxml\bin\release\libdb48.dll
     xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release\libdb48.dll ..\..\bin\release\
@@ -874,11 +874,11 @@ release : ..\..\bin\release\MgFoundation.dll \
 ..\..\bin\release64\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\release64\gd.pdb
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\release64\gd.pdb ..\..\bin\release64\
 
-..\..\bin\release64\GEOS.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.dll
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.dll ..\..\bin\release64\
+..\..\bin\release64\GEOS.dll : ..\..\..\Oem\geos\VisualStudio\Release64\GEOS.dll
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\Release64\GEOS.dll ..\..\bin\release64\
 
-..\..\bin\release64\GEOS.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.pdb
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.pdb ..\..\bin\release64\
+..\..\bin\release64\GEOS.pdb : ..\..\..\Oem\geos\VisualStudio\Release64\GEOS.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\Release64\GEOS.pdb ..\..\bin\release64\
 
 ..\..\bin\release64\libdb48.dll : ..\..\..\Oem\dbxml\bin64\release\libdb48.dll
     xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release\libdb48.dll ..\..\bin\release64\
@@ -1702,11 +1702,11 @@ cleanrelease64:
 ..\..\bin\debug(v100)\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\debug(v100)\gd.pdb
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\debug(v100)\gd.pdb ..\..\bin\debug(v100)\
 
-..\..\bin\debug(v100)\GEOSd.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)\GEOSd.dll
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)\GEOSd.dll ..\..\bin\debug(v100)\
+..\..\bin\debug(v100)\GEOSd.dll : ..\..\..\Oem\geos\VisualStudio\debug(v100)\GEOSd.dll
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\debug(v100)\GEOSd.dll ..\..\bin\debug(v100)\
 
-..\..\bin\debug(v100)\GEOSd.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)\GEOSd.pdb
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)\GEOSd.pdb ..\..\bin\debug(v100)\
+..\..\bin\debug(v100)\GEOSd.pdb : ..\..\..\Oem\geos\VisualStudio\debug(v100)\GEOSd.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\debug(v100)\GEOSd.pdb ..\..\bin\debug(v100)\
 
 ..\..\bin\debug(v100)\libdb48d.dll : ..\..\..\Oem\dbxml\bin\debug(v100)\libdb48d.dll
     xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug(v100)\libdb48d.dll ..\..\bin\debug(v100)\
@@ -1967,11 +1967,11 @@ debug(v100) : ..\..\bin\debug(v100)\MgFoundationd.dll \
 ..\..\bin\debug(v100)64\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\debug(v100)64\gd.pdb
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\debug(v100)64\gd.pdb ..\..\bin\debug(v100)64\
 
-..\..\bin\debug(v100)64\GEOSd.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)64\GEOSd.dll
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)64\GEOSd.dll ..\..\bin\debug(v100)64\
+..\..\bin\debug(v100)64\GEOSd.dll : ..\..\..\Oem\geos\VisualStudio\debug(v100)64\GEOSd.dll
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\debug(v100)64\GEOSd.dll ..\..\bin\debug(v100)64\
 
-..\..\bin\debug(v100)64\GEOSd.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)64\GEOSd.pdb
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)64\GEOSd.pdb ..\..\bin\debug(v100)64\
+..\..\bin\debug(v100)64\GEOSd.pdb : ..\..\..\Oem\geos\VisualStudio\debug(v100)64\GEOSd.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\debug(v100)64\GEOSd.pdb ..\..\bin\debug(v100)64\
 
 ..\..\bin\debug(v100)64\libdb48d.dll : ..\..\..\Oem\dbxml\bin64\debug(v100)\libdb48d.dll
     xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug(v100)\libdb48d.dll ..\..\bin\debug(v100)64\
@@ -2232,11 +2232,11 @@ debug(v100)64 : ..\..\bin\debug(v100)64\MgFoundationd.dll \
 ..\..\bin\release(v100)\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\release(v100)\gd.pdb
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\release(v100)\gd.pdb ..\..\bin\release(v100)\
 
-..\..\bin\release(v100)\GEOS.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)\GEOS.dll
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)\GEOS.dll ..\..\bin\release(v100)\
+..\..\bin\release(v100)\GEOS.dll : ..\..\..\Oem\geos\VisualStudio\release(v100)\GEOS.dll
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\release(v100)\GEOS.dll ..\..\bin\release(v100)\
 
-..\..\bin\release(v100)\GEOS.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)\GEOS.pdb
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)\GEOS.pdb ..\..\bin\release(v100)\
+..\..\bin\release(v100)\GEOS.pdb : ..\..\..\Oem\geos\VisualStudio\release(v100)\GEOS.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\release(v100)\GEOS.pdb ..\..\bin\release(v100)\
 
 ..\..\bin\release(v100)\libdb48.dll : ..\..\..\Oem\dbxml\bin\release(v100)\libdb48.dll
     xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release(v100)\libdb48.dll ..\..\bin\release(v100)\
@@ -2497,11 +2497,11 @@ release(v100) : ..\..\bin\release(v100)\MgFoundation.dll \
 ..\..\bin\release(v100)64\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\release(v100)64\gd.pdb
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\release(v100)64\gd.pdb ..\..\bin\release(v100)64\
 
-..\..\bin\release(v100)64\GEOS.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)64\GEOS.dll
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)64\GEOS.dll ..\..\bin\release(v100)64\
+..\..\bin\release(v100)64\GEOS.dll : ..\..\..\Oem\geos\VisualStudio\release(v100)64\GEOS.dll
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\release(v100)64\GEOS.dll ..\..\bin\release(v100)64\
 
-..\..\bin\release(v100)64\GEOS.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)64\GEOS.pdb
-    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)64\GEOS.pdb ..\..\bin\release(v100)64\
+..\..\bin\release(v100)64\GEOS.pdb : ..\..\..\Oem\geos\VisualStudio\release(v100)64\GEOS.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos\VisualStudio\release(v100)64\GEOS.pdb ..\..\bin\release(v100)64\
 
 ..\..\bin\release(v100)64\libdb48.dll : ..\..\..\Oem\dbxml\bin64\release(v100)\libdb48.dll
     xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release(v100)\libdb48.dll ..\..\bin\release(v100)64\

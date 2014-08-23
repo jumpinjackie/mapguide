@@ -21,8 +21,8 @@ set MENTOR_DICTIONARY_PATH=%GISPLATFORMROOTDIR%\Oem\CsMap\Dictionaries
 subst Q: %GISPLATFORMROOTDIR%
 echo Setting the PATH variable to Platform componentes in the %GISPLATFORMROOTDIR" directory.
 echo off
-set PATH=%PATH%;Q:\Common\bin\debug;Q:\Oem\ACE\ACE_wrappers\lib;Q:\Oem\dbxml-2.3.10\bin\debug;Q:\Oem\geos-2.2.0\VisualStudio\Debug
-set PATH=%PATH%;Q:\Common\bin\release;Q:\Oem\dbxml-2.3.10\bin;Q:\Oem\geos-2.2.0\VisualStudio\Release
+set PATH=%PATH%;Q:\Common\bin\debug;Q:\Oem\ACE\ACE_wrappers\lib;Q:\Oem\dbxml-2.3.10\bin\debug;Q:\Oem\geos\VisualStudio\Debug
+set PATH=%PATH%;Q:\Common\bin\release;Q:\Oem\dbxml-2.3.10\bin;Q:\Oem\geos\VisualStudio\Release
 echo on
 
 /////////////////////////////////////////////////////////////////////////////

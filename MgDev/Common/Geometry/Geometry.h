@@ -647,6 +647,11 @@ PUBLISHED_API:
     /// \param other (MgGeometry)
     /// The MgGeometry to subtract from this one.
     ///
+    /// \remarks 
+    /// As of 3.0 the resulting geometry, if it is an aggregate geometry will have its sub-geometries ordered based on the order  
+    /// of your operand geometries. Take note of this if your code is concerned about the order of geometries in the symmetric difference 
+    /// result 
+    /// 
     /// \return
     /// An MgGeometry representing the symmetric difference.
     ///

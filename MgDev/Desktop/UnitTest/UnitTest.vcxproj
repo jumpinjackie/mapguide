@@ -94,7 +94,7 @@
 xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)Resources\
 xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib\debug\ACEd.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\dbxml\bin\debug\xerces-c_3_1mgD.dll $(OutDir)
-xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\geos\VisualStudio\Debug\GEOSd.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\gd\build\win32\gd\Debug\gd.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\FDO\Bin\Debug\*.* $(OutDir)FDO\
 xcopy /S /Y /I ..\..\Server\bin\Debug\MgGws*.* $(OutDir)
@@ -142,7 +142,7 @@ xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
 xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)Resources\
 xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib\debug64\ACEd.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\dbxml\bin\debug64\xerces-c_3_1mgD.dll $(OutDir)
-xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\geos\VisualStudio\Debug64\GEOSd.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\gd\build\win32\gd\Debug64\gd.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\FDO\Bin\Debug64\*.* $(OutDir)FDO\
 xcopy /S /Y /I ..\..\Server\bin\Debug64\MgGws*.* $(OutDir)
@@ -190,7 +190,7 @@ xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
 xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)Resources\
 xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib\Release\ACE.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\dbxml\bin\Release\xerces-c_3_1mg.dll $(OutDir)
-xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\geos\VisualStudio\Release\GEOS.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\gd\build\win32\gd\Release\gd.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\FDO\Bin\Release\*.* $(OutDir)FDO\
 xcopy /S /Y /I ..\..\Server\bin\Release\MgGws*.* $(OutDir)
@@ -242,7 +242,7 @@ xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
 xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)Resources\
 xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib64\Release\ACE.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\dbxml\bin64\Release\xerces-c_3_1mg.dll $(OutDir)
-xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.dll $(OutDir)
+xcopy /S /Y /I ..\..\Oem\geos\VisualStudio\Release64\GEOS.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\gd\build\win32\gd\Release64\gd.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\FDO\Bin\Release64\*.* $(OutDir)FDO\
 xcopy /S /Y /I ..\..\Server\bin\Release64\MgGws*.* $(OutDir)
