@@ -4,7 +4,7 @@
 /**
  * @file BSD_Network_Interface_Monitor.h
  *
- * $Id: BSD_Network_Interface_Monitor.h 85928 2009-07-07 22:25:01Z parsons $
+ * $Id: BSD_Network_Interface_Monitor.h 91743 2010-09-13 18:24:51Z johnnyw $
  *
  * @author Jeff Parsons <j.parsons@vanderbilt.edu>
  */
@@ -50,7 +50,7 @@ namespace ACE
 
     protected:
       ACE_UINT64 value_;
-      
+
     private:
       void init (void);
       void fetch (ACE_UINT64& value) const;

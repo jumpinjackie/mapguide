@@ -1,20 +1,21 @@
 #! /usr/bin/perl
+
 package PerlACE::TestTarget_VxWorks;
 
 # ******************************************************************
 # Description : Creates a PerlACE::ProcessVX
 # Author      : Chad Elliott
 # Create Date : 6/20/2008
-#          $Id: TestTarget_VxWorks.pm 89840 2010-04-12 09:36:32Z mcorino $
+#          $Id: TestTarget_VxWorks.pm 94447 2011-09-08 08:15:58Z johnnyw $
 # ******************************************************************
 
 # ******************************************************************
 # Pragma Section
 # ******************************************************************
+use PerlACE::TestTarget;
 
 use strict;
 
-use PerlACE::TestTarget;
 use PerlACE::ProcessVX;
 use Cwd;
 use English;
@@ -71,7 +72,7 @@ sub WaitForFileTimed ($)
     my $file = shift;
     my $timeout = shift;
     my $cwdrel = $file;
-    my $prjroot = defined $ENV{"ACE_RUN_VX_PRJ_ROOT"} ? $ENV{"ACE_RUN_VX_PRJ_ROOT"}  : $ENV{"ACE_ROOT"};
+    my $prjroot = defined $ENV{'ACE_RUN_VX_PRJ_ROOT'} ? $ENV{'ACE_RUN_VX_PRJ_ROOT'}  : $ENV{'ACE_ROOT'};
     if (length ($cwdrel) > 0) {
         $cwdrel = File::Spec->abs2rel( cwd(), $prjroot );
     }
@@ -86,7 +87,7 @@ sub KillAll ($)
 {
     my $self = shift;
     my $procmask = shift;
-    PerlACE::ProcessVX::kill_all ($procmask, $self);    
+    PerlACE::ProcessVX::kill_all ($procmask, $self);
 }
 
 1;

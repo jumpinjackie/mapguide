@@ -1,4 +1,4 @@
-// $Id: Barrier.cpp 84282 2009-01-30 15:04:29Z msmit $
+// $Id: Barrier.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/Barrier.h"
 
@@ -12,12 +12,8 @@
 #include "ace/OS_NS_errno.h"
 
 #if defined (ACE_HAS_DUMP)
-#  include "ace/Log_Msg.h"
+#  include "ace/Log_Category.h"
 #endif /* ACE_HAS_DUMP */
-
-ACE_RCSID (ace,
-           Barrier,
-           "$Id: Barrier.cpp 84282 2009-01-30 15:04:29Z msmit $")
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -29,10 +25,10 @@ ACE_Sub_Barrier::dump (void) const
 #if defined (ACE_HAS_DUMP)
 // ACE_TRACE ("ACE_Sub_Barrier::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
   this->barrier_finished_.dump ();
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("running_threads_ = %d\n"), this->running_threads_));
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("running_threads_ = %d\n"), this->running_threads_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 
@@ -54,13 +50,13 @@ ACE_Barrier::dump (void) const
 #if defined (ACE_HAS_DUMP)
 // ACE_TRACE ("ACE_Barrier::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
   this->lock_.dump ();
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("current_generation_ = %d"), this->current_generation_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\ncount_ = %d"), this->count_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("current_generation_ = %d"), this->current_generation_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\ncount_ = %d"), this->count_));
   this->sub_barrier_1_.dump ();
   this->sub_barrier_2_.dump ();
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 
@@ -170,26 +166,6 @@ ACE_Thread_Barrier::dump (void) const
   ACE_Barrier::dump ();
 #endif /* ACE_HAS_DUMP */
 }
-
-#if 0
-ACE_ALLOC_HOOK_DEFINE(ACE_Process_Barrier)
-
-ACE_Process_Barrier::ACE_Process_Barrier (u_int count,
-                                          const ACE_TCHAR *name)
-  : ACE_Barrier (count, USYNC_PROCESS, name)
-{
-// ACE_TRACE ("ACE_Process_Barrier::ACE_Process_Barrier");
-}
-
-void
-ACE_Process_Barrier::dump (void) const
-{
-#if defined (ACE_HAS_DUMP)
-// ACE_TRACE ("ACE_Process_Barrier::dump");
-  ACE_Barrier::dump ();
-#endif /* ACE_HAS_DUMP */
-}
-#endif /* 0 */
 
 ACE_END_VERSIONED_NAMESPACE_DECL
 

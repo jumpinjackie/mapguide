@@ -4,7 +4,7 @@
 /**
  *  @file   OS_NS_signal.h
  *
- *  $Id: OS_NS_signal.h 87097 2009-10-14 14:42:24Z olli $
+ *  $Id: OS_NS_signal.h 97246 2013-08-07 07:10:20Z johnnyw $
  *
  *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
  *  @author Jesper S. M|ller<stophph@diku.dk>
@@ -33,10 +33,10 @@
 #endif
 #define ACE_EXPORT_MACRO ACE_Export
 
-#if defined (__Lynx__)
-// LynxOS defines pthread_sigmask() in pthread.h
+#if defined (__Lynx__) || defined (__OpenBSD__)
+// LynxOS and OpenBSD define pthread_sigmask() in pthread.h
 # include "ace/os_include/os_pthread.h"
-#endif /* __Lynx__ */
+#endif /* __Lynx__ || OpenBSD */
 
 /*
  * We inline and undef some functions that may be implemented
@@ -129,13 +129,9 @@ inline int ace_sigsuspend_helper (const sigset_t *s)
 struct ACE_Export siginfo_t
 {
   siginfo_t (ACE_HANDLE handle);
-  siginfo_t (ACE_HANDLE *handles);      // JCEJ 12/23/96
 
   /// Win32 HANDLE that has become signaled.
   ACE_HANDLE si_handle_;
-
-  /// Array of Win32 HANDLEs all of which have become signaled.
-  ACE_HANDLE *si_handles_;
 };
 # endif /* ACE_HAS_SIGINFO_T */
 

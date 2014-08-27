@@ -1,9 +1,6 @@
-// $Id: OS_NS_sys_utsname.cpp 86433 2009-08-09 19:19:12Z johnnyw $
+// $Id: OS_NS_sys_utsname.cpp 93543 2011-03-14 08:25:46Z johnnyw $
 
 #include "ace/OS_NS_sys_utsname.h"
-
-ACE_RCSID(ace, OS_NS_sys_utsname, "$Id: OS_NS_sys_utsname.cpp 86433 2009-08-09 19:19:12Z johnnyw $")
-
 #include "ace/OS_NS_string.h"
 #include "ace/OS_NS_stdio.h"
 #include "ace/OS_NS_unistd.h"
@@ -81,11 +78,7 @@ ACE_OS::uname (ACE_utsname *name)
       char processor[bufsize] = "Unknown";
       char subtype[bufsize] = "Unknown";
 
-#   if defined (ghs)
-    WORD arch = sinfo.u.s.wProcessorArchitecture;
-#   else
     WORD arch = sinfo.wProcessorArchitecture;
-#   endif
 
       switch (arch)
         {

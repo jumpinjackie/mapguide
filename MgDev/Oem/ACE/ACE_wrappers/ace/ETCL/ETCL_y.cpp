@@ -1,4 +1,3 @@
-// $Id: ETCL_y.cpp 81645 2008-05-08 08:07:21Z johnnyw $
 
 /*  A Bison parser, made from ETCL/ETCL.yy
     by GNU Bison version 1.28  */
@@ -49,22 +48,17 @@
 #define  ETCL_TYPE_ID 298
 #define  ETCL_REPOS_ID  299
 
-//#line 1 "ETCL/ETCL.yy"
 
-// $Id: ETCL_y.cpp 81645 2008-05-08 08:07:21Z johnnyw $
-// ========================================================================
-//
-// = LIBRARY
-//   ace/ETCL / Extended Trader Constraint Language parser.
-//
-// = FILENAME
-//   ETCL.yy
-//
-// = AUTHOR
-//   Carlos O'Ryan <coryan@uci.edu> based on previous work by
-//   Seth Widoff <sbw1@cs.wustl.edu>
-//
-// ========================================================================
+//=============================================================================
+/**
+ *  @file   ETCL_y.cpp
+ *
+ *  $Id: ETCL_y.cpp 93651 2011-03-28 08:49:11Z johnnyw $
+ *
+ *  @author Carlos O'Ryan <coryan@uci.edu> based on previous work by Seth Widoff <sbw1@cs.wustl.edu>
+ */
+//=============================================================================
+
 
 #include "ace/ETCL/ETCL_y.h"
 #include "ace/ETCL/ETCL_Constraint.h"
@@ -340,7 +334,7 @@ ACE_END_VERSIONED_NAMESPACE_DECL
 #define YYSTACK_USE_ALLOCA
 #define alloca __builtin_alloca
 #else /* not GNU C.  */
-#if (!defined (__STDC__) && defined (sparc)) || defined (__sparc__) || defined (__sparc) || defined (__sgi) || (defined (__sun) && defined (__i386))
+#if (!defined (__STDC__) && defined (sparc)) || defined (__sparc__) || defined (__sparc) || (defined (__sun) && defined (__i386))
 #define YYSTACK_USE_ALLOCA
 #include <alloca.h>
 #else /* not sparc */

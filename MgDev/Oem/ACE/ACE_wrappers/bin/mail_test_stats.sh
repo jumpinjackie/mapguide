@@ -1,19 +1,16 @@
-export TREE_ROOT=$HOME/ACE/latest
-export ACE_ROOT=$TREE_ROOT/ACE_wrappers
-export TAO_ROOT=$ACE_ROOT/TAO
-export CIAO_ROOT=$TAO_ROOT/CIAO
-mkdir -p $TREE_ROOT
-cd $TREE_ROOT
-svn co svn://svn.dre.vanderbilt.edu/DOC/Middleware/sets-anon/ACE+TAO+CIAO .
-cd $ACE_ROOT/bin
-rm *Tests.txt
-rm *TestRev.txt
-rm *Ignore.txt
-rm *Builds.txt
-./diff-builds-and-group-fixed-tests-only.sh
+#!/bin/sh
+# $Id: mail_test_stats.sh 96136 2012-09-10 00:17:27Z johnnyw $
 
-MAILTO="devo-group@list.isis.vanderbilt.edu"
-MAIL="mail -S smtp=10.2.0.3"
+if test -z $1; then CURRENTDATE=`date -u +%Y_%m_%d`; else CURRENTDATE=$1; fi
+if test -z $2; then PREFIX=`date -u +%Y%m%d%a`; else PREFIX=$2; fi
+if test -z $3; then MAILTO="devo-group@list.isis.vanderbilt.edu"; else MAILTO=$3; fi
+
+cd $ACE_ROOT/bin
+
+./diff-builds-and-group-fixed-tests-only.sh $CURRENTDATE $PREFIX
+./cleanbuilds.sh $CURRENTDATE
+
+MAIL="mail -S smtp=mail.remedy.nl"
 MAILFROM="jwillemsen@remedy.nl"
 
 MAIL_ATTACHMENTS=
@@ -23,7 +20,6 @@ done
 for fn in `ls *NoTestRev.txt`; do
    MAIL_ATTACHMENTS=$MAIL_ATTACHMENTS+"-a $fn "
 done
-CURRENTDATE=`date -u +%Y_%m_%d`
 mailfile="/tmp/rsmailfile"
 {
    echo "Sending test statistics for" $CURRENTDATE
@@ -37,7 +33,17 @@ mailfile="/tmp/rsmailfile"
    cat *Builds.txt
 } > $mailfile
 
-$MAIL -r $MAILFROM -s "ACE/TAO/CIAO test statistics for $CURRENTDATE" $MAILTO < $mailfile
+$MAIL -v -r $MAILFROM -s "ACE/TAO/CIAO/DAnCE test statistics for $CURRENTDATE" $MAILTO < $mailfile
 
 rm -f $mailfile
 
+mailfile="/tmp/rsmailfile"
+{
+   echo "Sending failing tests for " $CURRENTDATE
+   echo
+   cat cleanbuildresults.txt
+} > $mailfile
+
+$MAIL -v -r $MAILFROM -s "ACE/TAO/CIAO/DAnCE failing tests for $CURRENTDATE" $MAILTO < $mailfile
+
+rm -f $mailfile

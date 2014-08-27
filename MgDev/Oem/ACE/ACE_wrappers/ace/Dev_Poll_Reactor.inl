@@ -1,8 +1,7 @@
 // -*- C++ -*-
-//
-// $Id: Dev_Poll_Reactor.inl 90177 2010-05-19 11:44:22Z vzykov $
+// $Id: Dev_Poll_Reactor.inl 96985 2013-04-11 15:50:32Z huangh $
 
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -17,17 +16,6 @@ ACE_Dev_Poll_Reactor::Event_Tuple::Event_Tuple (ACE_Event_Handler *eh,
     controlled (is_controlled)
 {
 }
-
-// ---------------------------------------------------------------------
-
-#if 0
-ACE_INLINE
-ACE_Dev_Poll_Ready_Set::ACE_Dev_Poll_Ready_Set (void)
-  : pfds (0),
-    nfds (0)
-{
-}
-#endif  /* 0 */
 
 // ---------------------------------------------------------------------
 

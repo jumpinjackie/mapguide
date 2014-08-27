@@ -2,8 +2,8 @@ eval '(exit $?0)' && eval 'exec perl -S $0 ${1+"$@"}'
     & eval 'exec perl -S $0 $argv:q'
     if 0;
 
-# $Id: regenerate_exports.pl 80826 2008-03-04 14:51:23Z wotte $
-# Goes through ACE/TAO and replaces 
+# $Id: regenerate_exports.pl 91813 2010-09-17 07:52:52Z johnnyw $
+# Goes through ACE/TAO and replaces
 
 use File::Find;
 use Cwd;
@@ -37,7 +37,7 @@ sub wanted
 
         if ($flag == 1) {
             print "Regenerating: $file\n";
-            if ($OSNAME eq 'MSWIn32') { 
+            if ($OSNAME eq 'MSWIn32') {
                 $file =~ s/\//\\/g;
             }
             system ("perl -S generate_export_file.pl $args $name > $file");

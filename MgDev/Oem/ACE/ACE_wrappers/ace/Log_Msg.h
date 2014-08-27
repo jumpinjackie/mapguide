@@ -4,7 +4,7 @@
 /**
  *  @file    Log_Msg.h
  *
- *  $Id: Log_Msg.h 88331 2009-12-24 09:54:25Z johnnyw $
+ *  $Id: Log_Msg.h 97662 2014-03-17 10:11:16Z johnnyw $
  *
  *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
  */
@@ -24,7 +24,6 @@
 #include "ace/Default_Constants.h"
 #include "ace/Log_Priority.h"
 #include "ace/os_include/os_limits.h"
-#include "ace/Atomic_Op.h"
 #include "ace/Synch_Traits.h"
 
 // The ACE_ASSERT macro used to be defined here, include ace/Assert.h
@@ -124,7 +123,6 @@
 // that #define STDERR or THREAD (e.g. LynxOS). We simply #undef
 // these macros as there is no way to save the macro definition using
 // the pre-processor. See Bugzilla Bug #299 for more info.
-
 #if defined (STDERR)
 # undef STDERR
 #endif /* STDERR */
@@ -145,6 +143,8 @@ class ACE_Log_Msg_Backend;
 // Forward declaration
 class ACE_Thread_Descriptor;
 class ACE_Log_Record;
+class ACE_Log_Category_TSS;
+template<typename M, typename T> class ACE_Atomic_Op;
 
 /**
  * @class ACE_Log_Msg
@@ -184,7 +184,7 @@ public:
   {
     /// Write messages to stderr.
     STDERR = 1,
-    /// Write messages to the local client logger deamon.
+    /// Write messages to the local client logger daemon.
     LOGGER = 2,
     /// Write messages to the ostream * stored in thread-specific
     /// storage.
@@ -405,27 +405,6 @@ public:
    */
   void thr_desc (ACE_Thread_Descriptor *td);
 
-#if defined (ACE_HAS_WIN32_STRUCTURAL_EXCEPTIONS) && defined(ACE_LEGACY_MODE)
-  // These functions are disabled without ACE_LEGACY_MODE
-  // because the *semantics* have changed (the objects are no longer
-  // TSS).
-  /// Get TSS exception action.
-  /// @note The action is no longer TSS, they are global!
-  ACE_SEH_EXCEPT_HANDLER seh_except_selector (void);
-
-  /// Set TSS exception action.
-  /// @note The action is no longer TSS, they are global!
-  ACE_SEH_EXCEPT_HANDLER seh_except_selector (ACE_SEH_EXCEPT_HANDLER);
-
-  /// Get TSS exception handler.
-  /// @note The handler is no longer TSS, they are global!
-  ACE_SEH_EXCEPT_HANDLER seh_except_handler (void);
-
-  /// Set TSS exception handler.
-  /// @note The handler is no longer TSS, they are global!
-  ACE_SEH_EXCEPT_HANDLER seh_except_handler (ACE_SEH_EXCEPT_HANDLER);
-#endif /* ACE_HAS_WIN32_STRUCTURAL_EXCEPTIONS && ACE_LEGACY_MODE */
-
   /// Stop tracing status on a per-thread basis...
   void stop_tracing (void);
 
@@ -529,12 +508,12 @@ public:
    *  - 'S': print out the appropriate signal message corresponding
    *         to var-argument, e.g., as done by strsignal()
    *  - 's': prints a ACE_TCHAR* character string (also see C and W)
-   *  - 'T': print timestamp in hour:minute:sec:usec format (plain option, 
-   *         i.e. without any flags, prints system supplied timestamp; 
+   *  - 'T': print timestamp in hour:minute:sec:usec format (plain option,
+   *         i.e. without any flags, prints system supplied timestamp;
    *         with '#' flag added expects ACE_Time_Value* in argument list)
    *  - 'D': print timestamp as Weekday Month day year hour:minute:sec.usec
-   *         (plain option, i.e. without any flags, prints system supplied 
-   *         timestamp; with '#' flag added expects ACE_Time_Value* in 
+   *         (plain option, i.e. without any flags, prints system supplied
+   *         timestamp; with '#' flag added expects ACE_Time_Value* in
    *         argument list)
    *  - 't': print thread id (1 if single-threaded)
    *  - 'u': print as unsigned int
@@ -561,7 +540,8 @@ public:
    */
   ssize_t log (const ACE_TCHAR *format,
                ACE_Log_Priority priority,
-               va_list argp);
+               va_list argp,
+               ACE_Log_Category_TSS* category=0);
 
   /// Log a custom built log record to the currently enabled logging
   /// sinks.
@@ -576,18 +556,19 @@ public:
   int log_hexdump (ACE_Log_Priority log_priority,
                    const char *buffer,
                    size_t size,
-                   const ACE_TCHAR *text = 0);
+                   const ACE_TCHAR *text = 0,
+                   ACE_Log_Category_TSS* category=0);
 
-  static void init_hook (ACE_OS_Log_Msg_Attributes &attributes
-# if defined (ACE_HAS_WIN32_STRUCTURAL_EXCEPTIONS)
-                         , ACE_SEH_EXCEPT_HANDLER selector = 0
-                         , ACE_SEH_EXCEPT_HANDLER handler = 0
-# endif /* ACE_HAS_WIN32_STRUCTURAL_EXCEPTIONS */
   /**
    * Init hook, create a Log_Msg_Attribute object, initialize its
    * attributes from the TSS Log_Msg and save the object in the
    * @a attributes argument
    */
+  static void init_hook (ACE_OS_Log_Msg_Attributes &attributes
+# if defined (ACE_HAS_WIN32_STRUCTURAL_EXCEPTIONS)
+                         , ACE_SEH_EXCEPT_HANDLER selector = 0
+                         , ACE_SEH_EXCEPT_HANDLER handler = 0
+# endif /* ACE_HAS_WIN32_STRUCTURAL_EXCEPTIONS */
                          );
 
   /**
@@ -655,7 +636,7 @@ private:
   /**
    * If we're running in the context of an ACE_Thread_Manager this
    * will point to the thread descriptor adapter which holds the
-   * thread descriptor of the thread.  This can be used to repidly
+   * thread descriptor of the thread.  This can be used to rapidly
    * access all thread data kept in ACE_Thread_Descriptor.
    */
   ACE_Thread_Descriptor *thr_desc_;
@@ -686,9 +667,6 @@ private:
 
   /// Name of the local host (used when printing messages).
   static const ACE_TCHAR *local_host_;
-
-  /// Process id of the current process.
-  static pid_t pid_;
 
   /// Options flags used to hold the logger flag options, e.g.,
   /// STDERR, LOGGER, OSTREAM, MSG_CALLBACK, etc.
@@ -765,9 +743,6 @@ ACE_TSS_CLEANUP_NAME (void *ptr);
 # endif /* ACE_HAS_THREAD_SPECIFIC_STORAGE || ACE_HAS_TSS_EMULATION */
 #endif /* ACE_MT_SAFE */
 
-#if defined(ACE_LEGACY_MODE)
-#include "ace/Log_Msg_Callback.h"
-#endif /* ACE_LEGACY_MODE */
 
 #if defined (__ACE_INLINE__)
 #include "ace/Log_Msg.inl"

@@ -4,7 +4,7 @@
 /**
  * @file Solaris_Network_Interface_Monitor.h
  *
- * $Id: Solaris_Network_Interface_Monitor.h 82219 2008-06-27 15:00:18Z parsons $
+ * $Id: Solaris_Network_Interface_Monitor.h 91743 2010-09-13 18:24:51Z johnnyw $
  *
  * @author Jeff Parsons <j.parsons@vanderbilt.edu>
  */
@@ -46,7 +46,7 @@ namespace ACE
       /// network information about the system. To get the specific
       /// value we want to monitor, we just vary the lookup string.
       Solaris_Network_Interface_Monitor (const ACE_TCHAR *lookup_str);
-      
+
       /// Platform-specific implementation.
       void update_i (void);
 
@@ -55,10 +55,10 @@ namespace ACE
 
     protected:
       ACE_UINT64 value_;
-      
+
     private:
       /// Common code.
-      
+
       void init (void);
       void access_kstats (ACE_UINT64 &which_member);
       int check_ks_module (const unsigned long ks_instance,
@@ -66,7 +66,7 @@ namespace ACE
                            const char *max_str,
                            ACE_UINT64 *value_array,
                            ACE_UINT64 &which_member);
-                            
+
 
     private:
       static const unsigned long MAX_LO_INTERFACES = 5UL;

@@ -1,19 +1,17 @@
-# $Id: platform_win32_interix.GNU 87578 2009-11-16 14:41:47Z olli $
+# -*- Makefile -*-
+# $Id: platform_win32_interix.GNU 93413 2011-02-20 11:06:19Z olli $
 
 # platform_win32_interix.GNU
 
 versioned_so ?= 0
 
-exceptions ?= 1
 debug ?= 1
 optimize ?= 1
 threads ?= 1
-pipes ?= 1
 
 CC              = gcc
 CXX             = g++
 
-CFLAGS          += -W -Wall -Wpointer-arith
 CPPFLAGS        += -D_ALL_SOURCE
 DCFLAGS         += -g
 DLD             = $(CXX)
@@ -26,7 +24,7 @@ ARFLAGS         = ruv
 RANLIB          = ranlib
 LN_S            = cp
 
-SOFLAGS         += $(CPPFLAGS) -shared
+SOFLAGS         += -shared
 SOBUILD         = $(COMPILE.cc) $(PIC) -o $(VSHDIR)$*.so $<
 PRELIB          = @echo
 
@@ -43,5 +41,3 @@ PLATFORM_X11_LDFLAGS=-L/usr/X11R6/lib
 # add -E to LDFLAGS if using GNU ld
 #
 #include $(ACE_ROOT)/include/makeinclude/platform_g++_common.GNU
-
-CCFLAGS         += $(CFLAGS) $(TEMPLATES_FLAG)

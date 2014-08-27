@@ -1,4 +1,4 @@
-// $Id: TTY_IO.cpp 86739 2009-09-21 07:33:22Z olli $
+// $Id: TTY_IO.cpp 97246 2013-08-07 07:10:20Z johnnyw $
 
 #include "ace/TTY_IO.h"
 #include "ace/OS_NS_errno.h"
@@ -10,10 +10,6 @@
 #elif  defined (ACE_HAS_TERMIO)
 # include <termio.h>
 #endif
-
-ACE_RCSID (ace,
-           TTY_IO,
-           "$Id: TTY_IO.cpp 86739 2009-09-21 07:33:22Z olli $")
 
 namespace
 {
@@ -29,6 +25,10 @@ namespace
 }
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
+
+ACE_TTY_IO::ACE_TTY_IO (void)
+{
+}
 
 ACE_TTY_IO::Serial_Params::Serial_Params (void)
 {

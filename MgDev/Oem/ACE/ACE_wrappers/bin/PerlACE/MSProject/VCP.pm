@@ -1,4 +1,4 @@
-# $Id: VCP.pm 80826 2008-03-04 14:51:23Z wotte $
+# $Id: VCP.pm 91813 2010-09-17 07:52:52Z johnnyw $
 
 package PerlACE::MSProject::VCP;
 
@@ -11,12 +11,12 @@ our @ISA = ("PerlACE::MSProject");
 
 # Constructor
 
-sub new  
+sub new
 {
     my $proto = shift;
     my $class = ref ($proto) || $proto;
     my $self = $class->SUPER::new (@_);
-    
+
     $self->{COMPILER} = "evc.com";
 
     bless ($self, $class);

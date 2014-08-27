@@ -1,11 +1,10 @@
-# $Id: platform_win32_icc.GNU 80826 2008-03-04 14:51:23Z wotte $
+# -*- Makefile -*-
+# $Id: platform_win32_icc.GNU 93405 2011-02-17 19:30:42Z olli $
 
 # debug = 1
 # optimize = 1
-# exceptions = 0
 
 winsock2 ?= 1
-exceptions ?= 1
 debug ?= 1
 optimize ?= 1
 threads ?= 1
@@ -44,4 +43,4 @@ OBJEXT     = obj
 SOFLAGS    += $(MODEL_FLAGS) $(CPPFLAGS)
 SOBUILD    = $(COMPILE.cc) $(PIC) -o $(VSHDIR)$*.so $<
 
-CCFLAGS += $(CFLAGS) $(TEMPLATES_FLAG)
+CCFLAGS += $(CFLAGS)

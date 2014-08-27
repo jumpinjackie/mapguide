@@ -1,10 +1,10 @@
 // -*- MPC -*-
-// $Id: ace_gl.mpb 85345 2009-05-14 19:42:45Z sowayaa $
+// $Id: ace_gl.mpb 93117 2011-01-20 12:11:28Z mcorino $
 
 project : ace_x11 {
   requires += gl
 
-  // Depends on configration from include/makeinclude/platform_*.GNU
+  // Depends on configuration from include/makeinclude/platform_*.GNU
   verbatim(gnuace,local) {
     CPPFLAGS += $(PLATFORM_GL_CPPFLAGS) $(PLATFORM_X11_CPPFLAGS)
     LIBS += $(PLATFORM_GL_LIBS) $(PLATFORM_X11_LIBS)

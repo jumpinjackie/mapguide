@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 
-# $Id: platform_sunos5_common.GNU 84055 2008-12-22 11:36:23Z johnnyw $
+# $Id: platform_sunos5_common.GNU 93597 2011-03-21 12:54:52Z johnnyw $
 
 # SunOS 5.x common settings
 
@@ -21,8 +21,7 @@ endif
 kstat ?= 1
 ifeq ($(kstat),1)
   # Unguard the raw monitor code and link the system lib.
-  CFLAGS        += -DACE_HAS_KSTAT
-  CCFLAGS       += -DACE_HAS_KSTAT
+  FLAGS_C_CC    += -DACE_HAS_KSTAT
   LIBS          += -lkstat
 endif
 

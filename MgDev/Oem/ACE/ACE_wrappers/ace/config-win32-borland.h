@@ -1,5 +1,5 @@
-// -*- C++ -*-
-//$Id: config-win32-borland.h 89292 2010-03-04 08:06:15Z johnnyw $
+//-*- C++ -*-
+//$Id: config-win32-borland.h 97641 2014-02-28 09:24:49Z johnnyw $
 
 // The following configuration file contains defines for Borland compilers.
 
@@ -11,7 +11,7 @@
 #error Use config-win32.h in config.h instead of this header
 #endif /* ACE_CONFIG_WIN32_H */
 
-#define ACE_HAS_CUSTOM_EXPORT_MACROS
+#define ACE_HAS_CUSTOM_EXPORT_MACROS 1
 #define ACE_Proper_Export_Flag __declspec (dllexport)
 #define ACE_Proper_Import_Flag __declspec (dllimport)
 #define ACE_EXPORT_SINGLETON_DECLARATION(T) template class __declspec (dllexport) T
@@ -33,12 +33,8 @@
 # define ACE_CC_MINOR_VERSION (__BORLANDC__ % 0x100)
 # define ACE_CC_BETA_VERSION (0)
 
-#ifndef ACE_USING_MCPP_PREPROCESSOR
-# if (__BORLANDC__ >= 0x620)
-#  define ACE_CC_PREPROCESSOR_ARGS "-q -Sl -o%s"
-# else
-#  define ACE_CC_PREPROCESSOR_ARGS "-q -P- -o%s"
-# endif
+#if (__BORLANDC__ >= 0x620)
+# define ACE_CC_PREPROCESSOR_ARGS "-q -Sl -o%s"
 #endif
 
 // Automatically define WIN32 macro if the compiler tells us it is our
@@ -54,7 +50,19 @@
 #  include /**/ <vcl.h>
 # endif
 
+#if defined (__clang__)
+# define ACE_HAS_BCC64
+#else
+# define ACE_HAS_BCC32
+#endif
+
+#if defined (ACE_HAS_BCC64)
+// Use 32bit pre processor because cpp64 doesn't have the same
+// options
 # define ACE_CC_PREPROCESSOR "CPP32.EXE"
+#else
+# define ACE_CC_PREPROCESSOR "CPP32.EXE"
+#endif
 
 # include "ace/config-win32-common.h"
 
@@ -62,8 +70,6 @@
 # define ACE_HAS_DIRENT
 
 #define ACE_USES_STD_NAMESPACE_FOR_STDC_LIB 1
-
-#define ACE_NEEDS_DL_UNDERSCORE
 
 #define ACE_LACKS_TERMIOS_H
 #define ACE_LACKS_NETINET_TCP_H
@@ -106,23 +112,22 @@
 #define ACE_LACKS_STRRECVFD
 #define ACE_USES_EXPLICIT_STD_NAMESPACE
 
-#define ACE_HAS_TIME_T_LONG_MISMATCH
+#if defined (ACE_HAS_BCC64)
+# define ACE_HAS_TIME_T_LONG_MISMATCH
+#endif
 
 #define ACE_EXPORT_NESTED_CLASSES 1
 #define ACE_HAS_CPLUSPLUS_HEADERS 1
-#define ACE_HAS_EXCEPTIONS
 #define ACE_HAS_NONCONST_SELECT_TIMEVAL
 #define ACE_HAS_SIG_ATOMIC_T
 #define ACE_HAS_STANDARD_CPP_LIBRARY 1
 #define ACE_HAS_STDCPP_STL_INCLUDES 1
 #define ACE_HAS_STRING_CLASS 1
-#define ACE_HAS_TEMPLATE_TYPEDEFS 1
 #define ACE_HAS_USER_MODE_MASKS 1
 #define ACE_LACKS_ACE_IOSTREAM 1
 #define ACE_LACKS_LINEBUFFERED_STREAMBUF 1
 #define ACE_HAS_NEW_NOTHROW
 #define ACE_TEMPLATES_REQUIRE_SOURCE 1
-#define ACE_SIZEOF_LONG_DOUBLE 10
 #define ACE_UINT64_FORMAT_SPECIFIER_ASCII "%Lu"
 #define ACE_INT64_FORMAT_SPECIFIER_ASCII "%Ld"
 #define ACE_USES_STD_NAMESPACE_FOR_STDCPP_LIB 1
@@ -137,30 +142,20 @@
 // You must link with the multi threaded libraries. Add -tWM to your
 // compiler options
 #  error You must link against multi-threaded libraries when using ACE (check your project settings)
-# endif /* !_MT && !ACE_HAS_WINCE */
+# endif /* !__MT__ */
 #endif /* ACE_MT_SAFE && ACE_MT_SAFE != 0 */
 
-#if (__BORLANDC__ < 0x620)
-# define ACE_LACKS_ISBLANK
-# define ACE_LACKS_ISWBLANK
-# define ACE_LACKS_PRAGMA_ONCE 1
+#if (__BORLANDC__ <= 0x680)
+# define ACE_LACKS_ISWCTYPE
+# define ACE_LACKS_ISCTYPE
 #endif
 
-#define ACE_LACKS_ISWCTYPE
-#define ACE_LACKS_ISCTYPE
-
-#if (__BORLANDC__ < 0x620)
-// Older Borland compilers can't handle assembly in inline methods or
-// templates (E2211). When we build for pentium optimized and we are inlining
-// then we disable inline assembly
-# if defined (ACE_HAS_PENTIUM) && defined(__ACE_INLINE__)
-#  define ACE_LACKS_INLINE_ASSEMBLY
-# endif
+#if (__BORLANDC__ >= 0x650) && (__BORLANDC__ <= 0x680)
+# define ACE_LACKS_STRTOK_R
 #endif
 
-#if (__BORLANDC__ == 0x621)
-// C++ Builder 2010 wcsncat seems broken
-# define ACE_LACKS_WCSNCAT
+#if (__BORLANDC__ <= 0x680)
+# define ACE_LACKS_LOCALTIME_R
 #endif
 
 #define ACE_WCSDUP_EQUIVALENT ::_wcsdup
@@ -170,5 +165,17 @@
 #define ACE_FILENO_EQUIVALENT(X) (_get_osfhandle (::_fileno (X)))
 #define ACE_HAS_ITOA 1
 
+#if defined (ACE_HAS_BCC64)
+# if (__BORLANDC__ < 0x680)
+#  define ACE_LACKS_SWAB
+# endif
+#endif
+
+#if defined (ACE_HAS_BCC32)
+# define ACE_SIZEOF_LONG_DOUBLE 10
+# define ACE_NEEDS_DL_UNDERSCORE
+#endif
+
 #include /**/ "ace/post.h"
 #endif /* ACE_CONFIG_WIN32_BORLAND_H */
+

@@ -4,7 +4,7 @@
 /**
  *  @file    DLL_Manager.h
  *
- *  $Id: DLL_Manager.h 80826 2008-03-04 14:51:23Z wotte $
+ *  $Id: DLL_Manager.h 96137 2012-09-10 13:58:10Z johnnyw $
  *
  *  @author Don Hinton <dhinton@ieee.org>
  */
@@ -45,7 +45,7 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
  * on some platforms.  It is refcounted and managed by
  * ACE_DLL_Manager, so there will only be a single instance of this
  * class for each dll loaded, no matter how many instances of ACE_DLL
- * an application has open.  Operations <open>, <close>, and <symbol>
+ * an application has open.  Operations open(), close(), and symbol()
  * have been implemented to help opening/closing and extracting symbol
  * information from a DLL, respectively.
  *
@@ -68,14 +68,44 @@ public:
   const ACE_TCHAR *dll_name () const;
 
   /**
-   * This method opens and dynamically links @a dll_name.  The default
-   * mode is <RTLD_LAZY>, which loads identifier symbols but not the
-   * symbols for functions, which are loaded dynamically on-demand.
-   * Other supported modes include: <RTLD_NOW>, which performs all
-   * necessary relocations when @a dll_name is first loaded and
-   * <RTLD_GLOBAL>, which makes symbols available for relocation
-   * processing of any other DLLs.  Returns -1 on failure and 0 on
-   * success.
+   * This method opens and dynamically links a library/DLL.
+   * @param dll_name  The filename or path of the DLL to load. ACE will
+   *        attempt to apply the platform's standard library/DLL prefixes
+   *        and suffixes, allowing a simple, unadorned name to be passed
+   *        regardless of platform. The set of name transforms is listed
+   *        below. A @i decorator is a platform's name designator for a debug
+   *        vs release build. For example, on Windows it is usually "d".
+   *        @li Prefix + name + decorator + suffix
+   *        @li Prefix + name + suffix
+   *        @li Name + decorator + suffix
+   *        @li Name + suffix
+   *        @li Name
+   *        Note that the transforms with @i decorator will be avoided if
+   *        ACE is built with the @c ACE_DISABLE_DEBUG_DLL_CHECK config macro.
+   *
+   *        @Note There is another mode for locating library/DLL files that
+   *        was used in old versions of ACE. The alternate method builds
+   *        more combinations of pathname by combining the names transforms
+   *        above with locations listed in the platform's standard "path"
+   *        locations (e.g., @c LD_LIBRARY_PATH). It can be enabled by building
+   *        ACE with the @c ACE_MUST_HELP_DLOPEN_SEARCH_PATH config macro.
+   *        Use of this option is discouraged since it avoids the standard
+   *        platform search options and security mechanisms.
+   *
+   * @param open_mode  Flags to alter the actions taken when loading the DLL.
+   *        The possible values are:
+   *        @li @c RTLD_LAZY (this the default): loads identifier symbols but
+   *            not the symbols for functions, which are loaded dynamically
+   *            on demand.
+   *        @li @c RTLD_NOW: performs all necessary relocations when
+   *            @a dll_name is first loaded
+   *        @li @c RTLD_GLOBAL: makes symbols available for relocation
+   *            processing of any other DLLs.
+   * @param handle If a value other than @c ACE_INVALID_HANDLE is supplied,
+   *        this object is assigned the specified handle instead of attempting
+   *        to open the specified @a dll_name.
+   * @retval -1 On failure
+   * @retval 0 On success.
    */
   int open (const ACE_TCHAR *dll_name,
             int open_mode,
@@ -94,13 +124,13 @@ public:
   /// ignore_errors flag to supress logging errors if symbol_name isn't
   /// found.  This is nice if you just want to probe a dll to see what's
   /// available, since missing functions in that case aren't really errors.
-  void *symbol (const ACE_TCHAR *symbol_name, int ignore_errors = 0);
+  void *symbol (const ACE_TCHAR *symbol_name, bool ignore_errors = false);
 
   /**
-   * Return the handle to the caller.  If @a become_owner is non-0 then
+   * Return the handle to the caller.  If @a become_owner is true then
    * caller assumes ownership of the handle so we decrement the retcount.
    */
-  ACE_SHLIB_HANDLE get_handle (int become_owner = 0);
+  ACE_SHLIB_HANDLE get_handle (bool become_owner = false);
 
 private:
 
@@ -110,20 +140,20 @@ private:
   /// to the caller.
   auto_ptr <ACE_TString> error (void);
 
-  // Builds array of DLL names to try to dlopen, based on platform
-  // and configured DLL prefixes/suffixes.
-  // Returns the array of names to try in try_names.
+  /// Builds array of DLL names to try to dlopen, based on platform
+  /// and configured DLL prefixes/suffixes.
+  /// Returns the array of names to try in try_names.
   void get_dll_names (const ACE_TCHAR *dll_name,
                       ACE_Array<ACE_TString> &try_names);
 
-  // Disallow copying and assignment since we don't handle them.
+  /// Disallow copying and assignment since we don't handle them.
   ACE_DLL_Handle (const ACE_DLL_Handle &);
   void operator= (const ACE_DLL_Handle &);
 
 private:
 
-  // Keep track of how many ACE_DLL objects have a reference to this
-  // dll.
+  /// Keep track of how many ACE_DLL objects have a reference to this
+  /// dll.
   sig_atomic_t refcount_;
 
   /// Name of the shared library.
@@ -218,16 +248,16 @@ protected:
   /// Destructor.
   ~ACE_DLL_Manager (void);
 
-  // Allocate handle_vector_.
+  /// Allocate handle_vector_.
   int open (int size);
 
-  // Close all open dlls and deallocate memory.
+  /// Close all open dlls and deallocate memory.
   int close (void);
 
-  // Find dll in handle_vector_.
+  /// Find dll in handle_vector_.
   ACE_DLL_Handle *find_dll (const ACE_TCHAR *dll_name) const;
 
-  // Applies strategy for unloading dll.
+  /// Applies strategy for unloading dll.
   int unload_dll (ACE_DLL_Handle *dll_handle, int force_unload = 0);
 
 private:
@@ -235,7 +265,7 @@ private:
   /// Close the singleton instance.
   static void close_singleton (void);
 
-  // Disallow copying and assignment since we don't handle these.
+  /// Disallow copying and assignment since we don't handle these.
   ACE_DLL_Manager (const ACE_DLL_Manager &);
   void operator= (const ACE_DLL_Manager &);
 

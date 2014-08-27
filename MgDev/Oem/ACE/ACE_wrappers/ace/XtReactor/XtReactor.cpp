@@ -1,11 +1,9 @@
-// $Id: XtReactor.cpp 88506 2010-01-13 03:27:48Z schmidt $
+// $Id: XtReactor.cpp 95528 2012-02-07 12:57:33Z johnnyw $
 
 #include "ace/XtReactor/XtReactor.h"
 
 #include "ace/SOCK_Acceptor.h"
 #include "ace/SOCK_Connector.h"
-
-ACE_RCSID(ace, XtReactor, "$Id: XtReactor.cpp 88506 2010-01-13 03:27:48Z schmidt $")
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -325,7 +323,7 @@ ACE_XtReactor::synchronize_XtInput(ACE_HANDLE handle)
   // Finally, add input handler.
   (*XtID)->id_ = ::XtAppAddInput (this->context_,
                                   (int) handle,
-                                  (XtPointer) condition,
+                                  reinterpret_cast <XtPointer> (condition),
                                   InputCallbackProc,
                                   (XtPointer) this);
 }
@@ -361,7 +359,7 @@ ACE_XtReactor::compute_Xt_condition(ACE_HANDLE handle)
   if (ACE_BIT_ENABLED (mask, ACE_Event_Handler::WRITE_MASK))
     ACE_SET_BITS (condition, XtInputWriteWinsock);
   // EXCEPT_MASK is not supported for WIN32. As this was
-  // already handled in register_handler_i, no check here. 
+  // already handled in register_handler_i, no check here.
 #endif /* !ACE_WIN32 */
 
   return condition;

@@ -1,13 +1,13 @@
 // -*- C++ -*-
 //
-// $Id: SSL_SOCK_Connector.cpp 82577 2008-08-09 17:43:11Z mitza $
+// $Id: SSL_SOCK_Connector.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "SSL_SOCK_Connector.h"
 
 #include "ace/OS_NS_errno.h"
 #include "ace/Handle_Set.h"
 #include "ace/INET_Addr.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Countdown_Time.h"
 #include "ace/Truncate.h"
 
@@ -16,10 +16,6 @@
 #if !defined (__ACE_INLINE__)
 #include "SSL_SOCK_Connector.inl"
 #endif /* __ACE_INLINE__ */
-
-ACE_RCSID (ACE_SSL,
-           SSL_SOCK_Connector,
-           "$Id: SSL_SOCK_Connector.cpp 82577 2008-08-09 17:43:11Z mitza $")
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -75,7 +71,7 @@ ACE_SSL_SOCK_Connector::ssl_connect (ACE_SSL_SOCK_Stream &new_stream,
   ACE_Countdown_Time countdown ((timeout == 0 ? 0 : &t));
 
   int status;
-  
+
   do
     {
       // These handle sets are used to set up for whatever SSL_connect
@@ -142,7 +138,7 @@ ACE_SSL_SOCK_Connector::ssl_connect (ACE_SSL_SOCK_Stream &new_stream,
             {
               status = -1;
             }
-            
+
           break;
 
         default:

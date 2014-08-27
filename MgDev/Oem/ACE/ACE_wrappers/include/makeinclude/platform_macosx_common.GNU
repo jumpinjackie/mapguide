@@ -1,13 +1,12 @@
-# $Id: platform_macosx_common.GNU 87538 2009-11-13 01:54:36Z wotte $
-# platform_macosx.GNU
+# -*- Makefile -*-
+# $Id: platform_macosx_common.GNU 94867 2011-10-22 02:08:14Z sowayaa $
+
 # support for Mac OS X 10.4 (Tiger)
 # By default, this uses the default compiler selected using gcc_select.
 
-cidl = 1
 boost = 1
 zzip = 1
 zlib = 1
-exceptions ?= 1
 threads ?= 1
 debug ?= 1
 optimize ?= 0
@@ -25,20 +24,15 @@ endif
 
 with_ld = macosx
 
-pipes ?= 1
-
-CFLAGS  += $(FLAGS_C_CC)
-
-CC              = gcc
-CXX             = g++
-CFLAGS          += -Wall -Wpointer-arith 
-
+CC              ?= gcc
+CXX             ?= g++
+DCCFLAGS        += -g
 DCFLAGS         += -g
-DLD				= $(CXX)
-LD				= $(CXX)
+DLD		= $(CXX)
+LD		= $(CXX)
 #LIBS += -lstdc++.6 -lSystem -lSystemStubs
 
-OCFLAGS		   += -O2 
+OCFLAGS		   += -O2
 RANLIB          = ranlib
 SOEXT			= dylib
 SOFLAGS		   += -dynamiclib
@@ -46,11 +40,13 @@ SOBUILD			= -o $(VSHDIR)$*.dylib $<
 
 # Test for template instantiation, add to SOFLAGS if versioned_so set,
 # add -E to LDFLAGS if using GNU ld
-#
-include $(ACE_ROOT)/include/makeinclude/platform_g++_common.GNU
+ifeq ($(findstring g++,$(CXX)),)#
+  include $(ACE_ROOT)/include/makeinclude/platform_g++_common.GNU
+else
+  include $(ACE_ROOT)/include/makeinclude/platform_clang_common.GNU
+endif
 
 LDFLAGS         += -flat_namespace
-CCFLAGS         += $(CFLAGS) $(TEMPLATES_FLAG)
 
 ifeq ($(universal),1)
   CFLAGS += -arch i386 -arch ppc

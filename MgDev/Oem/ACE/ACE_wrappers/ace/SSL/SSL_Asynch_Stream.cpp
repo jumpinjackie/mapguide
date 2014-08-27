@@ -1,8 +1,5 @@
+// $Id: SSL_Asynch_Stream.cpp 96985 2013-04-11 15:50:32Z huangh $
 #include "SSL_Asynch_Stream.h"
-
-ACE_RCSID (ACE_SSL,
-           SSL_Asynch_Stream,
-           "$Id: SSL_Asynch_Stream.cpp 84181 2009-01-16 22:37:49Z shuston $")
 
 // This only works on platforms with Asynchronous IO support.
 #if OPENSSL_VERSION_NUMBER > 0x0090581fL && ((defined (ACE_WIN32) && !defined (ACE_HAS_WINCE)) || (defined (ACE_HAS_AIO_CALLS)))
@@ -124,7 +121,7 @@ ACE_SSL_Asynch_Stream::ACE_SSL_Asynch_Stream (
   this->ssl_ = ::SSL_new (ctx->context ());
 
   if (this->ssl_ == 0)
-    ACE_ERROR
+    ACELIB_ERROR
       ((LM_ERROR,
         ACE_TEXT ("(%P|%t) ACE_SSL_Asynch_Stream %p\n"),
         ACE_TEXT ("- cannot allocate new SSL structure")
@@ -142,7 +139,7 @@ ACE_SSL_Asynch_Stream::~ACE_SSL_Asynch_Stream (void)
   // done.
   if (this->flags_ & SF_STREAM_OPEN)             // open
     if ((this->flags_ & SF_DELETE_ENABLE) == 0)  // but ..
-      ACE_DEBUG ((LM_DEBUG,
+      ACELIB_DEBUG ((LM_DEBUG,
                   ACE_TEXT("ACE_SSL_Asynch_Stream::DTOR-")
                   ACE_TEXT("possible access violation ")
                   ACE_TEXT("if proactor still handles events\n")));
@@ -240,21 +237,21 @@ ACE_SSL_Asynch_Stream::open (ACE_Handler & handler,
   ACE_MT (ACE_GUARD_RETURN (ACE_SYNCH_MUTEX, ace_mon, this->mutex_, -1));
 
   if (this->flags_ & SF_STREAM_OPEN)
-    ACE_ERROR_RETURN
+    ACELIB_ERROR_RETURN
       ((LM_ERROR,
         ACE_TEXT ("(%P|%t) ACE_SSL_Asynch_Stream::open() %p\n"),
         ACE_TEXT ("- already opened")),
        -1);
 
   if (this->ssl_ == 0)
-    ACE_ERROR_RETURN
+    ACELIB_ERROR_RETURN
       ((LM_ERROR,
         ACE_TEXT ("(%P|%t) ACE_SSL_Asynch_Stream::open() %p\n"),
         ACE_TEXT ("- SSL structure is absent")),
        -1);
 
   if (handle == ACE_INVALID_HANDLE)
-    ACE_ERROR_RETURN
+    ACELIB_ERROR_RETURN
       ((LM_ERROR,
         ACE_TEXT ("(%P|%t) ACE_SSL_Asynch_Stream::open() %p\n"),
         ACE_TEXT ("- invalid handle")),
@@ -283,7 +280,7 @@ ACE_SSL_Asynch_Stream::open (ACE_Handler & handler,
   this->bio_ = ACE_SSL_make_BIO (this);
 
   if (this->bio_ == 0)
-    ACE_ERROR_RETURN
+    ACELIB_ERROR_RETURN
       ((LM_ERROR,
         ACE_TEXT ("(%P|%t) ACE_SSL_Asynch_Stream::open() %p\n"),
         ACE_TEXT ("- cannot allocate new BIO structure")),
@@ -302,7 +299,7 @@ ACE_SSL_Asynch_Stream::open (ACE_Handler & handler,
       break;
 
     default:
-      ACE_ERROR_RETURN
+      ACELIB_ERROR_RETURN
         ((LM_ERROR,
           ACE_TEXT ("(%P|%t) ACE_SSL_Asynch_Stream::open() %p\n"),
           ACE_TEXT ("- invalid stream type")),
@@ -505,7 +502,7 @@ ACE_SSL_Asynch_Stream::do_SSL_handshake (void)
               return -1;
             }
         }
-      return 1;  
+      return 1;
     }
 
   if (this->flags_ & SF_REQ_SHUTDOWN)
@@ -524,7 +521,7 @@ ACE_SSL_Asynch_Stream::do_SSL_handshake (void)
       break;
 
     default:
-      ACE_ERROR_RETURN
+      ACELIB_ERROR_RETURN
         ((LM_ERROR,
           ACE_TEXT ("(%P|%t) ACE_SSL_Asynch_Stream %p\n"),
           ACE_TEXT ("- invalid stream type")),
@@ -789,7 +786,7 @@ void
 ACE_SSL_Asynch_Stream::print_error (int err_ssl,
                                     const ACE_TCHAR * pText)
 {
-  ACE_DEBUG ((LM_DEBUG,
+  ACELIB_DEBUG ((LM_DEBUG,
               ACE_TEXT("SSL-error:%d %s\n"),
               err_ssl,
               pText));
@@ -803,7 +800,7 @@ ACE_SSL_Asynch_Stream::print_error (int err_ssl,
     {
       ERR_error_string_n (lerr, buf, sizeof buf);
 
-      ACE_DEBUG ((LM_DEBUG, "%C\n", buf));
+      ACELIB_DEBUG ((LM_DEBUG, "%C\n", buf));
     }
 #endif  /* OPENSSL_VERSION_NUMBER */
 }
@@ -862,7 +859,7 @@ ACE_SSL_Asynch_Stream::ssl_bio_read (char * buf,
 
   if (this->bio_inp_msg_.size (len) != 0)
     {
-      ACE_ERROR
+      ACELIB_ERROR
         ((LM_ERROR,
           ACE_TEXT ("%N:%l ((%P|%t) ACE_SSL_Asynch_Stream %p\n"),
           ACE_TEXT ("error in ACE_Message_Block::size() ")
@@ -885,7 +882,7 @@ ACE_SSL_Asynch_Stream::ssl_bio_read (char * buf,
         ACE_SIGRTMIN   // default signal
         ) == -1)
     {
-      ACE_ERROR
+      ACELIB_ERROR
         ((LM_ERROR,
           ACE_TEXT ("%N:%l (%P|%t) ACE_SSL_Asynch_Stream %p\n"),
           ACE_TEXT ("attempt read failed")
@@ -926,7 +923,7 @@ ACE_SSL_Asynch_Stream::ssl_bio_write (const char * buf,
 
   if (this->bio_out_msg_.size (len) != 0)
     {
-      ACE_ERROR
+      ACELIB_ERROR
         ((LM_ERROR,
           ACE_TEXT ("%N:%l ((%P|%t) ACE_SSL_Asynch_Stream %p\n"),
           ACE_TEXT ("error in ACE_Message_Block::size() ")
@@ -943,7 +940,7 @@ ACE_SSL_Asynch_Stream::ssl_bio_write (const char * buf,
 
   if (this->bio_out_msg_.copy (buf, len) == -1)
     {
-      ACE_ERROR
+      ACELIB_ERROR
         ((LM_ERROR,
           ACE_TEXT ("%N:%l ((%P|%t) ACE_SSL_Asynch_Stream %p\n"),
           ACE_TEXT ("error in ACE_Message_Block::copy() ")
@@ -962,7 +959,7 @@ ACE_SSL_Asynch_Stream::ssl_bio_write (const char * buf,
         ACE_SIGRTMIN  // default signal
         ) == -1)
     {
-      ACE_ERROR
+      ACELIB_ERROR
         ((LM_ERROR,
           ACE_TEXT ("%N:%l ((%P|%t) ACE_SSL_Asynch_Stream %p\n"),
           ACE_TEXT ("attempt write failed")
@@ -1013,7 +1010,7 @@ ACE_SSL_Asynch_Stream::handle_write_stream (
           return;
         }
 
-      ACE_ERROR
+      ACELIB_ERROR
         ((LM_ERROR,
           ACE_TEXT ("(%P|%t) ACE_SSL_Asynch_Stream %p\n"),
           ACE_TEXT ("attempt write failed")

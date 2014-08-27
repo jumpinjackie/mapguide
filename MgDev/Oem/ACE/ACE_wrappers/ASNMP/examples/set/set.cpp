@@ -1,22 +1,17 @@
-// $Id: set.cpp 84565 2009-02-23 08:20:39Z johnnyw $
 
-// ============================================================================
-//
-// = LIBRARY
-//    asnmp
-//
-// = FILENAME
-//    set.cpp
-//
-// = DESCRIPTION
-//  Sample application demonstrating synchronous Snmp::set API
-//  to update an oid in an SNMP Version 1 agent.
-//
-// = AUTHOR
-//  Peter E. Mellquist original code
-//  Michael R MacFaden mrm@cisco.com rework API/ACE integration
-//
-// ============================================================================
+//=============================================================================
+/**
+ *  @file    set.cpp
+ *
+ *  $Id: set.cpp 93651 2011-03-28 08:49:11Z johnnyw $
+ *
+ *  Sample application demonstrating synchronous Snmp::set API
+ *  to update an oid in an SNMP Version 1 agent.
+ *
+ *
+ */
+//=============================================================================
+
 /*===================================================================
   Copyright (c) 1996
   Hewlett-Packard Company
@@ -39,8 +34,6 @@
 
 // FUZZ: disable check_for_streams_include
 #include "ace/streams.h"
-
-ACE_RCSID(set, set, "$Id: set.cpp 84565 2009-02-23 08:20:39Z johnnyw $")
 
 //
 // SNMPv1 Set Application

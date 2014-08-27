@@ -1,9 +1,8 @@
+// $Id: TkReactor.cpp 91368 2010-08-16 13:03:34Z mhengstmengel $
 #include "ace/TkReactor/TkReactor.h"
 
 #include "ace/SOCK_Acceptor.h"
 #include "ace/SOCK_Connector.h"
-
-ACE_RCSID(ace, TkReactor, "$Id: TkReactor.cpp 82723 2008-09-16 09:35:44Z johnnyw $")
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 

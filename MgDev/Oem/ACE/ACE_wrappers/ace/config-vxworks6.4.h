@@ -1,5 +1,5 @@
 //* -*- C++ -*- */
-// $Id: config-vxworks6.4.h 89494 2010-03-15 20:11:18Z olli $
+// $Id: config-vxworks6.4.h 97326 2013-09-11 07:52:09Z johnnyw $
 
 // The following configuration file is designed to work for VxWorks
 // 6.4 platforms using one of these compilers:
@@ -48,7 +48,7 @@
 #elif defined (__DCC__)
 # define ACE_HAS_STANDARD_CPP_LIBRARY 1
 # define ACE_TEMPLATES_REQUIRE_SOURCE
-#else  /* ! __GNUG__ && ! ghs && !__DCC__ */
+#else  /* ! __GNUG__ && !__DCC__ */
 #  ifdef __cplusplus  /* Let it slide for C compilers. */
 #    error unsupported compiler on VxWorks
 #  endif  /* __cplusplus */
@@ -202,6 +202,8 @@
 #define ACE_LACKS_SYMLINKS
 #define ACE_LACKS_ISCTYPE
 
+#define ACE_LACKS_PTHREAD_SCOPE_PROCESS
+
 #if defined __RTP__
   // We are building for RTP mode
   #if !defined (ACE_AS_STATIC_LIBS)
@@ -238,7 +240,6 @@
   #define ACE_LACKS_STDINT_H
   #define ACE_LACKS_UNAME
   #define ACE_LACKS_UTSNAME_T
-  #define ACE_LACKS_RAND_REENTRANT_FUNCTIONS
   #define ACE_LACKS_DLFCN_H
   #define ACE_LACKS_WAIT
   #define ACE_LACKS_WAITPID
@@ -336,11 +337,6 @@
 #if !defined (ACE_NTRACE)
 # define ACE_NTRACE 1
 #endif /* ACE_NTRACE */
-
-// By default, don't include RCS Id strings in object code.
-#if !defined (ACE_USE_RCSID)
-#define ACE_USE_RCSID 0
-#endif /* !ACE_USE_RCSID */
 
 #if defined (ACE_HAS_IP_MULTICAST)
 # define ACE_LACKS_PERFECT_MULTICAST_FILTERING 1

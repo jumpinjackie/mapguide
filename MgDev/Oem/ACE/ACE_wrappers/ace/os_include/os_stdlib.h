@@ -6,7 +6,7 @@
  *
  *  standard library definitions
  *
- *  $Id: os_stdlib.h 83948 2008-12-02 13:55:34Z jtc $
+ *  $Id: os_stdlib.h 97262 2013-08-09 08:32:10Z johnnyw $
  *
  *  @author Don Hinton <dhinton@dresystems.com>
  *  @author This code was originally in various places including ace/OS.h.
@@ -18,7 +18,7 @@
 
 #include /**/ "ace/pre.h"
 
-#include "ace/config-lite.h"
+#include /**/ "ace/config-lite.h"
 
 #if !defined (ACE_LACKS_PRAGMA_ONCE)
 # pragma once
@@ -44,18 +44,6 @@
 extern "C"
 {
 #endif /* __cplusplus */
-
-   typedef u_int ACE_RANDR_TYPE;
-#if defined (ACE_HAS_BROKEN_RANDR)
-   // The SunOS 5.4.X version of rand_r is inconsistent with the header
-   // files...
-   int rand_r (ACE_RANDR_TYPE seed);
-#else
-#endif /* ACE_HAS_BROKEN_RANDR */
-
-#if defined (DIGITAL_UNIX)
-  extern int _Prand_r (unsigned int *seedptr);
-#endif /* DIGITAL_UNIX */
 
 #if defined (ACE_LACKS_PUTENV_PROTOTYPE)
   int putenv (char *);

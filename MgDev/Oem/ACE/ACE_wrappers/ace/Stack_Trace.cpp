@@ -2,7 +2,7 @@
 /**
  *  @file   Stack_Trace.cpp
  *
- *  $Id: Stack_Trace.cpp 90041 2010-04-29 03:38:07Z cleeland $
+ *  $Id: Stack_Trace.cpp 96017 2012-08-08 22:18:09Z mitza $
  *
  *  @brief  Encapsulate string representation of stack trace.
  *
@@ -22,7 +22,7 @@
  *
  *  If you add support for a new platform, please add a bullet to the
  *  above list with durable references to the origins of your code.
- *    
+ *
  */
 //=============================================================================
 
@@ -30,8 +30,6 @@
 #include "ace/Min_Max.h"
 #include "ace/OS_NS_string.h"
 #include "ace/OS_NS_stdio.h"
-
-ACE_RCSID (ace, Stack_Trace, "$Id: Stack_Trace.cpp 90041 2010-04-29 03:38:07Z cleeland $")
 
 /*
   This is ugly, simply because it's very platform-specific.
@@ -122,7 +120,7 @@ struct ACE_Stack_Trace_stackstate
   size_t starting_frame;
 };
 
-//@TODO: Replace with a TSS-based pointer to avoid problems in multithreaded environs, 
+//@TODO: Replace with a TSS-based pointer to avoid problems in multithreaded environs,
 //       or use a mutex to serialize access to this.
 static ACE_Stack_Trace_stackstate* ACE_Stack_Trace_stateptr = 0;
 
@@ -199,7 +197,7 @@ ACE_Stack_Trace::generate_trace (ssize_t starting_frame_offset,
 
 // See memEdrLib.c in VxWorks RTP sources for an example of stack tracing.
 
-static STATUS ace_vx_rtp_pc_validate (INSTR *pc, TRC_OS_CTX *pOsCtx)
+static STATUS ace_vx_rtp_pc_validate (INSTR *pc, TRC_OS_CTX *)
 {
   return ALIGNED (pc, sizeof (INSTR)) ? OK : ERROR;
 }
@@ -224,7 +222,12 @@ ACE_Stack_Trace::generate_trace (ssize_t starting_frame_offset,
   TRC_OS_CTX osCtx;
   osCtx.stackBase = desc.td_pStackBase;
   osCtx.stackEnd = desc.td_pStackEnd;
+#if (ACE_VXWORKS < 0x690)
   osCtx.pcValidateRtn = reinterpret_cast<FUNCPTR> (ace_vx_rtp_pc_validate);
+#else
+  // reinterpret_cast causes an error
+  osCtx.pcValidateRtn = ace_vx_rtp_pc_validate;
+#endif
 
   char *fp = _WRS_FRAMEP_FROM_JMP_BUF (regs);
   INSTR *pc = _WRS_RET_PC_FROM_JMP_BUF (regs);
@@ -252,8 +255,19 @@ ACE_Stack_Trace::generate_trace (ssize_t starting_frame_offset,
           const char *fnName = "(no symbols)";
 
           static const int N_ARGS = 12;
-          int buf[N_ARGS];
-          int *pArgs = 0;
+#if (ACE_VXWORKS < 0x690)
+# define ACE_VX_USR_ARG_T int
+# define ACE_VX_ARG_FORMAT "%x"
+#else
+# define ACE_VX_USR_ARG_T _Vx_usr_arg_t
+# ifdef _WRS_CONFIG_LP64
+#  define ACE_VX_ARG_FORMAT "%lx"
+# else
+#  define ACE_VX_ARG_FORMAT "%x"
+# endif
+#endif
+          ACE_VX_USR_ARG_T buf[N_ARGS];
+          ACE_VX_USR_ARG_T *pArgs = 0;
           int numArgs =
             trcLibFuncs.lvlArgsGet (prevPc, prevFn, prevFp,
                                     buf, N_ARGS, &pArgs);
@@ -264,7 +278,7 @@ ACE_Stack_Trace::generate_trace (ssize_t starting_frame_offset,
           size_t len = ACE_OS::strlen (this->buf_);
           size_t space = SYMBUFSIZ - len - 1;
           char *cursor = this->buf_ + len;
-          size_t written = ACE_OS::snprintf (cursor, space, "%x %s",
+          size_t written = ACE_OS::snprintf (cursor, space, "%p %s",
                                              prevFn, fnName);
           cursor += written;
           space -= written;
@@ -274,7 +288,9 @@ ACE_Stack_Trace::generate_trace (ssize_t starting_frame_offset,
             {
               if (arg == 0) *cursor++ = '(', --space;
               written = ACE_OS::snprintf (cursor, space,
-                                          (arg < numArgs - 1) ? "%x, " : "%x",
+                                          (arg < numArgs - 1) ?
+                                          ACE_VX_ARG_FORMAT ", " :
+                                          ACE_VX_ARG_FORMAT,
                                           pArgs[arg]);
               cursor += written;
               space -= written;
@@ -509,7 +525,7 @@ typedef struct _dbghelp_functions
 
 
 #  pragma warning (push)
-#  pragma warning (disable:4706)  
+#  pragma warning (disable:4706)
 static bool load_dbghelp_library_if_needed (dbghelp_functions *pDbg)
 {
   //@TODO: See codeproject's StackWalker.cpp for the list of locations to
@@ -609,7 +625,7 @@ cs_operate(int (*func)(struct frame_state const *, void *), void *usrarg,
   ZeroMemory (&fs.sf, sizeof (fs.sf));
   fs.pDbg = &dbg;
   emptyStack ();   //Not sure what this should do, Chad?
-  
+
   CONTEXT c;
   ZeroMemory (&c, sizeof (CONTEXT));
   c.ContextFlags = CONTEXT_FULL;
@@ -711,7 +727,7 @@ ACE_Stack_Trace::generate_trace (ssize_t starting_frame_offset,
 void
 ACE_Stack_Trace::generate_trace (ssize_t, size_t)
 {
-// Call determine_starting_frame() on HP aCC build to resolve declared 
+// Call determine_starting_frame() on HP aCC build to resolve declared
 // method never referenced warning.
 #if defined (__HP_aCC)
   size_t starting_frame = determine_starting_frame (0, 0);

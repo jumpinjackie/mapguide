@@ -2,7 +2,7 @@ eval '(exit $?0)' && eval 'exec perl -S $0 ${1+"$@"}'
     & eval 'exec perl -S $0 $argv:q'
     if 0;
 
-# $Id: auto_run_tests.pl 84255 2009-01-28 20:26:54Z mitza $
+# $Id: auto_run_tests.pl 97634 2014-02-25 09:31:17Z johnnyw $
 # -*- perl -*-
 # This file is for running the run_test.pl scripts listed in
 # auto_run_tests.lst.
@@ -17,7 +17,7 @@ use English;
 use Getopt::Std;
 use Cwd;
 
-use Env qw(ACE_ROOT PATH TAO_ROOT CIAO_ROOT);
+use Env qw(ACE_ROOT PATH TAO_ROOT CIAO_ROOT DANCE_ROOT DDS_ROOT);
 
 if (!defined $TAO_ROOT && -d "$ACE_ROOT/TAO") {
     $TAO_ROOT = "$ACE_ROOT/TAO";
@@ -25,25 +25,35 @@ if (!defined $TAO_ROOT && -d "$ACE_ROOT/TAO") {
 if (!defined $CIAO_ROOT && -d "$ACE_ROOT/TAO/CIAO") {
     $CIAO_ROOT = "$ACE_ROOT/TAO/CIAO";
 }
+if (!defined $DANCE_ROOT && -d "$ACE_ROOT/TAO/DAnCE") {
+    $DANCE_ROOT = "$ACE_ROOT/TAO/DAnCE";
+}
+if (!defined $DDS_ROOT && -d "$ACE_ROOT/TAO/DDS") {
+    $DDS_ROOT = "$ACE_ROOT/TAO/DDS";
+}
 
 ################################################################################
 
-if (!getopts ('adl:os:r:tC') || $opt_h) {
+if (!getopts ('adl:os:r:tCd') || $opt_h) {
     print "auto_run_tests.pl [-a] [-h] [-s sandbox] [-o] [-t]\n";
     print "\n";
     print "Runs the tests listed in auto_run_tests.lst\n";
     print "\n";
     print "Options:\n";
-    print "    -a          ACE tests only\n";
-    print "    -c config   Run the tests for the <config> configuration\n";
-    print "    -h          display this help\n";
-    print "    -s sandbox  Runs each program using a sandbox program\n";
-    print "    -o          ORB test only\n";
-    print "    -t          TAO tests (other than ORB tests) only\n";
-    print "    -C          CIAO tests only\n";
-    print "    -Config cfg Run the tests for the <cfg> configuration\n";
-    print "    -l list     Load the list and run only those tests\n";
-    print "    -r dir      Root directory for running the tests\n";
+    print "    -a             ACE tests only\n";
+    print "    -c config      Run the tests for the <config> configuration\n";
+    print "    -h             Display this help\n";
+    print "    -s sandbox     Runs each program using a sandbox program\n";
+    print "    -o             ORB test only\n";
+    print "    -t             TAO tests (other than ORB tests) only\n";
+    print "    -C             CIAO and DAnCE tests only\n";
+    print "    -d             Run OpenDDS tests only\n";
+    print "    -z             Run debug mode, no tests executed\n";
+    print "    -Config cfg    Run the tests for the <cfg> configuration\n";
+    print "    -l list        Load the list and run only those tests\n";
+    print "    -r dir         Root directory for running the tests\n";
+    print "    -ExeSubDir dir Subdirectory for finding the executables,\n";
+
     print "\n";
     $ace_config_list = new PerlACE::ConfigList;
     $ace_config_list->load ($ACE_ROOT."/bin/ace_tests.lst");
@@ -60,6 +70,18 @@ if (!getopts ('adl:os:r:tC') || $opt_h) {
         $ciao_config_list = new PerlACE::ConfigList;
         $ciao_config_list->load ($CIAO_ROOT."/bin/ciao_tests.lst");
         print "CIAO Test Configs: " . $ciao_config_list->list_configs ()
+            . "\n";
+    }
+    if (defined $DANCE_ROOT) {
+        $dance_config_list = new PerlACE::ConfigList;
+        $dance_config_list->load ($DANCE_ROOT."/bin/dance_tests.lst");
+        print "DAnCE Test Configs: " . $dance_config_list->list_configs ()
+            . "\n";
+    }
+    if (defined $DDS_ROOT) {
+        $dds_config_list = new PerlACE::ConfigList;
+        $dds_config_list->load ($DDS_ROOT."/bin/dcps_tests.lst");
+        print "DDS Test Configs: " . $dds_config_list->list_configs ()
             . "\n";
     }
     exit (1);
@@ -81,6 +103,11 @@ push (@file_list, "$TAO_ROOT/bin/tao_other_tests.lst");
 
 if ($opt_C) {
 push (@file_list, "$CIAO_ROOT/bin/ciao_tests.lst");
+push (@file_list, "$DANCE_ROOT/bin/dance_tests.lst");
+}
+
+if ($opt_d) {
+push (@file_list, "$DDS_ROOT/bin/dcps_tests.lst");
 }
 
 if ($opt_r) {
@@ -102,6 +129,12 @@ if (scalar(@file_list) == 0) {
     }
     if (-d $CIAO_ROOT) {
         push (@file_list, "$CIAO_ROOT/bin/ciao_tests.lst");
+    }
+    if (-d $DANCE_ROOT) {
+        push (@file_list, "$DANCE_ROOT/bin/dance_tests.lst");
+    }
+    if (-d $DDS_ROOT) {
+        push (@file_list, "$DDS_ROOT/bin/dcps_tests.lst");
     }
 }
 
@@ -143,6 +176,11 @@ foreach my $test_lst (@file_list) {
 
         if (! $is_ace_test) {
             print "auto_run_tests: $test\n";
+            if ($config_list->check_config ('Coverity')) {
+              $ENV{COVERITY_TEST_NAME} = $test;
+              $ENV{COVERITY_SUITE_NAME} = $test_lst;
+              $ENV{COVERITY_TEST_SOURCE} = "$directory/$program";
+            }
         }
 
         my($orig_dir) = $directory;
@@ -152,13 +190,27 @@ foreach my $test_lst (@file_list) {
         if ($directory =~ m:^CIAO/(.*):) {
           $directory = $1;
         }
+        if ($directory =~ m:^DAnCE/(.*):) {
+          $directory = $1;
+        }
+        if ($directory =~ m:^DDS/(.*):) {
+          $directory = $1;
+        }
 
         $status = undef;
-        foreach my $path ($ACE_ROOT."/$directory",
-                          $TAO_ROOT."/$directory",
-                          $CIAO_ROOT."/$directory",
-                          $startdir."/$directory",
-                          $startdir."/$orig_dir") {
+        my @dirlist = ($ACE_ROOT."/$directory",
+                       $TAO_ROOT."/$directory",
+                       $CIAO_ROOT."/$directory",
+                       $DANCE_ROOT."/$directory",
+                       $DDS_ROOT."/$directory");
+        # when $opt_r is set make sure to *first* check the explicitly
+        # specified directory and only when nothing found there check
+        # the default dirs
+        if ($opt_r) {
+          unshift (@dirlist, $startdir."/$directory");
+          unshift (@dirlist, $startdir."/$orig_dir");
+        }
+        foreach my $path (@dirlist) {
           if (-d $path && ($status = chdir ($path))) {
             last;
           }
@@ -206,7 +258,7 @@ foreach my $test_lst (@file_list) {
 
         my $result = 0;
 
-        if (defined $opt_d) {
+        if (defined $opt_z) {
             print "Running: $cmd\n";
         }
         else {
@@ -221,6 +273,7 @@ foreach my $test_lst (@file_list) {
                 }
 
                 print "\nauto_run_tests_finished: $test Time:$time"."s Result:$result\n";
+                print "==============================================================================\n";
             }
         }
     }

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: SSL_SOCK_Acceptor.cpp 82723 2008-09-16 09:35:44Z johnnyw $
+// $Id: SSL_SOCK_Acceptor.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 
 #include "SSL_SOCK_Acceptor.h"
@@ -8,7 +8,7 @@
 #include "ace/Handle_Set.h"
 #include "ace/OS_Errno.h"
 #include "ace/OS_NS_errno.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Time_Value.h"
 #include "ace/Countdown_Time.h"
 #include "ace/Truncate.h"
@@ -16,10 +16,6 @@
 #if !defined (__ACE_INLINE__)
 #include "SSL_SOCK_Acceptor.inl"
 #endif /* __ACE_INLINE__ */
-
-ACE_RCSID (ACE_SSL,
-           SSL_SOCK_Acceptor,
-           "$Id: SSL_SOCK_Acceptor.cpp 82723 2008-09-16 09:35:44Z johnnyw $")
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 

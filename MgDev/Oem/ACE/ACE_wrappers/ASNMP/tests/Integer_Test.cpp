@@ -1,21 +1,18 @@
-// $Id: Integer_Test.cpp 80826 2008-03-04 14:51:23Z wotte $
 
-// ============================================================================
-//
-// = LIBRARY
-//    tests
-//
-// = FILENAME
-//    Integer_Test.cpp
-//
-// = DESCRIPTION
-//  Test all the member functions of the Integer class. An Object
-//  representing an ASN.1 Integer64 SMI 32 bit Integer SYNTAX.
-//
-// = AUTHOR
-//    Michael R. MacFaden <mrm@cisco.com>
-//
-// ============================================================================
+//=============================================================================
+/**
+ *  @file    Integer_Test.cpp
+ *
+ *  $Id: Integer_Test.cpp 93651 2011-03-28 08:49:11Z johnnyw $
+ *
+ *  Test all the member functions of the Integer class. An Object
+ *  representing an ASN.1 Integer64 SMI 32 bit Integer SYNTAX.
+ *
+ *
+ *  @author Michael R. MacFaden <mrm@cisco.com>
+ */
+//=============================================================================
+
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 Copyright 1997 Cisco Systems, Inc.
 
@@ -41,10 +38,6 @@ DAMAGES.
 #include "ace/OS_main.h"
 #include "asnmp/integer.h"
 #include "test_config.h"
-
-ACE_RCSID (tests,
-           Integer_Test,
-           "$Id: Integer_Test.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 #if !defined (ACE_WIN32)
 static long l = LONG_MAX, nl = LONG_MIN;  // limits.h

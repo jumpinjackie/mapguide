@@ -1,3 +1,4 @@
+// $Id: SSL_Context.cpp 97714 2014-04-11 21:35:27Z mesnier_p $
 #include "SSL_Context.h"
 
 #include "sslconf.h"
@@ -8,7 +9,7 @@
 
 #include "ace/Guard_T.h"
 #include "ace/Object_Manager.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Singleton.h"
 #include "ace/Synch_Traits.h"
 #include "ace/Truncate.h"
@@ -25,11 +26,6 @@
 #include <openssl/err.h>
 #include <openssl/rand.h>
 #include <openssl/safestack.h>
-
-ACE_RCSID (ACE_SSL,
-           SSL_Context,
-           "$Id: SSL_Context.cpp 85202 2009-04-28 18:52:57Z johnnyw $")
-
 
 namespace
 {
@@ -206,9 +202,6 @@ ACE_SSL_Context::ssl_library_fini (void)
   --ssl_library_init_count;
   if (ssl_library_init_count == 0)
     {
-      // Explicitly close the singleton
-      ACE_Unmanaged_Singleton<ACE_SSL_Context, ACE_SYNCH_MUTEX>::close();
-
       ::ERR_free_strings ();
       ::EVP_cleanup ();
 
@@ -220,7 +213,6 @@ ACE_SSL_Context::ssl_library_fini (void)
 
       delete [] this->locks_;
       this->locks_ = 0;
-
 #endif  /* ACE_HAS_THREADS */
     }
 }
@@ -244,6 +236,7 @@ ACE_SSL_Context::set_mode (int mode)
 
   switch (mode)
     {
+#if !defined (OPENSSL_NO_SSL2)
     case ACE_SSL_Context::SSLv2_client:
       method = ::SSLv2_client_method ();
       break;
@@ -253,6 +246,7 @@ ACE_SSL_Context::set_mode (int mode)
     case ACE_SSL_Context::SSLv2:
       method = ::SSLv2_method ();
       break;
+#endif /* OPENSSL_NO_SSL2 */
     case ACE_SSL_Context::SSLv3_client:
       method = ::SSLv3_client_method ();
       break;
@@ -280,6 +274,28 @@ ACE_SSL_Context::set_mode (int mode)
     case ACE_SSL_Context::TLSv1:
       method = ::TLSv1_method ();
       break;
+#ifdef TLS1_1_VERSION
+    case ACE_SSL_Context::TLSv1_1_client:
+      method = ::TLSv1_1_client_method ();
+      break;
+    case ACE_SSL_Context::TLSv1_1_server:
+      method = ::TLSv1_1_server_method ();
+      break;
+    case ACE_SSL_Context::TLSv1_1:
+      method = ::TLSv1_1_method ();
+      break;
+#endif
+#ifdef TLS1_2_VERSION
+    case ACE_SSL_Context::TLSv1_2_client:
+      method = ::TLSv1_2_client_method ();
+      break;
+    case ACE_SSL_Context::TLSv1_2_server:
+      method = ::TLSv1_2_server_method ();
+      break;
+    case ACE_SSL_Context::TLSv1_2:
+      method = ::TLSv1_2_method ();
+      break;
+#endif
     default:
       method = ::SSLv3_method ();
       break;
@@ -347,10 +363,12 @@ ACE_SSL_Context::load_trusted_ca (const char* ca_file,
       || mode_ == SSLv23_server
       || mode_ == TLSv1
       || mode_ == TLSv1_server
-      || mode_ == SSLv3
-      || mode_ == SSLv3_server
+#if !defined (OPENSSL_NO_SSL2)
       || mode_ == SSLv2
-      || mode_ == SSLv2_server)
+      || mode_ == SSLv2_server
+#endif /* !OPENSSL_NO_SSL2 */
+      || mode_ == SSLv3
+      || mode_ == SSLv3_server)
     {
       // Note: The STACK_OF(X509_NAME) pointer is a copy of the pointer in
       // the CTX; any changes to it by way of these function calls will
@@ -388,10 +406,10 @@ ACE_SSL_Context::load_trusted_ca (const char* ca_file,
 
       // SSL_add_dir_cert_subjects_to_stack is defined at 0.9.8a (but not
       // on OpenVMS or Mac Classic); it may be available earlier. Change
-      // this comparison if so.
+      // this comparison if so. It's still (1.0.1g) broken on windows too.
 #if defined (OPENSSL_VERSION_NUMBER) && (OPENSSL_VERSION_NUMBER >= 0x0090801fL)
 #  if !defined (OPENSSL_SYS_VMS) && !defined (OPENSSL_SYS_MACINTOSH_CLASSIC)
-#    if !defined (OPENSSL_SYS_WIN32) || (OPENSSL_VERSION_NUMBER > 0x0090807fL)
+#    if !defined (OPENSSL_SYS_WIN32)
 
       if (ca_dir != 0)
         {
@@ -412,7 +430,7 @@ ACE_SSL_Context::load_trusted_ca (const char* ca_file,
               return -1;
             }
         }
-#    endif /* !OPENSSL_SYS_WIN32 || OPENSSL_VERSION_NUMBER >= 0x0090807fL */
+#    endif /* !OPENSSL_SYS_WIN32 */
 #  endif /* !OPENSSL_SYS_VMS && !OPENSSL_SYS_MACINTOSH_CLASSIC */
 #endif /* OPENSSL_VERSION_NUMBER >= 0.9.8a release */
 
@@ -585,7 +603,7 @@ ACE_SSL_Context::report_error (unsigned long error_code)
   (void) ::ERR_error_string (error_code, error_string);
 #endif /* OPENSSL_VERSION_NUMBER >= 0x0090601fL */
 
-  ACE_ERROR ((LM_ERROR,
+  ACELIB_ERROR ((LM_ERROR,
               ACE_TEXT ("ACE_SSL (%P|%t) error code: %u - %C\n"),
               error_code,
               error_string));
@@ -646,12 +664,6 @@ ACE_SSL_Context::dh_params (const char *file_name,
 }
 
 // ****************************************************************
-
-#if defined (ACE_HAS_EXPLICIT_STATIC_TEMPLATE_MEMBER_INSTANTIATION)
-
-template ACE_Singleton<ACE_SSL_Context, ACE_SYNCH_MUTEX> *
-  ACE_Singleton<ACE_SSL_Context, ACE_SYNCH_MUTEX>::singleton_;
-
-#endif /* ACE_HAS_EXPLICIT_STATIC_TEMPLATE_MEMBER_INSTANTIATION */
+ACE_SINGLETON_TEMPLATE_INSTANTIATE(ACE_Unmanaged_Singleton, ACE_SSL_Context, ACE_SYNCH_MUTEX)
 
 ACE_END_VERSIONED_NAMESPACE_DECL

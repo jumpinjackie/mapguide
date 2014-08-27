@@ -1,14 +1,10 @@
-// $Id: Configuration.cpp 86348 2009-08-04 14:45:29Z shuston $
+// $Id: Configuration.cpp 96985 2013-04-11 15:50:32Z huangh $
 #include "ace/Configuration.h"
 #include "ace/Auto_Ptr.h"
 #include "ace/SString.h"
 #include "ace/OS_NS_string.h"
 #include "ace/OS_NS_strings.h"
 #include "ace/Tokenizer_T.h"
-
-// Can remove this when import_config and export_config are removed from
-// ACE_Configuration. They're deprecated at ACE 5.2.
-#include "ace/Configuration_Import_Export.h"
 
 #if !defined (ACE_LACKS_ACCESS)
 #  include "ace/OS_NS_unistd.h"
@@ -133,22 +129,6 @@ ACE_Configuration::expand_path (const ACE_Configuration_Section_Key& key,
 
   return 0;
 
-}
-
-// import_config and export_config are here for backward compatibility,
-// and have been deprecated.
-int
-ACE_Configuration::export_config (const ACE_TCHAR* filename)
-{
-  ACE_Registry_ImpExp exporter (*this);
-  return exporter.export_config (filename);
-}
-
-int
-ACE_Configuration::import_config (const ACE_TCHAR* filename)
-{
-  ACE_Registry_ImpExp importer (*this);
-  return importer.import_config (filename);
 }
 
 int
@@ -1309,7 +1289,7 @@ ACE_Configuration_Heap::open (const ACE_TCHAR* file_name,
 #if !defined (ACE_LACKS_ACCESS)
   // Now check if the backing store has been created successfully.
   if (ACE_OS::access (file_name, F_OK) != 0)
-    ACE_ERROR_RETURN ((LM_ERROR,
+    ACELIB_ERROR_RETURN ((LM_ERROR,
                        ACE_TEXT ("create_index\n")),
                       -1);
 #endif /* ACE_LACKS_ACCESS */
@@ -1340,7 +1320,7 @@ ACE_Configuration_Heap::create_index (void)
                                      section_index) == -1)
         {
           // Attempt to clean up.
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("create_index failed\n")));
           this->allocator_->remove ();
           return -1;
@@ -1652,7 +1632,7 @@ ACE_Configuration_Heap::remove_section (const ACE_Configuration_Section_Key& key
 
   // Now remove subkey from parent key
   ACE_Configuration_ExtId SubSExtId (sub_section);
-  SUBSECTION_HASH::ENTRY* subsection_entry;
+  SUBSECTION_HASH::ENTRY* subsection_entry = 0;
   if (((SUBSECTION_HASH*)ParentIntId.section_hash_map_)->
       find (SubSExtId, subsection_entry))
     return -1;

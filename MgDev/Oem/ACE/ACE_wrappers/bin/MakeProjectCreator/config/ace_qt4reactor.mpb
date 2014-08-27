@@ -1,8 +1,8 @@
 // -*- MPC -*-
-// $Id: ace_qt4reactor.mpb 89672 2010-03-29 06:59:12Z johnnyw $
+// $Id: ace_qt4reactor.mpb 94074 2011-05-20 22:18:11Z mitza $
 
 project : acelib, ace_qt4 {
   requires += ace_qt4reactor
-  after    += ACE_QtReactor
+  after    += ACE_Qt4Reactor
   libs     += ACE_QtReactor
 }

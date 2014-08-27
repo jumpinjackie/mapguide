@@ -1,10 +1,6 @@
-// $Id: FoxReactor.cpp 85914 2009-07-07 12:59:36Z olli $
+// $Id: FoxReactor.cpp 93117 2011-01-20 12:11:28Z mcorino $
 
 #include "ace/FoxReactor/FoxReactor.h"
-
-ACE_RCSID(ace, FoxReactor, "$Id: FoxReactor.cpp 85914 2009-07-07 12:59:36Z olli $")
-
-#include "ace/Synch_T.h"
 
 FXDEFMAP(ACE_FoxReactor) ACE_FoxReactorMap[]={
   FXMAPFUNCS(SEL_IO_READ,0,MAXKEY,ACE_FoxReactor::onFileEvents),
@@ -155,13 +151,13 @@ long ACE_FoxReactor::onTimerEvents(FXObject* /* ob */, FXSelector /* sel */, voi
 
 int
 ACE_FoxReactor::register_handler_i (ACE_HANDLE handle,
-                                 ACE_Event_Handler *handler,
-                                 ACE_Reactor_Mask mask)
+                                    ACE_Event_Handler *handler,
+                                    ACE_Reactor_Mask mask)
 {
   ACE_TRACE ("ACE_FoxReactor::register_handler_i");
 
-  int result = ACE_Select_Reactor::register_handler_i (handle,
-                                                       handler, mask);
+  int const result = ACE_Select_Reactor::register_handler_i (handle,
+                                                             handler, mask);
   if (result == -1)
     return -1;
 
@@ -183,15 +179,15 @@ ACE_FoxReactor::register_handler_i (ACE_HANDLE handle,
 
   if (condition != 0)
     {
-     fxapp->addInput(handle,condition,this,0);
+     fxapp->addInput(handle, condition, this, 0);
     }
   return 0;
 }
 
 int
 ACE_FoxReactor::register_handler_i (const ACE_Handle_Set &handles,
-                                 ACE_Event_Handler *handler,
-                                 ACE_Reactor_Mask mask)
+                                    ACE_Event_Handler *handler,
+                                    ACE_Reactor_Mask mask)
 {
   return ACE_Select_Reactor::register_handler_i (handles, handler, mask);
 }

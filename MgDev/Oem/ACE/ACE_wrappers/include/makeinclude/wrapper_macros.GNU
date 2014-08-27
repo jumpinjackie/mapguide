@@ -1,7 +1,7 @@
 # -*- Makefile -*-
 
 #----------------------------------------------------------------------------
-#  $Id: wrapper_macros.GNU 90650 2010-06-16 21:54:18Z mitza $
+#  $Id: wrapper_macros.GNU 96328 2012-11-22 09:22:08Z johnnyw $
 #----------------------------------------------------------------------------
 #
 #  ACE supports the following flags.  They can be enabled either on
@@ -26,11 +26,7 @@
 #                   to CPPFLAGS, PLATFORM_DMALLOC_LDFLAGS to LDFLAGS, and
 #                   PLATFORM_DMALLOC_LIBS to LIBS. For more information on
 #                   dmalloc, see http://dmalloc.com.
-#  exceptions       Enable exception handling (not supported by all platforms).
 #  fast             Enable -fast option, e.g., with Sun C++.
-#  include_env      Enable usage of CORBA::Environment parameters that is
-#                   compatible with TAO versions before 1.2.2.  Default:
-#                   disabled.  Has no effect when building with exceptions=0
 #  inline           Enable ACE inlining.  Some platforms enable inlining by
 #                   default, others do not. If platform_macros.GNU does not
 #                   set this, inline is enabled.
@@ -82,7 +78,10 @@
 #                   If versioned_so is 1 (enabled), the SOVERSION make
 #                   variable can also be set to specify the version info
 #                   to append to the name - it should have a leading '.' -
-#                   else it defaults to .ACE_MAJOR.ACE_MINOR.ACE_BETA.
+#                   else it defaults to .ACE_MAJOR.ACE_MINOR.ACE_BETA. If 2,
+#                   the version will be appended to the name but *before* the
+#                   $(SOEXT) - it should have a lead '-' - else it defaults to
+#                   -ACE_MAJOR.ACE_MINOR.ACE_BETA.
 #  wfmo             Build with wfmo support (Win32 only)
 #  winregistry      Build with windows registry support (Win32 only)
 #  winnt            Build WinNT-specific projects (Win32 only)
@@ -121,9 +120,6 @@
 #  DLD          Name of dynamic linker
 #  LD           Name of linker
 #  IDL          Name of the CORBA IDL compiler
-#  TEMPLATES_FLAG
-#               Flag to pass to the compiler to control the instantiation of
-# 		templates.
 #  INSBIN       Binary (executable) installation directory
 #  INSINC       Include file installation directory
 #  INSMAN       Manpage installation directory
@@ -161,6 +157,9 @@
 #  PLATFORM_SCTP_LIBS
 #               Platform libraries required for SCTP
 #  PRELINK      Executable to precede linking, such as quantify
+#  PREPROCESS.c Command to preprocess C
+#  PREPROCESS.cc
+#               Command to preprocess C++
 #  PURELINK     If set, contains purify executable as well as all options
 #  PURE_CACHE_BASE_DIR
 #               The base directory in which Pure products will produce
@@ -197,14 +196,16 @@ endif # static_libs
 
 #### Set up the build ACE version in case the platform_macros.GNU wants it.
 ifeq (cmd,$(findstring cmd,$(SHELL)))
-ACE_MAJOR_VERSION := $(shell awk "/ACE_MAJOR_VERSION/ { print $$3}" ${ACE_ROOT}/ace/Version.h)
-ACE_MINOR_VERSION := $(shell awk "/ACE_MINOR_VERSION/ { print $$3}" ${ACE_ROOT}/ace/Version.h)
-ACE_BETA_VERSION := $(shell awk "/ACE_BETA_VERSION/ { print $$3}" ${ACE_ROOT}/ace/Version.h)
+  ACE_MAJOR_VERSION := $(shell awk "/ACE_MAJOR_VERSION/ { print $$3}" ${ACE_ROOT}/ace/Version.h)
+  ACE_MINOR_VERSION := $(shell awk "/ACE_MINOR_VERSION/ { print $$3}" ${ACE_ROOT}/ace/Version.h)
+  ACE_BETA_VERSION := $(shell awk "/ACE_BETA_VERSION/ { print $$3}" ${ACE_ROOT}/ace/Version.h)
 else
-ACE_MAJOR_VERSION := $(shell awk '/ACE_MAJOR_VERSION/ { print $$3}' ${ACE_ROOT}/ace/Version.h)
-ACE_MINOR_VERSION := $(shell awk '/ACE_MINOR_VERSION/ { print $$3}' ${ACE_ROOT}/ace/Version.h)
-ACE_BETA_VERSION := $(shell awk '/ACE_BETA_VERSION/ { print $$3}' ${ACE_ROOT}/ace/Version.h)
+  ACE_MAJOR_VERSION := $(shell awk '/ACE_MAJOR_VERSION/ { print $$3}' ${ACE_ROOT}/ace/Version.h)
+  ACE_MINOR_VERSION := $(shell awk '/ACE_MINOR_VERSION/ { print $$3}' ${ACE_ROOT}/ace/Version.h)
+  ACE_BETA_VERSION := $(shell awk '/ACE_BETA_VERSION/ { print $$3}' ${ACE_ROOT}/ace/Version.h)
 endif
+
+ACE_VERSION = $(ACE_MAJOR_VERSION).$(ACE_MINOR_VERSION).$(ACE_BETA_VERSION)
 
 # Define some variables to silence warnings
 SHR_FILTER ?=
@@ -219,7 +220,6 @@ endif # alternate_platform_macros
 
 # Define some variables to silence warnings
 GHS ?=
-CHORUS ?=
 AIX_TEMPLATE_HACK ?=
 
 # $(ACE_PLATFORM_CONFIG) is used in dependency rules and corresponds to the
@@ -234,10 +234,9 @@ ifeq ($(threads),0)
 endif # threads
 
 ####
-#### Defaults are exceptions on (1), fast off (0), threads on (1)
+#### Defaults are fast off (0), threads on (1)
 #### and versioned_so on (1).
 ####
-exceptions ?= 1
 fast ?= 0
 versioned_so ?= 1
 use_dep_libs ?= 1
@@ -245,12 +244,24 @@ threads ?= 1
 symlinks ?= relative
 link_groups ?= 0
 mcpp ?= 0
+root_is_symlink ?= 0
 
 SOVERSION ?=
 SONAME ?=
 
-ifeq ($(PWD),)
-  PWD=$(shell pwd)
+ifeq ($(root_is_symlink),1)
+  ifneq ($(symlinks),relative)
+    warn_output:=$(warning WARNING: You should really use relative library symlinks with symlinked root)
+  endif
+  use_pwd_call = 1
+  ### use 'real' pwd command from shell; internal make command resolves symlinks
+  ifeq ($(PWD),)
+    PWD=$(shell $(SHELL) -c pwd)
+  endif
+else
+  ifeq ($(PWD),)
+    PWD=$(shell pwd)
+  endif
 endif
 
 ifeq ($(ACE_MKDIR),)
@@ -281,14 +292,14 @@ IDL_CLIENT_HDR_EXT ?= C.h
 IDL_CLIENT_INL_EXT ?= C.inl
 IDL_CLIENT_SRC_EXT ?= C.cpp
 IDL_SERVER_HDR_EXT ?= S.h
-IDL_SERVER_INL_EXT ?= S.inl
 IDL_SERVER_SRC_EXT ?= S.cpp
 IDL_SERVER_THDR_EXT ?= S_T.h
 IDL_SERVER_TINL_EXT ?= S_T.inl
 IDL_SERVER_TSRC_EXT ?= S_T.cpp
+IDL_GEN_FILES_DIR ?= .
 
 ifeq (default,$(origin LEX))
-LEX = flex
+  LEX = flex
 endif
 
 EXEEXT ?=
@@ -453,7 +464,7 @@ endif
 # NOTE: VLDLIBS is defined below, in case it is overridden for static-
 #       or shared-only builds.
 ifeq (default,$(origin YACC))
-YACC = bison
+  YACC = bison
 endif
 
 #----------------------------------------------------------------------------
@@ -488,10 +499,6 @@ endif # debug
 
 ifeq ($(debug),)
   CPPFLAGS += -DACE_NDEBUG
-# Disable the RCSID for release/non-debug builds.
-  ifeq (,$(findstring ACE_USE_RCSID,$(CPPFLAGS)))
-    CPPFLAGS += -DACE_USE_RCSID=0
-  endif
 else
   CFLAGS  += $(DCFLAGS)
   CCFLAGS += $(DCCFLAGS)
@@ -682,23 +689,10 @@ endif
 ec_typed_events ?= 1
 zlib ?= 1
 
-ifeq ($(exceptions),0)
-    #### Disable the default exception handling of g++ >= 2.8.0.
-    ifneq ($(ACE_GNUG_ON_UNIXWARE),)
-      CCFLAGS += -fcheck-new
-    else
-      CCFLAGS += -fno-exceptions -fcheck-new
-    endif # ! ACE_GNUG_ON_UNIXWARE
-else  # exceptions
-  CPPFLAGS += -DACE_HAS_EXCEPTIONS
-  ifndef include_env
-    include_env ?=
-  endif
-  ifeq ($(include_env),1)
-    CPPFLAGS += -DACE_ENV_BKWD_COMPAT
-  endif
-  ACE_MAKE_OPTIONS += exceptions
-endif # exceptions
+valgrind ?=
+ifeq ($(valgrind),1)
+  CPPFLAGS += -DACE_HAS_VALGRIND
+endif
 
 profile ?=
 ifeq ($(profile),0)
@@ -856,8 +850,7 @@ pipes ?= 0
 # of intermediate files. This can be disabled by setting pipes to 0 in the
 # platform_macros.GNU file.
 ifeq ($(pipes),1)
-   CFLAGS += -pipe
-   CCFLAGS += -pipe
+   FLAGS_C_CC += -pipe
 endif # pipes
 
 # RMCast is turned on by default
@@ -937,30 +930,33 @@ PTDIRS ?=
 PRELINK ?=
 POSTLINK ?=
 PURELINK ?=
-TEMPLATES_FLAG ?=
 MVCMD ?=
+PREPROCESS_OPT ?= -E
+PREPROCESS_SUFFIX ?= i
 
-COMPILE.c       = $(CC) $(CFLAGS) $(CPPFLAGS) -c
-COMPILE.cc      = $(CXX) $(CCFLAGS) $(CPPFLAGS) $(PTDIRS) -c
+COMPILE.c       = $(CC) $(CFLAGS) $(FLAGS_C_CC) $(CPPFLAGS) -c
+COMPILE.cc      = $(CXX) $(CCFLAGS) $(FLAGS_C_CC) $(CPPFLAGS) $(PTDIRS) -c
+PREPROCESS.c   ?= $(CC) $(PREPROCESS_OPT) $(CFLAGS) $(CPPFLAGS)
+PREPROCESS.cc  ?= $(CXX) $(PREPROCESS_OPT) $(CCFLAGS) $(CPPFLAGS)
 RC ?=
 
 COMPILE.rc      = $(RC) $(RCFLAGS)
 COMPILE-NO_DASH_G.cc = `echo $(COMPILE.cc) | sed 's/-g //'`
 # 960905 Marius Kjeldahl <marius@funcom.com>
 # Added the line below to be used for compiling executable shared objects
-COMPILEESO.cc   = $(CXX) $(CCFLAGS) $(CPPFLAGS) $(PTDIRS)
+COMPILEESO.cc   = $(CXX) $(CCFLAGS) $(FLAGS_C_CC) $(CPPFLAGS) $(PTDIRS)
 
 ifeq ($(LINK.c),override)
   LINK.c  = $(LINK.c.override)
 else
-  LINK.c  = $(PURELINK) $(PRELINK) $(LD) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) \
+  LINK.c  = $(PURELINK) $(PRELINK) $(LD) $(CFLAGS) $(FLAGS_C_CC) $(CPPFLAGS) $(LDFLAGS) \
             $(LDLIBS) $(LIBS)
 endif # LINK.c.override
 
 ifeq ($(LINK.cc),override)
   LINK.cc = $(LINK.cc.override)
 else
-  LINK.cc = $(PURELINK) $(PRELINK) $(LD) $(CCFLAGS) $(CPPFLAGS) $(PTDIRS)
+  LINK.cc = $(PURELINK) $(PRELINK) $(LD) $(CCFLAGS) $(FLAGS_C_CC) $(CPPFLAGS) $(PTDIRS)
 endif # LINK.cc.override
 
 ifeq ($(SOLINK.cc),override)

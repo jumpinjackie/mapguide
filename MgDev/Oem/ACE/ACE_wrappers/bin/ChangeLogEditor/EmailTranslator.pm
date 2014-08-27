@@ -5,6 +5,7 @@ package EmailTranslator;
 #                 an email address.
 # Author        : Chad Elliott
 # Create Date   : 6/18/2002
+# $Id: EmailTranslator.pm 94634 2011-10-06 12:58:32Z johnnyw $
 # ************************************************************
 
 # ************************************************************

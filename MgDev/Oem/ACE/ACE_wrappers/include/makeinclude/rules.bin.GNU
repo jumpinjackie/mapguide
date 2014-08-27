@@ -1,7 +1,7 @@
 # -*- Makefile -*-
 
 #----------------------------------------------------------------------------
-#       $Id: rules.bin.GNU 83758 2008-11-14 22:29:43Z shuston $
+#       $Id: rules.bin.GNU 93359 2011-02-11 11:33:12Z mcorino $
 #
 #       Build binaries
 #       GNU version
@@ -34,7 +34,6 @@ PSRC += $(addsuffix .cpp, $(CLEANUP_BIN))
 
 CLEANUP_INSTALL += $(CLEANUP_BIN:%=$(INSBIN)/%$(VAR)$(EXEEXT))
 
-CHORUSLINK ?=
 VXWORKSLINK ?=
 using_aix_vacpp ?=
 

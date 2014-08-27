@@ -3,7 +3,7 @@
 /**
  *  @file   config-win32.h
  *
- *  $Id: config-win32.h 85057 2009-04-08 10:59:58Z msmit $
+ *  $Id: config-win32.h 97246 2013-08-07 07:10:20Z johnnyw $
  *
  *  @brief  Microsoft Windows configuration file.
  *
@@ -18,8 +18,6 @@
 #ifndef ACE_CONFIG_WIN32_H
 #define ACE_CONFIG_WIN32_H
 #include /**/ "ace/pre.h"
-#define ACE_HAS_IPV6
-#define ACE_USES_IPV4_IPV6_MIGRATION
 
 // NOTE: Please do not add anything besides #include's here.  Put other stuff
 //       (definitions, etc.) in the included headers
@@ -29,28 +27,27 @@
 // but instead let it be included at the appropriate place in
 // config-win32-borland.h.
 #if !defined (__BORLANDC__)
-#    include "ace/config-win32-common.h"
+#  include "ace/config-win32-common.h"
 #endif /* !__BORLANDC__ */
 
 // Include the config-win32-* file specific to the compiler
 #if defined (__BORLANDC__)
-#    include "ace/config-win32-borland.h"
+#  include "ace/config-win32-borland.h"
 #elif defined (_MSC_VER)
-#    include "ace/config-win32-msvc.h"
-#elif defined (ghs)
-#    include "ace/config-win32-ghs.h"
+#  include "ace/config-win32-msvc.h"
 #elif defined (ACE_HAS_CEGCC) //need to be prior to MINGW32
-#    include "ace/config-win32-cegcc.h"
+#  include "ace/config-win32-cegcc.h"
 #elif defined (__MINGW32__)
+#  if defined (__MINGW64_VERSION_MAJOR)
+#    include "ace/config-win32-mingw64.h"
+#  else
 #    include "ace/config-win32-mingw.h"
+#  endif
 #elif defined (__DMC__)
-#    include "ace/config-win32-dmc.h"
+#  include "ace/config-win32-dmc.h"
 #else
-#    error Compiler is not supported
+#  error Compiler is not supported
 #endif
-
-// gethostbyaddr does not handle IPv6-mapped-IPv4 addresses
-#define ACE_HAS_BROKEN_GETHOSTBYADDR_V4MAPPED
 
 #include /**/ "ace/post.h"
 #endif /* ACE_CONFIG_WIN32_H */

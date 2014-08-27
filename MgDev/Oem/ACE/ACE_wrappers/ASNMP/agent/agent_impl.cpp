@@ -1,4 +1,4 @@
-// $Id: agent_impl.cpp 80826 2008-03-04 14:51:23Z wotte $
+// $Id: agent_impl.cpp 91670 2010-09-08 18:02:26Z johnnyw $
 
 // implement a prototype SNMP Agent using ASNMP and ACE
 
@@ -8,8 +8,6 @@
 #include <ace/Signal.h>
 
 #include "agent_impl.h"
-
-ACE_RCSID(agent, agent_impl, "$Id: agent_impl.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 agent_impl::agent_impl(unsigned short port, const char *rd, const char *wr) :
 sagent(port)

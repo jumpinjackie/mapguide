@@ -1,5 +1,5 @@
 /* -*- C++ -*- */
-// $Id: config-sunos5.4-sunc++-4.x.h 87250 2009-10-28 11:57:17Z olli $
+// $Id: config-sunos5.4-sunc++-4.x.h 93573 2011-03-17 07:53:03Z olli $
 
 // The following configuration file is designed to work for SunOS 5.4
 // platforms using the SunC++ 4.0.x compiler.
@@ -25,9 +25,6 @@
 
 // Sun has the wrong prototype for sendmsg.
 #define ACE_HAS_NONCONST_SENDMSG
-
-// The SunOS 5.x version of rand_r is inconsistent with the header files...
-#define ACE_HAS_BROKEN_RANDR
 
 // Platform supports system configuration information.
 #define ACE_HAS_SYS_SYSTEMINFO_H
@@ -176,11 +173,9 @@
 #define ACE_HAS_GPERF
 #define ACE_HAS_DIRENT
 
-#  if defined (ACE_HAS_EXCEPTIONS)
-     // If exceptions are enabled and we are using Sun/CC then
-     // <operator new> throws an exception instead of returning 0.
-#    define ACE_NEW_THROWS_EXCEPTIONS
-#  endif /* ACE_HAS_EXCEPTIONS */
+// If exceptions are enabled and we are using Sun/CC then
+// <operator new> throws an exception instead of returning 0.
+#define ACE_NEW_THROWS_EXCEPTIONS
 
 #include /**/ "ace/post.h"
 #endif /* ACE_CONFIG_H */

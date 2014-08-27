@@ -1,5 +1,5 @@
 /* -*- C++ -*- */
-// $Id: config-win32-common.h 88567 2010-01-15 10:21:49Z olli $
+// $Id: config-win32-common.h 97304 2013-08-29 21:14:43Z shuston $
 
 
 #ifndef ACE_CONFIG_WIN32_COMMON_H
@@ -10,13 +10,27 @@
 #error Use config-win32.h in config.h instead of this header
 #endif /* ACE_CONFIG_WIN32_H */
 
-
 // Windows Mobile (CE) stuff is primarily further restrictions to what's
 // in the rest of this file. Also, it defined ACE_HAS_WINCE, which is used
 // in this file.
 #if defined (_WIN32_WCE)
 #  include "ace/config-WinCE.h"
 #endif /* _WIN32_WCE */
+
+#if defined(__MINGW32__)
+// When using the --std=c++0x option with MinGW the compiler omits defining
+// the following required macros (at least with the GCC 4.6.2 version)
+// So we define them ourselves here.
+# if !defined(WIN32)
+#   define _stdcall __attribute__((__stdcall__))
+#   define _cdecl __attribute__((__cdecl__))
+#   define _thiscall __attribute__((__thiscall__))
+#   define _fastcall __attribute__((__fastcall__))
+#   define WIN32 1
+#   define WINNT 1
+#   define i386 1
+# endif
+#endif
 
 // Complain if WIN32 is not already defined.
 #if !defined (WIN32) && !defined (ACE_HAS_WINCE)
@@ -26,6 +40,12 @@
 #define ACE_WIN32
 #if defined (_WIN64) || defined (WIN64)
 #  define ACE_WIN64
+
+// MPC template adds _AMD64_ but user projects not generated using MPC
+// may want to use _AMD64_ as well. Ensure it's there in all cases.
+#  ifndef _AMD64_
+#    define _AMD64_
+#  endif
 
 // Use 64-bit file offsets by default in the WIN64 case, similar to
 // what 64-bit UNIX systems do.
@@ -114,7 +134,10 @@
 //  #endif
 
 // Define the special export macros needed to export symbols outside a dll
-#if !defined(__BORLANDC__) && !defined (ACE_HAS_CUSTOM_EXPORT_MACROS)
+#if !defined (ACE_HAS_CUSTOM_EXPORT_MACROS) || (ACE_HAS_CUSTOM_EXPORT_MACROS == 0)
+#if defined (ACE_HAS_CUSTOM_EXPORT_MACROS)
+#undef ACE_HAS_CUSTOM_EXPORT_MACROS
+#endif
 #define ACE_HAS_CUSTOM_EXPORT_MACROS 1
 #define ACE_Proper_Export_Flag __declspec (dllexport)
 #define ACE_Proper_Import_Flag __declspec (dllimport)
@@ -162,11 +185,6 @@
 #endif /* ACE_HAS_NONSTATIC_OBJECT_MANAGER */
 
 #define ACE_HAS_GPERF
-
-// By default, don't include RCS Id strings in object code.
-#if !defined (ACE_USE_RCSID)
-# define ACE_USE_RCSID 0
-#endif /* ! ACE_USE_RCSID */
 
 // ---------------- platform features or lack of them -------------
 
@@ -229,6 +247,10 @@
 #define ACE_LACKS_SEEKDIR
 #define ACE_LACKS_TELLDIR
 
+#define ACE_LACKS_CLOCKID_T
+#define ACE_LACKS_CLOCK_REALTIME
+#define ACE_LACKS_CLOCK_MONOTONIC
+
 /* LACKS gid/pid/sid/uid facilities */
 #define ACE_LACKS_GETPGID
 #define ACE_LACKS_GETPPID
@@ -260,6 +282,7 @@
 #define ACE_LACKS_MODE_MASKS
 #define ACE_LACKS_PTHREAD_H
 #define ACE_LACKS_PWD_FUNCTIONS
+#define ACE_LACKS_RAND_R
 #define ACE_LACKS_READLINK
 #define ACE_LACKS_RLIMIT
 #define ACE_LACKS_SBRK
@@ -267,6 +290,7 @@
 #define ACE_LACKS_SEMBUF_T
 #define ACE_LACKS_SIGACTION
 #define ACE_LACKS_SIGSET
+#define ACE_LACKS_SIGSET_T
 #define ACE_LACKS_SOCKETPAIR
 #define ACE_LACKS_SUSECONDS_T
 #define ACE_LACKS_USECONDS_T
@@ -302,12 +326,11 @@
 #define ACE_MKDIR_LACKS_MODE
 
 #define ACE_SIZEOF_LONG_LONG 8
-// Green Hills Native x86 does not support __int64 keyword
-// Neither does mingw32.
-#if !defined (ACE_LACKS_LONGLONG_T) && !defined (__MINGW32__)
+
+#if !defined (__MINGW32__)
 #define ACE_INT64_TYPE  signed __int64
 #define ACE_UINT64_TYPE unsigned __int64
-#endif /* (ghs) */
+#endif
 
 #if defined (__MINGW32__)
 #define ACE_INT64_TYPE  signed long long
@@ -323,40 +346,12 @@
 #define ACE_HAS_WTOI
 #define ACE_HAS_WTOL
 
-// Compiler/platform correctly calls init()/fini() for shared
-// libraries. - applied for DLLs ?
-//define ACE_HAS_AUTOMATIC_INIT_FINI
-
-// Platform supports POSIX O_NONBLOCK semantics.
-//define ACE_HAS_POSIX_NONBLOCK
-
-// Platform contains <poll.h>.
-//define ACE_HAS_POLL
-
-// Platform supports the /proc file system.
-//define ACE_HAS_PROC_FS
-
 // Platform supports the rusage struct.
 #define ACE_HAS_GETRUSAGE
-
-// Compiler/platform supports SVR4 signal typedef.
-//define ACE_HAS_SVR4_SIGNAL_T
-
-// Platform provides <sys/filio.h> header.
-//define ACE_HAS_SYS_FILIO_H
-
-// Platform supports ACE_TLI timod STREAMS module.
-//define ACE_HAS_TIMOD_H
-
-// Platform supports ACE_TLI tiuser header.
-//define ACE_HAS_TIUSER_H
 
 // Platform provides ACE_TLI function prototypes.
 // For Win32, this is not really true, but saves a lot of hassle!
 #define ACE_HAS_TLI_PROTOTYPES
-
-// Platform supports ACE_TLI.
-//define ACE_HAS_TLI
 
 // I'm pretty sure NT lacks these
 #define ACE_LACKS_UNIX_DOMAIN_SOCKETS
@@ -608,8 +603,13 @@
 #define ACE_LACKS_ALPHASORT
 #define ACE_LACKS_MKSTEMP
 #define ACE_LACKS_LSTAT
-// Looks like Win32 has a non-const swab function
+// Looks like Win32 has a non-const swab function, and it takes the
+// non-standard int len (rather than ssize_t).
 #define ACE_HAS_NONCONST_SWAB
+#define ACE_HAS_INT_SWAB
+
+// gethostbyaddr does not handle IPv6-mapped-IPv4 addresses
+#define ACE_HAS_BROKEN_GETHOSTBYADDR_V4MAPPED
 
 // If we are using winsock2 then the SO_REUSEADDR feature is broken
 // SO_REUSEADDR=1 behaves like SO_REUSEPORT=1. (SO_REUSEPORT is an

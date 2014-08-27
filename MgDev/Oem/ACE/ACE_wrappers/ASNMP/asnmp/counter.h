@@ -5,7 +5,7 @@
 /**
  *  @file    counter.h
  *
- *  $Id: counter.h 80826 2008-03-04 14:51:23Z wotte $
+ *  $Id: counter.h 94442 2011-09-07 09:14:41Z johnnyw $
  *
  *  Class definition for SMI Counter32 class.
  *
@@ -50,30 +50,30 @@
  */
 class ASNMP_Export Counter32 : public SnmpUInt32
 {
-  public:
-     /// constructor with a value
-     Counter32( const unsigned long i = 0);
+public:
+  /// constructor with a value
+  Counter32( const unsigned long i = 0);
 
-     /// copy constructor
-     Counter32( const Counter32 &c);
+  /// copy constructor
+  Counter32( const Counter32 &c);
 
-     /// syntax type
-     SmiUINT32 get_syntax();
+  /// syntax type
+  SmiUINT32 get_syntax();
 
-     /// create a new instance of this Value
-     SnmpSyntax *clone() const;
+  /// create a new instance of this Value
+  SnmpSyntax *clone() const;
 
-     /// copy an instance of this Value
-     SnmpSyntax& operator=( SnmpSyntax &val);
+  /// copy an instance of this Value
+  SnmpSyntax& operator=( SnmpSyntax &val);
 
-     /// overloaded assignment
-     Counter32& operator=( const Counter32 &uli);
+  /// overloaded assignment
+  Counter32& operator=( const Counter32 &uli);
 
-     /// overloaded assignment
-     Counter32& operator=( const unsigned long i);
+  /// overloaded assignment
+  Counter32& operator=( const unsigned long i);
 
-     /// otherwise, behave like an unsigned long int
-     operator unsigned long();
+  /// otherwise, behave like an unsigned long int
+  operator unsigned long();
 };
 
 #endif // COUNTER_

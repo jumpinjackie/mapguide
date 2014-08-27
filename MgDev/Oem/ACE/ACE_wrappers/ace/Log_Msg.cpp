@@ -1,4 +1,4 @@
-// $Id: Log_Msg.cpp 88331 2009-12-24 09:54:25Z johnnyw $
+// $Id: Log_Msg.cpp 97662 2014-03-17 10:11:16Z johnnyw $
 
 // We need this to get the status of ACE_NTRACE...
 #include "ace/config-all.h"
@@ -40,12 +40,13 @@
 #include "ace/Log_Record.h"
 #include "ace/Recursive_Thread_Mutex.h"
 #include "ace/Stack_Trace.h"
+#include "ace/Atomic_Op.h"
 
 #if !defined (__ACE_INLINE__)
 #include "ace/Log_Msg.inl"
 #endif /* __ACE_INLINE__ */
 
-ACE_RCSID(ace, Log_Msg, "$Id: Log_Msg.cpp 88331 2009-12-24 09:54:25Z johnnyw $")
+
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -56,16 +57,7 @@ ACE_ALLOC_HOOK_DEFINE(ACE_Log_Msg)
 # if defined (ACE_HAS_THREAD_SPECIFIC_STORAGE) || \
     defined (ACE_HAS_TSS_EMULATION)
 
-#if defined (ACE_MVS)
-  static ACE_thread_key_t the_log_msg_tss_key =
-  #if !defined(_LP64)
-      { '\0','\0','\0','\0' };
-  #else
-      { '\0','\0','\0','\0','\0','\0','\0','\0' };
-  #endif
-#else
-  static ACE_thread_key_t the_log_msg_tss_key = 0;
-#endif /* defined (ACE_MVS) */
+static ACE_thread_key_t the_log_msg_tss_key = 0;
 
 ACE_thread_key_t *log_msg_tss_key (void)
 {
@@ -200,7 +192,6 @@ ACE_Log_Msg_Manager::get_lock (void)
   // This function is called by the first thread to create an ACE_Log_Msg
   // instance.  It makes the call while holding a mutex, so we don't have
   // to grab another one here.
-
   if (ACE_Log_Msg_Manager::lock_ == 0)
     {
       ACE_NO_HEAP_CHECK;
@@ -401,7 +392,7 @@ ACE_Log_Msg::instance (void)
 }
 
 // Not inlined to help prevent having to include OS.h just to
-// get ACE_DEBUG, et al, macros.
+// get ACELIB_DEBUG, et al, macros.
 int
 ACE_Log_Msg::last_error_adapter (void)
 {
@@ -445,9 +436,6 @@ const ACE_TCHAR *ACE_Log_Msg::program_name_ = 0;
 /// Default is to use stderr.
 u_long ACE_Log_Msg::flags_ = ACE_Log_Msg::STDERR;
 
-/// Process id of the current process.
-pid_t ACE_Log_Msg::pid_ = -2;
-
 /// Current offset of msg_[].
 ptrdiff_t ACE_Log_Msg::msg_off_ = 0;
 
@@ -489,7 +477,8 @@ ACE_Log_Msg::close (void)
         reinterpret_cast<ACE_thread_mutex_t *>
   (ACE_OS_Object_Manager::preallocated_object
    [ACE_OS_Object_Manager::ACE_LOG_MSG_INSTANCE_LOCK]);
-     ACE_OS::thread_mutex_lock (lock);
+      if (lock)
+        ACE_OS::thread_mutex_lock (lock);
 
      if (ACE_Log_Msg::key_created_)
        {
@@ -521,7 +510,8 @@ ACE_Log_Msg::close (void)
          ACE_Log_Msg::key_created_ = false;
        }
 
-     ACE_OS::thread_mutex_unlock (lock);
+     if (lock)
+       ACE_OS::thread_mutex_unlock (lock);
     }
 #endif /* (ACE_HAS_THREAD_SPECIFIC_STORAGE || ACE_HAS_TSS_EMULATION) && ACE_MT_SAFE */
 }
@@ -560,7 +550,6 @@ ACE_Log_Msg::sync (const ACE_TCHAR *prog_name)
       }
     }
 
-  ACE_Log_Msg::pid_ = ACE_OS::getpid ();
   ACE_Log_Msg::msg_off_ = 0;
 }
 
@@ -977,7 +966,8 @@ ACE_Log_Msg::log (ACE_Log_Priority log_priority,
 ssize_t
 ACE_Log_Msg::log (const ACE_TCHAR *format_str,
                   ACE_Log_Priority log_priority,
-                  va_list argp)
+                  va_list argp,
+                  ACE_Log_Category_TSS* category)
 {
   ACE_TRACE ("ACE_Log_Msg::log");
   // External decls.
@@ -1015,6 +1005,8 @@ ACE_Log_Msg::log (const ACE_TCHAR *format_str,
                              ACE_OS::gettimeofday (),
                              this->getpid ());
 
+  log_record.category(category);
+
   // bp is pointer to where to put next part of logged message.
   // bspace is the number of characters remaining in msg_.
   ACE_TCHAR *bp = const_cast<ACE_TCHAR *> (this->msg ());
@@ -1033,10 +1025,14 @@ ACE_Log_Msg::log (const ACE_TCHAR *format_str,
   bool abort_prog = false;
   int exit_value = 0;
 
-  if (ACE_BIT_ENABLED (ACE_Log_Msg::flags_, ACE_Log_Msg::VERBOSE))
+  // Retrieve the flags in a local variable on the stack, it is
+  // accessed by multiple threads and within this operation we
+  // check it several times, so this way we only lock once
+  u_long flags = this->flags ();
+
+  if (ACE_BIT_ENABLED (flags, ACE_Log_Msg::VERBOSE))
     {
       // Prepend the program name onto this message
-
       if (ACE_Log_Msg::program_name_ != 0)
         {
           for (const ACE_TCHAR *s = ACE_Log_Msg::program_name_;
@@ -1050,27 +1046,30 @@ ACE_Log_Msg::log (const ACE_TCHAR *format_str,
     }
 
   if (timestamp_ > 0)
-  {
-     ACE_TCHAR day_and_time[35];
-     const ACE_TCHAR *s = 0;
-     if (timestamp_ == 1)
-     {
-        // Print just the time
-        s = ACE::timestamp (day_and_time, sizeof day_and_time / sizeof (ACE_TCHAR), 1);
-     }
-     else
-     {
-        // Print time and date
-        ACE::timestamp (day_and_time, sizeof day_and_time / sizeof (ACE_TCHAR));
-        s = day_and_time;
-     }
+    {
+      ACE_TCHAR day_and_time[27];
+      const ACE_TCHAR *s = 0;
+      if (timestamp_ == 1)
+        {
+          // Print just the time
+          s = ACE::timestamp (day_and_time,
+                              sizeof (day_and_time) / sizeof (ACE_TCHAR),
+                              true);
+        }
+      else
+        {
+          // Print time and date
+          ACE::timestamp (day_and_time,
+                          sizeof (day_and_time) / sizeof (ACE_TCHAR));
+          s = day_and_time;
+        }
 
-     for (; bspace > 1 && (*bp = *s) != '\0'; ++s, --bspace)
-       ++bp;
+      for (; bspace > 1 && (*bp = *s) != '\0'; ++s, --bspace)
+        ++bp;
 
-     *bp++ = '|';
-     --bspace;
-  }
+      *bp++ = '|';
+      --bspace;
+    }
 
   while (*format_str != '\0' && bspace > 0)
     {
@@ -1105,7 +1104,8 @@ ACE_Log_Msg::log (const ACE_TCHAR *format_str,
           const ACE_TCHAR *abort_str = ACE_TEXT ("Aborting...");
           const ACE_TCHAR *start_format = format_str;
           ACE_TCHAR format[128]; // Converted format string
-          ACE_TCHAR *fp;         // Current format pointer
+          ACE_OS::memset (format, '\0', 128); // Set this string to known values.
+          ACE_TCHAR *fp = 0;         // Current format pointer
           int       wp = 0;      // Width/precision extracted from args
           bool      done = false;
           bool      skip_nul_locate = false;
@@ -1606,7 +1606,7 @@ ACE_Log_Msg::log (const ACE_TCHAR *format_str,
                   {
                     ptrdiff_t const osave = ACE_Log_Msg::msg_off_;
 
-                    if (ACE_BIT_ENABLED (ACE_Log_Msg::flags_,
+                    if (ACE_BIT_ENABLED (flags,
                                          ACE_Log_Msg::SILENT) &&
                         bspace > 1)
                       {
@@ -1617,7 +1617,7 @@ ACE_Log_Msg::log (const ACE_TCHAR *format_str,
 
                     (*va_arg (argp, PTF))();
 
-                    if (ACE_BIT_ENABLED (ACE_Log_Msg::flags_,
+                    if (ACE_BIT_ENABLED (flags,
                                          ACE_Log_Msg::SILENT) &&
                         bspace > (1 + ACE_OS::strlen (bp)))
                       {
@@ -1646,21 +1646,23 @@ ACE_Log_Msg::log (const ACE_TCHAR *format_str,
                   }
 
                 case 'D': // Format the timestamp in format:
-                          // Weekday Month day year hour:minute:sec.usec
+                          // yyyy-mm-dd hour:minute:sec.usec
+                          // This is a maximum of 27 characters
+                          // including terminator.
                   {
-                    ACE_TCHAR day_and_time[35];
-                    // Did we find the flag indicating a time value argument 
+                    ACE_TCHAR day_and_time[27];
+                    // Did we find the flag indicating a time value argument
                     if (format[1] == ACE_TEXT('#'))
                     {
                       ACE_Time_Value* time_value = va_arg (argp, ACE_Time_Value*);
                       ACE::timestamp (*time_value,
                                       day_and_time,
-                                      sizeof day_and_time / sizeof (ACE_TCHAR));
+                                      sizeof (day_and_time) / sizeof (ACE_TCHAR));
                     }
                     else
                     {
                       ACE::timestamp (day_and_time,
-                                      sizeof day_and_time / sizeof (ACE_TCHAR));
+                                      sizeof (day_and_time) / sizeof (ACE_TCHAR));
                     }
 #if !defined (ACE_WIN32) && defined (ACE_USES_WCHAR)
                     ACE_OS::strcpy (fp, ACE_TEXT ("ls"));
@@ -1677,23 +1679,23 @@ ACE_Log_Msg::log (const ACE_TCHAR *format_str,
                   }
 
                 case 'T': // Format the timestamp in
-                          // hour:minute:sec:usec format.
+                          // hour:minute:sec.usec format.
                   {
-                    ACE_TCHAR day_and_time[35];
+                    ACE_TCHAR day_and_time[27];
 #if !defined (ACE_WIN32) && defined (ACE_USES_WCHAR)
                     ACE_OS::strcpy (fp, ACE_TEXT ("ls"));
 #else
                     ACE_OS::strcpy (fp, ACE_TEXT ("s"));
 #endif
-                    // Did we find the flag indicating a time value argument 
+                    // Did we find the flag indicating a time value argument
                     if (format[1] == ACE_TEXT('#'))
                     {
                       ACE_Time_Value* time_value = va_arg (argp, ACE_Time_Value*);
                       if (can_check)
                         this_len = ACE_OS::snprintf
                           (bp, bspace, format,
-                          ACE::timestamp (*time_value, 
-                                         day_and_time, 
+                          ACE::timestamp (*time_value,
+                                         day_and_time,
                                          sizeof day_and_time / sizeof (ACE_TCHAR)));
                       else
                         this_len = ACE_OS::sprintf
@@ -1728,34 +1730,10 @@ ACE_Log_Msg::log (const ACE_TCHAR *format_str,
                       ACE_OS::sprintf (bp,
                                        format,
                                        static_cast <unsigned> (ACE_Thread::self ()));
-#elif defined (DIGITAL_UNIX)
-                  ACE_OS::strcpy (fp, ACE_TEXT ("u"));
-                  {
-                    int id =
-#  if defined (ACE_HAS_THREADS)
-                      pthread_getselfseq_np ();
-#  else
-                      ACE_Thread::self ();
-#  endif /* ACE_HAS_THREADS */
-
-                      if (can_check)
-                        this_len = ACE_OS::snprintf (bp, bspace, format, id);
-                      else
-                        this_len = ACE_OS::sprintf (bp, format, id);
-                  }
 #else
                   ACE_hthread_t t_id;
-                  ACE_Thread::self (t_id);
+                  ACE_OS::thr_self (t_id);
 
-#  if defined (ACE_MVS) || defined (ACE_TANDEM_T1248_PTHREADS)
-                  // MVS's pthread_t is a struct... yuck. So use the ACE 5.0
-                  // code for it.
-                  ACE_OS::strcpy (fp, ACE_TEXT ("u"));
-                  if (can_check)
-                    this_len = ACE_OS::snprintf (bp, bspace, format, t_id);
-                  else
-                    this_len = ACE_OS::sprintf (bp, format, t_id);
-#  else
                   // Yes, this is an ugly C-style cast, but the correct
                   // C++ cast is different depending on whether the t_id
                   // is an integral type or a pointer type. FreeBSD uses
@@ -1768,7 +1746,6 @@ ACE_Log_Msg::log (const ACE_TCHAR *format_str,
                   else
                     this_len = ACE_OS::sprintf
                       (bp, format, (unsigned long)t_id);
-#  endif /* ACE_MWS || ACE_TANDEM_T1248_PTHREADS */
 
 #endif /* ACE_WIN32 */
                   ACE_UPDATE_COUNT (bspace, this_len);
@@ -1995,21 +1972,6 @@ ACE_Log_Msg::log (const ACE_TCHAR *format_str,
                   break;
 
                 case 'Q':
-#if defined (ACE_LACKS_LONGLONG_T) || defined (ACE_LACKS_UNSIGNEDLONGLONG_T)
-                  {
-                    // This relies on the ACE_U_LongLong storage layout.
-                    ACE_UINT32 hi = va_arg (argp, ACE_UINT32);
-                    ACE_UINT32 lo = va_arg (argp, ACE_UINT32);
-                    if (hi > 0)
-                      this_len = ACE_OS::sprintf (bp,
-                                                  "0x%lx%0*lx",
-                                                  hi,
-                                                  2 * sizeof lo,
-                                                  lo);
-                    else
-                      this_len = ACE_OS::sprintf (bp, "0x%lx", lo);
-                  }
-#else  /* ! ACE_LACKS_LONGLONG_T */
                   {
                     const ACE_TCHAR *fmt = ACE_UINT64_FORMAT_SPECIFIER;
                     ACE_OS::strcpy (fp, &fmt[1]);    // Skip leading %
@@ -2022,15 +1984,10 @@ ACE_Log_Msg::log (const ACE_TCHAR *format_str,
                                                   format,
                                                   va_arg (argp, ACE_UINT64));
                   }
-#endif /* ! ACE_LACKS_LONGLONG_T || ACE_LACKS_UNSIGNEDLONGLONG_T */
                   ACE_UPDATE_COUNT (bspace, this_len);
                   break;
 
                 case 'q':
- #if defined (ACE_LACKS_LONGLONG_T)
-                   // No implementation available yet, no ACE_INT64 emulation
-                   // available yet
- #else  /* ! ACE_LACKS_LONGLONG_T */
                    {
                      const ACE_TCHAR *fmt = ACE_INT64_FORMAT_SPECIFIER;
                      ACE_OS::strcpy (fp, &fmt[1]);    // Skip leading %
@@ -2043,7 +2000,6 @@ ACE_Log_Msg::log (const ACE_TCHAR *format_str,
                                                    format,
                                                    va_arg (argp, ACE_INT64));
                    }
- #endif /* ! ACE_LACKS_LONGLONG_T */
                    ACE_UPDATE_COUNT (bspace, this_len);
                    break;
 
@@ -2115,7 +2071,11 @@ ACE_Log_Msg::log (const ACE_TCHAR *format_str,
                   {
                     // skip the frame that we're currently in
                     ACE_Stack_Trace t(2);
+#if defined (ACE_WIN32) && defined (ACE_USES_WCHAR)
+                    ACE_OS::strcpy (fp, ACE_TEXT ("S"));
+#else /* ACE_WIN32 && ACE_USES_WCHAR */
                     ACE_OS::strcpy (fp, ACE_TEXT ("s"));
+#endif /* ACE_WIN32 && ACE_USES_WCHAR */
                     if (can_check)
                       this_len = ACE_OS::snprintf
                         (bp, bspace, format, t.c_str ());
@@ -2254,11 +2214,15 @@ ACE_Log_Msg::log (ACE_Log_Record &log_record,
 {
   ssize_t result = 0;
 
+  // Retrieve the flags in a local variable on the stack, it is
+  // accessed by multiple threads and within this operation we
+  // check it several times, so this way we only lock once
+  u_long flags = this->flags ();
+
   // Format the message and print it to stderr and/or ship it off to
   // the log_client daemon, and/or print it to the ostream.  Of
   // course, only print the message if "SILENT" mode is disabled.
-  if (ACE_BIT_DISABLED (ACE_Log_Msg::flags_,
-                        ACE_Log_Msg::SILENT))
+  if (ACE_BIT_DISABLED (flags, ACE_Log_Msg::SILENT))
     {
       bool tracing = this->tracing_enabled ();
       this->stop_tracing ();
@@ -2271,40 +2235,40 @@ ACE_Log_Msg::log (ACE_Log_Record &log_record,
       // Do the callback, if needed, before acquiring the lock
       // to avoid holding the lock during the callback so we don't
       // have deadlock if the callback uses the logger.
-      if (ACE_BIT_ENABLED (ACE_Log_Msg::flags_,
-                           ACE_Log_Msg::MSG_CALLBACK)
+      if (ACE_BIT_ENABLED (flags, ACE_Log_Msg::MSG_CALLBACK)
           && this->msg_callback () != 0)
-        this->msg_callback ()->log (log_record);
+        {
+          this->msg_callback ()->log (log_record);
+        }
 
       // Make sure that the lock is held during all this.
       ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon,
                                 *ACE_Log_Msg_Manager::get_lock (),
                                 -1));
 
-      if (ACE_BIT_ENABLED (ACE_Log_Msg::flags_,
+      if (ACE_BIT_ENABLED (flags,
                            ACE_Log_Msg::STDERR)
           && !suppress_stderr) // This is taken care of by our caller.
         log_record.print (ACE_Log_Msg::local_host_,
-                          ACE_Log_Msg::flags_,
+                          flags,
                           stderr);
 
-      if (ACE_BIT_ENABLED (ACE_Log_Msg::flags_, ACE_Log_Msg::CUSTOM) ||
-          ACE_BIT_ENABLED (ACE_Log_Msg::flags_, ACE_Log_Msg::SYSLOG) ||
-          ACE_BIT_ENABLED (ACE_Log_Msg::flags_, ACE_Log_Msg::LOGGER))
+      if (ACE_BIT_ENABLED (flags, ACE_Log_Msg::CUSTOM) ||
+          ACE_BIT_ENABLED (flags, ACE_Log_Msg::SYSLOG) ||
+          ACE_BIT_ENABLED (flags, ACE_Log_Msg::LOGGER))
         {
           // Be sure that there is a message_queue_, with multiple threads.
           ACE_MT (ACE_Log_Msg_Manager::init_backend ());
         }
 
-
-      if (ACE_BIT_ENABLED (ACE_Log_Msg::flags_, ACE_Log_Msg::LOGGER) ||
-          ACE_BIT_ENABLED (ACE_Log_Msg::flags_, ACE_Log_Msg::SYSLOG))
+      if (ACE_BIT_ENABLED (flags, ACE_Log_Msg::LOGGER) ||
+          ACE_BIT_ENABLED (flags, ACE_Log_Msg::SYSLOG))
         {
           result =
             ACE_Log_Msg_Manager::log_backend_->log (log_record);
         }
 
-      if (ACE_BIT_ENABLED (ACE_Log_Msg::flags_, ACE_Log_Msg::CUSTOM) &&
+      if (ACE_BIT_ENABLED (flags, ACE_Log_Msg::CUSTOM) &&
           ACE_Log_Msg_Manager::custom_backend_ != 0)
         {
           result =
@@ -2313,11 +2277,11 @@ ACE_Log_Msg::log (ACE_Log_Record &log_record,
 
       // This must come last, after the other two print operations
       // (see the <ACE_Log_Record::print> method for details).
-      if (ACE_BIT_ENABLED (ACE_Log_Msg::flags_,
+      if (ACE_BIT_ENABLED (flags,
                            ACE_Log_Msg::OSTREAM)
           && this->msg_ostream () != 0)
         log_record.print (ACE_Log_Msg::local_host_,
-                          ACE_Log_Msg::flags_,
+                          flags,
 #if defined (ACE_LACKS_IOSTREAM_TOTALLY)
                           static_cast<FILE *> (this->msg_ostream ())
 #else  /* ! ACE_LACKS_IOSTREAM_TOTALLY */
@@ -2338,61 +2302,73 @@ int
 ACE_Log_Msg::log_hexdump (ACE_Log_Priority log_priority,
                           const char *buffer,
                           size_t size,
-                          const ACE_TCHAR *text)
+                          const ACE_TCHAR *text,
+                          ACE_Log_Category_TSS* category)
 {
   // Only print the message if <priority_mask_> hasn't been reset to
   // exclude this logging priority.
   if (this->log_priority_enabled (log_priority) == 0)
     return 0;
 
-  ACE_TCHAR* buf = 0;
-  size_t const buf_sz =
-    ACE_Log_Record::MAXLOGMSGLEN - ACE_Log_Record::VERBOSE_LEN - 58;
-  ACE_NEW_RETURN (buf, ACE_TCHAR[buf_sz], -1);
+  size_t text_sz = 0;
+  if (text)
+    text_sz = ACE_OS::strlen (text);
 
-  ACE_TCHAR *msg_buf = 0;
-  const size_t text_sz = text ? ACE_OS::strlen(text) : 0;
-  ACE_NEW_RETURN (msg_buf,
-                  ACE_TCHAR[text_sz + 58],
-                 -1);
+  size_t const total_buffer_size =
+    ACE_Log_Record::MAXLOGMSGLEN - ACE_Log_Record::VERBOSE_LEN + text_sz;
 
-  buf[0] = 0; // in case size = 0
+  ACE_Array<ACE_TCHAR> msg_buf(total_buffer_size);
+  if (msg_buf.size() == 0)
+    return -1;
 
-  size_t const len = ACE::format_hexdump
-    (buffer, size, buf, buf_sz / sizeof (ACE_TCHAR) - text_sz);
-
-  int sz = 0;
+  ACE_TCHAR* end_ptr = &msg_buf[0] + total_buffer_size;
+  ACE_TCHAR* wr_ptr = &msg_buf[0];
+  msg_buf[0] = 0; // in case size = 0
 
   if (text)
-    sz = ACE_OS::sprintf (msg_buf,
+    wr_ptr += ACE_OS::snprintf (wr_ptr,
+                                  end_ptr - wr_ptr,
 #if !defined (ACE_WIN32) && defined (ACE_USES_WCHAR)
-                          ACE_TEXT ("%ls - "),
+                                  ACE_TEXT ("%ls - "),
 #else
-                          ACE_TEXT ("%s - "),
+                                  ACE_TEXT ("%s - "),
 #endif
-                          text);
+                                  text);
 
-  sz += ACE_OS::sprintf (msg_buf + sz,
-                         ACE_TEXT ("HEXDUMP ")
-                         ACE_SIZE_T_FORMAT_SPECIFIER
-                         ACE_TEXT (" bytes"),
-                         size);
+  wr_ptr += ACE_OS::snprintf (wr_ptr,
+                            end_ptr - wr_ptr,
+                            ACE_TEXT ("HEXDUMP ")
+                            ACE_SIZE_T_FORMAT_SPECIFIER
+                            ACE_TEXT (" bytes"),
+                            size);
 
-  if (len < size)
-    ACE_OS::sprintf (msg_buf + sz,
-                     ACE_TEXT (" (showing first ")
-                     ACE_SIZE_T_FORMAT_SPECIFIER
-                     ACE_TEXT (" bytes)"),
-                     len);
+  // estimate how many bytes can be output
+  // We can fit 16 bytes output in text mode per line, 4 chars per byte;
+  // i.e. we need 68 bytes of buffer per line.
+  size_t hexdump_size = (end_ptr - wr_ptr -58)/68*16;
+
+  if (hexdump_size < size) {
+    wr_ptr += ACE_OS::snprintf (wr_ptr,
+                        end_ptr - wr_ptr,
+                        ACE_TEXT (" (showing first ")
+                        ACE_SIZE_T_FORMAT_SPECIFIER
+                        ACE_TEXT (" bytes)"),
+                        hexdump_size);
+    size = hexdump_size;
+  }
+
+  *wr_ptr++ = '\n';
+  ACE::format_hexdump(buffer, size, wr_ptr, end_ptr - wr_ptr);
 
   // Now print out the formatted buffer.
-  this->log (log_priority,
-             ACE_TEXT ("%s\n%s"),
-             msg_buf,
-             buf);
+  ACE_Log_Record log_record (log_priority,
+                             ACE_OS::gettimeofday (),
+                             this->getpid ());
 
-  delete [] msg_buf;
-  delete [] buf;
+  log_record.category(category);
+  log_record.msg_data(&msg_buf[0]);
+
+  this->log (log_record, false);
   return 0;
 }
 
@@ -2434,36 +2410,35 @@ ACE_Log_Msg::dump (void) const
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Log_Msg::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("status_ = %d\n"), this->status_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nerrnum_ = %d\n"), this->errnum_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nlinenum_ = %d\n"), this->linenum_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nfile_ = %C\n"), this->file_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nmsg_ = %s\n"), this->msg_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nrestart_ = %d\n"), this->restart_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nostream_ = %@\n"), this->ostream_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nmsg_callback_ = %@\n"),
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("status_ = %d\n"), this->status_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nerrnum_ = %d\n"), this->errnum_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nlinenum_ = %d\n"), this->linenum_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nfile_ = %C\n"), this->file_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nmsg_ = %s\n"), this->msg_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nrestart_ = %d\n"), this->restart_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nostream_ = %@\n"), this->ostream_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nmsg_callback_ = %@\n"),
               this->msg_callback_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nprogram_name_ = %s\n"),
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nprogram_name_ = %s\n"),
               this->program_name_ ? this->program_name_
                                   : ACE_TEXT ("<unknown>")));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nlocal_host_ = %s\n"),
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nlocal_host_ = %s\n"),
               this->local_host_ ? this->local_host_
                                 : ACE_TEXT ("<unknown>")));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\npid_ = %d\n"), this->getpid ()));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nflags_ = 0x%x\n"), this->flags_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\ntrace_depth_ = %d\n"),
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nflags_ = 0x%x\n"), this->flags_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\ntrace_depth_ = %d\n"),
               this->trace_depth_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\ntrace_active_ = %d\n"),
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\ntrace_active_ = %d\n"),
               this->trace_active_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\ntracing_enabled_ = %d\n"),
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\ntracing_enabled_ = %d\n"),
               this->tracing_enabled_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\npriority_mask_ = 0x%x\n"),
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\npriority_mask_ = 0x%x\n"),
               this->priority_mask_));
   if (this->thr_desc_ != 0 && this->thr_desc_->state () != 0)
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nthr_state_ = %d\n"),
+    ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nthr_state_ = %d\n"),
                 this->thr_desc_->state ()));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nmsg_off_ = %d\n"), this->msg_off_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nmsg_off_ = %d\n"), this->msg_off_));
 
   // Be sure that there is a message_queue_, with multiple threads.
   ACE_MT (ACE_Log_Msg_Manager::init_backend ());
@@ -2471,7 +2446,7 @@ ACE_Log_Msg::dump (void) const
   ACE_MT (ACE_Log_Msg_Manager::get_lock ()->dump ());
   // Synchronize output operations.
 
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 
@@ -2483,32 +2458,6 @@ ACE_Log_Msg::thr_desc (ACE_Thread_Descriptor *td)
   if (td != 0)
     td->acquire_release ();
 }
-
-#if defined (ACE_HAS_WIN32_STRUCTURAL_EXCEPTIONS) && defined(ACE_LEGACY_MODE)
-ACE_SEH_EXCEPT_HANDLER
-ACE_Log_Msg::seh_except_selector (void)
-{
-  return ACE_OS_Object_Manager::seh_except_selector ();
-}
-
-ACE_SEH_EXCEPT_HANDLER
-ACE_Log_Msg::seh_except_selector (ACE_SEH_EXCEPT_HANDLER n)
-{
-  return ACE_OS_Object_Manager::seh_except_selector (n);
-}
-
-ACE_SEH_EXCEPT_HANDLER
-ACE_Log_Msg::seh_except_handler (void)
-{
-  return ACE_OS_Object_Manager::seh_except_handler ();
-}
-
-ACE_SEH_EXCEPT_HANDLER
-ACE_Log_Msg::seh_except_handler (ACE_SEH_EXCEPT_HANDLER n)
-{
-  return ACE_OS_Object_Manager::seh_except_handler (n);
-}
-#endif /* ACE_HAS_WIN32_STRUCTURAL_EXCEPTIONS && ACE_LEGACY_MODE */
 
 ACE_Log_Msg_Backend *
 ACE_Log_Msg::msg_backend (ACE_Log_Msg_Backend *b)

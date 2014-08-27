@@ -1,4 +1,4 @@
-// $Id: global.features 90789 2010-06-23 10:30:53Z mcorino $
+// $Id: global.features 95440 2012-01-17 05:19:09Z jonesc $
 // The global features file contains the default feature settings.
 // By default, if a feature isn't listed here then it is enabled.
 // If it is listed, then the value assigned to the feature is interpreted
@@ -24,6 +24,7 @@ ace_token     = 1
 
 // By default we disable these.
 ace_for_tao   = 0
+ace_idl_dependencies = 0
 cross_compile = 0
 ssl           = 0
 qos           = 0
@@ -59,13 +60,18 @@ xerces2       = 0
 xerces3       = 0
 ofccm         = 0
 ndds          = 0
+nddsmonitor   = 0
 mcpp          = 0
 wireshark     = 0
 old_stdstream = 0
-
+exclude_inet  = 0
+inet_ssl      = 0
+coredx        = 0
 dds4ccm_opendds = 0
 dds4ccm_ndds = 0
 dds4ccm_splice = 0
+dds4ccm_coredx = 0
+openmp = 0
 
 // Features for various GUI libraries
 
@@ -146,5 +152,9 @@ link_codecfactory = 0
 
 // Feature for LwCCM
 ccm_lw = 1
+// Feature for CCM for disabling events.
+ccm_noevent = 0
+// Feature for direct collocation
+ccm_direct_collocation = 0
 
 valuetype_out_indirection=1

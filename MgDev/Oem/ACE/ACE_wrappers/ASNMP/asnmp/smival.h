@@ -5,7 +5,7 @@
 /**
  *  @file    smival.h
  *
- *  $Id: smival.h 80826 2008-03-04 14:51:23Z wotte $
+ *  $Id: smival.h 94442 2011-09-07 09:14:41Z johnnyw $
  *
  * SMIValue class definition. Superclass for the various types
  * of SNMP values (Address, Oid, Octet, etc.).  Provides
@@ -68,32 +68,31 @@ typedef struct {                /* smiVALUE portion of VarBind */
 // for all specific SNMP syntax types.
 //
 class ASNMP_Export SnmpSyntax {
-
 public:
+  /// virtual function for getting a printable ASCII value for any SNMP Value
   virtual const char * to_string() = 0;
-  // virtual function for getting a printable ASCII value for any SNMP Value
 
+  /// return the current syntax
   virtual SmiUINT32 get_syntax() = 0;
-  // return the current syntax
 
+  /// virtual clone operation for creating a new Value from an existing
+  /// value.  The caller MUST use the delete operation on the return
+  /// value when done.
   virtual  SnmpSyntax * clone() const = 0;
-  // virtual clone operation for creating a new Value from an existing
-  // value.  The caller MUST use the delete operation on the return
-  // value when done.
 
+  /// virtual destructor to ensure deletion of derived classes...
   virtual ~SnmpSyntax() {};
-  // virtual destructor to ensure deletion of derived classes...
 
+  /// overloaded assignment operator
+  /// This should be pure virtual, but WinNT compiler
+  /// complains about unresolved reference at link time.
   virtual SnmpSyntax& operator=(SnmpSyntax &/*val*/)
   {
       return *this;
   }
-  // overloaded assignment operator
-  // This should be pure virtual, but WinNT compiler
-  // complains about unresolved reference at link time.
 
+  /// return validity of value object.
   virtual int valid() const = 0;
-  // return validity of value object.
 
 protected:
   SmiVALUE smival;

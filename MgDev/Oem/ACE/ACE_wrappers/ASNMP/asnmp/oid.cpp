@@ -1,22 +1,19 @@
-// $Id: oid.cpp 80826 2008-03-04 14:51:23Z wotte $
 
-// ============================================================================
-//
-// = LIBRARY
-//    asnmp
-//
-// = FILENAME
-//     oid.cpp
-//
-// = DESCRIPTION
-//   This module contains the implementation of the oid class. This
-//   includes all protected and public member functions. The oid class
-//   may be compiled stand alone without the use of any other library.
-//
-// = AUTHOR
-//   Peter E Mellquist
-//   Michael R MacFaden  mrm@cisco.com - rework & ACE port
-// ============================================================================
+//=============================================================================
+/**
+ *  @file     oid.cpp
+ *
+ *  $Id: oid.cpp 93651 2011-03-28 08:49:11Z johnnyw $
+ *
+ * This module contains the implementation of the oid class. This
+ * includes all protected and public member functions. The oid class
+ * may be compiled stand alone without the use of any other library.
+ *
+ *
+ *  @author Peter E MellquistMichael R MacFaden  mrm@cisco.com - rework & ACE port
+ */
+//=============================================================================
+
 /*===================================================================
   Copyright (c) 1996
   Hewlett-Packard Company
@@ -40,8 +37,6 @@
 #include "ace/OS_NS_stdio.h"
 #include "ace/OS_Memory.h"
 #include "ace/OS_NS_ctype.h"
-
-ACE_RCSID(asnmp, oid, "$Id: oid.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 enum Defs {SNMPBUFFSIZE=300,
            SNMPCHARSIZE=15};          // max oid value (4294967295UL)

@@ -1,9 +1,7 @@
-// $Id: Assert.cpp 80826 2008-03-04 14:51:23Z wotte $
+// $Id: Assert.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/Assert.h"
-#include "ace/Log_Msg.h"
-
-ACE_RCSID(ace, Assert, "$Id: Assert.cpp 80826 2008-03-04 14:51:23Z wotte $")
+#include "ace/Log_Category.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 

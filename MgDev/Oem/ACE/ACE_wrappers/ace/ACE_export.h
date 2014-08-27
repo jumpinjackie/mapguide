@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ACE_export.h 80826 2008-03-04 14:51:23Z wotte $
+// $Id: ACE_export.h 97262 2013-08-09 08:32:10Z johnnyw $
 // Definition for Win32 Export directives.
 // This file is generated automatically by
 // generate_export_file.pl
@@ -8,7 +8,7 @@
 #ifndef ACE_EXPORT_H
 #define ACE_EXPORT_H
 
-#include "ace/config-lite.h"
+#include /**/ "ace/config-lite.h"
 
 #if defined (ACE_AS_STATIC_LIBS)
 
@@ -53,9 +53,7 @@
 #if defined (__ACE_INLINE__)
 #  if defined (_MSC_VER) || defined (__MINGW32__) || defined (CYGWIN32) || \
       (defined (__SUNPRO_CC) && __SUNPRO_CC >= 0x560) || \
-      (defined (__HP_aCC) && (__HP_aCC >= 60500)) || \
-      (defined (__sgi) && \
-       defined (_COMPILER_VERSION) && _COMPILER_VERSION <= 730)
+      (defined (__HP_aCC) && (__HP_aCC >= 60500))
 #    define ACE_NAMESPACE_INLINE_FUNCTION inline
 #  else
 #    define ACE_NAMESPACE_INLINE_FUNCTION ACE_NAMESPACE_STORAGE_CLASS inline

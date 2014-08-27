@@ -4,7 +4,7 @@
 /**
  *  @file    Handle_Set.h
  *
- *  $Id: Handle_Set.h 82723 2008-09-16 09:35:44Z johnnyw $
+ *  $Id: Handle_Set.h 97484 2013-12-20 08:09:58Z johnnyw $
  *
  *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
  */
@@ -29,6 +29,10 @@
 #else /* !FD_SETSIZE */
 #  define ACE_FD_SETSIZE FD_SETSIZE
 #endif /* ACE_FD_SETSIZE */
+
+#if defined(FD_SETSIZE) && defined(__FD_SETSIZE) && (FD_SETSIZE > __FD_SETSIZE)
+#error FD_SETSIZE definition is too large, please correct!
+#endif
 
 #if !defined (ACE_DEFAULT_SELECT_REACTOR_SIZE)
 #  define ACE_DEFAULT_SELECT_REACTOR_SIZE ACE_FD_SETSIZE
@@ -58,7 +62,6 @@ public:
     MAXSIZE = ACE_DEFAULT_SELECT_REACTOR_SIZE
   };
 
-  // = Initialization methods.
   /// Constructor, initializes the bitmask to all 0s.
   ACE_Handle_Set (void);
 
@@ -196,10 +199,10 @@ public:
   ACE_ALLOC_HOOK_DECLARE;
 
 private:
-  /// The <Handle_Set> we are iterating through.
+  /// The Handle_Set we are iterating through.
   const ACE_Handle_Set &handles_;
 
-  /// Index of the bit we're examining in the current <word_num_> word.
+  /// Index of the bit we're examining in the current word_num_() word.
 #if defined (ACE_WIN32)
   u_int handle_index_;
 #elif !defined (ACE_HAS_BIG_FD_SET)

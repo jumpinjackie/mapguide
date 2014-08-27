@@ -2,7 +2,7 @@ eval '(exit $?0)' && eval 'exec perl -S $0 ${1+"$@"}'
     & eval 'exec perl -S $0 $argv:q'
     if 0;
 
-# $Id: msvc_mpc_auto_compile.pl 83250 2008-10-15 09:47:41Z johnnyw $
+# $Id: msvc_mpc_auto_compile.pl 95720 2012-05-01 17:39:05Z johnnyw $
 #   Win32 auto_compile script.
 
 use File::Find;
@@ -14,10 +14,12 @@ if (!$ENV{ACE_ROOT}) {
 }
 else {
     $ACE_ROOT = $ENV{ACE_ROOT};
+    $TAO_ROOT = $ENV{TAO_ROOT};
+    $CIAO_ROOT = $ENV{CIAO_ROOT};
+    $DANCE_ROOT = $ENV{DANCE_ROOT};
 }
 
 @directories = ();
-
 
 @ace_core_dirs = ("$ACE_ROOT\\ace",
                   "$ACE_ROOT\\Kokyu",
@@ -26,14 +28,16 @@ else {
                   "$ACE_ROOT\\tests",
                   "$ACE_ROOT\\protocols");
 
-@tao_core_dirs = ("$ACE_ROOT\\apps",
-                  "$ACE_ROOT\\TAO\\TAO_IDL",
-                  "$ACE_ROOT\\TAO\\tao",
-                  "$ACE_ROOT\\TAO\\tests");
+@tao_core_dirs = ("$ACE_ROOT\\apps\\gperf\\src",
+                  "$TAO_ROOT\\TAO_IDL",
+                  "$TAO_ROOT\\tao",
+                  "$TAO_ROOT\\tests");
 
-@orbsvcs_core_dirs = ("$ACE_ROOT\\TAO\\orbsvcs\\orbsvcs");
+@orbsvcs_core_dirs = ("$TAO_ROOT\\orbsvcs\\orbsvcs");
 
-@ciao_core_dirs = ("$ACE_ROOT\\TAO\\CIAO");
+@dance_core_dirs = ("$DANCE_ROOT");
+
+@ciao_core_dirs = ("$CIAO_ROOT");
 
 $debug = 0;
 $verbose = 0;
@@ -46,6 +50,7 @@ $Build_Cmd = "/BUILD";
 $use_custom_dir = 0;
 $useenv = '';
 $vc7 = 0;
+$project_root = "$ACE_ROOT";
 
 # Build_Config takes in a string of the type "project--configuration" and
 # runs msdev to build it.
@@ -105,7 +110,7 @@ sub Find_Dsw (@)
 
     find (\&wanted_dsw, @dir);
 
-    print "List of dsw's \n" if ($verbose == 1);
+    print "List of dsw's\n" if ($verbose == 1);
     return @array;
 }
 
@@ -114,6 +119,8 @@ sub Find_Sln (@)
     my (@dir) = @_;
     @array = ();
 
+    print "Searching for list of sln's\n" if ($verbose == 1);
+
     sub wanted_sln {
         $array[++$#array] =
             $File::Find::name if ($File::Find::name =~ /\.sln$/i);
@@ -121,7 +128,7 @@ sub Find_Sln (@)
 
     find (\&wanted_sln, @dir);
 
-    print "List of sln's \n" if ($verbose == 1);
+    print "List of sln's\n" if ($verbose == 1);
     return @array;
 }
 
@@ -158,14 +165,15 @@ sub Build_All ()
     push @directories, @ace_core_dirs;
     push @directories, @tao_core_dirs;
     push @directories, @orbsvcs_core_dirs;
+    push @directories, @dance_core_dirs;
     push @directories, @ciao_core_dirs;
 
     print STDERR "First pass (libraries)\n" if ($print_status == 1);
-    print "\nmsvc_auto_compile: First Pass CORE (libraries)\n";
+    print "\nmsvc_mpc_auto_compile: First Pass CORE (libraries)\n";
 
     Build_Custom ();
 
-    my @new_directory_search = "$ACE_ROOT";
+    my @new_directory_search = "$project_root";
 
     my @configurations = Find_Dsw (@new_directory_search);
 
@@ -219,14 +227,15 @@ sub Build_All_VC7 ()
     push @directories, @ace_core_dirs;
     push @directories, @tao_core_dirs;
     push @directories, @orbsvcs_core_dirs;
+    push @directories, @dance_core_dirs;
     push @directories, @ciao_core_dirs;
 
     print STDERR "First pass (libraries)\n" if ($print_status == 1);
-    print "\nmsvc_auto_compile: First Pass CORE (libraries)\n";
+    print "\nmsvc_mpc_auto_compile: First Pass CORE (libraries)\n";
 
     Build_Custom_VC7 ();
 
-    my @new_directory_search = "$ACE_ROOT";
+    my @new_directory_search = "$project_root";
 
     my @configurations = Find_Sln (@new_directory_search);
 
@@ -303,6 +312,7 @@ while ( $#ARGV >= 0  &&  $ARGV[0] =~ /^(-|\/)/ )
         push @directories, @ace_core_dirs;
         push @directories, @tao_core_dirs;
         push @directories, @orbsvcs_core_dirs;
+        push @directories, @dance_core_dirs;
         push @directories, @ciao_core_dirs;
     }
     elsif ($ARGV[0] =~ '-ALL') {# Build the CIAO and related
@@ -315,6 +325,11 @@ while ( $#ARGV >= 0  &&  $ARGV[0] =~ /^(-|\/)/ )
         print "Adding directory $ARGV[0]\n" if ( $verbose );
         $use_custom_dir = 1;
         push @directories, $ARGV[0];
+    }
+    elsif ($ARGV[0] =~ '-project_root') {  # use different root than ACE_ROOT
+        shift;
+        print "Using project root $ARGV[0]\n" if ( $verbose );
+        $project_root = $ARGV[0];
     }
     elsif ($ARGV[0] =~ '-rebuild') {    # Rebuild all
         print "Rebuild all\n" if ( $verbose );
@@ -348,6 +363,7 @@ while ( $#ARGV >= 0  &&  $ARGV[0] =~ /^(-|\/)/ )
         print "-ORBSVCS   = Build ACE+TAO+ORBSVCS and its tests\n";
         print "-CIAO      = Build ACE+TAO+ORBSVCS+CIAO and its tests\n";
         print "-dir <dir> = Compile custom directories\n";
+        print "-project_root <dir> = Use different root directory than ACE_ROOT\n";
         print "\n";
         print "-rebuild   = Rebuild All\n";
         print "-clean     = Clean\n";

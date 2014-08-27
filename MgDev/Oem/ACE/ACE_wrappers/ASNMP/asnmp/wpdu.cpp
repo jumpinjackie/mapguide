@@ -1,21 +1,18 @@
-// $Id: wpdu.cpp 85030 2009-04-06 08:57:59Z johnnyw $
 
-// ============================================================================
-// = LIBRARY
-//    asnmp
-//
-// = FILENAME
-//    wpdu.cpp
-//
-// = DESCRIPTION
-//  Adapter class. Converts between raw wire format and Pdu objects
-//  that can be stuffed out a I/O port or reconstructed
-//
-// = AUTHOR
-//   Michael R. MacFaden rework the class api and impl using ACE
-//   Peter E Mellquist  implementation/code from snmp++ snmpmsg class
-//
-// ============================================================================
+//=============================================================================
+/**
+ *  @file    wpdu.cpp
+ *
+ *  $Id: wpdu.cpp 94459 2011-09-09 11:18:46Z johnnyw $
+ *
+ *  Adapter class. Converts between raw wire format and Pdu objects
+ *  that can be stuffed out a I/O port or reconstructed
+ *
+ *
+ *  @author Michael R. MacFaden rework the class api and impl using ACEPeter E Mellquist  implementation/code from snmp++ snmpmsg class
+ */
+//=============================================================================
+
 
 #include "asnmp/wpdu.h"
 #include "ace/Log_Msg.h"
@@ -24,8 +21,6 @@
 
 #define DEFINE_TRAP_CONSTANTS_
 #include "asnmp/enttraps.h"
-
-ACE_RCSID(asnmp, wpdu, "$Id: wpdu.cpp 85030 2009-04-06 08:57:59Z johnnyw $")
 
 #define MAX_COMM_STR_LEN 255
 #define V1_COLD_START 0
@@ -128,7 +123,6 @@ int wpdu::set_trap_info(snmp_pdu *raw_pdu, const Pdu& pdu) const
      cmu_snmp::free_pdu( raw_pdu);
      return SNMP_CLASS_INVALID_NOTIFYID;
   }
-
 
   raw_pdu->specific_type=0;
 
@@ -385,8 +379,7 @@ int wpdu::get_pdu(Pdu& pdu, snmp_version& version)
   if (iovec_.iov_len == 0)
     return -1; // NO DATA
 
-  snmp_pdu *raw_pdu;
-  raw_pdu = cmu_snmp::pdu_create(0);
+  snmp_pdu *raw_pdu = cmu_snmp::pdu_create(0);
   if (!raw_pdu) {
     return SNMP_CLASS_RESOURCE_UNAVAIL;
   }

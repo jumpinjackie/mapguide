@@ -1,6 +1,6 @@
 //  -*- MPC -*-
 //
-// $Id: ace_for_tao.mpc 90826 2010-06-24 09:07:33Z johnnyw $
+// $Id: ace_for_tao.mpc 97401 2013-11-01 13:16:51Z johnnyw $
 
 // The ACE_FOR_TAO subset is designed primarily for use with the
 // TAO CosNotification service.  It is not intended to be used
@@ -24,7 +24,6 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     Argv_Type_Converter.cpp
     Assert.cpp
     Atomic_Op.cpp
-    Auto_Event.cpp
     Barrier.cpp             // Required by orbsvcs/tests/Notify/lib
     Base_Thread_Adapter.cpp
     Based_Pointer_Repository.cpp
@@ -38,9 +37,9 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     Codeset_IBM1047.cpp
     Codeset_Registry.cpp
     Codeset_Registry_db.cpp
+    Condition_Attributes.cpp
     Condition_Recursive_Thread_Mutex.cpp
     Condition_Thread_Mutex.cpp
-    Countdown_Time.cpp
     Copy_Disabled.cpp
     DLL_Manager.cpp
     Dirent.cpp // Required by TAO_IDL
@@ -48,8 +47,9 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     Dump.cpp
     Dynamic.cpp
     Dynamic_Message_Strategy.cpp
-    Event.cpp
+    Event_Base.cpp
     Event_Handler.cpp
+    Event_Handler_Handle_Timeout_Upcall.cpp
     FILE.cpp
     FILE_Addr.cpp
     Flag_Manip.cpp
@@ -70,6 +70,7 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     Lib_Find.cpp
     Local_Memory_Pool.cpp
     Lock.cpp
+    Log_Category.cpp
     Log_Msg.cpp
     Log_Msg_Backend.cpp
     Log_Msg_Callback.cpp
@@ -80,7 +81,6 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     Logging_Strategy.cpp
     Malloc.cpp
     Malloc_Allocator.cpp
-    Manual_Event.cpp
     Mem_Map.cpp
     Message_Block.cpp
     Message_Queue.cpp
@@ -93,12 +93,14 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     Monitor_Size.cpp
     Monitor_Control_Types.cpp
     Monitor_Control_Action.cpp
+    Monotonic_Time_Policy.cpp
     Mutex.cpp
     Notification_Strategy.cpp
     Notification_Queue.cpp
     Obchunk.cpp
     Object_Manager.cpp
     Object_Manager_Base.cpp
+    Obstack.cpp
     OS_Errno.cpp
     OS_Log_Msg_Attributes.cpp
     OS_main.cpp
@@ -184,6 +186,7 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     Thread_Manager.cpp
     Thread_Mutex.cpp
     Throughput_Stats.cpp
+    Time_Policy.cpp
     Time_Value.cpp
     Timeprobe.cpp
     Token.cpp
@@ -206,6 +209,7 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
   }
 
   Template_Files {
+    Abstract_Timer_Queue.cpp
     Acceptor.cpp
     Active_Map_Manager_T.cpp
     Array_Base.cpp
@@ -213,6 +217,7 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     Arg_Shifter.cpp
     ARGV.cpp
     Atomic_Op_T.cpp
+    Auto_Event.cpp
     Auto_Functor.cpp
     Auto_IncDec_T.cpp
     Auto_Ptr.cpp
@@ -225,9 +230,11 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     Condition_T.cpp
     Connector.cpp
     Containers_T.cpp
+    Countdown_Time_T.cpp
     Dump_T.cpp
     Dynamic_Service.cpp
     Env_Value_T.cpp
+    Event.cpp
     Event_Handler_T.cpp
     Framework_Component_T.cpp
     Free_List.cpp
@@ -242,6 +249,7 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     Lock_Adapter_T.cpp
     Malloc_T.cpp
     Managed_Object.cpp
+    Manual_Event.cpp
     Map_Manager.cpp
     Map_T.cpp
     Message_Block_T.cpp
@@ -262,15 +270,17 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     Stream_Modules.cpp
     String_Base.cpp
     Svc_Handler.cpp
-    Synch_T.cpp
     TSS_T.cpp
     Task_Ex_T.cpp
     Task_T.cpp
     Timeprobe_T.cpp
+    Time_Policy_T.cpp
+    Time_Value_T.cpp
     Timer_Hash_T.cpp
     Timer_Heap_T.cpp
     Timer_List_T.cpp
     Timer_Queue_Adapters.cpp
+    Timer_Queue_Iterator.cpp
     Timer_Queue_T.cpp
     Timer_Wheel_T.cpp
     Tokenizer_T.cpp
@@ -287,25 +297,25 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     Guard_T.inl
     Handle_Gobbler.inl
     Lock_Adapter_T.inl
-    OS.inl
     OS_Memory.inl
-    OS_String.inl
     Refcounted_Auto_Ptr.inl
     Reverse_Lock_T.inl
     TSS_T.inl
     ace_wchar.inl
     MMAP_Memory_Pool.inl
     Mem_Map.inl
+    Time_Value_T.inl
   }
 
   Header_Files {
     ACE_export.h
-    Array.h
     Based_Pointer_Repository.h
     Bound_Ptr.h
     CORBA_macros.h
     Condition_T.h
+    Countdown_Time.h
     Default_Constants.h
+    Event_Base.h
     Exception_Macros.h
     Global_Macros.h
     Guard_T.h
@@ -319,21 +329,18 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     Memory_Pool.h
     Mem_Map.h
     Min_Max.h
+    Monotonic_Time_Policy.h
     Null_Barrier.h
     Null_Condition.h
     Null_Mutex.h
     Null_Semaphore.h
     Numeric_Limits.h
-    OS.h
-    OS_Dirent.h
     OS_Memory.h
     OS_NS_macros.h
-    OS_String.h
     OS_Thread_Adapter.h
     Object_Manager_Base.h
     Process.h
     Process_Manager.h
-    Pair.h
     Reactor_Impl.h
     Reactor_Timer_Interface.h
     Refcounted_Auto_Ptr.h
@@ -341,13 +348,14 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     Select_Reactor.h
     SStringfwd.h
     Static_Object_Lock.h
-    Strategies.h
     String_Base_Const.h
     Svc_Conf.h
     Svc_Conf_Tokens.h
     Synch.h
     Synch_Traits.h
     TSS_T.h
+    Time_Policy.h
+    Time_Value_T.h
     Timer_Queuefwd.h
     Truncate.h
     Value_Ptr.h
@@ -361,8 +369,6 @@ project(ACE_FOR_TAO) : acedefaults, install, svcconf, uuid, versioned_namespace,
     config-minimal.h
     config-win32-borland.h
     config-win32-common.h
-    config-win32-ghs.h
-    config-win32-msvc-6.h
     config-win32-msvc-7.h
     config-win32-msvc.h
     config-win32.h

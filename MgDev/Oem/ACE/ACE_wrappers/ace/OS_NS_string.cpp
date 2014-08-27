@@ -1,13 +1,10 @@
-// $Id: OS_NS_string.cpp 88331 2009-12-24 09:54:25Z johnnyw $
+// $Id: OS_NS_string.cpp 97310 2013-09-01 14:03:47Z mesnier_p $
 
 #include "ace/ACE.h"
+#include "ace/Global_Macros.h"
 #include "ace/OS_NS_string.h"
 #include "ace/OS_NS_stdio.h"
 #include "ace/OS_NS_stdlib.h"
-
-ACE_RCSID (ace,
-           OS_NS_string,
-           "$Id: OS_NS_string.cpp 88331 2009-12-24 09:54:25Z johnnyw $")
 
 #if !defined (ACE_HAS_INLINED_OSCALLS)
 # include "ace/OS_NS_string.inl"
@@ -372,8 +369,7 @@ ACE_OS::strsncpy (ACE_WCHAR_T *dst, const ACE_WCHAR_T *src, size_t maxlen)
   return dst;
 }
 
-#if (!defined (ACE_HAS_REENTRANT_FUNCTIONS) || defined (ACE_LACKS_STRTOK_R)) \
-    && !defined (ACE_HAS_TR24731_2005_CRT)
+#if defined (ACE_LACKS_STRTOK_R)
 char *
 ACE_OS::strtok_r_emulation (char *s, const char *tokens, char **lasts)
 {
@@ -394,7 +390,7 @@ ACE_OS::strtok_r_emulation (char *s, const char *tokens, char **lasts)
     *lasts = s + l_sub;
   return s ;
 }
-#endif /* !ACE_HAS_REENTRANT_FUNCTIONS */
+#endif /* ACE_LACKS_STRTOK_R */
 
 # if defined (ACE_HAS_WCHAR) && defined (ACE_LACKS_WCSTOK)
 wchar_t*

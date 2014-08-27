@@ -58,8 +58,6 @@ void DebugOutput(const ACE_TCHAR* format, ...)
 }
 #endif
 
-ACE_RCSID(server, MgServer, "Server.cpp")
-
 #ifdef _WIN32
 MG_NT_SERVICE_DEFINE(MgServerService, MgServer, MG_WCHAR_TO_TCHAR(MgResources::ServerServiceName));
 #endif

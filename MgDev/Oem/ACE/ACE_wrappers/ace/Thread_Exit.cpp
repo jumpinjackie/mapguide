@@ -1,11 +1,9 @@
-// $Id: Thread_Exit.cpp 80826 2008-03-04 14:51:23Z wotte $
+// $Id: Thread_Exit.cpp 92580 2010-11-15 09:48:02Z johnnyw $
 
 #include "ace/Thread_Exit.h"
 #include "ace/Managed_Object.h"
 #include "ace/Thread_Manager.h"
 #include "ace/Guard_T.h"
-
-ACE_RCSID(ace, Thread_Exit, "$Id: Thread_Exit.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 

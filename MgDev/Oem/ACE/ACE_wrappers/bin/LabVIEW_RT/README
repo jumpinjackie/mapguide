@@ -1,4 +1,4 @@
-# $Id: README 80826 2008-03-04 14:51:23Z wotte $
+$Id: README 94653 2011-10-07 09:09:21Z msmit $
 
 This directory contains utilities for running the ACE+TAO test suite on
 a LabVIEW RT 8 / Phar Lap ETS target. Although it's running Phar Lap ETS,

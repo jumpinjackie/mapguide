@@ -4,7 +4,7 @@
 /**
  *  @file   CDR_Size.h
  *
- *  $Id: CDR_Size.h 80826 2008-03-04 14:51:23Z wotte $
+ *  $Id: CDR_Size.h 96688 2013-01-22 12:28:42Z johnnyw $
  *
  *
  * ACE Common Data Representation (CDR) size-calculating stream.
@@ -13,7 +13,7 @@
  * The current implementation assumes that the host has 1-byte,
  * 2-byte and 4-byte integral types, and that it has single
  * precision and double precision IEEE floats.
- * Those assumptions are pretty good these days, with Crays beign
+ * Those assumptions are pretty good these days, with Crays being
  * the only known exception.
  *
  *
@@ -42,7 +42,6 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
  * @class ACE_SizeCDR
  *
  * @brief A CDR stream for calculating size of the representation.
- *
  */
 class ACE_Export ACE_SizeCDR
 {
@@ -54,14 +53,11 @@ public:
   /// Returns @c false if an error has ocurred.
   bool good_bit (void) const;
 
-
   /// Reset current size.
   void reset (void);
 
-
   /// Return current size.
   size_t total_length (void) const;
-
 
   // Return 0 on failure and 1 on success.
   //@{ @name Size-calculating pseudo-write operations

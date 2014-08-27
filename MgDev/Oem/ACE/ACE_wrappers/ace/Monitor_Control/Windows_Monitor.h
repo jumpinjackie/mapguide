@@ -4,7 +4,7 @@
 /**
  * @file Windows_Monitor.h
  *
- * $Id: Windows_Monitor.h 82132 2008-06-23 13:54:43Z parsons $
+ * $Id: Windows_Monitor.h 91743 2010-09-13 18:24:51Z johnnyw $
  *
  * @author Jeff Parsons <j.parsons@vanderbilt.edu>
  */
@@ -53,7 +53,7 @@ namespace ACE
 
     protected:
       double value_;
-      
+
     private:
       /// Code common to constructor and clear_impl().
       void init (void);

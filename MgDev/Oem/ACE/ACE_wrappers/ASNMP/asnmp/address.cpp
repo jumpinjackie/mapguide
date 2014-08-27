@@ -1,25 +1,22 @@
-// $Id: address.cpp 88870 2010-02-06 12:59:37Z mcorino $
 
-// ============================================================================
-//
-// = LIBRARY
-//    asnmp
-//
-// = FILENAME
-//     address.cpp
-//
-// = DESCRIPTION
-//  The Vb class is an encapsulation of the snmp variable binding.
-// This module contains the class definition for the variable binding (VB)
-// class. The VB class is an encapsulation of a SNMP VB. A VB object is
-// composed of one SNMP++ Oid and one SMI value. The Vb class utilizes Oid
-// objects and thus requires the Oid class. To use this class,
-// set oid, value then call valid() to be sure object was constructed correctly.
-//
-// = AUTHOR
-//   Peter E Mellquist
-//   Michael R MacFaden  mrm@cisco.com - rework & ACE port
-// ============================================================================
+//=============================================================================
+/**
+ *  @file     address.cpp
+ *
+ *  $Id: address.cpp 97246 2013-08-07 07:10:20Z johnnyw $
+ *
+ *  The Vb class is an encapsulation of the snmp variable binding.
+ * This module contains the class definition for the variable binding (VB)
+ * class. The VB class is an encapsulation of a SNMP VB. A VB object is
+ * composed of one SNMP++ Oid and one SMI value. The Vb class utilizes Oid
+ * objects and thus requires the Oid class. To use this class,
+ * set oid, value then call valid() to be sure object was constructed correctly.
+ *
+ *
+ *  @author Peter E MellquistMichael R MacFaden  mrm@cisco.com - rework & ACE port
+ */
+//=============================================================================
+
 /*===================================================================
   Copyright (c) 1996
   Hewlett-Packard Company
@@ -44,8 +41,6 @@
 #include "ace/OS_NS_stdio.h"
 #include "ace/OS_NS_ctype.h"
 #include "ace/OS_Memory.h"
-
-ACE_RCSID(asnmp, address, "$Id: address.cpp 88870 2010-02-06 12:59:37Z mcorino $")
 
 //=================================================================
 //======== Abstract Address Class Implementation ==================
@@ -604,7 +599,7 @@ int IpAddress::resolve_to_address(const char *hostname, in_addr& quad_addr)
    ACE_OS::memset(&lookupResult, 0, sizeof(struct hostent));
    int loc_errno = 0;
    if (ACE_OS::gethostbyname_r( hostname, &lookupResult, buffer, &loc_errno)) {
-     if (lookupResult.h_length == sizeof(in_addr) &&
+     if (lookupResult.h_length == (int) sizeof(in_addr) &&
          lookupResult.h_addrtype == AF_INET) {
         ACE_OS::memcpy((void *) &quad_addr,
                        (void *) lookupResult.h_addr_list[0], sizeof(in_addr));
@@ -672,7 +667,7 @@ Address_Iter::Address_Iter (const char *hostname)
 {
   ACE_OS::memset (&buffer_, 0, sizeof (ACE_HOSTENT_DATA));
   ACE_OS::memset (&lookupResult_, 0, sizeof (struct hostent));
-  
+
   if (ACE_OS::inet_addr (hostname) == (unsigned long) -1)
     {
       valid_ = query_dns (hostname);
@@ -724,7 +719,7 @@ int Address_Iter::query_dns(const char *hostname)
   int loc_errno = 0;
   if (ACE_OS::gethostbyname_r( hostname, &lookupResult_, buffer_,
                                 &loc_errno)) {
-    if (lookupResult_.h_length == sizeof(IPV4LEN) &&
+    if (lookupResult_.h_length == (int) sizeof(IPV4LEN) &&
         lookupResult_.h_addrtype == AF_INET) {
       return 0;
     }

@@ -1,21 +1,18 @@
-// $Id: Target_Test.cpp 80826 2008-03-04 14:51:23Z wotte $
 
-// ============================================================================
-//
-// = LIBRARY
-//    tests
-//
-// = FILENAME
-//    Target_Test.cpp
-//
-// = DESCRIPTION
-//  Test all the member functions of the Target class.
-//  Not sure if this object is really required or not in the new framework
-//
-// = AUTHOR
-//    Michael R. MacFaden <mrm@cisco.com>
-//
-// ============================================================================
+//=============================================================================
+/**
+ *  @file    Target_Test.cpp
+ *
+ *  $Id: Target_Test.cpp 93651 2011-03-28 08:49:11Z johnnyw $
+ *
+ *  Test all the member functions of the Target class.
+ *  Not sure if this object is really required or not in the new framework
+ *
+ *
+ *  @author Michael R. MacFaden <mrm@cisco.com>
+ */
+//=============================================================================
+
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 Copyright 1997 Cisco Systems, Inc.
@@ -43,8 +40,6 @@ DAMAGES.
 #include "asnmp/octet.h"
 #include "asnmp/target.h"
 #include "test_config.h"
-
-ACE_RCSID(tests, Target_Test, "$Id: Target_Test.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 /*
   Percieved Problems with this CTarget aka UdpTarget Interface:

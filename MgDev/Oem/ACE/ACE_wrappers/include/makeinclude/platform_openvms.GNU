@@ -1,10 +1,9 @@
-# $Id: platform_openvms.GNU 82161 2008-06-25 07:00:24Z johnnyw $
+# $Id: platform_openvms.GNU 91285 2010-08-05 08:29:30Z johnnyw $
 
 # for OpenVMS GNV
 
 ACE_OPENVMS = 1
 versioned_so ?= 0
-exceptions ?= 1
 debug ?= 1
 optimize ?= 0
 threads ?= 1

@@ -1,12 +1,7 @@
 // -*- MPC -*-
-// $Id: ace_output.mpb 80826 2008-03-04 14:51:23Z wotte $
+// $Id: ace_output.mpb 95491 2012-01-24 13:51:36Z johnnyw $
 
 project {
   libout = $(ACE_ROOT)/lib
-
-  specific(automake) {
-    libout -= $(ACE_ROOT)/lib
-    libout += $(top_builddir)/lib
-  }
 }
 

@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# $Id: TestTarget.pm 90487 2010-06-08 22:02:49Z mitza $
+# $Id: TestTarget.pm 97724 2014-04-18 06:55:25Z mcorino $
 #
 # The TestTarget class is for operations that are per-target while testing.
 # They can be overridden for specific needs like embedded systems, etc.
@@ -10,8 +10,12 @@ use strict;
 use English;
 use POSIX qw(:time_h);
 use File::Copy;
+use File::Spec;
+use File::Basename;
 use PerlACE::Run_Test;
+use Socket;
 use Sys::Hostname;
+use Cwd;
 
 ###############################################################################
 
@@ -28,8 +32,11 @@ sub create_target
     my $target = undef;
     my $envname = "DOC_TEST_\U$component";
     if (!exists $ENV{$envname}) {
-        $target = new PerlACE::TestTarget("default");
-        return $target;
+        $envname = "DOC_TEST_DEFAULT";
+        if (!exists $ENV{$envname}) {
+          $target = new PerlACE::TestTarget("default");
+          return $target;
+        }
     }
     my $config_name = $ENV{$envname};
     # There's a configuration name; use it to look up the platform.
@@ -58,6 +65,11 @@ sub create_target
       if ($config_os =~ /WinCE/i) {
         require PerlACE::TestTarget_WinCE;
         $target = new PerlACE::TestTarget_WinCE ($config_name);
+        last SWITCH;
+      }
+      if ($config_os =~ /ANDROID/i) {
+        require PerlACE::TestTarget_Android;
+        $target = new PerlACE::TestTarget_Android ($config_name, $component);
         last SWITCH;
       }
       print STDERR "$config_os is an unknown OS type!\n";
@@ -92,9 +104,13 @@ sub GetConfigSettings ($)
     my $self = shift;
     my $config_name = shift;
     my $env_prefix = '';
+    my $fs_root;
+    my $tgt_fs_root;
+
     if (defined $config_name) {
         $env_prefix = $config_name."_";
     }
+
     my $env_name = $env_prefix.'ACE_ROOT';
     if (exists $ENV{$env_name}) {
         $self->{ace_root} = $ENV{$env_name};
@@ -103,18 +119,80 @@ sub GetConfigSettings ($)
         # Fall back to naked ACE_ROOT if no config-specific one.
         $self->{ace_root} = $ENV{'ACE_ROOT'};
     }
-    $env_name = $env_prefix.'TAO_ROOT';
-    if (exists $ENV{$env_name}) {
-        $self->{tao_root} = $ENV{$env_name};
+    $tgt_fs_root = dirname($self->{ace_root});
+    if (exists $ENV{'ACE_ROOT'}) {
+        $fs_root = dirname($ENV{'ACE_ROOT'});
     } else {
+        $fs_root = $tgt_fs_root;
+    }
+    $env_name = $env_prefix.'TAO_ROOT';
+    if (exists $ENV{$env_name})
+    {
+      $self->{tao_root} = $ENV{$env_name};
+    } elsif ($fs_root ne $tgt_fs_root && -d "$fs_root/TAO") {
+        # flat directory structure
+        $self->{tao_root} = "$tgt_fs_root/TAO";
+    } elsif ($fs_root ne $tgt_fs_root && -d "$fs_root/ACE/TAO") {
+        # hierarchical struture
+        $self->{tao_root} = "$self->{ace_root}/TAO";
+    } elsif (exists $ENV{'TAO_ROOT'}) {
+        if ($fs_root ne $tgt_fs_root) {
+            $self->{tao_root} =
+                PerlACE::rebase_path ($ENV{'TAO_ROOT'}, $fs_root, $tgt_fs_root);
+        } else {
+            $self->{tao_root} = $ENV{'TAO_ROOT'};
+        }
+    } else {
+        # fall back to assuming classic hierarchical struture
         $self->{tao_root} = "$self->{ace_root}/TAO";
     }
     $env_name = $env_prefix.'CIAO_ROOT';
     if (exists $ENV{$env_name}) {
         $self->{ciao_root} = $ENV{$env_name};
+    } elsif ($fs_root ne $tgt_fs_root && -d "$fs_root/CIAO") {
+        # flat directory structure
+        $self->{ciao_root} = "$tgt_fs_root/CIAO";
+    } elsif ($fs_root ne $tgt_fs_root && -d "$fs_root/ACE/TAO/CIAO") {
+        # hierarchical struture
+        $self->{ciao_root} = "$self->{tao_root}/CIAO";
+    } elsif (exists $ENV{'CIAO_ROOT'}) {
+        if ($fs_root ne $tgt_fs_root) {
+            $self->{ciao_root} =
+                PerlACE::rebase_path ($ENV{'CIAO_ROOT'}, $fs_root, $tgt_fs_root);
+        } else {
+            $self->{ciao_root} = $ENV{'CIAO_ROOT'};
+        }
     } else {
+        # fall back to assuming classic hierarchical struture
         $self->{ciao_root} = "$self->{tao_root}/CIAO";
     }
+
+    $env_name = $env_prefix.'DANCE_ROOT';
+    if (exists $ENV{$env_name}) {
+        $self->{dance_root} = $ENV{$env_name};
+    } elsif ($fs_root ne $tgt_fs_root && -d "$fs_root/DAnCE") {
+        # flat directory structure
+        $self->{dance_root} = "$tgt_fs_root/DAnCE";
+    } elsif ($fs_root ne $tgt_fs_root && -d "$fs_root/ACE/TAO/DAnCE") {
+        # hierarchical struture
+        $self->{dance_root} = "$self->{tao_root}/DAnCE";
+    } elsif (exists $ENV{'DANCE_ROOT'}) {
+        if ($fs_root ne $tgt_fs_root) {
+            $self->{dance_root} =
+                PerlACE::rebase_path ($ENV{'DANCE_ROOT'}, $fs_root, $tgt_fs_root);
+        } else {
+            $self->{dance_root} = $ENV{'DANCE_ROOT'};
+        }
+    } else {
+        # fall back to assuming classic hierarchical struture
+        $self->{dance_root} = "$self->{tao_root}/DAnCE";
+    }
+
+    if ($fs_root ne $tgt_fs_root) {
+      $self->{HOST_FSROOT} = dirname ($fs_root);
+      $self->{TARGET_FSROOT} = dirname ($tgt_fs_root);
+    }
+
     $env_name = $env_prefix.'EXE_SUBDIR';
     if (exists $ENV{$env_name}) {
         $self->{EXE_SUBDIR} = $ENV{$env_name}.'/';
@@ -148,11 +226,21 @@ sub GetConfigSettings ($)
     } else {
         $self->{PROCESS_STOP_WAIT_INTERVAL} = 10;
     }
+    $env_name = $env_prefix.'ADB_WAIT_FOR_DEVICE_TIMEOUT';
+    if (exists $ENV{$env_name}) {
+        $self->{ADB_WAIT_FOR_DEVICE_TIMEOUT} = $ENV{$env_name};
+    } else {
+        $self->{ADB_WAIT_FOR_DEVICE_TIMEOUT} = 120;
+    }
     $env_name = $env_prefix.'HOSTNAME';
     if (exists $ENV{$env_name}) {
         $self->{HOSTNAME} = $ENV{$env_name};
     } else {
         $self->{HOSTNAME} = hostname();
+    }
+    $env_name = $env_prefix.'IP_ADDRESS';
+    if (exists $ENV{$env_name}) {
+        $self->{IP_ADDRESS} = $ENV{$env_name};
     }
     $env_name = $env_prefix.'IBOOT';
     if (exists $ENV{$env_name}) {
@@ -231,11 +319,14 @@ sub GetConfigSettings ($)
     if (exists $ENV{$env_name}) {
         my @x_env = split (' ', $ENV{$env_name});
         foreach my $x_env_s (@x_env) {
-          if ($x_env_s =~ /(\w+)=(.*)/) {
-            $self->{EXTRA_ENV}->{$1} = $2;
-          }
+            if ($x_env_s =~ /(\w+)=(.*)/) {
+                $self->{EXTRA_ENV}->{$1} = $2;
+            } elsif (exists $ENV{$env_prefix.$x_env_s}) {
+                $self->{EXTRA_ENV}->{$x_env_s} = $ENV{$env_prefix.$x_env_s};
+            }
         }
     }
+    $self->{RUNTIME_LIBDEP} = ();
 }
 
 ##################################################################
@@ -258,10 +349,33 @@ sub CIAO_ROOT ($)
     return $self->{ciao_root};
 }
 
+sub DANCE_ROOT ($)
+{
+    my $self = shift;
+    return $self->{dance_root};
+}
+
 sub HostName ($)
 {
     my $self = shift;
     return $self->{HOSTNAME};
+}
+
+sub IP_Address ($)
+{
+    my $self = shift;
+    if (!defined $self->{IP_ADDRESS}) {
+      my @host = gethostbyname($self->{HOSTNAME});
+      if (scalar(@host) == 0) {
+          $self->{IP_ADDRESS} = "not found";
+      } else {
+          $self->{IP_ADDRESS} = inet_ntoa($host[4]);
+      }
+      if (defined $ENV{'ACE_TEST_VERBOSE'}) {
+          print STDERR "Target host [" . $self->{HOSTNAME} . "] has ipaddres : " . $self->{IP_ADDRESS};
+      }
+    }
+    return $self->{IP_ADDRESS};
 }
 
 sub ExeSubDir ($)
@@ -309,11 +423,39 @@ sub ProcessStopWaitInterval ($)
     return $self->{PROCESS_STOP_WAIT_INTERVAL};
 }
 
+sub AdbWaitForDeviceTimeout ($)
+{
+    my $self = shift;
+    return $self->{ADB_WAIT_FOR_DEVICE_TIMEOUT};
+}
+
+sub LocalEnvDir ($)
+{
+    my $self = shift;
+    my $dir = shift;
+    my $newdir = $dir;
+    if (defined $self->{TARGET_FSROOT}) {
+      $newdir = PerlACE::rebase_path ($dir,
+                                      $self->{HOST_FSROOT},
+                                      $self->{TARGET_FSROOT});
+
+    }
+    if (defined $ENV{'ACE_TEST_VERBOSE'}) {
+        print STDERR "LocalEnvDir for $dir is $newdir\n";
+    }
+    return $newdir;
+}
+
 sub LocalFile ($)
 {
     my $self = shift;
     my $file = shift;
     my $newfile = PerlACE::LocalFile($file);
+    if (defined $self->{TARGET_FSROOT}) {
+      $newfile = PerlACE::rebase_path ($newfile,
+                                       $self->{HOST_FSROOT},
+                                       $self->{TARGET_FSROOT});
+    }
     if (defined $ENV{'ACE_TEST_VERBOSE'}) {
         print STDERR "LocalFile for $file is $newfile\n";
     }
@@ -341,12 +483,19 @@ sub AddLibPath ($)
         $self->{LIBPATH} = PerlACE::concat_path ($self->{LIBPATH}, $dir);
     } else {
         # add rebased path
-        $dir = PerlACE::rebase_path ($dir, $ENV{"ACE_ROOT"}, $self->ACE_ROOT ());
+        $dir = PerlACE::rebase_path ($dir, $self->{HOST_FSROOT}, $self->{TARGET_FSROOT});
         if (defined $ENV{'ACE_TEST_VERBOSE'}) {
             print STDERR "Adding libpath $dir\n";
         }
         $self->{LIBPATH} = PerlACE::concat_path ($self->{LIBPATH}, $dir);
     }
+}
+
+sub AddRuntimeLibrary ($)
+{
+    my $self = shift;
+    my $lib = shift;
+    push(@{$self->{RUNTIME_LIBDEP}}, $lib);
 }
 
 sub SetEnv ($)
@@ -387,7 +536,8 @@ sub PutFile ($)
     my $self = shift;
     my $src = shift;
     my $dest = $self->LocalFile ($src);
-    if ($src != $dest) {
+    if (($src ne $dest) &&
+        (File::Spec->rel2abs($src) ne File::Spec->rel2abs($dest))) {
         copy ($src, $dest);
     }
     return 0;
@@ -398,33 +548,37 @@ sub WaitForFileTimed ($)
     my $self = shift;
     my $file = shift;
     my $timeout = shift;
+    # expand path and possibly map to remote target root
     my $newfile = $self->LocalFile($file);
     if (defined $self->{REMOTE_SHELL} && defined $self->{REMOTE_FILETEST}) {
-      # If the target's config has a different ACE_ROOT, rebase the file
-      # from $ACE_ROOT to the target's root.
-      if ($self->ACE_ROOT () ne $ENV{'ACE_ROOT'}) {
-        $file = File::Spec->rel2abs($file);
-        $file = File::Spec->abs2rel($file, $ENV{"ACE_ROOT"});
-        $file = $self->{TARGET}->ACE_ROOT() . "/$file";
-      }
-      $timeout *= $PerlACE::Process::WAIT_DELAY_FACTOR;
-      my $cmd = $self->{REMOTE_SHELL};
-      if ($self->{REMOTE_FILETEST} =~ /^\d*$/) {
-        $cmd .= " 'test -e $newfile && test -s $newfile ; echo \$?'";
-      } else {
-        $cmd .= $self->{REMOTE_FILETEST} . ' ' . $file;
-      }
-      my $rc = 1;
-      while ($timeout-- != 0) {
-        $rc = int(`$cmd`);
-        if ($rc == 0) {
-          return 0;
+        if (defined $ENV{'ACE_TEST_VERBOSE'}) {
+            print STDERR "Waiting for remote $file using path $newfile\n";
         }
-        sleep 1;
-      }
-      return -1;
+
+        $timeout *= $PerlACE::Process::WAIT_DELAY_FACTOR;
+        my $cmd = $self->{REMOTE_SHELL};
+        if ($self->{REMOTE_FILETEST} =~ /^\d*$/) {
+            $cmd .= " 'test -e $newfile && test -s $newfile ; echo \$?'";
+        } else {
+            $cmd .= $self->{REMOTE_FILETEST} . ' ' . $file;
+        }
+        my $rc = 1;
+        my $mark_tm = time (); # start time
+        while ($timeout > 0) {
+            $rc = int(`$cmd`);
+            if ($rc == 0) {
+                return 0;
+            }
+            select(undef, undef, undef, 0.1);
+            $timeout -= (time () - $mark_tm);
+            $mark_tm = time ();
+        }
+        return -1;
     } else {
-      return PerlACE::waitforfile_timed ($newfile, $timeout);
+        if (defined $ENV{'ACE_TEST_VERBOSE'}) {
+            print STDERR "Waiting for local $file using path $newfile\n";
+        }
+        return PerlACE::waitforfile_timed ($newfile, $timeout);
     }
 }
 
@@ -447,7 +601,7 @@ sub KillAll ($)
 {
     my $self = shift;
     my $procmask = shift;
-    PerlACE::Process::kill_all ($procmask, $self);    
+    PerlACE::Process::kill_all ($procmask, $self);
 }
 
 1;

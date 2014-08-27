@@ -1,3 +1,376 @@
+USER VISIBLE CHANGES BETWEEN ACE-6.2.5 and ACE-6.2.6
+====================================================
+
+. Resolved several data races reported by Intel Inspector XE
+
+. Added optional socket connection optimization for Windows
+
+. Improve functionality and stability of running tests on
+  Android Virtual Device (AVD).
+
+USER VISIBLE CHANGES BETWEEN ACE-6.2.4 and ACE-6.2.5
+====================================================
+
+. Added the ability to build RPMs for just ACE, using an ACE-src tarball.
+  To do this add "--without tao" to the rpmbuild command line.
+
+. Added support for Embarcadero C++Builder XE5 using
+  bcc32 in debug and release mode
+
+. Added support for Embarcadero C++Builder XE6 using
+  bcc32 in debug and release mode
+
+. When Intel C++ 2013 SP1 Update 2 is used with C++11 enabled
+  as compiler feature now also ACE_HAS_CPP11 will be defined,
+  this compiler is now able to compile all our C++11 feature
+  tests
+
+. Fixed several boundary bugs in the ACE RLE Compressor
+
+USER VISIBLE CHANGES BETWEEN ACE-6.2.3 and ACE-6.2.4
+====================================================
+
+. Added support for FC20 and ended support for FC19
+
+. Extended C++11 feature test suite
+
+. Improved support for MingW64
+
+. Improvements to IPv6 support on Windows
+
+USER VISIBLE CHANGES BETWEEN ACE-6.2.2 and ACE-6.2.3
+====================================================
+
+. The ACE_OS::thr_join() method will detect if the thread to be waited on is
+  the calling thread and avert that deadlock. The support needed for this
+  method is available at Vista/Windows Server 2003 and higher; to enable
+  the deadlock prevention, compile ACE with _WIN32_WINNT=0x0502 or higher.
+
+. Ended maintenance and support for FC12 CEEL
+
+. Further improvements of the Android port: Added new define
+  ACE_HAS_EXPLICIT_TEMPLATE_CLASS_INSTANTIATION and related macros
+  ACE_SINGLETON_TEMPLATE_INSTANTIATION and ACE_SINGLETON_TEMPLATE_INSTANTIATE
+  providing a cleaner way to support explicit template (static member or class)
+  instantiation.
+
+' Improvements of the test framework for running tests in a mixed environment
+  where different targets run on different physiscal devices (possibly having
+  different OS).
+
+USER VISIBLE CHANGES BETWEEN ACE-6.2.1 and ACE-6.2.2
+====================================================
+
+. The max_len argument to ACE_Process::command_line_buf changed from int*
+  to size_t*. This corrects a mismatch between the argument type and the
+  data member in ACE_Process from which the value comes.
+
+. Removed some include files from ACE.h. These were not required for ACE.
+  The removed includes are OS_NS_math, Flag_Manip, Handle_Ops, Lib_Find,
+  Init_ACE, Sock_Connect.h. You may have to explicitly add one of these
+  in your own code to restore compiling.
+
+. Further improvements of the Android port, still work in progress.
+
+USER VISIBLE CHANGES BETWEEN ACE-6.2.0 and ACE-6.2.1
+====================================================
+
+. Added support for Fedora 19, ended daily maintenance
+  for Fedora 17 and 18
+
+. Added support for Embarcadero C++BuilderXE4 using
+  bcc32 in debug and release mode
+
+. Improved support for Android
+
+USER VISIBLE CHANGES BETWEEN ACE-6.1.9 and ACE-6.2.0
+====================================================
+
+. None
+
+USER VISIBLE CHANGES BETWEEN ACE-6.1.8 and ACE-6.1.9
+====================================================
+
+. Added MinGW64 as supported platform
+
+. Added support for GCC 4.8.0
+
+USER VISIBLE CHANGES BETWEEN ACE-6.1.7 and ACE-6.1.8
+====================================================
+
+. Small bug fixes
+
+USER VISIBLE CHANGES BETWEEN ACE-6.1.6 and ACE-6.1.7
+====================================================
+
+. Integrated several patches to simplify Debian/Ubuntu
+  packaging
+
+USER VISIBLE CHANGES BETWEEN ACE-6.1.5 and ACE-6.1.6
+====================================================
+
+. Added new event and sema initialization methods to OS_NS_Thread
+  to allow passing pre-initialized condition attributes providing
+  basic support for using time policies in ACE Event classes.
+
+. Added TIME_POLICY support to ACE_Event classes to allow for
+  monotonic timer support for ACE Events.
+
+. Added new regression test:
+  Monotonic_Manual_Event_Test
+
+USER VISIBLE CHANGES BETWEEN ACE-6.1.4 and ACE-6.1.5
+====================================================
+
+. When a ACE_Event_Handler registered for signals is unregistered,
+  whether by unregistering, returning -1 from handle_signal(), or by
+  the reactor closing, the ACE_Event_Handler::handle_close() hook will
+  be called. The close_mask passed will be ACE_Event_Handler::SIGNAL_MASK.
+  In previous versions, handle_close() would only be called when the
+  handle_signal() callback returned -1. This resolves Bugzilla #2368.
+
+. Some initial ACE unit tests to validate the C++11 support of various
+  compilers
+
+. Added support for OpenSuSE 12.2
+
+USER VISIBLE CHANGES BETWEEN ACE-6.1.3 and ACE-6.1.4
+====================================================
+
+. Added a new ACE_Time_Value derived template class (Time_Value_T.h):
+
+  template <class TIME_POLICY> class ACE_Time_Value_T
+
+  This template class overloads 4 new virtual methods from
+  the ACE_Time_Value base class to provide time policy aware
+  time values:
+  to_relative_time ()
+  to_absolute_time ()
+  now ()
+  duplicate ()
+
+. Updated time policy classes to return ACE_Time_Value_T<> instantiations
+  for the corresponding time policy instead of 'common' time values.
+
+. Added new ACE_Monotonic_Time_Policy (Monotonic_Time_Policy.h).
+  This class provides a monotonic time source for supported
+  platforms (Windows and POSIX platforms providing the required
+  clock_gettime() time source; currently verified for Windows and
+  Linux)
+
+. Updated OS_NS_Thread to use the new time policy support in ACE_Time_Value
+  for (relative) time calculations and added new ACE_OS::condattr_setclock ()
+  method.
+
+. Added TIME_POLICY support to ACE_Condition_Attributes to allow for
+  monotonic timer support for ACE_Condition.
+
+. Added TIME_POLICY support to ACE_Message_Queue-s, ACE_Task-s and
+  related classes to enable support for monotonic timers in the timed
+  wait methods (ACE_Condition based). See docs/ACE-monotonic-timer.html
+  for how to use this.
+
+. Added two new regression tests:
+  Monotonic_Task_Test
+  Monotonic_Message_Queue_Test
+  and updated the Bug_4055_Regression_Test to a fixed state.
+
+USER VISIBLE CHANGES BETWEEN ACE-6.1.2 and ACE-6.1.3
+====================================================
+
+. Added support for Oracle Solaris Studio 12 Update 3 (SunCC 5.12)
+
+. Added new XML_Utils library which comes from DAnCE but is now also used
+  by OpenDDS
+
+USER VISIBLE CHANGES BETWEEN ACE-6.1.1 and ACE-6.1.2
+====================================================
+
+. Added compile time support for Windows CE 7, no runtime testing has
+  been performed
+
+. The High Res Timer global scale factor on Windows is now 64bit, see bugzilla
+  3703 for the background of this. If you use the gsf in your code, use the
+  new ACE_High_Res_Timer::global_scale_factor_type type trait to not get
+  any conversion warnings
+
+. Removed Tandem NSK v2/v3 support which resulted in cleanup throughout all
+  code. The emulations for ACE_INT64/ACE_UINT64 have been removed because no
+  platform is using them anymore
+
+USER VISIBLE CHANGES BETWEEN ACE-6.1.0 and ACE-6.1.1
+====================================================
+
+. Minor bug fixes
+
+USER VISIBLE CHANGES BETWEEN ACE-6.0.8 and ACE-6.1.0
+====================================================
+
+. Added compilation support for VxWorks 6.9, no runtime
+  testing has been performed
+
+. Added ACE Run-length encoding compressor
+
+. Fixed several Coverity reported issues
+
+USER VISIBLE CHANGES BETWEEN ACE-6.0.7 and ACE-6.0.8
+====================================================
+
+. Added support for MPC's new feature that creates dependency files for IDL
+  files when generating '-type gnuace' projects. Turned off by default, it
+  can be enabled in a features file or on the command line with
+  '-features ace_idl_dependencies=1'.
+
+USER VISIBLE CHANGES BETWEEN ACE-6.0.6 and ACE-6.0.7
+====================================================
+
+. Added a new method to ACE_Atomic_Op<LOCK, TYPE>, TYPE exchange (TYPE newval)
+  which does an atomic exchange of the new value with ACE_Atomic_Op's value
+  and returns the old value. The tests/Atomic_Op_Test.cpp test program has a
+  test case that exemplifies its usage; see the Exchange_Tester class.
+
+. Added a new feature to timer queue templates classes: TIME_POLICY.
+  This feature is specified through a new template argument and provides the
+  timer queue with a policy for a timer (time of day) value. This feature is
+  intended to replace (in time) the gettimeofday setter method which has been
+  marked @deprecated. For now backwards compatibility is guaranteed.
+  The TIME_POLICY feature provides flexibility with regards to providing a timer
+  source to the timer queues as well as the possibility for a fully optimized
+  calling path.
+  A number of standard time policies are provided in ace/Time_Policy.h.
+  The tests/Timer_Queue_Test.cpp has been updated to reflect and exemplify these
+  changes.
+
+. Added the TIME_POLICY feature also to countdown time class which has now
+  become a template (ace/Countdown_Time_T.h)
+
+. Initial support for Microsoft Visual Studio 11
+
+. Increased overall code quality by using Coverity and Klocwork
+
+USER VISIBLE CHANGES BETWEEN ACE-6.0.5 and ACE-6.0.6
+====================================================
+
+. Removed autoconf support, only traditional way of
+  compilation is shipped from now
+
+. Add support for RHEL 6.1 64bit
+
+USER VISIBLE CHANGES BETWEEN ACE-6.0.4 and ACE-6.0.5
+====================================================
+
+. Improved support for Android and added the ability to run all ACE/TAO tests
+  automatically using the Android emulator
+
+USER VISIBLE CHANGES BETWEEN ACE-6.0.3 and ACE-6.0.4
+====================================================
+
+. Removed support for C++ Builder
+
+. Added support for building with the Android NDK, at least r5c. This
+  is currently available for linux host platforms.
+
+USER VISIBLE CHANGES BETWEEN ACE-6.0.2 and ACE-6.0.3
+====================================================
+
+. Added support for GCC 4.6
+
+USER VISIBLE CHANGES BETWEEN ACE-6.0.1 and ACE-6.0.2
+====================================================
+
+. The ACE_wrappers/ace/OS.h file has been restored in order to ensure
+  build-time compatibility with older ACE versions. Its use will still
+  cause your build to incur more processing time than using the needed
+  ace/OS_NS_*.h files; however, you should be able to build OS.h-including
+  code without needing to replace it with OS_NS_* includes.
+
+. Improved and simplified QNX support
+
+. Changed rand_r() and getpwnam_r() to conform Single UNIX Specification.
+
+. Fixed performance of send_v on windows when individual iovec elements
+  are particularly large.
+
+USER VISIBLE CHANGES BETWEEN ACE-6.0.0 and ACE-6.0.1
+====================================================
+
+. Added support for MinGW with GCC 4.5
+
+USER VISIBLE CHANGES BETWEEN ACE-5.8.3 and ACE-6.0.0
+====================================================
+
+. Changed the string format produced by ACE::timestamp() from the ctime
+  format "Day Mon dd hh:mm:ss yyyy" to ISO-8601 yyyy-mm-dd hh:mm:ss.mmmmmm.
+  This makes the time easier to collate and removes any dependence on locale.
+  The change affects the output from ACE_Log_Msg's %D format and both VERBOSE
+  and VERBOSE_LIGHT timestamps in addition to application-made direct calls
+  to ACE::timestamp().
+
+. Removed GCC < 3 support
+
+. A new build system hook was added for users to include site-private rules
+  in a build. If a file named "rules.private.GNU" in located in any build
+  directory it will get included from
+  $ACE_ROOT/include/makeinclude/rules.local.GNU. The "private_rules_file"
+  make variable can be set to override the name and/or location of the file.
+  If no such rules file exists, its absence is silently ignored. This
+  facility can be used, for example, to integrate a specialized code checker
+  into the build process.
+
+USER VISIBLE CHANGES BETWEEN ACE-5.8.2 and ACE-5.8.3
+====================================================
+
+. Two new methods were added to ACE_Pipe: close_read() and close_write().
+  These methods can be used to close individual pipe handles.
+
+. The ACE::handle_ready() family of methods was changed to prefer using
+  poll() over select() on platforms where poll() is available. This
+  preference was previously only used if ACE_HAS_LIMITED_SELECT was set.
+  The ACE_HAS_LIMITED_SELECT choice is removed, making ACE_HAS_POLL the
+  setting that switches this preference. The driving reason for this
+  is that if select() is called to detect changes on a handle whose
+  values falls outside that which can safely be stored in an fdset,
+  the handle-setting macros/functions will set/clear bits outside
+  of the fdset. This results in very weird memory changes, often in
+  the stack, which are very hard to diagnose. poll()'s operation
+  does not suffer from this affect. With the growing use of large
+  numbers of handles and use of ACE_Dev_Poll_Reactor on Linux,
+  the rate at which this problem was cropping up was increasing.
+
+. Added a simple helper ACE::is_equal() which compares equality of two
+  objects without using operator==. This is useful for comparing floating
+  point values.
+
+. Removed all deprecated methods, arguments, files, classes, macros and
+  anything else we kept for years.
+
+. Removed Irix/Tru64/SCO/Uniware/Cray support
+
+. ACE_Pair has been removed. Users should now use std::pair.
+
+. This is the last micro release that will work with GCC < 3, after x.8.3
+  support for GCC < 3 will be removed
+
+USER VISIBLE CHANGES BETWEEN ACE-5.8.1 and ACE-5.8.2
+====================================================
+
+. Added support for the Microsoft Visual Studio 2010 IDE (vc10)
+
+. Removed complete support for emulated C++ exceptions
+
+USER VISIBLE CHANGES BETWEEN ACE-5.8.0 and ACE-5.8.1
+====================================================
+
+. Added support for Microsoft Visual Studio 2010 using nmake
+
+. Reduced the amount of doxygen pages generated, the original settings caused
+  a doxygen generated html package of 1.4GB which was way too large
+
+. Extended ACE INet addon library with:
+  * HTTP Basic Authentication
+  * SSL/HTTPS support.
+  * Proxy CONNECT tunneling.
+
 USER VISIBLE CHANGES BETWEEN ACE-5.7.9 and ACE-5.8.0
 ====================================================
 

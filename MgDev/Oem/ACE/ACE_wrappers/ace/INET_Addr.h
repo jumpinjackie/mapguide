@@ -4,7 +4,7 @@
 /**
  *  @file    INET_Addr.h
  *
- *  $Id: INET_Addr.h 82789 2008-09-19 14:47:28Z johnnyw $
+ *  $Id: INET_Addr.h 95533 2012-02-14 22:59:17Z wotte $
  *
  *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
  */
@@ -71,15 +71,15 @@ public:
   explicit ACE_INET_Addr (u_short port_number,
                           ACE_UINT32 ip_addr = INADDR_ANY);
 
-  /// Uses <getservbyname> to create an ACE_INET_Addr from a
-  /// <port_name>, the remote @a host_name, and the @a protocol.
+  /// Uses getservbyname() to create an ACE_INET_Addr from a
+  /// @a port_name, the remote @a host_name, and the @a protocol.
   ACE_INET_Addr (const char port_name[],
                  const char host_name[],
                  const char protocol[] = "tcp");
 
   /**
-   * Uses <getservbyname> to create an ACE_INET_Addr from a
-   * <port_name>, an Internet @a ip_addr, and the @a protocol.  This
+   * Uses getservbyname() to create an ACE_INET_Addr from a
+   * @a port_name, an Internet @a ip_addr, and the @a protocol.  This
    * method assumes that @a ip_addr is in host byte order.
    */
   ACE_INET_Addr (const char port_name[],
@@ -133,7 +133,7 @@ public:
    * are converted into network byte order, otherwise they are assumed to be
    * in network byte order already and are passed straight through.
    *
-   * If <map> is non-zero and IPv6 support has been compiled in,
+   * If @a map is non-zero and IPv6 support has been compiled in,
    * then this address will be set to the IPv4-mapped IPv6 address of it.
    */
   int set (u_short port_number,
@@ -141,15 +141,15 @@ public:
            int encode = 1,
            int map = 0);
 
-  /// Uses <getservbyname> to initialize an ACE_INET_Addr from a
-  /// <port_name>, the remote @a host_name, and the @a protocol.
+  /// Uses getservbyname() to initialize an ACE_INET_Addr from a
+  /// @a port_name, the remote @a host_name, and the @a protocol.
   int set (const char port_name[],
            const char host_name[],
            const char protocol[] = "tcp");
 
   /**
-   * Uses <getservbyname> to initialize an ACE_INET_Addr from a
-   * <port_name>, an @a ip_addr, and the @a protocol.  This assumes that
+   * Uses getservbyname() to initialize an ACE_INET_Addr from a
+   * @a port_name, an @a ip_addr, and the @a protocol.  This assumes that
    * @a ip_addr is already in network byte order.
    */
   int set (const char port_name[],
@@ -250,13 +250,13 @@ public:
                    int encode = 1,
                    int map = 0);
 
-#if (defined (__linux__) || defined (ACE_WIN32)) && defined (ACE_HAS_IPV6)
+#if (defined (ACE_LINUX) || defined (ACE_WIN32)) && defined (ACE_HAS_IPV6)
   /**
    * Sets the interface that should be used for this address. This only has
    * an effect when the address is link local, otherwise it does nothing.
    */
   int set_interface (const char *intf_name);
-#endif /* (__linux__ || ACE_WIN32) && ACE_HAS_IPV6 */
+#endif /* (ACE_LINUX || ACE_WIN32) && ACE_HAS_IPV6 */
 
   /// Return the port number, converting it into host byte-order.
   u_short get_port_number (void) const;

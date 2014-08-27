@@ -1,4 +1,4 @@
-// $Id: Packets_Received_Monitor.cpp 86518 2009-08-18 12:30:56Z olli $
+// $Id: Packets_Received_Monitor.cpp 95533 2012-02-14 22:59:17Z wotte $
 
 #include "ace/Monitor_Control/Packets_Received_Monitor.h"
 
@@ -18,7 +18,7 @@ namespace ACE
 #if defined (ACE_HAS_WIN32_PDH)
       , Windows_Multi_Instance_Monitor (
             ACE_TEXT ("\\Network Interface(*)\\Packets Received/sec"))
-#elif defined (linux) || defined (AIX)
+#elif defined (ACE_LINUX) || defined (AIX)
       , Linux_Network_Interface_Monitor (
             " %*[^:]: %*u %lu %*u %*u %*u %*u %*u %*u %*u %*u")
             /// Scan format for /proc/net/dev
@@ -26,7 +26,7 @@ namespace ACE
       , Solaris_Network_Interface_Monitor (ACE_TEXT ("ipackets"))
 #elif defined (__FreeBSD__) || defined (__Lynx__)
       , FreeBSD_Network_Interface_Monitor (ACE_TEXT ("ipackets"))
-#elif defined (__NetBSD__) || defined (__OpenBSD__) 
+#elif defined (__NetBSD__) || defined (__OpenBSD__)
       , BSD_Network_Interface_Monitor (ACE_TEXT ("ipackets"))
 #endif
     {}
@@ -35,7 +35,7 @@ namespace ACE
     Packets_Received_Monitor::update (void)
     {
       this->update_i ();
-      
+
       /// On some platforms, value_ is an ACE_UINT64.
       this->receive (static_cast<double> (this->value_));
     }
@@ -45,7 +45,7 @@ namespace ACE
     {
       return Packets_Received_Monitor::default_name_;
     }
-    
+
     void
     Packets_Received_Monitor::clear_i (void)
     {

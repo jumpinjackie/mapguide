@@ -1,10 +1,9 @@
 # -*- Makefile -*-
-# $Id: platform_linux_common.GNU 89516 2010-03-17 20:02:14Z shuston $
+# $Id: platform_linux_common.GNU 93462 2011-03-02 12:45:06Z olli $
 
 # We always include config-linux.h on Linux platforms.
 ACE_PLATFORM_CONFIG ?= config-linux.h
 
-exceptions ?= 1
 debug ?= 1
 optimize ?= 1
 threads ?= 1
@@ -46,24 +45,23 @@ PLATFORM_BOOST_CPPFLAGS ?=
 PLATFORM_BOOST_LDLAGS ?=
 PLATFORM_BOOST_UTF_LIBS ?= -lboost_unit_test_framework
 
-ifeq (Ubuntu, $(findstring Ubuntu,$(LSB_RELEASE_ID)))
-  PLATFORM_TK_CPPFLAGS=$(shell . /usr/lib/tk*/tkConfig.sh && echo -n $$TK_INCLUDE_SPEC $$TK_DEFS)
-  PLATFORM_TK_LIBS=$(shell . /usr/lib/tk*/tkConfig.sh && echo -n $$TK_LIB_FLAG)
-  PLATFORM_TK_LDFLAGS=
-
-  PLATFORM_TCL_CPPFLAGS=
-  PLATFORM_TCL_LIBS=-ltcl8.4
-  PLATFORM_TCL_LDFLAGS=
+ifeq ($(buildbits),64)
+PLATFORM_TK_CPPFLAGS=$(shell . /usr/lib64/tkConfig.sh && echo -n $$TK_INCLUDE_SPEC $$TK_DEFS)
+PLATFORM_TK_LIBS=$(shell . /usr/lib64/tkConfig.sh && echo -n $$TK_LIB_FLAG)
 else
-  PLATFORM_TK_CPPFLAGS=-I$(shell . /usr/lib*/tkConfig.sh && echo -n $$TK_INC_DIR $$TK_DEFS)
-  PLATFORM_TK_LIBS=$(shell . /usr/lib*/tkConfig.sh && echo -n $$TK_LIB_FLAG)
-  PLATFORM_TK_LDFLAGS=
-
-
-  PLATFORM_TCL_CPPFLAGS=
-  PLATFORM_TCL_LIBS=-ltcl
-  PLATFORM_TCL_LDFLAGS=
+PLATFORM_TK_CPPFLAGS=$(shell . /usr/lib/tkConfig.sh && echo -n $$TK_INCLUDE_SPEC $$TK_DEFS)
+PLATFORM_TK_LIBS=$(shell . /usr/lib/tkConfig.sh && echo -n $$TK_LIB_FLAG)
 endif
+PLATFORM_TK_LDFLAGS=
+
+ifeq ($(buildbits),64)
+PLATFORM_TCL_CPPFLAGS=$(shell . /usr/lib64/tclConfig.sh && echo -n $$TCL_INCLUDE_SPEC $$TCL_DEFS)
+PLATFORM_TCL_LIBS=$(shell . /usr/lib64/tclConfig.sh && echo -n $$(eval echo $$TCL_LIB_FLAG))
+else
+PLATFORM_TCL_CPPFLAGS=$(shell . /usr/lib/tclConfig.sh && echo -n $$TCL_INCLUDE_SPEC $$TCL_DEFS)
+PLATFORM_TCL_LIBS=$(shell . /usr/lib/tclConfig.sh && echo -n $$(eval echo $$TCL_LIB_FLAG))
+endif
+PLATFORM_TCL_LDFLAGS=
 
 PLATFORM_QT_CPPFLAGS ?= -I$(QTDIR)/include
 PLATFORM_QT_LIBS ?= -lqt-mt
@@ -83,9 +81,6 @@ ifeq ($(sctp),lksctp)
   PLATFORM_SCTP_LDFLAGS?= -L/usr/local/lib
   PLATFORM_SCTP_LIBS?= -lsctp
 endif
-
-PLATFORM_AIO_SUPPORT := \
-       $(shell getconf AIO_LISTIO_MAX >/dev/null 2>&1 && echo -DACE_HAS_AIO_CALLS)
 
 GNU_LIBPTHREAD_VERSION := $(shell getconf GNU_LIBPTHREAD_VERSION 2> /dev/null || echo Unknown)
 ifeq (NPTL, $(word 1,$(GNU_LIBPTHREAD_VERSION)))
@@ -114,31 +109,6 @@ ifeq ($(ssl),1)
 endif # ssl
 
 SYSARCH := $(shell uname -m)
-
-ifeq ($(insure),1)
-  CC  = insure
-  CXX = insure
-else
-  ifneq ($(CROSS_COMPILE),)
-    # Build using the cross-tools
-    CC  = ${CROSS_COMPILE}gcc
-    CXX = ${CROSS_COMPILE}g++
-    AR  = ${CROSS_COMPILE}ar
-    # Cross-linker requires this for linked in shared libs that depend
-    # themselves on other shared libs (not directly linked in)
-    LDFLAGS += -Wl,-rpath-link,$(ACE_ROOT)/lib
-    ifneq (,$(HOST_ROOT))
-      TAO_IDLFLAGS += -g $(HOST_ROOT)/bin/ace_gperf
-      TAO_IDL = $(HOST_ROOT)/bin/tao_idl
-      TAO_IDL_DEP = $(TAO_IDL)
-      TAO_IDL3_TO_IDL2 = $(HOST_ROOT)/TAO/CIAO/bin/tao_idl3_to_idl2
-      TAO_IDL3_TO_IDL2_DEP = $(TAO_IDL3_TO_IDL2)
-      # make sure to use the target compiler, not the cross-compiler
-      # as preprocessor for the cross-compiled idl tools
-      TAO_IDL_PREPROCESSOR = gcc
-    endif
-  endif
-endif
 
 PIC      = -fPIC
 AR      ?= ar

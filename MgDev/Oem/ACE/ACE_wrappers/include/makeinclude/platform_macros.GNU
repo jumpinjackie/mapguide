@@ -1,1 +1,1 @@
-include $(ACE_ROOT)/include/makeinclude/platform_linux.GNU
+include ${ACE_ROOT}/include/makeinclude/platform_linux.GNU

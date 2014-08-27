@@ -1,10 +1,6 @@
-// $Id: Trace.cpp 87823 2009-11-30 12:38:34Z johnnyw $
+// $Id: Trace.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/Trace.h"
-
-ACE_RCSID (ace,
-           Trace,
-           "$Id: Trace.cpp 87823 2009-11-30 12:38:34Z johnnyw $")
 
 // Turn off tracing for the duration of this file.
 #if defined (ACE_NTRACE)
@@ -12,7 +8,7 @@ ACE_RCSID (ace,
 #endif /* ACE_NTRACE */
 #define ACE_NTRACE 1
 
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Object_Manager_Base.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
@@ -97,7 +93,7 @@ ACE_Trace::ACE_Trace (const ACE_TCHAR *n,
           && lm->trace_active () == 0)
         {
           lm->trace_active (1);
-          ACE_DEBUG ((LM_TRACE,
+          ACELIB_DEBUG ((LM_TRACE,
                       ACE_TEXT ("%*s(%t) calling %s in file `%s' on line %d\n"),
                       ACE_Trace::nesting_indent_ * lm->inc (),
                       ACE_TEXT (""),
@@ -123,7 +119,7 @@ ACE_Trace::~ACE_Trace (void)
           && lm->trace_active () == 0)
         {
           lm->trace_active (1);
-          ACE_DEBUG ((LM_TRACE,
+          ACELIB_DEBUG ((LM_TRACE,
                       ACE_TEXT ("%*s(%t) leaving %s\n"),
                       ACE_Trace::nesting_indent_ * lm->dec (),
                       ACE_TEXT (""),

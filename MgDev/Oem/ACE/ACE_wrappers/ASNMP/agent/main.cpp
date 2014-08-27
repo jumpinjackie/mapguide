@@ -1,13 +1,12 @@
-// $Id: main.cpp 80826 2008-03-04 14:51:23Z wotte $
+// $Id: main.cpp 97309 2013-09-01 13:10:27Z mesnier_p $
 
 // This server daemon processes SNMP Version 1 get, get-next, and set
 // commands. over the MIB II "System" group only.
 
 #include "ace/config-all.h"
 #include "snmp_agent.h"
-#include "ace/ACE.h"
-
-ACE_RCSID(agent, main, "$Id: main.cpp 80826 2008-03-04 14:51:23Z wotte $")
+#include "ace/Init_ACE.h"
+#include "ace/Argv_Type_Converter.h"
 
 int
 ACE_TMAIN(int argc, ACE_TCHAR *argv[])
@@ -15,7 +14,12 @@ ACE_TMAIN(int argc, ACE_TCHAR *argv[])
   ACE::init ();
   snmp_agent the_agent;
 
+#ifdef ACE_USES_WCHAR
+  ACE_Argv_Type_Converter arg_converter(argc, argv);
+  if (the_agent.set_args(arg_converter.get_argc (), arg_converter.get_ASCII_argv()))
+#else
   if (the_agent.set_args(argc, argv))
+#endif
     return 1;
 
   if (!the_agent.valid()) {

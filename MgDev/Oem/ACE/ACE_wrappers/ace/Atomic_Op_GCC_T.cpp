@@ -1,10 +1,6 @@
-// $Id: Atomic_Op_GCC_T.cpp 89345 2010-03-05 13:04:51Z johnnyw $
+// $Id: Atomic_Op_GCC_T.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/OS_NS_unistd.h"
-
-ACE_RCSID (ace,
-           Atomic_Op_GCC,
-           "$Id: Atomic_Op_GCC_T.cpp 89345 2010-03-05 13:04:51Z johnnyw $")
 
 #if defined (ACE_HAS_GCC_ATOMIC_BUILTINS) && (ACE_HAS_GCC_ATOMIC_BUILTINS == 1)
 
@@ -19,8 +15,8 @@ void
 ACE_Atomic_Op_GCC<T>::dump (void) const
 {
 #if defined (ACE_HAS_DUMP)
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 

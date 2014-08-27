@@ -1,4 +1,4 @@
-// $Id: Logging_Strategy.cpp 90712 2010-06-18 20:01:29Z shuston $
+// $Id: Logging_Strategy.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/Logging_Strategy.h"
 #include "ace/Service_Config.h"
@@ -10,15 +10,11 @@
 #include "ace/streams.h"
 
 #include "ace/Lib_Find.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Reactor.h"
 #include "ace/OS_NS_string.h"
 #include "ace/OS_NS_stdio.h"
 #include "ace/OS_NS_unistd.h"
-
-ACE_RCSID (ace,
-           Logging_Strategy,
-           "$Id: Logging_Strategy.cpp 90712 2010-06-18 20:01:29Z shuston $")
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -255,7 +251,7 @@ ACE_Logging_Strategy::ACE_Logging_Strategy (void)
       (this->filename_,
        MAXPATHLEN - 7) == -1) // 7 for "logfile"
     {
-      ACE_ERROR ((LM_ERROR,
+      ACELIB_ERROR ((LM_ERROR,
                   ACE_TEXT ("Temporary path too long, ")
                   ACE_TEXT ("defaulting to current directory\n")));
       this->filename_[0] = 0;
@@ -410,7 +406,7 @@ ACE_Logging_Strategy::handle_timeout (const ACE_Time_Value &,
     {
       // Lock out any other logging.
       if (this->log_msg_->acquire ())
-        ACE_ERROR_RETURN ((LM_ERROR,
+        ACELIB_ERROR_RETURN ((LM_ERROR,
                            ACE_TEXT ("Cannot acquire lock!\n")),
                           -1);
 
@@ -523,7 +519,7 @@ ACE_Logging_Strategy::handle_timeout (const ACE_Time_Value &,
           ACE_OS::rename (this->filename_, backup);
         }
       else
-        ACE_ERROR ((LM_ERROR,
+        ACELIB_ERROR ((LM_ERROR,
                     ACE_TEXT ("Backup file name too long; ")
                     ACE_TEXT ("backup logfile not saved.\n")));
 

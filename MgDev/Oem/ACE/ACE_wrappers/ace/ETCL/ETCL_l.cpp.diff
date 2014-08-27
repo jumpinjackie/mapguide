@@ -6,7 +6,7 @@
 
  /* Scanner skeleton version:
 - * $Header$
-+ * $Id: ETCL_l.cpp.diff 85378 2009-05-19 06:16:48Z johnnyw $
++ * $Id: ETCL_l.cpp.diff 91730 2010-09-13 09:31:11Z johnnyw $
   */
 
  #define FLEX_SCANNER
@@ -24,7 +24,8 @@
 
 -#include <stdlib.h>
 -#include <unistd.h>
-+#include "ace/OS.h"
++#include "ace/OS_NS_unistd.h"
++#include "ace/OS_NS_stdio.h"
 
  /* Use prototypes in function declarations. */
  #define YY_USE_PROTOS
@@ -48,7 +49,7 @@
  #define INITIAL 0
 -#line 4 "ETCL.ll"
 +//#line 4 "ETCL/ETCL.ll"
- // $Id: ETCL_l.cpp.diff 85378 2009-05-19 06:16:48Z johnnyw $
+ // $Id: ETCL_l.cpp.diff 91730 2010-09-13 09:31:11Z johnnyw $
  // ========================================================================
  //
  // = LIBRARY

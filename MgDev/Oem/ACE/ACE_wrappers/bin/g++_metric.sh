@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: g++_metric.sh 80826 2008-03-04 14:51:23Z wotte $
+# $Id: g++_metric.sh 91813 2010-09-17 07:52:52Z johnnyw $
 #
 # This simple script is used to gather compile time metrics.  You can use
 # it with make like this:
@@ -17,12 +17,12 @@ do
     shift
     target=$1
     break
-  fi  
+  fi
   shift
 done
 
 # echo out "(%x)", the return value from g++, so the script processes the output
-#  will only use times for successful compilations, i.e., "(0)". 
+#  will only use times for successful compilations, i.e., "(0)".
 /usr/bin/time -f "//compile time(%x): ${PWD#$ACE_ROOT/}/${target} %U %S" g++ $commandline
 
 retval=$?

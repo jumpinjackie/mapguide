@@ -1,4 +1,4 @@
-# $Id: platform_linux_suncc.GNU 86702 2009-09-14 06:55:44Z olli $
+# $Id: platform_linux_suncc.GNU 93520 2011-03-10 11:05:17Z olli $
 
 # This file should allow ACE to be built on Linux, using the Sun compiler.
 # The Sun compiler on linux is still in the Alpha stage, so no guarantees
@@ -13,40 +13,35 @@ ifeq ($(insure),0)
   CXX = CC
 endif
 
-ifeq ($(threads),1)
-    CPPFLAGS  += -D_REENTRANT $(PLATFORM_AIO_SUPPORT)
-endif # threads
-
 GNU_LIBPTHREAD_VERSION := $(shell getconf GNU_LIBPTHREAD_VERSION)
 ifeq (NPTL, $(word 1,$(GNU_LIBPTHREAD_VERSION)))
   CPPFLAGS += -DACE_HAS_LINUX_NPTL
 endif
 
-CCFLAGS += $(CFLAGS) $(IMPLICIT_TEMPLATES_FLAG)
-DCFLAGS += -g
-DLD     = $(CXX)
-LD      = $(CXX)
-LIBS    += -ldl
+DCCFLAGS += -g
+DCFLAGS  += -g
+DLD      = $(CXX)
+LD       = $(CXX)
+LIBS     += -ldl
+OCCFLAGS = -O3
+OCFLAGS  = -O3
+PRELIB   = @true
+SOFLAGS  += -shared
+PIC      = -PIC
+
+SOBUILD  = $(COMPILE.cc) $(PIC) -o $(VSHDIR)$*.so $<; \
+           $(SOLINK.cc) -o $@ $(LDFLAGS) $(VSHDIR)$*.o
 
 ifeq ($(threads),1)
-  LIBS += -lpthread
-  ifeq (-DACE_HAS_AIO_CALLS,$(PLATFORM_AIO_SUPPORT))
-    LIBS += -lrt
-  endif
+  CPPFLAGS  += -D_REENTRANT
+  LIBS += -lpthread -lrt
 endif
-
-OCFLAGS += -O3
 
 ifeq ($(optimize),0)
   # Disable all optimizing in code
   CPPFLAGS += -O0
 endif
 
-PIC     =
-SOFLAGS += $(CPPFLAGS) -shared
-SOBUILD = $(COMPILE.cc) $(PIC) -o $(VSHDIR)$*.so $<; \
-          $(SOLINK.cc) -o $@ $(LDFLAGS) $(VSHDIR)$*.o
-PRELIB  = @true
 
 ifeq ($(shared_libs), 1)
   ifneq ($static_libs_only), 1)

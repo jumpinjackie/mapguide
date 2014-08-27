@@ -1,7 +1,7 @@
-// $Id: SOCK_Dgram_Mcast_QoS.cpp 80826 2008-03-04 14:51:23Z wotte $
+// $Id: SOCK_Dgram_Mcast_QoS.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "SOCK_Dgram_Mcast_QoS.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/OS_NS_sys_socket.h"
 
 #if defined (ACE_WIN32)
@@ -18,10 +18,6 @@
 #define IMR_MULTIADDR imr_multiaddr
 #endif /* ! defined (IMR_MULTIADDR) */
 
-
-ACE_RCSID (QoS,
-           SOCK_Dgram_Mcast_QoS,
-           "$Id: SOCK_Dgram_Mcast_QoS.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -54,7 +50,7 @@ ACE_SOCK_Dgram_Mcast_QoS::open (const ACE_INET_Addr &addr,
   if (this->get_handle () != ACE_INVALID_HANDLE)
     return 0;
 
-  ACE_DEBUG ((LM_DEBUG,
+  ACELIB_DEBUG ((LM_DEBUG,
               "Get Handle Returns Invalid Handle\n"));
 
   if (ACE_SOCK::open (SOCK_DGRAM,
@@ -220,16 +216,16 @@ ACE_SOCK_Dgram_Mcast_QoS::subscribe (const ACE_INET_Addr &mcast_addr,
         {
           // Subscribe to the QoS session.
           if (this->qos_manager_.join_qos_session (qos_session) == -1)
-            ACE_ERROR_RETURN ((LM_ERROR,
+            ACELIB_ERROR_RETURN ((LM_ERROR,
                                ACE_TEXT ("Unable to join QoS Session\n")),
                               -1);
         }
       else
         {
           if (this->close () != 0)
-            ACE_ERROR ((LM_ERROR,
+            ACELIB_ERROR ((LM_ERROR,
                         ACE_TEXT ("Unable to close socket\n")));
-            ACE_ERROR_RETURN ((LM_ERROR,
+            ACELIB_ERROR_RETURN ((LM_ERROR,
                                ACE_TEXT ("Dest Addr in the QoS Session does")
                                ACE_TEXT (" not match the address passed into")
                                ACE_TEXT (" subscribe\n")),

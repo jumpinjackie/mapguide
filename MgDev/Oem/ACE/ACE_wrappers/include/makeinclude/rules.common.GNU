@@ -1,7 +1,7 @@
 # -*- Makefile -*-
 
 #----------------------------------------------------------------------------
-#	$Id: rules.common.GNU 90163 2010-05-18 21:42:20Z mitza $
+#	$Id: rules.common.GNU 95440 2012-01-17 05:19:09Z jonesc $
 #
 #	Common targets
 #----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ clean_idl_stubs:  clean_idl_stubs.nested clean_idl_stubs.local
 clean:            clean.nested clean.local
 realclean:        realclean.nested realclean.local
 clobber:          clobber.nested clobber.local
-depend:	          depend.nested depend.local
+depend:	          depend.nested depend.local depend_idl.local
 rcs_info:         rcs_info.nested rcs_info.local
 idl_stubs:        idl_stubs.nested idl_stubs.local
 svnignore:	  svnignore.nested svnignore.local

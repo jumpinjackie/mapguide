@@ -4,7 +4,7 @@
 /**
  *  @file    Thread_Adapter.h
  *
- *  $Id: Thread_Adapter.h 80826 2008-03-04 14:51:23Z wotte $
+ *  $Id: Thread_Adapter.h 92682 2010-11-23 23:41:19Z shuston $
  *
  *  @author Carlos O'Ryan <coryan@uci.edu>
  */
@@ -56,6 +56,7 @@ public:
                       , ACE_SEH_EXCEPT_HANDLER selector = 0,
                       ACE_SEH_EXCEPT_HANDLER handler = 0
 # endif /* ACE_HAS_WIN32_STRUCTURAL_EXCEPTIONS */
+                      , long cancel_flags = 0
                       );
 
   /**
@@ -69,21 +70,17 @@ public:
   ACE_Thread_Manager *thr_mgr (void);
 
 protected:
-
   /// Ensure that this object must be allocated on the heap.
   ~ACE_Thread_Adapter (void);
 
 private:
-
   /// Called by invoke, mainly here to separate the SEH stuff because
   /// SEH on Win32 doesn't compile with local vars with destructors.
   virtual ACE_THR_FUNC_RETURN invoke_i (void);
 
 private:
-
   /// Optional thread manager.
   ACE_Thread_Manager *thr_mgr_;
-
 };
 
 ACE_END_VERSIONED_NAMESPACE_DECL

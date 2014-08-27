@@ -1,12 +1,12 @@
-// $Id: Local_Memory_Pool.cpp 80826 2008-03-04 14:51:23Z wotte $
+// $Id: Local_Memory_Pool.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 // Local_Memory_Pool.cpp
 #include "ace/Local_Memory_Pool.h"
 #include "ace/Auto_Ptr.h"
 #include "ace/OS_Memory.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 
-ACE_RCSID(ace, Local_Memory_Pool, "$Id: Local_Memory_Pool.cpp 80826 2008-03-04 14:51:23Z wotte $")
+
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -62,7 +62,7 @@ ACE_Local_Memory_Pool::acquire (size_t nbytes,
   ACE_Auto_Basic_Array_Ptr<char> cp (temp);
 
   if (this->allocated_chunks_.insert (cp.get ()) != 0)
-    ACE_ERROR_RETURN ((LM_ERROR,
+    ACELIB_ERROR_RETURN ((LM_ERROR,
                        ACE_TEXT ("(%P|%t) insertion into set failed\n")),
                       0);
 

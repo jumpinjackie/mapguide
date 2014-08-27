@@ -1,5 +1,4 @@
-// Framework_Component.cpp
-// $Id: Framework_Component.cpp 84128 2009-01-09 15:07:40Z johnnyw $
+// $Id: Framework_Component.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/Framework_Component.h"
 
@@ -8,12 +7,10 @@
 #endif /* __ACE_INLINE__ */
 
 #include "ace/Object_Manager.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/DLL_Manager.h"
 #include "ace/Recursive_Thread_Mutex.h"
 #include "ace/OS_NS_string.h"
-
-ACE_RCSID(ace, Framework_Component, "$Id: Framework_Component.cpp 84128 2009-01-09 15:07:40Z johnnyw $")
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -60,7 +57,7 @@ int
 ACE_Framework_Repository::close (void)
 {
   ACE_TRACE ("ACE_Framework_Repository::close");
-  ACE_MT (ACE_GUARD_RETURN (ACE_Thread_Mutex, ace_mon, this->lock_, -1));
+  ACE_GUARD_RETURN (ACE_SYNCH_MUTEX, ace_mon, this->lock_, -1);
 
   this->shutting_down_ = 1;
 
@@ -128,7 +125,7 @@ int
 ACE_Framework_Repository::register_component (ACE_Framework_Component *fc)
 {
   ACE_TRACE ("ACE_Framework_Repository::register_component");
-  ACE_MT (ACE_GUARD_RETURN (ACE_Thread_Mutex, ace_mon, this->lock_, -1));
+  ACE_GUARD_RETURN (ACE_SYNCH_MUTEX, ace_mon, this->lock_, -1);
   int i;
 
   // Check to see if it's already registered
@@ -136,7 +133,7 @@ ACE_Framework_Repository::register_component (ACE_Framework_Component *fc)
     if (this->component_vector_[i] &&
         fc->this_ == this->component_vector_[i]->this_)
       {
-        ACE_ERROR_RETURN ((LM_ERROR,
+        ACELIB_ERROR_RETURN ((LM_ERROR,
           "AFR::register_component: error, compenent already registered\n"),
                           -1);
       }
@@ -155,7 +152,7 @@ int
 ACE_Framework_Repository::remove_component (const ACE_TCHAR *name)
 {
   ACE_TRACE ("ACE_Framework_Repository::remove_component");
-  ACE_MT (ACE_GUARD_RETURN (ACE_Thread_Mutex, ace_mon, this->lock_, -1));
+  ACE_GUARD_RETURN (ACE_SYNCH_MUTEX, ace_mon, this->lock_, -1);
   int i;
 
   for (i = 0; i < this->current_size_; i++)
@@ -178,7 +175,7 @@ ACE_Framework_Repository::remove_dll_components (const ACE_TCHAR *dll_name)
 
   if (this->shutting_down_)
     return this->remove_dll_components_i (dll_name);
-  ACE_MT (ACE_GUARD_RETURN (ACE_Thread_Mutex, ace_mon, this->lock_, -1));
+  ACE_GUARD_RETURN (ACE_SYNCH_MUTEX, ace_mon, this->lock_, -1);
 
   return this->remove_dll_components_i (dll_name);
 }
@@ -196,7 +193,7 @@ ACE_Framework_Repository::remove_dll_components_i (const ACE_TCHAR *dll_name)
         ACE_OS::strcmp (this->component_vector_[i]->dll_name_, dll_name) == 0)
       {
           if (ACE::debug ())
-            ACE_DEBUG ((LM_DEBUG,
+            ACELIB_DEBUG ((LM_DEBUG,
                         ACE_TEXT ("AFR::remove_dll_components_i (%s) ")
                         ACE_TEXT ("component \"%s\"\n"),
                         dll_name, this->component_vector_[i]->name_));
@@ -271,7 +268,7 @@ ACE_Framework_Repository::ACE_Framework_Repository (int size)
   ACE_TRACE ("ACE_Framework_Repository::ACE_Framework_Repository");
 
   if (this->open (size) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_Framework_Repository")));
 }

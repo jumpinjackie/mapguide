@@ -4,7 +4,7 @@
 /**
  *  @file    Atomic_Op.h
  *
- *  $Id: Atomic_Op.h 89936 2010-04-20 13:04:53Z johnnyw $
+ *  $Id: Atomic_Op.h 96147 2012-09-15 01:13:21Z shuston $
  *
  *  @author Douglas C. Schmidt <schmidt@uci.edu>
  */
@@ -124,6 +124,9 @@ public:
   /// Atomically assign <rhs> to @c value_.
   ACE_Atomic_Op<ACE_Thread_Mutex, long> &operator= (const ACE_Atomic_Op<ACE_Thread_Mutex, long> &rhs);
 
+  /// Exchange value with @a newval.
+  long exchange (long newval);
+
   /// Explicitly return @c value_.
   long value (void) const;
 
@@ -142,9 +145,9 @@ public:
 
 private:
 
-  // This function cannot be supported by this template specialization.
-  // If you need access to an underlying lock, use the ACE_Atomic_Op_Ex
-  // template instead.
+  /// This function cannot be supported by this template specialization.
+  /// If you need access to an underlying lock, use the ACE_Atomic_Op_Ex
+  /// template instead.
   ACE_Thread_Mutex &mutex (void);
 
 private:
@@ -152,7 +155,7 @@ private:
   /// Current object decorated by the atomic op.
   volatile long value_;
 
-  // Pointers to selected atomic op implementations.
+  /// Pointers to selected atomic op implementations.
   static long (*increment_fn_) (volatile long *);
   static long (*decrement_fn_) (volatile long *);
   static long (*exchange_fn_) (volatile long *, long);
@@ -220,6 +223,9 @@ public:
 
   /// Atomically assign <rhs> to @c value_.
   ACE_Atomic_Op<ACE_Thread_Mutex, unsigned long> &operator= (const ACE_Atomic_Op<ACE_Thread_Mutex, unsigned long> &rhs);
+
+  /// Exchange value with @a newval.
+  unsigned long exchange (unsigned long newval);
 
   /// Explicitly return @c value_.
   unsigned long value (void) const;
@@ -305,6 +311,31 @@ public:
   ACE_Atomic_Op (const ACE_Atomic_Op<ACE_Thread_Mutex, unsigned long> &c);
   ACE_Atomic_Op<ACE_Thread_Mutex, unsigned long> &operator= (unsigned long rhs);
 };
+
+// The long long intrinsics are not available on PPC
+#if !defined (__powerpc__)
+template<>
+class ACE_Export ACE_Atomic_Op<ACE_Thread_Mutex, long long>
+: public ACE_Atomic_Op_GCC<long long>
+{
+public:
+  ACE_Atomic_Op (void);
+  ACE_Atomic_Op (long long c);
+  ACE_Atomic_Op (const ACE_Atomic_Op<ACE_Thread_Mutex, long long> &c);
+  ACE_Atomic_Op<ACE_Thread_Mutex, long long> &operator= (long long rhs);
+};
+
+template<>
+class ACE_Export ACE_Atomic_Op<ACE_Thread_Mutex, unsigned long long>
+: public ACE_Atomic_Op_GCC<unsigned long long>
+{
+public:
+  ACE_Atomic_Op (void);
+  ACE_Atomic_Op (unsigned long long c);
+  ACE_Atomic_Op (const ACE_Atomic_Op<ACE_Thread_Mutex, unsigned long long> &c);
+  ACE_Atomic_Op<ACE_Thread_Mutex, unsigned long long> &operator= (unsigned long long rhs);
+};
+#endif /* !__powerpc__ */
 
 #if !defined (ACE_LACKS_GCC_ATOMIC_BUILTINS_2)
 template<>

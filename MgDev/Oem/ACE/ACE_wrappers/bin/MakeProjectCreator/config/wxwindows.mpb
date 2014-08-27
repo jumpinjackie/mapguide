@@ -1,5 +1,5 @@
 // -*- MPC -*-
-// $Id: wxwindows.mpb 80826 2008-03-04 14:51:23Z wotte $
+// $Id: wxwindows.mpb 95491 2012-01-24 13:51:36Z johnnyw $
 
 project {
   requires += wxWindows
@@ -9,12 +9,6 @@ project {
     CPPFLAGS += $(PLATFORM_WX_CPPFLAGS)
     LDFLAGS  += $(PLATFORM_WX_LDFLAGS)
     LDLIBS   += $(PLATFORM_WX_LIBS)
-  }
-
-  specific(automake) {
-    compile_flags += $(ACE_WX_CPPFLAGS)
-    linkflags += $(ACE_WX_LDFLAGS)
-    pure_libs += $(ACE_WX_LIBS)
   }
 
  // TBD - support other platforms

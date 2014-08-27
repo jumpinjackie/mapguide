@@ -1,16 +1,12 @@
-// $Id: Addr.cpp 84619 2009-02-26 12:26:16Z johnnyw $
+// $Id: Addr.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/Addr.h"
-
-ACE_RCSID (ace,
-           Addr,
-           "$Id: Addr.cpp 84619 2009-02-26 12:26:16Z johnnyw $")
 
 #if !defined (__ACE_INLINE__)
 #include "ace/Addr.inl"
 #endif /* __ACE_INLINE__ */
 
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/os_include/sys/os_socket.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
@@ -61,10 +57,10 @@ ACE_Addr::dump (void) const
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Addr::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("addr_type_ = %d"), this->addr_type_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\naddr_size_ = %d"), this->addr_size_));
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("addr_type_ = %d"), this->addr_type_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\naddr_size_ = %d"), this->addr_size_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 

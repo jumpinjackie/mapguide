@@ -1,10 +1,6 @@
-// $Id: WIN32_Asynch_IO.cpp 89454 2010-03-11 09:35:25Z johnnyw $
+// $Id: WIN32_Asynch_IO.cpp 97309 2013-09-01 13:10:27Z mesnier_p $
 
 #include "ace/WIN32_Asynch_IO.h"
-
-ACE_RCSID (ace,
-           Win32_Asynch_IO,
-           "$Id: WIN32_Asynch_IO.cpp 89454 2010-03-11 09:35:25Z johnnyw $")
 
 #if defined (ACE_HAS_WIN32_OVERLAPPED_IO) && \
     (defined (ACE_HAS_WINSOCK2) && (ACE_HAS_WINSOCK2 == 1))
@@ -13,6 +9,7 @@ ACE_RCSID (ace,
 #include "ace/Proactor.h"
 #include "ace/Message_Block.h"
 #include "ace/Service_Config.h"
+#include "ace/Flag_Manip.h"
 #include "ace/INET_Addr.h"
 #include "ace/Task_T.h"
 #include "ace/OS_NS_errno.h"
@@ -88,7 +85,7 @@ ACE_WIN32_Asynch_Result::post_completion (ACE_Proactor_Impl *proactor)
   ACE_WIN32_Proactor *win32_proactor = dynamic_cast<ACE_WIN32_Proactor *> (proactor);
 
   if (win32_proactor == 0)
-    ACE_ERROR_RETURN ((LM_ERROR,
+    ACELIB_ERROR_RETURN ((LM_ERROR,
                        ACE_TEXT ("Dynamic cast to WIN32 Proactor failed\n")),
                       -1);
 
@@ -447,7 +444,7 @@ ACE_WIN32_Asynch_Read_Stream::readv (ACE_Message_Block &message_block,
 
     // OS should correctly process zero length buffers
     // if ( msg_space == 0 )
-    //   ACE_ERROR_RETURN ((LM_ERROR,
+    //   ACELIB_ERROR_RETURN ((LM_ERROR,
     //                      ACE_TEXT ("ACE_WIN32_Asynch_Read_Stream::readv:")
     //                      ACE_TEXT ("No space in the message block\n")),
     //                     -1);
@@ -490,7 +487,7 @@ ACE_WIN32_Asynch_Read_Stream::readv (ACE_Message_Block &message_block,
     bytes_to_read += iov[i].iov_len;
 
   if (bytes_to_read == 0)
-      ACE_ERROR_RETURN ((LM_ERROR,
+      ACELIB_ERROR_RETURN ((LM_ERROR,
                          ACE_TEXT ("ACE_WIN32_Asynch_Read_Stream::readv:")
                          ACE_TEXT ("Attempt to read 0 bytes\n")),
                         -1);
@@ -546,7 +543,7 @@ ACE_WIN32_Asynch_Read_Stream::readv (ACE_Message_Block &message_block,
 
       if (ACE::debug ())
       {
-        ACE_DEBUG ((LM_ERROR,
+        ACELIB_DEBUG ((LM_ERROR,
                     ACE_TEXT ("%p\n"),
                     ACE_TEXT ("WSARecv")));
       }
@@ -612,7 +609,7 @@ ACE_WIN32_Asynch_Read_Stream::shared_read (ACE_WIN32_Asynch_Read_Stream_Result *
 
       if (ACE::debug ())
         {
-          ACE_DEBUG ((LM_ERROR,
+          ACELIB_DEBUG ((LM_ERROR,
                       ACE_TEXT ("%p\n"),
                       ACE_TEXT ("ReadFile")));
         }
@@ -828,7 +825,7 @@ ACE_WIN32_Asynch_Write_Stream::write (ACE_Message_Block &message_block,
      bytes_to_write = len ;
 
   if (bytes_to_write == 0)
-    ACE_ERROR_RETURN
+    ACELIB_ERROR_RETURN
       ((LM_ERROR,
         ACE_TEXT ("ACE_WIN32_Asynch_Write_Stream::write:")
         ACE_TEXT ("Attempt to write 0 bytes\n")),
@@ -920,7 +917,7 @@ ACE_WIN32_Asynch_Write_Stream::writev (ACE_Message_Block &message_block,
     bytes_to_write += iov[i].iov_len;
 
   if ( bytes_to_write == 0 )
-      ACE_ERROR_RETURN ((LM_ERROR,
+      ACELIB_ERROR_RETURN ((LM_ERROR,
                          ACE_TEXT ("ACE_WIN32_Asynch_Write_Stream::writev:")
                          ACE_TEXT ("Attempt to write 0 bytes\n")),
                         -1);
@@ -973,7 +970,7 @@ ACE_WIN32_Asynch_Write_Stream::writev (ACE_Message_Block &message_block,
 
       if (ACE::debug ())
       {
-        ACE_DEBUG ((LM_ERROR,
+        ACELIB_DEBUG ((LM_ERROR,
                     ACE_TEXT ("%p\n"),
                     ACE_TEXT ("WSASend")));
       }
@@ -1055,7 +1052,7 @@ ACE_WIN32_Asynch_Write_Stream::shared_write (ACE_WIN32_Asynch_Write_Stream_Resul
       // queued.
 
       if (ACE::debug ())
-        ACE_DEBUG ((LM_ERROR,
+        ACELIB_DEBUG ((LM_ERROR,
                     ACE_TEXT ("%p\n"),
                     ACE_TEXT ("Initiating write")));
       return -1;
@@ -1286,7 +1283,7 @@ ACE_WIN32_Asynch_Read_File::read (ACE_Message_Block &message_block,
     bytes_to_read = space;
 
   if ( bytes_to_read == 0 )
-    ACE_ERROR_RETURN
+    ACELIB_ERROR_RETURN
       ((LM_ERROR,
         ACE_TEXT ("ACE_WIN32_Asynch_Read_File::read:")
         ACE_TEXT ("Attempt to read 0 bytes or no space in the message block\n")),
@@ -1347,7 +1344,7 @@ ACE_WIN32_Asynch_Read_File::readv (ACE_Message_Block &message_block,
     size_t msg_space = msg->space ();
 
     if (msg_space < page_size)
-      ACE_ERROR_RETURN ((LM_ERROR,
+      ACELIB_ERROR_RETURN ((LM_ERROR,
                          ACE_TEXT ("ACE_WIN32_Asynch_Read_File::readv:")
                          ACE_TEXT ("Invalid message block size\n")),
                         -1);
@@ -1415,7 +1412,7 @@ ACE_WIN32_Asynch_Read_File::readv (ACE_Message_Block &message_block,
 
       if (ACE::debug ())
       {
-        ACE_DEBUG ((LM_ERROR,
+        ACELIB_DEBUG ((LM_ERROR,
                     ACE_TEXT ("%p\n"),
                     ACE_TEXT ("ReadFileScatter")));
       }
@@ -1687,7 +1684,7 @@ ACE_WIN32_Asynch_Write_File::write (ACE_Message_Block &message_block,
      bytes_to_write = len;
 
   if ( bytes_to_write == 0 )
-    ACE_ERROR_RETURN
+    ACELIB_ERROR_RETURN
       ((LM_ERROR,
         ACE_TEXT ("ACE_WIN32_Asynch_Write_File::write:")
         ACE_TEXT ("Attempt to read 0 bytes\n")),
@@ -1753,7 +1750,7 @@ ACE_WIN32_Asynch_Write_File::writev (ACE_Message_Block &message_block,
     if (msg_len < page_size &&
         (msg->size () - (msg->rd_ptr () - msg->base ()) < page_size || // message block too small
          bytes_to_write - total_len > page_size ))// NOT last chunk
-      ACE_ERROR_RETURN ((LM_ERROR,
+      ACELIB_ERROR_RETURN ((LM_ERROR,
                          ACE_TEXT ("ACE_WIN32_Asynch_Write_File::writev:")
                          ACE_TEXT ("Invalid message block length\n")),
                         -1);
@@ -1820,7 +1817,7 @@ ACE_WIN32_Asynch_Write_File::writev (ACE_Message_Block &message_block,
 
       if (ACE::debug ())
       {
-        ACE_DEBUG ((LM_ERROR,
+        ACELIB_DEBUG ((LM_ERROR,
                     ACE_TEXT ("%p\n"),
                     ACE_TEXT ("WriteFileGather")));
       }
@@ -2081,7 +2078,7 @@ ACE_WIN32_Asynch_Accept::accept (ACE_Message_Block &message_block,
   size_t available_space = message_block.space ();
   size_t space_needed = bytes_to_read + 2 * address_size;
   if (available_space < space_needed)
-    ACE_ERROR_RETURN ((LM_ERROR, ACE_TEXT ("Buffer too small\n")), -1);
+    ACELIB_ERROR_RETURN ((LM_ERROR, ACE_TEXT ("Buffer too small\n")), -1);
 
   // WIN Specific.
 
@@ -2104,7 +2101,7 @@ ACE_WIN32_Asynch_Accept::accept (ACE_Message_Block &message_block,
         {
           if (ACE::debug ())
             {
-              ACE_DEBUG ((LM_ERROR,
+              ACELIB_DEBUG ((LM_ERROR,
                           ACE_TEXT ("%p\n"),
                           ACE_TEXT ("ACE_OS::socket")));
             }
@@ -2166,7 +2163,7 @@ ACE_WIN32_Asynch_Accept::accept (ACE_Message_Block &message_block,
 
       if (ACE::debug ())
         {
-          ACE_DEBUG ((LM_ERROR,
+          ACELIB_DEBUG ((LM_ERROR,
                       ACE_TEXT ("%p\n"),
                       ACE_TEXT ("AcceptEx")));
         }
@@ -2387,7 +2384,7 @@ ACE_WIN32_Asynch_Connect::open (const ACE_Handler::Proxy_Ptr &handler_proxy,
   // if we are already opened,
   // we could not create a new handler without closing the previous
   if (this->flg_open_)
-    ACE_ERROR_RETURN ((LM_ERROR,
+    ACELIB_ERROR_RETURN ((LM_ERROR,
                        ACE_TEXT ("%N:%l:ACE_WIN32_Asynch_Connect::open:")
                        ACE_TEXT ("connector already open\n")),
                       -1);
@@ -2419,7 +2416,7 @@ ACE_WIN32_Asynch_Connect::connect (ACE_HANDLE connect_handle,
   ACE_TRACE ("ACE_WIN32_Asynch_Connect::connect");
 
   if (!this->flg_open_)
-    ACE_ERROR_RETURN ((LM_ERROR,
+    ACELIB_ERROR_RETURN ((LM_ERROR,
                        ACE_TEXT ("%N:%l:ACE_WIN32_Asynch_Connect::connect")
                        ACE_TEXT ("connector was not opened before\n")),
                       -1);
@@ -2453,7 +2450,7 @@ ACE_WIN32_Asynch_Connect::connect (ACE_HANDLE connect_handle,
 
     if (this->result_map_.bind (connect_handle, result) == -1)
       {
-        ACE_ERROR ((LM_ERROR,
+        ACELIB_ERROR ((LM_ERROR,
                     ACE_TEXT ("ACE_WIN32_Asynch_Connect::connect: %p\n"),
                     ACE_TEXT ("bind")));
         result->set_error (EFAULT);
@@ -2496,7 +2493,7 @@ int ACE_WIN32_Asynch_Connect::post_result (ACE_WIN32_Asynch_Connect_Result * res
       if (this->win32_proactor_ ->post_completion (result) == 0)
         return 0;
 
-      ACE_ERROR ((LM_ERROR,
+      ACELIB_ERROR ((LM_ERROR,
                   ACE_TEXT ("Error:(%P | %t):%p\n"),
                   ACE_TEXT ("ACE_WIN32_Asynch_Connect::post_result: ")
                   ACE_TEXT (" <post_completion> failed")));
@@ -2540,7 +2537,7 @@ ACE_WIN32_Asynch_Connect::connect_i (ACE_WIN32_Asynch_Connect_Result *result,
       if (handle == ACE_INVALID_HANDLE)
         {
           result->set_error (errno);
-          ACE_ERROR_RETURN
+          ACELIB_ERROR_RETURN
             ((LM_ERROR,
               ACE_TEXT ("ACE_WIN32_Asynch_Connect::connect_i: %p\n"),
               ACE_TEXT ("socket")),
@@ -2558,7 +2555,7 @@ ACE_WIN32_Asynch_Connect::connect_i (ACE_WIN32_Asynch_Connect_Result *result,
                               sizeof one) == -1)
         {
           result->set_error (errno);
-          ACE_ERROR_RETURN
+          ACELIB_ERROR_RETURN
             ((LM_ERROR,
               ACE_TEXT ("ACE_WIN32_Asynch_Connect::connect_i: %p\n"),
               ACE_TEXT ("setsockopt")),
@@ -2573,7 +2570,7 @@ ACE_WIN32_Asynch_Connect::connect_i (ACE_WIN32_Asynch_Connect_Result *result,
       if (ACE_OS::bind (handle, laddr, size) == -1)
         {
            result->set_error (errno);
-           ACE_ERROR_RETURN
+           ACELIB_ERROR_RETURN
              ((LM_ERROR,
                ACE_TEXT ("ACE_WIN32_Asynch_Connect::connect_i: %p\n"),
                ACE_TEXT ("bind")),
@@ -2585,7 +2582,7 @@ ACE_WIN32_Asynch_Connect::connect_i (ACE_WIN32_Asynch_Connect_Result *result,
   if (ACE::set_flags (handle, ACE_NONBLOCK) != 0)
     {
       result->set_error (errno);
-      ACE_ERROR_RETURN
+      ACELIB_ERROR_RETURN
         ((LM_ERROR,
           ACE_TEXT ("ACE_WIN32_Asynch_Connect::connect_i: %p\n"),
           ACE_TEXT ("set_flags")),
@@ -3045,7 +3042,7 @@ ACE_WIN32_Asynch_Transmit_File::transmit_file (ACE_HANDLE file,
 
       if (ACE::debug ())
         {
-          ACE_DEBUG ((LM_ERROR,
+          ACELIB_DEBUG ((LM_ERROR,
                       ACE_TEXT ("%p\n"),
                       ACE_TEXT ("TransmitFile")));
         }
@@ -3315,7 +3312,7 @@ ACE_WIN32_Asynch_Read_Dgram::recv (ACE_Message_Block *message_block,
 
     // OS should correctly process zero length buffers
     // if ( msg_space == 0 )
-    //   ACE_ERROR_RETURN ((LM_ERROR,
+    //   ACELIB_ERROR_RETURN ((LM_ERROR,
     //                      ACE_TEXT ("ACE_WIN32_Asynch_Read_Dgram::recv:")
     //                      ACE_TEXT ("No space in the message block\n")),
     //                     -1);
@@ -3350,7 +3347,7 @@ ACE_WIN32_Asynch_Read_Dgram::recv (ACE_Message_Block *message_block,
   }
 
   if (bytes_to_read == 0)
-      ACE_ERROR_RETURN ((LM_ERROR,
+      ACELIB_ERROR_RETURN ((LM_ERROR,
                          ACE_TEXT ("ACE_WIN32_Asynch_Read_Dgram::recv:")
                          ACE_TEXT ("Attempt to read 0 bytes\n")),
                         -1);
@@ -3371,11 +3368,15 @@ ACE_WIN32_Asynch_Read_Dgram::recv (ACE_Message_Block *message_block,
                   -1);
 
   // do the scatter/gather recv
+  // NOTE! The flags value is in/out to recvfrom() - it's changed AFTER
+  // the call to WSARecvFrom returns and if it completes immediately, the
+  // result object may already be deleted. Since the changed value is not
+  // used, and not needed by result, pass a copy to avoid the race.
   ssize_t initiate_result = ACE_OS::recvfrom (result->handle (),
                                               iov,
                                               iovcnt,
                                               number_of_bytes_recvd,
-                                              result->flags_,
+                                              flags,
                                               result->saddr (),
                                               &(result->addr_len_),
                                               result,
@@ -3398,7 +3399,7 @@ ACE_WIN32_Asynch_Read_Dgram::recv (ACE_Message_Block *message_block,
 
         if (ACE::debug ())
         {
-          ACE_DEBUG ((LM_ERROR,
+          ACELIB_DEBUG ((LM_ERROR,
                       ACE_TEXT ("%p\n"),
                       ACE_TEXT ("WSARecvFrom")));
         }
@@ -3648,7 +3649,9 @@ ACE_WIN32_Asynch_Write_Dgram::send (ACE_Message_Block *message_block,
 
     do
       {
-        if (msg_len >= 0 && iovcnt < ACE_IOV_MAX)
+        //if (msg_len >= 0 && iovcnt < ACE_IOV_MAX)
+        // msg_len >= 0 is always true since msg_len is unsigned
+        if (iovcnt < ACE_IOV_MAX)
           {
             u_long this_chunk_length;
             if (msg_len > ULONG_MAX)
@@ -3721,7 +3724,7 @@ ACE_WIN32_Asynch_Write_Dgram::send (ACE_Message_Block *message_block,
 
         if (ACE::debug ())
         {
-          ACE_DEBUG ((LM_ERROR,
+          ACELIB_DEBUG ((LM_ERROR,
                       ACE_TEXT ("%p\n"),
                       ACE_TEXT ("WSASendTo")));
         }

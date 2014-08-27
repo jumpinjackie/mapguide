@@ -1,4 +1,4 @@
-# $Id: platform_linux_pgi.GNU 81315 2008-04-10 07:14:15Z johnnyw $
+# $Id: platform_linux_pgi.GNU 93359 2011-02-11 11:33:12Z mcorino $
 
 # This file should allow ACE to be built on Linux, using the
 # Portland Group PGI compilers
@@ -14,7 +14,7 @@ ifeq ($(threads),1)
     CPPFLAGS  += -D_REENTRANT $(PLATFORM_AIO_SUPPORT)
 endif # threads
 
-CCFLAGS += $(CFLAGS) $(IMPLICIT_TEMPLATES_FLAG)
+CCFLAGS += $(CFLAGS)
 DCFLAGS += -g
 DLD     = $(CXX)
 LD      = $(CXX)

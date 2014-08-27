@@ -1,4 +1,4 @@
-// $Id: Strategies_T.cpp 89510 2010-03-17 12:21:14Z vzykov $
+// $Id: Strategies_T.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #ifndef ACE_STRATEGIES_T_CPP
 #define ACE_STRATEGIES_T_CPP
@@ -276,7 +276,7 @@ ACE_Thread_Strategy<SVC_HANDLER>::open (ACE_Thread_Manager *thr_mgr,
 
   // Must have a thread manager!
   if (this->thr_mgr_ == 0)
-    ACE_ERROR_RETURN ((LM_ERROR,
+    ACELIB_ERROR_RETURN ((LM_ERROR,
                        ACE_TEXT ("error: must have a non-NULL thread manager\n")),
                       -1);
   else
@@ -314,7 +314,9 @@ ACE_Accept_Strategy<SVC_HANDLER, ACE_PEER_ACCEPTOR_2>::open
   // socket handle is "ready" and when we call <accept>.  During this
   // interval, the client can shutdown the connection, in which case,
   // the <accept> call can hang!
-  this->peer_acceptor_.enable (ACE_NONBLOCK);
+  if (this->peer_acceptor_.enable (ACE_NONBLOCK) == -1)
+    return -1;
+
   return 0;
 }
 
@@ -328,7 +330,7 @@ ACE_Accept_Strategy<SVC_HANDLER, ACE_PEER_ACCEPTOR_2>::ACE_Accept_Strategy
   ACE_TRACE ("ACE_Accept_Strategy<SVC_HANDLER, ACE_PEER_ACCEPTOR_2>::ACE_Accept_Strategy");
 
   if (this->open (local_addr, reuse_addr) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("open")));
 }
@@ -441,7 +443,7 @@ ACE_Process_Strategy<SVC_HANDLER>::activate_svc_handler (SVC_HANDLER *svc_handle
         ACE_Errno_Guard error (errno);
         svc_handler->close ();
       }
-      ACE_ERROR_RETURN ((LM_ERROR,
+      ACELIB_ERROR_RETURN ((LM_ERROR,
                          ACE_TEXT ("%p\n"),
                          ACE_TEXT ("fork")),
                         -1);
@@ -499,7 +501,7 @@ ACE_Cached_Connect_Strategy<SVC_HANDLER, ACE_PEER_CONNECTOR_2, MUTEX>::ACE_Cache
   if (this->open (cre_s,
                   con_s,
                   rec_s) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_Cached_Connect_Strategy::ACE_Cached_Connect_Strategy")));
 }
@@ -1011,12 +1013,15 @@ ACE_Cached_Connect_Strategy<SVC_HANDLER, ACE_PEER_CONNECTOR_2, MUTEX>::connect_s
         return result;
     }
 
-  // For all successful cases: mark the <svc_handler> in the cache
-  // as being <in_use>.  Therefore recyclable is BUSY.
-  entry->ext_id_.recycle_state (ACE_RECYCLABLE_BUSY);
+  if (entry)
+    {
+      // For all successful cases: mark the <svc_handler> in the cache
+      // as being <in_use>.  Therefore recyclable is BUSY.
+      entry->ext_id_.recycle_state (ACE_RECYCLABLE_BUSY);
 
-  // And increment the refcount
-  entry->ext_id_.increment ();
+      // And increment the refcount
+      entry->ext_id_.increment ();
+    }
 
   return 0;
 }
@@ -1377,8 +1382,8 @@ ACE_Scheduling_Strategy<SVC_HANDLER>::dump (void) const
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Scheduling_Strategy<SVC_HANDLER>::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 

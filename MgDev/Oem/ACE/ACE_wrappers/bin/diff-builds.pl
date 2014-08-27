@@ -2,7 +2,7 @@ eval '(exit $?0)' && eval 'exec perl -S $0 ${1+"$@"}'
     & eval 'exec perl -S $0 $argv:q'
     if 0;
 
-# $Id: diff-builds.pl 86172 2009-07-22 08:44:15Z johnnyw $
+# $Id: diff-builds.pl 95621 2012-03-17 12:12:23Z johnnyw $
 # -*- perl -*-
 
 use File::Spec qw/ tmpdir /;
@@ -16,10 +16,10 @@ my $clean_builds_only = 1; # Only diff todays clean builds
 my $append_revision_to_new_test_fails = 0;  # Default to not doing this.
 
 # The root of the test statistics
-my $teststaturl = "http://download.theaceorb.nl/teststat/builds/";
+my $teststaturl = "http://teststat.theaceorb.nl/teststat/builds/";
 
-my $allbuildsurl = "http://download.theaceorb.nl/teststat/buildscore";
-my $cleanbuildsurl = "http://download.theaceorb.nl/teststat/cleanbuildtests";
+my $allbuildsurl = "http://teststat.theaceorb.nl/teststat/buildscore";
+my $cleanbuildsurl = "http://teststat.theaceorb.nl/teststat/cleanbuildtests";
 
 # Determine the available timestamps for a build on a date,
 # by scanning the index page (build.html)

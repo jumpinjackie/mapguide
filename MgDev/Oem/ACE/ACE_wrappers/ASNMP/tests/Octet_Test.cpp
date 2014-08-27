@@ -1,21 +1,18 @@
-// $Id: Octet_Test.cpp 80826 2008-03-04 14:51:23Z wotte $
 
-// ============================================================================
-//
-// = LIBRARY
-//    tests
-//
-// = FILENAME
-//    Octet_Test.cpp
-//
-// = DESCRIPTION
-//  Test all the member functions of the OCTET class. An Object
-//  representing an ASN.1 Integer64 SMI OCTET STRING SYNTAX.
-//
-// = AUTHOR
-//    Michael R. MacFaden <mrm@cisco.com>
-//
-// ============================================================================
+//=============================================================================
+/**
+ *  @file    Octet_Test.cpp
+ *
+ *  $Id: Octet_Test.cpp 93651 2011-03-28 08:49:11Z johnnyw $
+ *
+ *  Test all the member functions of the OCTET class. An Object
+ *  representing an ASN.1 Integer64 SMI OCTET STRING SYNTAX.
+ *
+ *
+ *  @author Michael R. MacFaden <mrm@cisco.com>
+ */
+//=============================================================================
+
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 Copyright 1997 Cisco Systems, Inc.
@@ -43,8 +40,6 @@ DAMAGES.
 #include "ace/OS_NS_string.h"
 #include "asnmp/octet.h"
 #include "test_config.h"
-
-ACE_RCSID(tests, Octet_Test, "$Id: Octet_Test.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 /*
   OctetStr( const char *string, long size = -1);

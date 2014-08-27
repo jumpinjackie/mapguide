@@ -98,19 +98,20 @@ clean_linuxapt()
 }
 
 #**********************************************************
-# Build ACE 5.7
+# Build ACE 6.2.6
 # Notes: none
 #**********************************************************
 
 init_ace()
 {
-    LIB_NAME="ACE 5.7"
+    LIB_NAME="ACE 6.2.6"
     ace_buildbits=32
     ace_debug=0
     ace_optimize=1
     if [ $BUILD_CONFIG = "debug" ]; then
         ace_debug=1
         ace_optimize=0
+    chmod +x bin/*.sh
     fi
     if [ $BUILD_CPU -eq 64 ]; then
         ace_buildbits=64

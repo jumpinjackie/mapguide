@@ -1,4 +1,4 @@
-// $Id: SString.cpp 85547 2009-06-07 17:57:11Z johnnyw $
+// $Id: SString.cpp 92580 2010-11-15 09:48:02Z johnnyw $
 
 #include "ace/Malloc_T.h"
 #include "ace/OS_Memory.h"
@@ -15,11 +15,6 @@
 #if !defined (__ACE_INLINE__)
 #include "ace/SString.inl"
 #endif /* __ACE_INLINE__ */
-
-
-ACE_RCSID (ace,
-           SString,
-           "SString.cpp,v 4.61 2001/03/04 00:55:30 brunsch Exp")
 
 
 // ************************************************************
@@ -84,7 +79,7 @@ ACE_NS_WString::char_rep (void) const
     }
 }
 
-ACE_USHORT16 *
+ACE_UINT16 *
 ACE_NS_WString::ushort_rep (void) const
 {
   ACE_TRACE ("ACE_NS_WString::ushort_rep");
@@ -92,16 +87,16 @@ ACE_NS_WString::ushort_rep (void) const
     return 0;
   else
     {
-      ACE_USHORT16 *t = 0;
+      ACE_UINT16 *t = 0;
 
       ACE_NEW_RETURN (t,
-                      ACE_USHORT16[this->len_ + 1],
+                      ACE_UINT16[this->len_ + 1],
                       0);
 
       for (size_type i = 0; i < this->len_; ++i)
         // Note that this cast may lose data if wide chars are
         // actually used!
-        t[i] = (ACE_USHORT16)this->rep_[i];
+        t[i] = (ACE_UINT16)this->rep_[i];
 
       t[this->len_] = 0;
       return t;
@@ -130,7 +125,7 @@ ACE_NS_WString::ACE_NS_WString (const char *s,
 }
 
 #if defined (ACE_WSTRING_HAS_USHORT_SUPPORT)
-ACE_NS_WString::ACE_NS_WString (const ACE_USHORT16 *s,
+ACE_NS_WString::ACE_NS_WString (const ACE_UINT16 *s,
                                 size_type len,
                                 ACE_Allocator *alloc)
   : ACE_WString (alloc)

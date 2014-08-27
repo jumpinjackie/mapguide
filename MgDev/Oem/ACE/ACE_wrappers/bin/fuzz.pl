@@ -2,7 +2,7 @@ eval '(exit $?0)' && eval 'exec perl -S $0 ${1+"$@"}'
     & eval 'exec perl -S $0 $argv:q'
     if 0;
 
-# $Id: fuzz.pl 90332 2010-05-28 16:16:10Z johnnyw $
+# $Id: fuzz.pl 97434 2013-11-22 08:24:27Z msmit $
 #   Fuzz is a script whose purpose is to check through ACE/TAO/CIAO files for
 #   easy to spot (by a perl script, at least) problems.
 
@@ -21,10 +21,9 @@ use PerlACE::Run_Test;
 #
 # Add tests for these:
 #
-# - not setting up the release configs correctly in dsp files
 # - Guards in .h files
 # - no global functions
-# - other commit_check checks, tabs, trailing spaces.
+# - other commit_check checks
 #
 # And others in ACE_Guidelines and Design Rules
 #
@@ -43,6 +42,7 @@ use PerlACE::Run_Test;
 @files_gnu = ();
 @files_idl = ();
 @files_pl = ();
+@files_py = ();
 @files_changelog = ();
 @files_makefile = ();
 @files_mpc = ();
@@ -51,31 +51,53 @@ use PerlACE::Run_Test;
 @files_sln = ();
 @files_vcproj = ();
 @files_run_pl = ();
+@files_generic = ();
+@files_doxygen = ();
+@files_conf = ();
+@files_rb = ();
 
 # To keep track of errors and warnings
 $errors = 0;
 $warnings = 0;
 
+# to register suppressed tests
+%suppressed_tests = ();
+
+# to register excluded directories
+@excluded_dirs = ();
+
 ##############################################################################
 
-# Find_Modified_Files will use 'cvs -nq' to get a list of locally modified
+# Find_Modified_Files will use 'svn -q st' to get a list of locally modified
 # files to look through
 sub find_mod_files ()
 {
-    unless (open (CVS, "cvs -nq up |")) {
-        print STDERR "Error: Could not run cvs\n";
+    unless (open (SVN, "svn -q st |")) {
+        print STDERR "Error: Could not run svn\n";
         exit (1);
     }
 
-    while (<CVS>) {
-        if (/^[M|A] (.*)/) {
+    while (<SVN>) {
+        #        1234567   (see "svn help st" for column definitions)
+        if (/^[MA].....\s+(.*)$/) {
             store_file ($1);
         }
     }
-    close (CVS);
+    close (SVN);
 }
 
 
+sub is_excluded ($)
+{
+  # exclude will contain the full file name
+  my $exclude = shift;
+  foreach (@excluded_dirs) {
+      if ($exclude =~ /$_/) {
+          return 1;
+      }
+  }
+  return 0;
+}
 
 # Find_Files will search for files with certain extensions in the
 # directory tree
@@ -94,6 +116,9 @@ sub find_files ()
 sub store_file ($)
 {
     my $name = shift;
+
+    return if is_excluded ($name);
+
     if ($name =~ /\.(c|cc|cpp|cxx|tpp)$/i) {
         push @files_cpp, ($name);
     }
@@ -127,6 +152,12 @@ sub store_file ($)
             push @files_run_pl, ($name);
         }
     }
+    elsif ($name =~ /\.py$/i) {
+        push @files_py, ($name);
+    }
+    elsif ($name =~ /\.(rb|erb)$/i) {
+        push @files_rb, ($name);
+    }
     elsif ($name =~ /\.vcproj$/i) {
         push @files_vcproj, ($name);
     }
@@ -148,6 +179,27 @@ sub store_file ($)
     elsif ($name =~ /\.(cdp)$/i) {
         push @files_cdp, ($name);
     }
+    elsif ($name =~ /\.(doxygen)$/i) {
+        push @files_doxygen, ($name);
+    }
+    elsif ($name =~ /\.(conf)$/i) {
+        if ($name =~ /\.(WCHAR_T.conf|UTF-16.conf)$/i) {
+            return;
+        }
+        push @files_conf, ($name);
+    }
+    elsif ($name =~ /\.(conf.xml)$/i) {
+        if ($name =~ /\.(WCHAR_T.conf.xml|UTF-16.conf.xml)$/i) {
+            return;
+        }
+        push @files_conf, ($name);
+    }
+    elsif ($name =~ /\.(pm|cmd|java|sh|txt|xml)$/i) {
+        push @files_generic, ($name);
+    }
+    elsif ($name =~ /README$/i) {
+        push @files_generic, ($name);
+    }
 }
 
 ##############################################################################
@@ -168,6 +220,14 @@ sub print_warning ($)
     ++$warnings;
 }
 
+##############################################################################
+## Check if test is suppressed
+
+sub is_suppressed ()
+{
+  my $method = (split (/::/, (caller(1))[3]))[-1];
+  return (defined $suppressed_tests{$method} ? 1 : 0);
+}
 
 ##############################################################################
 ## Tests
@@ -177,6 +237,8 @@ sub print_warning ($)
 # copy/pasted code from a .inl/.i file
 sub check_for_inline_in_cpp ()
 {
+    return if is_suppressed ();
+
     print "Running ACE_INLINE/ASYS_INLINE check\n";
     foreach $file (@files_cpp) {
         if (open (FILE, $file)) {
@@ -202,21 +264,27 @@ sub check_for_inline_in_cpp ()
 # be used locally or to check for files
 sub check_for_id_string ()
 {
+    return if is_suppressed ();
+
     print "Running \$Id\$ string check\n";
-    foreach $file (@files_cpp, @files_inl, @files_h, @files_mpc, @files_bor, @files_gnu,
-                   @files_html, @files_idl, @files_pl, @makefile_files) {
+    foreach $file (@files_cpp, @files_inl, @files_h, @files_mpc, @files_bor,
+                   @files_gnu, @files_html, @files_idl, @files_pl,
+                   @files_cdp, @files_py, @files_conf, @files_generic) {
         my $found = 0;
         if (open (FILE, $file)) {
             print "Looking at file $file\n" if $opt_d;
             while (<FILE>) {
-                if (/\$Id\:/ or /\$Id\$/) {
-                    $found = 1;
-                }
                 if (/\$id\$/) {
                     print_error ("$file:$.: Incorrect \$id\$ found (correct casing)");
                 }
                 if (/\$Id:\$/) {
                     print_error ("$file:$.: Incorrect \$Id:\$ found (remove colon)");
+                }
+                if (/\$Id: fuzz.pl 97434 2013-11-22 08:24:27Z msmit $/) {
+                    print_error ("$file:$.: Incorrect \$Id: found (remove colon, added \$)");
+                }
+                if (/\$Id\:/ or /\$Id\$/) {
+                    $found = 1;
                 }
             }
             close (FILE);
@@ -233,6 +301,8 @@ sub check_for_id_string ()
 # check for _MSC_VER
 sub check_for_msc_ver_string ()
 {
+    return if is_suppressed ();
+
     print "Running _MSC_VER check\n";
     foreach $file (@files_cpp, @files_inl, @files_h) {
         my $found = 0;
@@ -294,6 +364,8 @@ sub check_for_msc_ver_string ()
 # This test checks for the newline at the end of a file
 sub check_for_newline ()
 {
+    return if is_suppressed ();
+
     print "Running newline check\n";
     foreach $file (@files_cpp, @files_inl, @files_h,
                    @files_html, @files_idl, @files_pl) {
@@ -318,6 +390,8 @@ sub check_for_newline ()
 # This test checks for files that are not allowed to be in svn
 sub check_for_noncvs_files ()
 {
+    return if is_suppressed ();
+
     print "Running non svn files check\n";
     foreach $file (@files_noncvs, @files_dsp, @files_dsw, @files_makefile, @files_bor) {
         print_error ("File $file should not be in svn!");
@@ -329,6 +403,8 @@ sub check_for_noncvs_files ()
 
 sub check_for_ACE_SYNCH_MUTEX ()
 {
+    return if is_suppressed ();
+
     print "Running ACE_SYNCH_MUTEX check\n";
     ITERATION: foreach $file (@files_cpp, @files_inl, @files_h) {
         if (open (FILE, $file)) {
@@ -340,7 +416,7 @@ sub check_for_ACE_SYNCH_MUTEX ()
                 }
                 if (/FUZZ\: enable check_for_ACE_SYNCH_MUTEX/) {
                     $disable = 0;
-                    next ITERATION;
+                    next;
                 }
                 if ($disable == 0 and /ACE_SYNCH_MUTEX/) {
                     # It is okay to use ACE_SYNCH_MUTEX in ACE
@@ -368,13 +444,27 @@ sub check_for_ACE_SYNCH_MUTEX ()
 }
 
 # This test checks for not having export files in CIAO, all have to be ---
-# generated using TAO_IDL
+# generated using TAO_IDL. If you have a file that must be in the repository
+# remove the generated automatically by line
 sub check_for_export_file ()
 {
+    return if is_suppressed ();
+
     print "Running export file check\n";
     ITERATION: foreach $file (@files_h) {
-        if (($file =~ /.*CIAO.*export.h/)) {
-            print_error ("$file:$.: found should be generated by TAO_IDL, check -Gx** option");
+        if (($file =~ /.*CIAO.*export.h/) || ($file =~ /.*DAnCE.*export.h/)) {
+          if (open (FILE, $file)) {
+            print "Looking at file $file\n" if $opt_d;
+            while (<FILE>) {
+              if (/generated automatically by/) {
+                print_error ("$file:$.: file should be generated by TAO_IDL, check -Gxh** option");
+              }
+            }
+            close (FILE);
+          }
+          else {
+            print STDERR "Error: Could not open $file\n";
+          }
         }
     }
 }
@@ -383,9 +473,10 @@ sub check_for_export_file ()
 # This test checks for the use of ACE_Thread_Mutex in TAO/CIAO,
 # TAO_SYNCH_MUTEX should used instead to make the code build
 # in single-threaded builds.
-
 sub check_for_ACE_Thread_Mutex ()
 {
+    return if is_suppressed ();
+
     print "Running ACE_Thread_Mutex check\n";
     ITERATION: foreach $file (@files_cpp, @files_inl, @files_h) {
         if (open (FILE, $file)) {
@@ -397,7 +488,7 @@ sub check_for_ACE_Thread_Mutex ()
                 }
                 if (/FUZZ\: enable check_for_ACE_Thread_Mutex/) {
                     $disable = 0;
-                    next ITERATION;
+                    next;
                 }
                 if ($disable == 0 and /ACE_Thread_Mutex/) {
                     # It is okay to use ACE_Thread_Mutex in ACE
@@ -418,11 +509,51 @@ sub check_for_ACE_Thread_Mutex ()
     }
 }
 
+# This test checks for the use of ACE_Guard
+# ACE_GUARD should used because it checks if we really got a lock
+# in single-threaded builds.
+sub check_for_ACE_Guard ()
+{
+    return if is_suppressed ();
+
+    print "Running ACE_Guard check\n";
+    ITERATION: foreach $file (@files_cpp, @files_inl, @files_h) {
+        if (open (FILE, $file)) {
+            my $disable = 0;
+            print "Looking at file $file\n" if $opt_d;
+            while (<FILE>) {
+                if (/FUZZ\: disable check_for_ACE_Guard/) {
+                    $disable = 1;
+                }
+                if (/FUZZ\: enable check_for_ACE_Guard/) {
+                    $disable = 0;
+                    next;
+                }
+                if ($disable == 0 and /ACE_Guard/) {
+                    print_error ("$file:$.: found ACE_Guard, use ACE_GUARD");
+                }
+                if ($disable == 0 and /ACE_Read_Guard/) {
+                    print_error ("$file:$.: found ACE_Read_Guard, use ACE_READ_GUARD");
+                }
+                if ($disable == 0 and /ACE_Write_Guard/) {
+                    print_error ("$file:$.: found ACE_Write_Guard, use ACE_WRITE_GUARD");
+                }
+            }
+            close (FILE);
+        }
+        else {
+            print STDERR "Error: Could not open $file\n";
+        }
+    }
+}
+
 # This test checks for the use of tabs, spaces should be used instead of tabs
 sub check_for_tab ()
 {
+    return if is_suppressed ();
+
     print "Running tabs check\n";
-    ITERATION: foreach $file (@files_cpp, @files_inl, @files_h, @files_idl, @files_cdp) {
+    ITERATION: foreach $file (@files_cpp, @files_inl, @files_h, @files_idl, @files_cdp, @files_doxygen, @files_changelog) {
         if (open (FILE, $file)) {
             my $disable = 0;
             print "Looking at file $file\n" if $opt_d;
@@ -445,9 +576,40 @@ sub check_for_tab ()
     }
 }
 
+sub check_for_trailing_whitespace ()
+{
+    return if is_suppressed ();
+
+    print "Running trailing_whitespaces check\n";
+    ITERATION: foreach $file (@files_cpp, @files_inl, @files_h, @files_idl,
+                              @files_cdp, @files_pl, @files_generic) {
+        if (open (FILE, $file)) {
+            my $disable = 0;
+            print "Looking at file $file\n" if $opt_d;
+            while (<FILE>) {
+                if (/FUZZ\: disable check_for_trailing_whitespace/) {
+                    $disable = 1;
+                }
+                if (/FUZZ\: enable check_for_trailing_whitespace/) {
+                    $disable = 0;
+                }
+                if ($disable == 0 and /\s\n$/) {
+                    print_error ("$file:$.: found trailing whitespace");
+                }
+            }
+            close (FILE);
+        }
+        else {
+            print STDERR "Error: Could not open $file\n";
+        }
+    }
+}
+
 # This test checks for the lack of ACE_OS
 sub check_for_lack_ACE_OS ()
 {
+    return if is_suppressed ();
+
     $OS_NS_arpa_inet_symbols = "inet_addr|inet_aton|inet_ntoa|inet_ntop|inet_pton";
 
     $OS_NS_ctype_symbols = "isalnum|isalpha|iscntrl|isdigit|isgraph|islower|isprint|ispunct|isspace|isupper|isxdigit|tolower|toupper|isblank|isascii|isctype|iswctype";
@@ -530,167 +692,167 @@ sub check_for_lack_ACE_OS ()
                     if($file !~ /.c$/ && $file !~ /S.cpp$/ && $file !~ /S.inl$/ && $file !~ /C.cpp$/ && $file !~ /C.inl$/) {
                         if($file !~ /OS_NS_arpa_inet/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_arpa_inet_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_arpa_inet.h");
                             }
                         }
                         if($file !~ /OS_NS_ctype/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_ctype_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_ctype.h");
                             }
                         }
                         if($file !~ /OS_NS_dirent/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_dirent_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_dirent.h");
                             }
                         }
                         if($file !~ /OS_NS_dlfcn/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_dlfcn_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_dlfcn.h");
                             }
                         }
                         if($file !~ /OS_NS_errno/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_errno_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_errno.h");
                             }
                         }
                         if($file !~ /OS_NS_fcntl/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_fcntl_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_fcntl.h");
                             }
                         }
                         if($file !~ /OS_NS_math/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_math_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_math.");
                             }
                         }
                         if($file !~ /OS_NS_netdb/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_netdb_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_netdb.h");
                             }
                         }
                         if($file !~ /OS_NS_poll/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_netdb_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_poll.h");
                             }
                         }
                         if($file !~ /OS_NS_pwd/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_pwd_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_pwd.h");
                             }
                         }
                         if($file !~ /OS_NS_regex/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_regex_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_regex.h");
                             }
                         }
                         if($file !~ /OS_NS_signal/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_signal_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_signal.h");
                             }
                         }
                         if($file !~ /OS_NS_stdlib/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_stdlib_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_stdlib.h");
                             }
                         }
                         if($file !~ /OS_NS_stdio/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_stdio_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_stdio.h");
                             }
                         }
                         if($file !~ /OS_NS_string/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_string_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_string.h");
                             }
                         }
                         if($file !~ /OS_NS_strings/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_strings_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_strings.h");
                             }
                         }
                         if($file !~ /OS_NS_stropts/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_stropts_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_stropts.h");
                             }
                         }
                         if($file !~ /OS_NS_sys_mman/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_sys_mman_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_sys_mman.h");
                             }
                         }
                         if($file !~ /OS_NS_sys_msg/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_sys_msg_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_sys_msg.h");
                             }
                         }
                         if($file !~ /OS_NS_sys_resource/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_sys_resource_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_sys_resource.h");
                             }
                         }
                         if($file !~ /OS_NS_sys_select/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_sys_select_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_sys_select.h");
                             }
                         }
                         if($file !~ /OS_NS_sys_sendfile/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_sys_sendfile_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_sys_sendfile.h");
                             }
                         }
                         if($file !~ /OS_NS_sys_shm/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_sys_shm_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_sys_shm.h");
                             }
                         }
                         if($file !~ /OS_NS_sys_socket/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_sys_socket_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_sys_socket.h");
                             }
                         }
                         if($file !~ /OS_NS_sys_stat/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_sys_stat_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_sys_stat.h");
                             }
                         }
                         if($file !~ /OS_NS_sys_time/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_sys_time_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_sys_time.h");
                             }
                         }
                         if($file !~ /OS_NS_sys_uio/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_sys_uio_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_sys_uio.h");
                             }
                         }
                         if($file !~ /OS_NS_sys_utsname/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_sys_utsname_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_sys_utsname.h");
                             }
                         }
                         if($file !~ /OS_NS_sys_wait/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_sys_wait_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_sys_wait.h");
                             }
                         }
                         if($file !~ /OS_NS_Thread/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_Thread_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_Thread.h");
                             }
                         }
                         if($file !~ /OS_NS_time/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_time_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_time.h");
                             }
                         }
                         if($file !~ /OS_NS_unistd/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_unistd_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_unistd.h");
                             }
                         }
                         if($file !~ /OS_NS_wchar/) {
                             if(/(\s+:{0,2}|\(:{0,2}|\s*!:{0,2}|^|\):{0,2})($OS_NS_wchar_symbols)\s*\(/ and $` !~ /\/\// and $` !~ /\/\*/ and $` !~ /\*\*+/ and $` !~ /\s+\*+\s+/) {
-                                print_error ("$file:$.: missing ACE_OS");
+                                print_error ("$file:$.: missing ACE_OS use ace/OS_NS_wchar.h");
                             }
                         }
                     }
@@ -709,6 +871,8 @@ sub check_for_lack_ACE_OS ()
 # should not be used.
 sub check_for_exception_spec ()
 {
+    return if is_suppressed ();
+
     print "Running exception specification check\n";
 
     foreach $file (@files_cpp, @files_inl, @files_h) {
@@ -743,6 +907,8 @@ sub check_for_exception_spec ()
 # NULL shouldn't be used, use 0 instead
 sub check_for_NULL ()
 {
+    return if is_suppressed ();
+
     print "Running NULL usage check\n";
 
     foreach $file (@files_cpp, @files_inl, @files_h) {
@@ -775,6 +941,8 @@ sub check_for_NULL ()
 # int ACE_TMAIN (int argc, ACE_TCHAR *argv[])
 sub check_for_improper_main_declaration ()
 {
+    return if is_suppressed ();
+
     print "Running Improper main() declaration check\n";
 
     foreach $file (@files_cpp) {
@@ -877,6 +1045,8 @@ sub check_for_improper_main_declaration ()
 # This test checks for the use of "inline" instead of ACE_INLINE
 sub check_for_inline ()
 {
+    return if is_suppressed ();
+
     print "Running inline check\n";
     foreach $file (@files_inl) {
         if (open (FILE, $file)) {
@@ -907,6 +1077,8 @@ sub check_for_inline ()
 # cause problems with exception handling
 sub check_for_math_include ()
 {
+    return if is_suppressed ();
+
     print "Running math.h test\n";
     foreach $file (@files_h, @files_cpp, @files_inl) {
         if (open (FILE, $file)) {
@@ -936,6 +1108,8 @@ sub check_for_math_include ()
 # // FUZZ: disable check_for_streams_include
 sub check_for_streams_include ()
 {
+    return if is_suppressed ();
+
     print "Running ace/streams.h test\n";
     foreach $file (@files_h, @files_cpp, @files_inl) {
         if (open (FILE, $file)) {
@@ -964,41 +1138,11 @@ sub check_for_streams_include ()
     }
 }
 
-# This test checks for the inclusion of OS.h.
-sub check_for_OS_h_include ()
-{
-    print "Running ace/OS.h test\n";
-    foreach $file (@files_h, @files_cpp, @files_inl) {
-        if (open (FILE, $file)) {
-            my $disable = 0;
-            print "Looking at file $file\n" if $opt_d;
-            while (<FILE>) {
-                if (/FUZZ\: disable check_for_OS_h_include/) {
-                    $disable = 1;
-                }
-                if (/FUZZ\: enable check_for_OS_h_include/) {
-                    $disable = 0;
-                }
-                if ($disable == 0 and ($file =~ /.*CIAO.*/)
-                    and /^\s*#\s*include\s*\"ace\/OS\.h\"/) {
-                    print_error ("$file:$.: expensive ace/OS.h included; consider an OS_NS_*.h file");
-                    print " OS.h is very expensive in both ";
-                    print "compile-time and footprint. \n";
-                    print " Please consider including one of the ";
-                    print "OS_NS_*.h files instead.\n\n";
-                }
-            }
-            close (FILE);
-        }
-        else {
-            print STDERR "Error: Could not open $file\n";
-        }
-    }
-}
-
 # This test checks for the inclusion of Synch*.h.
 sub check_for_synch_include ()
 {
+    return if is_suppressed ();
+
     print "Running ace/Synch*.h test\n";
     foreach $file (@files_h, @files_cpp, @files_inl) {
         if (open (FILE, $file)) {
@@ -1033,6 +1177,8 @@ sub check_for_synch_include ()
 # For general readability, lines should not contain more than 80 characters
 sub check_for_line_length ()
 {
+    return if is_suppressed ();
+
     print "Running line length test\n";
     foreach $file (@files_h, @files_cpp, @files_inl) {
         if (open (FILE, $file)) {
@@ -1058,6 +1204,8 @@ sub check_for_line_length ()
 # should be used, not the newer // style.
 sub check_for_preprocessor_comments ()
 {
+    return if is_suppressed ();
+
     print "Running preprocessor comment test\n";
     foreach $file (@files_h, @files_cpp, @files_inl) {
         if (open (FILE, $file)) {
@@ -1078,15 +1226,17 @@ sub check_for_preprocessor_comments ()
 # We should not have empty files in the repo
 sub check_for_empty_files ()
 {
+    return if is_suppressed ();
+
     print "Running empty file test\n";
     foreach $file (@files_inl, @files_cpp) {
         my $found_non_empty_line = 0;
         if (open (FILE, $file)) {
             print "Looking at file $file\n" if $opt_d;
             while (<FILE>) {
-              next if /^[:blank:]*$/; # skip empty lines
-              next if /^[:blank:]*\/\//; # skip C++ comments
-              next if /^[:blank:]*\/\*/; # skip C++ comments
+              next if /^[[:blank:]]*$/; # skip empty lines
+              next if /^[[:blank:]]*\/\//; # skip C++ comments
+              next if /^[[:blank:]]*\/\*/; # skip C++ comments
               $found_non_empty_line = 1;
               last;
             }
@@ -1107,6 +1257,8 @@ sub check_for_empty_files ()
 # We should only be using the ACE_TCHAR, ACE_TEXT macros instead.
 sub check_for_tchar
 {
+    return if is_suppressed ();
+
     print "Running TCHAR test\n";
     foreach $file (@files_h, @files_cpp, @files_inl) {
         if (open (FILE, $file)) {
@@ -1163,6 +1315,8 @@ sub check_for_tchar
 # whether or not it's in the cvs repo.
 sub check_for_dependency_file ()
 {
+    return if is_suppressed ();
+
     print "Running DEPENDENCY_FILE test\n";
     foreach $file (@files_makefile) {
         if (open (FILE, $file)) {
@@ -1194,6 +1348,8 @@ sub check_for_dependency_file ()
 # name of the GNUmakefile
 sub check_for_makefile_variable ()
 {
+    return if is_suppressed ();
+
     print "Running MAKEFILE variable test\n";
     foreach $file (@files_makefile) {
         if (!(substr($file,-4) eq ".bor")
@@ -1232,6 +1388,8 @@ sub check_for_makefile_variable ()
 # and vice versa.
 sub check_for_pre_and_post ()
 {
+    return if is_suppressed ();
+
     print "Running pre.h/post.h test\n";
     foreach $file (@files_h) {
         my $pre = 0;
@@ -1279,6 +1437,8 @@ sub check_for_pre_and_post ()
 # "#pragma warning(pop)" pragmas are used in a given header.
 sub check_for_push_and_pop ()
 {
+    return if is_suppressed ();
+
     print "Running #pragma (push)/(pop) test\n";
     foreach $file (@files_h) {
         my $push_count = 0;
@@ -1320,6 +1480,8 @@ sub check_for_push_and_pop ()
 # source file.
 sub check_for_versioned_namespace_begin_end ()
 {
+  return if is_suppressed ();
+
   print "Running versioned namespace begin/end test\n";
   foreach $file (@files_cpp, @files_inl, @files_h) {
     my $begin_count = 0;
@@ -1355,6 +1517,8 @@ sub check_for_versioned_namespace_begin_end ()
 # Check doxygen @file comments
 sub check_for_mismatched_filename ()
 {
+    return if is_suppressed ();
+
     print "Running doxygen \@file test\n";
     foreach $file (@files_h, @files_cpp, @files_inl, @files_idl) {
         if (open (FILE, $file)) {
@@ -1363,11 +1527,9 @@ sub check_for_mismatched_filename ()
             while (<FILE>) {
                 if (m/\@file\s*([^\s]+)/){
                     # $file includes complete path, $1 is the name after
-                    # @file. We must strip the complete path from $file.
-                    # we do that using the basename function from
-                    # File::BaseName
-                    $filename = basename($file,"");
-                    if (!($filename eq $1)){
+                    # @file. We must check whether the last part of $file
+                    # is equal to $1
+                    if ($file !~ /$1$/) {
                         print_error ("$file:$.: \@file mismatch in $file, found $1");
                     }
                 }
@@ -1383,6 +1545,8 @@ sub check_for_mismatched_filename ()
 # check for bad run_test
 sub check_for_bad_run_test ()
 {
+    return if is_suppressed ();
+
     print "Running run_test.pl test\n";
     foreach $file (@files_run_pl) {
         if (open (FILE, $file)) {
@@ -1544,6 +1708,8 @@ sub check_for_bad_run_test ()
 # documentation
 sub check_for_absolute_ace_wrappers()
 {
+    return if is_suppressed ();
+
     print "Running absolute ACE_wrappers test\n";
     foreach $file (@files_html) {
         if (open (FILE, $file)) {
@@ -1566,6 +1732,8 @@ sub check_for_absolute_ace_wrappers()
 # Check for generated headers in the code documentation
 sub check_for_generated_headers()
 {
+    return if is_suppressed ();
+
     print "Running generated headers test\n";
     foreach $file (@files_cpp, @files_inl, @files_h) {
         if (open (FILE, $file)) {
@@ -1585,9 +1753,46 @@ sub check_for_generated_headers()
     }
 }
 
+sub check_for_numeric_log()
+{
+    return if is_suppressed ();
+
+    print "Running check for numeric flags in DAnCE and DDS4CCM\n";
+
+    foreach $file (@files_inl, @files_cpp, @files_h) {
+        if (open (FILE, $file)) {
+            while (<FILE>) {
+                # look for debug statements
+                if (m/DANCE_DEBUG\s*\(\s*\d*\s*,/) {
+                    print_warning ("$file:$.: Found numeric log level in debug statement");
+                }
+                if (m/DANCE_ERROR\s*\(\s*\d\s*,/) {
+                    print_warning ("$file:$.: Found numeric log level in error statement");
+                }
+                if (m/DANCE_TRACE_LOG\s*\(\s*\d\s*,/) {
+                    print_warning ("$file:$.: Found numeric log level in trace log statement");
+                }
+                if (m/DDS4CCM_DEBUG\s*\(\s*\d*\s*,/) {
+                    print_warning ("$file:$.: Found numeric log level in debug statement");
+                }
+                if (m/DDS4CCM_ERROR\s*\(\s*\d\s*,/) {
+                    print_warning ("$file:$.: Found numeric log level in error statement");
+                }
+            }
+
+            close (FILE);
+        }
+        else {
+            print STDERR "Error: Could not open $file\n";
+        }
+    }
+}
+
 # Make sure ACE_[OS_]TRACE matches the function/method
 sub check_for_bad_ace_trace()
 {
+    return if is_suppressed ();
+
     print "Running TRACE test\n";
     foreach $file (@files_inl, @files_cpp) {
         if (open (FILE, $file)) {
@@ -1610,22 +1815,37 @@ sub check_for_bad_ace_trace()
                     $class = "";
                     $function = $1;
                 }
+                elsif (m/^class (.*)\s*:/) {
+                    $class = $1;
+                    $function = "";
+                }
+                elsif (m/^class (.*)\s*$/) {
+                    $class = $1;
+                    $function = "";
+                }
+
+                # print "TRACE_CHECK. Class = $class\n";
 
                 # Look for TRACE statements
                 if (m/ACE_OS_TRACE\s*\(\s*\"(.*)\"/
                     || m/ACE_TRACE\s*\(\s*\"(.*)\"/
                     || m/CIAO_TRACE\s*\(\s*\"(.*)\"/
+                    || m/DANCE_TRACE\s*\(\s*\"(.*)\"/
                     || m/DDS4CCM_TRACE\s*\(\s*\"(.*)\"/) {
                     my $trace = $1;
 
                     # reduce the classname
                     if ($class =~ m/([^\s][^\<^\s]*)\s*\</) {
                         $class = $1;
-                    }
+                   }
+
+                    # print "TRACE_CHECK. Found a trace. Class = $class\n";
 
                     if ($class =~ m/([^\s^\&^\*]*)\s*$/) {
                         $class = $1;
                     }
+
+                    # print "TRACE_CHECK. Augmenting class. Class = $class\n";
 
                     if ($trace !~ m/\Q$function\E/
                         || ($trace =~ m/\:\:/ && !($trace =~ m/\Q$class\E/ && $trace =~ m/\Q$function\E/))) {
@@ -1647,6 +1867,8 @@ sub check_for_bad_ace_trace()
 # This test checks for broken ChangeLog entries.
 sub check_for_changelog_errors ()
 {
+    return if is_suppressed ();
+
     print "Running ChangeLog check\n";
     foreach $file (@files_changelog) {
         if (open (FILE, $file)) {
@@ -1664,9 +1886,9 @@ sub check_for_changelog_errors ()
                     print_error ("$file:$.: Backslashes in file path");
                 }
 
-                # Check for CVS conflict tags
+                # Check for svn conflict tags
                 if (m/^<<<<</ || m/^=====/ || m/^>>>>>/) {
-                    print_error ("$file:$.: CVS conflict markers");
+                    print_error ("$file:$.: svn conflict markers");
                 }
             }
             close (FILE);
@@ -1679,6 +1901,8 @@ sub check_for_changelog_errors ()
 
 sub check_for_deprecated_macros ()
 {
+    return if is_suppressed ();
+
     ## Take the current working directory and remove everything up to
     ## ACE_wrappers (or ACE for the peer-style checkout).  This will be
     ## used to determine when the use of ACE_THROW_SPEC is an error.
@@ -1694,16 +1918,12 @@ sub check_for_deprecated_macros ()
 
             print "Looking at file $file\n" if $opt_d;
             while (<FILE>) {
-                # Check for ACE_HAS_EXPLICIT_TEMPLATE_INSTANTIATION usage.
-                if (m/ACE_HAS_EXPLICIT_TEMPLATE_INSTANTIATION\)/) {
-                    print_error ("$file:$.: ACE_HAS_EXPLICIT_TEMPLATE_INSTANTIATION found.");
-                }
-                elsif (/ACE_THROW_SPEC/) {
-                    ## Do not use ACE_THROW_SPEC in TAO or CIAO.
-                    if ($file =~ /TAO|CIAO/i || $cwd =~ /TAO|CIAO/i) {
-                        print_error ("$file:$.: ACE_THROW_SPEC found.");
-                    }
-                }
+              if (/ACE_THROW_SPEC/) {
+                  ## Do not use ACE_THROW_SPEC in TAO or CIAO.
+                  if ($file =~ /TAO|CIAO/i || $cwd =~ /TAO|CIAO/i) {
+                      print_error ("$file:$.: ACE_THROW_SPEC found.");
+                  }
+              }
             }
             close (FILE);
         }
@@ -1716,6 +1936,8 @@ sub check_for_deprecated_macros ()
 # is non-portable.  Use ptrdiff_t instead.
 sub check_for_ptr_arith_t ()
 {
+    return if is_suppressed ();
+
     print "Running ptr_arith_t check\n";
     foreach $file (@files_cpp, @files_inl, @files_h) {
         if (open (FILE, $file)) {
@@ -1747,6 +1969,8 @@ sub check_for_ptr_arith_t ()
 # " " instead of <> to avoid confict with Doxygen.
 sub check_for_include ()
 {
+    return if is_suppressed ();
+
     print "Running the include check\n";
     foreach $file (@files_h, @files_cpp, @files_inl, @files_idl) {
         my $bad_occurance = 0;
@@ -1793,6 +2017,8 @@ sub check_for_include ()
 # NOTE:  This test isn't fool proof yet.
 sub check_for_non_bool_operators ()
 {
+    return if is_suppressed ();
+
     print "Running non-bool equality, relational and logical operator check\n";
     foreach $file (@files_h, @files_inl, @files_cpp) {
         if (open (FILE, $file)) {
@@ -1841,9 +2067,10 @@ sub check_for_non_bool_operators ()
 }
 
 # This test verifies that all filenames are short enough
-
 sub check_for_long_file_names ()
 {
+    return if is_suppressed ();
+
     my $max_filename = 50;
     my $max_mpc_projectname = $max_filename - 12; ## GNUmakefile.[project_name]
     print "Running file names check\n";
@@ -1851,7 +2078,7 @@ sub check_for_long_file_names ()
     foreach $file (@files_cpp, @files_inl, @files_h, @files_html,
                    @files_dsp, @files_dsw, @files_gnu, @files_idl,
                    @files_pl, @files_changelog, @files_makefile,
-                   @files_bor, @files_mpc) {
+                   @files_bor, @files_mpc, @files_generic) {
         if ( length( basename($file) ) >= $max_filename )
         {
             print_error ("File name $file meets or exceeds $max_filename chars.");
@@ -1888,6 +2115,8 @@ sub check_for_long_file_names ()
 
 sub check_for_refcountservantbase ()
 {
+    return if is_suppressed ();
+
     print "Running PortableServer::RefCountServantBase derivation check\n";
 
     foreach $file (@files_h, @files_cpp, @files_inl) {
@@ -1907,8 +2136,33 @@ sub check_for_refcountservantbase ()
     }
 }
 
+sub check_for_old_documentation_style ()
+{
+    return if is_suppressed ();
+
+    print "Running documentation style check\n";
+
+    foreach $file (@files_h, @files_cpp, @files_inl) {
+        if (open (FILE, $file)) {
+            print "Looking at file $file\n" if $opt_d;
+            while (<FILE>) {
+
+                if (/\/\/\s*\= TITLE/) {
+                  print_error ("$file:$.: found old documentation style // = TITLE");
+                }
+            }
+            close (FILE);
+        }
+        else {
+            print STDERR "Error: Could not open $file\n";
+        }
+    }
+}
+
 sub check_for_TAO_Local_RefCounted_Object ()
 {
+    return if is_suppressed ();
+
     print "Running TAO_Local_RefCounted_Object check\n";
 
     ITERATION: foreach $file (@files_h, @files_cpp, @files_inl) {
@@ -1921,7 +2175,6 @@ sub check_for_TAO_Local_RefCounted_Object ()
                 }
                 if (/FUZZ\: enable check_for_TAO_Local_RefCounted_Object/) {
                     $disable = 0;
-                    next ITERATION;
                 }
 
                 if ($disable == 0 and /TAO_Local_RefCounted_Object/) {
@@ -1940,6 +2193,8 @@ sub check_for_TAO_Local_RefCounted_Object ()
 # to be compatiable with wide character builds.
 sub check_for_ORB_init ()
 {
+    return if is_suppressed ();
+
     print "Running the ORB_init() wide character incompatability check\n";
     foreach $file (@files_cpp, @files_inl) {
         if (open (FILE, $file)) {
@@ -2019,25 +2274,124 @@ sub check_for_ORB_init ()
     }
 }
 
+# This test checks for the presence of an include for ace/OS.h
+# which should never occur. Only user code is allowed to include OS.h.
+sub check_for_include_OS_h ()
+{
+    return if is_suppressed ();
+
+    print "Running the OS.h inclusion check\n";
+    foreach $file (@files_h, @files_cpp, @files_inl) {
+        if (open (FILE, $file)) {
+            my $disable = 0;
+            print "Looking at file $file\n" if $opt_d;
+            while (<FILE>) {
+                if (/FUZZ\: disable check_for_include_OS_h/) {
+                    $disable = 1;
+                    next;
+                }
+                elsif (/FUZZ\: enable check_for_include_OS_h/) {
+                    $disable = 0;
+                    next;
+                }
+                elsif ($disable == 0 and /^\s*#\s*include\s*<[(ace)|(TAO)|(CIAO)]\/.*>/) {
+                    print_error ("$file:$.: include <ace\/..> used");
+                }
+                else {
+                    if ($disable == 0 and /^\s*#\s*include\s*"ace\/OS.h"/) {
+                        print_error ("$file:$.: include ace/OS.h used");
+                    }
+                }
+            }
+            close (FILE);
+        }
+        else {
+            print STDERR "Error: Could not open $file\n";
+        }
+    }
+}
+
+sub check_for_ace_log_categories ()
+{
+    return if is_suppressed ();
+
+    print "Running the ACE log categories check\n";
+
+    my @macros = qw/HEX_DUMP ERROR ERROR_RETURN ERROR_BREAK DEBUG/;
+    my $macros = join ('|', @macros);
+
+    for my $f (@files_h, @files_cpp, @files_inl) {
+        my $cat = 'ACE';
+        $f =~ s!\\!/!g;
+        if ($f =~ /\bace\/(\w+)/) {
+            next if $1 eq 'Log_Msg' || $` =~ /\/protocols\/$/;
+            $cat = 'ACELIB';
+        }
+        elsif ($f =~ /tao\// && $f !~ /interop-tests\//) {
+            $cat = 'TAOLIB';
+        }
+        elsif ($f =~ /\/orbsvcs\// && $f !~ /tests|examples/i) {
+            $cat = 'ORBSVCS';
+        }
+        elsif ($f =~ /CIAO\// || $f =~ /DAnCE\//) {
+            next;
+        }
+        elsif ($f =~ /tests\/Log_Msg_Test\.cpp/) {
+            next;
+        }
+
+        if (open (IN, $f)) {
+            print "Looking at file $f for category $cat\n" if $opt_d;
+            my $disable = 0;
+            while (<IN>) {
+                if (/FUZZ: disable check_for_ace_log_categories/) {
+                    $disable = 1;
+                    next;
+                }
+                elsif (/FUZZ: enable check_for_ace_log_categories/) {
+                    $disable = 0;
+                    next;
+                }
+                elsif ($disable == 0
+                       && /\b(ACE|ACELIB|TAOLIB|ORBSVCS)_($macros)\b/g
+                       && $1 ne $cat) {
+                    print_error ("$f:$.: found log macro $1_$2, "
+                                 . "expecting ${cat}_$2");
+                }
+            }
+            close IN;
+        }
+        else {
+            print STDERR "Error: Could not open $f\n";
+        }
+    }
+}
+
+
 ##############################################################################
 
-use vars qw/$opt_c $opt_d $opt_h $opt_l $opt_t $opt_m/;
+use vars qw/$opt_c $opt_d $opt_x $opt_h $opt_l $opt_t $opt_s $opt_m/;
 
-if (!getopts ('cdhl:t:mv') || $opt_h) {
-    print "fuzz.pl [-cdhm] [-l level] [-t test_name][file1, file2, ...]\n";
+if (!getopts ('cdx:hl:t:s:mv') || $opt_h) {
+    print "fuzz.pl [-cdhm] [-l level] [-t test_names] [file1, file2, ...]\n";
     print "\n";
     print "    -c             only look at the files passed in\n";
     print "    -d             turn on debugging\n";
+    print "    -x             specify comma-separated list of path masks\n";
+          "                       (regex) to exclude\n";
     print "    -h             display this help\n";
     print "    -l level       set detection level (default = 5)\n";
-    print "    -t test_name   specify any single test to run. This will disable the run level setting\n";
-    print "    -m             only check locally modified files (uses cvs)\n";
+    print "    -t test_names  specify comma-separated list of tests to run\n".
+          "                       this will disable the run level setting\n";
+    print "    -s test_names  specify comma-separated list of tests to suppress\n".
+          "                       this will supplement the run level setting\n";
+    print "    -m             only check locally modified files (uses svn)\n";
     print "======================================================\n";
-    print "list of the tests that could be run:\n";
-    print "\t   check_for_noncvs_files
+    print "list of the tests that could be run or suppressed:\n";
+    print <<EOT;
+           check_for_noncvs_files
            check_for_generated_headers
            check_for_synch_include
-           check_for_OS_h_include
            check_for_streams_include
            check_for_dependency_file
            check_for_makefile_variable
@@ -2070,12 +2424,27 @@ if (!getopts ('cdhl:t:mv') || $opt_h) {
            check_for_long_file_names
            check_for_refcountservantbase
            check_for_TAO_Local_RefCounted_Object
-           check_for_ORB_init\n";
+           check_for_ORB_init
+           check_for_trailing_whitespace
+           check_for_include_OS_h
+           check_for_numeric_log
+           check_for_ORB_init
+           check_for_old_documentation_style
+           check_for_ace_log_categories
+EOT
     exit (1);
 }
 
 if (!$opt_l) {
     $opt_l = 5;
+}
+
+# Before opt_m is read!
+if ($opt_x) {
+    my @excludes = split '\s*,\s*', $opt_x;
+    for my $exclude (@excludes) {
+      push (@excluded_dirs, $exclude);
+    }
 }
 
 if ($opt_c) {
@@ -2091,13 +2460,28 @@ else {
 }
 
 if ($opt_t) {
-    &$opt_t();
-    exit (1);
+    my @tests = split '\s*,\s*', $opt_t;
+    for my $test (@tests) {
+      &$test();
+    }
+    print "\nfuzz.pl - $errors error(s), $warnings warning(s)\n";
+    exit ($errors > 0) ? 1 : 0;
+}
+
+if ($opt_s) {
+    my @tests = split '\s*,\s*', $opt_s;
+    for my $test (@tests) {
+      $suppressed_tests{$test} = 1;
+    }
 }
 
 print "--------------------Configuration: Fuzz - Level ",$opt_l,
       "--------------------\n";
 
+check_for_export_file () if ($opt_l >= 4);
+check_for_trailing_whitespace () if ($opt_l >= 4);
+check_for_lack_ACE_OS () if ($opt_l >= 6);
+check_for_ACE_Guard () if ($opt_l >= 1);
 check_for_generated_headers () if ($opt_l >= 6);
 check_for_bad_run_test () if ($opt_l >= 5);
 check_for_deprecated_macros () if ($opt_l >= 1);
@@ -2114,13 +2498,11 @@ check_for_newline () if ($opt_l >= 1);
 check_for_ACE_Thread_Mutex () if ($opt_l >= 1);
 check_for_ACE_SYNCH_MUTEX () if ($opt_l >= 1);
 check_for_tab () if ($opt_l >= 1);
-check_for_lack_ACE_OS () if ($opt_l >= 6);
 check_for_exception_spec () if ($opt_l >= 1);
 check_for_NULL () if ($opt_l >= 1);
 check_for_inline () if ($opt_l >= 2);
 check_for_math_include () if ($opt_l >= 3);
 check_for_synch_include () if ($opt_l >= 6);
-check_for_OS_h_include () if ($opt_l >= 5);
 check_for_line_length () if ($opt_l >= 8);
 check_for_preprocessor_comments () if ($opt_l >= 7);
 check_for_tchar () if ($opt_l >= 4);
@@ -2137,9 +2519,12 @@ check_for_non_bool_operators () if ($opt_l > 2);
 check_for_long_file_names () if ($opt_l >= 1);
 check_for_improper_main_declaration () if ($opt_l >= 1);
 check_for_TAO_Local_RefCounted_Object () if ($opt_l >= 1);
+check_for_include_OS_h () if ($opt_l >= 1);
+check_for_numeric_log () if ($opt_l >= 3);
 check_for_ORB_init () if ($opt_l >= 1);
-check_for_export_file () if ($opt_l >= 6);
+check_for_old_documentation_style () if ($opt_l >= 6);
+check_for_ace_log_categories () if ($opt_l >= 5);
 
-print "\nFuzz.pl - $errors error(s), $warnings warning(s)\n";
+print "\nfuzz.pl - $errors error(s), $warnings warning(s)\n";
 
 exit (1) if $errors > 0;

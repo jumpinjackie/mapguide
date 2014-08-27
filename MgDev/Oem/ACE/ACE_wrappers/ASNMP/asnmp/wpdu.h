@@ -5,7 +5,7 @@
 /**
  *  @file    wpdu.h
  *
- *  $Id: wpdu.h 80826 2008-03-04 14:51:23Z wotte $
+ *  $Id: wpdu.h 94442 2011-09-07 09:14:41Z johnnyw $
  *
  *  Adapter class. Converts a Pdu and GenTarget into a format
  *  that can be stuffed out a I/O port
@@ -27,14 +27,15 @@
 #include "asnmp/pdu.h"
 #include "asnmp/target.h"
 
-// this is an adapter class, it peforms the following transformations
-// PDU / Target -> iovec buffer
-// iovec buffer -> PDU / Target
 struct snmp_pdu;
 /**
  * @class wpdu
  *
  * @brief Implement an Adapter pattern between CMU SNMP and HP SNMP++
+ *
+ * this is an adapter class, it peforms the following transformations
+ * PDU / Target -> iovec buffer
+ * iovec buffer -> PDU / Target
  */
 class ASNMP_Export wpdu
 {

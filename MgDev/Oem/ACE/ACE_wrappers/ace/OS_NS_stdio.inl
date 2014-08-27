@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: OS_NS_stdio.inl 87232 2009-10-26 13:25:55Z johnnyw $
+// $Id: OS_NS_stdio.inl 96943 2013-03-30 09:42:31Z mcorino $
 
 #include "ace/OS_NS_unistd.h"
 #include "ace/OS_NS_stdlib.h"
@@ -339,13 +339,11 @@ ACE_OS::flock_wrlock (ACE_OS::ace_flock_t *lock,
 #endif /* ACE_WIN32 */
 }
 
-#if !defined (ACE_LACKS_CLEARERR)
 ACE_INLINE void
 ACE_OS::clearerr (FILE* fp)
 {
   ace_clearerr_helper (fp);
 }
-#endif /* !ACE_LACKS_CLEARERR */
 
 #if !defined (ACE_LACKS_CUSERID)
 ACE_INLINE char *
@@ -585,7 +583,7 @@ ACE_INLINE ACE_HANDLE
 ACE_OS::fileno (FILE *stream)
 {
 #if defined ACE_FILENO_EQUIVALENT
-  return (ACE_HANDLE)ACE_FILENO_EQUIVALENT (stream);
+  return (ACE_HANDLE)((intptr_t)ACE_FILENO_EQUIVALENT (stream));
 #else
   return ace_fileno_helper (stream);
 #endif
@@ -807,12 +805,7 @@ ACE_OS::rename (const char *old_name,
                 const char *new_name,
                 int flags)
 {
-# if defined (ACE_LACKS_RENAME)
-  ACE_UNUSED_ARG (old_name);
-  ACE_UNUSED_ARG (new_name);
-  ACE_UNUSED_ARG (flags);
-  ACE_NOTSUP_RETURN (-1);
-# elif defined (ACE_HAS_WINCE)
+# if defined (ACE_HAS_WINCE)
   // Win CE is always wide-char.
   ACE_UNUSED_ARG (flags);
   if (0 == ::MoveFile (ACE_TEXT_CHAR_TO_TCHAR (old_name),
@@ -829,10 +822,10 @@ ACE_OS::rename (const char *old_name,
   if (::MoveFileExA (old_name, new_name, flags) == 0)
     ACE_FAIL_RETURN (-1);
   return 0;
-# else /* ACE_LACKS_RENAME */
+# else
   ACE_UNUSED_ARG (flags);
   ACE_OSCALL_RETURN (::rename (old_name, new_name), int, -1);
-# endif /* ACE_LACKS_RENAME */
+# endif /* ACE_HAS_WINCE */
 }
 
 #if defined (ACE_HAS_WCHAR)
@@ -841,12 +834,7 @@ ACE_OS::rename (const wchar_t *old_name,
                 const wchar_t *new_name,
                 int flags)
 {
-# if defined (ACE_LACKS_RENAME)
-  ACE_UNUSED_ARG (old_name);
-  ACE_UNUSED_ARG (new_name);
-  ACE_UNUSED_ARG (flags);
-  ACE_NOTSUP_RETURN (-1);
-# elif defined (ACE_HAS_WINCE)
+# if defined (ACE_HAS_WINCE)
   ACE_UNUSED_ARG (flags);
   if (::MoveFileW (old_name, new_name) == 0)
     ACE_FAIL_RETURN (-1);
@@ -864,11 +852,11 @@ ACE_OS::rename (const wchar_t *old_name,
 # elif defined (ACE_WIN32)
   ACE_UNUSED_ARG (flags);
   ACE_OSCALL_RETURN (::_wrename (old_name, new_name), int, -1);
-# else /* ACE_LACKS_RENAME */
+# else
   ACE_Wide_To_Ascii nold_name (old_name);
   ACE_Wide_To_Ascii nnew_name (new_name);
   return ACE_OS::rename (nold_name.char_rep (), nnew_name.char_rep (), flags);
-# endif /* ACE_LACKS_RENAME */
+# endif /* ACE_HAS_WINCE */
 }
 #endif /* ACE_HAS_WCHAR */
 
@@ -1025,6 +1013,12 @@ ACE_OS::vsprintf (wchar_t *buffer, const wchar_t *format, va_list argptr)
   // to see if the operation will remain in bounds). If this isn't ok, use
   // ACE_OS::snprintf().
   return vswprintf (buffer, 4096, format, argptr);
+
+# elif defined (__MINGW64_VERSION_MAJOR) && !defined (WIN64)
+  // the MingW64 32bit version causes link errors when using the
+  // 'standard' vswprint(). Luckily they have a mingw special.
+
+  return __mingw_vswprintf (buffer, format, argptr);
 
 # elif defined (ACE_WIN32)
   // Windows has vswprintf, but the pre-VC8 signature is from the older

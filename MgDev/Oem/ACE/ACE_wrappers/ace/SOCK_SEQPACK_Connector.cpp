@@ -1,9 +1,9 @@
-// $Id: SOCK_SEQPACK_Connector.cpp 83735 2008-11-14 09:41:52Z johnnyw $
+// $Id: SOCK_SEQPACK_Connector.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/SOCK_SEQPACK_Connector.h"
 
 #include "ace/INET_Addr.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Time_Value.h"
 #include "ace/OS_Memory.h"
 #include "ace/OS_NS_string.h"
@@ -18,7 +18,7 @@
 #include "ace/SOCK_SEQPACK_Connector.inl"
 #endif /* __ACE_INLINE__ */
 
-ACE_RCSID(ace, SOCK_SEQPACK_Connector, "SOCK_SEQPACK_Connector.cpp,v 4.35 2002/03/08 23:18:09 spark Exp")
+
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -407,7 +407,7 @@ ACE_SOCK_SEQPACK_Connector::ACE_SOCK_SEQPACK_Connector (ACE_SOCK_SEQPACK_Associa
                      protocol) == -1
       && timeout != 0
       && !(errno == EWOULDBLOCK || errno == ETIME || errno == ETIMEDOUT))
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_SOCK_SEQPACK_Connector::ACE_SOCK_SEQPACK_Connector")));
 }
@@ -434,7 +434,7 @@ ACE_SOCK_SEQPACK_Connector::ACE_SOCK_SEQPACK_Connector (ACE_SOCK_SEQPACK_Associa
                      protocol) == -1
       && timeout != 0
       && !(errno == EWOULDBLOCK || errno == ETIME || errno == ETIMEDOUT))
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_SOCK_SEQPACK_Connector::ACE_SOCK_SEQPACK_Connector")));
 }

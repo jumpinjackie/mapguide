@@ -6,7 +6,7 @@
  *
  *  definitions for XSI resource operations
  *
- *  $Id: os_resource.h 81697 2008-05-14 18:33:11Z johnnyw $
+ *  $Id: os_resource.h 97262 2013-08-09 08:32:10Z johnnyw $
  *
  *  @author Don Hinton <dhinton@dresystems.com>
  *  @author This code was originally in various places including ace/OS.h.
@@ -18,7 +18,7 @@
 
 #include /**/ "ace/pre.h"
 
-#include "ace/config-lite.h"
+#include /**/ "ace/config-lite.h"
 
 #if !defined (ACE_LACKS_PRAGMA_ONCE)
 # pragma once
@@ -49,17 +49,6 @@
 extern "C"
 {
 #endif /* __cplusplus */
-
-// There must be a better way to do this...
-#if !defined (RLIMIT_NOFILE) && !defined (ACE_LACKS_RLIMIT_NOFILE)
-#  if defined (linux) || defined (AIX) || defined (SCO)
-#    if defined (RLIMIT_OFILE)
-#      define RLIMIT_NOFILE RLIMIT_OFILE
-#    else
-#      define RLIMIT_NOFILE 200
-#    endif /* RLIMIT_OFILE */
-#  endif /* defined (linux) || defined (AIX) || defined (SCO) */
-#endif /* RLIMIT_NOFILE */
 
 #if defined (ACE_WIN32)
 #  define RUSAGE_SELF 1

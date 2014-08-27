@@ -1,20 +1,17 @@
-// $Id: integer.cpp 80826 2008-03-04 14:51:23Z wotte $
 
-// ============================================================================
-//
-// = LIBRARY
-//    asnmp
-//
-// = FILENAME
-//     integer.cpp
-//
-// = DESCRIPTION
-//   Class implemtation for SMI Integer classes.
-//
-// = AUTHOR
-//   Jeff Meyer
-//   Michael R MacFaden  mrm@cisco.com - rework & ACE port
-// ============================================================================
+//=============================================================================
+/**
+ *  @file     integer.cpp
+ *
+ *  $Id: integer.cpp 93651 2011-03-28 08:49:11Z johnnyw $
+ *
+ * Class implemtation for SMI Integer classes.
+ *
+ *
+ *  @author Jeff MeyerMichael R MacFaden  mrm@cisco.com - rework & ACE port
+ */
+//=============================================================================
+
 /*===================================================================
 
   Copyright (c) 1996
@@ -34,8 +31,6 @@
 
 #include "asnmp/integer.h"        // header file for gauge class
 #include "ace/OS_NS_stdio.h"
-
-ACE_RCSID(asnmp, integer, "$Id: integer.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 // constructor with value
 SnmpUInt32::SnmpUInt32 (const unsigned long i)

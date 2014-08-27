@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# $Id: sets-manager.py 93359 2011-02-11 11:33:12Z mcorino $
 """ This script implements branching and tagging in the DOC group
 repository, and automates the process of creating sets. """
 

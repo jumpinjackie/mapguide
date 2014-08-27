@@ -1,4 +1,4 @@
-# $Id: platform_hpux_aCC.GNU 86209 2009-07-24 08:48:23Z johnnyw $
+# $Id: platform_hpux_aCC.GNU 97375 2013-10-17 12:06:45Z johnnyw $
 #
 # This is for HP-UX 11.x using the aC++ compiler.
 #
@@ -13,7 +13,6 @@
 buildbits ?= 0
 debug ?= 1
 distrib ?= 0
-exceptions ?= 1
 optimize ?= 0
 stdcpplib ?= 1
 threads ?= 1
@@ -46,21 +45,18 @@ else
   endif
 endif
 
+# Want to be able to do [unsigned] long long.
+CCFLAGS += -ext
+
 ifeq (1,$(stdcpplib))
   CCFLAGS += -AA
   ifeq (03,$(CXXMAJORVERS))
     # Warning 930 is spurious when new(std::nothrow) is used. Reported to HP
     # as support call 3201224717. (Steve Huston, 23-Nov-2002)
     CCFLAGS += +W930
-    # aCC 3.31 has poor member template support.
-    ifeq (31,$(CXXMINORVERS))
-      CCFLAGS += -DACE_LACKS_MEMBER_TEMPLATES
-    endif
   endif
 # Compile errors using -AA and +noeh together - HP problem report
 # JAGad12608, fix slated for Dec 2001 Release -- Steve Huston, April 10, 2001.
-# If you still have problems with this area, uncomment the following line:
-#  exceptions = 1
 else
   CCFLAGS += -AP
 endif
@@ -69,25 +65,7 @@ endif
 # and specified compiler options.
 ifeq ($(threads),1)
   THR_DEFS = -DACE_HAS_THREADS
-
-  # x.30 was the first version offering -mt. So, if it's a .2x version,
-  # set the defs by hand; anything else, use -mt. This leaves out .1x
-  # versions, which should be no problem at this point.
-  ifeq (,$(filter 2%,$(CXXMINORVERS)))
-    CC_THR_DEFS += -mt
-  else
-    # Different for v2 vs. v1 C++ library selection.
-    ifeq (1,$(stdcpplib))
-      THR_DEFS += -D_RWSTD_MULTI_THREAD
-    else
-      THR_DEFS += -DRWSTD_MULTI_THREAD -D_THREAD_SAFE
-    endif
-
-    # For HP-UX 11.x, choose kernel threads over CMA (user) threads.
-    ifeq ($(word 2,$(HPVERS_WORDS)), 11)
-      THR_DEFS += -D_POSIX_C_SOURCE=199506L
-    endif
-  endif
+  CC_THR_DEFS += -mt
 else
   THR_DEFS = -DACE_HAS_THREADS=0
   # On HP-UX 11, even without building for threads, the *_r reentrant
@@ -139,12 +117,6 @@ endif
 
 CPPFLAGS        += $(THR_DEFS) -D_HPUX_SOURCE -DHPUX_VERS=$(HPUX_VERS) -DACE_LACKS_PRAGMA_ONCE
 CCFLAGS         += $(CC_THR_DEFS)
-
-# If exception support is explicitly disabled, tell the compiler.
-# This is not recommended since the run-time library can throw exceptions.
-ifneq ($(exceptions),1)
-  CCFLAGS  += +noeh
-endif
 
 DCCFLAGS        += -g
 DLD             = $(CXX) $(CCFLAGS)
@@ -233,4 +205,8 @@ ifeq ($(64bitoffsets),1)
   ifneq ($(HPUX_VERS), 1123)
     CCFLAGS += +W600
   endif
+endif
+
+ifeq ($(c++0x),1)
+  CCFLAGS += -Ax
 endif

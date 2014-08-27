@@ -1,9 +1,8 @@
 // -*- MPC -*-
-// $Id: pkgconfig.mpb 80826 2008-03-04 14:51:23Z wotte $
+// $Id: pkgconfig.mpb 91974 2010-09-23 16:17:42Z mitza $
 
 project {
   Define_Custom(pkgconfig) {
-    automatic = 0
-    inputext = .in
+    inputext = .pc.in
   }
 }

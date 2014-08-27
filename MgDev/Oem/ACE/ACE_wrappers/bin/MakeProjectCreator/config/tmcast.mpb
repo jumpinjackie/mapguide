@@ -1,7 +1,7 @@
 // -*- MPC -*-
-// $Id: tmcast.mpb 80826 2008-03-04 14:51:23Z wotte $
+// $Id: tmcast.mpb 91291 2010-08-05 16:55:50Z johnnyw $
 
-project: acelib, exceptions, threads {
+project: acelib, threads {
   avoids   += ace_for_tao
   after    += TMCast
   libs     += ACE_TMCast

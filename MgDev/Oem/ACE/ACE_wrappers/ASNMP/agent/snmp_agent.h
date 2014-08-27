@@ -1,31 +1,30 @@
-// $Id: snmp_agent.h 80826 2008-03-04 14:51:23Z wotte $
 
 /* -*-C++-*- */
 
 #ifndef SNMP_AGENT_
 #define SNMP_AGENT_
-// ============================================================================
-//
-// = LIBRARY
-//    ASNMP
-//
-// = FILENAME
-//    snmp_agent.h
-//
-// = AUTHOR
-//    Michael R. MacFaden (mrm@cisco.com)
-//
-// ============================================================================
+//=============================================================================
+/**
+ *  @file    snmp_agent.h
+ *
+ *  $Id: snmp_agent.h 93651 2011-03-28 08:49:11Z johnnyw $
+ *
+ *  @author Michael R. MacFaden (mrm@cisco.com)
+ */
+//=============================================================================
+
 
 class agent_impl;
 
+/**
+ * @class snmp_agent
+ *
+ * @brief An SNMP v1 agent class
+ *
+ * Contructs agents that are capable of processing SNMPv1 requests
+ * over the MIB II System group
+ */
 class snmp_agent {
-  // = TITLE
-  //   An SNMP v1 agent class
-  //
-  // = DESCRIPTION
-  //   Contructs agents that are capable of processing SNMPv1 requests
-  //   over the MIB II System group
 
   public:
   snmp_agent(); // uses port 161, public, private

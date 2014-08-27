@@ -1,21 +1,18 @@
-// $Id: Varbind_Test.cpp 80826 2008-03-04 14:51:23Z wotte $
 
-// ============================================================================
-//
-// = LIBRARY
-//    asnmp
-//
-// = FILENAME
-//    Varbind_Test.cpp
-//
-// = DESCRIPTION
-//  Test all the member functions of the Varbind class.
-//   A varbind is a list of { oids and associated values }
-//
-// = AUTHOR
-//    Michael R. MacFaden <mrm@cisco.com>
-//
-// ============================================================================
+//=============================================================================
+/**
+ *  @file    Varbind_Test.cpp
+ *
+ *  $Id: Varbind_Test.cpp 93651 2011-03-28 08:49:11Z johnnyw $
+ *
+ *  Test all the member functions of the Varbind class.
+ * A varbind is a list of { oids and associated values }
+ *
+ *
+ *  @author Michael R. MacFaden <mrm@cisco.com>
+ */
+//=============================================================================
+
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 Copyright 1997 Cisco Systems, Inc.
@@ -44,7 +41,6 @@ DAMAGES.
 #include "asnmp/vb.h"
 #include "test_config.h"
 
-ACE_RCSID(tests, Varbind_Test, "$Id: Varbind_Test.cpp 80826 2008-03-04 14:51:23Z wotte $")
 /*
   Vb( void);
   Vb( const Oid &oid);

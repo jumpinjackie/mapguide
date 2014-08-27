@@ -1,21 +1,18 @@
-// $Id: gauge.cpp 80826 2008-03-04 14:51:23Z wotte $
 
-// ============================================================================
-//
-// = LIBRARY
-//    asnmp
-//
-// = FILENAME
-//     gauge.cpp
-//
-// = DESCRIPTION
-//   Class implemtation for SMI Gauge32 class.
-//   NOTES: This does not behave exactly as a Gauge described in RFC 1155
-//
-// = AUTHOR
-//   Peter E Mellquist
-//   Michael R MacFaden  mrm@cisco.com - rework & ACE port
-// ============================================================================
+//=============================================================================
+/**
+ *  @file     gauge.cpp
+ *
+ *  $Id: gauge.cpp 93651 2011-03-28 08:49:11Z johnnyw $
+ *
+ * Class implemtation for SMI Gauge32 class.
+ * NOTES: This does not behave exactly as a Gauge described in RFC 1155
+ *
+ *
+ *  @author Peter E MellquistMichael R MacFaden  mrm@cisco.com - rework & ACE port
+ */
+//=============================================================================
+
 /*===================================================================
   Copyright (c) 1996
   Hewlett-Packard Company
@@ -33,8 +30,6 @@
 =====================================================================*/
 
 #include "asnmp/gauge.h"          // header file for gauge class
-
-ACE_RCSID(asnmp, gauge, "$Id: gauge.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 // constructor with a value
 Gauge32::Gauge32( const unsigned long i):SnmpUInt32(i)

@@ -1,4 +1,4 @@
-// $Id: Memory_Usage_Monitor.cpp 86518 2009-08-18 12:30:56Z olli $
+// $Id: Memory_Usage_Monitor.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #if defined (ACE_HAS_KSTAT)
 #include <sys/sysinfo.h>
@@ -34,7 +34,7 @@ namespace ACE
 #elif defined (ACE_HAS_LINUX_SYSINFO)
       if (::sysinfo (&this->sysinfo_) != 0)
         {
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("Memory usage - sysinfo() failed\n")));
           return;
         }
@@ -60,7 +60,7 @@ namespace ACE
     {
       return Memory_Usage_Monitor::default_name_;
     }
-    
+
     void
     Memory_Usage_Monitor::clear_i (void)
     {

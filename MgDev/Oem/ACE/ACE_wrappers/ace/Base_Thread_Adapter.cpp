@@ -1,10 +1,6 @@
-// $Id: Base_Thread_Adapter.cpp 84340 2009-02-05 22:28:08Z stallions $
+// $Id: Base_Thread_Adapter.cpp 95595 2012-03-07 13:33:25Z johnnyw $
 
 #include "ace/Base_Thread_Adapter.h"
-
-ACE_RCSID (ace,
-           Base_Thread_Adapter,
-           "$Id: Base_Thread_Adapter.cpp 84340 2009-02-05 22:28:08Z stallions $")
 
 #if !defined (ACE_HAS_INLINED_OSCALLS)
 # include "ace/Base_Thread_Adapter.inl"
@@ -33,12 +29,14 @@ ACE_Base_Thread_Adapter::ACE_Base_Thread_Adapter (
      , ACE_SEH_EXCEPT_HANDLER selector
      , ACE_SEH_EXCEPT_HANDLER handler
 #endif /* ACE_HAS_WIN32_STRUCTURAL_EXCEPTIONS */
+     , long cancel_flags
    )
   : user_func_ (user_func)
   , arg_ (arg)
   , entry_point_ (entry_point)
   , thr_desc_ (td)
   , ctx_ (ACE_Service_Config::current())
+  , flags_ (cancel_flags)
 {
   ACE_OS_TRACE ("ACE_Base_Thread_Adapter::ACE_Base_Thread_Adapter");
 
@@ -85,6 +83,10 @@ ACE_Base_Thread_Adapter::sync_log_msg (const ACE_TCHAR *prg)
 {
   if (ACE_Base_Thread_Adapter::sync_log_msg_hook_ != 0)
     (*ACE_Base_Thread_Adapter::sync_log_msg_hook_) (prg);
+}
+
+ACE_OS_Thread_Descriptor::~ACE_OS_Thread_Descriptor (void)
+{
 }
 
 ACE_OS_Thread_Descriptor *

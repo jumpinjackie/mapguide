@@ -4,7 +4,7 @@
 /**
  * @file Memory_Usage_Monitor.h
  *
- * $Id: Memory_Usage_Monitor.h 82246 2008-07-02 18:31:13Z parsons $
+ * $Id: Memory_Usage_Monitor.h 91743 2010-09-13 18:24:51Z johnnyw $
  *
  * @author Jeff Parsons <j.parsons@vanderbilt.edu>
  */
@@ -56,7 +56,7 @@ namespace ACE
 
       /// Stores the default name, used if none is supplied by the user.
       static const char* default_name (void);
-      
+
     private:
       /// Overridden reset, calls platform-specific reset.
       virtual void clear_i (void);

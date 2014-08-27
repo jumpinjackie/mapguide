@@ -1,6 +1,6 @@
 #!/bin/sh
 # Update ACE/TAO source tree to the latest numeric-assigned version.
-# $Id: update-ace+tao.sh 80826 2008-03-04 14:51:23Z wotte $
+# $Id: update-ace+tao.sh 91813 2010-09-17 07:52:52Z johnnyw $
 
 # Define helper function to extract version number into tag format
 d='\([0-9]*\)'
@@ -26,8 +26,8 @@ tao_version=`version <TAO/VERSION TAO`
 if [ -z $ace_version ]; then echo No ACE version after update; exit 1; fi
 if [ -z $tao_version ]; then echo No TAO version after update; exit 1; fi
 
-echo Old software version tags: $old_ace_version $old_tao_version 
-echo New software version tags: $ace_version $tao_version 
+echo Old software version tags: $old_ace_version $old_tao_version
+echo New software version tags: $ace_version $tao_version
 
 # Conserve net bandwidth if no change was observed
 if [ $old_ace_version != $ace_version ] || [ x"$1"x = x"force"x ]; then

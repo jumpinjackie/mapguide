@@ -111,7 +111,7 @@ int MgTimedEventHandler::handle_timeout(const ACE_Time_Value& currentTime, const
     MG_TRY()
 
     ACE_UNUSED_ARG(currentTime);
-    const long* eventId = ACE_static_cast(const long*, arg);
+    const long* eventId = static_cast<const long*>(arg);
 
     if (NULL != eventId)
     {

@@ -4,7 +4,7 @@
 /**
  * @file    Array_Map.h
  *
- * $Id: Array_Map.h 84136 2009-01-12 11:01:17Z johnnyw $
+ * $Id: Array_Map.h 97262 2013-08-09 08:32:10Z johnnyw $
  *
  * Light weight array-based map with fast iteration but linear
  * (i.e. O(n)) search times.  STL-style interface is exposed.
@@ -16,14 +16,13 @@
  */
 //=============================================================================
 
-#pragma once
 
 #ifndef ACE_ARRAY_MAP_H
 #define ACE_ARRAY_MAP_H
 
 #include /**/ "ace/pre.h"
 
-#include "ace/config-lite.h"
+#include /**/ "ace/config-lite.h"
 
 #if !defined (ACE_LACKS_PRAGMA_ONCE)
 # pragma once
@@ -111,12 +110,8 @@ public:
    */
   ACE_Array_Map (size_type s = 0);
 
-#ifndef ACE_LACKS_MEMBER_TEMPLATES
   template<typename InputIterator>
   ACE_Array_Map (InputIterator f, InputIterator l);
-#else
-  ACE_Array_Map (const_iterator f, const_iterator l);
-#endif  /* !ACE_LACKS_MEMBER_TEMPLATES */
 
   ACE_Array_Map (ACE_Array_Map const & map);
   ACE_Array_Map & operator= (ACE_Array_Map const & map);
@@ -182,14 +177,9 @@ public:
    */
   std::pair<iterator, bool> insert (value_type const & x);
 
-#ifndef ACE_LACKS_MEMBER_TEMPLATES
   /// Insert range of elements into map.
   template<typename InputIterator>
   void insert (InputIterator f, InputIterator l);
-#else
-  /// Insert range of elements into map.
-  void insert (const_iterator f, const_iterator l);
-#endif  /* ACE_LACKS_MEMBER_TEMPLATES */
 
   /// Remove element at position @a pos from the map.
   void erase (iterator pos);

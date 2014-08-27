@@ -113,7 +113,7 @@ copy ..\dotnet.i .\language.i
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)WebUnmanagedApid.dll</OutputFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)WebUnmanagedApid.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -122,6 +122,7 @@ copy ..\dotnet.i .\language.i
       </DataExecutionPrevention>
       <ImportLibrary>..\..\..\lib\$(Configuration)\WebUnmanagedApid.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>ACEd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>move /Y *.cs ..\..\DotNetApi\Web</Command>
@@ -149,7 +150,7 @@ copy ..\dotnet.i .\language.i
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)WebUnmanagedApid.dll</OutputFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)WebUnmanagedApid.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -158,6 +159,7 @@ copy ..\dotnet.i .\language.i
       </DataExecutionPrevention>
       <ImportLibrary>..\..\..\lib\$(Configuration)64\WebUnmanagedApid.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalDependencies>ACEd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>move /Y *.cs ..\..\DotNetApi\Web</Command>
@@ -184,7 +186,7 @@ copy ..\dotnet.i .\language.i
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)WebUnmanagedApi.dll</OutputFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)WebUnmanagedApi.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -195,6 +197,7 @@ copy ..\dotnet.i .\language.i
       </DataExecutionPrevention>
       <ImportLibrary>..\..\..\lib\$(Configuration)\WebUnmanagedApi.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>ACE.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>move /Y *.cs ..\..\DotNetApi\Web</Command>
@@ -221,7 +224,7 @@ copy ..\dotnet.i .\language.i
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)WebUnmanagedApi.dll</OutputFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)WebUnmanagedApi.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -232,6 +235,7 @@ copy ..\dotnet.i .\language.i
       </DataExecutionPrevention>
       <ImportLibrary>..\..\..\lib\$(Configuration)64\WebUnmanagedApi.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalDependencies>ACE.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>move /Y *.cs ..\..\DotNetApi\Web</Command>

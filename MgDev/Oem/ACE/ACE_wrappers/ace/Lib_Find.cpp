@@ -1,7 +1,7 @@
-// $Id: Lib_Find.cpp 85473 2009-06-01 08:09:31Z johnnyw $
+// $Id: Lib_Find.cpp 97383 2013-10-23 08:44:20Z mhengstmengel $
 
 #include "ace/Lib_Find.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/OS_NS_string.h"
 #include "ace/OS_NS_errno.h"
 #include "ace/OS_NS_stdio.h"
@@ -75,13 +75,13 @@ ACE_LD_Symbol_Registry::register_symbol (const ACE_TCHAR* symname,
   int const result = symbol_registry_.bind (symname, symaddr);
   if (result == 1)
     {
-      ACE_DEBUG((LM_INFO, ACE_TEXT ("ACE_LD_Symbol_Registry:")
+      ACELIB_DEBUG((LM_INFO, ACE_TEXT ("ACE_LD_Symbol_Registry:")
                           ACE_TEXT (" duplicate symbol %s registered\n"),
                           ACE_TEXT_ALWAYS_CHAR (symname)));
     }
   else if (result == -1)
     {
-      ACE_ERROR((LM_ERROR, ACE_TEXT ("ACE_LD_Symbol_Registry:")
+      ACELIB_ERROR((LM_ERROR, ACE_TEXT ("ACE_LD_Symbol_Registry:")
                            ACE_TEXT (" failed to register symbol %s\n"),
                            ACE_TEXT_ALWAYS_CHAR (symname)));
     }
@@ -104,13 +104,12 @@ ACE_SINGLETON_DECLARE (ACE_Singleton,
 typedef ACE_Singleton<ACE_LD_Symbol_Registry, ACE_Thread_Mutex>
         ACE_LD_SYMBOL_REGISTRY;
 
-#if defined (ACE_HAS_EXPLICIT_STATIC_TEMPLATE_MEMBER_INSTANTIATION)
-template ACE_Singleton<ACE_LD_Symbol_Registry, ACE_Thread_Mutex> *
-  ACE_Singleton<ACE_LD_Symbol_Registry, ACE_Thread_Mutex>::singleton_;
-#endif /* ACE_HAS_EXPLICIT_STATIC_TEMPLATE_MEMBER_INSTANTIATION */
+ACE_SINGLETON_TEMPLATE_INSTANTIATE(ACE_Singleton, ACE_LD_Symbol_Registry, ACE_SYNCH_MUTEX);
+
+
 #endif
 
-ACE_RCSID(ace, Lib_Find, "$Id: Lib_Find.cpp 85473 2009-06-01 08:09:31Z johnnyw $")
+
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -268,7 +267,7 @@ ACE::ldfind (const ACE_TCHAR* filename,
       if (ACE_OS::strcmp (s, dll_suffix) != 0)
 #endif /* ACE_WIN32 */
         {
-          ACE_ERROR ((LM_WARNING,
+          ACELIB_ERROR ((LM_WARNING,
                       ACE_TEXT ("Warning: improper suffix for a ")
                       ACE_TEXT ("shared library on this platform: %s\n"),
                       s));
@@ -608,7 +607,13 @@ ACE::get_temp_dir (ACE_TCHAR *buffer, size_t buffer_len)
   const char *tmpdir = ACE_OS::getenv ("TMPDIR");
 
   if (tmpdir == 0)
-    tmpdir = "/tmp";
+    {
+#if defined (ACE_DEFAULT_TEMP_DIR)
+      tmpdir = ACE_DEFAULT_TEMP_DIR;
+#else
+      tmpdir = "/tmp";
+#endif
+    }
 
   size_t len = ACE_OS::strlen (tmpdir);
 
@@ -653,7 +658,10 @@ ACE::open_temp_file (const ACE_TCHAR *name, int mode, int perm)
   // Unlink it so that the file will be removed automatically when the
   // process goes away.
   if (ACE_OS::unlink (name) == -1)
-    return ACE_INVALID_HANDLE;
+    {
+      ACE_OS::close (handle);
+      return ACE_INVALID_HANDLE;
+    }
   else
     // Return the handle.
     return handle;

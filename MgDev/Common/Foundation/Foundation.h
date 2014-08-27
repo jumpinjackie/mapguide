@@ -18,6 +18,8 @@
 #ifndef MG_FOUNDATION_H
 #define MG_FOUNDATION_H
 
+#include <cassert>
+
 // Enable logging, our log files use this
 #ifdef ACE_NLOGGING
 #undef ACE_NLOGGING
@@ -42,6 +44,8 @@
 
 // ignore warnings about using deprecated methods
 #pragma warning(disable: 4996)
+
+#include "ace/Init_ACE.h"
 
 #include "ace/INET_Addr.h"
 #include "ace/SOCK_Stream.h"

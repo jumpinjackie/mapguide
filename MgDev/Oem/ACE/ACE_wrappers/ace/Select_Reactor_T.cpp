@@ -1,4 +1,4 @@
-// $Id: Select_Reactor_T.cpp 85505 2009-06-04 10:14:56Z johnnyw $
+// $Id: Select_Reactor_T.cpp 97138 2013-05-16 17:55:36Z mitza $
 
 #ifndef ACE_SELECT_REACTOR_T_CPP
 #define ACE_SELECT_REACTOR_T_CPP
@@ -11,7 +11,7 @@
 
 #include "ace/ACE.h"
 #include "ace/Guard_T.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Signal.h"
 #include "ace/Sig_Handler.h"
 #include "ace/Thread.h"
@@ -31,10 +31,6 @@
 #if !defined (__ACE_INLINE__)
 #include "ace/Select_Reactor_T.inl"
 #endif /* __ACE_INLINE__ */
-
-ACE_RCSID (ace,
-           Select_Reactor_T,
-           "$Id: Select_Reactor_T.cpp 85505 2009-06-04 10:14:56Z johnnyw $")
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -429,7 +425,7 @@ ACE_Select_Reactor_T<ACE_SELECT_REACTOR_TOKEN>::open
                                         0,
                                         disable_notify_pipe) == -1)
     {
-      ACE_ERROR ((LM_ERROR,
+      ACELIB_ERROR ((LM_ERROR,
                   ACE_TEXT ("%p\n"),
                   ACE_TEXT ("notification pipe open failed")));
       result = -1;
@@ -465,7 +461,14 @@ template <class ACE_SELECT_REACTOR_TOKEN> int
 ACE_Select_Reactor_T<ACE_SELECT_REACTOR_TOKEN>::timer_queue
   (ACE_Timer_Queue *tq)
 {
-  delete this->timer_queue_;
+  if (this->delete_timer_queue_)
+    {
+      delete this->timer_queue_;
+    }
+  else if (this->timer_queue_)
+    {
+      this->timer_queue_->close ();
+    }
   this->timer_queue_ = tq;
   this->delete_timer_queue_ = false;
   return 0;
@@ -499,6 +502,9 @@ ACE_Select_Reactor_T<ACE_SELECT_REACTOR_TOKEN>::ACE_Select_Reactor_T
       // determine the size at run-time by checking the process file
       // descriptor limit on platforms that support this feature.
 
+      // reset the errno so that subsequent checks are valid
+      errno = 0;
+
       // There is no need to deallocate resources from previous open()
       // call since the open() method deallocates any resources prior
       // to exiting if an error was encountered.
@@ -512,7 +518,7 @@ ACE_Select_Reactor_T<ACE_SELECT_REACTOR_TOKEN>::ACE_Select_Reactor_T
                      tq,
                      disable_notify_pipe,
                      notify) == -1)
-        ACE_ERROR ((LM_ERROR,
+        ACELIB_ERROR ((LM_ERROR,
                     ACE_TEXT ("%p\n"),
                     ACE_TEXT ("ACE_Select_Reactor_T::open ")
                     ACE_TEXT ("failed inside ")
@@ -546,7 +552,7 @@ ACE_Select_Reactor_T<ACE_SELECT_REACTOR_TOKEN>::ACE_Select_Reactor_T
                   tq,
                   disable_notify_pipe,
                   notify) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_Select_Reactor_T::open ")
                 ACE_TEXT ("failed inside ACE_Select_Reactor_T::CTOR")));
@@ -576,6 +582,11 @@ ACE_Select_Reactor_T<ACE_SELECT_REACTOR_TOKEN>::close (void)
       delete this->timer_queue_;
       this->timer_queue_ = 0;
       this->delete_timer_queue_ = false;
+    }
+  else if (this->timer_queue_)
+    {
+      this->timer_queue_->close ();
+      this->timer_queue_ = 0;
     }
 
   if (this->notify_handler_ != 0)
@@ -768,14 +779,14 @@ template <class ACE_SELECT_REACTOR_TOKEN> int
 ACE_Select_Reactor_T<ACE_SELECT_REACTOR_TOKEN>::handle_error (void)
 {
   ACE_TRACE ("ACE_Select_Reactor_T::handle_error");
-#if defined (linux) && defined (ERESTARTNOHAND)
+#if defined (ACE_LINUX) && defined (ERESTARTNOHAND)
   int const error = errno; // Avoid multiple TSS accesses.
   if (error == EINTR || error == ERESTARTNOHAND)
     return this->restart_;
 #else
   if (errno == EINTR)
     return this->restart_;
-#endif /* linux && ERESTARTNOHAND */
+#endif /* ACE_LINUX && ERESTARTNOHAND */
 #if defined (__MVS__) || defined (ACE_WIN32) || defined (ACE_VXWORKS)
   // On MVS Open Edition and Win32, there can be a number of failure
   // codes on a bad socket, so check_handles on anything other than
@@ -1243,7 +1254,7 @@ ACE_Select_Reactor_T<ACE_SELECT_REACTOR_TOKEN>::dispatch_io_handlers
       return -1;
     }
 
-  // ACE_DEBUG ((LM_DEBUG,  ACE_TEXT ("ACE_Select_Reactor_T::dispatch - EXCEPT\n")));
+  // ACELIB_DEBUG ((LM_DEBUG,  ACE_TEXT ("ACE_Select_Reactor_T::dispatch - EXCEPT\n")));
   if (this->dispatch_io_set (number_of_active_handles,
                              number_of_handlers_dispatched,
                              ACE_Event_Handler::EXCEPT_MASK,
@@ -1255,7 +1266,7 @@ ACE_Select_Reactor_T<ACE_SELECT_REACTOR_TOKEN>::dispatch_io_handlers
       return -1;
     }
 
-  // ACE_DEBUG ((LM_DEBUG,  ACE_TEXT ("ACE_Select_Reactor_T::dispatch - READ\n")));
+  // ACELIB_DEBUG ((LM_DEBUG,  ACE_TEXT ("ACE_Select_Reactor_T::dispatch - READ\n")));
   if (this->dispatch_io_set (number_of_active_handles,
                              number_of_handlers_dispatched,
                              ACE_Event_Handler::READ_MASK,
@@ -1397,24 +1408,34 @@ ACE_Select_Reactor_T<ACE_SELECT_REACTOR_TOKEN>::handle_events
 {
   ACE_TRACE ("ACE_Select_Reactor_T::handle_events");
 
-#if defined (ACE_MT_SAFE) && (ACE_MT_SAFE != 0)
-
   // Stash the current time -- the destructor of this object will
   // automatically compute how much time elapsed since this method was
   // called.
   ACE_Countdown_Time countdown (max_wait_time);
 
+#if defined (ACE_MT_SAFE) && (ACE_MT_SAFE != 0)
+
   ACE_GUARD_RETURN (ACE_SELECT_REACTOR_TOKEN, ace_mon, this->token_, -1);
 
-  if (ACE_OS::thr_equal (ACE_Thread::self (),
-                         this->owner_) == 0 || this->deactivated_)
-    return -1;
+  if (ACE_OS::thr_equal (ACE_Thread::self (), this->owner_) == 0)
+    {
+      errno = EACCES;
+      return -1;
+    }
+  if (this->deactivated_)
+    {
+      errno = ESHUTDOWN;
+      return -1;
+    }
 
   // Update the countdown to reflect time waiting for the mutex.
   countdown.update ();
 #else
   if (this->deactivated_)
-    return -1;
+    {
+      errno = ESHUTDOWN;
+      return -1;
+    }
 #endif /* ACE_MT_SAFE */
 
   return this->handle_events_i (max_wait_time);
@@ -1510,6 +1531,9 @@ ACE_Select_Reactor_T<ACE_SELECT_REACTOR_TOKEN>::check_handles (void)
         {
           result = 1;
           this->remove_handler_i (h, ACE_Event_Handler::ALL_EVENTS_MASK);
+          this->wait_set_.rd_mask_.clr_bit (h);
+          this->wait_set_.wr_mask_.clr_bit (h);
+          this->wait_set_.ex_mask_.clr_bit (h);
         }
       rd_mask.clr_bit (h);
 #else /* !ACE_WIN32 && !MVS && !VXWORKS */
@@ -1532,12 +1556,12 @@ ACE_Select_Reactor_T<ACE_SELECT_REACTOR_TOKEN>::dump (void) const
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Select_Reactor_T::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
 
   this->timer_queue_->dump ();
   this->handler_rep_.dump ();
   this->signal_handler_->dump ();
-  ACE_DEBUG ((LM_DEBUG,
+  ACELIB_DEBUG ((LM_DEBUG,
               ACE_TEXT ("delete_signal_handler_ = %d\n"),
               this->delete_signal_handler_));
 
@@ -1545,51 +1569,51 @@ ACE_Select_Reactor_T<ACE_SELECT_REACTOR_TOKEN>::dump (void) const
 
   for (ACE_Handle_Set_Iterator handle_iter_wr (this->wait_set_.wr_mask_);
        (h = handle_iter_wr ()) != ACE_INVALID_HANDLE;)
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("write_handle = %d\n"), h));
+    ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("write_handle = %d\n"), h));
 
   for (ACE_Handle_Set_Iterator handle_iter_rd (this->wait_set_.rd_mask_);
        (h = handle_iter_rd ()) != ACE_INVALID_HANDLE;)
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("read_handle = %d\n"), h));
+    ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("read_handle = %d\n"), h));
 
   for (ACE_Handle_Set_Iterator handle_iter_ex (this->wait_set_.ex_mask_);
        (h = handle_iter_ex ()) != ACE_INVALID_HANDLE;)
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("except_handle = %d\n"), h));
+    ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("except_handle = %d\n"), h));
 
   for (ACE_Handle_Set_Iterator handle_iter_wr_ready (this->ready_set_.wr_mask_);
        (h = handle_iter_wr_ready ()) != ACE_INVALID_HANDLE;)
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("write_handle_ready = %d\n"), h));
+    ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("write_handle_ready = %d\n"), h));
 
   for (ACE_Handle_Set_Iterator handle_iter_rd_ready (this->ready_set_.rd_mask_);
        (h = handle_iter_rd_ready ()) != ACE_INVALID_HANDLE;)
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("read_handle_ready = %d\n"), h));
+    ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("read_handle_ready = %d\n"), h));
 
   for (ACE_Handle_Set_Iterator handle_iter_ex_ready (this->ready_set_.ex_mask_);
        (h = handle_iter_ex_ready ()) != ACE_INVALID_HANDLE;)
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("except_handle_ready = %d\n"), h));
+    ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("except_handle_ready = %d\n"), h));
 
   for (ACE_Handle_Set_Iterator handle_iter_su_ready (this->suspend_set_.wr_mask_);
        (h = handle_iter_su_ready ()) != ACE_INVALID_HANDLE;)
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("write_handle_suspend = %d\n"), h));
+    ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("write_handle_suspend = %d\n"), h));
 
   for (ACE_Handle_Set_Iterator handle_iter_su_ready (this->suspend_set_.rd_mask_);
        (h = handle_iter_su_ready ()) != ACE_INVALID_HANDLE;)
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("read_handle_suspend = %d\n"), h));
+    ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("read_handle_suspend = %d\n"), h));
 
   for (ACE_Handle_Set_Iterator handle_iter_su_ready (this->suspend_set_.ex_mask_);
        (h = handle_iter_su_ready ()) != ACE_INVALID_HANDLE;)
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("except_handle_suspend = %d\n"), h));
+    ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("except_handle_suspend = %d\n"), h));
 
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("restart_ = %d\n"), this->restart_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("requeue_position_ = %d\n"), this->requeue_position_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("initialized_ = %d\n"), this->initialized_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("owner_ = %d\n"), this->owner_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("restart_ = %d\n"), this->restart_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("requeue_position_ = %d\n"), this->requeue_position_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("initialized_ = %d\n"), this->initialized_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("owner_ = %d\n"), this->owner_));
 
 #if defined (ACE_MT_SAFE) && (ACE_MT_SAFE != 0)
   this->notify_handler_->dump ();
   this->token_.dump ();
 #endif /* ACE_MT_SAFE */
 
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 

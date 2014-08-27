@@ -4,6 +4,7 @@ package GNUAutobuildProjectCreator;
 # Description   : A Project creator for the GNUAutobuild project type
 # Author        : Chad Elliott
 # Create Date   : 3/13/2002
+# $Id: GNUAutobuildProjectCreator.pm 94635 2011-10-06 12:59:23Z johnnyw $
 # ************************************************************
 
 # ************************************************************

@@ -1,8 +1,6 @@
-// $Id: OS_NS_unistd.cpp 85906 2009-07-06 20:52:40Z mitza $
+// $Id: OS_NS_unistd.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/OS_NS_unistd.h"
-
-ACE_RCSID (ace, OS_NS_unistd, "$Id: OS_NS_unistd.cpp 85906 2009-07-06 20:52:40Z mitza $")
 
 #if !defined (ACE_HAS_INLINED_OSCALLS)
 # include "ace/OS_NS_unistd.inl"
@@ -23,22 +21,6 @@ ACE_RCSID (ace, OS_NS_unistd, "$Id: OS_NS_unistd.cpp 85906 2009-07-06 20:52:40Z 
 # include "vxCpuLib.h"
 # include "cpuset.h"
 #endif /* ACE_HAS_VXCPULIB */
-
-#if defined (ACE_NEEDS_FTRUNCATE)
-extern "C" int
-ftruncate (ACE_HANDLE handle, long len)
-{
-  struct flock fl;
-  fl.l_whence = 0;
-  fl.l_len = 0;
-  fl.l_start = len;
-  fl.l_type = F_WRLCK;
-
-  return ACE_OS::fcntl (handle, F_FREESP, reinterpret_cast <long> (&fl));
-}
-#endif /* ACE_NEEDS_FTRUNCATE */
-
-/*****************************************************************************/
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -362,7 +344,7 @@ ACE_OS::fork_exec (ACE_TCHAR *argv[])
           if (ACE_OS::execv (argv[0], argv) == -1)
             {
               // The OS layer should not print stuff out
-              // ACE_ERROR ((LM_ERROR,
+              // ACELIB_ERROR ((LM_ERROR,
               //             "%p Exec failed\n"));
 
               // If the execv fails, this child needs to exit.
@@ -725,8 +707,11 @@ ACE_OS::pwrite (ACE_HANDLE handle,
   return (ssize_t) bytes_written;
 
 #   else /* ACE_WIN32 */
-
+#     if defined (ACE_HAS_NON_CONST_PWRITE)
+  return ::pwrite (handle, const_cast<void*> (buf), nbytes, offset);
+#     else
   return ::pwrite (handle, buf, nbytes, offset);
+#     endif
 #   endif /* ACE_WIN32 */
 # else /* ACE_HAS_P_READ_WRITE */
 

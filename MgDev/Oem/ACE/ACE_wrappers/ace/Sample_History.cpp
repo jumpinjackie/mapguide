@@ -1,4 +1,4 @@
-// $Id: Sample_History.cpp 83891 2008-11-28 11:01:50Z johnnyw $
+// $Id: Sample_History.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/Sample_History.h"
 
@@ -7,11 +7,8 @@
 #endif /* __ACE_INLINE__ */
 
 #include "ace/Basic_Stats.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/OS_Memory.h"
-
-ACE_RCSID(ace, Sample_History, "$Id: Sample_History.cpp 83891 2008-11-28 11:01:50Z johnnyw $")
-
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -27,27 +24,16 @@ ACE_Sample_History::~ACE_Sample_History (void)
   delete[] this->samples_;
 }
 
-size_t
-ACE_Sample_History::max_samples (void) const
-{
-  return this->max_samples_;
-}
-
-size_t
-ACE_Sample_History::sample_count (void) const
-{
-  return this->sample_count_;
-}
-
 void
-ACE_Sample_History::dump_samples (const ACE_TCHAR *msg,
-                                  ACE_UINT32 scale_factor) const
+ACE_Sample_History::dump_samples (
+    const ACE_TCHAR *msg,
+    ACE_Sample_History::scale_factor_type scale_factor) const
 {
 #ifndef ACE_NLOGGING
   for (size_t i = 0; i != this->sample_count_; ++i)
     {
       ACE_UINT64 const val = this->samples_[i] / scale_factor;
-      ACE_DEBUG ((LM_DEBUG,
+      ACELIB_DEBUG ((LM_DEBUG,
                   ACE_TEXT ("%s: ")
                   ACE_SIZE_T_FORMAT_SPECIFIER
                   ACE_TEXT ("\t%Q\n"),

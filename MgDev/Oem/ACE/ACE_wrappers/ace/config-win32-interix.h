@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: config-win32-interix.h 87578 2009-11-16 14:41:47Z olli $
+// $Id: config-win32-interix.h 93550 2011-03-15 21:26:56Z olli $
 
 // The following configuration file is designed to work for Interix
 // platforms using GNU g++ (Interix == Microsoft's Services for Unix)
@@ -11,6 +11,7 @@
 
 #include "ace/config-g++-common.h"
 
+#define ACE_HAS_SYS_SIGINFO_H
 #define ACE_HAS_2_PARAM_ASCTIME_R_AND_CTIME_R
 #define ACE_HAS_3_PARAM_READDIR_R
 #define ACE_HAS_4_4BSD_SENDMSG_RECVMSG
@@ -18,7 +19,6 @@
 #define ACE_HAS_BROKEN_T_ERROR
 #define ACE_HAS_CONSISTENT_SIGNAL_PROTOTYPES
 #define ACE_HAS_DIRENT
-#define ACE_HAS_EXCEPTIONS
 #define ACE_HAS_GETPAGESIZE
 #define ACE_HAS_GETRUSAGE
 #define ACE_HAS_GETRUSAGE_PROTOTYPE
@@ -33,11 +33,8 @@
 #define ACE_HAS_NEW_NO_H
 #define ACE_HAS_NONCONST_SELECT_TIMEVAL
 #define ACE_HAS_POLL
-#define ACE_HAS_POSITION_INDEPENDENT_POINTERS 1
-#define ACE_HAS_POSIX_GETPWNAM_R
 #define ACE_HAS_POSIX_NONBLOCK
 #define ACE_HAS_POSIX_TIME
-#define ACE_HAS_PTHREADS_STD
 #define ACE_HAS_PTHREADS_UNIX98_EXT
 #define ACE_HAS_PTHREAD_GETCONCURRENCY
 #define ACE_HAS_PTHREAD_SETCONCURRENCY

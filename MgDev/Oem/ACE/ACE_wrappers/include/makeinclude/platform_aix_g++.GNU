@@ -1,4 +1,4 @@
-# $Id: platform_aix_g++.GNU 80951 2008-03-14 19:57:24Z johnnyw $
+# $Id: platform_aix_g++.GNU 93403 2011-02-17 18:54:42Z olli $
 #
 # Platform macros for building on AIX with g++.  This has been tested on
 # AIX 4.3 and 5 with gcc 3. Earlier versions of gcc may compile, but are
@@ -9,7 +9,6 @@
 
 debug ?= 1
 distrib ?= 0
-exceptions ?= 1
 optimize ?= 1
 threads ?= 1
 buildbits ?= 32
@@ -50,7 +49,7 @@ AIX_VERS := $(AIX_MAJOR_VERS)0$(AIX_MINOR_VERS)
 CC             = gcc
 CXX            = g++
 
-CFLAGS          += -W -Wall -DACE_AIX_VERS=$(AIX_VERS)
+CFLAGS          += -DACE_AIX_VERS=$(AIX_VERS)
 ifeq ($(buildbits),32)
   CFLAGS    += -maix32
 endif
@@ -91,5 +90,3 @@ RANLIB          = ranlib
 # add -E to LDFLAGS if using GNU ld
 #
 include $(ACE_ROOT)/include/makeinclude/platform_g++_common.GNU
-
-CCFLAGS         += $(CFLAGS) $(TEMPLATES_FLAG)

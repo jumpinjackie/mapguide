@@ -1,8 +1,8 @@
-// $Id: OS_NS_dirent.cpp 90263 2010-05-24 14:44:39Z johnnyw $
+// $Id: OS_NS_dirent.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/OS_NS_dirent.h"
 
-ACE_RCSID(ace, OS_NS_dirent, "$Id: OS_NS_dirent.cpp 90263 2010-05-24 14:44:39Z johnnyw $")
+
 
 #if !defined (ACE_HAS_INLINED_OSCALLS)
 # include "ace/OS_NS_dirent.inl"
@@ -10,7 +10,7 @@ ACE_RCSID(ace, OS_NS_dirent, "$Id: OS_NS_dirent.cpp 90263 2010-05-24 14:44:39Z j
 
 #include "ace/OS_NS_errno.h"
 #include "ace/OS_NS_string.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/OS_NS_stdlib.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL

@@ -1,4 +1,4 @@
-// $Id: Future_Set.cpp 88128 2009-12-14 02:17:22Z schmidt $
+// $Id: Future_Set.cpp 92900 2010-12-17 14:45:11Z mcorino $
 
 #ifndef ACE_FUTURE_SET_CPP
 #define ACE_FUTURE_SET_CPP
@@ -83,7 +83,7 @@ ACE_Future_Set<T>::insert (ACE_Future<T> &future)
 template <class T> void
 ACE_Future_Set<T>::update (const ACE_Future<T> &future)
 {
-  ACE_Message_Block *mb;
+  ACE_Message_Block *mb = 0;
   FUTURE &local_future = const_cast<ACE_Future<T> &> (future);
 
   ACE_NEW (mb,
@@ -117,7 +117,7 @@ ACE_Future_Set<T>::next_readable (ACE_Future<T> &future,
     return 0;
 
   // Remove the hash map entry with the specified future rep from our map.
-  FUTURE_HOLDER *future_holder;
+  FUTURE_HOLDER *future_holder = 0;
   if (this->future_map_.find (future_rep,
                               future_holder) != -1)
     {

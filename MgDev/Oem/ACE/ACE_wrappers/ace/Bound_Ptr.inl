@@ -1,11 +1,11 @@
 /* -*- C++ -*- */
-// $Id: Bound_Ptr.inl 82723 2008-09-16 09:35:44Z johnnyw $
+// $Id: Bound_Ptr.inl 96985 2013-04-11 15:50:32Z huangh $
 
 // Bound_Ptr.i
 
 #include "ace/Guard_T.h"
 #if !defined (ACE_NEW_THROWS_EXCEPTIONS)
-#  include "ace/Log_Msg.h"
+#  include "ace/Log_Category.h"
 #endif /* ACE_NEW_THROWS_EXCEPTIONS */
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
@@ -67,7 +67,7 @@ ACE_Bound_Ptr_Counter<ACE_LOCK>::detach_strong (ACE_Bound_Ptr_Counter<ACE_LOCK>*
       counter->obj_ref_count_ = -1;
 
     if (--counter->self_ref_count_ == 0)
-      // Since counter contains the lock held by the ACE_Guard, the
+      // Since counter contains the lock held by the guard, the
       // guard needs to be released before freeing the memory holding
       // the lock. So save the pointer to free, then release, then
       // free.
@@ -112,7 +112,7 @@ ACE_Bound_Ptr_Counter<ACE_LOCK>::detach_weak (ACE_Bound_Ptr_Counter<ACE_LOCK>* c
     ACE_GUARD (ACE_LOCK, guard, counter->lock_);
 
     if (--counter->self_ref_count_ == 0)
-      // Since counter contains the lock held by the ACE_Guard, the
+      // Since counter contains the lock held by the guard, the
       // guard needs to be released before freeing the memory holding
       // the lock. So save the pointer to free, then release, then
       // free.

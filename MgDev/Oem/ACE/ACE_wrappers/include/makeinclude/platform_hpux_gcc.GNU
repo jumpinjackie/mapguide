@@ -1,10 +1,9 @@
-# $Id: platform_hpux_gcc.GNU 80826 2008-03-04 14:51:23Z wotte $
+# $Id: platform_hpux_gcc.GNU 93403 2011-02-17 18:54:42Z olli $
 #
 
 buildbits ?= 64
 debug ?= 1
 distrib ?= 0
-exceptions ?= 1
 optimize ?= 1
 stdcpplib ?= 1
 threads ?= 1
@@ -103,4 +102,4 @@ endif
 #
 include $(ACE_ROOT)/include/makeinclude/platform_g++_common.GNU
 
-CCFLAGS		+= $(CFLAGS) $(TEMPLATES_FLAG) -DHPUX_VERS=$(HPUX_VERS) $(THR_DEFS)
+CCFLAGS		+= -DHPUX_VERS=$(HPUX_VERS) $(THR_DEFS)

@@ -1,4 +1,4 @@
-# $Id: platform_cegcc.GNU 86432 2009-08-09 18:56:15Z johnnyw $
+# $Id: platform_cegcc.GNU 96548 2012-12-19 14:46:42Z johnnyw $
 #
 # This file should allow to build ACE for Windows CE with GCC tools.
 #
@@ -28,7 +28,7 @@ qos ?= 1
 # See https://sourceforge.net/tracker/?func=detail&atid=102435&aid=683455&group_id=2435
 # for the details why to do this.
 LDFLAGS += -Wl,--enable-auto-import
-CPPFLAGS += -DACE_HAS_CEGCC 
+CPPFLAGS += -DACE_HAS_CEGCC
 
 CPPFLAGS += -D_WIN32_WCE=$(ACE_CE_VER) -DUNICODE -D_UNICODE -D_WINDOWS -DCEVER -DWIN32 -D_WINSOCKAPI_
 RCFLAGS += -D_WIN32_WCE=$(ACE_CE_VER) -DUNICODE -D_UNICODE -D_WINDOWS -DCEVER -DWIN32 -D_WINSOCKAPI_ -D_WIN32_IE=0x0500
@@ -36,8 +36,7 @@ RCFLAGS += -D_WIN32_WCE=$(ACE_CE_VER) -DUNICODE -D_UNICODE -D_WINDOWS -DCEVER -D
 cpumodelflag=0
 tunemodelflag=0
 
-COMPARCH ?= i386-mingw32ce-
-#COMPARCH ?= arm-wince-mingw32ce-
+CROSS_COMPILE ?= i386-mingw32ce-
 
 LIBS += -lcoredll -lmingw32 -lmingwex -lws2 -lsupc++ -liphlpapi
 
@@ -51,7 +50,7 @@ endif
 ifneq (,$(HOST_ROOT))
 TAO_IDLFLAGS += -g $(HOST_ROOT)/bin/ace_gperf
 TAO_IDL = $(HOST_ROOT)/bin/tao_idl$(HOST_EXE_EXT)
-TAO_IDL3_TO_IDL2 = $(HOST_ROOT)/TAO/CIAO/bin/tao_idl3_to_idl2$(HOST_EXE_EXT)
+TAO_IDL3_TO_IDL2 = $(HOST_ROOT)/bin/tao_idl3_to_idl2$(HOST_EXE_EXT)
 TAO_IDL_DEP = $(TAO_IDL)
 TAO_IDL3_TO_IDL2_DEP = $(TAO_IDL3_TO_IDL2)
 else

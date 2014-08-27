@@ -4,6 +4,7 @@ package ChangeLogEntry;
 # Description   : Create a ChangeLog entry based on modified files.
 # Author        : Chad Elliott
 # Create Date   : 6/18/2002
+# $Id: ChangeLogEntry.pm 94634 2011-10-06 12:58:32Z johnnyw $
 # ************************************************************
 
 # ************************************************************

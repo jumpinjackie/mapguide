@@ -1,20 +1,17 @@
-// $Id: timetick.cpp 80826 2008-03-04 14:51:23Z wotte $
 
-// ============================================================================
-//
-// = LIBRARY
-//    asnmp
-//
-// = FILENAME
-//     timetick.cpp
-//
-// = DESCRIPTION
-// Class implentation for SMI Timeticks class.
-//
-// = AUTHOR
-//   Peter E Mellquist
-//   Michael R MacFaden  mrm@cisco.com - rework & ACE port
-// ============================================================================
+//=============================================================================
+/**
+ *  @file     timetick.cpp
+ *
+ *  $Id: timetick.cpp 93651 2011-03-28 08:49:11Z johnnyw $
+ *
+ * Class implentation for SMI Timeticks class.
+ *
+ *
+ *  @author Peter E MellquistMichael R MacFaden  mrm@cisco.com - rework & ACE port
+ */
+//=============================================================================
+
 /*===================================================================
   Copyright (c) 1996
   Hewlett-Packard Company
@@ -33,8 +30,6 @@
 
 #include "asnmp/timetick.h"            // include header file for timetick class
 #include "ace/OS_NS_stdio.h"
-
-ACE_RCSID(asnmp, timetick, "$Id: timetick.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 // constructor with a value
 TimeTicks::TimeTicks( const unsigned long i):SnmpUInt32(i)
@@ -134,13 +129,13 @@ const char * TimeTicks::to_string()
   hseconds = tt;
 
   if ( days ==0)
-    ACE_OS::sprintf( output_buffer,"%ld:%02ld:%02ld.%02ld", hours, 
+    ACE_OS::sprintf( output_buffer,"%ld:%02ld:%02ld.%02ld", hours,
                      minutes,seconds,hseconds);
   else if ( days==1)
-    ACE_OS::sprintf( output_buffer,"1 day %ld:%02ld:%02ld.%02ld", hours, 
+    ACE_OS::sprintf( output_buffer,"1 day %ld:%02ld:%02ld.%02ld", hours,
                      minutes,seconds,hseconds);
   else
-    ACE_OS::sprintf( output_buffer,"%ld days, %ld:%02ld:%02ld.%02ld", 
+    ACE_OS::sprintf( output_buffer,"%ld days, %ld:%02ld:%02ld.%02ld",
                      days,hours, minutes,seconds, hseconds);
 
   return output_buffer;

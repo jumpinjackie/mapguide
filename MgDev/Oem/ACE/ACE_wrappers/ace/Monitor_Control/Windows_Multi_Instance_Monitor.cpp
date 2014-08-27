@@ -1,10 +1,10 @@
-// $Id: Windows_Multi_Instance_Monitor.cpp 84218 2009-01-22 19:21:39Z mitza $
+// $Id: Windows_Multi_Instance_Monitor.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/Monitor_Control/Windows_Multi_Instance_Monitor.h"
 
 #if defined (ACE_HAS_WIN32_PDH)
 
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/SString.h"
 #include "ace/os_include/os_pdhmsg.h"
 
@@ -44,7 +44,7 @@ namespace ACE
 
       if (PDH_CSTATUS_VALID_DATA != static_cast<DWORD> (this->status_))
         {
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("%s: PdhExpandCounterPath failed\n"),
                       wildcard_path));
         }
@@ -88,7 +88,7 @@ namespace ACE
           this->value_ += (*current_instance)->value_;
         }
     }
-    
+
     void
     Windows_Multi_Instance_Monitor::clear_impl (void)
     {

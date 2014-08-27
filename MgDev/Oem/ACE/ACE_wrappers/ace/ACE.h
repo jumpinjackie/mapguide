@@ -4,7 +4,7 @@
 /**
  * @file    ACE.h
  *
- * $Id: ACE.h 88193 2009-12-16 09:14:06Z mcorino $
+ * $Id: ACE.h 97308 2013-09-01 00:58:08Z mesnier_p $
  *
  * This file contains value added ACE functions that extend the
  * behavior of the UNIX and Win32 OS calls.
@@ -22,18 +22,13 @@
 
 #include /**/ "ace/pre.h"
 
-#include "ace/config-lite.h"
+#include /**/ "ace/config-lite.h"
 
 #if !defined (ACE_LACKS_PRAGMA_ONCE)
 # pragma once
 #endif /* ACE_LACKS_PRAGMA_ONCE */
 
-#include "ace/OS_NS_math.h"
-#include "ace/Flag_Manip.h"
-#include "ace/Handle_Ops.h"
-#include "ace/Lib_Find.h"
-#include "ace/Init_ACE.h"
-#include "ace/Sock_Connect.h"
+#include "ace/Basic_Types.h"
 #include "ace/Default_Constants.h"
 
 #if defined (ACE_EXPORT_MACRO)
@@ -90,7 +85,7 @@ namespace ACE
 
   /// Simple wildcard matching function supporting '*' and '?'
   /// return true if string s matches pattern.
-  /// If character_classes is true, '[' is treated as a wildcard character
+  /// If @a character_classes is true, '[' is treated as a wildcard character
   /// as described in the fnmatch() POSIX API.  The following POSIX "bracket
   /// expression" features are not implemented: collating symbols, equivalence
   /// class expressions, and character class expressions.  The POSIX locale is
@@ -474,15 +469,23 @@ namespace ACE
                                               ACE_DIRECTORY_SEPARATOR_CHAR);
 
   /**
-   * Returns the given timestamp in the form
-   * "hour:minute:second:microsecond."  The month, day, and year are
-   * also stored in the beginning of the @a date_and_time array, which
-   * is a user-supplied array of size @a time_len> @c ACE_TCHARs.
-   * Returns 0 if unsuccessful, else returns pointer to beginning of the
-   * "time" portion of @a date_and_time.  If @a
-   * return_pointer_to_first_digit is 0 then return a pointer to the
-   * space before the time, else return a pointer to the beginning of
-   * the time portion.
+   * Translate the given timestamp to ISO-8601 format.
+   *
+   * @param time_value      ACE_Time_Value to format. This is assumed to be
+   *                        an absolute time value.
+   * @param date_and_time   Array to hold the timestamp.
+   * @param time_len        Size of @a date_and_time in ACE_TCHARs.
+   *                        Must be greater than or equal to 27.
+   * @param return_pointer_to_first_digit  If true, returned pointer value
+   *                        is to the first time digit, else to the space
+   *                        prior to the first time digit. See Return Values.
+   *
+   * @retval 0 if unsuccessful, with errno set. If @a time_len is less than
+   *           27 errno will be EINVAL.
+   * @retval If successful, pointer to beginning of the "time" portion of
+   *         @a date_and_time.  If @a return_pointer_to_first_digit is false
+   *         the pointer is actually to the space before the time, else
+   *         the pointer is to the first time digit.
    */
   extern ACE_Export ACE_TCHAR *timestamp (const ACE_Time_Value& time_value,
                                           ACE_TCHAR date_and_time[],
@@ -490,15 +493,21 @@ namespace ACE
                                           bool return_pointer_to_first_digit = false);
 
   /**
-   * Returns the current timestamp in the form
-   * "hour:minute:second:microsecond."  The month, day, and year are
-   * also stored in the beginning of the @a date_and_time array, which
-   * is a user-supplied array of size @a time_len> @c ACE_TCHARs.
-   * Returns 0 if unsuccessful, else returns pointer to beginning of the
-   * "time" portion of @a date_and_time.  If @a
-   * return_pointer_to_first_digit is 0 then return a pointer to the
-   * space before the time, else return a pointer to the beginning of
-   * the time portion.
+   * Translate the current time to ISO-8601 timestamp format.
+   *
+   * @param date_and_time   Array to hold the timestamp.
+   * @param time_len        Size of @a date_and_time in ACE_TCHARs.
+   *                        Must be greater than or equal to 27.
+   * @param return_pointer_to_first_digit  If true, returned pointer value
+   *                        is to the first time digit, else to the space
+   *                        prior to the first time digit. See Return Values.
+   *
+   * @retval 0 if unsuccessful, with errno set. If @a time_len is less than
+   *           27 errno will be EINVAL.
+   * @retval If successful, pointer to beginning of the "time" portion of
+   *         @a date_and_time.  If @a return_pointer_to_first_digit is false
+   *         the pointer is actually to the space before the time, else
+   *         the pointer is to the first time digit.
    */
   extern ACE_Export ACE_TCHAR *timestamp (ACE_TCHAR date_and_time[],
                                           size_t time_len,
@@ -642,6 +651,22 @@ namespace ACE
   /// Computes the base 2 logarithm of {num}.
   ACE_NAMESPACE_INLINE_FUNCTION u_long log2 (u_long num);
 
+  /// Helper to avoid comparing floating point values with ==
+  /// (uses < and > operators).
+  template <typename T>
+  bool is_equal (const T& a, const T& b)
+  {
+    return !((a < b) || (a > b));
+  }
+
+  /// Helper to avoid comparing floating point values with !=
+  /// (uses < and > operators).
+  template <typename T>
+  bool is_inequal (const T& a, const T& b)
+  {
+    return !is_equal (a, b);
+  }
+
   /// Hex conversion utility.
   extern ACE_Export ACE_TCHAR nibble2hex (u_int n);
 
@@ -666,21 +691,33 @@ namespace ACE
                                 const ACE_Time_Value *timeout = 0);
 
   /// Timed wait for handle to get read ready.
+  /// @retval -1 for error
+  /// @retval 0 for timeout
+  /// @retval 1 the handle is ready
   ACE_NAMESPACE_INLINE_FUNCTION
   int handle_read_ready (ACE_HANDLE handle,
                          const ACE_Time_Value *timeout);
 
   /// Timed wait for handle to get write ready.
+  /// @retval -1 for error
+  /// @retval 0 for timeout
+  /// @retval 1 the handle is ready
   ACE_NAMESPACE_INLINE_FUNCTION
   int handle_write_ready (ACE_HANDLE handle,
                           const ACE_Time_Value *timeout);
 
   /// Timed wait for handle to get exception ready.
+  /// @retval -1 for error
+  /// @retval 0 for timeout
+  /// @retval 1 the handle is ready
   ACE_NAMESPACE_INLINE_FUNCTION
   int handle_exception_ready (ACE_HANDLE handle,
                               const ACE_Time_Value *timeout);
 
   /// Timed wait for handle to get read, write, or exception ready.
+  /// @retval -1 for error
+  /// @retval 0 for timeout
+  /// @retval 1 the handle is ready
   extern ACE_Export int handle_ready (ACE_HANDLE handle,
                                       const ACE_Time_Value *timeout,
                                       int read_ready,

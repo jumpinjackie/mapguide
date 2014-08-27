@@ -1,5 +1,5 @@
 //  -*- MPC -*-
-// $Id: ssl.mpc 90826 2010-06-24 09:07:33Z johnnyw $
+// $Id: ssl.mpc 91974 2010-09-23 16:17:42Z mitza $
 
 project(SSL) : acelib, ace_output, install, ace_openssl {
   avoids      += ace_for_tao
@@ -13,5 +13,11 @@ project(SSL) : acelib, ace_output, install, ace_openssl {
 
   pkgconfig_files {
     ACE_SSL.pc.in
+  }
+
+  specific(gnuace) {
+    pkgconfig_variables += ACE_TLS_CPPFLAGS=$(PLATFORM_SSL_CPPFLAGS)
+    pkgconfig_variables += ACE_TLS_LDFLAGS=$(PLATFORM_SSL_LDFLAGS)
+    pkgconfig_variables += ACE_TLS_LIBS=$(PLATFORM_SSL_LIBS)
   }
 }

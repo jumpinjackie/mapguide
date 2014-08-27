@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# $Id: Process_VMS.pm 89840 2010-04-12 09:36:32Z mcorino $
+# $Id: Process_VMS.pm 97704 2014-04-09 08:27:34Z mcorino $
 
 package PerlACE::Process;
 
@@ -11,31 +11,6 @@ use Config;
 use VmsProcess;
 
 ###############################################################################
-
-### Chorus stuff
-
-$PerlACE::Process::chorushostname = "localhost";
-$PerlACE::Process::chorus = 0;
-
-$PerlACE::Process::cwd = getcwd();
-
-for(my $i = 0; $i <= $#ARGV; $i++) {
-    if ($ARGV[$i] eq '-chorus') {
-        if (defined $ARGV[$i + 1]) {
-            $PerlACE::Process::chorus = 1;
-            $PerlACE::Process::chorushostname = $ARGV[$1 + 1];
-        }
-        else {
-            print STDERR "The -chorus option requires " .
-                         "the hostname of the target\n";
-            exit(1);
-        }
-
-        splice(@ARGV, $i, 2);
-        # Don't break from the loop just in case there
-        # is an accidental duplication of the -chorus option
-    }
-}
 
 ###############################################################################
 
@@ -72,7 +47,7 @@ sub new
     $self->{PROCESS} = undef;
     $self->{EXECUTABLE} = shift;
     $self->{ARGUMENTS} = shift;
-    $self->{VALGRIND_CMD} = $ENV{"ACE_RUN_VALGRIND_CMD"};
+    $self->{VALGRIND_CMD} = $ENV{'ACE_RUN_VALGRIND_CMD'};
 
     if (!defined $PerlACE::Process::WAIT_DELAY_FACTOR) {
          if (defined $self->{PURIFY_CMD}) {
@@ -158,15 +133,6 @@ sub CommandLine ()
         $commandline .= ' '.$self->{ARGUMENTS};
     }
 
-    if ($PerlACE::Process::chorus == 1) {
-        $commandline = "rsh "
-                       . $PerlACE::Process::chorushostname
-                       . " arun "
-                       . $PerlACE::Process::cwd
-                       . "/"
-                       . $commandline;
-    }
-
     return $commandline;
 }
 
@@ -179,6 +145,17 @@ sub IgnoreExeSubDir
     }
 
     return $self->{IGNOREEXESUBDIR};
+}
+
+sub IgnoreHostRoot
+{
+    my $self = shift;
+
+    if (@_ != 0) {
+        $self->{IGNOREHOSTROOT} = shift;
+    }
+
+    return $self->{IGNOREHOSTROOT};
 }
 
 ###############################################################################
@@ -207,23 +184,21 @@ sub Spawn ()
             return -1;
         }
 
-        if (!$PerlACE::Process::chorus && !-x $self->Executable ()) {
+        if (!-x $self->Executable ()) {
             print STDERR "ERROR: Cannot Spawn: <", $self->Executable (),
                          "> not executable\n";
             return -1;
         }
     }
 
-    {
-        $self->{PROCESS} = VmsProcess::Spawn $self->{EXECUTABLE}, $self->{ARGUMENTS};
-        if ($self->{PROCESS}) {
-            #parent here
-            bless $self;
-        }
-        else {
-            # weird fork error
-            print STDERR "ERROR: Can't spawn <" . $self->CommandLine () . ">: $!\n";
-        }
+    $self->{PROCESS} = VmsProcess::Spawn $self->{EXECUTABLE}, $self->{ARGUMENTS};
+    if ($self->{PROCESS}) {
+        #parent here
+        bless $self;
+    }
+    else {
+        # weird fork error
+        print STDERR "ERROR: Can't spawn <" . $self->CommandLine () . ">: $!\n";
     }
     $self->{RUNNING} = 1;
     return 0;
@@ -360,9 +335,9 @@ sub TimedWait ($)
 
 sub kill_all
 {
-  my $procmask = shift;
-  my $target = shift;
-  ## NOT IMPLEMENTED YET
+    my $procmask = shift;
+    my $target = shift;
+    ## NOT IMPLEMENTED YET
 }
 
 1;

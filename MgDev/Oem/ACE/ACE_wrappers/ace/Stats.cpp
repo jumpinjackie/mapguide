@@ -1,4 +1,4 @@
-// $Id: Stats.cpp 83735 2008-11-14 09:41:52Z johnnyw $
+// $Id: Stats.cpp 95761 2012-05-15 18:23:04Z johnnyw $
 
 #include "ace/Stats.h"
 
@@ -9,7 +9,7 @@
 #include "ace/OS_NS_stdio.h"
 #include "ace/OS_NS_string.h"
 
-ACE_RCSID(ace, Stats, "$Id: Stats.cpp 83735 2008-11-14 09:41:52Z johnnyw $")
+
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -68,15 +68,8 @@ ACE_Stats::mean (ACE_Stats_Value &m,
 {
   if (number_of_samples_ > 0)
     {
-#if defined ACE_LACKS_LONGLONG_T
-      // If ACE_LACKS_LONGLONG_T, then ACE_UINT64 is a user-defined class.
-      // To prevent having to construct a static of that class, declare it
-      // on the stack, and construct it, in each function that needs it.
-      const ACE_U_LongLong ACE_STATS_INTERNAL_OFFSET (0, 8);
-#else  /* ! ACE_LACKS_LONGLONG_T */
       const ACE_UINT64 ACE_STATS_INTERNAL_OFFSET =
         ACE_UINT64_LITERAL (0x100000000);
-#endif /* ! ACE_LACKS_LONGLONG_T */
 
       ACE_UINT64 sum = ACE_STATS_INTERNAL_OFFSET;
       ACE_Unbounded_Queue_Iterator<ACE_INT32> i (samples_);

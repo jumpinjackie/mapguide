@@ -4,7 +4,7 @@
 /**
  *  @file   OS_NS_stdio.h
  *
- *  $Id: OS_NS_stdio.h 87143 2009-10-17 10:29:01Z olli $
+ *  $Id: OS_NS_stdio.h 96952 2013-04-02 09:08:16Z mcorino $
  *
  *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
  *  @author Jesper S. M|ller<stophph@diku.dk>
@@ -27,6 +27,7 @@
 
 #include "ace/os_include/os_stdio.h"
 #include "ace/os_include/os_fcntl.h"
+#include "ace/os_include/os_inttypes.h"
 #include /**/ "ace/ACE_export.h"
 
 /* OPENVMS needs unistd for cuserid() */
@@ -50,17 +51,15 @@
  * using the pre-processor.
  *
  */
-#if !defined (ACE_LACKS_CLEARERR)
 inline void ace_clearerr_helper (FILE *stream)
 {
-#  if defined (clearerr)
+#if defined (clearerr)
   clearerr (stream);
-#  undef clearerr
-#  else
+#undef clearerr
+#else
   ACE_STD_NAMESPACE::clearerr (stream);
-#  endif /* defined (clearerr) */
+#endif /* defined (clearerr) */
 }
-#endif /* !ACE_LACKS_CLEARERR */
 
 inline int ace_fgetc_helper (FILE *fp)
 {
@@ -119,11 +118,11 @@ inline ACE_HANDLE ace_fileno_helper (FILE *fp)
   return (ACE_HANDLE)fileno (fp);
 # undef fileno
 # else
-  return (ACE_HANDLE)ACE_STD_NAMESPACE::fileno (fp);
+  return (ACE_HANDLE)(intptr_t)ACE_STD_NAMESPACE::fileno (fp);
 # endif /* defined (fileno) */
 }
 #endif /* !ACE_FILENO_EQUIVALENT */
- 
+
 #if !defined (ACE_LACKS_CUSERID) && !defined(ACE_HAS_ALT_CUSERID) \
     && !defined(ACE_WIN32) && !defined (ACE_VXWORKS)
 /// Helper for the ACE_OS::cuserid() function
@@ -199,10 +198,8 @@ namespace ACE_OS {
   void checkUnicodeFormat (FILE* fp);
 # endif  // ACE_USES_WCHAR
 
-# if !defined (ACE_LACKS_CLEARERR)
   ACE_NAMESPACE_INLINE_FUNCTION
   void clearerr (FILE* fp);
-# endif /* !ACE_LACKS_CLEARERR */
 
   //@{ @name Wrappers to obtain the current user id
   // Legacy as per SUSV3
@@ -224,7 +221,8 @@ namespace ACE_OS {
   //@}
 
   extern ACE_Export
-  int asprintf (char **bufp, const char* format, ...);
+  int asprintf (char **bufp, const char* format, ...)
+    ACE_GCC_FORMAT_ATTRIBUTE (printf, 2, 3);
 
 # if defined (ACE_HAS_WCHAR)
   extern ACE_Export
@@ -375,7 +373,8 @@ namespace ACE_OS {
 #endif /* ACE_WIN32 */
 
   extern ACE_Export
-  int fprintf (FILE *fp, const char *format, ...);
+  int fprintf (FILE *fp, const char *format, ...)
+    ACE_GCC_FORMAT_ATTRIBUTE (printf, 2, 3);
 
 # if defined (ACE_HAS_WCHAR)
   extern ACE_Export
@@ -441,7 +440,8 @@ namespace ACE_OS {
 #endif /* ACE_HAS_WCHAR */
 
   extern ACE_Export
-  int printf (const char *format, ...);
+  int printf (const char *format, ...)
+    ACE_GCC_FORMAT_ATTRIBUTE (printf, 1, 2);
 
 #if defined (ACE_HAS_WCHAR)
   extern ACE_Export
@@ -472,7 +472,8 @@ namespace ACE_OS {
   void rewind (FILE *fp);
 
   extern ACE_Export
-  int snprintf (char *buf, size_t maxlen, const char *format, ...);
+  int snprintf (char *buf, size_t maxlen, const char *format, ...)
+    ACE_GCC_FORMAT_ATTRIBUTE (printf, 3, 4);
 
 # if defined (ACE_HAS_WCHAR)
   extern ACE_Export
@@ -480,7 +481,8 @@ namespace ACE_OS {
 # endif /* ACE_HAS_WCHAR */
 
   extern ACE_Export
-  int sprintf (char *buf, const char *format, ...);
+  int sprintf (char *buf, const char *format, ...)
+    ACE_GCC_FORMAT_ATTRIBUTE (printf, 2, 3);
 
 # if defined (ACE_HAS_WCHAR)
   extern ACE_Export
@@ -498,19 +500,24 @@ namespace ACE_OS {
 #endif /* ACE_HAS_WCHAR */
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  int vasprintf (char **bufp, const char *format, va_list argptr);
+  int vasprintf (char **bufp, const char *format, va_list argptr)
+    ACE_GCC_FORMAT_ATTRIBUTE (printf, 2, 0);
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  int vprintf (const char *format, va_list argptr);
+  int vprintf (const char *format, va_list argptr)
+    ACE_GCC_FORMAT_ATTRIBUTE (printf, 1, 0);
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  int vfprintf (FILE *fp, const char *format, va_list argptr);
+  int vfprintf (FILE *fp, const char *format, va_list argptr)
+    ACE_GCC_FORMAT_ATTRIBUTE (printf, 2, 0);
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  int vsprintf (char *buffer, const char *format, va_list argptr);
+  int vsprintf (char *buffer, const char *format, va_list argptr)
+    ACE_GCC_FORMAT_ATTRIBUTE (printf, 2, 0);
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  int vsnprintf (char *buffer, size_t maxlen, const char *format, va_list argptr);
+  int vsnprintf (char *buffer, size_t maxlen, const char *format, va_list argptr)
+    ACE_GCC_FORMAT_ATTRIBUTE (printf, 3, 0);
 
 # if defined (ACE_HAS_WCHAR)
   ACE_NAMESPACE_INLINE_FUNCTION

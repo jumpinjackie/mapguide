@@ -1,4 +1,5 @@
 #!/bin/sh
+# $Id: clean_sems.sh 94638 2011-10-06 14:49:29Z johnnyw $
 
 SYSTEM=`uname -s`
 IPCS="ipcs"

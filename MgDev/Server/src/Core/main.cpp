@@ -29,9 +29,9 @@ using namespace XERCES_CPP_NAMESPACE;
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
+#else
+#include <malloc.h>
 #endif
-
-ACE_RCSID(server, main, "main.cpp")
 
 #ifdef _WIN32
 // Windows NT Service

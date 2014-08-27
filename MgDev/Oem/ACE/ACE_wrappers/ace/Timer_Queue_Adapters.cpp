@@ -1,4 +1,4 @@
-// $Id: Timer_Queue_Adapters.cpp 89482 2010-03-15 07:58:50Z johnnyw $
+// $Id: Timer_Queue_Adapters.cpp 97493 2013-12-31 07:45:27Z johnnyw $
 
 #ifndef ACE_TIMER_QUEUE_ADAPTERS_CPP
 #define ACE_TIMER_QUEUE_ADAPTERS_CPP
@@ -17,6 +17,7 @@
 #  include "ace/Timer_Queue_Adapters.inl"
 # endif /* __ACE_INLINE__ */
 
+#include "ace/Reverse_Lock_T.h"
 #include "ace/Signal.h"
 #include "ace/OS_NS_unistd.h"
 #include "ace/OS_NS_sys_time.h"
@@ -85,7 +86,7 @@ ACE_Async_Timer_Queue_Adapter<TQ, TYPE>::schedule (TYPE eh,
   long tid = this->timer_queue_.schedule (eh, act, future_time);
 
   if (tid == -1)
-    ACE_ERROR_RETURN ((LM_ERROR,
+    ACELIB_ERROR_RETURN ((LM_ERROR,
                        ACE_TEXT ("%p\n"),
                        ACE_TEXT ("schedule_timer")),
                       -1);
@@ -111,7 +112,7 @@ ACE_Async_Timer_Queue_Adapter<TQ, TYPE>::ACE_Async_Timer_Queue_Adapter (ACE_Sig_
                      SA_RESTART);
 
   if (this->sig_handler_.register_handler (SIGALRM, this, &sa) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("register_handler")));
 }
@@ -146,7 +147,7 @@ ACE_Async_Timer_Queue_Adapter<TQ, TYPE>::handle_signal (int signum,
         /* NOTREACHED */
       }
     default:
-      ACE_ERROR_RETURN ((LM_ERROR,
+      ACELIB_ERROR_RETURN ((LM_ERROR,
                          "unexpected signal %S\n",
                          signum),
                         -1);
@@ -180,6 +181,11 @@ ACE_Thread_Timer_Queue_Adapter<TQ, TYPE>::~ACE_Thread_Timer_Queue_Adapter (void)
       delete this->timer_queue_;
       this->timer_queue_ = 0;
       this->delete_timer_queue_ = false;
+    }
+  else if (this->timer_queue_)
+    {
+      this->timer_queue_->close ();
+      this->timer_queue_ = 0;
     }
 }
 
@@ -263,23 +269,31 @@ ACE_Thread_Timer_Queue_Adapter<TQ, TYPE>::svc (void)
         {
           // Compute the remaining time, being careful not to sleep
           // for "negative" amounts of time.
-          ACE_Time_Value const tv_curr = this->timer_queue_->gettimeofday ();
-          ACE_Time_Value const tv_earl = this->timer_queue_->earliest_time ();
+          ACE_Time_Value const tv_curr =
+            this->timer_queue_->gettimeofday ();
+          ACE_Time_Value const tv_earl =
+            this->timer_queue_->earliest_time ();
 
           if (tv_earl > tv_curr)
             {
-              // The earliest time on the Timer_Queue is in future, so
-              // use ACE_OS::gettimeofday() to convert the tv to the
-              // absolute time.
-              ACE_Time_Value const tv = ACE_OS::gettimeofday () + (tv_earl - tv_curr);
-              // ACE_DEBUG ((LM_DEBUG,  ACE_TEXT ("waiting until %u.%3.3u secs\n"),
+              // The earliest time on the Timer_Queue lies in future;
+              // convert the tv to an absolute time.
+              ACE_Time_Value const tv = this->timer_queue_->gettimeofday () + (tv_earl - tv_curr);
+              // ACELIB_DEBUG ((LM_DEBUG,  ACE_TEXT ("waiting until %u.%3.3u secs\n"),
               // tv.sec(), tv.msec()));
               this->condition_.wait (&tv);
             }
         }
 
-      // Expire timers anyway, at worst this is a no-op.
-      this->timer_queue_->expire ();
+      // Expire timers anyway, at worst this is a no-op. Release the lock
+      // while dispatching; the timer queue has its own lock to protect
+      // itself.
+      {
+        ACE_Reverse_Lock<ACE_SYNCH_RECURSIVE_MUTEX> rel (this->mutex_);
+        ACE_GUARD_RETURN (ACE_Reverse_Lock<ACE_SYNCH_RECURSIVE_MUTEX>,
+                          rmon, rel, -1);
+        this->timer_queue_->expire ();
+      }
     }
 
    // Thread cancellation point, if ACE supports it.

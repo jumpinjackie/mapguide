@@ -6,7 +6,7 @@
  *
  *  signals
  *
- *  $Id: os_signal.h 87480 2009-11-11 11:38:15Z olli $
+ *  $Id: os_signal.h 97262 2013-08-09 08:32:10Z johnnyw $
  *
  *  @author Don Hinton <dhinton@dresystems.com>
  *  @author This code was originally in various places including ace/OS.h.
@@ -18,7 +18,7 @@
 
 #include /**/ "ace/pre.h"
 
-#include "ace/config-lite.h"
+#include /**/ "ace/config-lite.h"
 
 #if !defined (ACE_LACKS_PRAGMA_ONCE)
 # pragma once
@@ -32,25 +32,15 @@
    }
 #endif /* !ACE_LACKS_SIGNAL_H */
 
-// This must come after signal.h is #included.
-#if defined (SCO)
-#  define SIGIO SIGPOLL
-#  include /**/ <sys/regset.h>
-#endif /* SCO */
-
 #if defined (ACE_HAS_SIGINFO_T)
 #  if !defined (ACE_LACKS_SIGINFO_H)
-#    if defined (__QNX__) || defined (__OpenBSD__) || defined (__INTERIX)
+#    if defined (ACE_HAS_SYS_SIGINFO_H)
 #      include /**/ <sys/siginfo.h>
-#    else  /* __QNX__ || __OpenBSD__ */
+#    else  /* ACE_HAS_SYS_SIGINFO_H */
 #      include /**/ <siginfo.h>
-#    endif /* __QNX__ || __OpenBSD__ */
+#    endif /* ACE_HAS_SYS_SIGINFO_H */
 #  endif /* ACE_LACKS_SIGINFO_H */
 #endif /* ACE_HAS_SIGINFO_T */
-
-#if defined (ACE_VXWORKS) && (ACE_VXWORKS < 0x620) && !defined (__RTP__)
-#  include /**/ <sigLib.h>
-#endif /* ACE_VXWORKS */
 
 // Place all additions (especially function declarations) within extern "C" {}
 #ifdef __cplusplus
@@ -58,9 +48,9 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-#if defined (ACE_LACKS_SIGSET) && !defined (__MINGW32__)
+#if defined (ACE_LACKS_SIGSET_T)
   typedef u_int sigset_t;
-#endif /* ACE_LACKS_SIGSET && !sigset_t */
+#endif /* ACE_LACKS_SIGSET_T && !sigset_t */
 
 #if !defined (ACE_HAS_SIG_ATOMIC_T)
    typedef int sig_atomic_t;
@@ -175,9 +165,6 @@ extern "C"
 #elif defined (ACE_WIN32)
    typedef void (__cdecl *ACE_SignalHandler)(int);
    typedef void (__cdecl *ACE_SignalHandlerV)(int);
-#elif defined (ACE_HAS_UNIXWARE_SVR4_SIGNAL_T)
-   typedef void (*ACE_SignalHandler)(int);
-   typedef void (*ACE_SignalHandlerV)(...);
 #elif defined (INTEGRITY)
    typedef void (*ACE_SignalHandler)();
    typedef void (*ACE_SignalHandlerV)(int);
@@ -214,26 +201,6 @@ extern "C"
 #    define ACE_SIGRTMAX 0
 #  endif /* ACE_SIGRTMAX */
 #endif /* ACE_HAS_POSIX_REALTIME_SIGNALS */
-
-#if defined (DIGITAL_UNIX)
-   // sigwait is yet another macro on Digital UNIX 4.0, just causing
-   // trouble when introducing member functions with the same name.
-   // Thanks to Thilo Kielmann" <kielmann@informatik.uni-siegen.de> for
-   // this fix.
-#  if defined  (__DECCXX_VER)
-#    undef sigwait
-     // cxx on Digital Unix 4.0 needs this declaration.  With it,
-     // <::_Psigwait> works with cxx -pthread.  g++ does _not_ need
-     // it.
-     int _Psigwait __((const sigset_t *set, int *sig));
-#  endif /* __DECCXX_VER */
-#elif !defined (ACE_HAS_SIGWAIT)
-#  if defined(ACE_HAS_RTEMS)
-     int sigwait (const sigset_t *set, int *sig);
-#  else
-     int sigwait (sigset_t *set);
-#  endif /* ACE_HAS_RTEMS */
-#endif /* ! DIGITAL_UNIX && ! ACE_HAS_SIGWAIT */
 
 #if !defined (ACE_HAS_PTHREAD_SIGMASK_PROTOTYPE)
   int pthread_sigmask(int, const sigset_t *, sigset_t *);

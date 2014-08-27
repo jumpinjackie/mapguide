@@ -1,8 +1,6 @@
-// $Id: OS_main.cpp 85662 2009-06-16 15:17:31Z mitza $
+// $Id: OS_main.cpp 97431 2013-11-19 14:28:52Z johnnyw $
 
 #include "ace/OS_main.h"
-
-ACE_RCSID(ace, OS_main, "$Id: OS_main.cpp 85662 2009-06-16 15:17:31Z mitza $")
 
 #if !defined (ACE_DOESNT_DEFINE_MAIN)
 

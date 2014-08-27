@@ -4,7 +4,7 @@
 /**
  * @file Bytes_Received_Monitor.h
  *
- * $Id: Bytes_Received_Monitor.h 86518 2009-08-18 12:30:56Z olli $
+ * $Id: Bytes_Received_Monitor.h 95533 2012-02-14 22:59:17Z wotte $
  *
  * @author Jeff Parsons <j.parsons@vanderbilt.edu>
  */
@@ -25,13 +25,13 @@
 
 #if defined (ACE_HAS_PDH_H) && !defined (ACE_LACKS_PDH_H)
 #include "ace/Monitor_Control/Windows_Multi_Instance_Monitor.h"
-#elif defined (linux) || defined (AIX)
+#elif defined (ACE_LINUX) || defined (AIX)
 #include "ace/Monitor_Control/Linux_Network_Interface_Monitor.h"
 #elif defined (ACE_HAS_KSTAT)
 #include "ace/Monitor_Control/Solaris_Network_Interface_Monitor.h"
 #elif defined (__FreeBSD__) || defined (__Lynx__)
 #include "ace/Monitor_Control/FreeBSD_Network_Interface_Monitor.h"
-#elif defined (__NetBSD__) || defined (__OpenBSD__) 
+#elif defined (__NetBSD__) || defined (__OpenBSD__)
 #include "ace/Monitor_Control/BSD_Network_Interface_Monitor.h"
 #else
 #include "ace/Monitor_Control/Null_Network_Interface_Monitor.h"
@@ -54,7 +54,7 @@ namespace ACE
       : public Monitor_Base
 #if defined (ACE_HAS_WIN32_PDH)
       , public Windows_Multi_Instance_Monitor
-#elif defined (linux) || defined (AIX)
+#elif defined (ACE_LINUX) || defined (AIX)
       , public Linux_Network_Interface_Monitor
 #elif defined (ACE_HAS_KSTAT)
       , public Solaris_Network_Interface_Monitor
@@ -74,7 +74,7 @@ namespace ACE
 
       /// Stores the default name, used if none is supplied by the user.
       static const char* default_name (void);
-      
+
     private:
       /// Overridden reset, calls platform-specific reset.
       virtual void clear_i (void);

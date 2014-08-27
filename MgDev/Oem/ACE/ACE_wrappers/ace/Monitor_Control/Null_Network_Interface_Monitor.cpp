@@ -1,4 +1,4 @@
-// $Id: Null_Network_Interface_Monitor.cpp 82115 2008-06-20 20:43:13Z parsons $
+// $Id: Null_Network_Interface_Monitor.cpp 91813 2010-09-17 07:52:52Z johnnyw $
 
 #include "ace/Monitor_Control/Null_Network_Interface_Monitor.h"
 
@@ -18,7 +18,7 @@ namespace ACE
     {
       /// No-op.
     }
-    
+
     void
     Null_Network_Interface_Monitor::clear_impl (void)
     {

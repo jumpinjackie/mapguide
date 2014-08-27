@@ -1,4 +1,4 @@
-// $Id: Monitor_Group.cpp 86518 2009-08-18 12:30:56Z olli $
+// $Id: Monitor_Group.cpp 93390 2011-02-15 14:44:58Z johnnyw $
 
 #include "ace/Monitor_Control/Monitor_Group.h"
 
@@ -36,25 +36,25 @@ namespace ACE
     {
       /// No-op, should always call update().
     }
-    
+
     void
     Monitor_Group::receive (size_t /* data */)
     {
       /// No-op, should always call update().
     }
-    
+
     void
     Monitor_Group::receive (const Monitor_Control_Types::NameList& /* data */)
     {
       /// No-op, should always call update().
     }
-    
+
     void
     Monitor_Group::clear (void)
     {
       for (MEMBERS_ITERATOR i (this->members_); !i.done (); i.advance ())
         {
-          Monitor_Base **member;
+          Monitor_Base **member = 0;
           i.next (member);
           (*member)->clear ();
         }

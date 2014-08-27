@@ -4,7 +4,7 @@
 /**
  *  @file    TTY_IO.h
  *
- *  $Id: TTY_IO.h 82271 2008-07-09 09:23:03Z olli $
+ *  $Id: TTY_IO.h 97246 2013-08-07 07:10:20Z johnnyw $
  *
  *  @author Douglas C. Schmidt <schmidt@uci.edu>
  */
@@ -36,6 +36,8 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 class ACE_Export ACE_TTY_IO : public ACE_DEV_IO
 {
 public:
+  ACE_TTY_IO (void);
+
   enum Control_Mode
   {
     SETPARAMS,              ///< Set control parameters.
@@ -46,7 +48,7 @@ public:
   {
     Serial_Params (void);
 
-    /** Specifies the baudrate at which the communnication port operates. */
+    /** Specifies the baudrate at which the communication port operates. */
     int baudrate;
     /** Specifies the minimum number of bytes in input buffer before XON char
         is sent. Negative value indicates that default value should

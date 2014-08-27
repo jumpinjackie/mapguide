@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: Service_Gestalt.inl 90808 2010-06-24 02:14:22Z shuston $
+// $Id: Service_Gestalt.inl 91158 2010-07-21 15:54:12Z mesnier_p $
 
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL

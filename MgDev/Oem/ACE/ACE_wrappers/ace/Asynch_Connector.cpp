@@ -1,4 +1,4 @@
-// $Id: Asynch_Connector.cpp 80826 2008-03-04 14:51:23Z wotte $
+// $Id: Asynch_Connector.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #ifndef ACE_ASYNCH_CONNECTOR_CPP
 #define ACE_ASYNCH_CONNECTOR_CPP
@@ -15,7 +15,7 @@
 #include "ace/OS_NS_sys_socket.h"
 #include "ace/OS_Memory.h"
 #include "ace/Flag_Manip.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Message_Block.h"
 #include "ace/INET_Addr.h"
 
@@ -48,7 +48,7 @@ ACE_Asynch_Connector<HANDLER>::open (bool pass_addresses,
                                   ACE_INVALID_HANDLE,
                                   0,
                                   this->proactor ()) == -1)
-    ACE_ERROR_RETURN ((LM_ERROR,
+    ACELIB_ERROR_RETURN ((LM_ERROR,
                        ACE_TEXT ("%p\n"),
                        ACE_TEXT ("ACE_Asynch_Connect::open")),
                       -1);
@@ -67,7 +67,7 @@ ACE_Asynch_Connector<HANDLER>::connect (const ACE_INET_Addr & remote_sap,
                                      local_sap,
                                      reuse_addr,
                                      act) == -1)
-    ACE_ERROR_RETURN ((LM_ERROR,
+    ACELIB_ERROR_RETURN ((LM_ERROR,
                        ACE_TEXT ("%p\n"),
                        ACE_TEXT ("ACE_Asynch_Connect::connect")),
                       -1);
@@ -98,7 +98,7 @@ ACE_Asynch_Connector<HANDLER>::handle_connect (const ACE_Asynch_Connect::Result 
         (result.connect_handle (), ACE_NONBLOCK) != 0)
     {
       error = 1;
-      ACE_ERROR ((LM_ERROR,
+      ACELIB_ERROR ((LM_ERROR,
                   ACE_TEXT ("%p\n"),
                   ACE_TEXT ("ACE_Asynch_Connector::handle_connect : Set blocking mode")));
     }
@@ -128,7 +128,7 @@ ACE_Asynch_Connector<HANDLER>::handle_connect (const ACE_Asynch_Connect::Result 
       if (new_handler == 0)
         {
           error = 1;
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("%p\n"),
                       ACE_TEXT ("ACE_Asynch_Connector::handle_connect : Making of new handler failed")));
         }
@@ -203,7 +203,7 @@ ACE_Asynch_Connector<HANDLER>::parse_address (const ACE_Asynch_Connect::Result &
   if (ACE_OS::getsockname (result.connect_handle (),
                            reinterpret_cast<sockaddr *> (&local_addr),
                            &local_size) < 0)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT("%p\n"),
                 ACE_TEXT("ACE_Asynch_Connector::<getsockname> failed")));
 
@@ -211,7 +211,7 @@ ACE_Asynch_Connector<HANDLER>::parse_address (const ACE_Asynch_Connect::Result &
   if (ACE_OS::getpeername (result.connect_handle (),
                            reinterpret_cast<sockaddr *> (&remote_addr),
                            &remote_size) < 0)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT("%p\n"),
                 ACE_TEXT("ACE_Asynch_Connector::<getpeername> failed")));
 
@@ -220,32 +220,6 @@ ACE_Asynch_Connector<HANDLER>::parse_address (const ACE_Asynch_Connect::Result &
                       local_size);
   remote_address.set (reinterpret_cast<sockaddr_in *> (&remote_addr),
                       remote_size);
-
-#if 0
-  // @@ Just debugging.
-  char local_address_buf  [BUFSIZ];
-  char remote_address_buf [BUFSIZ];
-
-  if (local_address.addr_to_string (local_address_buf,
-                                    sizeof local_address_buf) == -1)
-    ACE_ERROR ((LM_ERROR,
-                "Error:%m:can't obtain local_address's address string"));
-
-  ACE_DEBUG ((LM_DEBUG,
-              "ACE_Asynch_Connector<HANDLER>::parse_address : "
-              "Local address %s\n",
-              local_address_buf));
-
-  if (remote_address.addr_to_string (remote_address_buf,
-                                     sizeof remote_address_buf) == -1)
-    ACE_ERROR ((LM_ERROR,
-                "Error:%m:can't obtain remote_address's address string"));
-
-  ACE_DEBUG ((LM_DEBUG,
-              "ACE_Asynch_Connector<HANDLER>::parse_address : "
-              "Remote address %s\n",
-              remote_address_buf));
-#endif /* 0 */
 
   return;
 }

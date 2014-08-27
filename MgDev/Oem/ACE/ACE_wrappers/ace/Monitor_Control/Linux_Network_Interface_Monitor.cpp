@@ -1,10 +1,10 @@
-// $Id: Linux_Network_Interface_Monitor.cpp 82115 2008-06-20 20:43:13Z parsons $
+// $Id: Linux_Network_Interface_Monitor.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/Monitor_Control/Linux_Network_Interface_Monitor.h"
 
-#if defined (linux) || defined (AIX)
+#if defined (ACE_LINUX) || defined (AIX)
 
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/OS_NS_stdio.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
@@ -31,7 +31,7 @@ namespace ACE
 
       if (fp == 0)
         {
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("bytes sent - opening ")
                       ACE_TEXT ("/proc/net/dev failed\n")));
           return;
@@ -40,7 +40,9 @@ namespace ACE
       /// Ignore the first 2 lines of the file, which are file
       /// and column headers.
       void* dummy = ACE_OS::fgets (buf, sizeof (buf), fp);
+      ACE_UNUSED_ARG (dummy);
       dummy = ACE_OS::fgets (buf, sizeof (buf), fp);
+      ACE_UNUSED_ARG (dummy);
 
       unsigned long iface_value = 0UL;
       ACE_UINT32 iface_index = 0UL;
@@ -70,7 +72,7 @@ namespace ACE
     {
       this->init ();
     }
-    
+
     void
     Linux_Network_Interface_Monitor::init (void)
     {
@@ -88,7 +90,7 @@ namespace ACE
 
       if (fp == 0)
         {
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("bytes sent - opening ")
                       ACE_TEXT ("/proc/net/dev failed\n")));
           return;
@@ -97,7 +99,9 @@ namespace ACE
       /// Ignore the first 2 lines of the file, which are file
       /// and column headers.
       void* dummy = ACE_OS::fgets (buf, sizeof (buf), fp);
+      ACE_UNUSED_ARG (dummy);
       dummy = ACE_OS::fgets (buf, sizeof (buf), fp);
+      ACE_UNUSED_ARG (dummy);
 
       unsigned long iface_value = 0UL;
       ACE_UINT32 iface_index = 0UL;
@@ -117,4 +121,4 @@ namespace ACE
 
 ACE_END_VERSIONED_NAMESPACE_DECL
 
-#endif /* defined (linux) || defined (AIX) */
+#endif /* defined (ACE_LINUX) || defined (AIX) */

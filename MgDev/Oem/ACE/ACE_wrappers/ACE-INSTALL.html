@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><!-- $Id: ACE-INSTALL.html 90858 2010-06-25 12:47:19Z johnnyw $ -->
+http://www.dre.vanderbilt.edu/~schmidt/PDF/Svc-Conf.pdf<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><!-- $Id: ACE-INSTALL.html 97719 2014-04-15 08:58:11Z johnnyw $ -->
   <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Building and Installing ACE and Its Auxiliary Libraries and Services</title>
 
   <link rev="made" href="mailto:d.schmidt@vanderbilt.edu"></head>
@@ -123,7 +123,7 @@ document</a>.</p><p>
 </thead><tbody>
   <tr>
     <th>DOC Group</th>
-    <td>Windows 2000, XP (MSVC++ 7.1, and 8);
+    <td>Windows 2000, XP (MSVC++ 7.1, 8, 9, and 10);
         many versions of Linux/Intel (many compilers).
     </td>
     <td>DOC sites at <a href="http://www.dre.vanderbilt.edu/">ISIS</a>,
@@ -154,13 +154,13 @@ document</a>.</p><p>
     <th>Remedy IT</th>
     <td>Maintains ACE on many platforms required for their ACE and
         TAO service offerings. We support AIX,
-        CodeGear C++ Builder 2007/2009, CodeGear RAD Studio 2007, Embarcadero C++ Builder 2010,
-        CBuilderX 1.0, Windows CE, MinGW, Microsoft Visual C++ 7.1/8/9, GCC,
-        Cygwin, VxWorks 5.5.x - 6.x (kernel and rtp), OpenVMS 8.2-1 &            8.3 on Alpha and IA64,
+        CodeGear C++ Builder 2007/2009, CodeGear RAD Studio 2007, Embarcadero C++ Builder 2010/XE/XE4/XE5/XE6,
+        Windows CE, MinGW, Microsoft Visual C++ 7.1/8/9/10, GCC,
+        Cygwin, VxWorks 6.x (kernel and rtp), OpenVMS 8.3 on IA64,
         BlueCAT Linux, RedHat Linux, Fedora, MacOSX, Solaris,
-        Tru64, SuSE Linux on Alpha/IA32/EM64T/IA64, RTEMS, QNX, LynxOS 4.0/4.2,
-        HPUX 11i v1/v2 32/64 bit on PA-RISC, and
-        HPUX 11i v2/v3 on IA64. The Intel C++ compiler is supported on
+        Tru64, SuSE Linux on Alpha/IA32/EM64T/IA64, RTEMS, QNX, LynxOS,
+        HPUX 11i v2/v3 on IA64, and Android.
+        The Intel C++ compiler is supported on
         Windows 32/64bit, Linux IA32/EM64T/IA64, MacOSX.
     </td>
     <td>Remedy IT <a href="http://www.theaceorb.nl/">web site</a> and
@@ -232,7 +232,7 @@ supported by the DOC group, Riverace, OCI or Remedy IT. </p><p>
 HREF="http://downloads.ociweb.com/MPC/docs/html/MakeProjectCreator.html">MPC</A>
 (MakeProjectCreator) to generate files used by all supported build
 tools (such as GNUmakefiles for UNIX based platforms, sln and vcproj
-files for VC71/VC8 and CodeGear makefiles) on various platforms. To
+files for VC71/VC8 and Embarcadero makefiles) on various platforms. To
 help new users to bootstrap quickly the release bundles of ACE (as
 well as TAO and CIAO) include all needed files to use the build
 instructions in this document.
@@ -259,6 +259,7 @@ The following sections explain how to build ACE on:
 <li><a href="#unix">UNIX</a></li>
 <li><a href="#win32">Windows (including MinGW and Cygwin)</a></li>
 <li><a href="#vxworks">VxWorks</a></li>
+<li><a href="#android">Android</a></li>
 <li><a href="#interix">Interix</a></li>
 <li><a href="#rtems">RTEMS</a></li>
 </ul>
@@ -280,149 +281,13 @@ The following sections explain how to build ACE on:
 <hr align="left" width="50%">
 <h2><a name="unix">Building and Installing ACE on UNIX</a></h2>
 
-As of ACE 5.4, you can choose between two methods of building ACE on
-UNIX:
+As of ACE 6.0.6, you can building ACE on
+UNIX with:
 <ol>
-  <li><a href="#unix_autoconf">GNU Autoconf</a></li>
   <li><a href="#unix_traditional">Traditional ACE/GNU Make Configuration</a></li>
 </ol>
-The <a href="#win32">build process for Windows</a> is different from both of
+The <a href="#win32">build process for Windows</a> is different from
 the UNIX methods.
-
-<h3><a name="unix_autoconf">Building ACE with GNU Autoconf</a></h3>
-<p>
-GNU Autoconf support is available in the ACE and ACE+TAO distributions
-in the DOC group website. Support for Autoconf is not included in
-distributions that contain CIAO.
-</p>
-<p>
-GNU Autoconf support has been partially present in a number of ACE
-versions. However, ACE 5.4 was the first version that supported it in
-earnest. The range of platforms on which GNU autoconf support is regularly
-tested is not as broad as for the traditional configuration method, so you
-should be careful to test the resulting ACE library before using it in
-your applications. You can review the
-<a href="http://www.dre.vanderbilt.edu/scoreboard/" target="_blank">
-build scoreboard</a> to check the currently tested set of autoconfigured
-platforms (look for autoconf in the platform name).
-Any help you can lend to improve the ACE build process using GNU Autoconf
-would be very much appreciated. Please send any fixes to the
-<a href="mailto:ace-users@cse.wustl.edu">ACE users</a> mailing list
-using the standard <a href="PROBLEM-REPORT-FORM">PROBLEM-REPORT-FORM</a>.
-</p>
-<p>
-The kit has been bootstrapped so you do not need to install the GNU
-Autotools (autoconf, automake, libtool) unless you want to participate
-in <a href="#autoconf_development">testing and developing</a> this
-process further or if you are working directly off of sources in the
-ACE subversion repository. To simply configure and build ACE, do:
-</p><ol>
-  <li><code>cd</code> to the top-level <code>ACE_wrappers</code> directory.</li>
-  <li>Create a subdirectory to hold your build's configuration and built
-      ACE version, and then change to the new directory:
-       <pre>       mkdir build
-       cd build</pre>
-      Note that you do not run the <code>create_ace_build.pl</code> utility
-      mentioned in the <a href="#cloning">Cloning the Source Tree</a>
-      section. The configure script takes care of creating all files
-      and links that are needed.</li>
-  <li>Configure ACE for your platform by issuing the following command:
-       <pre>       ../configure [options]</pre>
-      <code>options</code> can be a variable setting (such as setting
-      <code>CXX</code> to your C++ compiler command) any standard GNU
-      configure options, or any of the following ACE configure options
-      (default values are in parentheses):
-      <ul>
-        <li><code>--enable-alloca</code> (no): Enable <code>alloca()</code>
-          support.</li>
-        <li><code>--enable-debug</code> (yes): Build ACE with debugging
-          support.</li>
-        <li><code>--enable-exceptions</code> (yes): Build ACE with C++
-          exception support compiled in.</li>
-        <li><code>--enable-fast</code> (no): Use the Sun C++ <code>-fast</code>
-          option to build. Only used on Solaris.</li>
-        <li><code>--enable-ipv4-ipv6</code> (no): Enable IPv4/IPv6 migration support.</li>
-        <li><code>--enable-ipv6</code> (no): Enable IPv6 support.</li>
-        <li><code>--enable-inline</code> (yes): Enable inline functions.</li>
-        <li><code>--enable-optimize</code> (yes): Enable building optimized.</li>
-        <li><code>--enable-prof</code> (no): Enable profiling support.</li>
-        <li><code>--enable-purify</code> (no): Build with support for
-          IBM Rational Purify.</li>
-        <li><code>--enable-quantify</code> (no): Build with support for
-          IBM Rational Quantify.</li>
-        <li><code>--enable-repo</code> (no): Enable the GNU g++
-          <code>-frepo</code> option. Only useful for pre-3.0 g++.</li>
-        <li><code>--enable-stdcpplib</code> (yes): Build with support for the
-          standard C++ library, as opposed to the older iostreams library.</li>
-        <li><code>--enable-log-msg-prop</code> (yes): Enable
-          <code>ACE_Log_Msg</code> property propagation to ACE-created
-          threads.</li>
-        <li><code>--enable-logging</code> (yes): Enable the ACE logging
-          macros.</li>
-        <li><code>--enable-malloc-stats</code> (no): Compile in additional code
-          for collecting memory allocation statistics.</li>
-        <li><code>--enable-pi-pointers</code> (yes): Enable
-          position-independent pointers for shared memory classes.</li>
-        <li><code>--enable-probe</code> (no): Enable the
-          <code>ACE_Timeprobe</code> class.</li>
-        <li><code>--enable-reentrant</code> (yes): Enable use of platform's
-          reentrant functions.</li>
-        <li><code>--enable-static-obj-mgr</code> (yes): Enable use of a
-          static <code>ACE_Object_Manager</code>.</li>
-        <li><code>--enable-threads</code> (yes): Enable threading support.</li>
-        <li><code>--enable-verb-not-sup</code> (no): Enable verbose ENOTSUP
-          reports at run time.</li>
-        <li><code>--enable-trace</code> (no): Enable ACE execution tracing
-          support.</li>
-        <li><code>--enable-fl-reactor</code> (no): Enable support for the
-          <code>ACE_FlReactor</code> class.</li>
-        <li><code>--enable-qt-reactor</code> (no): Enable support for the
-          <code>ACE_QtReactor</code> class.</li>
-        <li><code>--enable-tk-reactor</code> (no): Enable support for the
-          <code>ACE_TkReactor</code> class.</li>
-        <li><code>--enable-xt-reactor</code> (no): Enable support for the
-          <code>ACE_XtReactor</code> class.</li>
-        <li><code>--enable-gperf</code> (yes): Build the implementation of
-          gperf that comes with ACE.</li>
-        <li><code>--enable-qos</code> (no): Include the ACE_QoS library when
-          building ACE.</li>
-        <li><code>--enable-ssl</code> (yes): Include the ACE_SSL library when
-          building ACE. Requires the SSL components to be available using the
-          compiler's and linker's default search directories.</li>
-        <li><code>--with-openssl</code>: Specifies the root directory of the
-          OpenSSL installation; expects the specified directory to have
-          <code>include</code> and <code>lib</code> subdirectories. To
-          specify other locations for the header and libraries, use one or
-          both of the following.</li>
-        <li><code>--with-openssl-include</code>: Specify the directory
-          containing the OpenSSL header files.</li>
-        <li><code>--with-openssl-libdir</code>: Specify the directory
-          containing the OpenSSL libraries.</li>
-        <li><code>--with-tli-device</code> (/dev/tcp): Specifies the device
-          name for opening a TLI device at run time.</li>
-      </ul>
-  </li>
-  <li>Build ACE by typing <code>make</code>.
-  </li><li>(Optional) Install ACE by typing <code>make install</code>.
-</li></ol>
-
-<h4><a name="autoconf_development">Testing and Developing GNU Autotool
-Support in ACE</a></h4>
-<p>
-In order to test and develop the GNU Autotool support in ACE or
-bootstrap autotool support into ACE when working directly off of ACE
-sources in the subversion repository, you must have recent versions of GNU
-Autoconf, Automake and Libtool installed on your host.  Once
-installed, autotool support may be bootstrapped into your workspace by
-doing the following:
-    <blockquote>
-      <code>
-        cd ACE_wrappers<br>
-        ./bin/bootstrap<br>
-      </code>
-    </blockquote>
-After doing so, you will be able to run the <code>configure</code>
-script.
 
 <h3><a name="unix_traditional">Using the Traditional ACE/GNU Configuration</a></h3>
 <p>
@@ -554,9 +419,13 @@ is to start with a clean directory. Unpacking the newer release over an older
 one will not clean up any old files, and trying to use the environment's
 "Clean" command will probably not account for all existing files.</p>
 
+<p>For using MPC and our perl based test framework we recommend
+our windows users to use <a href="http://www.activestate.com/Products/ActivePerl/"> Active
+State Perl.</a></p>
+
 <ul>
 <li><a href="#msvc">Microsoft Visual Studio</a></li>
-<li><a href="#codegear">CodeGear C++Builder</a></li>
+<li><a href="#embarcadero">Embarcadero C++Builder</a></li>
 <li><a href="#mingw">MinGW</a></li>
 <li><a href="#cygwin">Cygwin</a></li>
 </ul>
@@ -565,19 +434,18 @@ one will not clean up any old files, and trying to use the environment's
 </p><h3><a name="msvc">Building and Installing ACE on Windows with
 Microsoft Visual Studio</a></h3>
 
-<p>ACE contains project files for Microsoft Visual Studio .NET 2003 (VC7.1)
-and Visual Studio 2005 (VC8). Visual Studio 2005 supports building for
+<p>ACE contains project files for
+Visual Studio 2009 (VC9), and Visual Studio 2010 (VC10).
+Visual Studio 2005 supports building for
 desktop/server Windows as well as for Windows CE and Windows Mobile. Since
 not all users will be interested in the CE/Mobile capability, these platforms
 have separate solution and project files from the desktop/server Windows.
-Furthermore, VC7.1 and VC8 use different file formats but the same file
+Furthermore, VC7.1, VC8, VC9, and 10 use different file formats but the same file
 suffixes (<code>.sln</code> and <code>.vcproj</code>). To support both
 environments, ACE supplies files with different names for the different
 development and target platforms. The platform/name mapping is shown below.
 All solution files have a <code>.sln</code> suffix and all project files have
 a <code>.vcproj</code> suffix.</p>
-
-<p>Visual Studio 2008 (VC9) is also supported.</p>
 
 <p>
 The free Visual C++ 2008 Express Edition will work in place of the traditional
@@ -612,6 +480,11 @@ can be built with the compiler and linker included in the <a href="http://www.mi
   <tr>
     <th>VC9 for desktop/server</th>
     <td><i>name</i><code>_vc9</code>
+    </td>
+  </tr>
+  <tr>
+    <th>VC10 for desktop/server</th>
+    <td><i>name</i><code>_vc10</code>
     </td>
   </tr>
 </tbody></table>
@@ -756,41 +629,8 @@ card.  This is one method:
       MS Loopback Adapter<p>
 </p></li></a></ol>
 
-<a name="win32nonic"><b>WIN32 ALPHA CONFIGURATIONS</b>
-
-</a><p><a name="win32nonic">The project files for Visual C++ no longer contain any configurations
-targetted to Windows NT on the DEC Alpha.  Below are the steps needed to
-recreate the Alpha configurations:</a></p>
-
-<ol>
-<a name="win32nonic">  <li>Load the project on the Alpha machine.
-  </li><li>Go to the Build menu and then select Configurations.
-  </li><li>Select the project that you want to convert.
-  </li><li>Click on Add.
-  </li><li>Select the x86 configuration to "Copy settings from"
-      (either Debug or Release versions).
-  </li><li>Prepend "Alpha " to the beginning of the name under
-      "Configuration".
-  </li><li>Click OK.
-  </li><li>Close the "Configurations" window.
-  </li><li>Now go to the Project settings.
-  </li><li>For the General Settings, change the output directories to standard ACE
-      output directories. Intermediate Directories are "Debug" and
-          "Release" in most cases.  The Output Directories are blank,
-          except for Release versions of executables, in which it is also
-          "Release".
-  </li><li>For the C/C++ Settings, make sure that the Code Generation's runtime
-      library is set to "Multithreaded DLL" or "Debug Multithreaded
-          DLL".
-</li></a></ol>
-
-<p><a name="win32nonic"><b>Note:</b> MSVC 6 has a bug where if a .dsp is converted from version 5 to 6 on
-x86, the Alpha configuration can get corrupted.  This seems to happen when additional
-include or library directories are specified using backslashes instead of forward
-slashes.  If this occurs, the easiest way to fix it is to recreate it.</a></p>
-
 <hr align="left" width="50%"><p>&nbsp;</p>
-<h3><a name="codegear">Building and Installing ACE on Windows with CodeGear C++</a></h3>
+<h3><a name="embarcadero">Building and Installing ACE on Windows with Embarcadero C++</a></h3>
 
 If you are building for a machine without a network card, you may want
 to check <a href="#win32nonic">here</a> first. <p>
@@ -808,7 +648,7 @@ to check <a href="#win32nonic">here</a> first. <p>
       <br>
       <code>#include "ace/config-win32.h"</code><br>
       <br>
-  </li><li>Open a Command Prompt (DOS Box).<br>
+  </li><li>Open a RAD Studio Command Prompt.<br>
       <br>
   </li><li>Set the ACE_ROOT environment variable to point to the ACE_wrappers
       directory. For example:<br>
@@ -817,17 +657,17 @@ to check <a href="#win32nonic">here</a> first. <p>
       <br>
   </li><li>Add ACE_wrappers\lib and ACE_wrappers\bin to the PATH environment variable:<br>
       <br>
-      <code>set PATH=C:\ACE_wrappers\lib;C:\ACE_wrappers\bin;%PATH%</code><br>
+      <code>set PATH=%ACE_ROOT%\lib;%ACE_ROOT%\bin;%PATH%</code><br>
       <br>
-  </li><li>Generate the bmake makefiles using <a href="#MPC">MPC</a>. Use the <code>bmake</code> project type for C++ Builder.
-      <br><br>
   </li><li>Change to the ACE_ROOT\ace directory.<br>
       <br>
-  </li><li>Build release DLLs for ACE by going:<br>
+      <code>cd %ACE_ROOT%\ace</code><br>
       <br>
-      <code>make -f Makefile.bmak all</code><br>
+  </li><li>Generate the bmake makefiles using <a href="#MPC">MPC</a>. Use the <code>bmake</code> project type for C++ Builder:<br>
       <br>
-  </li><li>You can build several different versions of ACE by setting environment
+      <code>%ACE_ROOT%\bin\mwc.pl -type bmake</code><br>
+      <br>
+  </li><li>You can build several different versions of ACE by setting the following optional environment
       variables before you run make:<br>
       <br>
       Set the environment variable below to build a debug version of ACE<br>
@@ -842,7 +682,7 @@ to check <a href="#win32nonic">here</a> first. <p>
       <br>
       Set the environment variable below to build a version of ACE optimized
       for a certain CPU. For this there are special compiler flags
-      (-3/-4/-5/-6), see the CodeGear help for more info.<br>
+      (-3/-4/-5/-6), see the Embarcadero help for more info.<br>
       <code>set CPU_FLAG=-6</code><br>
       <br>
       You can then start the build with the command
@@ -851,25 +691,31 @@ to check <a href="#win32nonic">here</a> first. <p>
       You may also enable the options by passing them as command line options to make, for example:<br>
       <code>make -f Makefile.bmak -DDEBUG all</code><br>
       <br>
+  </li><li>Build ACE by doing:<br>
+      <br>
+      <code>make -f Makefile.bmak all</code><br>
+      <br>
 </li></ol>
 
 <p>
 
 Note that when you run <code>make</code> in a sub directory you give <code>make -f Makefile.bmak all</code>. The <code>all</code> is needed to make sure the complete project is build.<p>
 
-The Borland/CodeGear C++ Builder 4.0/5.0/6.0/2006/2007/2009/2010 port has been done by Jody Hagins, <a href="mailto:chris@kohlhoff.com">Christopher Kohlhoff</a> and <a href="mailto:jwillemsen@remedy.nl">Johnny Willemsen</a>. </p><p>
+The C++ Builder port has been done by Jody Hagins, <a href="mailto:chris@kohlhoff.com">Christopher Kohlhoff</a> and <a href="mailto:jwillemsen@remedy.nl">Johnny Willemsen</a>. </p><p>
 
 <b>ACE TESTS</b></p><p>
 
 Before you can build the tests you need to build the protocols directory.
-Change the directory to ACE_ROOT\protocols and start the build with: </p><p>
+Change the directory to ACE_ROOT\protocols and start: </p><p>
 </p><blockquote><code>
+%ACE_ROOT%\bin\mwc.pl -type bmake<br>
 make -f Makefile.bmak all
 </code></blockquote><p>
 
 The tests are located in ACE_ROOT\tests, change to this directory.
-You build then the tests with the following command:</p><p>
+You build then the tests with the following commands:</p><p>
 </p><blockquote><code>
+%ACE_ROOT%\bin\mwc.pl -type bmake<br>
 make -f Makefile.bmak all
 </code></blockquote><p>
 
@@ -877,8 +723,10 @@ Once you build all the tests, you can run the automated test script using:</p><p
 </p><blockquote><code>perl run_test.pl</code></blockquote><p> in the
 <code>tests</code> directory to try all the tests. You need to make
 sure the ACE bin and lib directory (in this case
-<code>ACE_ROOT\bin</code> and <code>ACE_ROOT\lib</code>)
-are on the path before you try to run the tests.</p><p>
+<code>%ACE_ROOT%\bin</code> and <code>%ACE_ROOT%\lib</code>)
+are on the path before you try to run the tests. If your executables are
+compiled into a subdirectory, add <code>-ExeSubDir subdirname</code> to the
+command.</p><p>
 
 <p></p><hr align="left" width="50%"><p>
 </p><h3><a name="mingw">Building and Installing ACE on Win32 with MinGW/ MSYS</a></h3>
@@ -904,7 +752,7 @@ For our build we require the packages
 
 </p><ol>
 
-  <li> Install the MinGW tools into a common directory, say c:/mingw.
+  <li> Install the MinGW tools (including the MinGW Development toolkit) into a common directory, say c:/mingw.
       <br><br>
 
   </li><li> Install the MSYS tools into a common directory, say c:/msys.
@@ -951,6 +799,19 @@ For our build we require the packages
        before the previous one.
        <br><br>
 
+     <p>
+       If you want to install ACE (using "make install") and want all the <tt>.pc</tt> files generated,
+     set the installation prefix in platform_macros.GNU.
+       </p><blockquote><code></code><pre>      INSTALL_PREFIX=/c/ACE
+       </pre></blockquote>
+     Headers will be installed to $INSTALL_PREFIX/include, documentation and
+     build system files to $INSTALL_PREFIX/share and libraries to $INSTALL_PREFIX/lib. With INSTALL_PREFIX set, RPATH will be enabled.
+     To disable RPATH (for example, if $INSTALL_PREFIX/$INSTALL_LIB is already
+     a system-known location for shared libraries), set the make macro
+     install_rpath to 0 by adding install_rpath=0 to platform_macros.GNU.
+
+       <br><br>
+
   </li><li> In the MSYS shell, change to the $ACE_ROOT/ace directory and
        run make:
 
@@ -967,8 +828,16 @@ For our build we require the packages
        </p><p>
        If you want static libs also, you may run:
 
-       </p><blockquote><code></code><pre>       % make static_libs=1
+       </p><blockquote><code></code><pre>       % make static_libs_only=1
        </pre></blockquote>
+
+  </li><li> Run make install:
+
+    <blockquote><code></code><pre>       % make install
+       </pre></blockquote>
+     <p>
+       This should create <tt>ACE.pc</tt> to use with pkg-config.
+       </p>
 
   </li><li> <a name="mingwrunpath">
        The same rules for Win32 search of DLLs apply for MinGW. If you
@@ -1105,7 +974,7 @@ setup selects by default:
        </p><p>
        If you want static libs also, you may run:
 
-       </p><blockquote><code></code><pre>       % make static_libs=1
+       </p><blockquote><code></code><pre>       % make static_libs_only=1
        </pre></blockquote>
 
   </li><li> <a name="cygwinrunpath">
@@ -1359,8 +1228,7 @@ broken. This will be remedied(!) as soon as possible.<p>
 
 ACE supports shared libraries for VxWorks, but only with the g++
 compiler.  To build shared libraries instead of the default static
-libraries, added <code>shared_libs=1</code> (<strong>not</strong>
-<code>shared_libs_only=1</code>) to either your
+libraries, added <code>shared_libs_only=1</code> to either your
 <code>ACE_wrappers/include/makeinclude/platform_macros.GNU</code> or
 your <code>make</code> invocation.  Then, be sure to load the ACE (and
 any other) shared library before loading your executable(s).</p><p>
@@ -1402,7 +1270,7 @@ disable the munch step.  The easiest way to do that is to set the
 example, to build a libACE.so for PowerPC that can be linked into
 the kernel:
 <pre>% cd $ACE_ROOT/ace
-% make LD=ldppc shared_libs=1
+% make LD=ldppc shared_libs_only=1
 </pre>
 After building the shared lib, link it into the kernel by setting
 the <code>MACH_EXTRA</code> make variable in the kernel configuration
@@ -1585,7 +1453,7 @@ on Windows NT hosts:
  </li><li>When using cygnus windows GNUTools on WinNT you have to start
  make with "--unix" option, otherwise WinNT shell cmd.exe is responded and
  not sh.exe, i.e.,
- <pre> make --unix static_libs=1
+ <pre> make --unix static_libs_only=1
  </pre>
 </li></ol>
 
@@ -1721,16 +1589,16 @@ C:\Corba\ACE_wrappers\apps\gperf\src\gperf.sln. Build gperf.exe</p>
 
 <p>4) Build ACE in Cygwin</p>
 <p>$cd /Corba/ACE_wrappers/ace </p>
-<p>$make static_libs=1</p>
+<p>$make static_libs_only=1</p>
 <p>This will build your ace library libACE.a for VxWorks. If you use
-option shared_libs=1 then the build will be libACE.so. The other
+option shared_libs_only=1 then the build will be libACE.so. The other
 options are same as follows.</p>
 
 <p>5) Build TAO in Cygwin</p>
 <p>$cd $TAO_ROOT/tao</p>
 <p>$make debug=0 optimize=1 static_libs_only=1 minimum_orb=1
 </p>
-<p>for shared libs use shared_libs=1</p>
+<p>for shared libs use shared_libs_only=1</p>
 
 <p>The minimum Tao does not have following components,</p>
 <p>Dynamic Skeleton Interface</p>
@@ -1747,6 +1615,90 @@ symbols will be created and the build will huge in size. The debug
 symbols are necessary when you want to debug your code.</p>
 
 <p></p><hr align="left" width="50%">
+
+<p></p><h2><a name="android">Building and Installing ACE on Android</a></h2>
+<p>ACE can be built for Android by using the <a href="http://developer.android.com/tools/sdk/ndk/index.html">Android Native Development
+Kit's</a> standalone toolchain. Testing has been performed with
+NDK6 and NDK8e. The compilation creates native binaries,
+not the standard Android Java applications.  The native binary applications
+that use ACE can be run by either a shell or using the Java Runtime exec
+operation.</p>
+
+<p>The standalone toolchain must configured for a platform of android API level 8, 9, or 14. From your NDK root directory you can use their
+<code>make-standalone-toolchain.sh</code> script to set this up. For example:</p>
+<code>./build/tools/make-standalone-toolchain.sh --toolchain=arm-linux-androideabi-4.4.3 --arch=arm --platform=android-9 --install-dir=../arm_tools</code>
+<p>To set up an arm-specific tool chain. With the release of NDK r6, x86 targets are supported, so the setup command for that would be:</p>
+<code>./build/tools/make-standalone-toolchain.sh --toolchain=x86-4.4.3 --arch=x86 --platform=android-9 --install-dir=../x86_tools</code>
+<p>
+The bin directory under the installed standalone toolchain dir must be added to your $PATH</p>
+<p>
+When using the Android NDK on a 64bit Linux system you have to install the
+following 32bit packages: <code>libstdc++.i686 glibc.i686 ncurses-libs.i686 zlib.i686</code>
+</p>
+<p>Starting with NDK8e it is possible to use shared libraries on Android.</p>
+
+<p>Compilation requires using the NDK's standalone toolchain for it's
+exception and RTTI support.  The standard NDK compiler is not identified
+as supporting exceptions or RTTI, as of NDK r5c.</p>
+
+<p>It is not recommended to perform the build on a Windows host.  Using the
+NDK r5c, compilation issues were encountered on Windows XP, when the compiler
+failed to recognize the name difference between the ACE file Signal.h and
+the system file signal.h.</p>
+
+<p>You should be able to follow the instructions above to build ACE
+and applications that use it.  Use the
+<a href="#unix_traditional">Unix  traditional instructions</a> above to build
+ACE and the applications that use it.  Building TAO for Android requires
+cross compiling the code.<p>
+
+<p>Basic steps to build
+<ul>
+  <li>Setup up the standalone compiler toolchain by following the
+ instructions provided with the Android NDK.</li>
+  <li>If building TAO, build the ACE and TAO tools (<code>ace_gperf</code> and
+ <code>tao_idl</code>) for the compiling host.  Follow the cross compilation setup instructions provide
+ in $TAO_ROOT/TAO-INSTALL.html.  Search for "Using cross compilation".</li>
+  <ul>
+    <li>Setup the Android build<ul>
+      <li>Create <code>ace/config.h</code>:  <i>#include "ace/config-android.h"</i></li>
+      <li>Create <code>include/makeinclude/platform_macros.GNU</code>:
+        <ul>
+          <li>set options for debug and optimized builds</li>
+          <li>inline is forced on and no-hidden-visibility</li>
+          <li>if you want to compile static, add <code>static_libs_only=1</code></li>
+          <li>Include the <code>include/makeinclude/platform_android.GNU</code> file.</li>
+          <li>If building TAO, set the tao idl options specified in the cross compiling instructions in <code>TAO-INSTALL.html</code></li>
+        </ul>
+      <li>Ensure the following environment variables are set:
+        <ul>
+          <li>$ANDROID_ARCH - either arm or x86. Note that x86 is only available in r6 and greater, and is still experimental. ANDROID_ARCH will be set to arm by default.</li>
+          <li>$NDK - the path to the android native development kit</li>
+          <li>$SYSROOT - the platform/arch directory. This defaults to <code>$NDK/platforms/android-9/arch-$ANDROID_ARCH</code>. </li>
+          <li>$HOST_ROOT - the path to the native TAO_IDL & gperf tools</li>
+          <li>$PATH - must include <code>$NDK_TOOLS/bin</code>.</li>
+        </ul>
+      </ul>
+    </li>
+    </li>
+    <li>Generate makefiles (if necessary).</li>
+    <li>Build with GNU make.</li>
+  </ul>
+</ul>
+</p>
+
+<p>Native applications using the ACE library can be installed onto devices by
+several different methods.  The files can be include as assets of Java
+application and can be written by the Java application into it's executable
+program directory.  The native application can be downloaded by a Java
+application and written into the Java applications executable program
+directory.  The native application can also be uploaded using the Software
+Development Kit's ADB tool.  This method requires uploading the native
+application to a directory that allows execution and having any output
+directed to a writable directory.</p>
+
+<p></p><hr align="left" width="50%">
+<br/>
 <hr>
 <h1><a name="svcsinstall">Building and Installing ACE Network Services</a></h1>
 
@@ -1842,9 +1794,9 @@ below.</p>
       the <code>config.h</code> file has been created, build the
       <code>ACE_SSL</code> project.</li>
 </ol>
-<h2>CodeGear C++</h2>
+<h2>Embarcadero C++</h2>
 <p>Support for building ACE's ACE_SSL library and TAO's SSLIOP
-   pluggable protocol with CodeGear C++ does exist.
+   pluggable protocol with Embarcadero C++ does exist.
 <ol>
   <li>Set the <code>SSL_ROOT</code> environment variable to the location
       of the directory containing the OpenSSL <code>inc32</code> and
@@ -1852,7 +1804,7 @@ below.</p>
   <li>Add <code>ssl=1</code> to your MPC
       <code>$ACE_ROOT/bin/MakeProjectCreator/config/default.features</code>
       or <code>$ACE_ROOT/local.features</code> file, and re-run MPC to add
-      support for building the ACE_SSL library to your CodeGear C++ makefiles.
+      support for building the ACE_SSL library to your Embarcadero C++ makefiles.
   <li>Build ACE and TAO.
 </ol>
 </p>
@@ -2090,7 +2042,7 @@ libraries.
             can enable it by rebuilding your kernel with CONFIG_IP_MULTICAST
             enabled.<p>
         </p></li><li>Enable IP multicast in ACE.  It is enabled by default in
-            <code>ace/config-linux-common.h</code>.  If you don't use
+            <code>ace/config-linux.h</code>.  If you don't use
             IP multicast, add <code>#define ACE_HAS_IP_MULTICAST 0</code>
             to your <code>ace/config.h</code> before building ACE.<p>
         </p></li><li>There must be a network interface that is up and supports
@@ -2620,7 +2572,7 @@ To save space on a Unix machine, I usually run
     'find . -name \*.sln -o -name \*.vcproj -o -name \*.bmak | xargs rm -f'
 in $ACE_ROOT at first after I untar the distribution.  They are
 meaningless in my environment (Files named '*.sln' and '*.vcproj' are
-used for MSVC++ and files named '*.bmak' are for CodeGear C++
+used for MSVC++ and files named '*.bmak' are for Embarcadero C++
 Builder.)</p><p>
 
 Finally, to save space, may want to run 'make clean' after 'make'.  It
@@ -2944,8 +2896,8 @@ quantify         Quantify all executables.
 repo             Use GNU template repository (g++ with repo patches only).
 rtti             Enable run-time type identification.  On some platforms,
                    it is enabled by default, so this is ignored.
-shared_libs      Build shared libraries. Ignored if static_libs_only is set.
-static_libs      Build shared libraries. Ignored if shared_libs_only is set.
+shared_libs      If migrating from prior version use <code>shared_libs_only</code>
+static_libs      If migrating from prior version use <code>static_libs_only</code>
 shared_libs_only Only build shared libraries.  Ignored if no SHLIBs are
                    specified by the Makefile, as in performance-tests/Misc.
 static_libs_only Only build static libraries.
@@ -2986,18 +2938,18 @@ CIAO. We point out some suggestions below to get bootstrapped
 quickly.
 
 <ul>
-	<li>You can checkout different subsets from the Subversion repository.
-	<ul>
-	<li>To checkout ACE with MPC:<p>
-	<code>svn co svn://svn.dre.vanderbilt.edu/DOC/Middleware/sets-anon/ACE .</code>
-	</li>
-	<li>To checkout ACE+TAO with MPC:<p>
-	<code>svn co svn://svn.dre.vanderbilt.edu/DOC/Middleware/sets-anon/ACE+TAO .</code>
-	</li>
-	<li>To checkout ACE+TAO+CIAO with MPC:<p>
-	<code>svn co svn://svn.dre.vanderbilt.edu/DOC/Middleware/sets-anon/ACE+TAO+CIAO .</code>
-	</li>
-	</ul>
+  <li>You can checkout different subsets from the Subversion repository.
+  <ul>
+  <li>To checkout ACE with MPC:<p>
+  <code>svn co svn://svn.dre.vanderbilt.edu/DOC/Middleware/sets-anon/ACE .</code>
+  </li>
+  <li>To checkout ACE+TAO with MPC:<p>
+  <code>svn co svn://svn.dre.vanderbilt.edu/DOC/Middleware/sets-anon/ACE+TAO .</code>
+  </li>
+  <li>To checkout ACE+TAO+CIAO with MPC:<p>
+  <code>svn co svn://svn.dre.vanderbilt.edu/DOC/Middleware/sets-anon/ACE+TAO+CIAO .</code>
+  </li>
+  </ul>
   </p></li><li>Please make sure that you have <a href="http://www.perl.org/">
   perl</a> installed, preferably perl
   5.8 or higher. Users on Win32 based platforms are recommended to use

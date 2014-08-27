@@ -255,7 +255,7 @@ bool MgConfigurationHeap::ExportSection(MgConfigurationSection* section, FILE* o
                 {
                     return false;
                 }
-                ACE_OS::sprintf(int_value, ACE_LIB_TEXT("%08x"), value);
+                ACE_OS::sprintf(int_value, ACE_TEXT("%08x"), value);
                 line += L"dword:";
                 line += MG_TCHAR_TO_WCHAR(int_value);
                 break;

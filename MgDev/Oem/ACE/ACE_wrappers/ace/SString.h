@@ -4,7 +4,7 @@
 /**
  *  @file    SString.h
  *
- *  $Id: SString.h 86289 2009-07-30 03:40:46Z hillj $
+ *  $Id: SString.h 92580 2010-11-15 09:48:02Z johnnyw $
  *
  *  @author Douglas C. Schmidt (schmidt@cs.wustl.edu)
  */
@@ -75,7 +75,7 @@ public:
 #if defined (ACE_WSTRING_HAS_USHORT_SUPPORT)
   /// Constructor that takes in a ushort16 string (mainly used by the
   /// ACE Name_Space classes)
-  ACE_NS_WString (const ACE_USHORT16 *s,
+  ACE_NS_WString (const ACE_UINT16 *s,
                   size_type len,
                   ACE_Allocator *alloc = 0);
 #endif /* ACE_WSTRING_HAS_USHORT_SUPPORT */
@@ -102,7 +102,7 @@ public:
 
   /// Transform into a copy of a USHORT16 representation (caller must
   /// delete).  Note, behavior is undefined when sizeof (wchar_t) != 2.
-  ACE_USHORT16 *ushort_rep (void) const;
+  ACE_UINT16 *ushort_rep (void) const;
 };
 
 ACE_Export
@@ -145,7 +145,7 @@ public:
   /// Constructor that copies @a s into dynamically allocated memory.
   ACE_SString (const char *s, ACE_Allocator *alloc = 0);
 
-  /// Constructor that copies @a len chars of  @s  into dynamically
+  /// Constructor that copies @a len chars of @a s into dynamically
   /// allocated memory (will NUL terminate the result).
   ACE_SString (const char *s, size_type len, ACE_Allocator *alloc = 0);
 
@@ -195,7 +195,7 @@ public:
   /// Get the underlying pointer.
   const char *fast_rep (void) const;
 
-  /// Same as STL String's <c_str> and <fast_rep>.
+  /// Same as STL String's c_str() and fast_rep().
   const char *c_str (void) const;
 
   /// Comparison operator that will match substrings.  Returns the
@@ -230,7 +230,7 @@ public:
   /// Inequality comparison operator.
   bool operator != (const ACE_SString &s) const;
 
-  /// Performs a <strcmp>-style comparison.
+  /// Performs a strcmp()-style comparison.
   int compare (const ACE_SString &s) const;
 
   /// Dump the state of an object.
@@ -243,7 +243,7 @@ private:
   /// Pointer to a memory allocator.
   ACE_Allocator *allocator_;
 
-  /// Length of the ACE_SString (not counting the trailing '\0').
+  /// Length of the ACE_SString (not counting the trailing '\\0').
   size_type len_;
 
   /// Pointer to data.

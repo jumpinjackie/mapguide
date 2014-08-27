@@ -1,6 +1,6 @@
-# $Id: platform_vxworks.GNU 87036 2009-10-10 18:21:39Z johnnyw $
+# $Id: platform_vxworks.GNU 95534 2012-02-17 23:19:33Z mitza $
 # VxWorks main platform file. This requires that you have set the WIND_PLATFORM
-# environmeht variable
+# environment variable
 
 ifeq (,$(WIND_PLATFORM))
   default:
@@ -28,5 +28,7 @@ endif
 ifeq (vxworks-6.8, $(findstring vxworks-6.8,$(WIND_PLATFORM)))
   include $(ACE_ROOT)/include/makeinclude/platform_vxworks6.8.GNU
 endif
-
+ifeq (vxworks-6.9, $(findstring vxworks-6.9,$(WIND_PLATFORM)))
+  include $(ACE_ROOT)/include/makeinclude/platform_vxworks6.9.GNU
+endif
 

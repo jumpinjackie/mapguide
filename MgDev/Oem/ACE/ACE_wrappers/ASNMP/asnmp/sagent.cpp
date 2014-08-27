@@ -1,22 +1,19 @@
-// $Id: sagent.cpp 80826 2008-03-04 14:51:23Z wotte $
 
-// ============================================================================
-//
-// = LIBRARY
-//    asnmp
-//
-// = FILENAME
-//    sagent.cpp
-//
-// = DESCRIPTION
-//   SNMP agent class definition. The sagent class provides an object oriented
-//   approach for creating SNMP Agents. The sagent class is an encapsulation
-//   of SNMP sessions, gets, sets, etc.
-//
-// = AUTHOR
-//    Michael R. MacFaden
-//
-// ============================================================================
+//=============================================================================
+/**
+ *  @file    sagent.cpp
+ *
+ *  $Id: sagent.cpp 93651 2011-03-28 08:49:11Z johnnyw $
+ *
+ * SNMP agent class definition. The sagent class provides an object oriented
+ * approach for creating SNMP Agents. The sagent class is an encapsulation
+ * of SNMP sessions, gets, sets, etc.
+ *
+ *
+ *  @author Michael R. MacFaden
+ */
+//=============================================================================
+
 #include "ace/Reactor.h"
 #include "ace/SOCK_Dgram.h"
 
@@ -29,8 +26,6 @@
 #include "asnmp/snmp.h"               // manager snmp interface
 #include "asnmp/sagent.h"             // agent interface
 #include "asnmp/transaction.h"        // convert from wire to API
-
-ACE_RCSID(asnmp, sagent, "$Id: sagent.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 sagent::sagent(unsigned short port): Snmp(port)
 {

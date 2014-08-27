@@ -1,12 +1,12 @@
-// $Id: LSOCK_Stream.cpp 80826 2008-03-04 14:51:23Z wotte $
+// $Id: LSOCK_Stream.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/LSOCK_Stream.h"
 #if !defined (ACE_LACKS_UNIX_DOMAIN_SOCKETS)
 
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/OS_NS_sys_socket.h"
 
-ACE_RCSID(ace, LSOCK_Stream, "$Id: LSOCK_Stream.cpp 80826 2008-03-04 14:51:23Z wotte $")
+
 
 #if !defined (__ACE_INLINE__)
 #include "ace/LSOCK_Stream.inl"
@@ -50,10 +50,10 @@ ACE_LSOCK_Stream::dump (void) const
 {
   ACE_TRACE ("ACE_LSOCK_Stream::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
   ACE_SOCK_Stream::dump ();
   ACE_LSOCK::dump ();
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 }
 
 #if defined (ACE_HAS_MSG)

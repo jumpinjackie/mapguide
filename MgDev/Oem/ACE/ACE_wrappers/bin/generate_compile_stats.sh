@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: generate_compile_stats.sh 84856 2009-03-16 20:03:52Z johnnyw $
+# $Id: generate_compile_stats.sh 95449 2012-01-18 19:46:41Z johnnyw $
 #
 # This script generate metrics html pages for either compile times or
 # footprint.
@@ -35,7 +35,7 @@ usage ()
   echo "--base       This option can be used to set the base root directory to"
   echo "             something other than the default \$ACE_ROOT."
   echo "--name       This option can be used to set the software title to something"
-  echo "             other than the default ACE+TAO+CIAO."
+  echo "             other than the default ACE+TAO+CIAO+DAnCE."
   echo "--compiler   This option can be used to set the compiler to something"
   echo "             other than the default gcc."
   echo "input_file   This is the compilation log file."
@@ -739,7 +739,7 @@ create_index_page ()
   echo '<body text = "#000000" link="#000fff" vlink="#ff0f0f" bgcolor="#ffffff">'
   echo "<br><center><h1>$TITLE</h1></center><br><hr>"
   if [ $BASE_TITLE = $DEFAULT_TITLE ]; then
-    echo '<p>One of the goals of the PCES-TENA project is to decrease compile times.'
+    echo '<p>We are measuring ACE+TAO+CIAO+DAnCE metrics daily.'
   else
     echo '<p>'
   fi
@@ -750,6 +750,7 @@ create_index_page ()
     echo "<li><a href=\"ace_${TYPE}.html\">ACE</a>"
     echo "<li><a href=\"tao_${TYPE}.html\">TAO</a>"
     echo "<li><a href=\"ciao_${TYPE}.html\">CIAO</a>"
+    echo "<li><a href=\"dance_${TYPE}.html\">DAnCE</a>"
   else
     echo "<li><a href=\"all_${TYPE}.html\">ALL</a>"
   fi
@@ -789,7 +790,7 @@ create_index_page ()
   echo '<TABLE border="2"><TBODY>'
   for cfg_file in $CFG_FILES; do
     if [ -r $cfg_file ]; then
-      echo "<TR><TD>ACE+TAO+CIAO Configuration</TD><TD>`basename $cfg_file`</TD></TR>"
+      echo "<TR><TD>ACE+TAO+CIAO+DAnCE Configuration</TD><TD>`basename $cfg_file`</TD></TR>"
       echo '<TR><TD colspan="2"><PRE>'
       cat $cfg_file
       echo '</PRE></TD></TR>'
@@ -835,12 +836,14 @@ create_index_page ()
 ###############################################################################
 create_page ()
 {
-  # always strip off "TAO___" / "CIAO___"
+  # always strip off "ACE___" / "TAO___" / "CIAO___"
   local BASE=$1
   local TYPE=$2
   local EXT=""
+  local BASE_NAME=${BASE#ACE___}
   local BASE_NAME=${BASE#TAO___}
   local BASE_NAME=${BASE#CIAO___}
+  local BASE_NAME=${BASE#DAnCE___}
   local TITLE="${TYPE} metrics for ${BASE_NAME//___//}"
 
   if [ "$TYPE" = "Compilation" ]; then
@@ -880,10 +883,14 @@ create_page ()
       LAST=0 PRE=0 VAL_TMP=0 VAL_INT=0 VAL_SIGN="+"
       echo '<TR><TD>'
       if [ -e "${DEST}/${i}_${TYPE}.html" ]; then
+        # strip off "ACE___" if it exists
+        NAME=${i#ACE___}
         # strip off "TAO___" if it exists
         NAME=${i#TAO___}
         # strip off "CIAO___" if it exists
         NAME=${i#CIAO___}
+        # strip off "DAnCE___" if it exists
+        NAME=${i#DAnCE___}
         echo "<a href=\"${i}_${TYPE}.html\">${NAME//___//}</a>"
       elif [ -e "${DEST}/images/${i}_${TYPE}.png" ]; then
         # since you'll only have images if it's a composite, strip off the
@@ -918,7 +925,7 @@ create_page ()
       let VAL_TENTH="$VAL_TMP-($VAL_INT*10)"
       echo "<TD align=right>${VAL_SIGN}${VAL_INT}.${VAL_TENTH}</TD>"
       echo "<TD align=right><a href=\"data/${i}.${EXT}\">Data</a></TD>"
-      ecoo "</TR>"
+      echo "</TR>"
     else
       echo '<TR><TD>'
       echo "${i}"
@@ -972,17 +979,20 @@ create_html ()
   local ACE_OBJS=""
   local TAO_OBJS=""
   local CIAO_OBJS=""
+  local DAnCE_OBJS=""
 
   while read base colon files; do
     # create individual page for app/lib
 
     sort_list ${files} | create_page ${base} ${TYPE} \
       > ${DEST}/${base}_${TYPE}.html
-    if [ "${base}" != "${base#TAO___CIAO}" ]; then
+    if [ "${base}" != "${base#DAnCE}" ]; then
+      DAnCE_OBJS="${DAnCE_OBJS} ${base}"
+    elif [ "${base}" != "${base#CIAO}" ]; then
       CIAO_OBJS="${CIAO_OBJS} ${base}"
     elif [ "${base}" != "${base#TAO}" ]; then
       TAO_OBJS="${TAO_OBJS} ${base}"
-    else
+    elif [ "${base}" != "${base#ACE}" ]; then
       ACE_OBJS="${ACE_OBJS} ${base}"
     fi
     ALL_OBJS="${ALL_BASE} ${base}"
@@ -1001,6 +1011,9 @@ create_html ()
 
       name="ciao_${TYPE}.html"
       sort_list ${CIAO_OBJS} | create_page "CIAO" ${TYPE} > ${DEST}/${name}
+
+      name="dance_${TYPE}.html"
+      sort_list ${DAnCE_OBJS} | create_page "DAnCE" ${TYPE} > ${DEST}/${name}
     else
       name="all_${TYPE}.html"
       sort_list ${ACE_OBJS} | create_page $BASE_TITLE ${TYPE} > ${DEST}/${name}
@@ -1021,7 +1034,7 @@ DATE=""
 METRIC="Compilation"
 FUDGE_FACTOR=0
 BASE_ROOT=$ACE_ROOT
-DEFAULT_TITLE=ACE+TAO+CIAO
+DEFAULT_TITLE=ACE+TAO+CIAO+DAnCE
 BASE_TITLE=$DEFAULT_TITLE
 COMPILER="gcc"
 

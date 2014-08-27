@@ -1,8 +1,8 @@
 // -*- MPC -*-
-// $Id: conv_lib.mpb 80826 2008-03-04 14:51:23Z wotte $
+// $Id: conv_lib.mpb 95495 2012-01-24 15:26:47Z johnnyw $
 
 project {
-  specific(!automake) {
-    install_this_target = 1
-  }
+ specific {
+   install_this_target = 1
+ }
 }

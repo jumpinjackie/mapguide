@@ -1,5 +1,5 @@
 # -*- Makefile -*-
-# $Id: platform_vxworks6.3.GNU 86432 2009-08-09 18:56:15Z johnnyw $
+# $Id: platform_vxworks6.3.GNU 96548 2012-12-19 14:46:42Z johnnyw $
 # VxWorks 6.3
 
 #### Notes:
@@ -20,7 +20,6 @@ CROSS-COMPILE = 1
 debug ?= 1
 optimize ?= 1
 threads ?= 1
-exceptions ?= 1
 rtp ?= 1
 ifeq ($(rtp),0)
   pthread ?= 0
@@ -70,7 +69,7 @@ endif # x86-win32
 ifneq (,$(HOST_ROOT))
 TAO_IDLFLAGS += -g $(HOST_ROOT)/bin/ace_gperf
 TAO_IDL = $(HOST_ROOT)/bin/tao_idl$(HOST_EXE_EXT)
-TAO_IDL3_TO_IDL2 = $(HOST_ROOT)/TAO/CIAO/bin/tao_idl3_to_idl2$(HOST_EXE_EXT)
+TAO_IDL3_TO_IDL2 = $(HOST_ROOT)/bin/tao_idl3_to_idl2$(HOST_EXE_EXT)
 TAO_IDL_DEP = $(TAO_IDL)
 TAO_IDL3_TO_IDL2_DEP = $(TAO_IDL3_TO_IDL2)
 else
@@ -204,10 +203,11 @@ ifeq ($(rtp),1)
   LDFLAGS := $(filter-out -N, $(LDFLAGS))
   LD := $(CPLUS)
   DLD := $(CPLUS)
+  WIND_USR_LIB ?= lib
   ifeq ($(findstring *sf,*$(TOOL)),*sf)
-    LDFLAGS += -L$(WIND_USR)/lib/$(VX_CPU_FAMILY)/$(CPU)/sfcommon$(PICDIR)
+    LDFLAGS += -L$(WIND_USR)/$(WIND_USR_LIB)/$(VX_CPU_FAMILY)/$(CPU)/sfcommon$(PICDIR)
   else
-    LDFLAGS += -L$(WIND_USR)/lib/$(VX_CPU_FAMILY)/$(CPU)/common$(PICDIR)
+    LDFLAGS += -L$(WIND_USR)/$(WIND_USR_LIB)/$(VX_CPU_FAMILY)/$(CPU)/common$(PICDIR)
   endif
 else
   include $(TGT_DIR)/h/make/defs.default
@@ -332,26 +332,13 @@ else
 endif
 endif
 endif
-
-# TEMPLATES_FLAG is set by platform_g++_common.GNU
-ifneq ($(TEMPLATES_FLAG),) # If specified, add it to the CCFLAGS
-  CPPFLAGS += $(TEMPLATES_FLAG)
-endif
 endif  # TOOL_FAMILY == gnu
 
 ifeq ("$(TOOL_FAMILY)","diab")
-ifeq ($(exceptions),1)
   C++FLAGS += -Xexceptions
 else
-  C++FLAGS += -Xexceptions-off
-endif
-else
 ifeq ("$(TOOL_FAMILY)","gnu")
-ifeq ($(exceptions),1)
   C++FLAGS += -fexceptions
-else
-  C++FLAGS += -fno-exceptions
-endif
 endif
 endif
 
@@ -377,7 +364,7 @@ ifneq ($(optimize),1)
   CC_OPTIM_NORMAL =
 endif
 
-CCFLAGS         += $(C++FLAGS)
+CCFLAGS         += $(C++FLAGS) $(FLAGS_C_CC)
 
 ifeq ($(VXWORKSLINK), 1)
 

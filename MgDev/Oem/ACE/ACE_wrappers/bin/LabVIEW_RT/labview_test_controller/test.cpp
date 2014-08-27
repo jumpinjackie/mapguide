@@ -1,9 +1,9 @@
-// $Id: test.cpp 82122 2008-06-23 11:12:17Z sma $
+// $Id: test.cpp 91813 2010-09-17 07:52:52Z johnnyw $
 
 #include <stdio.h>
 __declspec(dllimport) int test_entry(void);
 
-// This is plain Windows code, not ACE. Therefore we disable 
+// This is plain Windows code, not ACE. Therefore we disable
 // the check for ACE_OS
 // FUZZ: disable check_for_lack_ACE_OS
 // FUZZ: disable check_for_improper_main_declaration

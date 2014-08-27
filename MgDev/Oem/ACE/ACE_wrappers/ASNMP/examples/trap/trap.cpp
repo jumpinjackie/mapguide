@@ -1,22 +1,15 @@
-// $Id: trap.cpp 84565 2009-02-23 08:20:39Z johnnyw $
 
-// ============================================================================
-//
-// = LIBRARY
-//    asnmp
-//
-// = FILENAME
-//    trap.cpp
-//
-// = DESCRIPTION
-//  Sample application demonstrating synchronous Snmp::trap API
-//  to send to an SNMP Version 1 trap listener app.
-//
-// = AUTHOR
-//  Peter E. Mellquist original code
-//  Michael R MacFaden mrm@cisco.com rework OO, API/ACE integration
-//
-// ============================================================================
+//=============================================================================
+/**
+ *  @file    trap.cpp
+ *
+ *  $Id: trap.cpp 94442 2011-09-07 09:14:41Z johnnyw $
+ *
+ *  Sample application demonstrating synchronous Snmp::trap API
+ *  to send to an SNMP Version 1 trap listener app.
+ */
+//=============================================================================
+
 /*===================================================================
   Copyright (c) 1996
   Hewlett-Packard Company
@@ -41,8 +34,6 @@
 
 // FUZZ: disable check_for_streams_include
 #include "ace/streams.h"
-
-ACE_RCSID(trap, trap, "$Id: trap.cpp 84565 2009-02-23 08:20:39Z johnnyw $")
 
 //
 // SNMPv1 Trap Application

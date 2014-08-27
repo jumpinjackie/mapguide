@@ -4,7 +4,7 @@
 /**
  *  @file   CDR_Base.h
  *
- *  $Id: CDR_Base.h 88488 2010-01-12 14:20:13Z olli $
+ *  $Id: CDR_Base.h 95761 2012-05-15 18:23:04Z johnnyw $
  *
  * ACE Common Data Representation (CDR) basic types.
  *
@@ -209,11 +209,11 @@ public:
 
 #   if (defined (_MSC_VER)) || (defined (__BORLANDC__))
       typedef __int64 LongLong;
-#   elif ACE_SIZEOF_LONG == 8 && !defined(_CRAYMPP)
+#   elif ACE_SIZEOF_LONG == 8
       typedef long LongLong;
 #   elif defined(__TANDEM)
       typedef long long LongLong;
-#   elif ACE_SIZEOF_LONG_LONG == 8 && !defined (ACE_LACKS_LONGLONG_T)
+#   elif ACE_SIZEOF_LONG_LONG == 8
 #     if defined (sun) && !defined (ACE_LACKS_U_LONGLONG_T)
               // sun #defines   u_longlong_t, maybe other platforms do also.
               // Use it, at least with g++, so that its -pedantic doesn't
@@ -263,12 +263,6 @@ public:
 #       else  /* ACE_SIZEOF_INT != 4 */
           // Applications will probably have trouble with this.
           char f[4];
-#         if defined(_UNICOS) && !defined(_CRAYMPP)
-            Float (void);
-            Float (const float &init);
-            Float & operator= (const float &rhs);
-            bool operator!= (const Float &rhs) const;
-#         endif /* _UNICOS */
 #       endif /* ACE_SIZEOF_INT != 4 */
       };
 #   endif /* ACE_SIZEOF_FLOAT != 4 */

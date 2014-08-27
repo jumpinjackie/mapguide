@@ -1,20 +1,17 @@
-// $Id: Gauge_Test.cpp 80826 2008-03-04 14:51:23Z wotte $
 
-// ============================================================================
-//
-// = LIBRARY
-//    tests
-//
-// = FILENAME
-//    Guage_Test.cpp
-//
-// = DESCRIPTION
-//  Test all the member functions of the Guage class. An Object
-//  representing an ASN.1 Counter SMI GUAGE SYNTAX.
-// = AUTHOR
-//    Michael R. MacFaden <mrm@cisco.com>
-//
-// ============================================================================
+//=============================================================================
+/**
+ *  @file    Gauge_Test.cpp
+ *
+ *  $Id: Gauge_Test.cpp 93652 2011-03-28 08:55:39Z johnnyw $
+ *
+ *  Test all the member functions of the Guage class. An Object
+ *  representing an ASN.1 Counter SMI GUAGE SYNTAX.
+ *
+ *  @author Michael R. MacFaden <mrm@cisco.com>
+ */
+//=============================================================================
+
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 Copyright 1997 Cisco Systems, Inc.
 
@@ -40,10 +37,6 @@ DAMAGES.
 #include "ace/OS_main.h"
 #include "asnmp/gauge.h"
 #include "test_config.h"
-
-ACE_RCSID (tests,
-           Gauge_Test,
-           "$Id: Gauge_Test.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 /*
    Gauge32( void);

@@ -4,7 +4,7 @@
 /**
  *  @file    Reactor.h
  *
- *  $Id: Reactor.h 88832 2010-02-04 09:57:42Z johnnyw $
+ *  $Id: Reactor.h 96184 2012-10-10 22:50:29Z shuston $
  *
  *  @author Irfan Pyarali <irfan@cs.wustl.edu>
  *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
@@ -43,7 +43,7 @@ class ACE_Sig_Set;
 
 /*
  * Hook to specialize the Reactor implementation with the concrete
- * Reactor type, for exmaple, select, thread pool reactor known
+ * Reactor type, for example, select, thread pool reactor known
  * at compile time.
  */
 //@@ REACTOR_SPL_INCLUDE_FORWARD_DECL_ADD_HOOK
@@ -107,14 +107,14 @@ public:
   // = Singleton reactor event loop management methods.
 
   // Note that these method ONLY work on the "Singleton Reactor,"
-  // i.e., the one returned from <ACE_Reactor::instance>.
+  // i.e., the one returned from ACE_Reactor::instance().
   /**
    * Run the event loop until the
-   * <ACE_Reactor::handle_events/ACE_Reactor::alertable_handle_events>
-   * method returns -1 or the <end_event_loop> method is invoked.
+   * ACE_Reactor::handle_events()/ACE_Reactor::alertable_handle_events()
+   * method returns -1 or the end_event_loop() method is invoked.
    * Note that this method can only be used by the singleton
-   * <ACE_Reactor::instance>.  Thus, to run another reactor use
-   * <ACE_Reactor::run_reactor_event_loop>.
+   * ACE_Reactor::instance().  Thus, to run another reactor use
+   * ACE_Reactor::run_reactor_event_loop().
    *
    * @deprecated Use ACE_Reactor::instance()->run_reactor_event_loop() instead
    */
@@ -122,11 +122,11 @@ public:
   static int run_alertable_event_loop (void);
 
   /**
-   * Run the event loop until the <ACE_Reactor::handle_events> or
+   * Run the event loop until the ACE_Reactor::handle_events() or
    * <ACE_Reactor::alertable_handle_events> methods returns -1, the
-   * <end_event_loop> method is invoked, or the ACE_Time_Value
+   * end_event_loop() method is invoked, or the ACE_Time_Value
    * expires.  Note that this method can only be used by the singleton
-   * <ACE_Reactor::instance>.  Thus, to run another reactor use
+   * ACE_Reactor::instance().  Thus, to run another reactor use
    * <ACE_Reactor::run_reactor_event_loop>.
    *
    * @deprecated Use ACE_Reactor::instance()->run_reactor_event_loop() instead
@@ -135,10 +135,10 @@ public:
   static int run_alertable_event_loop (ACE_Time_Value &tv);
 
   /**
-   * Instruct the <ACE_Reactor::instance> to terminate its event loop
-   * and notifies the <ACE_Reactor::instance> so that it can wake up
+   * Instruct the ACE_Reactor::instance() to terminate its event loop
+   * and notifies the ACE_Reactor::instance() so that it can wake up
    * and close down gracefully.  Note that this method can only be
-   * used by the singleton <ACE_Reactor::instance>.  Thus, to
+   * used by the singleton ACE_Reactor::instance().  Thus, to
    * terminate another reactor, use
    * <ACE_Reactor::end_reactor_event_loop>.
    *
@@ -147,9 +147,9 @@ public:
   static int end_event_loop (void);
 
   /**
-   * Report if the <ACE_Reactor::instance>'s event loop is finished.
+   * Report if the ACE_Reactor::instance()'s event loop is finished.
    * Note that this method can only be used by the singleton
-   * <ACE_Reactor::instance>.  Thus, to check another reactor use
+   * ACE_Reactor::instance().  Thus, to check another reactor use
    * <ACE_Reactor::reactor_event_loop_done>.
    *
    * @deprecated Use ACE_Reactor::instance()->reactor_event_loop_done() instead
@@ -157,10 +157,10 @@ public:
   static int event_loop_done (void);
 
   /**
-   * Resets the <ACE_Reactor::end_event_loop_> static so that the
-   * <run_event_loop> method can be restarted.  Note that this method
-   * can only be used by the singleton <ACE_Reactor::instance>.  Thus,
-   * to reset another reactor use <ACE_Reactor::reset_reactor_event_loop>.
+   * Resets the ACE_Reactor::end_event_loop_  static so that the
+   * run_event_loop() method can be restarted.  Note that this method
+   * can only be used by the singleton ACE_Reactor::instance().  Thus,
+   * to reset another reactor use ACE_Reactor::reset_reactor_event_loop().
    *
    * @deprecated Use ACE_Reactor::instance()->reset_reactor_event_loop()
    * instead
@@ -178,18 +178,23 @@ public:
 
   // These methods work with an instance of a reactor.
   /**
-   * Run the event loop until the
-   * <ACE_Reactor::handle_events/ACE_Reactor::alertable_handle_events>
-   * method returns -1 or the <end_reactor_event_loop> method is invoked.
+   * Run the event loop until the ACE_Reactor::handle_events() or
+   * ACE_Reactor::alertable_handle_events() method returns -1 or
+   * the end_reactor_event_loop() method is invoked.
    */
   int run_reactor_event_loop (REACTOR_EVENT_HOOK = 0);
   int run_alertable_reactor_event_loop (REACTOR_EVENT_HOOK = 0);
 
   /**
-   * Run the event loop until the <ACE_Reactor::handle_events> or
-   * <ACE_Reactor::alertable_handle_events> methods returns -1, the
-   * <end_reactor_event_loop> method is invoked, or the ACE_Time_Value
-   * expires.
+   * Run the event loop until the ACE_Reactor::handle_events() or
+   * ACE_Reactor::alertable_handle_events() method returns -1, the
+   * end_reactor_event_loop() method is invoked, or the ACE_Time_Value
+   * expires while the underlying event demultiplexer is waiting for
+   * events.
+   * Note that it is possible for events to continuously be available,
+   * avoiding the need to wait for events. In this situation the timeout
+   * value will not have an opportunity to expire until the next time
+   * the underlying event demultiplexer waits for events.
    */
   int run_reactor_event_loop (ACE_Time_Value &tv,
                               REACTOR_EVENT_HOOK = 0);
@@ -212,8 +217,8 @@ public:
   /// Indicate if the Reactor's event loop has been ended.
   int reactor_event_loop_done (void);
 
-  /// Resets the <ACE_Reactor::end_event_loop_> static so that the
-  /// <run_event_loop> method can be restarted.
+  /// Resets the ACE_Reactor::end_event_loop_ static so that the
+  /// run_event_loop() method can be restarted.
   void reset_reactor_event_loop (void);
 
   /**
@@ -232,9 +237,9 @@ public:
   virtual ~ACE_Reactor (void);
 
   /**
-   * Initialize the ACE_Reactor to manage <max_number_of_handles>.
-   * If @a restart is false then the ACE_Reactor's <handle_events>
-   * method will be restarted automatically when <EINTR> occurs.  If
+   * Initialize the ACE_Reactor to manage @a max_number_of_handles.
+   * If @a restart is false then the ACE_Reactor's handle_events()
+   * method will be restarted automatically when @c EINTR occurs.  If
    * @a signal_handler or @a timer_queue are non-0 they are used as the
    * signal handler and timer queue, respectively.
    */
@@ -457,15 +462,12 @@ public:
    * Install the new disposition (if given) and return the previous
    * disposition (if desired by the caller).
    *
-   * Note that, unlike removing handler for I/O events,
-   * ACE_Event_Handler::handle_close() will not be called when the
-   * handler is removed. Neither will any reference-counting activity be
-   * involved.
-   *
-   * @note There's an existing enhancement request in Bugzilla,
-   * #2368, to change this behavior so that ACE_Event_Handler::handle_close()
-   * is called when the signal handler is removed. Thus, there's some chance
-   * this behavior will change in a future version of ACE.
+   * Note that the registered handler's ACE_Event_Handler::handle_close ()
+   * callback will be called to indicate the signal handler has been removed.
+   * Unlike with I/O handles, there is no way to prevent this callback. The
+   * handle_close() callback can check the passed mask for the value
+   * ACE_Event_Handler::SIGNAL_MASK to tell when the callback is the result
+   * of a signal handler removal.
    */
   int remove_handler (int signum,
                       ACE_Sig_Action *new_disp,
@@ -544,7 +546,7 @@ public:
   /**
    * Schedule a timer event.
    *
-   * Schedule a timer event that will expire after an <delay> amount
+   * Schedule a timer event that will expire after an @a delay amount
    * of time.  The return value of this method, a timer_id value,
    * uniquely identifies the @a event_handler in the ACE_Reactor's
    * internal list of timers.  This timer_id value can be used to
@@ -559,13 +561,19 @@ public:
    * @see cancel_timer()
    * @see reset_timer_interval()
    *
-   * @param event_handler Event handler to schedule on reactor
-   * @param arg Argument passed to the handle_timeout() method of
-   * event_handler
-   * @param delay Time interval after which the timer will expire
-   * @param interval Time interval after which the timer will be automatically
-   * rescheduled
-   * @return -1 on failure, a timer_id value on success
+   * @param event_handler Event handler to schedule on reactor. The handler's
+   *                      handle_timeout() method will be called when this
+   *                      scheduled timer expires.
+   * @param arg           Argument passed to the handle_timeout() method of
+   *                      event_handler.
+   * @param delay         Time interval after which the timer will expire.
+   * @param interval      Time interval for which the timer will be
+   *                      automatically rescheduled if the handle_timeout()
+   *                      callback does not return a value less than 0.
+   *
+   * @retval              timer id, on success. The id can be used to
+   *                      cancel or reschedule this timer.
+   * @retval              -1 on failure, with errno set.
    */
   virtual long schedule_timer (ACE_Event_Handler *event_handler,
                                const void *arg,
@@ -578,7 +586,7 @@ public:
    *
    * Resets the interval of the timer represented by @a timer_id to
    * @a interval, which is specified in relative time to the current
-   * <gettimeofday>.  If @a interval is equal to
+   * gettimeofday().  If @a interval is equal to
    * ACE_Time_Value::zero, the timer will become a non-rescheduling
    * timer.  Returns 0 if successful, -1 if not.
    *

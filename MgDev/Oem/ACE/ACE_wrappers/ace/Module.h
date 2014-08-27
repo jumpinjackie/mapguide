@@ -4,7 +4,7 @@
 /**
  *  @file    Module.h
  *
- *  $Id: Module.h 85417 2009-05-22 08:31:42Z johnnyw $
+ *  $Id: Module.h 96061 2012-08-16 09:36:07Z mcorino $
  *
  *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
  */
@@ -43,22 +43,22 @@ public:
     /// Indicates that the flags have not been set
     M_FLAGS_NOT_SET = 0,
 
-    /// Indicates that <close> should delete the writer Task.
+    /// Indicates that close() should delete the writer Task.
     M_DELETE_READER = 1,
 
-    /// Indicates that <close> should delete the reader Task.
+    /// Indicates that close() should delete the reader Task.
     M_DELETE_WRITER = 2,
 
-    /// Indicates that <close> deletes the Tasks.
+    /// Indicates that close() deletes the Tasks.
     /**
      * Don't change this value without updating the same enum in class
      * ACE_Stream...
-     * The <M_DELETE_READER> and <M_DELETE_WRITER> flags may be or'ed
+     * The M_DELETE_READER and M_DELETE_WRITER flags may be or'ed
      * together.
      */
     M_DELETE = 3,
 
-    /// Indicates that <close> should not delete any Tasks.
+    /// Indicates that close() should not delete any Tasks.
     M_DELETE_NONE = 4
   };
 };
@@ -74,7 +74,7 @@ public:
  * general, you shouldn't subclass from this class, but instead
  * subclass from the ACE_Task.
  */
-template <ACE_SYNCH_DECL>
+template <ACE_SYNCH_DECL, class TIME_POLICY = ACE_System_Time_Policy>
 class ACE_Module : public ACE_Module_Base
 {
 public:
@@ -88,8 +88,8 @@ public:
   /// Create an initialized module with @a module_name as its identity
   /// and @a reader and @a writer as its tasks.
   ACE_Module (const ACE_TCHAR *module_name,
-              ACE_Task<ACE_SYNCH_USE> *writer = 0,
-              ACE_Task<ACE_SYNCH_USE> *reader = 0,
+              ACE_Task<ACE_SYNCH_USE, TIME_POLICY> *writer = 0,
+              ACE_Task<ACE_SYNCH_USE, TIME_POLICY> *reader = 0,
               void *args = 0,
               int flags = M_DELETE);
 
@@ -101,8 +101,8 @@ public:
    * <ACE_Task::module_closed>.
    */
   int open (const ACE_TCHAR *module_name,
-            ACE_Task<ACE_SYNCH_USE> *writer = 0,
-            ACE_Task<ACE_SYNCH_USE> *reader = 0,
+            ACE_Task<ACE_SYNCH_USE, TIME_POLICY> *writer = 0,
+            ACE_Task<ACE_SYNCH_USE, TIME_POLICY> *reader = 0,
             void *a = 0,
             int flags = M_DELETE);
 
@@ -117,7 +117,7 @@ public:
 
   // = ACE_Task manipulation routines
   /// Get the writer task.
-  ACE_Task<ACE_SYNCH_USE> *writer (void);
+  ACE_Task<ACE_SYNCH_USE, TIME_POLICY> *writer (void);
 
   /**
    * Set the writer task. @a flags can be used to indicate that the
@@ -126,10 +126,10 @@ public:
    * also be deleted, depending on the old flags_ value.  Should not
    * be called from within <ACE_Task::module_closed>.
    */
-  void writer (ACE_Task<ACE_SYNCH_USE> *q, int flags = M_DELETE_WRITER);
+  void writer (ACE_Task<ACE_SYNCH_USE, TIME_POLICY> *q, int flags = M_DELETE_WRITER);
 
   /// Get the reader task.
-  ACE_Task<ACE_SYNCH_USE> *reader (void);
+  ACE_Task<ACE_SYNCH_USE, TIME_POLICY> *reader (void);
 
   /**
    * Set the reader task. @a flags can be used to indicate that the
@@ -138,10 +138,10 @@ public:
    * also be deleted, depending on the old flags_ value.  Should not
    * be called from within <ACE_Task::module_closed>.
    */
-  void reader (ACE_Task<ACE_SYNCH_USE> *q, int flags = M_DELETE_READER);
+  void reader (ACE_Task<ACE_SYNCH_USE, TIME_POLICY> *q, int flags = M_DELETE_READER);
 
   /// Set and get pointer to sibling ACE_Task in an ACE_Module
-  ACE_Task<ACE_SYNCH_USE> *sibling (ACE_Task<ACE_SYNCH_USE> *orig);
+  ACE_Task<ACE_SYNCH_USE, TIME_POLICY> *sibling (ACE_Task<ACE_SYNCH_USE, TIME_POLICY> *orig);
 
   // = Identify the module
   /// Get the module name.
@@ -158,13 +158,13 @@ public:
   void arg (void *);
 
   /// Link to other modules in the ustream stack
-  void link (ACE_Module<ACE_SYNCH_USE> *m);
+  void link (ACE_Module<ACE_SYNCH_USE, TIME_POLICY> *m);
 
   /// Get the next pointer to the module above in the stream.
-  ACE_Module<ACE_SYNCH_USE> *next (void);
+  ACE_Module<ACE_SYNCH_USE, TIME_POLICY> *next (void);
 
   /// Set the next pointer to the module above in the stream.
-  void next (ACE_Module<ACE_SYNCH_USE> *m);
+  void next (ACE_Module<ACE_SYNCH_USE, TIME_POLICY> *m);
 
   /// Dump the state of an object.
   void dump (void) const;
@@ -179,13 +179,13 @@ private:
 
   /// Pair of Tasks that form the "read-side" and "write-side" of the
   /// ACE_Module partitioning.
-  ACE_Task<ACE_SYNCH_USE> *q_pair_[2];
+  ACE_Task<ACE_SYNCH_USE, TIME_POLICY> *q_pair_[2];
 
   /// Name of the ACE_Module.
   ACE_TCHAR name_[MAXPATHLEN + 1];
 
   /// Next ACE_Module in the stack.
-  ACE_Module<ACE_SYNCH_USE> *next_;
+  ACE_Module<ACE_SYNCH_USE, TIME_POLICY> *next_;
 
   /// Argument passed through to the reader and writer task when they
   /// are opened.

@@ -4,6 +4,7 @@ package GNUACEWorkspaceCreator;
 # Description   : A GNU Workspace (GNUmakefile) creator for ACE
 # Author        : Chad Elliott
 # Create Date   : 5/13/2002
+# $Id: GNUACEWorkspaceCreator.pm 94635 2011-10-06 12:59:23Z johnnyw $
 # ************************************************************
 
 # ************************************************************
@@ -53,12 +54,12 @@ sub pre_workspace {
 
   print $fh '# -*- makefile -*-', $crlf;
   $self->workspace_preamble($fh, $crlf, 'GNU ACE Workspace',
-                            '$Id: GNUACEWorkspaceCreator.pm 90264 2010-05-24 15:19:01Z mitza $');
+                            '$Id: GNUACEWorkspaceCreator.pm 94635 2011-10-06 12:59:23Z johnnyw $');
   print $fh 'MAKEFILE = ', $self->get_modified_workspace_name($base, '', 1),
             $crlf;
 }
-  
-  
+
+
 sub write_project_targets {
   my($self)   = shift;
   my($fh)     = shift;

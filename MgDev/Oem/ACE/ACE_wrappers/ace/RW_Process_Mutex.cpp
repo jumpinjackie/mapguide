@@ -1,10 +1,10 @@
-// $Id: RW_Process_Mutex.cpp 81509 2008-04-28 22:00:49Z shuston $
+// $Id: RW_Process_Mutex.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/RW_Process_Mutex.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/ACE.h"
 
-ACE_RCSID(ace, RW_Process_Mutex, "$Id: RW_Process_Mutex.cpp 81509 2008-04-28 22:00:49Z shuston $")
+
 
 #if !defined (__ACE_INLINE__)
 #include "ace/RW_Process_Mutex.inl"
@@ -45,9 +45,9 @@ ACE_RW_Process_Mutex::dump (void) const
 {
 #if defined (ACE_HAS_DUMP)
 // ACE_TRACE ("ACE_RW_Process_Mutex::dump");
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
   this->lock_.dump ();
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 

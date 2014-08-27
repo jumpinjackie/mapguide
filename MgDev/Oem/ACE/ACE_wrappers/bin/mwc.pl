@@ -6,7 +6,7 @@ eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
 # ******************************************************************
 #      Author: Chad Elliott
 #        Date: 6/17/2002
-#         $Id: mwc.pl 89398 2010-03-08 15:38:06Z mitza $
+#         $Id: mwc.pl 94802 2011-10-20 09:46:10Z mcorino $
 # ******************************************************************
 
 # ******************************************************************
@@ -34,7 +34,7 @@ my($mpcpath) = (defined $mpcroot ? $mpcroot :
 unshift(@INC, $mpcpath . '/modules');
 
 if (defined $mpcroot) {
-  print STDERR "MPC_ROOT was set to $mpcroot.\n";
+  print "MPC_ROOT was set to $mpcroot.\n";
 }
 
 if (! -d "$mpcpath/modules") {

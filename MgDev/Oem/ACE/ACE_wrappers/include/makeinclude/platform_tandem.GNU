@@ -1,4 +1,4 @@
-# $Id: platform_tandem.GNU 80826 2008-03-04 14:51:23Z wotte $
+# $Id: platform_tandem.GNU 91285 2010-08-05 08:29:30Z johnnyw $
 
 # NonStop-UX NCC 3.20
 
@@ -11,7 +11,6 @@ CC		= cc
 CXX		= NCC
 DLD		= $(CXX)
 LD		= $(CXX)
-CPPFLAGS	+= -no_exceptions
 CPPFLAGS	+= -I/usr/include3.18
 CPPFLAGS	+= -D_REENTRANT
 #CPPFLAGS	+= -ptused -prelink
@@ -58,9 +57,9 @@ SOBUILD		= $(COMPILE.cc) $(PIC) -o $(VSHDIR)$*.o $<; \
 #INCDIR		+= -I/usr/include -I/usr/include3.18
 # -I /usr/ucbinclude
 #### No threads
-#CCFLAGS         += -no_exceptions -pta $(WARNOFF) $(INCDIR)
+#CCFLAGS         += -pta $(WARNOFF) $(INCDIR)
 #### Threads
-#CCFLAGS         += -D_REENTRANT -no_exceptions -pta $(WARNOFF)
+#CCFLAGS         += -D_REENTRANT -pta $(WARNOFF)
 
 #DLD             = $(CXX)
 #LD		= $(CXX)

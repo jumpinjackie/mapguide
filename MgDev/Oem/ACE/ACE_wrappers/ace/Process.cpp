@@ -1,4 +1,4 @@
-// $Id: Process.cpp 87826 2009-11-30 14:02:40Z johnnyw $
+// $Id: Process.cpp 97594 2014-02-17 12:09:55Z johnnyw $
 
 #include "ace/Process.h"
 
@@ -10,7 +10,7 @@
 #include "ace/Auto_Ptr.h"
 #include "ace/Signal.h"
 #include "ace/SString.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/OS_NS_stdio.h"
 #include "ace/OS_NS_stdlib.h"
 #include "ace/OS_NS_sys_socket.h"
@@ -24,12 +24,10 @@
 #include "ace/Vector_T.h"
 #include "ace/Tokenizer_T.h"
 
-#if defined (ACE_VXWORKS) && (ACE_VXWORKS > 0x600) && defined (__RTP__)
+#if defined (ACE_VXWORKS) && defined (__RTP__)
 # include <rtpLib.h>
 # include <taskLib.h>
 #endif
-
-ACE_RCSID (ace, Process, "$Id: Process.cpp 87826 2009-11-30 14:02:40Z johnnyw $")
 
 // This function acts as a signal handler for SIGCHLD. We don't really want
 // to do anything with the signal - it's just needed to interrupt a sleep.
@@ -104,9 +102,8 @@ ACE_Process::spawn (ACE_Process_Options &options)
   if (set_p && !ACE_BIT_ENABLED (options.creation_flags (),
                                  ACE_Process_Options::NO_EXEC))
     {
-      int maxlen = 0;
-      ACE_TCHAR *cmd_line_buf = options.command_line_buf (&maxlen);
-      size_t max_len = static_cast<size_t> (maxlen);
+      size_t max_len = 0;
+      ACE_TCHAR *cmd_line_buf = options.command_line_buf (&max_len);
       size_t curr_len = ACE_OS::strlen (cmd_line_buf);
       ACE_Handle_Set_Iterator h_iter (*set_p);
       // Because the length of the to-be-formatted +H option is not
@@ -118,9 +115,18 @@ ACE_Process::spawn (ACE_Process_Options &options)
         {
 #if defined (ACE_WIN32)
 # if defined (ACE_WIN64)
+// silence warnings coming from MinGW64 compilers
+#  if defined (__GNUC__)
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wformat"
+#   pragma GCC diagnostic ignored "-Wformat-extra-args"
+#  endif /* __GNUC__ */
           curr_len += ACE_OS::sprintf (&cmd_line_buf[curr_len],
                                        ACE_TEXT (" +H %I64p"),
                                        h);
+#  if defined (__GNUC__)
+#   pragma GCC diagnostic pop
+#  endif /* __GNUC__ */
 # else
           curr_len += ACE_OS::sprintf (&cmd_line_buf[curr_len],
                                        ACE_TEXT (" +H %p"),
@@ -255,7 +261,7 @@ ACE_Process::spawn (ACE_Process_Options &options)
   }
 
   return this->child_id_;
-#elif (defined (ACE_VXWORKS) && (ACE_VXWORKS > 0x600)) && defined (__RTP__)
+#elif defined (ACE_VXWORKS) && defined (__RTP__)
   if (ACE_BIT_ENABLED (options.creation_flags (),
                        ACE_Process_Options::NO_EXEC))
     ACE_NOTSUP_RETURN (ACE_INVALID_PID);
@@ -375,10 +381,10 @@ ACE_Process::spawn (ACE_Process_Options &options)
                               options.getgroup ()) < 0)
         {
 #if !defined (ACE_HAS_THREADS)
-          // We can't emit this log message because ACE_ERROR(), etc.
+          // We can't emit this log message because ACELIB_ERROR(), etc.
           // will invoke async signal unsafe functions, which results
           // in undefined behavior in threaded programs.
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("%p.\n"),
                       ACE_TEXT ("ACE_Process::spawn: setpgid failed.")));
 #endif
@@ -392,10 +398,10 @@ ACE_Process::spawn (ACE_Process_Options &options)
                               options.getegid ()) == -1)
           {
 #if !defined (ACE_HAS_THREADS)
-            // We can't emit this log message because ACE_ERROR(), etc.
+            // We can't emit this log message because ACELIB_ERROR(), etc.
             // will invoke async signal unsafe functions, which results
             // in undefined behavior in threaded programs.
-            ACE_ERROR ((LM_ERROR,
+            ACELIB_ERROR ((LM_ERROR,
                         ACE_TEXT ("%p.\n"),
                         ACE_TEXT ("ACE_Process::spawn: setregid failed.")));
 #endif
@@ -410,10 +416,10 @@ ACE_Process::spawn (ACE_Process_Options &options)
                               options.geteuid ()) == -1)
           {
 #if !defined (ACE_HAS_THREADS)
-            // We can't emit this log message because ACE_ERROR(), etc.
+            // We can't emit this log message because ACELIB_ERROR(), etc.
             // will invoke async signal unsafe functions, which results
             // in undefined behavior in threaded programs.
-            ACE_ERROR ((LM_ERROR,
+            ACELIB_ERROR ((LM_ERROR,
                         ACE_TEXT ("%p.\n"),
                         ACE_TEXT ("ACE_Process::spawn: setreuid failed.")));
 #endif
@@ -519,13 +525,7 @@ ACE_Process::spawn (ACE_Process_Options &options)
           }
         else
           {
-# if defined (ghs)
-            // GreenHills 1.8.8 (for VxWorks 5.3.x) can't compile this
-            // code.  Processes aren't supported on VxWorks anyways.
-            ACE_NOTSUP_RETURN (ACE_INVALID_PID);
-# else
             result = ACE_OS::execve (procname, procargv, procenv);
-# endif /* ghs */
           }
         if (result == -1)
           {
@@ -624,7 +624,7 @@ ACE_Process::wait (const ACE_Time_Value &tv,
 # if defined (ACE_VXWORKS)
     {
       pid_t retv;
-      while ( (retv = this->wait (status)) == ACE_INVALID_PID && errno == EINTR ) ;
+      while ((retv = this->wait (status)) == ACE_INVALID_PID && errno == EINTR);
       return retv;
     }
 # else
@@ -796,7 +796,8 @@ ACE_Process::convert_env_buffer (const char* env) const
 ACE_Process_Options::ACE_Process_Options (bool inherit_environment,
                                           size_t command_line_buf_len,
                                           size_t env_buf_len,
-                                          size_t max_env_args)
+                                          size_t max_env_args,
+                                          size_t max_cmdline_args)
   :
 #if !defined (ACE_HAS_WINCE)
     inherit_environment_ (inherit_environment),
@@ -830,6 +831,8 @@ ACE_Process_Options::ACE_Process_Options (bool inherit_environment,
     command_line_buf_ (0),
     command_line_copy_ (0),
     command_line_buf_len_ (command_line_buf_len),
+    max_command_line_args_ (max_cmdline_args),
+    command_line_argv_ (0),
     process_group_ (ACE_INVALID_PID),
     use_unicode_environment_ (false)
 {
@@ -859,6 +862,8 @@ ACE_Process_Options::ACE_Process_Options (bool inherit_environment,
   this->startup_info_.cb = sizeof this->startup_info_;
 #endif /* ACE_WIN32 */
 #endif /* !ACE_HAS_WINCE */
+  ACE_NEW (command_line_argv_,
+           ACE_TCHAR *[max_cmdline_args]);
 }
 
 #if !defined (ACE_HAS_WINCE)
@@ -904,7 +909,7 @@ ACE_Process_Options::inherit_environment (void)
       // Add the string to our env buffer.
       if (this->setenv_i (existing_environment + slot, len) == -1)
         {
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("%p.\n"),
                       ACE_TEXT ("ACE_Process_Options::ACE_Process_Options")));
           break;
@@ -1178,6 +1183,7 @@ ACE_Process_Options::~ACE_Process_Options (void)
 #endif /* !ACE_HAS_WINCE */
   delete [] command_line_buf_;
   ACE::strdelete (command_line_copy_);
+  delete [] command_line_argv_;
 }
 
 int
@@ -1200,7 +1206,7 @@ ACE_Process_Options::command_line (const ACE_TCHAR *const argv[])
 
           if (cur_len > command_line_buf_len_)
             {
-              ACE_ERROR_RETURN ((LM_ERROR,
+              ACELIB_ERROR_RETURN ((LM_ERROR,
                                  ACE_TEXT ("ACE_Process:command_line: ")
                                  ACE_TEXT ("command line is ")
                                  ACE_TEXT ("longer than %d\n"),
@@ -1225,7 +1231,10 @@ ACE_Process_Options::command_line (const ACE_TCHAR *format, ...)
   va_start (argp, format);
 
   if (command_line_buf_len_ < 1)
-    return -1;
+    {
+      va_end (argp);
+      return -1;
+    }
 
 #if !defined (ACE_LACKS_VSNPRINTF) || defined (ACE_HAS_TRIO)
   // vsnprintf the format and args into command_line_buf__.
@@ -1315,12 +1324,12 @@ ACE_Process_Options::command_line_argv (void)
       parser.preserve_designators ('\"', '\"'); // "
       parser.preserve_designators ('\'', '\'');
 
-      int x = 0;
+      unsigned int x = 0;
       do
         command_line_argv_[x] = parser.next ();
       while (command_line_argv_[x] != 0
-             // substract one for the ending zero.
-             && ++x < MAX_COMMAND_LINE_OPTIONS - 1);
+             // subtract one for the ending zero.
+             && ++x < max_command_line_args_ - 1);
 
       command_line_argv_[x] = 0;
     }

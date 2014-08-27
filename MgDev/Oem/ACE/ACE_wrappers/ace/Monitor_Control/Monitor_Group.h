@@ -4,7 +4,7 @@
 /**
  * @file Monitor_Group.h
  *
- * $Id: Monitor_Group.h 82194 2008-06-26 13:14:24Z parsons $
+ * $Id: Monitor_Group.h 91743 2010-09-13 18:24:51Z johnnyw $
  *
  * @author Jeff Parsons <j.parsons@vanderbilt.edu>
  */
@@ -44,7 +44,7 @@ namespace ACE
       void add_member (Monitor_Base* member);
 
       virtual void update (void);
-      
+
       /// These are overridden to be no-ops.
       virtual void receive (double data);
       virtual void receive (size_t data);

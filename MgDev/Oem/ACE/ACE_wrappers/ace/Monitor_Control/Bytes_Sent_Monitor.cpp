@@ -1,4 +1,4 @@
-// $Id: Bytes_Sent_Monitor.cpp 86518 2009-08-18 12:30:56Z olli $
+// $Id: Bytes_Sent_Monitor.cpp 95533 2012-02-14 22:59:17Z wotte $
 
 #include "ace/Monitor_Control/Bytes_Sent_Monitor.h"
 
@@ -18,7 +18,7 @@ namespace ACE
 #if defined (ACE_HAS_WIN32_PDH)
       , Windows_Multi_Instance_Monitor (
             ACE_TEXT ("\\Network Interface(*)\\Bytes Sent/sec"))
-#elif defined (linux) || defined (AIX)
+#elif defined (ACE_LINUX) || defined (AIX)
       , Linux_Network_Interface_Monitor (
             " %*[^:]: %*u %*u %*u %*u %*u %*u %*u %*u %lu %*u")
             /// Scan format for /proc/net/dev
@@ -26,7 +26,7 @@ namespace ACE
       , Solaris_Network_Interface_Monitor (ACE_TEXT ("obytes"))
 #elif defined (__FreeBSD__) || defined (__Lynx__)
       , FreeBSD_Network_Interface_Monitor (ACE_TEXT ("obytes"))
-#elif defined (__NetBSD__) || defined (__OpenBSD__) 
+#elif defined (__NetBSD__) || defined (__OpenBSD__)
       , BSD_Network_Interface_Monitor (ACE_TEXT ("obytes"))
 #endif
     {}
@@ -35,7 +35,7 @@ namespace ACE
     Bytes_Sent_Monitor::update (void)
     {
       this->update_i ();
-      
+
       /// On some platforms, value_ is an ACE_UINT64.
       this->receive (static_cast<double> (this->value_));
     }
@@ -45,7 +45,7 @@ namespace ACE
     {
       return Bytes_Sent_Monitor::default_name_;
     }
-    
+
     void
     Bytes_Sent_Monitor::clear_i (void)
     {

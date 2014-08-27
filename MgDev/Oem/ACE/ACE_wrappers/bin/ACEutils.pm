@@ -1,4 +1,4 @@
-# $Id: ACEutils.pm 80826 2008-03-04 14:51:23Z wotte $
+# $Id: ACEutils.pm 91813 2010-09-17 07:52:52Z johnnyw $
 
 require Process;
 $EXEPREFIX = ".".$DIR_SEPARATOR;
@@ -9,7 +9,7 @@ package ACE;
 sub CheckForExeDir
 {
   for($i = 0; $i <= $#ARGV; $i++) {
-    if ($ARGV[$i] eq '-ExeSubDir') {  
+    if ($ARGV[$i] eq '-ExeSubDir') {
       if (defined $ARGV[$i + 1]) {
         $::EXEPREFIX = $ARGV[$i + 1].$::DIR_SEPARATOR;
       }
@@ -27,7 +27,7 @@ sub CheckForExeDir
 sub CheckForConfig
 {
   for($i = 0; $i <= $#ARGV;) {
-    if ($ARGV[$i] eq '-Config') {  
+    if ($ARGV[$i] eq '-Config') {
       if (!defined $ARGV[$i + 1]) {
         print STDERR "You must pass a configuration with Config\n";
         exit(1);
@@ -44,7 +44,7 @@ sub checkForTarget
   my($cwd) = shift;
 
   for($i = 0; $i <= $#ARGV; $i++) {
-    if ($ARGV[$i] eq '-chorus') {  
+    if ($ARGV[$i] eq '-chorus') {
       if (defined $ARGV[$i + 1]) {
         $::TARGETHOSTNAME = $ARGV[$i + 1];
         $::EXEPREFIX = "rsh $::TARGETHOSTNAME arun $cwd$::DIR_SEPARATOR";

@@ -1,21 +1,19 @@
-// $Id: snmp.cpp 80826 2008-03-04 14:51:23Z wotte $
 
-// ============================================================================
-//
-// = LIBRARY
-//    asnmp
-//
-// = FILENAME
-//    snmp.cpp
-//
-// = DESCRIPTION
-//   The basic SNMPv1 API - blocking version using UDP/IPv4 transport
-//   and addressing.
-//
-// = AUTHOR
-//   Peter E Mellquist class design/orig code
-//   Michael R MacFaden  mrm@cisco.com / rework API, use ACE facilities
-// ============================================================================
+//=============================================================================
+/**
+ *  @file    snmp.cpp
+ *
+ *  $Id: snmp.cpp 97246 2013-08-07 07:10:20Z johnnyw $
+ *
+ * The basic SNMPv1 API - blocking version using UDP/IPv4 transport
+ * and addressing.
+ *
+ *
+ *  @author Peter E Mellquist class design/orig codeMichael R MacFaden  mrm@cisco.com / rework API
+ *  @author use ACE facilities
+ */
+//=============================================================================
+
 /*===================================================================
   Copyright (c) 1996
   Hewlett-Packard Company
@@ -46,8 +44,6 @@
 #include "ace/OS_NS_string.h"
 #include "ace/OS_NS_unistd.h"
 #include "ace/OS_NS_time.h"
-
-ACE_RCSID(asnmp, snmp, "$Id: snmp.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 const coldStartOid coldStart;
 const warmStartOid warmStart;
@@ -255,32 +251,38 @@ int Snmp::trap( Pdu &pdu, UdpTarget &target)
 // length string removes the override.
 void Snmp::override_host_name(const char* name)
 {
-        if (name)
-        {
-                ACE_OS::strncpy(host_name_, name, MAXHOSTNAMELEN);
-                host_name_[MAXHOSTNAMELEN-1] = 0;
-        }
-        else {
-                host_name_[0] = 0;
-        }
+  if (name)
+  {
+    ACE_OS::strncpy(host_name_, name, MAXHOSTNAMELEN);
+    host_name_[MAXHOSTNAMELEN-1] = 0;
+  }
+  else {
+    host_name_[0] = 0;
+  }
 }
 
 // Returns the current host name in the supplied string.
 void Snmp::get_host_name(char* name, int len)
 {
-        if (name)
-        {
-                if (ACE_OS::strlen(host_name_) > 0)
-                {
-                        ACE_OS::strncpy(name, host_name_, len);
-                        name[len-1] = 0;
-                }
-                else
-                {
-                        if (ACE_OS::hostname(name, len-1) == -1)
-                                name[0] = 0;
-                }
-        }
+  if (name)
+  {
+    if (ACE_OS::strlen(host_name_) > 0)
+    {
+      ACE_OS::strncpy(name, host_name_, len);
+      name[len-1] = 0;
+    }
+    else
+    {
+      if (ACE_OS::hostname(name, len-1) == -1)
+        name[0] = 0;
+    }
+  }
 }
 
-Snmp_Result::~Snmp_Result() {}
+Snmp_Result::~Snmp_Result()
+{
+}
+
+Snmp_Result::Snmp_Result()
+{
+}

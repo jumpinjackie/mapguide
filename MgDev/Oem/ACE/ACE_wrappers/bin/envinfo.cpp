@@ -1,11 +1,11 @@
-// $Id: envinfo.cpp 80826 2008-03-04 14:51:23Z wotte $
+// $Id: envinfo.cpp 91671 2010-09-08 18:39:23Z johnnyw $
 
 #include "ace/ACE.h"
 #include "ace/Log_Msg.h"
 #include "ace/OS_main.h"
 #include "ace/OS_NS_sys_utsname.h"
 
-ACE_RCSID(bin, envinfo, "$Id: envinfo.cpp 80826 2008-03-04 14:51:23Z wotte $")
+
 
 int
 ACE_TMAIN (int, ACE_TCHAR *[])

@@ -1,12 +1,12 @@
+// $Id: SOCK_Dgram.cpp 96985 2013-04-11 15:50:32Z huangh $
+
 #include "ace/SOCK_Dgram.h"
 
-#include "ace/Handle_Set.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/INET_Addr.h"
 #include "ace/ACE.h"
 #include "ace/OS_NS_string.h"
 #include "ace/OS_Memory.h"
-#include "ace/OS_NS_sys_select.h"
 #include "ace/OS_NS_ctype.h"
 #include "ace/os_include/net/os_if.h"
 #include "ace/Truncate.h"
@@ -18,10 +18,6 @@
 #if defined (ACE_HAS_IPV6) && defined (ACE_WIN32)
 #include /**/ <iphlpapi.h>
 #endif
-
-ACE_RCSID (ace,
-           SOCK_Dgram,
-           "$Id: SOCK_Dgram.cpp 85421 2009-05-22 11:12:30Z johnnyw $")
 
 // This is a workaround for platforms with non-standard
 // definitions of the ip_mreq structure
@@ -54,34 +50,9 @@ ACE_SOCK_Dgram::recv (iovec *io_vec,
 {
   ACE_TRACE ("ACE_SOCK_Dgram::recv");
 #if defined (FIONREAD)
-  ACE_Handle_Set handle_set;
-  handle_set.reset ();
-  handle_set.set_bit (this->get_handle ());
-
-  // Check the status of the current socket to make sure there's data
-  // to recv (or time out).
-#  if defined (ACE_WIN32)
-  // This arg is ignored on Windows and causes pointer truncation
-  // warnings on 64-bit compiles.
-  int select_width = 0;
-#  else
-  int select_width = int (this->get_handle ()) + 1;
-#  endif /* ACE_WIN32 */
-  switch (ACE_OS::select (select_width,
-                          handle_set,
-                          0, 0,
-                          timeout))
+  if( ACE::handle_read_ready (this->get_handle (), timeout) != 1 )
     {
-    case -1:
       return -1;
-      /* NOTREACHED */
-    case 0:
-      errno = ETIME;
-      return -1;
-      /* NOTREACHED */
-    default:
-      // Goes fine, fallthrough to get data
-      break;
     }
 
   sockaddr *saddr = (sockaddr *) addr.get_addr ();
@@ -232,7 +203,7 @@ ACE_SOCK_Dgram::ACE_SOCK_Dgram (const ACE_Addr &local,
                   protocol_family,
                   protocol,
                   reuse_addr) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_SOCK_Dgram")));
 }
@@ -253,7 +224,7 @@ ACE_SOCK_Dgram::ACE_SOCK_Dgram (const ACE_Addr &local,
                   g,
                   flags,
                   reuse_addr) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_SOCK_Dgram")));
 }
@@ -349,7 +320,7 @@ ACE_SOCK_Dgram::send (const iovec iov[],
 
   // Determine the total length of all the buffers in <iov>.
   for (i = 0; i < n; i++)
-#if ! (defined(__BORLANDC__) || defined(linux) || defined(ACE_HAS_RTEMS))
+#if ! (defined(__BORLANDC__) || defined(ACE_LINUX) || defined(ACE_HAS_RTEMS))
     // The iov_len is unsigned on Linux, RTEMS and with Borland. If we go
     // ahead and try the if, it will emit a warning.
     if (iov[i].iov_len < 0)
@@ -398,7 +369,7 @@ ACE_SOCK_Dgram::recv (iovec iov[],
   int i;
 
   for (i = 0; i < n; i++)
-#if ! (defined(__BORLANDC__) || defined(linux) || defined(ACE_HAS_RTEMS))
+#if ! (defined(__BORLANDC__) || defined(ACE_LINUX) || defined(ACE_HAS_RTEMS))
     // The iov_len is unsigned on Linux, RTEMS and with Borland. If we go
     // ahead and try the if, it will emit a warning.
     if (iov[i].iov_len < 0)
@@ -453,34 +424,14 @@ ACE_SOCK_Dgram::recv (void *buf,
                       int flags,
                       const ACE_Time_Value *timeout) const
 {
-  ACE_Handle_Set handle_set;
-  handle_set.reset ();
-  handle_set.set_bit (this->get_handle ());
-
-  // Check the status of the current socket.
-#if defined (ACE_WIN32)
-  // This arg is ignored on Windows and causes pointer truncation
-  // warnings on 64-bit compiles.
-  int select_width = 0;
-#else
-  int select_width = int (this->get_handle ()) + 1;
-#endif /* ACE_WIN32 */
-  switch (ACE_OS::select (select_width,
-                          handle_set,
-                          0,
-                          0,
-                          timeout))
+  if( ACE::handle_read_ready (this->get_handle (), timeout) == 1 )
     {
-    case -1:
-      return -1;
-      /* NOTREACHED */
-    case 0:
-      errno = ETIME;
-      return -1;
-      /* NOTREACHED */
-    default:
       // Goes fine, call <recv> to get data
       return this->recv (buf, n, addr, flags);
+    }
+  else
+    {
+      return -1;
     }
 }
 
@@ -491,34 +442,15 @@ ACE_SOCK_Dgram::send (const void *buf,
                       int flags,
                       const ACE_Time_Value *timeout) const
 {
-  ACE_Handle_Set handle_set;
-  handle_set.reset ();
-  handle_set.set_bit (this->get_handle ());
-
   // Check the status of the current socket.
-#if defined (ACE_WIN32)
-  // This arg is ignored on Windows and causes pointer truncation
-  // warnings on 64-bit compiles.
-  int select_width = 0;
-#else
-  int select_width = int (this->get_handle ()) + 1;
-#endif /* ACE_WIN32 */
-  switch (ACE_OS::select (select_width,
-                          0,
-                          handle_set,
-                          0,
-                          timeout))
+  if( ACE::handle_write_ready (this->get_handle (), timeout) == 1 )
     {
-    case -1:
-      return -1;
-      /* NOTREACHED */
-    case 0:
-      errno = ETIME;
-      return -1;
-      /* NOTREACHED */
-    default:
       // Goes fine, call <send> to transmit the data.
       return this->send (buf, n, addr, flags);
+    }
+  else
+    {
+      return -1;
     }
 }
 
@@ -598,7 +530,7 @@ ACE_SOCK_Dgram::set_nic (const ACE_TCHAR *net_if,
   // a non-null interface parameter in this function.)
   ACE_UNUSED_ARG (net_if);
   ACE_UNUSED_ARG (addr_family);
-  ACE_DEBUG ((LM_DEBUG,
+  ACELIB_DEBUG ((LM_DEBUG,
               ACE_TEXT ("Send interface specification not ")
               ACE_TEXT ("supported - IGNORED.\n")));
 #endif /* !IP_MULTICAST_IF */
@@ -611,7 +543,7 @@ ACE_SOCK_Dgram::make_multicast_ifaddr (ip_mreq *ret_mreq,
                                        const ACE_INET_Addr &mcast_addr,
                                        const ACE_TCHAR *net_if)
 {
-  ACE_TRACE ("ACE_SOCK_Dgram_Mcast::make_multicast_ifaddr");
+  ACE_TRACE ("ACE_SOCK_Dgram::make_multicast_ifaddr");
   ip_mreq  lmreq;       // Scratch copy.
   if (net_if != 0)
     {
@@ -624,17 +556,29 @@ ACE_SOCK_Dgram::make_multicast_ifaddr (ip_mreq *ret_mreq,
         ACE_HTONL (interface_addr.get_ip_address ());
 #else
       ifreq if_address;
-
       ACE_OS::strcpy (if_address.ifr_name, ACE_TEXT_ALWAYS_CHAR (net_if));
-
       if (ACE_OS::ioctl (this->get_handle (),
                          SIOCGIFADDR,
                          &if_address) == -1)
-        return -1;
-
-      sockaddr_in *socket_address =
-        reinterpret_cast<sockaddr_in*> (&if_address.ifr_addr);
-      lmreq.imr_interface.s_addr = socket_address->sin_addr.s_addr;
+        {
+          // The net_if name failed to be found. It seems that older linux
+          // kernals only support the actual interface name (eg. "eth0"),
+          // not the IP address string of the interface (eg. "192.168.0.1"),
+          // which newer kernals seem to automatically translate.
+          // So assume that we have been given an IP Address and translate
+          // that instead, similar to the above for windows.
+          ACE_INET_Addr interface_addr;
+          if (interface_addr.set (mcast_addr.get_port_number (), net_if) == -1)
+            return -1;  // Still doesn't work, unknown device specified.
+          lmreq.imr_interface.s_addr =
+            ACE_HTONL (interface_addr.get_ip_address ());
+        }
+      else
+        {
+          sockaddr_in *socket_address =
+            reinterpret_cast<sockaddr_in*> (&if_address.ifr_addr);
+          lmreq.imr_interface.s_addr = socket_address->sin_addr.s_addr;
+        }
 #endif /* ACE_WIN32 || __INTERIX */
     }
   else
@@ -657,14 +601,14 @@ ACE_SOCK_Dgram::make_multicast_ifaddr6 (ipv6_mreq *ret_mreq,
                                         const ACE_INET_Addr &mcast_addr,
                                         const ACE_TCHAR *net_if)
 {
-  ACE_TRACE ("ACE_SOCK_Dgram_Mcast::make_multicast_ifaddr6");
+  ACE_TRACE ("ACE_SOCK_Dgram::make_multicast_ifaddr6");
   ipv6_mreq  lmreq;       // Scratch copy.
 
   ACE_OS::memset (&lmreq,
                   0,
                   sizeof (lmreq));
 
-#if defined(__linux__)
+#if defined(ACE_LINUX)
   if (net_if != 0)
     {
       lmreq.ipv6mr_interface = ACE_OS::if_nametoindex (ACE_TEXT_ALWAYS_CHAR(net_if));
@@ -742,6 +686,6 @@ ACE_SOCK_Dgram::make_multicast_ifaddr6 (ipv6_mreq *ret_mreq,
 
   return 0;
 }
-#endif /* __linux__ && ACE_HAS_IPV6 */
+#endif /* ACE_LINUX && ACE_HAS_IPV6 */
 
 ACE_END_VERSIONED_NAMESPACE_DECL

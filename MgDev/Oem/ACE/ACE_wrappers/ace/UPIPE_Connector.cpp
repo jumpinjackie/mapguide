@@ -1,8 +1,8 @@
-// $Id: UPIPE_Connector.cpp 80826 2008-03-04 14:51:23Z wotte $
+// $Id: UPIPE_Connector.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/UPIPE_Connector.h"
 
-ACE_RCSID(ace, UPIPE_Connector, "$Id: UPIPE_Connector.cpp 80826 2008-03-04 14:51:23Z wotte $")
+
 
 #if defined (ACE_HAS_THREADS)
 
@@ -70,7 +70,7 @@ ACE_UPIPE_Connector::connect (ACE_UPIPE_Stream &new_stream,
                                       (const char *) &ustream,
                                       sizeof ustream);
       if (result == -1)
-        ACE_ERROR ((LM_ERROR,
+        ACELIB_ERROR ((LM_ERROR,
                     ACE_TEXT ("ACE_UPIPE_Connector %p\n"),
                     ACE_TEXT ("write to pipe failed")));
 
@@ -83,7 +83,7 @@ ACE_UPIPE_Connector::connect (ACE_UPIPE_Stream &new_stream,
       // Do *not* coalesce the following two checks for result == -1.
       // They perform different checks and cannot be merged.
       if (result == -1)
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("ACE_UPIPE_Connector %p\n"),
                       ACE_TEXT ("no confirmation from server")));
       else

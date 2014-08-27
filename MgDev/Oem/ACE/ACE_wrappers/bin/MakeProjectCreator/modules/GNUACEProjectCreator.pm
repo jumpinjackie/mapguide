@@ -4,6 +4,7 @@ package GNUACEProjectCreator;
 # Description   : A GNU Project Creator for ACE
 # Author        : Chad Elliott
 # Create Date   : 3/13/2002
+# $Id: GNUACEProjectCreator.pm 94635 2011-10-06 12:59:23Z johnnyw $
 # ************************************************************
 
 # ************************************************************
@@ -63,6 +64,12 @@ sub fill_value {
     my($libs) = $self->get_assignment('libpaths');
     return ((defined $incs && $incs =~ /ciao/i) ||
             (defined $libs && $libs =~ /ciao/i));
+  }
+  elsif ($name eq 'dance') {
+    my($incs) = $self->get_assignment('includes');
+    my($libs) = $self->get_assignment('libpaths');
+    return ((defined $incs && $incs =~ /DAnCE/i) ||
+            (defined $libs && $libs =~ /DAnCE/i));
   }
   elsif ($name eq 'genins') {
     my $ins = '';

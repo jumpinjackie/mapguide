@@ -1,21 +1,18 @@
-// $Id: pdu.cpp 80826 2008-03-04 14:51:23Z wotte $
 
-// ============================================================================
-//
-// = LIBRARY
-//    asnmp
-//
-// = FILENAME
-//     pdu.cpp
-//
-// = DESCRIPTION
-//  Pdu class implementation. Encapsulation of an SMI Protocol
-//  Data Unit (PDU) in C++.
-//
-// = AUTHOR
-//   Peter E Mellquist
-//   Michael R MacFaden  mrm@cisco.com - rework & ACE port
-// ============================================================================
+//=============================================================================
+/**
+ *  @file     pdu.cpp
+ *
+ *  $Id: pdu.cpp 93651 2011-03-28 08:49:11Z johnnyw $
+ *
+ *  Pdu class implementation. Encapsulation of an SMI Protocol
+ *  Data Unit (PDU) in C++.
+ *
+ *
+ *  @author Peter E MellquistMichael R MacFaden  mrm@cisco.com - rework & ACE port
+ */
+//=============================================================================
+
 /*===================================================================
   Copyright (c) 1996
   Hewlett-Packard Company
@@ -36,8 +33,6 @@
 #include "asnmp/pdu.h"       // include Pdu class definition
 #include "ace/OS_NS_string.h"
 #include "ace/OS_NS_stdio.h"
-
-ACE_RCSID(asnmp, pdu, "$Id: pdu.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 //=====================[ constructor no args ]=========================
 Pdu::Pdu( void): vb_count_(0), error_status_(0), error_index_(0),

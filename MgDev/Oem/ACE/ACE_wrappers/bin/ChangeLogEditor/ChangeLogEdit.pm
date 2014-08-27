@@ -4,6 +4,7 @@ package ChangeLogEdit;
 # Description   : Edit the existing ChangeLog.
 # Author        : Chad Elliott
 # Create Date   : 9/10/2002
+# $Id: ChangeLogEdit.pm 94634 2011-10-06 12:58:32Z johnnyw $
 # ************************************************************
 
 # ************************************************************

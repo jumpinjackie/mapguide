@@ -4,6 +4,7 @@ package GNUDependencyWriter;
 # Description   : Generates GNU Makefile dependencies.
 # Author        : Chad Elliott
 # Create Date   : 2/10/2002
+# $Id: GNUDependencyWriter.pm 94638 2011-10-06 14:49:29Z johnnyw $
 # ************************************************************
 
 # ************************************************************

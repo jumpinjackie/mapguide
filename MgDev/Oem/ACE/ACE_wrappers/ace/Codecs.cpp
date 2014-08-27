@@ -1,11 +1,9 @@
+// $Id: Codecs.cpp 96985 2013-04-11 15:50:32Z huangh $
+
 #include "ace/Codecs.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/OS_Memory.h"
 #include "ace/OS_NS_ctype.h"
-
-ACE_RCSID (ace,
-           Codecs,
-           "$Id: Codecs.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 namespace
 {
@@ -71,7 +69,7 @@ ACE_Base64::encode (const ACE_Byte* input,
           result[pos++] = alphabet[bits & 0x3f];
           cols += 4;
           if (cols == max_columns) {
-            if (is_chunked) 
+            if (is_chunked)
               result[pos++] = '\n';
             cols = 0;
           }
@@ -181,7 +179,7 @@ ACE_Base64::decode (const ACE_Byte* input, size_t* output_len)
     {
       if (char_count)
         {
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("Decoding incomplete: atleast %d bits truncated\n"),
                       (4 - char_count) * 6));
           ++errors;
@@ -192,7 +190,7 @@ ACE_Base64::decode (const ACE_Byte* input, size_t* output_len)
       switch (char_count)
         {
         case 1:
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("Decoding incomplete: atleast 2 bits missing\n")));
           ++errors;
           break;

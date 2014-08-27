@@ -1,26 +1,24 @@
-// $Id: transaction.cpp 80826 2008-03-04 14:51:23Z wotte $
 
-// ============================================================================
-//
-// = LIBRARY
-//    asnmp
-//
-// = FILENAME
-//    transaction.cpp
-//
-// = DESCRIPTION
-//  implements blocking SNMPv1 API using a simple state machine
-//   transactions over UDP/IP networks
-//
-// = AUTHOR
-//   Michael R MacFaden  mrm@cisco.com - remove v2c, async, rework for ACE
-// ============================================================================
+//=============================================================================
+/**
+ *  @file    transaction.cpp
+ *
+ *  $Id: transaction.cpp 95741 2012-05-12 11:06:28Z johnnyw $
+ *
+ *  implements blocking SNMPv1 API using a simple state machine
+ * transactions over UDP/IP networks
+ *
+ *
+ *  @author Michael R MacFaden  mrm@cisco.com - remove v2c
+ *  @author async
+ *  @author rework for ACE
+ */
+//=============================================================================
+
 
 #include "ace/Reactor.h"
 #include "asnmp/transaction.h"
 #include "ace/OS_NS_string.h"
-
-ACE_RCSID(asnmp, transaction, "$Id: transaction.cpp 80826 2008-03-04 14:51:23Z wotte $")
 
 // pre: pdu, target report  valid() == 1
 // post: pdu sent out over the wire
@@ -107,7 +105,7 @@ int transaction::run(transaction_result * r)
 
     // register a time handler and a socket with this
     ACE_Time_Value to (params_.get_timeout());
-    if (reactor->schedule_timer(this, 0, to, to) < 0)
+    if (reactor->schedule_timer(this, 0, to, to) == -1)
         return SNMP_CLASS_INTERNAL_ERROR;
 
     if ((rc = this->send()) < 0)      // send pkt to agent

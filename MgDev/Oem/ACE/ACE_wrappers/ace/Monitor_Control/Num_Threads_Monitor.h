@@ -4,7 +4,7 @@
 /**
  * @file Num_Threads_Monitor.h
  *
- * $Id: Num_Threads_Monitor.h 82246 2008-07-02 18:31:13Z parsons $
+ * $Id: Num_Threads_Monitor.h 95533 2012-02-14 22:59:17Z wotte $
  *
  * @author Jeff Parsons <j.parsons@vanderbilt.edu>
  */
@@ -62,7 +62,7 @@ namespace ACE
 
       /// Stores the default name, used if none is supplied by the user.
       static const char* default_name (void);
-      
+
     private:
       /// Overridden reset, calls platform-specific reset.
       virtual void clear_i (void);
@@ -70,7 +70,7 @@ namespace ACE
     private:
       static const char* default_name_;
 
-#if defined (linux)
+#if defined (ACE_LINUX)
       FILE *file_ptr_;
       char buf_[1024];
       unsigned long nthreads_;

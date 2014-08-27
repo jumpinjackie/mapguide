@@ -1,4 +1,4 @@
-// $Id: Service_Repository.cpp 90337 2010-05-28 20:00:49Z cbeaulac $
+// $Id: Service_Repository.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/Service_Repository.h"
 
@@ -8,17 +8,13 @@
 
 #include "ace/Service_Types.h"
 #include "ace/Object_Manager.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/ACE.h"
 #include "ace/OS_NS_unistd.h"
 #include "ace/OS_NS_errno.h"
 #include "ace/OS_NS_string.h"
 
-ACE_RCSID (ace,
-           Service_Repository,
-           "$Id: Service_Repository.cpp 90337 2010-05-28 20:00:49Z cbeaulac $")
-
-  ACE_BEGIN_VERSIONED_NAMESPACE_DECL
+ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 ACE_ALLOC_HOOK_DEFINE(ACE_Service_Repository)
 
@@ -136,7 +132,7 @@ ACE_Service_Repository::fini (void)
       ACE_Service_Type *s =
         const_cast<ACE_Service_Type *> (this->service_array_[i]);
       if (s == 0)
-        ACE_DEBUG ((LM_DEBUG,
+        ACELIB_DEBUG ((LM_DEBUG,
                     ACE_TEXT ("ACE (%P|%t) SR::fini, repo=%@ [%d] -> 0\n"),
                     this,
                     i));
@@ -159,7 +155,7 @@ ACE_Service_Repository::fini (void)
 #ifndef ACE_NLOGGING
       if (ACE::debug ())
       {
-        ACE_DEBUG ((LM_DEBUG,
+        ACELIB_DEBUG ((LM_DEBUG,
                     ACE_TEXT ("ACE (%P|%t) SR::fini, repo=%@ [%d], ")
                     ACE_TEXT ("name=%s, type=%@, object=%@, active=%d\n"),
                     this,
@@ -191,7 +187,7 @@ ACE_Service_Repository::fini (void)
 #ifndef ACE_NLOGGING
       if (ACE::debug ())
       {
-        ACE_DEBUG ((LM_DEBUG,
+        ACELIB_DEBUG ((LM_DEBUG,
                     ACE_TEXT ("ACE (%P|%t) SR::fini, repo=%@ [%d], ")
                     ACE_TEXT ("name=%s, type=%@, object=%@, active=%d\n"),
                     this,
@@ -219,7 +215,7 @@ ACE_Service_Repository::close (void)
 
 #ifndef ACE_NLOGGING
   if(ACE::debug ())
-    ACE_DEBUG ((LM_DEBUG,
+    ACELIB_DEBUG ((LM_DEBUG,
                 ACE_TEXT ("ACE (%P|%t) SR::close - repo=%@, size=%d\n"),
                 this,
                 this->service_array_.size()));
@@ -237,12 +233,12 @@ ACE_Service_Repository::close (void)
       if(ACE::debug ())
         {
           if (s == 0)
-            ACE_DEBUG ((LM_DEBUG,
+            ACELIB_DEBUG ((LM_DEBUG,
                         ACE_TEXT ("ACE (%P|%t) SR::close - repo=%@ [%d] -> 0\n"),
                         this,
                         i));
           else
-            ACE_DEBUG ((LM_DEBUG,
+            ACELIB_DEBUG ((LM_DEBUG,
                         ACE_TEXT ("ACE (%P|%t) SR::close - repo=%@ [%d], name=%s, object=%@\n"),
                         this,
                         i,
@@ -263,7 +259,7 @@ ACE_Service_Repository::~ACE_Service_Repository (void)
   ACE_TRACE ("ACE_Service_Repository::~ACE_Service_Repository");
 #ifndef ACE_NLOGGING
   if(ACE::debug ())
-    ACE_DEBUG ((LM_DEBUG, "ACE (%P|%t) SR::<dtor>, this=%@\n", this));
+    ACELIB_DEBUG ((LM_DEBUG, "ACE (%P|%t) SR::<dtor>, this=%@\n", this));
 #endif
   this->close ();
 }
@@ -345,13 +341,13 @@ ACE_Service_Repository::relocate_i (size_t begin,
       if (ACE::debug ())
         {
           if (type == 0)
-            ACE_DEBUG ((LM_DEBUG,
+            ACELIB_DEBUG ((LM_DEBUG,
                         ACE_TEXT ("ACE (%P|%t) SR::relocate_i - repo=%@ [%d]")
                         ACE_TEXT (": skipping empty slot\n"),
                         this,
                         i));
           else
-            ACE_DEBUG ((LM_DEBUG,
+            ACELIB_DEBUG ((LM_DEBUG,
                         ACE_TEXT ("ACE (%P|%t) SR::relocate_i - repo=%@ [%d]")
                         ACE_TEXT (": trying name=%s, handle: %d -> %d\n"),
                         this,
@@ -368,7 +364,7 @@ ACE_Service_Repository::relocate_i (size_t begin,
         {
 #ifndef ACE_NLOGGING
           if (ACE::debug ())
-            ACE_DEBUG ((LM_DEBUG,
+            ACELIB_DEBUG ((LM_DEBUG,
                         ACE_TEXT ("ACE (%P|%t) SR::relocate_i - repo=%@ [%d]")
                         ACE_TEXT (": relocating name=%s, handle: %d -> %d\n"),
                         this,
@@ -441,7 +437,7 @@ ACE_Service_Repository::insert (const ACE_Service_Type *sr)
   }
 #ifndef ACE_NLOGGING
   if (ACE::debug ())
-    ACE_DEBUG ((LM_DEBUG,
+    ACELIB_DEBUG ((LM_DEBUG,
                 ACE_TEXT ("ACE (%P|%t) SR::insert - repo=%@ [%d],")
                 ACE_TEXT (" name=%s (%C) (type=%@, object=%@, active=%d)\n"),
                 this,
@@ -549,7 +545,7 @@ ACE_Service_Repository::remove_i (const ACE_TCHAR name[], ACE_Service_Type **ps)
 
 #ifndef ACE_NLOGGING
   if (ACE::debug ())
-    ACE_DEBUG ((LM_DEBUG,
+    ACELIB_DEBUG ((LM_DEBUG,
                 ACE_TEXT ("ACE (%P|%t) SR::remove_i - repo=%@ [%d],")
                 ACE_TEXT (" name=%s (removed) (type=%@, active=%d)\n"),
                 this,

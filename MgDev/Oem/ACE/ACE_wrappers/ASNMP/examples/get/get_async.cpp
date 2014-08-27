@@ -1,20 +1,16 @@
-// ============================================================================
-// $Id: get_async.cpp 84565 2009-02-23 08:20:39Z johnnyw $
-// = LIBRARY
-//    asnmp
-//
-// = FILENAME
-//    get.cpp
-//
-// = DESCRIPTION
-//  Sample application demonstrating synchronous Snmp::get API
-//  to access an SNMP Version 1 agent.
-//
-// = AUTHOR
-//  Peter E. Mellquist original code
-//  Michael R MacFaden mrm@cisco.com rework API/ACE integration
-//
-// ============================================================================
+//=============================================================================
+/**
+ *  @file    get_async.cpp
+ *
+ *  $Id: get_async.cpp 93652 2011-03-28 08:55:39Z johnnyw $
+ *
+ *  Sample application demonstrating synchronous Snmp::get API
+ *  to access an SNMP Version 1 agent.
+ *
+ *
+ */
+//=============================================================================
+
 
 /*===================================================================
   Copyright (c) 1996
@@ -39,11 +35,7 @@
 // FUZZ: disable check_for_streams_include
 #include "ace/streams.h"
 
-ACE_RCSID(get, get_async, "$Id: get_async.cpp 84565 2009-02-23 08:20:39Z johnnyw $")
-
-//
 // SNMPv1 Get Application
-//
 class getapp : public Snmp_Result {
   public:
   getapp(int argc, char **argv); // process command line args

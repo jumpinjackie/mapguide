@@ -1,7 +1,7 @@
-// $Id: SSL_SOCK_Stream.cpp 82577 2008-08-09 17:43:11Z mitza $
+// $Id: SSL_SOCK_Stream.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/Handle_Set.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Countdown_Time.h"
 #include "ace/OS_NS_string.h"
 #include "ace/OS_NS_sys_select.h"
@@ -14,10 +14,6 @@
 #if !defined (__ACE_INLINE__)
 #include "SSL_SOCK_Stream.inl"
 #endif /* __ACE_INLINE__ */
-
-ACE_RCSID (ACE_SSL,
-           SSL_SOCK_Stream,
-           "$Id: SSL_SOCK_Stream.cpp 82577 2008-08-09 17:43:11Z mitza $")
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -36,7 +32,7 @@ ACE_SSL_SOCK_Stream::ACE_SSL_SOCK_Stream (ACE_SSL_Context *context)
 
   if (this->ssl_ == 0)
     {
-      ACE_ERROR ((LM_ERROR,
+      ACELIB_ERROR ((LM_ERROR,
                   "(%P|%t) ACE_SSL_SOCK_Stream "
                   "- cannot allocate new SSL structure %p\n",
                   ACE_TEXT ("")));
@@ -413,22 +409,9 @@ ACE_SSL_SOCK_Stream::recv_n (void *buf,
                       timeout);
 
       if (n < 0)
-        {
-          if (errno == EWOULDBLOCK)
-            {
-              // If blocked, try again.
-              n = 0;
-              continue;
-            }
-          else
-            {
-              return -1;
-            }
-        }
+        return -1;
       else if (n == 0)
-        {
-          break;
-        }
+        break;
     }
 
   return ACE_Utils::truncate_cast<ssize_t> (bytes_transferred);
@@ -459,22 +442,9 @@ ACE_SSL_SOCK_Stream::recv_n (void *buf, int len, int flags) const
                       flags);
 
       if (n < 0)
-        {
-          if (errno == EWOULDBLOCK)
-            {
-              // If blocked, try again.
-              n = 0;
-              continue;
-            }
-          else
-            {
-              return -1;
-            }
-        }
+        return -1;
       else if (n == 0)
-        {
-          break;
-        }
+        break;
     }
 
   return ACE_Utils::truncate_cast<ssize_t> (bytes_transferred);
@@ -502,24 +472,10 @@ ACE_SSL_SOCK_Stream::send_n (const void *buf, int len, int flags) const
       n = this->send ((const char*) buf + bytes_transferred,
                       len - bytes_transferred,
                       flags);
-
       if (n < 0)
-        {
-          if (errno == EWOULDBLOCK)
-            {
-              // If blocked, try again.
-              n = 0;
-              continue;
-            }
-          else
-            {
-              return -1;
-            }
-        }
+        return -1;
       else if (n == 0)
-        {
-          break;
-        }
+        break;
     }
 
   return ACE_Utils::truncate_cast<ssize_t> (bytes_transferred);

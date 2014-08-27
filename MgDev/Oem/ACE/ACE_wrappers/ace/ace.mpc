@@ -1,5 +1,5 @@
 //  -*- MPC -*- now wouldn't this be cool...
-// $Id: ace.mpc 90826 2010-06-24 09:07:33Z johnnyw $
+// $Id: ace.mpc 97403 2013-11-01 16:04:32Z johnnyw $
 
 project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, uuid, filecache, versioned_namespace, pkgconfig, support_ostream {
   avoids       = ace_for_tao
@@ -27,7 +27,6 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     ATM_Stream.cpp
     Atomic_Op.cpp
     Atomic_Op_Sparc.c
-    Auto_Event.cpp
     Barrier.cpp
     Base_Thread_Adapter.cpp
     Based_Pointer_Repository.cpp
@@ -41,6 +40,7 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Codeset_IBM1047.cpp
     Codeset_Registry.cpp
     Codeset_Registry_db.cpp
+    Condition_Attributes.cpp
     Condition_Recursive_Thread_Mutex.cpp
     Condition_Thread_Mutex.cpp
     Configuration.cpp
@@ -48,7 +48,6 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Connection_Recycling_Strategy.cpp
     Containers.cpp
     Copy_Disabled.cpp
-    Countdown_Time.cpp
     Date_Time.cpp
     DEV.cpp
     DEV_Addr.cpp
@@ -61,8 +60,9 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Dump.cpp
     Dynamic.cpp
     Dynamic_Message_Strategy.cpp
-    Event.cpp
+    Event_Base.cpp
     Event_Handler.cpp
+    Event_Handler_Handle_Timeout_Upcall.cpp
     FIFO.cpp
     FIFO_Recv.cpp
     FIFO_Recv_Msg.cpp
@@ -78,7 +78,6 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Functor.cpp
     Functor_String.cpp
     Get_Opt.cpp
-    gethrtime.cpp
     Handle_Ops.cpp
     Handle_Set.cpp
     Hashable.cpp
@@ -93,6 +92,7 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Lib_Find.cpp
     Local_Memory_Pool.cpp
     Lock.cpp
+    Log_Category.cpp
     Log_Msg.cpp
     Log_Msg_Backend.cpp
     Log_Msg_Callback.cpp
@@ -109,7 +109,6 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     LSOCK_Stream.cpp
     Malloc.cpp
     Malloc_Allocator.cpp
-    Manual_Event.cpp
     MEM_Acceptor.cpp
     MEM_Addr.cpp
     MEM_Connector.cpp
@@ -131,6 +130,7 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Monitor_Size.cpp
     Monitor_Control_Types.cpp
     Monitor_Control_Action.cpp
+    Monotonic_Time_Policy.cpp
     Multihomed_INET_Addr.cpp
     Mutex.cpp
     Netlink_Addr.cpp
@@ -139,6 +139,7 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Obchunk.cpp
     Object_Manager.cpp
     Object_Manager_Base.cpp
+    Obstack.cpp
     OS_Errno.cpp
     OS_Log_Msg_Attributes.cpp
     OS_main.cpp
@@ -260,6 +261,7 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Thread_Mutex.cpp
     Thread_Semaphore.cpp
     Throughput_Stats.cpp
+    Time_Policy.cpp
     Time_Value.cpp
     Timeprobe.cpp
     TLI.cpp
@@ -282,6 +284,7 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
   }
 
   Template_Files {
+    Abstract_Timer_Queue.cpp
     Acceptor.cpp
     Active_Map_Manager_T.cpp
     ARGV.cpp
@@ -292,6 +295,7 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Asynch_Connector.cpp
     Atomic_Op_T.cpp
     Atomic_Op_GCC_T.cpp
+    Auto_Event.cpp
     Auto_Functor.cpp
     Auto_IncDec_T.cpp
     Auto_Ptr.cpp
@@ -304,9 +308,11 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Condition_T.cpp
     Connector.cpp
     Containers_T.cpp
+    Countdown_Time_T.cpp
     Dump_T.cpp
     Dynamic_Service.cpp
     Env_Value_T.cpp
+    Event.cpp
     Event_Handler_T.cpp
     Framework_Component_T.cpp
     Free_List.cpp
@@ -327,6 +333,7 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Lock_Adapter_T.cpp
     Malloc_T.cpp
     Managed_Object.cpp
+    Manual_Event.cpp
     Map_Manager.cpp
     Map_T.cpp
     Message_Block_T.cpp
@@ -348,17 +355,19 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Stream_Modules.cpp
     String_Base.cpp
     Svc_Handler.cpp
-    Synch_T.cpp
     Refcountable_T.cpp
     TSS_T.cpp
     Task_Ex_T.cpp
     Task_T.cpp
     Test_and_Set.cpp
     Timeprobe_T.cpp
+    Time_Policy_T.cpp
+    Time_Value_T.cpp
     Timer_Hash_T.cpp
     Timer_Heap_T.cpp
     Timer_List_T.cpp
     Timer_Queue_Adapters.cpp
+    Timer_Queue_Iterator.cpp
     Timer_Queue_T.cpp
     Timer_Wheel_T.cpp
     Tokenizer_T.cpp
@@ -381,8 +390,7 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Refcounted_Auto_Ptr.inl
     Reverse_Lock_T.inl
     TSS_T.inl
-    ace_wchar.inl
-    OS.inl
+    Time_Value_T.inl
   }
 
   Header_Files {
@@ -390,15 +398,15 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     recurse = 1
 
     ACE_export.h
-    Array.h
     Bound_Ptr.h
     CE_Screen_Output.h
     Codeset_Symbols.h
     CORBA_macros.h
     Codeset_Symbols.h
     Condition_T.h
+    Countdown_Time.h
     Default_Constants.h
-    Exception_Macros.h
+    Event_Base.h
     Global_Macros.h
     Guard_T.h
     Hash_Map_Manager.h
@@ -409,12 +417,11 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Lock_Adapter_T.h
     Log_Priority.h
     Malloc_Base.h
-    Map.h
-    Method_Object.h
     Metrics_Cache.h
     Metrics_Cache_T.h
     Memory_Pool.h
     Min_Max.h
+    Monotonic_Time_Policy.h
     Netlink_Addr.h
     Null_Barrier.h
     Null_Condition.h
@@ -422,28 +429,21 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Null_Semaphore.h
     Numeric_Limits.h
     OS.h
-    OS_Dirent.h
     OS_Memory.h
     OS_NS_macros.h
-    OS_String.h
     OS_Thread_Adapter.h
-    Obstack.h
     Object_Manager_Base.h
     Obstack.h
-    Pair.h
     Proactor_Impl.h
     Reactor_Impl.h
     Reactor_Timer_Interface.h
-    Refcountable.h
     Refcounted_Auto_Ptr.h
     Reverse_Lock_T.h
     Select_Reactor.h
-    Service_Templates.h
     SOCK_Netlink.h
     SStringfwd.h
     Stack_Trace.h
     Static_Object_Lock.h
-    Strategies.h
     String_Base_Const.h
     Svc_Conf.h
     Svc_Conf_Param.h
@@ -452,6 +452,8 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Synch.h
     Synch_Traits.h
     TSS_T.h
+    Time_Policy.h
+    Time_Value_T.h
     Timer_Hash.h
     Timer_Heap.h
     Timer_List.h
@@ -464,6 +466,7 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
     Version.h
     Versioned_Namespace.h
     ace_wchar.h
+    ace_wchar.inl
     checked_iterator.h
     config-*.h
     config.h
@@ -510,9 +513,9 @@ project(ACE) : ace_output, acedefaults, install, other, codecs, token, svcconf, 
   }
 
   verbatim(gnuace, postinstall) {
-"	perl -i -pe's!\\$$[{(]ACE_ROOT[})]!$(INSTALL_PREFIX)/include!g unless /^\\s*include / || /^INS/' $(INSTALL_PREFIX)/share/ace/include/makeinclude/wrapper_macros.GNU"
-"	perl -i -pe'BEGIN {$$lib = qq($(INSTALL_PREFIX)/$(INSTALL_LIB)); $$lp = qq(-value_project libpaths+=$$lib\\n); $$cl = qq(command_line =)}' -e'if ($$. == 1 && /^$$cl (.*)/ && $$1 !~ /$$lib\\b/) {chomp; print qq($$_ $$lp); $$_ = qq()}' -e'elsif ($$. == 1 && !/^$$cl/) {print qq($$cl $$lp)}' $(INSTALL_PREFIX)/share/ace/bin/MakeProjectCreator/config/MPC.cfg"
-"	perl -i -ne'print unless /^\\s*ARCH\\s*[+?:]?=/' $(INSTALL_PREFIX)/share/ace/include/makeinclude/platform_macros.GNU"
-"	echo export ACE_ROOT=$(INSTALL_PREFIX)/share/ace> $(INSTALL_PREFIX)/share/ace/ace-devel.sh"
+"	perl -i -pe's!\\$$[{(]ACE_ROOT[})]!$(INSTALL_PREFIX)/include!g unless /^\\s*include / || /^INS/' $(DESTDIR)$(INSTALL_PREFIX)/share/ace/include/makeinclude/wrapper_macros.GNU"
+"	perl -i -pe'BEGIN {$$lib = qq($(INSTALL_PREFIX)/$(INSTALL_LIB)); $$lp = qq(-value_project libpaths+=$$lib\\n); $$cl = qq(command_line =)}' -e'if ($$. == 1 && /^$$cl (.*)/ && $$1 !~ /$$lib\\b/) {chomp; print qq($$_ $$lp); $$_ = qq()}' -e'elsif ($$. == 1 && !/^$$cl/) {print qq($$cl $$lp)}' $(DESTDIR)$(INSTALL_PREFIX)/share/ace/bin/MakeProjectCreator/config/MPC.cfg"
+"	perl -i -ne'print unless /^\\s*ARCH\\s*[+?:]?=/' $(DESTDIR)$(INSTALL_PREFIX)/share/ace/include/makeinclude/platform_macros.GNU"
+"	echo export ACE_ROOT=$(INSTALL_PREFIX)/share/ace> $(DESTDIR)$(INSTALL_PREFIX)/share/ace/ace-devel.sh"
   }
 }

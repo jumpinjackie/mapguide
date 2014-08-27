@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: config-win32-mingw.h 87167 2009-10-19 19:33:53Z olli $
+// $Id: config-win32-mingw.h 96943 2013-03-30 09:42:31Z mcorino $
 
 //
 // The following configuration file is designed to work for win32
@@ -14,14 +14,8 @@
 #  error Use config-win32.h in config.h instead of this header
 #endif /* ACE_CONFIG_WIN32_H */
 
-#define ACE_CC_NAME ACE_TEXT ("g++")
 #define ACE_CC_PREPROCESSOR "cpp"
 #define ACE_CC_PREPROCESOR_ARGS ""
-
-// Why all this is not in config-g++-common.h?
-#define ACE_CC_MAJOR_VERSION __GNUC__
-#define ACE_CC_MINOR_VERSION __GNUC_MINOR__
-#define ACE_CC_BETA_VERSION (0)
 
 #if !defined(__MINGW32__)
 #  error You do not seem to be using mingw32
@@ -38,6 +32,12 @@
 #  error You need a newer version (>= 2.0) of mingw32/w32api
 #endif
 
+// In strict ANSI mode (default when using --std=c++0x) the fileno()
+// macro is not defined so use the following work around.
+#if defined(__STRICT_ANSI__)
+# define ACE_FILENO_EQUIVALENT ::_fileno
+#endif
+
 #if (__MINGW32_MAJOR_VERSION >= 3)
 #  define ACE_HAS_SSIZE_T
 #  undef ACE_LACKS_STRUCT_DIR
@@ -51,8 +51,11 @@
 #  define ACE_LACKS_DIRENT_H
 #endif
 
-#if (__MINGW32_MAJOR_VERSION > 3)  || ((__MINGW32_MAJOR_VERSION == 3) && (__MINGW32_MINOR_VERSION >= 15))
+#if (__MINGW32_MAJOR_VERSION > 3) || ((__MINGW32_MAJOR_VERSION == 3) && (__MINGW32_MINOR_VERSION >= 15))
 # undef ACE_LACKS_USECONDS_T
+# if defined (ACE_LACKS_SIGSET_T)
+#   undef ACE_LACKS_SIGSET_T
+# endif
 #endif
 
 #undef ACE_HAS_WTOF
@@ -84,6 +87,8 @@
 #define ACE_LACKS_SYS_IOCTL_H
 #define ACE_LACKS_PDH_H
 #define ACE_LACKS_PDHMSG_H
+#define ACE_LACKS_STRTOK_R
+#define ACE_LACKS_LOCALTIME_R
 #define ACE_HAS_NONCONST_WCSDUP
 #define ACE_HAS_WINSOCK2_GQOS
 #define ACE_ISCTYPE_EQUIVALENT ::_isctype

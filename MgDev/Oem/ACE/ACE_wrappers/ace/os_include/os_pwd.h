@@ -6,7 +6,7 @@
  *
  *  password structure
  *
- *  $Id: os_pwd.h 80826 2008-03-04 14:51:23Z wotte $
+ *  $Id: os_pwd.h 93564 2011-03-16 14:35:58Z olli $
  *
  *  @author Don Hinton <dhinton@dresystems.com>
  *  @author This code was originally in various places including ace/OS.h.
@@ -36,19 +36,6 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-#if !defined (ACE_WIN32)
-// VAC++ doesn't correctly grok the ::getpwnam_r - the function is redefined
-// in pwd.h, and that redefinition is used here
-#  if defined (_AIX) && defined (__IBMCPP__) && (__IBMCPP__ >= 400)
-  extern int _posix_getpwnam_r(const char *, struct passwd *, char *,
-                               int, struct passwd **);
-#  endif /* AIX and VAC++ 4 */
-#endif /* !ACE_WIN32 */
-
-#if defined (DIGITAL_UNIX)
-  extern int _Pgetpwnam_r (const char *, struct passwd *,
-                           char *, size_t, struct passwd **);
-#endif /* DIGITAL_UNIX */
 
 #ifdef __cplusplus
 }

@@ -1,4 +1,5 @@
 #!/bin/sh
+# $Id: add_rel_link.sh 94638 2011-10-06 14:49:29Z johnnyw $
 # This script assumes it is being run by bash
 
 # ======= needed functions ======

@@ -1,12 +1,12 @@
-// $Id: Dump.cpp 80826 2008-03-04 14:51:23Z wotte $
+// $Id: Dump.cpp 96985 2013-04-11 15:50:32Z huangh $
 
 #include "ace/Dump.h"
 #include "ace/Guard_T.h"
 #include "ace/Thread_Mutex.h"
 #include "ace/Object_Manager.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 
-ACE_RCSID(ace, Dump, "$Id: Dump.cpp 80826 2008-03-04 14:51:23Z wotte $")
+
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
