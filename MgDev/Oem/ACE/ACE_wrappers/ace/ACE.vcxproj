@@ -141,7 +141,7 @@
       <AdditionalDependencies>iphlpapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)ACEd.dll</OutputFile>
       <AdditionalLibraryDirectories>.;..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>..\lib\$(Configuration)\ACE.lib</ImportLibrary>
+      <ImportLibrary>..\lib\$(Configuration)\ACEd.lib</ImportLibrary>
     </Link>
     <!-- "postclean" was made-up by MPC for use by vs_postclean.pl.
      Check if msbuild has any support for a custom post-cleaning step
@@ -221,7 +221,7 @@
       <AdditionalDependencies>iphlpapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)ACEd.dll</OutputFile>
       <AdditionalLibraryDirectories>.;..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>..\lib64\$(Configuration)\ACE.lib</ImportLibrary>
+      <ImportLibrary>..\lib64\$(Configuration)\ACEd.lib</ImportLibrary>
       <!--
   Though we can set TargetMachine explicitly, VC++
   can figure it out by project type. We don't need
