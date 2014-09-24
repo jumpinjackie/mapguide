@@ -148,7 +148,7 @@ clean_ace()
 init_dwfcore()
 {
     LIB_NAME="DWFCORE 1.0"
-    pushd DWFTK7.1/develop/global/build/gnu/dwfcore
+    pushd DWFTK/develop/global/build/gnu/dwfcore
     if [ $CLEAN_FLAG -eq 0 ]; then
     	sh ./build_setup.sh
     fi
@@ -157,7 +157,7 @@ init_dwfcore()
 
 build_dwfcore()
 {
-    pushd DWFTK7.1/develop/global/src/dwfcore
+    pushd DWFTK/develop/global/src/dwfcore
     aclocal
     libtoolize --copy --force
     automake --add-missing --copy
@@ -174,7 +174,7 @@ build_dwfcore()
 
 clean_dwfcore()
 {
-    pushd DWFTK7.1/develop/global/src/dwfcore
+    pushd DWFTK/develop/global/src/dwfcore
     make clean
     check_clean
     popd
@@ -188,7 +188,7 @@ clean_dwfcore()
 init_dwftk()
 {
     LIB_NAME="DWFTK 7.1"
-    pushd DWFTK7.1/develop/global/build/gnu/dwftoolkit
+    pushd DWFTK/develop/global/build/gnu/dwftoolkit
     if [ $CLEAN_FLAG -eq 0 ]; then
     	sh ./build_setup.sh
     fi
@@ -197,7 +197,7 @@ init_dwftk()
 
 build_dwftk()
 {
-    pushd DWFTK7.1/develop/global/src/dwf
+    pushd DWFTK/develop/global/src/dwf
     aclocal
     libtoolize --copy --force
     automake --add-missing --copy
@@ -214,7 +214,7 @@ build_dwftk()
 
 clean_dwftk()
 {
-    pushd DWFTK7.1/develop/global/src/dwf
+    pushd DWFTK/develop/global/src/dwf
     make clean
     check_clean
     popd

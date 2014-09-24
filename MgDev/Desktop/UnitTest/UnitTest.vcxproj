@@ -75,7 +75,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\CppUnit-1.9.14\include;..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK\develop\global\src;..\..\Oem\DWFTK\develop\global\src\dwf;..\..\Oem\CppUnit-1.9.14\include;..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -85,7 +85,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>cppunitd.lib;MgDesktopd.lib;FDO.lib;FDOCommon.lib;ACEd.lib;MgFoundationd.lib;MgGeometryd.lib;MgMdfModeld.lib;MgMdfParserd.lib;MgPlatformBased.lib;MgRenderersd.lib;MgStylizationd.lib;xerces-c_3mgD.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\FDO\Lib;..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration);..\..\Common\lib\$(Configuration);..\Lib\debug;..\..\Oem\CppUnit-1.9.14\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\FDO\Lib;..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration);..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration);..\..\Common\lib\$(Configuration);..\Lib\debug;..\..\Oem\CppUnit-1.9.14\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
@@ -123,7 +123,7 @@ xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\CppUnit-1.9.14\include;..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK\develop\global\src;..\..\Oem\DWFTK\develop\global\src\dwf;..\..\Oem\CppUnit-1.9.14\include;..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -133,7 +133,7 @@ xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
     </ClCompile>
     <Link>
       <AdditionalDependencies>cppunitd.lib;MgDesktopd.lib;FDO.lib;FDOCommon.lib;ACEd.lib;MgFoundationd.lib;MgGeometryd.lib;MgMdfModeld.lib;MgMdfParserd.lib;MgPlatformBased.lib;MgRenderersd.lib;MgStylizationd.lib;xerces-c_3mgD.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;..\..\Common\lib\$(Configuration)64;..\Lib\debug64;..\..\Oem\CppUnit-1.9.14\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration)64;..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;..\..\Common\lib\$(Configuration)64;..\Lib\debug64;..\..\Oem\CppUnit-1.9.14\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -169,7 +169,7 @@ xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\CppUnit-1.9.14\include;..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK\develop\global\src;..\..\Oem\DWFTK\develop\global\src\dwf;..\..\Oem\CppUnit-1.9.14\include;..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -178,7 +178,7 @@ xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
     </ClCompile>
     <Link>
       <AdditionalDependencies>cppunit.lib;MgDesktop.lib;FDO.lib;FDOCommon.lib;ACE.lib;MgFoundation.lib;MgGeometry.lib;MgMdfModel.lib;MgMdfParser.lib;MgPlatformBase.lib;MgRenderers.lib;MgStylization.lib;xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\FDO\Lib;..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration);..\..\Common\lib\$(Configuration);..\Lib\release;..\..\Oem\CppUnit-1.9.14\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\FDO\Lib;..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration);..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration);..\..\Common\lib\$(Configuration);..\Lib\release;..\..\Oem\CppUnit-1.9.14\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>FDO.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OptimizeReferences>true</OptimizeReferences>
@@ -221,7 +221,7 @@ xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\CppUnit-1.9.14\include;..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK\develop\global\src;..\..\Oem\DWFTK\develop\global\src\dwf;..\..\Oem\CppUnit-1.9.14\include;..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -230,7 +230,7 @@ xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
     </ClCompile>
     <Link>
       <AdditionalDependencies>cppunit.lib;MgDesktop.lib;FDO.lib;FDOCommon.lib;ACE.lib;MgFoundation.lib;MgGeometry.lib;MgMdfModel.lib;MgMdfParser.lib;MgPlatformBase.lib;MgRenderers.lib;MgStylization.lib;xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;..\..\Common\lib\$(Configuration)64;..\Lib\release64;..\..\Oem\CppUnit-1.9.14\lib64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration)64;..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;..\..\Common\lib\$(Configuration)64;..\Lib\release64;..\..\Oem\CppUnit-1.9.14\lib64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>FDO.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OptimizeReferences>true</OptimizeReferences>

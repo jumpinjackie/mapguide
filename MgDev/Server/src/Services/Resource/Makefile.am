@@ -11,7 +11,7 @@ INCLUDES = \
   -I../../../../Oem/dbxml/install/include \
   -I../../../../Oem/dbxml/dbxml/include \
   -I../../../../Oem/dbxml/dbxml/src \
-  -I../../../../Oem/DWFTK7.1/develop/global/src \
+  -I../../../../Oem/DWFTK/develop/global/src \
   -I../../../../Common/Security \
   -I../../../../Common/Foundation \
   -I../../../../Common/Geometry \

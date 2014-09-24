@@ -130,8 +130,8 @@ mgserver_LDADD = \
 mgserver_LDFLAGS = \
   -R$(map_fdo_lib) \
   -R$(map_srcdir)/Oem/ACE/ACE_wrappers/ace \
-  -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwfcore \
-  -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwf \
+  -R$(map_srcdir)/Oem/DWFTK/develop/global/src/dwfcore \
+  -R$(map_srcdir)/Oem/DWFTK/develop/global/src/dwf \
   -R$(map_srcdir)/Oem/dbxml/install/lib \
   -R$(map_srcdir)/Common/CoordinateSystem/.libs \
   -R$(map_srcdir)/Common/MdfModel/.libs \
@@ -159,8 +159,8 @@ mgserver_LDFLAGS = \
   -R$(map_srcdir)/Server/src/$(map_unittesting_dir)/.libs \
   -L$(map_fdo_lib) \
   -L../../../Oem/ACE/ACE_wrappers/ace \
-  -L../../../Oem/DWFTK7.1/develop/global/src/dwfcore \
-  -L../../../Oem/DWFTK7.1/develop/global/src/dwf \
+  -L../../../Oem/DWFTK/develop/global/src/dwfcore \
+  -L../../../Oem/DWFTK/develop/global/src/dwf \
   -L../../../Oem/dbxml/install/lib \
   -L$(top_builddir)/Common/CoordinateSystem \
   -L../../../Common/MdfModel \
@@ -392,7 +392,6 @@ install-data-local:
 	test -d $(mentor_dict_install_dir) || ($(mkinstalldirs) $(mentor_dict_install_dir); \
 				cp -f -r $(mentor_dict_source_dir)/* $(mentor_dict_install_dir);)
 	@cp -fp ../../../Common/Schema/*.xsd $(schemadir)
-	@cp -fp ../../../Oem/DWFTK7.1/develop/global/fonts/* ${prefix}/bin/
 	@cp -fp ../../../Oem/dbxml/install/bin/db_archive ${prefix}/bin/
 	@cp -fp ../../../Oem/dbxml/install/bin/db_checkpoint ${prefix}/bin/
 	@cp -fp ../../../Oem/dbxml/install/bin/db_dump ${prefix}/bin/

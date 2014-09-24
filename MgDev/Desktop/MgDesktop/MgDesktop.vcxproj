@@ -82,7 +82,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc;..\..\Common\Security;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK\develop\global\src;..\..\Oem\DWFTK\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc;..\..\Common\Security;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;DEBUG;_WINDOWS;_USRDLL;DESKTOP_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -93,10 +93,10 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;ExpressionEngine.lib;ACEd.lib;MgFoundationd.lib;MgGeometryd.lib;MgMdfModeld.lib;MgMdfParserd.lib;MgPlatformBased.lib;MgRenderersd.lib;MgStylizationd.lib;MgGwsCommond.lib;MgGwsQueryEngined.lib;xerces-c_3mgD.lib;dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;MgSecurityd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;ExpressionEngine.lib;ACEd.lib;MgFoundationd.lib;MgGeometryd.lib;MgMdfModeld.lib;MgMdfParserd.lib;MgPlatformBased.lib;MgRenderersd.lib;MgStylizationd.lib;MgGwsCommond.lib;MgGwsQueryEngined.lib;xerces-c_3mgD.lib;dwfcore_wt.1.7.0.lib;dwftk_wt.7.7.0.lib;w3dtk_wt.1.7.1555.lib;whiptk_wt.7.13.601.lib;MgSecurityd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <OutputFile>$(OutDir)MgDesktopd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\FDO\Lib;..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration);..\..\Common\lib\$(Configuration);..\..\Server\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\FDO\Lib;..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration)\vc10.0;..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration);..\..\Common\lib\$(Configuration);..\..\Server\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>FDO.dll;FDOCommon.dll;FDOGeometry.dll;ExpressionEngine.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -121,7 +121,7 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc;..\..\Common\Security;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK\develop\global\src;..\..\Oem\DWFTK\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc;..\..\Common\Security;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;DESKTOP_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -130,9 +130,9 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;ExpressionEngine.lib;ACE.lib;MgFoundation.lib;MgGeometry.lib;MgMdfModel.lib;MgMdfParser.lib;MgPlatformBase.lib;MgRenderers.lib;MgStylization.lib;MgGwsCommon.lib;MgGwsQueryEngine.lib;xerces-c_3mg.lib;dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;MgSecurity.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;ExpressionEngine.lib;ACE.lib;MgFoundation.lib;MgGeometry.lib;MgMdfModel.lib;MgMdfParser.lib;MgPlatformBase.lib;MgRenderers.lib;MgStylization.lib;MgGwsCommon.lib;MgGwsQueryEngine.lib;xerces-c_3mg.lib;dwfcore_wt.1.7.0.lib;dwftk_wt.7.7.0.lib;w3dtk_wt.1.7.1555.lib;whiptk_wt.7.13.601.lib;MgSecurity.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\FDO\Lib;..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration);..\..\Common\lib\$(Configuration);..\..\Server\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\FDO\Lib;..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration)\vc10.0;..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration);..\..\Common\lib\$(Configuration);..\..\Server\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>MgMdfParser.dll;MgGeometry.dll;MgGwsCommon.dll;MgGwsResource.dll;FDO.dll;FDOCommon.dll;MgStylization.dll;FDOGeometry.dll;ExpressionEngine.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -155,7 +155,7 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc;..\..\Common\Security;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK\develop\global\src;..\..\Oem\DWFTK\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc;..\..\Common\Security;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;DEBUG;_WINDOWS;_USRDLL;DESKTOP_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -166,10 +166,10 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;ExpressionEngine.lib;ACEd.lib;MgFoundationd.lib;MgGeometryd.lib;MgMdfModeld.lib;MgMdfParserd.lib;MgPlatformBased.lib;MgRenderersd.lib;MgStylizationd.lib;MgGwsCommond.lib;MgGwsQueryEngined.lib;xerces-c_3mgD.lib;dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;MgSecurityd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;ExpressionEngine.lib;ACEd.lib;MgFoundationd.lib;MgGeometryd.lib;MgMdfModeld.lib;MgMdfParserd.lib;MgPlatformBased.lib;MgRenderersd.lib;MgStylizationd.lib;MgGwsCommond.lib;MgGwsQueryEngined.lib;xerces-c_3mgD.lib;dwfcore_wt.1.7.0.lib;dwftk_wt.7.7.0.lib;w3dtk_wt.1.7.1555.lib;whiptk_wt.7.13.601.lib;MgSecurityd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <OutputFile>$(OutDir)MgDesktopd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;..\..\Common\lib\$(Configuration)64;..\..\Server\lib\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration)64\vc10.0;..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;..\..\Common\lib\$(Configuration)64;..\..\Server\lib\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>FDO.dll;FDOCommon.dll;FDOGeometry.dll;ExpressionEngine.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -197,7 +197,7 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc;..\..\Common\Security;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK\develop\global\src;..\..\Oem\DWFTK\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc;..\..\Common\Security;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;DESKTOP_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -206,9 +206,9 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;ExpressionEngine.lib;ACE.lib;MgFoundation.lib;MgGeometry.lib;MgMdfModel.lib;MgMdfParser.lib;MgPlatformBase.lib;MgRenderers.lib;MgStylization.lib;MgGwsCommon.lib;MgGwsQueryEngine.lib;xerces-c_3mg.lib;dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;MgSecurity.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;ExpressionEngine.lib;ACE.lib;MgFoundation.lib;MgGeometry.lib;MgMdfModel.lib;MgMdfParser.lib;MgPlatformBase.lib;MgRenderers.lib;MgStylization.lib;MgGwsCommon.lib;MgGwsQueryEngine.lib;xerces-c_3mg.lib;dwfcore_wt.1.7.0.lib;dwftk_wt.7.7.0.lib;w3dtk_wt.1.7.1555.lib;whiptk_wt.7.13.601.lib;MgSecurity.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;..\..\Common\lib\$(Configuration)64;..\..\Server\lib\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration)64\vc10.0;..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;..\..\Common\lib\$(Configuration)64;..\..\Server\lib\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>MgMdfParser.dll;MgGeometry.dll;MgGwsCommon.dll;MgGwsResource.dll;FDO.dll;FDOCommon.dll;MgStylization.dll;FDOGeometry.dll;ExpressionEngine.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>

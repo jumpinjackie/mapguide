@@ -27,6 +27,7 @@
 #include "dwf/package/Manifest.h"
 #include "dwf/package/GlobalSection.h"
 #include "dwf/package/EPlotSection.h"
+#include "dwf/package/writer/DWF6PackageWriter.h"
 #include "dwf/package/writer/extensions/6.01/PackageVersionExtension.h"
 
 IMPLEMENT_CREATE_SERVICE(MgServerDrawingService)
@@ -219,10 +220,10 @@ MgByteReader* MgServerDrawingService::GetSection(MgResourceIdentifier* resource,
         STRING tempDwfPathname = MgFileUtil::GenerateTempFileName(false, /*NOXLATE*/L"MGDS");
         DWFFile oDWF(tempDwfPathname.c_str());
 
-        DWFPackageVersionExtension* pVersionExtension =
+        DWF6PackageVersionExtension* pVersionExtension =
             DWFCORE_ALLOC_OBJECT(DWFPackageVersionTypeInfoExtension(DWFInterface::kzEPlot_ID));
 
-        DWFPackageWriter oWriter( oDWF, L"", pVersionExtension );
+        DWF6PackageWriter oWriter( oDWF, L"", pVersionExtension );
 
         // Add section to the writer
         oWriter.addSection(pSection);
@@ -817,10 +818,10 @@ MgByteReader* MgServerDrawingService::GetLayer( MgResourceIdentifier* resource, 
         STRING tempDwfPathname = MgFileUtil::GenerateTempFileName(false, /*NOXLATE*/L"MGDS");
         DWFFile oDWF(MgUtil::WideCharToMultiByte(tempDwfPathname).c_str());
 
-        DWFPackageVersionExtension* pVersionExtension =
+        DWF6PackageVersionExtension* pVersionExtension =
             DWFCORE_ALLOC_OBJECT(DWFPackageVersionTypeInfoExtension(DWFInterface::kzEPlot_ID));
 
-        DWFPackageWriter oWriter( oDWF, L"", pVersionExtension );
+        DWF6PackageWriter oWriter( oDWF, L"", pVersionExtension );
 
         // ... add the section to the writer
         oWriter.addSection(pPage);

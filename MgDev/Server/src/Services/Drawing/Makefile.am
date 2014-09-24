@@ -11,8 +11,8 @@ INCLUDES = \
   -I../../../../Common/Geometry \
   -I../../../../Common/PlatformBase \
   -I../../../../Common/MapGuideCommon \
-  -I../../../../Oem/DWFTK7.1/develop/global/src \
-  -I../../../../Oem/DWFTK7.1/develop/global/src/dwf \
+  -I../../../../Oem/DWFTK/develop/global/src \
+  -I../../../../Oem/DWFTK/develop/global/src/dwf \
   -I../../../../Oem/dbxml/xerces-c-src/src \
   -I../../Common \
   -I../../Common/Base \

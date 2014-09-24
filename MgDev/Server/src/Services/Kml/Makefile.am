@@ -7,7 +7,7 @@ prefix=@prefix@/server
 INCLUDES = \
   -I../../../../Oem/ACE/ACE_wrappers \
   -I../../../../Oem/dbxml/xerces-c-src/src \
-  -I../../../../Oem/DWFTK7.1/develop/global/src \
+  -I../../../../Oem/DWFTK/develop/global/src \
   -I../../../../Common/Foundation \
   -I../../../../Common/Geometry \
   -I../../../../Common/PlatformBase \

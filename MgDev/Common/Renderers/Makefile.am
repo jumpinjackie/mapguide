@@ -7,8 +7,8 @@ INCLUDES = \
   -I../Stylization/ \
   -I$(map_fdo_include) \
   -I$(map_fdo_include)/ExpressionEngine \
-  -I../../Oem/DWFTK7.1/develop/global/src/ \
-  -I../../Oem/DWFTK7.1/develop/global/src/dwf/ \
+  -I../../Oem/DWFTK/develop/global/src/ \
+  -I../../Oem/DWFTK/develop/global/src/dwf/ \
   -I../../Oem/gd/gd/ \
   -I../../Oem/gd/lpng \
   -I../../Oem/gd/freetype/include/ \
@@ -91,5 +91,5 @@ libMgRenderers_la_LIBADD = \
   -ldwftk
 
 libMgRenderers_la_LDFLAGS = -release $(PACKAGE_VERSION) \
-  -L../../Oem/DWFTK7.1/develop/global/src/dwfcore/.libs \
-  -L../../Oem/DWFTK7.1/develop/global/src/dwf/.libs
+  -L../../Oem/DWFTK/develop/global/src/dwfcore/.libs \
+  -L../../Oem/DWFTK/develop/global/src/dwf/.libs

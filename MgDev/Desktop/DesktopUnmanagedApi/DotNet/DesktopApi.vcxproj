@@ -85,7 +85,7 @@ copy ..\dotnet.i .\language.i
     </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\FDO\Inc;..\..\..\Oem\FDO\Inc\ExpressionEngine;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\FDO\Inc;..\..\..\Oem\FDO\Inc\ExpressionEngine;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\DWFTK\develop\global\src;..\..\..\Oem\DWFTK\develop\global\src\dwf;..\..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -115,7 +115,7 @@ copy ..\dotnet.i .\language.i
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\FDO\Inc;..\..\..\Oem\FDO\Inc\ExpressionEngine;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\FDO\Inc;..\..\..\Oem\FDO\Inc\ExpressionEngine;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\DWFTK\develop\global\src;..\..\..\Oem\DWFTK\develop\global\src\dwf;..\..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -153,7 +153,7 @@ copy ..\dotnet.i .\language.i
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\FDO\Inc;..\..\..\Oem\FDO\Inc\ExpressionEngine;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\FDO\Inc;..\..\..\Oem\FDO\Inc\ExpressionEngine;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\DWFTK\develop\global\src;..\..\..\Oem\DWFTK\develop\global\src\dwf;..\..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -186,7 +186,7 @@ copy ..\dotnet.i .\language.i
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\FDO\Inc;..\..\..\Oem\FDO\Inc\ExpressionEngine;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\FDO\Inc;..\..\..\Oem\FDO\Inc\ExpressionEngine;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\DWFTK\develop\global\src;..\..\..\Oem\DWFTK\develop\global\src\dwf;..\..\MgDesktop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>

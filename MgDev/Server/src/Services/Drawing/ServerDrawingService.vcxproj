@@ -94,7 +94,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Resource;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src\dwf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Resource;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\DWFTK\develop\global\src;..\..\..\..\Oem\DWFTK\develop\global\src\dwf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_DRAWING_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -104,9 +104,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;dwfcore_wt.1.7.0.lib;dwftk_wt.7.7.0.lib;w3dtk_wt.1.7.1555.lib;whiptk_wt.7.13.601.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgServerDrawingServiced.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\..\Oem\dbxml\lib\$(Configuration);..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\..\Oem\dbxml\lib\$(Configuration);..\..\..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration)\vc10.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgServerDrawingServiced.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -120,7 +120,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Resource;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src\dwf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Resource;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\DWFTK\develop\global\src;..\..\..\..\Oem\DWFTK\develop\global\src\dwf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_DRAWING_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -130,9 +130,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;dwfcore_wt.1.7.0.lib;dwftk_wt.7.7.0.lib;w3dtk_wt.1.7.1555.lib;whiptk_wt.7.13.601.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgServerDrawingServiced.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\..\Oem\dbxml\lib64\$(Configuration);..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\..\Oem\dbxml\lib64\$(Configuration);..\..\..\..\Oem\DWFTK\develop\global\lib\x64\static\$(Configuration)\vc10.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgServerDrawingServiced.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -146,7 +146,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Resource;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src\dwf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Resource;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\DWFTK\develop\global\src;..\..\..\..\Oem\DWFTK\develop\global\src\dwf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_DRAWING_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -155,9 +155,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;dwfcore_wt.1.7.0.lib;dwftk_wt.7.7.0.lib;w3dtk_wt.1.7.1555.lib;whiptk_wt.7.13.601.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgServerDrawingService.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\..\Oem\dbxml\lib\$(Configuration);..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\..\Oem\dbxml\lib\$(Configuration);..\..\..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration)\vc10.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgServerDrawingService.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -173,7 +173,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Resource;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src\dwf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Resource;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\DWFTK\develop\global\src;..\..\..\..\Oem\DWFTK\develop\global\src\dwf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_DRAWING_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -182,9 +182,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;dwfcore_wt.1.7.0.lib;dwftk_wt.7.7.0.lib;w3dtk_wt.1.7.1555.lib;whiptk_wt.7.13.601.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgServerDrawingService.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\..\Oem\dbxml\lib64\$(Configuration);..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\..\Oem\dbxml\lib64\$(Configuration);..\..\..\..\Oem\DWFTK\develop\global\lib\x64\static\$(Configuration)\vc10.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgServerDrawingService.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>

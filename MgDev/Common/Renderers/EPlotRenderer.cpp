@@ -33,7 +33,7 @@
 #include "dwf/package/Interface.h"
 #include "dwf/package/EPlotSection.h"
 #include "dwf/package/DefinedObject.h"
-#include "dwf/package/writer/PackageWriter.h"
+#include "dwf/package/writer/DWF6PackageWriter.h"
 #include "dwf/package/writer/extensions/6.01/PackageVersionExtension.h"
 
 using namespace DWFToolkit;
@@ -62,10 +62,10 @@ EPlotRenderer::EPlotRenderer(const RS_String& filename,
     // Set the cache for the EPlot sections to be added to the output DWF
     DWFFile oDWF( m_dwfFilename.c_str() );
 
-    DWFPackageVersionExtension* pVersionExtension =
+    DWF6PackageVersionExtension* pVersionExtension =
         DWFCORE_ALLOC_OBJECT(DWFPackageVersionTypeInfoExtension(DWFInterface::kzEPlot_ID));
 
-    m_dwfPackageWriter = new DWFPackageWriter ( oDWF, L"", pVersionExtension);
+    m_dwfPackageWriter = new DWF6PackageWriter ( oDWF, L"", pVersionExtension);
 }
 
 

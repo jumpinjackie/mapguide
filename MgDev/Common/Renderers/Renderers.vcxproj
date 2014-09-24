@@ -95,7 +95,7 @@
     <ClCompile>
       <AdditionalOptions>$(USRCFLAGS) %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\MdfModel;..\Stylization;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\gd\gd;..\..\Oem\gd\freetype\include;..\..\Oem\agg-2.4\include;..\..\Oem\agg-2.4\font_freetype;..\..\Oem\gd\lpng;..\..\Oem\gd\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\MdfModel;..\Stylization;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine;..\..\Oem\DWFTK\develop\global\src;..\..\Oem\DWFTK\develop\global\src\dwf;..\..\Oem\gd\gd;..\..\Oem\gd\freetype\include;..\..\Oem\agg-2.4\include;..\..\Oem\agg-2.4\font_freetype;..\..\Oem\gd\lpng;..\..\Oem\gd\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;RENDERERS_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -105,9 +105,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;gd.lib;freetype235_D.lib;libpngd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dwfcore_wt.1.7.0.lib;dwftk_wt.7.7.0.lib;w3dtk_wt.1.7.1555.lib;whiptk_wt.7.13.601.lib;gd.lib;freetype235_D.lib;libpngd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgRenderersd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);..\..\Oem\gd\build\win32\gd\$(Configuration);..\..\Oem\gd\freetype\objs\$(Configuration);..\..\Oem\gd\lpng\projects\vs\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration)\vc10.0;..\..\Oem\gd\build\win32\gd\$(Configuration);..\..\Oem\gd\freetype\objs\$(Configuration);..\..\Oem\gd\lpng\projects\vs\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgRenderersd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -124,7 +124,7 @@
     <ClCompile>
       <AdditionalOptions>$(USRCFLAGS) %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\MdfModel;..\Stylization;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\gd\gd;..\..\Oem\gd\freetype\include;..\..\Oem\agg-2.4\include;..\..\Oem\agg-2.4\font_freetype;..\..\Oem\gd\lpng;..\..\Oem\gd\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\MdfModel;..\Stylization;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine;..\..\Oem\DWFTK\develop\global\src;..\..\Oem\DWFTK\develop\global\src\dwf;..\..\Oem\gd\gd;..\..\Oem\gd\freetype\include;..\..\Oem\agg-2.4\include;..\..\Oem\agg-2.4\font_freetype;..\..\Oem\gd\lpng;..\..\Oem\gd\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;RENDERERS_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -134,9 +134,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;gd.lib;freetype235_D.lib;libpngd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dwfcore_wt.1.7.0.lib;dwftk_wt.7.7.0.lib;w3dtk_wt.1.7.1555.lib;whiptk_wt.7.13.601.lib;gd.lib;freetype235_D.lib;libpngd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgRenderersd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;..\..\Oem\gd\build\win32\gd\$(Configuration)64;..\..\Oem\gd\freetype\objs\$(Configuration)64;..\..\Oem\gd\lpng\projects\vs\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\DWFTK\develop\global\lib\x64\static\$(Configuration)\vc10.0;..\..\Oem\gd\build\win32\gd\$(Configuration)64;..\..\Oem\gd\freetype\objs\$(Configuration)64;..\..\Oem\gd\lpng\projects\vs\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgRenderersd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -154,7 +154,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\MdfModel;..\Stylization;..\..\Oem\FDO\inc;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\gd\gd;..\..\Oem\gd\freetype\include;..\..\Oem\agg-2.4\include;..\..\Oem\gd\lpng;..\..\Oem\agg-2.4\font_freetype;..\..\Oem\gd\zlib;..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\MdfModel;..\Stylization;..\..\Oem\FDO\inc;..\..\Oem\DWFTK\develop\global\src;..\..\Oem\DWFTK\develop\global\src\dwf;..\..\Oem\gd\gd;..\..\Oem\gd\freetype\include;..\..\Oem\agg-2.4\include;..\..\Oem\gd\lpng;..\..\Oem\agg-2.4\font_freetype;..\..\Oem\gd\zlib;..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;RENDERERS_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -164,9 +164,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;gd.lib;freetype235.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dwfcore_wt.1.7.0.lib;dwftk_wt.7.7.0.lib;w3dtk_wt.1.7.1555.lib;whiptk_wt.7.13.601.lib;gd.lib;freetype235.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgRenderers.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);..\..\Oem\gd\build\win32\gd\$(Configuration);..\..\Oem\gd\freetype\objs\$(Configuration);..\..\Oem\gd\lpng\projects\vs\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration)\vc10.0;..\..\Oem\gd\build\win32\gd\$(Configuration);..\..\Oem\gd\freetype\objs\$(Configuration);..\..\Oem\gd\lpng\projects\vs\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgRenderers.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -189,7 +189,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\MdfModel;..\Stylization;..\..\Oem\FDO\inc;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\gd\gd;..\..\Oem\gd\freetype\include;..\..\Oem\agg-2.4\include;..\..\Oem\gd\lpng;..\..\Oem\agg-2.4\font_freetype;..\..\Oem\gd\zlib;..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\MdfModel;..\Stylization;..\..\Oem\FDO\inc;..\..\Oem\DWFTK\develop\global\src;..\..\Oem\DWFTK\develop\global\src\dwf;..\..\Oem\gd\gd;..\..\Oem\gd\freetype\include;..\..\Oem\agg-2.4\include;..\..\Oem\gd\lpng;..\..\Oem\agg-2.4\font_freetype;..\..\Oem\gd\zlib;..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;RENDERERS_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -199,9 +199,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;gd.lib;freetype235.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dwfcore_wt.1.7.0.lib;dwftk_wt.7.7.0.lib;w3dtk_wt.1.7.1555.lib;whiptk_wt.7.13.601.lib;gd.lib;freetype235.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgRenderers.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;..\..\Oem\gd\build\win32\gd\$(Configuration)64;..\..\Oem\gd\freetype\objs\$(Configuration)64;..\..\Oem\gd\lpng\projects\vs\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\DWFTK\develop\global\lib\x64\static\$(Configuration)\vc10.0;..\..\Oem\gd\build\win32\gd\$(Configuration)64;..\..\Oem\gd\freetype\objs\$(Configuration)64;..\..\Oem\gd\lpng\projects\vs\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgRenderers.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
