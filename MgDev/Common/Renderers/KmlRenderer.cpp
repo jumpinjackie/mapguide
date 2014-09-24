@@ -26,8 +26,8 @@
 
 #include "RenderUtil.h"
 
+const double MIN_KML_THICKNESS = 0.00001;
 const double ELEV_FACTOR = 0.1;
-
 
 //default constructor
 KmlRenderer::KmlRenderer(KmlContent* kmlContent,
@@ -685,7 +685,11 @@ double KmlRenderer::_MeterToPixels(RS_Units unit, double number)
         scale_factor = 1.0 / m_mapScale / m_pixelSize;
     }
 
-    return number * scale_factor;
+    double result = number * scale_factor;
+    //We cannot apply a thickness of 0 as this will cause Google Earth to draw nothing
+    //so if the thickness computes to 0, replace it with a very small value that's greater
+    //than 0
+    return result == 0.0 ? MIN_KML_THICKNESS : result;
 }
 
 
