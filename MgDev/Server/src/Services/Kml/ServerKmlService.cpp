@@ -32,8 +32,7 @@
 //Zip support from DWF toolkit
 #include "dwfcore/ZipFileDescriptor.h"
 
-const STRING LL84_WKT = L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137,298.25722293287],TOWGS84[0,0,0,0,0,0,0]],PRIMEM[\"Greenwich\",0],UNIT[\"Degrees\",0.01745329252]]";
-const STRING GOOGLE_EARTH_WKT = LL84_WKT;
+const STRING GOOGLE_EARTH_CS = L"LL84";
 
 IMPLEMENT_CREATE_SERVICE(MgServerKmlService)
 
@@ -103,7 +102,7 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, double dpi, CREFSTRING a
         if(!mapWkt.empty())
         {
             Ptr<MgCoordinateSystem> mapCs = (mapWkt.empty()) ? NULL : m_csFactory->Create(mapWkt);
-            Ptr<MgCoordinateSystem> llCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
+            Ptr<MgCoordinateSystem> llCs = m_csFactory->CreateFromCode(GOOGLE_EARTH_CS);
             Ptr<MgCoordinateSystemTransform> trans = m_csFactory->GetTransform(mapCs, llCs);
             trans->IgnoreDatumShiftWarning(true);
             trans->IgnoreOutsideDomainWarning(true);
@@ -159,7 +158,7 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
     KmlContent kmlContent;
     kmlContent.StartDocument();
     kmlContent.WriteString("<visibility>1</visibility>");
-    Ptr<MgCoordinateSystem> destCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
+    Ptr<MgCoordinateSystem> destCs = m_csFactory->CreateFromCode(GOOGLE_EARTH_CS);
     Ptr<MgEnvelope> destExtent = GetLayerExtent(ldf.get(), destCs);
     if(destExtent != NULL)
     {
@@ -264,7 +263,8 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
         Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
         siteConn->Open(userInfo);
         Ptr<MgMap> map = new MgMap(siteConn);
-        map->Create(GOOGLE_EARTH_WKT, extents, L"Google Earth Map");
+        STRING mapWkt = m_csFactory->ConvertCoordinateSystemCodeToWkt(GOOGLE_EARTH_CS);
+        map->Create(mapWkt, extents, L"Google Earth Map");
         map->SetDisplayWidth(width);
         map->SetDisplayHeight(height);
         map->SetDisplayDpi((int)dpi);
@@ -465,7 +465,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
                              layer->GetExpandInLegend(),
                             -layer->GetDisplayOrder(),
                              uig);
-    Ptr<MgCoordinateSystem> destCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
+    Ptr<MgCoordinateSystem> destCs = m_csFactory->CreateFromCode(GOOGLE_EARTH_CS);
     double metersPerUnit = (destCs.p != NULL)? destCs->ConvertCoordinateSystemUnitsToMeters(1.0) : 1.0;
 
     Ptr<MgCoordinate> ll = extents->GetLowerLeftCoordinate();
@@ -551,7 +551,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
 
 double MgServerKmlService::GetScale(MgEnvelope* llExtents, int width, int height, double dpi)
 {
-    Ptr<MgCoordinateSystem> destCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
+    Ptr<MgCoordinateSystem> destCs = m_csFactory->CreateFromCode(GOOGLE_EARTH_CS);
     double mapWidth = destCs->ConvertCoordinateSystemUnitsToMeters(llExtents->GetWidth());
     double mapHeight = destCs->ConvertCoordinateSystemUnitsToMeters(llExtents->GetHeight());
     double screenWidth = width / dpi * METERS_PER_INCH;
