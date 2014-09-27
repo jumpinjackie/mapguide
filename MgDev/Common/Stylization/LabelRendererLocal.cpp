@@ -351,7 +351,8 @@ void LabelRendererLocal::ProcessLabelGroup(SE_LabelInfo*    labels,
     }
 
     // remember the feature bounds for the label group
-    m_labelGroups.back().m_feature_bounds = path->bounds();
+    // the path is NULL when it is a point feature, set m_feature_bounds to an invalid RS_Bounds.
+    m_labelGroups.back().m_feature_bounds = path ? path->bounds() : RS_Bounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
 
     EndOverpostGroup();
 }
@@ -629,25 +630,28 @@ void LabelRendererLocal::BlastLabels()
             int tMaxY = (int)floor((maxY - tileMinY) / tileHgt);
 
             // check if the leftmost tile can "see" the group
-            double reqMaxX = tileMinX + (double)(tMinX + 1) * tileWid + offset; // right edge of the tile's request extent
-            if (group.m_feature_bounds.minx > reqMaxX)                          // feature lies to the right of this edge
-                continue;
+            // m_feature_bounds is invalid for point feature
+            if (group.m_feature_bounds.IsValid())
+            {
+                double reqMaxX = tileMinX + (double)(tMinX + 1) * tileWid + offset; // right edge of the tile's request extent
+                if (group.m_feature_bounds.minx > reqMaxX)                          // feature lies to the right of this edge
+                    continue;
 
-            // check if the rightmost tile can "see" the group
-            double reqMinX = tileMinX + (double)(tMaxX    ) * tileWid - offset; // left edge of the tile's request extent
-            if (group.m_feature_bounds.maxx < reqMinX)                          // feature lies to the left of this edge
-                continue;
+                // check if the rightmost tile can "see" the group
+                double reqMinX = tileMinX + (double)(tMaxX    ) * tileWid - offset; // left edge of the tile's request extent
+                if (group.m_feature_bounds.maxx < reqMinX)                          // feature lies to the left of this edge
+                    continue;
 
-            // check if the bottommost tile can "see" the group
-            double reqMaxY = tileMinY + (double)(tMinY + 1) * tileHgt + offset; // top edge of tile's request extent
-            if (group.m_feature_bounds.miny > reqMaxY)                          // feature lies above this edge
-                continue;
+                // check if the bottommost tile can "see" the group
+                double reqMaxY = tileMinY + (double)(tMinY + 1) * tileHgt + offset; // top edge of tile's request extent
+                if (group.m_feature_bounds.miny > reqMaxY)                          // feature lies above this edge
+                    continue;
 
-            // check if the topmost tile can "see" the group
-            double reqMinY = tileMinY + (double)(tMaxY    ) * tileHgt - offset; // bottom edge of tile's request extent
-            if (group.m_feature_bounds.maxy < reqMinY)                          // feature lies below this edge
-                continue;
-
+                // check if the topmost tile can "see" the group
+                double reqMinY = tileMinY + (double)(tMaxY    ) * tileHgt - offset; // bottom edge of tile's request extent
+                if (group.m_feature_bounds.maxy < reqMinY)                          // feature lies below this edge
+                    continue;
+            }
             //-------------------------------------------------------
             // check more involved cases
             //-------------------------------------------------------
@@ -1091,8 +1095,9 @@ void LabelRendererLocal::ProcessLabelGroupsInternal(SimpleOverpost* pMgr, std::v
                                             pGroup->m_exclude,
                                             pGroup->m_type != RS_OverpostType_All);
 
-            // only in the case of a simple label do we check the overpost type
-            if (pGroup->m_algo == laSimple)
+            // in the case of a simple label do we check the overpost type
+            // we also need to check the overpost type for point feature even if it is a SE symbol
+            if (pGroup->m_algo == laSimple || pGroup->m_algo == laSESymbol)
             {
                 if (res && (pGroup->m_type == RS_OverpostType_FirstFit))
                     break;
