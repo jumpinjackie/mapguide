@@ -1207,7 +1207,7 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
     if (!fts)
         return NULL;
 
-    RS_Color bgcolor(255, 255, 255, 255);
+    RS_Color bgcolor(255, 255, 255, 0);
 
     // get the right renderer going
     AGGRenderer er(imgWidth, imgHeight, bgcolor, false, false, 0.0);
