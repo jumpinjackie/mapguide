@@ -181,13 +181,13 @@ clean_dwfcore()
 }
 
 #**********************************************************
-# Build DWFTOOLKIT 7.1
+# Build DWFTOOLKIT 7.7
 # Notes: none
 #**********************************************************
 
 init_dwftk()
 {
-    LIB_NAME="DWFTK 7.1"
+    LIB_NAME="DWFTK 7.7"
     pushd DWFTK/develop/global/build/gnu/dwftoolkit
     if [ $CLEAN_FLAG -eq 0 ]; then
     	sh ./build_setup.sh
