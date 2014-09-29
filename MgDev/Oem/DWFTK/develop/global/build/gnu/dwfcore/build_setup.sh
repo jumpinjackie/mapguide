@@ -11,6 +11,6 @@ cd ../../../src/dwfcore
 cp -f ../../build/gnu/dwfcore/files/* .
 echo "Configuring..."
 rm -rf autom4te.cache/
-autoreconf --force
+autoreconf --force --install
 echo "Done."
 

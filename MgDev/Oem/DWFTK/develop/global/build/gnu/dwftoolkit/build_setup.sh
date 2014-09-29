@@ -11,6 +11,6 @@ cd ../../../src/dwf
 cp -f ../../build/gnu/dwftoolkit/files/* .
 echo "Configuring..."
 rm -rf autom4te.cache/
-autoreconf --force
+autoreconf --force --install
 echo "Done."
 
