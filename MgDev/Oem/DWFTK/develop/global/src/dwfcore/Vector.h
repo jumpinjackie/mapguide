@@ -560,7 +560,7 @@ public:
         _tSTLConstIterator iter = this->_oVector.begin();
         for (; iter!=this->_oVector.end(); ++iter)
         {
-            if (_tEquals(*iter, oValue))
+            if (this->_tEquals(*iter, oValue))
             {
                 ++nCount;
             }
@@ -588,7 +588,7 @@ public:
         _tSTLConstIterator iter = this->_oVector.begin();
         for (; iter!=this->_oVector.end(); ++iter)
         {
-            if (_tEquals( oValue, *iter ))
+            if (this->_tEquals( oValue, *iter ))
             {
                 return true;
             }
@@ -619,7 +619,7 @@ public:
         unsigned int i = 0;
         for (; it != this->_oVector.end(); ++it, ++i)
         {
-            if (_tEquals( oValue, *it ))
+            if (this->_tEquals( oValue, *it ))
             {
                 oIndices.push_back( i );
             }

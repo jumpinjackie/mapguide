@@ -868,7 +868,7 @@ public:
             // If the current key is equal to that supplied then just update the value
             // and we are done.
             //
-        if ((pCurrentNode != NULL) && _tEquals(pCurrentNode->key(), rKey))
+        if ((pCurrentNode != NULL) && this->_tEquals(pCurrentNode->key(), rKey))
         {
                 //
                 // Iterate through all previously last-visited nodes of each level and update
@@ -957,7 +957,7 @@ public:
             // If the current key is equal to that supplied then just update the value
             // and we are done.
             //
-        if ((pCurrentNode != NULL) && (_tEquals(pCurrentNode->key(), rKey)))
+        if ((pCurrentNode != NULL) && (this->_tEquals(pCurrentNode->key(), rKey)))
         {                  
             if (bReplace)
             {
@@ -1066,7 +1066,7 @@ private:
             //
             // If the node was found then return the value. 
             //
-        if ((pCurrentNode != NULL) && (_tEquals(pCurrentNode->key(), rKey)))
+        if ((pCurrentNode != NULL) && (this->_tEquals(pCurrentNode->key(), rKey)))
         {
             return pCurrentNode;
         }
