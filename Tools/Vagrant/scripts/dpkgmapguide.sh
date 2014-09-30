@@ -5,38 +5,53 @@
 #   control - generated all packages control file with subst params
 #   changelog - generated changelog file
 #   substvars - subst params created by dpkg-shlibdeps
+#   mapguideplatformbase/ - packaging directory for common MapGuide components
+#     usr/local/mapguideopensource-3.0.0/ - copied tree for common components
+#     DEBIAN/
+#       control - control file generated from dpkg-gencontrol
+#       symbols - symbols file generated from dpkg-gensymbols
+#
 #   mapguidecommon/ - packaging directory for common MapGuide components
-#     usr/local/mapguideopensource-2.4.0/ - copied tree for common components
+#     usr/local/mapguideopensource-3.0.0/ - copied tree for common components
+#     DEBIAN/
+#       control - control file generated from dpkg-gencontrol
+#       symbols - symbols file generated from dpkg-gensymbols
+#
+#   mapguidecoordsys/ - packaging directory for CS-Map coordinate system dictionaries
+#     usr/local/mapguideopensource-3.0.0/ - copied tree for common components
+#     DEBIAN/
+#       control - control file generated from dpkg-gencontrol
+#       symbols - symbols file generated from dpkg-gensymbols
+#
+#   mapguidecoordsyslite/ - packaging directory for CS-Map coordinate system dictionaries
+#     usr/local/mapguideopensource-3.0.0/ - copied tree for common components
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 #
 #   mapguideserver/ - packaging directory for MapGuide Server
-#     usr/local/mapguideopensource-2.4.0/ - copied tree for Server
+#     usr/local/mapguideopensource-3.0.0/ - copied tree for Server
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 #
 #   mapguidewebextensions/ - packaging directory for Web Extensions
-#     usr/local/mapguideopensource-2.4.0/ - copied tree for Web Extensions
+#     usr/local/mapguideopensource-3.0.0/ - copied tree for Web Extensions
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 #
 #   mapguidehttpd/ - packaging directory for Apache Bundle
-#     usr/local/mapguideopensource-2.4.0/ - copied tree for Apache bundle
+#     usr/local/mapguideopensource-3.0.0/ - copied tree for Apache bundle
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
-# 
 #
-# Make sure setvars.sh is called first before running this script
 
 BUILDROOT=`pwd`
-MGBUILD=2.6.0
+MGBUILD=3.0.0
+FDOBUILD=3.9.0
 MGINST=usr/local/mapguideopensource-${MGBUILD}
-ROOT=${BUILDROOT}/debian/mapguidecommon
-TREE=${BUILDROOT}/debian
 CPROOT=${ROOT}/${MGINST}
 
 # Create output directory structure and ignore errors
@@ -90,12 +105,33 @@ Section: misc
 Priority: optional
 Homepage: http://mapguide.osgeo.org
 
+Package: mapguideopensource-platformbase
+Architecture: ${ARCH}
+Section: misc
+Priority: optional
+Depends: \${mapguideplatformbase:Depends}
+Description:  Base platform components for OSGeo MapGuide ${MGBUILD}
+
 Package: mapguideopensource-common
 Architecture: ${ARCH}
 Section: misc
 Priority: optional
 Depends: \${mapguidecommon:Depends}
-Description:  OSGeo MapGuide ${MGBUILD} common components
+Description:  OSGeo MapGuide ${MGBUILD} server-specific common components
+
+Package: mapguideopensource-coordsys
+Architecture: ${ARCH}
+Section: msic
+Priority: optional
+Depends: \${mapguidecoordsys:Depends}
+Description:  CS-Map Coordinate System Dictionary data files
+
+Package: mapguideopensource-coordsys-lite
+Architecture: ${ARCH}
+Section: msic
+Priority: optional
+Depends: \${mapguidecoordsys:Depends}
+Description:  CS-Map Coordinate System Dictionary data files. Lite version. Excludes country-specific grid files
 
 Package: mapguideopensource-server
 Architecture: ${ARCH}
@@ -137,13 +173,45 @@ END-OF-CHANGELOG
 wget -N http://svn.osgeo.org/mapguide/trunk/MgDev/License.txt -O tmp/copyright
 iconv -f ISO-8859-1 -t UTF-8 tmp/copyright > debian/copyright
 
-PACKAGENAME=mapguideopensource-common
-PACKAGEDIR=mapguidecommon
-DIRLIST="lib share"
+MGINST=usr/local/mapguideopensource-${MGBUILD}
+PACKAGENAME=mapguideopensource-platformbase
+PACKAGEDIR=mapguideplatformbase
+ROOT=${BUILDROOT}/debian/mapguideplatformbase
+TREE=${BUILDROOT}/debian
+CPROOT=${ROOT}/${MGINST}
+DIRLIST="lib"
 REMOVELIST="\.a\$ \.la\$"
 STRIPLIST="\.so\$ libdwf"
+EXCLUDEFILE=platformbase_excludes.txt
 
 source ./dpkgbuild.sh
+
+MGINST=usr/local/mapguideopensource-${MGBUILD}
+PACKAGENAME=mapguideopensource-common
+PACKAGEDIR=mapguidecommon
+ROOT=${BUILDROOT}/debian/mapguidecommon
+TREE=${BUILDROOT}/debian
+CPROOT=${ROOT}/${MGINST}
+DIRLIST="lib"
+REMOVELIST="\.a\$ \.la\$"
+STRIPLIST="\.so\$ libdwf"
+EXCLUDEFILE=mapguidecommon_excludes.txt
+
+source ./dpkgbuild.sh
+
+EXCLUDEFILE=
+PACKAGENAME=mapguideopensource-coordsys
+PACKAGEDIR=mapguidecoordsys
+ROOT=${BUILDROOT}/debian/mapguidecoordsys
+TREE=${BUILDROOT}/debian
+CPROOT=${ROOT}/${MGINST}
+DIRLIST="share"
+REMOVELIST="\.a\$ \.la\$ \.c\$ \.o\$ \.mak\$ \.nmk\$"
+STRIPLIST="\.so\$"
+
+source ./dpkgbuild.sh
+
+source ./csmap_optimize.sh
 
 MGINST=usr/local/mapguideopensource-${MGBUILD}/server
 ROOT=${BUILDROOT}/debian/mapguideserver

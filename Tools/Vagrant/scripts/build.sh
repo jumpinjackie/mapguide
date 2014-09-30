@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Global vars for this script. Modify as necessary
-APIVERSION=2.6
+APIVERSION=3.0
 BUILDNUM=${APIVERSION}.0
 BUILDROOT=`pwd`
 MGCPUPLATFORM=i386
+MGDEBUG=0
 INSTALLROOT=/usr/local/mapguideopensource-${BUILDNUM}
 #INSTALLROOT=/usr/local/mapguideopensource-trunk
 LOCKFILEDIR=/var/lock/mgserver
@@ -26,6 +27,7 @@ echo " MapGuide will be installed to: ${INSTALLROOT}"
 echo " SVN Source is: ${SVNROOT}${SVNRELPATH}"
 echo " Make Options: ${MY_MAKE_OPTS}"
 echo " Is Ubuntu?: ${UBUNTU}"
+echo " Debug Build?: ${MGDEBUG}"
 echo " Preserving the build dir?: ${PRESERVE_BUILD_ROOT}"
 echo " JAVA_HOME: ${JAVA_HOME}"
 echo "******************************************************************"
@@ -61,7 +63,7 @@ if [ ! ${PRESERVE_BUILD_ROOT} -eq 1 -o ! -d ${MGSOURCE} ];
 then
     if [ ! -d ${MGSOURCE} ];
     then
-    	echo "Build root ${MGSOURCE} does not exist. Doing svn export"
+        echo "Build root ${MGSOURCE} does not exist. Doing svn export"
     fi
     echo "Exporting svn revision ${REVISION}"
     if [ ${LOCALSVN} -eq 1 ] 
@@ -69,13 +71,51 @@ then
         echo "Making local SVN copy of ${SVNROOT}${SVNRELPATH} to ${MGSOURCE}"
         cp -R ${SVNROOT}${SVNRELPATH} ${MGSOURCE}
         echo "Cleaning out .svn directories"
-	pushd ${MGSOURCE}
+    pushd ${MGSOURCE}
         find . -name .svn -exec rm -rf {} \;
-	popd
+    popd
     else
         echo "Performing fresh SVN export of ${SVNROOT}${SVNRELPATH} (r${REVISION}) to ${MGSOURCE}"
         svn export -q -r ${REVISION} ${SVNROOT}${SVNRELPATH} ${MGSOURCE}
     fi
+fi
+
+if [ ${UBUNTU} -eq 1 ];
+then
+    echo "[info]: Performing Ubuntu-specific modifications"
+    # GCC 4.8 is causing too much instability, so downgrade one version
+    #GCCVER=4.7
+    #export GCCVER
+    #CC=gcc-$GCCVER
+    #export CC
+    #CXX=g++-$GCCVER
+    #export CXX
+    #echo "[info]: Using GCC $GCCVER for Ubuntu"
+
+    # Patch some build scripts and makefiles to accept our chosen compiler
+
+    # CS-Map Dictionary Compiler
+    #echo "[info]: Patch CS-Map compiler makefile"
+    #sed -i 's/gcc \$/'"$CC"' \$/g' ${MGSOURCE}/Oem/CsMap/Dictionaries/Compiler.mak
+    #sed -i 's/gcc -v/'"$CC"' -v/g' ${MGSOURCE}/Oem/CsMap/Dictionaries/Compiler.mak
+
+    # libpng makefile
+    #echo "[info]: Patch libpng makefile"
+    #sed -i 's/CC=cc/CC='"$CC"'/g' ${MGSOURCE}/Oem/gd/lpng/scripts/makefile.std
+
+    # AGG 2.4 Linux Makefile
+    #echo "[info]: Replace agg-2.4 makefile"
+    #echo "AGGLIBS= -lagg " > ${MGSOURCE}/Oem/agg-2.4/Makefile.in.Linux
+    #echo "AGGCXXFLAGS = -O3 -I/usr/X11R6/include -L/usr/X11R6/lib" >> ${MGSOURCE}/Oem/agg-2.4/Makefile.in.Linux
+    #echo "CXX = $CXX" >> ${MGSOURCE}/Oem/agg-2.4/Makefile.in.Linux
+    #echo "C = $CC" >> ${MGSOURCE}/Oem/agg-2.4/Makefile.in.Linux
+    #echo "LIB = ar cr" >> ${MGSOURCE}/Oem/agg-2.4/Makefile.in.Linux
+    #echo "" >> ${MGSOURCE}/Oem/agg-2.4/Makefile.in.Linux
+    #echo ".PHONY : clean" >> ${MGSOURCE}/Oem/agg-2.4/Makefile.in.Linux
+else
+    echo "[info]: Performing CentOS-specific modifications"
+    #sed -i 's/sh .\/buildall.sh/sh .\/buildall.sh --with-xerces-conf=--enable-transcoder-iconv/g' ${MGSOURCE}/build_oem.sh
+    #sed -i 's/sh .\/buildall.sh --with-xerces-conf=--enable-transcoder-iconv --clean/sh .\/buildall.sh --clean/g' ${MGSOURCE}/build_oem.sh
 fi
 
 start_time=`date +%s`
@@ -89,6 +129,7 @@ echo 'const STRING ProductVersion = L"'${BUILDNUM}'.'${REVISION}'";' >> ${VERFIL
 echo 'const STRING ApiVersion     = L"'${APIVERSION}'";' >> ${VERFILE}
 echo '#endif' >> ${VERFILE}
 
+# Note: Remove for trunk as this has been included into build_oem.sh
 echo "Building LinuxApt"
 pushd ${MGSOURCE}/Oem/LinuxApt
 BUILD_COMPONENT="LinuxApt"
@@ -98,9 +139,25 @@ popd
 
 echo "Building Oem"
 BUILD_COMPONENT="Oem"
-./build_oem.sh --prefix ${INSTALLROOT}
-check_build
+if [ $(uname -m) = "x86_64" ]; then
+    if [ ${MGDEBUG} -eq 1 ]; then
+        ./build_oem.sh --prefix ${INSTALLROOT} --build 64 --config debug
+        check_build
+    else
+        ./build_oem.sh --prefix ${INSTALLROOT} --build 64
+        check_build
+    fi
+else
+    if [ ${MGDEBUG} -eq 1 ]; then
+        ./build_oem.sh --prefix ${INSTALLROOT} --config debug
+        check_build
+    else
+        ./build_oem.sh --prefix ${INSTALLROOT}
+        check_build
+    fi
+fi
 
+# Note: Remove for trunk as this has been included into build_oem.sh
 echo "Building Fusion"
 pushd ${MGSOURCE}/Oem/fusion
 BUILD_COMPONENT="Fusion"
@@ -117,10 +174,18 @@ automake --add-missing --copy
 autoconf
 if [ $(uname -m) = "x86_64" ]; then
     MGCPUPLATFORM=amd64
-    ./configure --enable-optimized --enable-silent-rules --enable-64bit --prefix=${INSTALLROOT}
+    if [ ${MGDEBUG} -eq 1 ]; then
+        ./configure --disable-optimized --enable-silent-rules --enable-64bit --prefix=${INSTALLROOT}
+    else
+        ./configure --enable-optimized --enable-silent-rules --enable-64bit --prefix=${INSTALLROOT}
+    fi
 else
     MGCPUPLATFORM=i386
-    ./configure --enable-optimized --enable-silent-rules --prefix=${INSTALLROOT}
+    if [ ${MGDEBUG} -eq 1 ]; then
+        ./configure --disable-optimized --enable-silent-rules --prefix=${INSTALLROOT}
+    else
+        ./configure --enable-optimized --enable-silent-rules --prefix=${INSTALLROOT}
+    fi
 fi
 make $MY_MAKE_OPTS
 check_build

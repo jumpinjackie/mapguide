@@ -10,4 +10,4 @@ Ubuntu 14.04
 
 Need atomic.h copied to /usr/include/asm/atomic.h
 
-build-essential bison automake libtool libpng-dev libjpeg62-dev libxslt-dev libfreetype6-dev libpcre3-dev openjdk-7-jdk subversion lintian ant scons dos2unix libldap-dev libssl-dev libcurl4-openssl-dev libexpat-dev libmysqlclient-dev unixODBC-dev python-dev libpq-dev libcppunit-dev
+build-essential bison automake libtool libc6-dev libpng-dev libjpeg62-dev libxslt-dev libfreetype6-dev libpcre3-dev openjdk-7-jdk subversion lintian ant scons dos2unix libldap-dev libssl-dev libcurl4-openssl-dev libexpat-dev libmysqlclient-dev unixODBC-dev python-dev libpq-dev libcppunit-dev

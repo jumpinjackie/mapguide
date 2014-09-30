@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "vagrant-trusty64"
+  config.vm.box = "vagrant-precise64"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
@@ -126,19 +126,41 @@ check_build()
 		exit $error
 	fi
 }
+check_test()
+{
+	error=$?
+	if [ $error -ne 0 ]; then
+		echo "[warning]: ${BUILD_COMPONENT} - Unit Tests failed ($error)"
+		echo "[warning]: ${BUILD_COMPONENT} - Unit Tests failed ($error)" >> ~/unit_test_status.log
+	fi
+}
 cd ~
 echo [provision]: Home directory is `pwd`
 echo [provision]: Checking directories
 HAVE_FDO=0
 HAVE_FDO_LIBS=0
 HAVE_MAPGUIDE=0
-MG_UNIT_TEST=0
+MG_UNIT_TEST=1
+FDO_UNIT_TEST=1
 SCRIPT_ROOT=~/scripts
 FDO_SRC_ROOT=~/fdo
-FDO_SRC=$FDO_SRC_ROOT/trunk
+FDO_VER_MM=3.9
+FDO_VER_FULL=${FDO_VER_MM}.0
+MG_VER_MM=3.0
+MG_VER_FULL=${MG_VER_MM}.0
+FDO_SRC_DIR=trunk
+FDO_SRC=$FDO_SRC_ROOT/$FDO_SRC_DIR
 FDO_LIB_SRC=~/fdo_rdbms_thirdparty
 MG_SRC_ROOT=~/mapguide/trunk
 MG_SRC=$MG_SRC_ROOT/MgDev
+FDO_TARBALL=fdo-checkout.tar.gz
+MG_TARBALL=mapguide-checkout.tar.gz
+
+HAVE_FDO_SDK=0
+FDO_SDK_PKG_PATH=~/fdosdk
+FDO_SDK_TARBALL=
+FDO_INST=/usr/local/fdo-${FDO_VER_FULL}
+
 if [ -d $FDO_SRC ]; 
 then
     HAVE_FDO=1
@@ -151,6 +173,21 @@ if [ -d $MG_SRC ];
 then
     HAVE_MAPGUIDE=1
 fi
+if [ -f /mapguide_sources/fdosdk_filename ] && [ -f /mapguide_sources/fdosdk_rev ] && [ -d /mapguide_sources/filelist ];
+then
+    FDO_SDK_TARBALL=`cat /mapguide_sources/fdosdk_filename`
+    FDO_REV=`cat /mapguide_sources/fdosdk_rev`
+    if [ -f /mapguide_sources/$FDO_SDK_TARBALL ];
+    then
+        sudo mkdir -p ${FDO_INST}
+        sudo tar -zxf /mapguide_sources/$FDO_SDK_TARBALL -C ${FDO_INST}
+        HAVE_FDO_SDK=1
+        FDO_UNIT_TEST=0
+        echo [provision]: Using FDO SDK. Not building from source. Not running FDO unit tests.
+    fi
+else
+    echo [provision]: FDO SDK not found. Building FDO from source.
+fi
 if [ -f /usr/include/asm/atomic.h ];
 then
     echo [provision]: atomic.h exists. Doing nothing
@@ -159,12 +196,27 @@ else
     sudo mkdir -p /usr/include/asm
     sudo cp /mapguide_sources/atomic.h /usr/include/asm
 fi
-echo [provision]: Checking libraries
-sudo apt-get install -y libpq-dev libmysqlclient-dev
+#echo [provision]: Checking libraries
+#sudo apt-get install -y libpq-dev libmysqlclient-dev
+echo [provision]: Clean line endings
+sudo dos2unix /vagrant/*.sh
+sudo dos2unix /vagrant/*.pl
+sudo dos2unix /vagrant/*.txt
 echo [provision]: Copying shell scripts
 mkdir -p $SCRIPT_ROOT
+if [ $HAVE_FDO_SDK -eq 1 ];
+then
+    echo [provision]: Prepare package build area for FDO SDK
+    mkdir -p $FDO_SDK_PKG_PATH
+    cp -R /mapguide_sources/filelist $FDO_SDK_PKG_PATH
+    cp -f /vagrant/dpkgfdo.sh $FDO_SDK_PKG_PATH
+    cp -f /vagrant/dpkgfdocore.sh $FDO_SDK_PKG_PATH
+    cp -f /vagrant/dpkgfdoprovider.sh $FDO_SDK_PKG_PATH
+    cp -f /vagrant/revnum.pl $FDO_SDK_PKG_PATH
+fi
 cp -f /vagrant/*.sh $SCRIPT_ROOT
 cp -f /vagrant/*.pl $SCRIPT_ROOT
+cp -f /vagrant/*.txt $SCRIPT_ROOT
 echo [provision]: Flip Ubuntu switch
 cd $SCRIPT_ROOT
 sed -i 's/UBUNTU=0/UBUNTU=1/g' build.sh
@@ -173,39 +225,52 @@ sed -i 's/FDO_PLATFORM=32/FDO_PLATFORM=64/g' build_fdo.sh
 sed -i 's/FDO_CPU=x86/FDO_CPU=x64/g' build_fdo.sh
 sed -i 's/FDO_BUILD_CPU=i386/FDO_BUILD_CPU=amd64/g' build_fdo.sh
 sed -i 's/LIB_DIRNAME=lib/LIB_DIRNAME=lib64/g' build_fdo.sh
-if [ $HAVE_FDO_LIBS -eq 0 ];
+if [ $HAVE_FDO_SDK -eq 0 ];
 then
-    echo [provision]: Extracting FDO thirdparty libs
-    tar -zxf /mapguide_sources/fdo_rdbms_thirdparty.tar.gz -C ~
-fi
-if [ $HAVE_FDO -eq 0 ];
-then
-    echo [provision]: Extracting FDO trunk working copy
-    mkdir -p ~/fdo
-    tar -zxf /mapguide_sources/fdo-checkout.tar.gz -C ~/fdo
+    if [ $HAVE_FDO_LIBS -eq 0 ];
+    then
+        echo [provision]: Extracting FDO thirdparty libs
+        tar -zxf /mapguide_sources/fdo_rdbms_thirdparty.tar.gz -C ~
+    fi
+    if [ $HAVE_FDO -eq 0 ];
+    then
+        echo [provision]: Extracting FDO working copy
+        mkdir -p $FDO_SRC_ROOT
+        tar -zxf /mapguide_sources/$FDO_TARBALL -C $FDO_SRC_ROOT
+    fi
 fi
 if [ $HAVE_MAPGUIDE -eq 0 ];
 then
-    echo [provision]: Extracting MapGuide trunk working copy
+    echo [provision]: Extracting MapGuide working copy
     mkdir -p $MG_SRC_ROOT
-    tar -zxf /mapguide_sources/mapguide-checkout.tar.gz -C $MG_SRC_ROOT
+    tar -zxf /mapguide_sources/$MG_TARBALL -C $MG_SRC_ROOT
 fi
-echo [provision]: svn update FDO
-BUILD_COMPONENT="svn update FDO"
-# Only for this VM, svn is 1.8 so we have to upgrade the WC first before it can be updated
-svn upgrade $FDO_SRC
-svn update $FDO_SRC
-check_build
+if [ $HAVE_FDO_SDK -eq 0 ];
+then
+    echo [provision]: svn update FDO
+    BUILD_COMPONENT="svn update FDO"
+    # Only for Ubuntu 14.04 VM, svn is 1.8 so we have to upgrade the WC first before it can be updated
+    #svn upgrade $FDO_SRC
+    svn update $FDO_SRC
+    check_build
+else
+    echo [provision]: Using FDO SDK. No svn update of source required.
+fi
 echo [provision]: svn update MapGuide
 BUILD_COMPONENT="svn update MapGuide"
-# Only for this VM, svn is 1.8 so we have to upgrade the WC first before it can be updated
-svn upgrade $MG_SRC
+# Only for Ubuntu 14.04 VM, svn is 1.8 so we have to upgrade the WC first before it can be updated
+#svn upgrade $MG_SRC
 svn update $MG_SRC
 check_build
-if [ -d /mapguide_sources/patches/fdo ];
+if [ $HAVE_FDO_SDK -eq 0 ];
 then
-    echo [provision]: Applying FDO source patches
-    cp -R /mapguide_sources/patches/fdo/* $FDO_SRC
+    if [ -d /mapguide_sources/patches/fdo ];
+    then
+        echo [provision]: Applying FDO source patches
+        cp -R /mapguide_sources/patches/fdo/* $FDO_SRC
+    fi
+else
+    echo [provision]: Using FDO SDK. No source patches to apply
 fi
 if [ -d /mapguide_sources/patches/mapguide ];
 then
@@ -215,27 +280,96 @@ fi
 echo [provision]: Making sure swig is executable
 chmod +x $MG_SRC/Oem/SWIGEx/Linux/swig
 cd ~/scripts
-BUILD_COMPONENT="FDO"
-sudo -E ./build_fdo.sh 2>&1 | tee ~/fdo_build.log
-check_build
+if [ $HAVE_FDO_SDK -eq 0 ];
+then
+    BUILD_COMPONENT="FDO"
+    sudo -E ./build_fdo.sh 2>&1 | tee ~/fdo_build.log
+    check_build
+    FDO_REV=`svn info $FDO_SRC | perl revnum.pl`
+else
+    echo [provision]: Using FDO SDK. Not building from source
+    echo [provision]: Re-packaging FDO SDK r$FDO_REV as debs
+    FDO_FILELIST=$FDO_SDK_PKG_PATH/filelist
+    pushd $FDO_SDK_PKG_PATH
+    ./dpkgfdo.sh amd64 $FDO_REV 2>&1 | tee ~/dpkg_fdo.log
+    popd
+fi
 BUILD_COMPONENT="MapGuide"
 sudo -E ./build.sh 2>&1 | tee ~/mapguide_build.log
 check_build
 MG_REV=`svn info $MG_SRC | perl revnum.pl`
 BUILD_COMPONENT="MapGuide deb packages"
-sudo ./dpkgmapguide.sh amd64 $MG_REV
+./dpkgmapguide.sh amd64 $MG_REV 2>&1 | tee ~/dpkg_mapguide.log
 check_build
+> ~/unit_test_status.log
+if [ $FDO_UNIT_TEST -eq 1 ];
+then
+    export NLSPATH=/usr/local/fdo-${FDO_VER_FULL}/nls/%N
+    echo [provision]: Unit test FDO
+    BUILD_COMPONENT="Unit Test FDO Core"
+    cd $SCRIPT_ROOT/fdo_build_area/Fdo/UnitTest
+    sudo -E ./UnitTest 2>&1 | tee ~/fdo_core_unit_test.log
+    check_test
+    BUILD_COMPONENT="Unit Test SHP Provider"
+    cd $SCRIPT_ROOT/fdo_build_area/Providers/SHP/Src/UnitTest
+    sudo -E ./UnitTest 2>&1 | tee ~/fdo_shp_unit_test.log
+    check_test
+    BUILD_COMPONENT="Unit Test SDF Provider"
+    cd $SCRIPT_ROOT/fdo_build_area/Providers/SDF/Src/UnitTest
+    sudo -E ./UnitTest 2>&1 | tee ~/fdo_sdf_unit_test.log
+    check_test
+    BUILD_COMPONENT="Unit Test SQLite Provider"
+    cd $SCRIPT_ROOT/fdo_build_area/Providers/SQLite/Src/UnitTest
+    sudo -E ./UnitTest 2>&1 | tee ~/fdo_sqlite_unit_test.log
+    check_test
+    BUILD_COMPONENT="Unit Test GDAL Provider"
+    cd $SCRIPT_ROOT/fdo_build_area/Providers/GDAL/Src/UnitTest
+    sudo -E ./UnitTest 2>&1 | tee ~/fdo_gdal_unit_test.log
+    check_test
+    BUILD_COMPONENT="Unit Test WMS Provider"
+    cd $SCRIPT_ROOT/fdo_build_area/Providers/WMS/Src/UnitTest
+    sudo -E ./UnitTest 2>&1 | tee ~/fdo_wms_unit_test.log
+    check_test
+fi
 if [ $MG_UNIT_TEST -eq 1 ];
 then
     echo [provision]: Unit test MapGuide
-    cd $SCRIPT_ROOT/mgdev
-    sudo make check 2>&1 | tee ~/mapguide_unit_test.log
+    BUILD_COMPONENT="Unit Test MapGuide Server"
+    # HACK: Tile and Resource Service tests are known to freeze our VMs when driven by vagrant (why? who knows? 
+    # All we know is that those tests involve threads)
+    # So test everything *but* the above services. If required, this can be tested under a manually controlled
+    # VM
+    #
+    # build the individual targets that would comprise "make check" sans execution of unittest.sh
+    cd $SCRIPT_ROOT/mgdev/Server/src/UnitTesting
+    sudo make libMgUnitTesting.la
+    cd $SCRIPT_ROOT/mgdev/Server/src/Core
+    sudo make unittest.sh
+    # Run the test suites individually except for TileService for reasons already stated
+    for comp in CoordinateSystem FeatureService Geometry KmlService LogManager MdfModel Misc RenderingService ServerAdminService ServerManager ServiceManager SiteManager SiteService ProfilingService TransformMesh
+    do
+        sudo -E ./mgserver test $comp UnitTestResults_${comp}.xml 2>&1 | tee ~/mapguide_${comp}_unit_test.log
+        check_test
+        if [ -f UnitTestResults_${comp}.xml ]; then
+            sudo mv UnitTestResults_${comp}.xml ~/UnitTestResults_${comp}.xml
+        fi
+    done
 fi
 cd $SCRIPT_ROOT
 sudo mkdir -p /vagrant/build
 sudo mv -f ~/*.log /vagrant/build
-sudo cp fdo_build_area/install/bin/*.deb /vagrant/build
+if [ $HAVE_FDO_SDK -eq 0 ];
+then
+    sudo cp fdo_build_area/install/bin/*.deb /vagrant/build
+    sudo cp ~/fdo_*_unit_test.log /vagrant/build
+else
+    sudo cp $FDO_SDK_PKG_PATH/bin/*.deb /vagrant/build
+fi
 sudo cp bin/*.deb /vagrant/build
+sudo cp ~/UnitTestResults_*.xml /vagrant/build
+sudo cp /vagrant/mginstallubuntu.sh /vagrant/build/mginstallubuntu.sh
+sudo sed -i 's/FDOBUILD=0/FDOBUILD='"$FDO_REV"'/g' /vagrant/build/mginstallubuntu.sh
+sudo sed -i 's/MGBUILD=0/MGBUILD='"$MG_REV"'/g' /vagrant/build/mginstallubuntu.sh
 # Do not update the working copy tarballs. Ubuntu 14.04 uses svn 1.8 which will break
 # the working copy if copied over to a CentOS VM (which is still on 1.6)
 #
@@ -243,14 +377,14 @@ sudo cp bin/*.deb /vagrant/build
 #
 #if [ ! -d /mapguide_sources/updated ]; then
 #    sudo mkdir -p /mapguide_sources/updated
-#    cd ~/mapguide/trunk
+#    cd $MG_SRC_ROOT
 #    echo [provision]: Updating mapguide source tarball
-#    tar -zcf mapguide-checkout.tar.gz MgDev
-#    sudo mv mapguide-checkout.tar.gz /mapguide_sources/updated
-#    cd ~/fdo
+#    tar -zcf $MG_TARBALL MgDev
+#    sudo mv $MG_TARBALL /mapguide_sources/updated
+#    cd $FDO_SRC_ROOT
 #    echo [provision]: Updating fdo source tarball
-#    tar -zcf fdo-checkout.tar.gz trunk
-#    sudo mv fdo-checkout.tar.gz /mapguide_sources/updated
+#    tar -zcf $FDO_TARBALL $FDO_SRC_DIR
+#    sudo mv $FDO_TARBALL /mapguide_sources/updated
 #else
 #    echo [provision]: Updated tarballs already exist. Doing nothing
 #fi
