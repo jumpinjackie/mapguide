@@ -12,7 +12,7 @@ enum Language
     java
 };
 
-static char version[] = "1.2.2";
+static char version[] = "1.2.3";
 static char EXTERNAL_API_DOCUMENTATION[] = "(NOTE: This API is not officially supported and may be subject to removal in a future release without warning. Use with caution.)";
 
 static string module;
@@ -1113,7 +1113,7 @@ void outputClassDoc(const string& className, const string& commentStr)
         fprintf(docOutFile, "\n%%typemap(javaclassmodifiers) %s %%{%s public%%}\n", className.c_str(), convertedDoc.c_str());
     } else if(language == csharp) {
         convertedDoc = doxygenToCsharpDoc(commentStr, true); //EXTERNAL_API only applies to class members, so treat this fragment as PUBLISHED_API
-        fprintf(docOutFile, "\n%%typemap(csclassmodifiers) %s %%{%s public%%}\n", className.c_str(), convertedDoc.c_str());
+        fprintf(docOutFile, "\n%%typemap(csclassmodifiers) %s %%{%s public partial%%}\n", className.c_str(), convertedDoc.c_str());
     }
 }
 
@@ -1225,6 +1225,16 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
         if (!commentStr.empty()) {
             outputClassDoc(className, commentStr);
             commentStr.clear();
+            classesWithDocs.insert(className);
+        } else if (language == csharp) {
+            //We need to ensure the partial modifier is applied. However since we (ab)use csclassmodifiers to do this, if there's no class documentation
+            //then it won't apply the required partial modifier. So we need to insert some kind of comment string here, so take this opportunity to 
+            //note that this class has no documentation.
+            std::string cmnt = "///\n";
+            cmnt += "/// \\brief\n";
+            cmnt += "/// TODO: This class has no class documentation (message inserted by IMake.exe)\n";
+            cmnt += "///";
+            outputClassDoc(className, cmnt);
             classesWithDocs.insert(className);
         }
     }

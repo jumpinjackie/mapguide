@@ -1416,6 +1416,10 @@ class CSHARP : public Language {
             "\n",
             NIL);
 
+        // Offload attributes to partial classes so that it doesn't interfere with csclassmodifiers
+        // that could have arbitrary content (ie. Documentation) 
+        String *proxy_partial_class_def = NewString("");
+
         //Emit namespace if one is specified
         if(namespaceName != NULL)
         {
@@ -1425,25 +1429,49 @@ class CSHARP : public Language {
                 "\n",
                 "{\n",
                 NIL);
+
+            //Partial class needs to know about this namespace too
+            Printv(proxy_partial_class_def,
+                "namespace ",
+                namespaceName,
+                "\n",
+                "{\n",
+                NIL);
         }
 
-        //Add attribute
+        //Add attribute (if any) to partial class definition
         if(*Char(attributeTags))
         {
-            Printv(proxy_class_def, 
+            Printv(proxy_partial_class_def, 
                 "[",
                 attributeTags,
                 "]\n",
                 NIL);
         }
 
-        //Add serializable attribute
+        //Add serializable attribute (if any) to partial class definition
         if(isDeserializable)
         {
-            Printv(proxy_class_def,
-                "[Serializable]\n",
+            Printv(proxy_partial_class_def,
+                "[global::System.Serializable]\n",
                 NIL);
         }
+
+        //Write remainder of partial class body
+        Printv(proxy_partial_class_def, "    partial class ", c_classname, " { }\n", NIL);
+        Printv(proxy_partial_class_def, "}\n", NIL);
+
+        //Write the class body to file
+        String *pfilen = NewStringf("%s%s.partial.cs", SWIG_output_directory(), c_classname);
+        File* f_partial = NewFile(pfilen,"w");
+        if(!f_partial) {
+            Printf(stderr, "Unable to create partial proxy class file: %s\n", pfilen);
+            SWIG_exit(EXIT_FAILURE);
+        }
+        Delete(pfilen); pfilen = NULL;
+        Printv(f_partial, proxy_partial_class_def, NIL);
+        Close(f_partial);
+        Delete(proxy_partial_class_def); proxy_partial_class_def = NULL;
 
         Printv(proxy_class_def,
             typemapLookup("csclassmodifiers", typemap_lookup_type, WARN_CSHARP_TYPEMAP_CLASSMOD_UNDEF), // Class modifiers
