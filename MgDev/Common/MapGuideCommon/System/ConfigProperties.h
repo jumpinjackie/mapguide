@@ -86,6 +86,10 @@ EXTERNAL_API:
     static const STRING GeneralPropertyLinuxMemDebug;               /// value("LinuxMemDebug")
     static const bool DefaultGeneralPropertyLinuxMemDebug;        /// value(false);
 
+    /// Optional Linux search paths for additional fonts
+    static const STRING GeneralPropertyLinuxFontDirectories;            /// value("LinuxFontDirectories")
+    static const STRING DefaultGeneralPropertyLinuxFontDirectories;     /// value("")
+
     /// Sets the field delimiter in the logs
     static const STRING GeneralPropertyLogsDelimiter;                   /// value("LogsDelimiter")
     static const STRING DefaultGeneralPropertyLogsDelimiter;            /// value("\t")

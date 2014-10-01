@@ -695,6 +695,36 @@ int MgServer::svc()
     return nResult;
 }
 
+void MgServer::AddFontDirectories()
+{
+    //This is Linux-only
+#ifndef _WIN32
+    FontManager* fontManager = FontManager::Instance();
+    MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
+    // Precache the specified maps
+    STRING fontDirs;
+    pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyLinuxFontDirectories, fontDirs, MgConfigProperties::DefaultGeneralPropertyLinuxFontDirectories);
+
+    // Check if there is actually directories to add
+    if (!fontDirs.empty())
+    {
+        Ptr<MgStringCollection> fontDirCollection;
+        fontDirCollection = MgStringCollection::ParseCollection(fontDirs, L":");
+
+        if (fontDirCollection->GetCount() > 0)
+        {
+            for (INT32 i = 0; i < fontDirCollection->GetCount(); i++)
+            {
+                STRING fontDir = fontDirCollection->GetItem(i);
+                std::string mbFontDir = MgUtil::WideCharToMultiByte(fontDir);
+                int added = fontManager->AddLinuxFontDirectory(mbFontDir.c_str());
+                ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) Added %d fonts from directory: %W\n"), added, fontDir.c_str()));
+            }
+        }
+    }
+#endif
+}
+
 void MgServer::AddFontManagerFontAliases()
 {
     FontManager* fontManager = FontManager::Instance();
@@ -972,6 +1002,10 @@ int MgServer::open(void *args)
             pConfiguration->GetStringValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolExcludedProviders, dataConnectionPoolExcludedProviders, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders);
             pConfiguration->GetStringValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolSizeCustom, dataConnectionPoolSizeCustom, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSizeCustom);
             pConfiguration->GetStringValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionUseLimit, dataConnectionUseLimit, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionUseLimit);
+
+            // Add additional font directories to the FontManager
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Adding extra font directories.\n")));
+            AddFontDirectories();
 
             // Add additional font mappings to the FontManager
             ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Adding Font Manager Mappings.\n")));

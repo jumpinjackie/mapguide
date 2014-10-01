@@ -65,6 +65,9 @@ class FontManager
         void init_font_list();
         void create_font(FT_Face face, FT_Long index, wchar_t const* filename);
 
+#ifndef _WIN32
+        RENDERERS_API int AddLinuxFontDirectory(const char* fontDir);
+#endif
         RENDERERS_API void AddFontAlias(const wchar_t* alias, const wchar_t* asciiName);
 
         FontList* GetFontList();

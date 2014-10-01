@@ -140,6 +140,8 @@ const STRING MgConfigProperties::GeneralPropertyLicenseServerPath               
 const STRING MgConfigProperties::DefaultGeneralPropertyLicenseServerPath                    = L"";
 const STRING MgConfigProperties::GeneralPropertyLinuxMemDebug                               = L"LinuxMemDebug";
 const bool   MgConfigProperties::DefaultGeneralPropertyLinuxMemDebug                        = false;
+const STRING MgConfigProperties::GeneralPropertyLinuxFontDirectories                        = L"LinuxFontDirectories";
+const STRING MgConfigProperties::DefaultGeneralPropertyLinuxFontDirectories                 = L"";
 const STRING MgConfigProperties::GeneralPropertyLogsDelimiter                               = L"LogsDelimiter";
 const STRING MgConfigProperties::DefaultGeneralPropertyLogsDelimiter                        = L"\t";
 const STRING MgConfigProperties::GeneralPropertyLogsDetail                                  = L"LogsDetail";

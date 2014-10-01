@@ -239,15 +239,15 @@ void FontManager::init_font_list()
     }
 }
 #else
-// initialize the font list
-void FontManager::init_font_list()
+int FontManager::AddLinuxFontDirectory(const char* fontDir)
 {
     AutoMutexLocker autoLocker(sm_mutex);
-
     int error = 0;
+    int added = 0;
 
-    string dirname(".");
-    DIR* pCurrent = opendir(dirname.c_str());
+    std::string sFontDir;
+    sFontDir.append(fontDir);
+    DIR* pCurrent = opendir(fontDir);
 
     while (pCurrent)
     {
@@ -256,7 +256,7 @@ void FontManager::init_font_list()
 
         if (pDirent)
         {
-            string entryName = dirname;
+            string entryName = sFontDir;
             entryName += "/";
             entryName += pDirent->d_name;
 
@@ -282,6 +282,7 @@ void FontManager::init_font_list()
                     wstring en;
                     UnicodeString::MultiByteToWideChar(entryName.c_str(), en);
                     create_font(face, index, en.c_str());
+                    added++;
 
                     // dispose of face
                     FT_Done_Face(face);
@@ -299,6 +300,15 @@ void FontManager::init_font_list()
             pCurrent = NULL;    //  break out of while loop
         }
     }
+    return added;
+}
+// initialize the font list
+void FontManager::init_font_list()
+{
+    int added = AddLinuxFontDirectory(".");
+#ifdef _DEBUG
+    printf("Added %d fonts from default location\n", added);
+#endif
 }
 #endif  //  _WIN32
 

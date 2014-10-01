@@ -115,6 +115,7 @@ private:
 
     void ParseArgs(INT32 argc, ACE_TCHAR *argv[]);
     void AddFontManagerFontAliases();
+    void AddFontDirectories();
     static STRING LocaleCallback();
 
     ///////////////////////////////////////////////////////
