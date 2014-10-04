@@ -463,15 +463,18 @@ public class MapGuideTestExecutorCollection extends TestExecutorCollectionBase
                         }
                         else
                         {
-                            Console.WriteLine("\t\tNo result to compare against");
+                            if (DebugSettings.Enabled)
+                                Console.WriteLine("\t\tNo result to compare against");
                         }
                     }
                 }
             }
             else
             {
-                String pval = CommonUtility.GetStringFromStatement(stmt, "ParamValue");
-                Console.WriteLine("\t\tALWAYSPASS: " + pval);
+                if (DebugSettings.Enabled) {
+                    String pval = CommonUtility.GetStringFromStatement(stmt, "ParamValue");
+                    Console.WriteLine("\t\tALWAYSPASS: " + pval);
+                }
             }
         } catch (Exception ex) {
             Console.WriteLine("Exception validating response: %s", CommonUtility.ExceptionToString(ex));

@@ -74,12 +74,14 @@ public class TestExecutionRun implements java.io.Closeable
 
                         try {
                             ITestExecutor exec = _executors.GetTestExecutor(paramValue);
-                            Console.WriteLine("\tExecuting operation: %s", exec.getOperationName());
+                            if (DebugSettings.Enabled)
+                                Console.WriteLine("\tExecuting operation: %s", exec.getOperationName());
                             actualResult = exec.Execute(paramSetId);
                             testsRun.increment();
                             exitStatus += _executors.ValidateRequest(_unitTestDb, testName, paramSetId, paramValue, actualResult, logger);
                         } catch (MissingTestExecutorException ex) {
-                            Console.WriteLine("No test executor for %s in test: %s. Skipping test.", paramValue, testName);
+                            if (DebugSettings.Enabled)
+                                Console.WriteLine("No test executor for %s in test: %s. Skipping test.", paramValue, testName);
                         }
                     }
                 }
