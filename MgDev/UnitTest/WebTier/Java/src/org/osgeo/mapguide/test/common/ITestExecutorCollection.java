@@ -1,5 +1,7 @@
 package org.osgeo.mapguide.test.common;
 
+import com.almworks.sqlite4java.*;
+
 public interface ITestExecutorCollection
 {
     /// <summary>
@@ -45,7 +47,7 @@ public interface ITestExecutorCollection
     /// <param name="actualResult"></param>
     /// <param name="logger"></param>
     /// <returns></returns>
-    int ValidateRequest(SqliteDb db, String testName, int paramSetId, String operation, TestResult actualResult, ITestLogger logger);
+    int ValidateRequest(SQLiteConnection db, String testName, int paramSetId, String operation, TestResult actualResult, ITestLogger logger);
 
     /// <summary>
     /// Performs necessary cleanup

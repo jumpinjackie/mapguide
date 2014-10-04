@@ -18,7 +18,10 @@ public class TestLoggerFile implements ITestLogger
     public void Write(String format, Object ... args)
     {
         try {
-            sw.write(String.format(format, args));
+            if (args.length > 0)
+                sw.write(String.format(format, args));
+            else
+                sw.write(format);
         } catch (IOException ex) {
 
         }
@@ -27,7 +30,10 @@ public class TestLoggerFile implements ITestLogger
     public void WriteLine(String format, Object ... args)
     {
         try {
-            sw.write(String.format(format, args) + "\n");
+            if (args.length > 0)
+                sw.write(String.format(format, args) + "\n");
+            else
+                sw.write(format + "\n");
         } catch (IOException ex) {
 
         }

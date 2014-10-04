@@ -2,6 +2,8 @@ package org.osgeo.mapguide.test;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 import org.osgeo.mapguide.*;
 import org.osgeo.mapguide.test.common.*;
 
@@ -12,6 +14,7 @@ public class Program
 
     public static void main(String[] args) {
         try {
+            Logger.getLogger("com.almworks.sqlite4java").setLevel(Level.OFF);
             if (args.length >= 1 && args.length <= 2) {
                 String webConfigPath = args[0];
                 String logFile = "UnitTests.log";
