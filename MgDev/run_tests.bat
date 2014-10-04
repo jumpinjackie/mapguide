@@ -24,12 +24,16 @@ SET PREPARE_PHP_WEBSERVER=1
 SET RUN_SERVER_TESTS=0
 SET RUN_PHP_TESTS=1
 SET RUN_DOTNET_TESTS=1
+SET RUN_JAVA_TESTS=1
 
 SET RETURN_CODE=0
 
 echo *************** TEST SUMMARY ******************
 echo Platform: %PLAT%
 echo Configuration: %CONF%
+echo Run PHP Tests: %RUN_PHP_TESTS%
+echo Run .net Tests: %RUN_DOTNET_TESTS%
+echo Run Java Tests: %RUN_JAVA_TESTS%
 echo ***********************************************
 :test_server
 if "%RUN_SERVER_TESTS%" == "1" (
@@ -126,6 +130,28 @@ if "%RUN_DOTNET_TESTS%" == "1" (
     pushd UnitTest\WebTier\DotNet_%PLAT%
     MgTestRunner.exe "%WEBCONFIGINI%" "../../../Oem/CsMap/Dictionaries"
     if %ERRORLEVEL% neq 0 echo [test]: .net test runner had one or more test failures. Check log files for more information
+    popd
+)
+:test_java
+if "%RUN_JAVA_TESTS%" == "1" (
+    echo [test]: Java tests
+    REM Clear out old dbs before running
+    pushd UnitTest\TestData
+    if exist Unicode\UnicodeTest.db del /F Unicode\UnicodeTest.db
+    if exist WmsTest\WmsTest.db del /F WmsTest\WmsTest.db
+    if exist WebLayout\WebLayoutTest.db del /F WebLayout\WebLayoutTest.db
+    if exist WfsTest\WfsTest.db del /F WfsTest\WfsTest.db
+    if exist MapLayer\MapLayerTest.db del /F MapLayer\MapLayerTest.db
+    if exist ServerAdmin\ServerAdminTest.db del /F ServerAdmin\ServerAdminTest.db
+    if exist MappingService\MappingServiceTest.db del /F MappingService\MappingServiceTest.db
+    if exist SiteService\SiteServiceTest.db del /F SiteService\SiteServiceTest.db
+    if exist FeatureService\FeatureServiceTest.db del /F FeatureService\FeatureServiceTest.db
+    if exist DrawingService\DrawingServiceTest.db del /F DrawingService\DrawingServiceTest.db
+    if exist ResourceService\ResourceServiceTest.db del /F ResourceService\ResourceServiceTest.db
+    popd
+    pushd UnitTest\WebTier\Java
+    call ant check
+    if %ERRORLEVEL% neq 0 echo [test]: Java test runner had one or more test failures. Check log files for more information
     popd
 )
 :stop_mgserver
