@@ -2,6 +2,7 @@
 <project name="MgUnitTest" default="dist" basedir=".">
   <description>MgUnitTest project file</description>
 
+  <!-- Must install ant-contrib 1.0b2 or higher -->
   <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 
   <!-- set global properties for this build -->
