@@ -1,6 +1,7 @@
 package org.osgeo.mapguide.test.common;
 
 import java.util.UUID;
+import java.text.DecimalFormat;
 
 import org.osgeo.mapguide.*;
 import org.osgeo.mapguide.test.*;
@@ -74,7 +75,14 @@ public class TestResult
     }
 
     public static TestResult Double(double value) {
-        return new TestResult((value + ""), "text/plain");
+        /*
+        DecimalFormat format = new DecimalFormat("0.#");
+        if (value < 0.0)
+            return new TestResult("-" + format.format(Math.abs(value)), "text/plain");
+        else
+            return new TestResult(format.format(value), "text/plain");
+        */
+       return new TestResult(String.format("%g", value), "text/plain");
     }
 
     public static TestResult Boolean(boolean value) {

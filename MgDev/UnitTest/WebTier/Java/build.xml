@@ -142,6 +142,11 @@
   </target>
 
   <target name="check" depends="dist">
+    <!-- Remove any log files and dumped binary files from previous run -->
+    <delete>
+      <fileset dir="${dist}" includes="**/*.bin"/>
+      <fileset dir="${dist}" includes="**/*.log"/>
+    </delete>
     <exec executable="java" dir="${dist}">
       <arg line="-jar MgUnitTest.jar ${mapguide.config} ${unittest.logpath}" />
       <env key="MENTOR_DICTIONARY_PATH" value="${mapguide.dictpath}" />

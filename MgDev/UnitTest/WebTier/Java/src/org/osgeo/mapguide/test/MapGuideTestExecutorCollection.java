@@ -23,6 +23,7 @@ import org.osgeo.mapguide.test.platform.operations.maplayer.*;
 import org.osgeo.mapguide.test.mapguide.operations.drawing.*;
 import org.osgeo.mapguide.test.mapguide.operations.admin.*;
 import org.osgeo.mapguide.test.mapguide.operations.site.*;
+import org.osgeo.mapguide.test.mapguide.operations.weblayout.*;
 
 public class MapGuideTestExecutorCollection extends TestExecutorCollectionBase
 {
@@ -170,8 +171,6 @@ public class MapGuideTestExecutorCollection extends TestExecutorCollectionBase
         _executors.put("UpdateServer".toUpperCase(), new UpdateServer(site, dbPath));
         _executors.put("RemoveServer".toUpperCase(), new RemoveServer(site, dbPath));
 
-        /*
-
         //Web Layout
         _executors.put("WL_GetTitle".toUpperCase(), new WL_GetTitle(wlCreator, dbPath));
         _executors.put("WL_GetMapDefinition".toUpperCase(), new WL_GetMapDefinition(wlCreator, dbPath));
@@ -197,8 +196,6 @@ public class MapGuideTestExecutorCollection extends TestExecutorCollectionBase
         _executors.put("WL_TasksName".toUpperCase(), new WL_TasksName(wlCreator, dbPath));
         _executors.put("WL_TasksTooltip".toUpperCase(), new WL_TasksTooltip(wlCreator, dbPath));
         _executors.put("WL_TasksDescription".toUpperCase(), new WL_TasksDescription(wlCreator, dbPath));
-
-        */
     }
 
     class MgWebLayoutCreator implements IWebLayoutCreator

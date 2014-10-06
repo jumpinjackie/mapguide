@@ -19,6 +19,14 @@ import org.w3c.dom.Node;
 
 public class CommonUtility
 {
+    public static String DoubleToString(double d)
+    {
+        if(d == (long) d)
+            return String.format("%d",(long)d);
+        else
+            return String.format("%s",d);
+    }
+
     public static MgStringCollection StringToMgStringCollection(String str)
     {
         try
