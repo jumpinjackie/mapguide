@@ -26,6 +26,8 @@ public class CommonTests
         tests.add(new FeatureSchemaCollectionTest());
         tests.add(new GeometryCollectionTest());
         tests.add(new IntCollectionTest());
+        tests.add(new LayerCollectionTest());
+        tests.add(new LayerGroupCollectionTest());
         tests.add(new LinearRingCollectionTest());
         tests.add(new LineStringCollectionTest());
         tests.add(new MapCollectionTest());

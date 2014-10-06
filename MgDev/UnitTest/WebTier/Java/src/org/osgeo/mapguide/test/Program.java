@@ -25,11 +25,19 @@ public class Program
                 try (ITestLogger logger = new TestLoggerFile(logFile)) {
                     logger.WriteLine(String.format("Run started: %s", new Date().toString()));
                     MapGuideJavaApiEx.MgInitializeWebTier(webConfigPath);
-                    Console.WriteLine("MapGuide Initialized. Running tests");
 
                     userInfo = new MgUserInformation("Administrator", "admin");
                     siteConn = new MgSiteConnection();
                     siteConn.open(userInfo);
+
+                    //Load the Sheboygan sample data set required by some tests
+                    Console.WriteLine("Loading Sheboygan sample data package");
+                    MgByteSource bs = new MgByteSource("../../TestData/Samples/Sheboygan/Sheboygan.mgp");
+                    MgByteReader rdr = bs.getReader();
+                    MgResourceService resSvc = (MgResourceService)siteConn.createService(MgServiceType.ResourceService);
+                    resSvc.applyResourcePackage(rdr);
+
+                    Console.WriteLine("MapGuide Initialized. Running tests");
 
                     IPlatformFactory factory = new PlatformFactory(siteConn);
 

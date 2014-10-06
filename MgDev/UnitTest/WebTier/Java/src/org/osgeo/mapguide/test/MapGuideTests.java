@@ -2,13 +2,20 @@ package org.osgeo.mapguide.test;
 
 import java.util.*;
 
+import org.osgeo.mapguide.*;
 import org.osgeo.mapguide.test.common.*;
+import org.osgeo.mapguide.test.mapguide.*;
 
 public class MapGuideTests
 {
     public static int Execute(IPlatformFactory factory, ITestLogger logger, MutableInteger testsRun) {
         int failures = 0;
         Vector<IExternalTest> tests = new Vector<IExternalTest>();
+        
+        //--------------- BEGIN Test Registration -----------------//
+        tests.add(new ReadOnlyLayerCollectionTest());
+        //--------------- END Test Registration -------------------//
+
         for (IExternalTest test : tests)
         {
             try
