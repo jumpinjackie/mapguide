@@ -19,6 +19,24 @@ import org.w3c.dom.Node;
 
 public class CommonUtility
 {
+    public static MgStringCollection StringToMgStringCollection(String str)
+    {
+        try
+        {
+            MgStringCollection coll = new MgStringCollection();
+            String[] tokens = str.split(",");
+            for (String token : tokens)
+            {
+                coll.add(token);
+            }
+            return coll;
+        }
+        catch (MgException ex)
+        {
+            throw new UnitTestException(String.format("Exception from MapGuide:\n%s", ex.getDetails()));
+        }
+    }
+
     public static String JoinStringArray(String glue, String[] s)
     {
         int k = s.length;

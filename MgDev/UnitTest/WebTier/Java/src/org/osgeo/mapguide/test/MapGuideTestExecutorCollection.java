@@ -21,6 +21,8 @@ import org.osgeo.mapguide.test.platform.operations.feature.*;
 import org.osgeo.mapguide.test.platform.operations.resource.*;
 import org.osgeo.mapguide.test.platform.operations.maplayer.*;
 import org.osgeo.mapguide.test.mapguide.operations.drawing.*;
+import org.osgeo.mapguide.test.mapguide.operations.admin.*;
+import org.osgeo.mapguide.test.mapguide.operations.site.*;
 
 public class MapGuideTestExecutorCollection extends TestExecutorCollectionBase
 {
@@ -123,7 +125,6 @@ public class MapGuideTestExecutorCollection extends TestExecutorCollectionBase
         _executors.put("EnumerateDrawingSections".toUpperCase(), new EnumerateDrawingSections(drawSvc, dbPath));
         _executors.put("EnumerateDrawingSectionResources".toUpperCase(), new EnumerateDrawingSectionResources(drawSvc, dbPath));
         _executors.put("GetDrawingSectionResource".toUpperCase(), new GetDrawingSectionResource(drawSvc, dbPath));
-        /*
 
         //Mapping Service
 
@@ -168,6 +169,8 @@ public class MapGuideTestExecutorCollection extends TestExecutorCollectionBase
         _executors.put("AddServer".toUpperCase(), new AddServer(site, dbPath));
         _executors.put("UpdateServer".toUpperCase(), new UpdateServer(site, dbPath));
         _executors.put("RemoveServer".toUpperCase(), new RemoveServer(site, dbPath));
+
+        /*
 
         //Web Layout
         _executors.put("WL_GetTitle".toUpperCase(), new WL_GetTitle(wlCreator, dbPath));
