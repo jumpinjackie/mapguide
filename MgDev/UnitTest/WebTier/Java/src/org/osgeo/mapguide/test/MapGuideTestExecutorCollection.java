@@ -731,7 +731,7 @@ public class MapGuideTestExecutorCollection extends TestExecutorCollectionBase
         XmlCompareResult result = null;
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
+            //dbf.setNamespaceAware(true);
             dbf.setCoalescing(true);
             dbf.setIgnoringElementContentWhitespace(true);
             dbf.setIgnoringComments(true);
