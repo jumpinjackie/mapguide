@@ -20,6 +20,7 @@ import org.osgeo.mapguide.test.operations.*;
 import org.osgeo.mapguide.test.platform.operations.feature.*;
 import org.osgeo.mapguide.test.platform.operations.resource.*;
 import org.osgeo.mapguide.test.platform.operations.maplayer.*;
+import org.osgeo.mapguide.test.mapguide.operations.drawing.*;
 
 public class MapGuideTestExecutorCollection extends TestExecutorCollectionBase
 {
@@ -113,8 +114,6 @@ public class MapGuideTestExecutorCollection extends TestExecutorCollectionBase
         _executors.put("RemoveGroup".toUpperCase(), new RemoveGroup(resSvc, dbPath, creator));
         _executors.put("ShowGroup".toUpperCase(), new ShowGroup(resSvc, dbPath, creator));
 
-        /*
-
         //Drawing Service
         _executors.put("DescribeDrawing".toUpperCase(), new DescribeDrawing(drawSvc, dbPath));
         _executors.put("GetDrawing".toUpperCase(), new GetDrawing(drawSvc, dbPath));
@@ -124,6 +123,7 @@ public class MapGuideTestExecutorCollection extends TestExecutorCollectionBase
         _executors.put("EnumerateDrawingSections".toUpperCase(), new EnumerateDrawingSections(drawSvc, dbPath));
         _executors.put("EnumerateDrawingSectionResources".toUpperCase(), new EnumerateDrawingSectionResources(drawSvc, dbPath));
         _executors.put("GetDrawingSectionResource".toUpperCase(), new GetDrawingSectionResource(drawSvc, dbPath));
+        /*
 
         //Mapping Service
 
