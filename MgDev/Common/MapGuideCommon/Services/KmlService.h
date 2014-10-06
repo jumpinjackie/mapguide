@@ -70,7 +70,7 @@ PUBLISHED_API:
     ///
     /// \param extents
     /// Input
-    /// required spatial data extents
+    /// required spatial data extents. The extents must be in LL84 coordinates
     ///
     /// \param width
     /// Input
@@ -119,7 +119,7 @@ PUBLISHED_API:
     ///
     /// \param extents
     /// Input
-    /// required spatial data extents
+    /// required spatial data extents. The extents must be in LL84 coordinates
     ///
     /// \param width
     /// Input
@@ -163,7 +163,7 @@ PUBLISHED_API:
     ///
     /// \param extents
     /// Input
-    /// required spatial data extents
+    /// required spatial data extents. The extents must be in LL84 coordinates
     ///
     /// \param width
     /// Input
