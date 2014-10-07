@@ -55,7 +55,14 @@ INT32 MgClientAcceptor::Initialize()
     // Set a large backlog so INET will not block connections
     // so often.  It takes time to clean the port up and
     // make it available for other connections.
-    if (m_SockAcceptor.open(m_Addr, 0, PF_INET, 32) != -1)
+    //
+    // Also set reuse_addr = 1 to avoid the case where the mgserver
+    // process dies by segfault and we have to wait several minutes for
+    // the dangling sockets to be cleared out by the system before mgserver
+    // can be started again (dangling sockets will cause a "port already in 
+    // use" error when restarting mgserver). With reuse_addr = 1, mgserver 
+    // will reclaim these dangling sockets when this method is called
+    if (m_SockAcceptor.open(m_Addr, 1 /* reuse_addr */, PF_INET, 32) != -1)
     {
         MgLogManager* pMan = MgLogManager::GetInstance();
         if(pMan->IsTraceLogEnabled())
