@@ -147,11 +147,12 @@ public class CommonUtility
     {
         if (path != null)
         {
+            String normPath = GetPath(path);
             if (bCheck)
             {
-                if (FileExists(path))
+                if (FileExists(normPath))
                 {
-                    MgByteSource source = new MgByteSource(path);
+                    MgByteSource source = new MgByteSource(normPath);
                     MgByteReader reader = source.getReader();
                     return reader;
                 }
@@ -159,7 +160,7 @@ public class CommonUtility
             }
             else
             {
-                MgByteSource source = new MgByteSource(path);
+                MgByteSource source = new MgByteSource(normPath);
                 MgByteReader reader = source.getReader();
                 return reader;
             }
@@ -317,16 +318,19 @@ public class CommonUtility
 
     public static String GetPath(String dbPath)
     {
-        if (IsNullOrEmpty(dbPath))
-            return new File(".").getPath();
-        else
-            return dbPath;
-        /*
-        if (Path.IsPathRooted(dbPath))
-            return dbPath.Replace("\\", "/");
-        else
-            return Path.Combine(GetAssemblyPath(), dbPath).Replace("\\", "/");
-        */
+        try {
+            if (IsNullOrEmpty(dbPath)) {
+                return new File(".").getPath();
+            } else {
+                File f = new File(dbPath.replace("\\", "/"));
+                if (f.isAbsolute())
+                    return f.getPath();
+                else
+                    return new File(System.getProperty("user.dir"), dbPath.replace("\\","/")).getCanonicalPath();
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public static Object SpecialDataHandling(String operation, Object resultData, String mimeType)

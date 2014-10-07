@@ -25,12 +25,16 @@ public class ApplyResourcePackage extends ResourceServiceOperationExecutor
             if (param.get("PACKAGE") != null)
                 packagePath = param.get("PACKAGE");
 
-            //Console.WriteLine("\t\tPackage Path: " + packagePath);
-            MgByteReader reader = CommonUtility.GetByteReaderFromPath(packagePath, false);
+            if (System.getProperty("os.name").toLowerCase().contains("win")) {
+                //Console.WriteLine("\t\tPackage Path: " + packagePath);
+                MgByteReader reader = CommonUtility.GetByteReaderFromPath(packagePath, false);
 
-            _resourceService.applyResourcePackage(reader);
+                _resourceService.applyResourcePackage(reader);
 
-            return TestResult.Ok();
+                return TestResult.Ok();
+            } else {
+                throw new RuntimeException("FIXME: ApplyResourcePackage will kill the mgserver on invalid package files");
+            }
         }
         catch (MgException ex)
         {
