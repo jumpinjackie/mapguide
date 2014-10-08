@@ -11,12 +11,12 @@ REM Vars to inject into $_SERVER in PHP CLI
 SET SERVER_ADDR=localhost
 SET WEBCONFIGINI=%CD%\UnitTest\webconfig.ini
 SET SERVER_PORT=8018
-SET PATH=D:\mg-trunk\MgDev\Release\Web\Php;%PATH%;
+SET PATH=%CD%\%CONF%\Web\Php;%PATH%;
 REM SET WEBCONFIGINI=C:\Program Files\OSGeo\MapGuide\Web\www\webconfig.ini
 REM SET SERVER_PORT=80
 SET PHP_TEST_CWD=%CD%\Web\src\mapagent
 REM SET PHP_EXT_DIR=C:\Program Files\OSGeo\MapGuide\Web\Php\ext
-SET PHP_EXT_DIR=D:\mg-trunk\MgDev\Release\Web\Php\ext
+SET PHP_EXT_DIR=%CD%\%CONF%\Web\Php\ext
 
 SET START_MGSERVER=1
 SET START_WEBSERVER=1
@@ -52,7 +52,10 @@ if "%RUN_SERVER_TESTS%" == "1" (
 if "%RUN_DOTNET_TESTS%" == "1" (
     echo [build]: DotNet test runner
     SET TEST_COMPONENT=Build DotNet test runner
+    if exist UnitTest\WebTier\DotNet_x64 rd /S /Q UnitTest\WebTier\DotNet_x64
+    if exist UnitTest\WebTier\DotNet_x86 rd /S /Q UnitTest\WebTier\DotNet_x86
     pushd UnitTest\WebTier\DotNet
+    if exist Libs rd /S /Q Libs
     msbuild /p:Configuration=%CONFIG%;Platform=%PLAT% /fl /flp:logfile=build.log DotNet.sln
     if "%ERRORLEVEL%" == "1" (
         set RETURN_CODE=%ERRORLEVEL%
@@ -150,7 +153,7 @@ if "%RUN_JAVA_TESTS%" == "1" (
     if exist ResourceService\ResourceServiceTest.db del /F ResourceService\ResourceServiceTest.db
     popd
     pushd UnitTest\WebTier\Java
-    call ant check
+    call ant checkwin
     if %ERRORLEVEL% neq 0 echo [test]: Java test runner had one or more test failures. Check log files for more information
     popd
 )
