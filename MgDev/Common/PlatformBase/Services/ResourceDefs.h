@@ -550,10 +550,10 @@ INTERNAL_API:
 ///
 class MG_PLATFORMBASE_API MgResourceHeaderProperties
 {
-INTERNAL_API:
-    static const INT32 General  = 0x00000001;
-    static const INT32 Security = 0x00000002;
-    static const INT32 Metadata = 0x00000004;
+EXTERNAL_API:
+    static const INT32 General  = 1;
+    static const INT32 Security = 2;
+    static const INT32 Metadata = 4;
 };
 /// \endcond
 

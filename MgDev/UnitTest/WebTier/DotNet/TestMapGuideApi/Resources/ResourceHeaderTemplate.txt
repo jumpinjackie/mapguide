@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<ResourceDocumentHeader xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="ResourceDocumentHeader-1.0.0.xsd">
+  <Security>
+    <Inherited>true</Inherited>
+  </Security>
+  <Metadata>
+    <Simple>
+	  <Property>
+	    <Name>{0}</Name>
+		<Value>{1}</Value>
+	  </Property>
+	</Simple>
+  </Metadata>
+</ResourceDocumentHeader>

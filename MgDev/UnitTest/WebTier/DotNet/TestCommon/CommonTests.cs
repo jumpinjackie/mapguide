@@ -18,7 +18,8 @@ namespace OSGeo.MapGuide.Test.Common
     public interface IPlatformFactory
     {
         MgService CreateService(int serviceType);
-        MgMapBase CreateMap();
+        MgMapBase CreateMap(MgResourceIdentifier mapDefinition);
+        MgMapBase CreateMap(string coordSys, MgEnvelope env, string name);
         MgLayerBase CreateLayer(MgResourceIdentifier resId);
     }
 

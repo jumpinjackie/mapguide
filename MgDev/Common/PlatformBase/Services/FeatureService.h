@@ -981,6 +981,342 @@ PUBLISHED_API:
                                                  MgFeatureCommandCollection* commands,
                                                  MgTransaction* transaction) = 0;
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Inserts a new feature into the specified feature class of the specified Feature Source
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgResourceIdentifier resource, string className, MgPropertyCollection propertyValues);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgResourceIdentifier resource, String className, MgPropertyCollection propertyValues);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgResourceIdentifier resource, String className, MgPropertyCollection propertyValues);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier for the feature
+    /// source.
+    /// \param className (String/string)
+    /// The name of the feature class on which
+    /// the insert operation is performed.
+    /// \param propertyValues (MgPropertyCollection)
+    /// The collection of property values to insert
+    ///
+    /// \return
+    /// Returns a feature reader object that contains the set of properties 
+    /// inserted into the datastore by the insert command.
+    ///
+    /// \remarks
+    /// Remember to close any feature readers returned by this method, even if you don't intend
+    /// to do anything with them
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource,
+                                            CREFSTRING className,
+                                            MgPropertyCollection* propertyValues) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Inserts a new feature into the specified feature class of the specified Feature Source
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgResourceIdentifier resource, string className, MgPropertyCollection propertyValues, MgTransaction trans);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgResourceIdentifier resource, String className, MgPropertyCollection propertyValues, MgTransaction trans);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgResourceIdentifier resource, String className, MgPropertyCollection propertyValues, MgTransaction trans);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier for the feature
+    /// source.
+    /// \param className (String/string)
+    /// The name of the feature class on which
+    /// the insert operation is performed.
+    /// \param propertyValues (MgPropertyCollection)
+    /// The collection of property values to insert
+    /// \param trans (MgTransaction)
+    /// The transaction to execute this operation under
+    ///
+    /// \return
+    /// Returns a feature reader object that contains the set of properties 
+    /// inserted into the datastore by the insert command.
+    ///
+    /// \remarks
+    /// Remember to close any feature readers returned by this method, even if you don't intend
+    /// to do anything with them
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource,
+                                            CREFSTRING className,
+                                            MgPropertyCollection* propertyValues,
+                                            MgTransaction* trans) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Inserts a set of new features into the specified feature class of the specified Feature Source
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgResourceIdentifier resource, string className, MgBatchPropertyCollection batchPropertyValues);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgResourceIdentifier resource, String className, MgBatchPropertyCollection batchPropertyValues);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgResourceIdentifier resource, String className, MgBatchPropertyCollection batchPropertyValues);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier for the feature
+    /// source.
+    /// \param className (String/string)
+    /// The name of the feature class on which
+    /// the insert operation is performed.
+    /// \param batchPropertyValues (MgBatchPropertyCollection)
+    /// The collection of property values to insert. Each MgPropertyCollection within 
+    /// this collection represents property values for a single feature to insert
+    ///
+    /// \return
+    /// Returns a feature reader object that contains the set of properties 
+    /// inserted into the datastore by the insert command.
+    ///
+    /// \remarks
+    /// Remember to close any feature readers returned by this method, even if you don't intend
+    /// to do anything with them
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource,
+                                            CREFSTRING className,
+                                            MgBatchPropertyCollection* batchPropertyValues) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Inserts a set of new features into the specified feature class of the specified Feature Source
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgResourceIdentifier resource, string className, MgBatchPropertyCollection batchPropertyValues, MgTransaction trans);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgResourceIdentifier resource, String className, MgBatchPropertyCollection batchPropertyValues, MgTransaction trans);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgResourceIdentifier resource, String className, MgBatchPropertyCollection batchPropertyValues, MgTransaction trans);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier for the feature
+    /// source.
+    /// \param className (String/string)
+    /// The name of the feature class on which
+    /// the insert operation is performed.
+    /// \param batchPropertyValues (MgBatchPropertyCollection)
+    /// The collection of property values to insert. Each MgPropertyCollection within 
+    /// this collection represents property values for a single feature to insert
+    /// \param trans (MgTransaction)
+    /// The transaction to execute this operation under
+    ///
+    /// \return
+    /// Returns a feature reader object that contains the set of properties 
+    /// inserted into the datastore by the insert command.
+    ///
+    /// \remarks
+    /// Remember to close any feature readers returned by this method, even if you don't intend
+    /// to do anything with them
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource,
+                                            CREFSTRING className,
+                                            MgBatchPropertyCollection* batchPropertyValues,
+                                            MgTransaction* trans) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Updates all features that match the given filter with the specified property values
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int UpdateMatchingFeatures(MgResourceIdentifier resource, string className, MgPropertyCollection properties, string filter);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int UpdateMatchingFeatures(MgResourceIdentifier resource, String className, MgPropertyCollection properties, String filter);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int UpdateMatchingFeatures(MgResourceIdentifier resource, String className, MgPropertyCollection properties, String filter);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier for the feature
+    /// source.
+    /// \param className (String/string)
+    /// The name of the feature class on which
+    /// the update operation is performed.
+    /// \param properties (MgBatchPropertyCollection)
+    /// The property values to update matching features with
+    /// \param filter (String/string)
+    /// The FDO filter string that detemines what features will be updated
+    ///
+    /// \return
+    /// Returns the number of features updated by this operation
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual INT32 UpdateMatchingFeatures(MgResourceIdentifier* resource,
+                                         CREFSTRING className,
+                                         MgPropertyCollection* properties,
+                                         CREFSTRING filter) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Updates all features that match the given filter with the specified property values
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int UpdateMatchingFeatures(MgResourceIdentifier resource, string className, MgPropertyCollection properties, string filter, MgTransaction trans);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int UpdateMatchingFeatures(MgResourceIdentifier resource, String className, MgPropertyCollection properties, String filter, MgTransaction trans);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int UpdateMatchingFeatures(MgResourceIdentifier resource, String className, MgPropertyCollection properties, String filter, MgTransaction trans);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier for the feature
+    /// source.
+    /// \param className (String/string)
+    /// The name of the feature class on which
+    /// the update operation is performed.
+    /// \param properties (MgBatchPropertyCollection)
+    /// The property values to update matching features with
+    /// \param filter (String/string)
+    /// The FDO filter string that detemines what features will be updated
+    /// \param trans (MgTransaction)
+    /// The transaction to execute this operation under
+    ///
+    /// \return
+    /// Returns the number of features updated by this operation
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual INT32 UpdateMatchingFeatures(MgResourceIdentifier* resource,
+                                         CREFSTRING className,
+                                         MgPropertyCollection* properties,
+                                         CREFSTRING filter,
+                                         MgTransaction* trans) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Deletes all features that match the given filter
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int DeleteFeatures(MgResourceIdentifier resource, string className, string filter);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int DeleteFeatures(MgResourceIdentifier resource, String className, String filter);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int DeleteFeatures(MgResourceIdentifier resource, String className, String filter);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier for the feature
+    /// source.
+    /// \param className (String/string)
+    /// The name of the feature class on which
+    /// the delete operation is performed.
+    /// \param filter (String/string)
+    /// The FDO filter string that detemines what features will be deleted
+    ///
+    /// \return
+    /// Returns the number of features deleted by this operation
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual INT32 DeleteFeatures(MgResourceIdentifier* resource,
+                                 CREFSTRING className,
+                                 CREFSTRING filter) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Deletes all features that match the given filter
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int DeleteFeatures(MgResourceIdentifier resource, string className, string filter, MgTransaction trans);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int DeleteFeatures(MgResourceIdentifier resource, String className, String filter, MgTransaction trans);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int DeleteFeatures(MgResourceIdentifier resource, String className, String filter, MgTransaction trans);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier for the feature
+    /// source.
+    /// \param className (String/string)
+    /// The name of the feature class on which
+    /// the delete operation is performed.
+    /// \param filter (String/string)
+    /// The FDO filter string that detemines what features will be deleted
+    /// \param trans (MgTransaction)
+    /// The transaction to execute this operation under
+    ///
+    /// \return
+    /// Returns the number of features deleted by this operation
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual INT32 DeleteFeatures(MgResourceIdentifier* resource,
+                                 CREFSTRING className,
+                                 CREFSTRING filter,
+                                 MgTransaction* trans) = 0;
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the locked features

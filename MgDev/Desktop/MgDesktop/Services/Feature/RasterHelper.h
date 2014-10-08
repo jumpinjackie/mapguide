@@ -133,6 +133,22 @@ PUBLISHED_API:
     virtual MgByteReader* EnumerateDataStores(CREFSTRING providerName, CREFSTRING partialConnString);
 
     virtual MgByteReader* GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString);
+
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues);
+
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, MgTransaction* trans);
+
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues);
+
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues, MgTransaction* trans);
+
+    virtual INT32 DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter);
+
+	virtual INT32 DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans);
+    
+    virtual INT32 UpdateMatchingFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter);
+
+    virtual INT32 UpdateMatchingFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans);
     
 INTERNAL_API:
 

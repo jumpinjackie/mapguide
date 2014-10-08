@@ -107,3 +107,8 @@
 #include "OpCommitTransaction.cpp"
 #include "OpRollbackTransaction.cpp"
 #include "OpUpdateFeaturesWithTransaction.cpp"
+#include "OpInsertFeatures.cpp"
+#include "OpInsertFeaturesBatched.cpp"
+#include "OpUpdateMatchingFeatures.cpp"
+#include "OpDeleteFeatures.cpp"
+#include "TransformedGeometryFeatureReader.cpp"

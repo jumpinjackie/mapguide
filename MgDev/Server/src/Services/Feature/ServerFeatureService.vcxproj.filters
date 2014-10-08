@@ -188,6 +188,19 @@
     <ClCompile Include="ServerUpdateFeatures.cpp" />
     <ClCompile Include="TransformCache.cpp" />
     <ClCompile Include="FdoForcedOneToOneFeatureReader.cpp" />
+    <ClCompile Include="OpInsertFeatures.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpUpdateMatchingFeatures.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpDeleteFeatures.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpInsertFeaturesBatched.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformedGeometryFeatureReader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FeatureOperation.h">
@@ -385,6 +398,19 @@
     <ClInclude Include="TransformCache.h" />
     <ClInclude Include="UniqueFunction.h" />
     <ClInclude Include="FdoForcedOneToOneFeatureReader.h" />
+    <ClInclude Include="OpInsertFeatures.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpUpdateMatchingFeatures.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpDeleteFeatures.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpInsertFeaturesBatched.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformedGeometryFeatureReader.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ServerFeatureService.rc" />

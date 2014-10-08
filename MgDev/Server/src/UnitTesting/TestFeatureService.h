@@ -38,9 +38,15 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_DescribeSchema);
     CPPUNIT_TEST(TestCase_ApplySchema);
     CPPUNIT_TEST(TestCase_SelectFeatures);
+    CPPUNIT_TEST(TestCase_SelectFeaturesWithXform);
     CPPUNIT_TEST(TestCase_SelectAggregate);
     CPPUNIT_TEST(TestCase_UpdateFeaturesInsert);
     CPPUNIT_TEST(TestCase_UpdateFeaturesPartialFailure);
+    CPPUNIT_TEST(TestCase_InsertFeatures);
+    CPPUNIT_TEST(TestCase_InsertFeaturesBatch);
+    CPPUNIT_TEST(TestCase_UpdateMatchingFeatures);
+    CPPUNIT_TEST(TestCase_DeleteFeatures);
+    CPPUNIT_TEST(TestCase_TransactedCrud);
     CPPUNIT_TEST(TestCase_ExecuteSqlQuery);
     CPPUNIT_TEST(TestCase_ExecuteSqlNonQuery);
     CPPUNIT_TEST(TestCase_GetSpatialContexts);
@@ -86,9 +92,15 @@ public:
     void TestCase_DescribeSchema();
     void TestCase_ApplySchema();
     void TestCase_SelectFeatures();
+    void TestCase_SelectFeaturesWithXform();
     void TestCase_SelectAggregate();
     void TestCase_UpdateFeaturesInsert();
     void TestCase_UpdateFeaturesPartialFailure();
+    void TestCase_InsertFeatures();
+    void TestCase_InsertFeaturesBatch();
+    void TestCase_UpdateMatchingFeatures();
+    void TestCase_DeleteFeatures();
+    void TestCase_TransactedCrud();
     void TestCase_ExecuteSqlQuery();
     void TestCase_ExecuteSqlNonQuery();
     void TestCase_GetSpatialContexts();
@@ -110,6 +122,9 @@ public:
     void TestCase_JoinFdoFeatures();
     void TestCase_BenchmarkSqliteJoin();
     void TestCase_BenchmarkSqliteAggregateJoin();
+
+private:
+    STRING CreateTestDataStore(MgFeatureService* svcFeature, CREFSTRING provider, MgResourceIdentifier* fsId);
 };
 
 #endif // _TESTFEATURESERVICE_H

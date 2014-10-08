@@ -77,6 +77,12 @@ INTERNAL_API:
     static const int AddSavePoint_Id                      = 0x1111ED2E;
     static const int RollbackSavePoint_Id                 = 0x1111ED2F;
     static const int ReleaseSavePoint_Id                  = 0x1111ED30;
+
+    static const int InsertFeatures         = 0x1111ED31;
+    static const int InsertFeatures2        = 0x1111ED32;
+    static const int UpdateMatchingFeatures = 0x1111ED33;
+    static const int DeleteFeatures         = 0x1111ED34;
+    static const int SelectFeaturesWithTransform = 0x1111ED35;
 };
 /// \endcond
 

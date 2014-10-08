@@ -1700,6 +1700,11 @@ MgSerializableCollection* MgdResourceService::EnumerateParentMapDefinitions(
 	NOT_IMPLEMENTED(L"MgdResourceService::EnumerateParentMapDefinitions");
 }
 
+MgSerializableCollection* MgdResourceService::EnumerateParentTileSetDefinitions(MgSerializableCollection* resources)
+{
+    NOT_IMPLEMENTED(L"MgdResourceService::EnumerateParentTileSetDefinitions");
+}
+
 void MgdResourceService::DeleteSessionFiles()
 {
     Ptr<MgStringCollection> dirs = new MgStringCollection();

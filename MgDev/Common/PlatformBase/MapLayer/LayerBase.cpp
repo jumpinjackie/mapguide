@@ -776,6 +776,20 @@ MgFeatureReader* MgLayerBase::SelectFeatures(MgFeatureQueryOptions* options)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
+/// Selects features from a feature source according to the
+/// criteria set in the MgFeatureQueryOptions argument The
+/// criteria are applied to all of the features in the feature
+/// source. If you want to apply the criteria to a subset of the
+/// features, use the MgFeatureService::SelectAggregate Method.
+///
+MgFeatureReader* MgLayerBase::SelectFeatures(MgFeatureQueryOptions* options, CREFSTRING coordinateSystem)
+{
+    throw new MgNotImplementedException(L"MgLayerBase.SelectFeatures",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Selects groups of features from a feature source and applies
 /// filters to each of the groups according to the criteria set
 /// in the MgFeatureAggregateOptions argument. If you want to
@@ -797,5 +811,47 @@ MgDataReader* MgLayerBase::SelectAggregate(MgFeatureAggregateOptions* options)
 MgPropertyCollection* MgLayerBase::UpdateFeatures(MgFeatureCommandCollection* commands)
 {
     throw new MgNotImplementedException(L"MgLayerBase.UpdateFeatures",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgPropertyCollection* MgLayerBase::UpdateFeatures(MgFeatureCommandCollection* commands, MgTransaction* transaction)
+{
+    throw new MgNotImplementedException(L"MgLayerBase.UpdateFeatures",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgTransaction* MgLayerBase::BeginTransaction()
+{
+    throw new MgNotImplementedException(L"MgLayerBase.BeginTransaction",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgFeatureReader* MgLayerBase::InsertFeatures(MgPropertyCollection* properties, MgTransaction* transaction)
+{
+    throw new MgNotImplementedException(L"MgLayerBase.InsertFeatures",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgFeatureReader* MgLayerBase::InsertFeatures(MgBatchPropertyCollection* properties, MgTransaction* transaction)
+{
+    throw new MgNotImplementedException(L"MgLayerBase.InsertFeatures",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+INT32 MgLayerBase::UpdateMatchingFeatures(MgPropertyCollection* properties, CREFSTRING filter, MgTransaction* transaction)
+{
+    throw new MgNotImplementedException(L"MgLayerBase.UpdateMatchingFeatures",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+INT32 MgLayerBase::DeleteFeatures(CREFSTRING filter, MgTransaction* transaction)
+{
+    throw new MgNotImplementedException(L"MgLayerBase.DeleteFeatures",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgSpatialContextReader* MgLayerBase::GetSpatialContexts(bool bActiveOnly)
+{
+    throw new MgNotImplementedException(L"MgLayerBase.GetSpatialContexts",
         __LINE__, __WFILE__, NULL, L"", NULL);
 }

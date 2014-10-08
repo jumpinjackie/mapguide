@@ -378,6 +378,24 @@ MgPropertyCollection* MgdLayer::UpdateFeatures(MgFeatureCommandCollection* comma
     return propCol.Detach();
 }
 
+MgPropertyCollection* MgdLayer::UpdateFeatures(MgFeatureCommandCollection* commands, MgTransaction* trans)
+{
+    Ptr<MgPropertyCollection> propCol;
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> resourceId = new MgResourceIdentifier(m_featureSourceId);
+
+    Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(
+        GetMap()->GetService(MgServiceType::FeatureService));
+
+    propCol = featureService->UpdateFeatures(resourceId, commands, trans);
+
+    MG_CATCH_AND_THROW(L"MgdLayer.UpdateFeatures")
+
+    return propCol.Detach();
+}
+
 MgTransaction* MgdLayer::BeginTransaction()
 {
     Ptr<MgTransaction> trans;
@@ -442,7 +460,7 @@ MgFeatureReader* MgdLayer::InsertFeatures(MgPropertyCollection* propertyValues)
     return reader.Detach();
 }
 
-int MgdLayer::UpdateFeatures(MgPropertyCollection* propertyValues, CREFSTRING filter)
+INT32 MgdLayer::UpdateMatchingFeatures(MgPropertyCollection* propertyValues, CREFSTRING filter)
 {
     int updated = 0;
 
@@ -451,14 +469,14 @@ int MgdLayer::UpdateFeatures(MgPropertyCollection* propertyValues, CREFSTRING fi
     Ptr<MgdFeatureService> featSvc = static_cast<MgdFeatureService*>(GetMap()->GetService(MgServiceType::FeatureService));
     Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(GetFeatureSourceId());
 
-    updated = featSvc->UpdateFeatures(fsId, GetFeatureClassName(), propertyValues, filter);
+    updated = featSvc->UpdateMatchingFeatures(fsId, GetFeatureClassName(), propertyValues, filter);
 
-    MG_CATCH_AND_THROW(L"MgdLayer.UpdateFeatures")
+    MG_CATCH_AND_THROW(L"MgdLayer.UpdateMatchingFeatures")
 
     return updated;
 }
 
-int MgdLayer::DeleteFeatures(CREFSTRING filter)
+INT32 MgdLayer::DeleteFeatures(CREFSTRING filter)
 {
     int deleted = 0;
 
@@ -490,7 +508,7 @@ MgFeatureReader* MgdLayer::InsertFeatures(MgPropertyCollection* propertyValues, 
     return reader.Detach();
 }
 
-int MgdLayer::UpdateFeatures(MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans)
+INT32 MgdLayer::UpdateMatchingFeatures(MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans)
 {
     int updated = 0;
 
@@ -499,14 +517,14 @@ int MgdLayer::UpdateFeatures(MgPropertyCollection* propertyValues, CREFSTRING fi
     Ptr<MgdFeatureService> featSvc = static_cast<MgdFeatureService*>(GetMap()->GetService(MgServiceType::FeatureService));
     Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(GetFeatureSourceId());
 
-    updated = featSvc->UpdateFeatures(fsId, GetFeatureClassName(), propertyValues, filter, trans);
+    updated = featSvc->UpdateMatchingFeatures(fsId, GetFeatureClassName(), propertyValues, filter, trans);
 
-    MG_CATCH_AND_THROW(L"MgdLayer.UpdateFeatures")
+    MG_CATCH_AND_THROW(L"MgdLayer.UpdateMatchingFeatures")
 
     return updated;
 }
 
-int MgdLayer::DeleteFeatures(CREFSTRING filter, MgTransaction* trans)
+INT32 MgdLayer::DeleteFeatures(CREFSTRING filter, MgTransaction* trans)
 {
     int deleted = 0;
 

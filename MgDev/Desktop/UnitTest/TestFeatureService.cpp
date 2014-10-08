@@ -1719,20 +1719,15 @@ void TestFeatureService::TestCase_InsertFeaturesBatch()
         batch->Add(propVals);
 
         //Call the API
-        Ptr<MgPropertyCollection> insertRes = pService->InsertFeatures(fsId, L"Default:Parcels", batch);
+        Ptr<MgFeatureReader> insertRes = pService->InsertFeatures(fsId, L"Default:Parcels", batch);
         
-        //We inserted 3 features
-        CPPUNIT_ASSERT(3 == insertRes->GetCount());
-
-        for (INT32 i = 0; i < insertRes->GetCount(); i++)
+        INT32 insertedCount = 0;
+        while (insertRes->ReadNext())
         {
-            Ptr<MgProperty> res = insertRes->GetItem(i);
-            CPPUNIT_ASSERT(MgPropertyType::Feature == res->GetPropertyType());
-
-            MgFeatureProperty* fp = static_cast<MgFeatureProperty*>(res.p);
-            Ptr<MgFeatureReader> fr = fp->GetValue();
-            fr->Close();
+            insertedCount++;
         }
+        //We inserted 3 features
+        CPPUNIT_ASSERT(3 == insertedCount);
 
         //Now query to verify all values are the same
         Ptr<MgFeatureReader> reader = pService->SelectFeatures(fsId, L"Default:Parcels", NULL);
@@ -1837,7 +1832,7 @@ void TestFeatureService::TestCase_UpdateFeatures()
         ACE_OS::itoa(smTestSdfId, sdfNum, 10);
         filter += sdfNum;
 
-        int updated = pService->UpdateFeatures(fsId, className, propVals, filter);
+        int updated = pService->UpdateMatchingFeatures(fsId, className, propVals, filter);
         CPPUNIT_ASSERT(updated == 1);
 
         Ptr<MgFeatureQueryOptions> query = new MgFeatureQueryOptions();
@@ -3429,7 +3424,7 @@ void TestFeatureService::TestCase_LayerUpdateFeatures()
         ACE_OS::itoa(smTestSdfId, sdfNum, 10);
         filter += sdfNum;
 
-        int updated = parcels->UpdateFeatures(propVals, filter);
+        int updated = parcels->UpdateMatchingFeatures(propVals, filter);
         CPPUNIT_ASSERT(updated == 1);
 
         Ptr<MgFeatureQueryOptions> query = new MgFeatureQueryOptions();

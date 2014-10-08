@@ -431,16 +431,8 @@ namespace SampleExtension
             */
 
             // Here's the mg-desktop way
-            MgPropertyCollection insertResult = featureService.InsertFeatures(resourceIdentifier, "Points", batchPropertyCollection);
-            for (int i = 0; i < insertResult.GetCount(); i++)
-            {
-                MgFeatureProperty fp = insertResult.GetItem(i) as MgFeatureProperty;
-                if (fp != null)
-                {
-                    MgFeatureReader fr = fp.GetValue();
-                    fr.Close();
-                }
-            }
+            MgFeatureReader insertResult = featureService.InsertFeatures(resourceIdentifier, "Points", batchPropertyCollection);
+            insertResult.Close();
 
             // ...
             //---------------------------------------------------//

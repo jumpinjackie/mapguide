@@ -36,6 +36,10 @@
 #include "OpTestConnection.h"
 #include "OpTestFeatureSourceConnection.h"
 #include "OpUpdateFeatures.h"
+#include "OpInsertFeatures.h"
+#include "OpInsertFeaturesBatched.h"
+#include "OpUpdateMatchingFeatures.h"
+#include "OpDeleteFeatures.h"
 #include "OpGetFeatures.h"
 #include "OpCloseFeatureReader.h"
 #include "OpGetLongTransactions.h"
@@ -236,6 +240,18 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         }
         break;
 
+    case MgFeatureServiceOpId::SelectFeaturesWithTransform:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
+            handler.reset(new MgOpSelectFeatures());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
     case MgFeatureServiceOpId::SelectAggregate_Id:
         switch (VERSION_NO_PHASE(operationVersion))
         {
@@ -325,6 +341,54 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpUpdateFeaturesWithTransaction());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgFeatureServiceOpId::InsertFeatures:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
+            handler.reset(new MgOpInsertFeatures());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgFeatureServiceOpId::InsertFeatures2:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
+            handler.reset(new MgOpInsertFeaturesBatched());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgFeatureServiceOpId::UpdateMatchingFeatures:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
+            handler.reset(new MgOpUpdateMatchingFeatures());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgFeatureServiceOpId::DeleteFeatures:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3,0):
+            handler.reset(new MgOpDeleteFeatures());
             break;
         default:
             throw new MgInvalidOperationVersionException(

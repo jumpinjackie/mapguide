@@ -1773,35 +1773,6 @@ INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Enumerate the resource documents in the specified repository.
-    ///
-    /// \remarks
-    /// This method only works on "Library".
-    ///
-    /// \param resources
-    /// Resource identifiers specifying the resources to enumerate.
-    /// \n If it is null or contains no resource, then the type must be specified.
-    /// \n If it is not null and contains some resource, then the type will be ignored.
-    /// \param type
-    /// Type of the resource to be enumerated. See MgResourceType for valid types.
-    /// No folder type is allowed.
-    /// \param properties
-    /// Flag to specify which properties of the resource header should be filtered.
-    /// It may be set to 0 or by bitwise inclusively OR'ing together one or
-    /// more of the MgResourceHeaderProperties values.
-    ///
-    /// \return
-    /// Returns a string containing a description of the WMS layer definitions
-    /// in XML format using the \link ResourceList_schema ResourceList \endlink
-    /// schema.
-    ///
-    /// \exception MgInvalidResourceTypeException
-    ///
-    virtual STRING EnumerateResourceDocuments(MgStringCollection* resources,
-        CREFSTRING type, INT32 properties);
-
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
     /// Gets the content of the specified resource.
     ///
     /// \param resource
@@ -1845,34 +1816,6 @@ INTERNAL_API:
     ///
     virtual MgByteReader* GetResourceData(MgResourceIdentifier* resource,
         CREFSTRING dataName, CREFSTRING preProcessTags) = 0;
-
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Returns the modified date of the specified resource.
-    ///
-    /// This method only works on "Library" repository.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgDateTime GetResourceModifiedDate(MgResourceIdentifier resource);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgDateTime GetResourceModifiedDate(MgResourceIdentifier resource);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgDateTime GetResourceModifiedDate(MgResourceIdentifier resource);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param resource (MgResourceIdentifier)
-    /// Resource to get the modified date for.
-    ///
-    /// \return
-    /// An MgDateTime object containing the modified date of the resource.
-    ///
-    /// \exception MgInvalidRepositoryTypeException
-    /// \exception MgInvalidResourceTypeException
-    ///
-    virtual MgDateTime* GetResourceModifiedDate(MgResourceIdentifier* resource) = 0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1927,6 +1870,65 @@ INTERNAL_API:
     virtual bool HasPermission(MgResourceIdentifier* resource, CREFSTRING permission);
 
 EXTERNAL_API:
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Enumerate the resource documents in the specified repository.
+    ///
+    /// \remarks
+    /// This method only works on "Library".
+    /// This API has been promoted from internal to un-published status for MapGuide Open Source 3.0
+    ///
+    /// \param resources
+    /// Resource identifiers specifying the resources to enumerate.
+    /// \n If it is null or contains no resource, then the type must be specified.
+    /// \n If it is not null and contains some resource, then the type will be ignored.
+    /// \param type
+    /// Type of the resource to be enumerated. See MgResourceType for valid types.
+    /// No folder type is allowed.
+    /// \param properties
+    /// Flag to specify which properties of the resource header should be filtered.
+    /// It may be set to 0 or by bitwise inclusively OR'ing together one or
+    /// more of the MgResourceHeaderProperties values.
+    ///
+    /// \return
+    /// Returns a string containing a description of the WMS layer definitions
+    /// in XML format using the \link ResourceList_schema ResourceList \endlink
+    /// schema.
+    ///
+    /// \exception MgInvalidResourceTypeException
+    ///
+    virtual STRING EnumerateResourceDocuments(MgStringCollection* resources,
+        CREFSTRING type, INT32 properties);
+        
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the modified date of the specified resource.
+    ///
+    /// \remarks
+    /// This method only works on "Library" repository.
+    /// This API has been promoted from internal to un-published status for MapGuide Open Source 3.0
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgDateTime GetResourceModifiedDate(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgDateTime GetResourceModifiedDate(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgDateTime GetResourceModifiedDate(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// Resource to get the modified date for.
+    ///
+    /// \return
+    /// An MgDateTime object containing the modified date of the resource.
+    ///
+    /// \exception MgInvalidRepositoryTypeException
+    /// \exception MgInvalidResourceTypeException
+    ///
+    virtual MgDateTime* GetResourceModifiedDate(MgResourceIdentifier* resource) = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief

@@ -171,8 +171,23 @@ PUBLISHED_API:
 
     virtual MgByteReader* GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString);
 
-    //------- Desktop API additions --------//
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues);
 
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, MgTransaction* trans);
+
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues);
+
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues, MgTransaction* trans);
+
+    virtual INT32 DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter);
+
+	virtual INT32 DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans);
+    
+    virtual INT32 UpdateMatchingFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter);
+
+    virtual INT32 UpdateMatchingFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans);
+
+    //------- Desktop API additions --------//
     MgdScrollableFeatureReader* SelectFeaturesExtended(MgResourceIdentifier* resource,
                                                        CREFSTRING className,
                                                        MgFeatureQueryOptions* options);
@@ -180,22 +195,6 @@ PUBLISHED_API:
     void RegisterProvider(CREFSTRING providerLibraryPath);
 
     void UnregisterProvider(CREFSTRING providerName);
-
-	MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues);
-
-    MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, MgTransaction* trans);
-
-    MgPropertyCollection* InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues);
-
-    MgPropertyCollection* InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues, MgTransaction* trans);
-
-	INT32 UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter);
-
-    INT32 UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans);
-
-	INT32 DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter);
-
-	INT32 DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans);
 
 EXTERNAL_API:
     void PurgeCache(MgResourceIdentifier* resource);

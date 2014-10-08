@@ -30,9 +30,18 @@ namespace MgTestRunner
                 return _siteConn.CreateService(serviceType);
             }
 
-            public MgMapBase CreateMap()
+            public MgMapBase CreateMap(MgResourceIdentifier mapDefinition)
             {
-                return new MgMap(_siteConn);
+                var map = new MgMap(_siteConn);
+                map.Create(mapDefinition, mapDefinition.Name);
+                return map;
+            }
+
+            public MgMapBase CreateMap(string coordSys, MgEnvelope env, string name)
+            {
+                var map = new MgMap(_siteConn);
+                map.Create(coordSys, env, name);
+                return map;
             }
 
             public MgLayerBase CreateLayer(MgResourceIdentifier resId)

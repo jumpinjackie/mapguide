@@ -71,6 +71,46 @@ MgPropertyCollection* MgdRasterHelper::UpdateFeatures(MgResourceIdentifier* reso
                                              MgFeatureCommandCollection* commands,
                                              MgTransaction* transaction) { NOT_IMPLEMENTED(L"MgdRasterHelper::UpdateFeatures"); }
 
+MgFeatureReader* MgdRasterHelper::InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues)   
+{
+    NOT_IMPLEMENTED(L"MgdRasterHelper::InsertFeatures");
+}
+
+MgFeatureReader* MgdRasterHelper::InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, MgTransaction* trans)
+{
+    NOT_IMPLEMENTED(L"MgdRasterHelper::InsertFeatures");
+}
+
+MgFeatureReader* MgdRasterHelper::InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues)
+{
+    NOT_IMPLEMENTED(L"MgdRasterHelper::InsertFeatures");
+}
+
+MgFeatureReader* MgdRasterHelper::InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues, MgTransaction* trans)
+{
+    NOT_IMPLEMENTED(L"MgdRasterHelper::InsertFeatures");
+}
+
+INT32 MgdRasterHelper::DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter)
+{
+    NOT_IMPLEMENTED(L"MgdRasterHelper::DeleteFeatures");
+}
+
+INT32 MgdRasterHelper::DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans)
+{
+    NOT_IMPLEMENTED(L"MgdRasterHelper::DeleteFeatures");
+}
+    
+INT32 MgdRasterHelper::UpdateMatchingFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter)
+{
+    NOT_IMPLEMENTED(L"MgdRasterHelper::UpdateMatchingFeatures");
+}
+
+INT32 MgdRasterHelper::UpdateMatchingFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans)
+{
+    NOT_IMPLEMENTED(L"MgdRasterHelper::UpdateMatchingFeatures");
+}
+
 MgFeatureReader* MgdRasterHelper::GetLockedFeatures(MgResourceIdentifier* resource,
                                            CREFSTRING className,
                                            MgFeatureQueryOptions* options) { NOT_IMPLEMENTED(L"MgdRasterHelper::GetLockedFeatures"); }

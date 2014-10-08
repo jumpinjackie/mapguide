@@ -34,6 +34,10 @@ class TestMappingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_GetLegendPlot);
     CPPUNIT_TEST(TestCase_GetLegendImage);
     CPPUNIT_TEST(TestCase_GetLegendImagePointStyleWithConstRotations);
+    CPPUNIT_TEST(TestCase_GetLegendImageConvenience);
+    CPPUNIT_TEST(TestCase_GetLegendImageCompositeConvenience);
+    CPPUNIT_TEST(TestCase_GetLegendImageCompositeThemedConvenience);
+    CPPUNIT_TEST(TestCase_GetLegendImagePointStyleWithConstRotationsConvenience);
     CPPUNIT_TEST(TestCase_CreateRuntimeMap);
     CPPUNIT_TEST(TestCase_DescribeRuntimeMap);
     CPPUNIT_TEST(TestCase_CreateAndDescribeLinkedRuntimeMap);
@@ -65,6 +69,10 @@ public:
     void TestCase_GetLegendPlot();
     void TestCase_GetLegendImage();
     void TestCase_GetLegendImagePointStyleWithConstRotations();
+    void TestCase_GetLegendImageConvenience();
+    void TestCase_GetLegendImageCompositeConvenience();
+    void TestCase_GetLegendImageCompositeThemedConvenience();
+    void TestCase_GetLegendImagePointStyleWithConstRotationsConvenience();
     void TestCase_QueryFeaturesImageMap();
 
 private:

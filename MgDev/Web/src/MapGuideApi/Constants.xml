@@ -75,6 +75,7 @@
   <Class name="MgResourceDataName" />
   <Class name="MgResourceDataType" />
   <Class name="MgResourcePermission" />
+  <Class name="MgResourceHeaderProperties" />
   <Class name="MgMimeType" />
   <Class name="MgPropertyType" />
   <Class name="MgPageUnitsType" />

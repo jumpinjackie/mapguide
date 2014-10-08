@@ -208,7 +208,7 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
     <Link>
       <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;ExpressionEngine.lib;ACE.lib;MgFoundation.lib;MgGeometry.lib;MgMdfModel.lib;MgMdfParser.lib;MgPlatformBase.lib;MgRenderers.lib;MgStylization.lib;MgGwsCommon.lib;MgGwsQueryEngine.lib;xerces-c_3mg.lib;dwfcore_wt.1.7.0.lib;dwftk_wt.7.7.0.lib;w3dtk_wt.1.7.1555.lib;whiptk_wt.7.13.601.lib;MgSecurity.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration)64\vc10.0;..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;..\..\Common\lib\$(Configuration)64;..\..\Server\lib\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK\develop\global\lib\x64\static\$(Configuration)\vc10.0;..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;..\..\Common\lib\$(Configuration)64;..\..\Server\lib\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>MgMdfParser.dll;MgGeometry.dll;MgGwsCommon.dll;MgGwsResource.dll;FDO.dll;FDOCommon.dll;MgStylization.dll;FDOGeometry.dll;ExpressionEngine.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>

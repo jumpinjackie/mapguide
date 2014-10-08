@@ -47,6 +47,7 @@
 #include "ServerDataReader.h"
 #include "ServerSqlDataReader.h"
 #include "ServerFeatureTransaction.h"
+#include "TransformedGeometryFeatureReader.h"
 
 #include <Fdo/Xml/FeatureSerializer.h>
 #include <Fdo/Xml/FeatureWriter.h>
@@ -507,11 +508,46 @@ MgFeatureReader* MgServerFeatureService::SelectFeatures(MgResourceIdentifier* re
                                                         MgFeatureQueryOptions* options,
                                                         CREFSTRING coordinateSystem)
 {
-    throw new MgNotImplementedException(
-        L"MgServerFeatureService::SelectFeatures",
-        __LINE__, __WFILE__, NULL, L"", NULL);
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::SelectFeatures()");
 
-    return NULL; // to make some compiler happy
+    Ptr<MgFeatureReader> reader;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    if (NULL == resource)
+    {
+        throw new MgNullArgumentException(
+            L"MgServerFeatureService.SelectFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.SelectFeatures",mgStackParams);
+    logDetail.AddResourceIdentifier(L"Resource", resource);
+    logDetail.AddString(L"ClassName", className);
+    logDetail.AddObject(L"Options", options);
+    logDetail.AddString(L"CoordinateSystem", coordinateSystem);
+    logDetail.Create();
+
+    MgServerSelectFeatures mssf;
+    Ptr<MgFeatureReader> innerReader = (MgFeatureReader*)mssf.SelectFeatures(resource, className, options, false);
+
+    Ptr<MgCoordinateSystemTransform> xform;
+    STRING srcCsWkt = MgServerFeatureUtil::GetSpatialContextCoordSys(this, resource, className);
+    if (!srcCsWkt.empty() && !coordinateSystem.empty())
+    {
+        Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+        Ptr<MgCoordinateSystem> srcCs = csFactory->Create(srcCsWkt);
+        Ptr<MgCoordinateSystem> dstCs = csFactory->Create(coordinateSystem);
+        xform = csFactory->GetTransform(srcCs, dstCs);
+        reader = new MgTransformedGeometryFeatureReader(innerReader, xform);
+    }
+    else
+    {
+        reader = SAFE_ADDREF((MgFeatureReader*)innerReader);
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.SelectFeatures", resource)
+
+    return reader.Detach();
 }
 
 
@@ -637,6 +673,307 @@ MgPropertyCollection* MgServerFeatureService::UpdateFeatures(MgResourceIdentifie
     return asuf.Execute(resource, commands, transaction);
 }
 
+MgFeatureReader* MgServerFeatureService::InsertFeatures(MgResourceIdentifier* resource,
+                                                        CREFSTRING className,
+                                                        MgPropertyCollection* propertyValues)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::InsertFeatures()");
+
+    Ptr<MgFeatureReader> ret;
+    MG_FEATURE_SERVICE_TRY()
+    
+    Ptr<MgInsertFeatures> insert = new MgInsertFeatures(className, propertyValues);
+    Ptr<MgFeatureCommandCollection> cmds = new MgFeatureCommandCollection();
+    cmds->Add(insert);
+    MgServerUpdateFeatures asuf;
+    Ptr<MgPropertyCollection> props = asuf.Execute(resource, cmds, false);
+
+    if (props->GetCount() == 1)
+    {
+        INT32 i = 0;
+        Ptr<MgProperty> prop = props->GetItem(i);
+        if (prop->GetPropertyType() == MgPropertyType::String) //FDO error in non-transactional mode
+        {
+            MgStringProperty* sp = static_cast<MgStringProperty*>(prop.p);
+            MgStringCollection args;
+            args.Add(sp->GetValue());
+            throw new MgFdoException(L"MgServerFeatureService.InsertFeatures", __LINE__, __WFILE__, &args, L"MgFormatInnerExceptionMessage", NULL);
+        }
+        else if (prop->GetPropertyType() == MgPropertyType::Feature) //Insert result
+        {
+            MgFeatureProperty* fp = static_cast<MgFeatureProperty*>(prop.p);
+            ret = fp->GetValue();
+        }
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.InsertFeatures", resource)
+    return ret.Detach();
+}
+
+MgFeatureReader* MgServerFeatureService::InsertFeatures(MgResourceIdentifier* resource,
+                                                        CREFSTRING className,
+                                                        MgPropertyCollection* propertyValues,
+                                                        MgTransaction* trans)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::InsertFeatures()");
+
+    Ptr<MgFeatureReader> ret;
+    MG_FEATURE_SERVICE_TRY()
+    
+    Ptr<MgInsertFeatures> insert = new MgInsertFeatures(className, propertyValues);
+    Ptr<MgFeatureCommandCollection> cmds = new MgFeatureCommandCollection();
+    cmds->Add(insert);
+    MgServerUpdateFeatures asuf;
+    Ptr<MgPropertyCollection> props = asuf.Execute(resource, cmds, trans);
+
+    if (cmds->GetCount() == 1)
+    {
+        INT32 i = 0;
+        Ptr<MgProperty> prop = props->GetItem(i);
+        if (prop->GetPropertyType() == MgPropertyType::String) //FDO error in non-transactional mode
+        {
+            MgStringProperty* sp = static_cast<MgStringProperty*>(prop.p);
+            MgStringCollection args;
+            args.Add(sp->GetValue());
+            throw new MgFdoException(L"MgServerFeatureService.InsertFeatures", __LINE__, __WFILE__, &args, L"MgFormatInnerExceptionMessage", NULL);
+        }
+        else if (prop->GetPropertyType() == MgPropertyType::Feature) //Insert result
+        {
+            MgFeatureProperty* fp = static_cast<MgFeatureProperty*>(prop.p);
+            ret = fp->GetValue();
+        }
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.InsertFeatures", resource)
+    return ret.Detach();
+}
+
+MgFeatureReader* MgServerFeatureService::InsertFeatures(MgResourceIdentifier* resource,
+                                                        CREFSTRING className,
+                                                        MgBatchPropertyCollection* batchPropertyValues)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::InsertFeatures()");
+
+    Ptr<MgFeatureReader> ret;
+    MG_FEATURE_SERVICE_TRY()
+    
+    Ptr<MgInsertFeatures> insert = new MgInsertFeatures(className, batchPropertyValues);
+    Ptr<MgFeatureCommandCollection> cmds = new MgFeatureCommandCollection();
+    cmds->Add(insert);
+    MgServerUpdateFeatures asuf;
+    Ptr<MgPropertyCollection> props = asuf.Execute(resource, cmds, false);
+
+    if (cmds->GetCount() == 1)
+    {
+        INT32 i = 0;
+        Ptr<MgProperty> prop = props->GetItem(i);
+        if (prop->GetPropertyType() == MgPropertyType::String) //FDO error in non-transactional mode
+        {
+            MgStringProperty* sp = static_cast<MgStringProperty*>(prop.p);
+            MgStringCollection args;
+            args.Add(sp->GetValue());
+            throw new MgFdoException(L"MgServerFeatureService.InsertFeatures", __LINE__, __WFILE__, &args, L"MgFormatInnerExceptionMessage", NULL);
+        }
+        else if (prop->GetPropertyType() == MgPropertyType::Feature) //Insert result
+        {
+            MgFeatureProperty* fp = static_cast<MgFeatureProperty*>(prop.p);
+            ret = fp->GetValue();
+        }
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.InsertFeatures", resource)
+    return ret.Detach();
+}
+
+MgFeatureReader* MgServerFeatureService::InsertFeatures(MgResourceIdentifier* resource,
+                                                        CREFSTRING className,
+                                                        MgBatchPropertyCollection* batchPropertyValues,
+                                                        MgTransaction* trans)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::InsertFeatures()");
+
+    Ptr<MgFeatureReader> ret;
+    MG_FEATURE_SERVICE_TRY()
+    
+    Ptr<MgInsertFeatures> insert = new MgInsertFeatures(className, batchPropertyValues);
+    Ptr<MgFeatureCommandCollection> cmds = new MgFeatureCommandCollection();
+    cmds->Add(insert);
+    MgServerUpdateFeatures asuf;
+    Ptr<MgPropertyCollection> props = asuf.Execute(resource, cmds, trans);
+
+    if (cmds->GetCount() == 1)
+    {
+        INT32 i = 0;
+        Ptr<MgProperty> prop = props->GetItem(i);
+        if (prop->GetPropertyType() == MgPropertyType::String) //FDO error in non-transactional mode
+        {
+            MgStringProperty* sp = static_cast<MgStringProperty*>(prop.p);
+            MgStringCollection args;
+            args.Add(sp->GetValue());
+            throw new MgFdoException(L"MgServerFeatureService.InsertFeatures", __LINE__, __WFILE__, &args, L"MgFormatInnerExceptionMessage", NULL);
+        }
+        else if (prop->GetPropertyType() == MgPropertyType::Feature) //Insert result
+        {
+            MgFeatureProperty* fp = static_cast<MgFeatureProperty*>(prop.p);
+            ret = fp->GetValue();
+        }
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.InsertFeatures", resource)
+    return ret.Detach();
+}
+
+INT32 MgServerFeatureService::UpdateMatchingFeatures(MgResourceIdentifier* resource,
+                                                     CREFSTRING className,
+                                                     MgPropertyCollection* properties,
+                                                     CREFSTRING filter)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::UpdateMatchingFeatures()");
+
+    INT32 ret = -1;
+    MG_FEATURE_SERVICE_TRY()
+    
+    Ptr<MgUpdateFeatures> update = new MgUpdateFeatures(className, properties, filter);
+    Ptr<MgFeatureCommandCollection> cmds = new MgFeatureCommandCollection();
+    cmds->Add(update);
+    MgServerUpdateFeatures asuf;
+    Ptr<MgPropertyCollection> props = asuf.Execute(resource, cmds, false);
+
+    if (cmds->GetCount() == 1)
+    {
+        INT32 i = 0;
+        Ptr<MgProperty> prop = props->GetItem(i);
+        if (prop->GetPropertyType() == MgPropertyType::String) //FDO error in non-transactional mode
+        {
+            MgStringProperty* sp = static_cast<MgStringProperty*>(prop.p);
+            MgStringCollection args;
+            args.Add(sp->GetValue());
+            throw new MgFdoException(L"MgServerFeatureService.UpdateMatchingFeatures", __LINE__, __WFILE__, &args, L"MgFormatInnerExceptionMessage", NULL);
+        }
+        else if (prop->GetPropertyType() == MgPropertyType::Int32) //Update result
+        {
+            MgInt32Property* ip = static_cast<MgInt32Property*>(prop.p);
+            ret = ip->GetValue();
+        }
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.UpdateMatchingFeatures", resource)
+    return ret;
+}
+
+INT32 MgServerFeatureService::UpdateMatchingFeatures(MgResourceIdentifier* resource,
+                                                     CREFSTRING className,
+                                                     MgPropertyCollection* properties,
+                                                     CREFSTRING filter,
+                                                     MgTransaction* trans)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::UpdateMatchingFeatures()");
+
+    INT32 ret = -1;
+    MG_FEATURE_SERVICE_TRY()
+    
+    Ptr<MgUpdateFeatures> update = new MgUpdateFeatures(className, properties, filter);
+    Ptr<MgFeatureCommandCollection> cmds = new MgFeatureCommandCollection();
+    cmds->Add(update);
+    MgServerUpdateFeatures asuf;
+    Ptr<MgPropertyCollection> props = asuf.Execute(resource, cmds, trans);
+
+    if (cmds->GetCount() == 1)
+    {
+        INT32 i = 0;
+        Ptr<MgProperty> prop = props->GetItem(i);
+        if (prop->GetPropertyType() == MgPropertyType::String) //FDO error in non-transactional mode
+        {
+            MgStringProperty* sp = static_cast<MgStringProperty*>(prop.p);
+            MgStringCollection args;
+            args.Add(sp->GetValue());
+            throw new MgFdoException(L"MgServerFeatureService.UpdateMatchingFeatures", __LINE__, __WFILE__, &args, L"MgFormatInnerExceptionMessage", NULL);
+        }
+        else if (prop->GetPropertyType() == MgPropertyType::Int32) //Update result
+        {
+            MgInt32Property* ip = static_cast<MgInt32Property*>(prop.p);
+            ret = ip->GetValue();
+        }
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.UpdateMatchingFeatures", resource)
+    return ret;
+}
+
+INT32 MgServerFeatureService::DeleteFeatures(MgResourceIdentifier* resource,
+                                             CREFSTRING className,
+                                             CREFSTRING filter)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::DeleteFeatures()");
+
+    INT32 ret = -1;
+    MG_FEATURE_SERVICE_TRY()
+    
+    Ptr<MgDeleteFeatures> deleteCmd = new MgDeleteFeatures(className, filter);
+    Ptr<MgFeatureCommandCollection> cmds = new MgFeatureCommandCollection();
+    cmds->Add(deleteCmd);
+    MgServerUpdateFeatures asuf;
+    Ptr<MgPropertyCollection> props = asuf.Execute(resource, cmds, false);
+
+    if (cmds->GetCount() == 1)
+    {
+        INT32 i = 0;
+        Ptr<MgProperty> prop = props->GetItem(i);
+        if (prop->GetPropertyType() == MgPropertyType::String) //FDO error in non-transactional mode
+        {
+            MgStringProperty* sp = static_cast<MgStringProperty*>(prop.p);
+            MgStringCollection args;
+            args.Add(sp->GetValue());
+            throw new MgFdoException(L"MgServerFeatureService.DeleteFeatures", __LINE__, __WFILE__, &args, L"MgFormatInnerExceptionMessage", NULL);
+        }
+        else if (prop->GetPropertyType() == MgPropertyType::Int32) //Delete result
+        {
+            MgInt32Property* ip = static_cast<MgInt32Property*>(prop.p);
+            ret = ip->GetValue();
+        }
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.UpdateMatchingFeatures", resource)
+    return ret;
+}
+
+INT32 MgServerFeatureService::DeleteFeatures(MgResourceIdentifier* resource,
+                                             CREFSTRING className,
+                                             CREFSTRING filter,
+                                             MgTransaction* trans)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::DeleteFeatures()");
+
+    INT32 ret = -1;
+    MG_FEATURE_SERVICE_TRY()
+    
+    Ptr<MgDeleteFeatures> deleteCmd = new MgDeleteFeatures(className, filter);
+    Ptr<MgFeatureCommandCollection> cmds = new MgFeatureCommandCollection();
+    cmds->Add(deleteCmd);
+    MgServerUpdateFeatures asuf;
+    Ptr<MgPropertyCollection> props = asuf.Execute(resource, cmds, trans);
+
+    if (cmds->GetCount() == 1)
+    {
+        INT32 i = 0;
+        Ptr<MgProperty> prop = props->GetItem(i);
+        if (prop->GetPropertyType() == MgPropertyType::String) //FDO error in non-transactional mode
+        {
+            MgStringProperty* sp = static_cast<MgStringProperty*>(prop.p);
+            MgStringCollection args;
+            args.Add(sp->GetValue());
+            throw new MgFdoException(L"MgServerFeatureService.DeleteFeatures", __LINE__, __WFILE__, &args, L"MgFormatInnerExceptionMessage", NULL);
+        }
+        else if (prop->GetPropertyType() == MgPropertyType::Int32) //Delete result
+        {
+            MgInt32Property* ip = static_cast<MgInt32Property*>(prop.p);
+            ret = ip->GetValue();
+        }
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.UpdateMatchingFeatures", resource)
+    return ret;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /// <summary>

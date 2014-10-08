@@ -584,11 +584,27 @@ MgFeatureReader* MgProxyFeatureService::SelectFeatures(MgResourceIdentifier* res
                                                        MgFeatureQueryOptions* options,
                                                        CREFSTRING coordinateSystem)
 {
-    throw new MgNotImplementedException(
-        L"MgProxyFeatureService::SelectFeatures",
-        __LINE__, __WFILE__, NULL, L"", NULL);
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knObject,                         // Return type expected
+                       MgFeatureServiceOpId::SelectFeaturesWithTransform, // Command Code
+                       4,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(3,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument#1
+                       MgCommand::knString, &className,             // Argument#2
+                       MgCommand::knObject, options,                // Argument#3
+                       MgCommand::knString, &coordinateSystem,      // Argument#4
+                       MgCommand::knNone);                          // End of argument
 
-    return NULL; // to make some compiler happy
+    SetWarning(cmd.GetWarningObject());
+
+    Ptr<MgProxyFeatureReader> featReader = (MgProxyFeatureReader*)cmd.GetReturnValue().val.m_obj;
+
+    if (featReader != NULL)
+        featReader->SetService(this); // Feature reader on proxy side would store proxy service to call GetFeatures()
+
+    return SAFE_ADDREF((MgProxyFeatureReader*)featReader);
 }
 
 
@@ -1896,4 +1912,229 @@ bool MgProxyFeatureService::ReleaseSavePoint(CREFSTRING transactionId, CREFSTRIN
 
     SetWarning(cmd.GetWarningObject());
     return cmd.GetReturnValue().val.m_i8;
+}
+
+MgFeatureReader* MgProxyFeatureService::InsertFeatures(MgResourceIdentifier* resource,
+                                                       CREFSTRING className,
+                                                       MgPropertyCollection* propertyValues)
+
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knObject,                         // Return type expected
+                       MgFeatureServiceOpId::InsertFeatures,        // Command Code
+                       3,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(3,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument#1
+                       MgCommand::knString, &className,             // Argument#2
+                       MgCommand::knObject, propertyValues,         // Argument#3
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    Ptr<MgProxyFeatureReader> featReader = (MgProxyFeatureReader*)cmd.GetReturnValue().val.m_obj;
+
+    if (featReader != NULL)
+        featReader->SetService(this); // Feature reader on proxy side would store proxy service to call GetFeatures()
+
+    return SAFE_ADDREF((MgProxyFeatureReader*)featReader);
+}
+
+MgFeatureReader* MgProxyFeatureService::InsertFeatures(MgResourceIdentifier* resource,
+                                                       CREFSTRING className,
+                                                       MgPropertyCollection* propertyValues,
+                                                       MgTransaction* transaction)
+{
+    STRING transactionId = L"";
+    MgProxyFeatureTransaction* proxyTransaction = dynamic_cast<MgProxyFeatureTransaction*>(transaction);
+    if (NULL != proxyTransaction)
+    {
+        transactionId = proxyTransaction->GetTransactionId();
+    }
+
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knObject,                         // Return type expected
+                       MgFeatureServiceOpId::InsertFeatures,        // Command Code
+                       4,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(3,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument#1
+                       MgCommand::knString, &className,             // Argument#2
+                       MgCommand::knObject, propertyValues,         // Argument#3
+                       MgCommand::knString, &transactionId,         // Argument#4
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    Ptr<MgProxyFeatureReader> featReader = (MgProxyFeatureReader*)cmd.GetReturnValue().val.m_obj;
+
+    if (featReader != NULL)
+        featReader->SetService(this); // Feature reader on proxy side would store proxy service to call GetFeatures()
+
+    return SAFE_ADDREF((MgProxyFeatureReader*)featReader);
+}
+
+MgFeatureReader* MgProxyFeatureService::InsertFeatures(MgResourceIdentifier* resource,
+                                                       CREFSTRING className,
+                                                       MgBatchPropertyCollection* batchPropertyValues)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knObject,                         // Return type expected
+                       MgFeatureServiceOpId::InsertFeatures2,       // Command Code
+                       3,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(3,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument#1
+                       MgCommand::knString, &className,             // Argument#2
+                       MgCommand::knObject, batchPropertyValues,    // Argument#3
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    Ptr<MgProxyFeatureReader> featReader = (MgProxyFeatureReader*)cmd.GetReturnValue().val.m_obj;
+
+    if (featReader != NULL)
+        featReader->SetService(this); // Feature reader on proxy side would store proxy service to call GetFeatures()
+
+    return SAFE_ADDREF((MgProxyFeatureReader*)featReader);
+}
+
+MgFeatureReader* MgProxyFeatureService::InsertFeatures(MgResourceIdentifier* resource,
+                                                       CREFSTRING className,
+                                                       MgBatchPropertyCollection* batchPropertyValues,
+                                                       MgTransaction* transaction)
+{
+    STRING transactionId = L"";
+    MgProxyFeatureTransaction* proxyTransaction = dynamic_cast<MgProxyFeatureTransaction*>(transaction);
+    if (NULL != proxyTransaction)
+    {
+        transactionId = proxyTransaction->GetTransactionId();
+    }
+
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knObject,                         // Return type expected
+                       MgFeatureServiceOpId::InsertFeatures2,       // Command Code
+                       4,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(3,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument#1
+                       MgCommand::knString, &className,             // Argument#2
+                       MgCommand::knObject, batchPropertyValues,    // Argument#3
+                       MgCommand::knString, &transactionId,         // Argument#4
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    Ptr<MgProxyFeatureReader> featReader = (MgProxyFeatureReader*)cmd.GetReturnValue().val.m_obj;
+
+    if (featReader != NULL)
+        featReader->SetService(this); // Feature reader on proxy side would store proxy service to call GetFeatures()
+
+    return SAFE_ADDREF((MgProxyFeatureReader*)featReader);
+}
+
+INT32 MgProxyFeatureService::UpdateMatchingFeatures(MgResourceIdentifier* resource,
+                                                    CREFSTRING className,
+                                                    MgPropertyCollection* propertyValues,
+                                                    CREFSTRING filter)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knInt32,                          // Return type expected
+                       MgFeatureServiceOpId::UpdateMatchingFeatures,// Command Code
+                       4,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(3,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument#1
+                       MgCommand::knString, &className,             // Argument#2
+                       MgCommand::knObject, propertyValues,         // Argument#3
+                       MgCommand::knString, &filter,                // Argument#4
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+    return cmd.GetReturnValue().val.m_i32;
+}
+
+INT32 MgProxyFeatureService::UpdateMatchingFeatures(MgResourceIdentifier* resource,
+                                                    CREFSTRING className,
+                                                    MgPropertyCollection* propertyValues,
+                                                    CREFSTRING filter,
+                                                    MgTransaction* transaction)
+{
+    STRING transactionId = L"";
+    MgProxyFeatureTransaction* proxyTransaction = dynamic_cast<MgProxyFeatureTransaction*>(transaction);
+    if (NULL != proxyTransaction)
+    {
+        transactionId = proxyTransaction->GetTransactionId();
+    }
+
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knInt32,                          // Return type expected
+                       MgFeatureServiceOpId::UpdateMatchingFeatures,// Command Code
+                       5,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(3,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument#1
+                       MgCommand::knString, &className,             // Argument#2
+                       MgCommand::knObject, propertyValues,         // Argument#3
+                       MgCommand::knString, &filter,                // Argument#4
+                       MgCommand::knString, &transactionId,         // Argument#5
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+    return cmd.GetReturnValue().val.m_i32;
+}
+
+INT32 MgProxyFeatureService::DeleteFeatures(MgResourceIdentifier* resource,
+                                            CREFSTRING className,
+                                            CREFSTRING filter)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knInt32,                          // Return type expected
+                       MgFeatureServiceOpId::DeleteFeatures,        // Command Code
+                       3,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(3,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument#1
+                       MgCommand::knString, &className,             // Argument#2
+                       MgCommand::knString, &filter,                // Argument#3
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+    return cmd.GetReturnValue().val.m_i32;
+}
+
+INT32 MgProxyFeatureService::DeleteFeatures(MgResourceIdentifier* resource,
+                                            CREFSTRING className,
+                                            CREFSTRING filter,
+                                            MgTransaction* transaction)
+{
+    STRING transactionId = L"";
+    MgProxyFeatureTransaction* proxyTransaction = dynamic_cast<MgProxyFeatureTransaction*>(transaction);
+    if (NULL != proxyTransaction)
+    {
+        transactionId = proxyTransaction->GetTransactionId();
+    }
+
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knInt32,                          // Return type expected
+                       MgFeatureServiceOpId::DeleteFeatures,        // Command Code
+                       4,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(3,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument#1
+                       MgCommand::knString, &className,             // Argument#2
+                       MgCommand::knString, &filter,                // Argument#3
+                       MgCommand::knString, &transactionId,         // Argument#4
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+    return cmd.GetReturnValue().val.m_i32;
 }

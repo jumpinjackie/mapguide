@@ -23,19 +23,21 @@ PUBLISHED_API:
 
     virtual MgPropertyCollection* UpdateFeatures(MgFeatureCommandCollection* commands);
 
+    virtual MgPropertyCollection* UpdateFeatures(MgFeatureCommandCollection* commands, MgTransaction* trans);
+
     virtual MgTransaction* BeginTransaction();
 
     virtual MgdScrollableFeatureReader* SelectFeaturesExtended(MgFeatureQueryOptions* options);
 
     virtual MgFeatureReader* InsertFeatures(MgPropertyCollection* propertyValues);
 
-	virtual INT32 UpdateFeatures(MgPropertyCollection* propertyValues, CREFSTRING filter);
+    virtual INT32 UpdateMatchingFeatures(MgPropertyCollection* propertyValues, CREFSTRING filter);
 
 	virtual INT32 DeleteFeatures(CREFSTRING filter);
 
     virtual MgFeatureReader* InsertFeatures(MgPropertyCollection* propertyValues, MgTransaction* trans);
 
-	virtual INT32 UpdateFeatures(MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans);
+	virtual INT32 UpdateMatchingFeatures(MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans);
 
 	virtual INT32 DeleteFeatures(CREFSTRING filter, MgTransaction* trans);
 

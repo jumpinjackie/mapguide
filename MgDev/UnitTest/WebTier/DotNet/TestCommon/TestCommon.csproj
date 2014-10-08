@@ -76,6 +76,7 @@
     <Compile Include="CommonTests.cs" />
     <Compile Include="ExternalTests\ByteReaderTest.cs" />
     <Compile Include="ExternalTests\CollectionTests.cs" />
+    <Compile Include="ExternalTests\ConvenienceTests.cs" />
     <Compile Include="ExternalTests\PropertiesTest.cs" />
     <Compile Include="FeatureService\Operations.cs" />
     <Compile Include="ITestExecutor.cs" />
@@ -86,6 +87,11 @@
     <Compile Include="PlatformApiTestExecutor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FeatureService\FeatureServiceOperationExecutor.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ResourceService\ResourceServiceOperationExecutor.cs" />
     <Compile Include="ResourceService\Operations.cs" />
     <Compile Include="SqliteException.cs" />
@@ -95,7 +101,18 @@
     <Compile Include="UnitTestException.cs" />
     <Compile Include="CommonUtility.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TestLayer.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TestMapDef.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>call "$(SolutionDir)prebuild.bat" "$(ConfigurationName)" "$(PlatformName)"</PreBuildEvent>

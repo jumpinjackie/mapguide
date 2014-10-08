@@ -131,6 +131,44 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Selects features from a feature source according to the
+    /// criteria set in the MgFeatureQueryOptions argument The
+    /// criteria are applied to all of the features in the feature
+    /// source. If you want to apply the criteria to a subset of the
+    /// features, use the \link MgFeatureService::SelectAggregate MgFeatureService::SelectAggregate Method \endlink.
+    /// See \link FiltersAndExpressions Filters and expressions \endlink.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgFeatureReader SelectFeatures(MgFeatureQueryOptions options);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgFeatureReader SelectFeatures(MgFeatureQueryOptions options);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgFeatureReader SelectFeatures(MgFeatureQueryOptions options);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param options (MgFeatureQueryOptions)
+    /// MgFeatureQueryOptions instance
+    /// containing all required filters for this
+    /// select operation.
+    /// \param coordinateSystem (String/string)
+    /// The WKT string of the coordinate system to transform features to
+    ///
+    /// \return
+    /// Returns an MgFeatureReader containing the set of selected
+    /// features.
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual MgFeatureReader* SelectFeatures(MgFeatureQueryOptions* options, CREFSTRING coordinateSystem);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Selects groups of features from a feature source and applies
     /// filters to each of the groups according to the criteria set
     /// in the MgFeatureAggregateOptions argument. If you want to
@@ -224,6 +262,538 @@ PUBLISHED_API:
     ///
     virtual MgPropertyCollection* UpdateFeatures(MgFeatureCommandCollection* commands);
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Starts a transaction on the this layer. The FDO provider indicated by the layer's 
+    /// Feature Source must support transactions.
+    ///
+    /// \remarks
+    /// The XML returned by MgFeatureService::GetCapabilities says
+    /// whether a provider supports transactions. See \link ProviderCapabilities Provider Capabilities \endlink.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgTransaction BeginTransaction();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgTransaction BeginTransaction();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgTransaction BeginTransaction();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns an MgTransaction instance (or NULL).
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual MgTransaction* BeginTransaction();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Executes the MgDeleteFeatures, MgInsertFeatures,
+    /// MgUpdateFeatures, MgLockFeatures or MgUnlockFeatures commands
+    /// contained in the given MgFeatureCommandCollection object.
+    ///
+    /// \remarks
+    /// The XML returned by MgFeatureService::GetCapabilities says
+    /// whether a provider supports SQL commands. See \link ProviderCapabilities Provider Capabilities \endlink.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgPropertyCollection UpdateFeatures(MgFeatureCommandCollection commands);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgPropertyCollection UpdateFeatures(MgFeatureCommandCollection commands);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgPropertyCollection UpdateFeatures(MgFeatureCommandCollection commands);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param commands (MgFeatureCommandCollection)
+    /// A collection of feature commands to be
+    /// executed.
+    /// \param transaction (MgTransaction)
+    /// An optional transaction to execute this operation under
+    ///
+    /// \return
+    /// Returns an MgPropertyCollection object. Each property in the
+    /// collection corresponds to a command in the
+    /// MgFeatureCommandCollection argument. The property name is the
+    /// index of the command in the feature command collection.
+    /// <ul>
+    ///   <li>If the command is of type MgDeleteFeatures, the property
+    ///     type is an MgPropertyType::Int32, and its value is the number
+    ///     of features deleted.</li>
+    ///   <li>If the command is of type MgInsertFeatures, the property
+    ///     type is an MgPropertyType::Feature, and its value is a
+    ///     MgFeatureReader object. The feature reader object contains
+    ///     the set of properties inserted into the datastore by the
+    ///     insert command.</li>
+    ///   <li>If the command is of type MgUpdateFeatures, the property
+    ///     type is MgPropertyType::Int32, and its value is the number of
+    ///     features updated.</li>
+    ///   <li>If the command is of type MgLockFeatures, the property
+    ///     type is MgPropertyType::Feature, and its value is the number
+    ///     of features locked.</li>
+    ///   <li>If the command is of type MgUnLockFeatures, the property
+    ///     type is MgPropertyType::Int32, and its value is the number of
+    ///     features unlocked.</li>
+    /// </ul>
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual MgPropertyCollection* UpdateFeatures(MgFeatureCommandCollection* commands, MgTransaction* transaction);
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Inserts a new feature into the specified feature class of the specified Feature Source
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgPropertyCollection properties);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgPropertyCollection properties);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgPropertyCollection properties);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param properties (MgPropertyCollection)
+    /// The collection of property values to insert
+    /// \param transaction (MgTransaction)
+    /// An optional transaction to execute this operation under
+    ///
+    /// \return
+    /// Returns a feature reader object that contains the set of properties 
+    /// inserted into the datastore by the insert command.
+    ///
+    /// \remarks
+    /// Remember to close any feature readers returned by this method, even if you don't intend
+    /// to do anything with them
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual MgFeatureReader* InsertFeatures(MgPropertyCollection* properties, MgTransaction* transaction);
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Inserts a set of new features into the specified feature class of the specified Feature Source
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgBatchPropertyCollection properties);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgBatchPropertyCollection properties);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgFeatureReader InsertFeatures(MgBatchPropertyCollection properties);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param properties (MgBatchPropertyCollection)
+    /// The collection of property values to insert. Each MgPropertyCollection within 
+    /// this collection represents property values for a single feature to insert
+    /// \param transaction (MgTransaction)
+    /// An optional transaction to execute this operation under
+    ///
+    /// \return
+    /// Returns a feature reader object that contains the set of properties 
+    /// inserted into the datastore by the insert command.
+    ///
+    /// \remarks
+    /// Remember to close any feature readers returned by this method, even if you don't intend
+    /// to do anything with them
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual MgFeatureReader* InsertFeatures(MgBatchPropertyCollection* properties, MgTransaction* transaction);
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Updates all features that match the given filter with the specified property values
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int UpdateMatchingFeatures(MgPropertyCollection properties, string filter);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int UpdateMatchingFeatures(MgPropertyCollection properties, String filter);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int UpdateMatchingFeatures(MgPropertyCollection properties, String filter);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param properties (MgBatchPropertyCollection)
+    /// The property values to update matching features with
+    /// \param filter (String/string)
+    /// The FDO filter string that detemines what features will be updated
+    /// \param transaction (MgTransaction)
+    /// An optional transaction to execute this operation under
+    ///
+    /// \return
+    /// Returns the number of features updated by this operation
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual INT32 UpdateMatchingFeatures(MgPropertyCollection* properties, CREFSTRING filter, MgTransaction* transaction);
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Deletes all features that match the given filter
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int DeleteFeatures(string filter);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int DeleteFeatures(String filter);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int DeleteFeatures(String filter);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param filter (String/string)
+    /// The FDO filter string that detemines what features will be deleted
+    /// \param transaction (MgTransaction)
+    /// An optional transaction to execute this operation under
+    ///
+    /// \return
+    /// Returns the number of features deleted by this operation
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual INT32 DeleteFeatures(CREFSTRING filter, MgTransaction* transaction);
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the list of geometry type styles for this layer at the map's current scale. Returns NULL if there are no applicable geometry types
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgIntCollection GetGeometryTypeStyles();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgIntCollection GetGeometryTypeStyles();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgIntCollection GetGeometryTypeStyles();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \remarks
+    /// The map's current scale is used to determine what scale range in the layer definition to search for.
+    /// For a scale range with multiple composite styles, multiple instances of (4 = composite) will be in the resulting collection
+    ///
+    /// \return
+    /// The list of geometry type styles for this layer at the map's current scale. Returns NULL if there are no applicable geometry types
+    ///
+    /// \since 3.0
+    MgIntCollection* GetGeometryTypeStyles();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the number of theme categories for this layer at the map's current scale for the given geometry type style. A count greater than 1 indicates a themed layer. Returns -1 if there are no applicable styles at the current scale
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int GetThemeCategoryCount(int geomType);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int GetThemeCategoryCount(int geomType);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int GetThemeCategoryCount(int geomType);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param geomType (int)
+    /// The geometry type
+    ///
+    /// \remarks
+    /// The map's current scale is used to determine what scale range in the layer definition to search for.
+    /// When geomType = 4, it will only count the number of the theme categories for the first composite style it finds. For a scale range
+    /// with multiple composite type styles, you should use GetCompositeThemeCategoryCount() instead
+    ///
+    /// \return
+    /// The number of theme categories for this layer at the map's current scale for the given geometry type style. A count greater than 1 indicates a themed layer. Returns -1 if there are no applicable styles at the current scale
+    ///
+    /// \since 3.0
+    INT32 GetThemeCategoryCount(INT32 geomType);
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the number of composite theme categories for this layer at the map's current scale for the given composite style. A count greater than 1 indicates a themed layer. Returns -1 if there are no applicable styles at the current scale
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int GetThemeCategoryCount(double scale, int geomType);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int GetThemeCategoryCount(double scale, int geomType);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int GetThemeCategoryCount(double scale, int geomType);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param compositeOffset (int)
+    /// The zero-based index denoting the particular composite style to count from. 0 = 1st composite style, 1 = 2nd composite style
+    ///
+    /// \return
+    /// The number of theme categories for this layer at the map's current scale for the given composite style. A count greater than 1 indicates a themed layer. Returns -1 if there are no applicable styles at the current scale
+    ///
+    /// \since 3.0
+    INT32 GetCompositeThemeCategoryCount(INT32 compositeOffset);
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the legend image for the specified geometry type and theme category
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgByteReader GenerateLegendImage(int width, int height, string format, int geomType, int themeCategory);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgByteReader GenerateLegendImage(int width, int height, String format, int geomType, int themeCategory);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgByteReader GenerateLegendImage(int width, int height, string format, int geomType, int themeCategory);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// Input
+    /// MgResourceIdentifier object identifying the layer definition resource.
+    /// \param scale (double)
+    /// Input
+    /// The scale at which the symbolization is requested.
+    /// \param width (int)
+    /// Input
+    /// The requested image width in pixels.
+    /// \param height (int)
+    /// Input
+    /// The requested image height in pixels.
+    /// \param format (String/string)
+    /// Input
+    /// Image format, from MgImageFormats. Example: PNG, JPG, PNG8, etc 
+    /// \param geomType (int)
+    /// Input
+    /// The type of symbolization required: 1=Point, 2=Line, 3=Area, 4=Composite
+    /// \param themeCategory (int)
+    /// Input
+    /// The value indicating which theme category swatch to return.
+    /// Used when there is a theme defined at this scale. An exception will be
+    /// thrown if a requested them category doesn't exist.
+    ///
+    /// \remarks
+    /// The map's current scale is used to determine what scale range in the layer definition to search for
+    ///
+    /// \return
+    /// Returns a stream representing the legend image.
+    /// The default returned image format will be PNG8 unless a different supported
+    /// format is requested. An exception will be thrown if an unsupported image
+    /// format is requested.
+    ///
+    /// \exception MgArgumentOutOfRangeException
+    /// \exception MgInvalidResourceTypeException
+    /// \exception MgNullArgumentException
+    /// \exception MgInvalidImageFormatException
+    ///
+    /// \since 3.0
+    MgByteReader* GenerateLegendImage(INT32 width, INT32 height, CREFSTRING format, INT32 geomType, INT32 themeCategory);
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the list of geometry type styles for this layer at the map's current scale. Returns NULL if there are no applicable geometry types
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgIntCollection GetGeometryTypeStyles(double scale);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgIntCollection GetGeometryTypeStyles(double scale);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgIntCollection GetGeometryTypeStyles(double scale);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param scale (double)
+    /// The scale at which to retrive the list of applicable geometry types
+    ///
+    /// \remarks
+    /// For a scale range with multiple composite styles, multiple instances of (4 = composite) will be in the resulting collection
+    ///
+    /// \return
+    /// The list of geometry type styles for this layer at the map's current scale. Returns NULL if there are no applicable geometry types
+    ///
+    /// \since 3.0
+    MgIntCollection* GetGeometryTypeStyles(double scale);
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the number of theme categories for this layer at the map's current scale for the given geometry type style. A count greater than 1 indicates a themed layer. Returns -1 if there are no applicable styles at the current scale
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int GetThemeCategoryCount(double scale, int geomType);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int GetThemeCategoryCount(double scale, int geomType);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int GetThemeCategoryCount(double scale, int geomType);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param scale (double)
+    /// The scale at which to count the number of applicable theme categories
+    /// \param geomType (int)
+    /// The geometry type
+    ///
+    /// \remarks
+    /// When geomType = 4, it will only count the number of the theme categories for the first composite style it finds. For a scale range
+    /// with multiple composite type styles, you should use GetCompositeThemeCategoryCount() instead
+    ///
+    /// \return
+    /// The number of theme categories for this layer at the map's current scale for the given geometry type style. A count greater than 1 indicates a themed layer. Returns -1 if there are no applicable styles at the current scale
+    ///
+    /// \since 3.0
+    INT32 GetThemeCategoryCount(double scale, INT32 geomType);
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the number of composite theme categories for this layer at the map's current scale for the given composite style. A count greater than 1 indicates a themed layer. Returns -1 if there are no applicable styles at the current scale
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int GetThemeCategoryCount(double scale, int geomType);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int GetThemeCategoryCount(double scale, int geomType);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int GetThemeCategoryCount(double scale, int geomType);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param scale (double)
+    /// The scale at which to count the number of applicable theme categories
+    /// \param compositeOffset (int)
+    /// The zero-based index denoting the particular composite style to count from. 0 = 1st composite style, 1 = 2nd composite style
+    ///
+    /// \return
+    /// The number of theme categories for this layer at the map's current scale for the given composite style. A count greater than 1 indicates a themed layer. Returns -1 if there are no applicable styles at the current scale
+    ///
+    /// \since 3.0
+    INT32 GetCompositeThemeCategoryCount(double scale, INT32 compositeOffset);
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the legend image for the specified geometry type and theme category
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgByteReader GenerateLegendImage(double scale, int width, int height, string format, int geomType, int themeCategory);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgByteReader GenerateLegendImage(double scale, int width, int height, String format, int geomType, int themeCategory);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgByteReader GenerateLegendImage(double scale, int width, int height, string format, int geomType, int themeCategory);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// Input
+    /// MgResourceIdentifier object identifying the layer definition resource.
+    /// \param scale (double)
+    /// Input
+    /// The scale at which the symbolization is requested.
+    /// \param width (int)
+    /// Input
+    /// The requested image width in pixels.
+    /// \param height (int)
+    /// Input
+    /// The requested image height in pixels.
+    /// \param format (String/string)
+    /// Input
+    /// Image format, from MgImageFormats. Example: PNG, JPG, PNG8, etc 
+    /// \param geomType (int)
+    /// Input
+    /// The type of symbolization required: 1=Point, 2=Line, 3=Area, 4=Composite
+    /// \param themeCategory (int)
+    /// Input
+    /// The value indicating which theme category swatch to return.
+    /// Used when there is a theme defined at this scale. An exception will be
+    /// thrown if a requested them category doesn't exist.
+    ///
+    /// \return
+    /// Returns a stream representing the legend image.
+    /// The default returned image format will be PNG8 unless a different supported
+    /// format is requested. An exception will be thrown if an unsupported image
+    /// format is requested.
+    ///
+    /// \exception MgArgumentOutOfRangeException
+    /// \exception MgInvalidResourceTypeException
+    /// \exception MgNullArgumentException
+    /// \exception MgInvalidImageFormatException
+    ///
+    /// \since 3.0
+    MgByteReader* GenerateLegendImage(double scale, INT32 width, INT32 height, CREFSTRING format, INT32 geomType, INT32 themeCategory);
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets all of the spatial contexts available in the layer or just the active one
+    ///
+    /// \remarks
+    /// The \link FdoSpatialContextList_schema FdoSpatialContextList \endlink XML schema contains
+    /// a specification of the content of the spatial context
+    /// information returned in the MgSpatialContextReader object.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgSpatialContextReader GetSpatialContexts(bool bActiveOnly);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgSpatialContextReader GetSpatialContexts(boolean bActiveOnly);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgSpatialContextReader GetSpatialContexts(bool bActiveOnly);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param bActiveOnly (boolean/bool)
+    /// This flag is obsolete and no longer used.
+    ///
+    /// \return
+    /// Returns an MgSpatialContextReader object.
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    /// \since 3.0
+    virtual MgSpatialContextReader* GetSpatialContexts(bool bActiveOnly);
+
 INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
@@ -308,6 +878,8 @@ protected:
     }
 
 private:
+    STRING GetProviderName();
+    bool UseTransaction(MgFeatureService* svcFeature, CREFSTRING providerName);
 
     MgMapBase* GetMap();
 

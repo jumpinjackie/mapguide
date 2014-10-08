@@ -3624,3 +3624,38 @@ FdoIdentifierCollection* MgServerFeatureUtil::ExtractIdentifiers(FdoExpression* 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureUtil.ExtractIdentifiers")
     return ret.Detach();
 }
+
+STRING MgServerFeatureUtil::GetSpatialContextCoordSys(MgFeatureService* featSvc, MgResourceIdentifier* featureSourceId, CREFSTRING className)
+{
+    STRING ret;
+    MG_FEATURE_SERVICE_TRY()
+
+    STRING schema;
+    STRING klass;
+
+    MgUtil::ParseQualifiedClassName(className, schema, klass);
+
+    Ptr<MgClassDefinition> clsDef = featSvc->GetClassDefinition(featureSourceId, schema, klass);
+    Ptr<MgPropertyDefinitionCollection> clsProps = clsDef->GetProperties();
+    INT32 gidx = clsProps->IndexOf(clsDef->GetDefaultGeometryPropertyName());
+    if (gidx >= 0)
+    {
+        Ptr<MgPropertyDefinition> propDef = clsProps->GetItem(gidx);
+        if (propDef->GetPropertyType() == MgFeaturePropertyType::GeometricProperty)
+        {
+            STRING scName = ((MgGeometricPropertyDefinition*)propDef.p)->GetSpatialContextAssociation();
+            Ptr<MgSpatialContextReader> scReader = featSvc->GetSpatialContexts(featureSourceId, false);
+            while(scReader->ReadNext())
+            {
+                if (scReader->GetName() == scName)
+                {
+                    ret = scReader->GetCoordinateSystemWkt();
+                    break;
+                }
+            }
+            scReader->Close();
+        }
+    }
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureUtil.GetSpatialContextCoordSys")
+    return ret;
+}

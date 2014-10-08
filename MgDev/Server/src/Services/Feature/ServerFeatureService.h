@@ -992,6 +992,44 @@ public:
     ///
     void CreateFeatureSource(MgResourceIdentifier* resource, MgFeatureSourceParams* sourceParams);
 
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource,
+                                            CREFSTRING className,
+                                            MgPropertyCollection* propertyValues);
+
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource,
+                                            CREFSTRING className,
+                                            MgPropertyCollection* propertyValues,
+                                            MgTransaction* trans);
+
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource,
+                                            CREFSTRING className,
+                                            MgBatchPropertyCollection* batchPropertyValues);
+
+    virtual MgFeatureReader* InsertFeatures(MgResourceIdentifier* resource,
+                                            CREFSTRING className,
+                                            MgBatchPropertyCollection* batchPropertyValues,
+                                            MgTransaction* trans);
+
+    virtual INT32 UpdateMatchingFeatures(MgResourceIdentifier* resource,
+                                         CREFSTRING className,
+                                         MgPropertyCollection* properties,
+                                         CREFSTRING filter);
+
+    virtual INT32 UpdateMatchingFeatures(MgResourceIdentifier* resource,
+                                         CREFSTRING className,
+                                         MgPropertyCollection* properties,
+                                         CREFSTRING filter,
+                                         MgTransaction* trans);
+
+    virtual INT32 DeleteFeatures(MgResourceIdentifier* resource,
+                                 CREFSTRING className,
+                                 CREFSTRING filter);
+
+    virtual INT32 DeleteFeatures(MgResourceIdentifier* resource,
+                                 CREFSTRING className,
+                                 CREFSTRING filter,
+                                 MgTransaction* trans);
+
     // Feature
     MgBatchPropertyCollection* GetFeatures(CREFSTRING featureReader);
     bool CloseFeatureReader(CREFSTRING featureReader);

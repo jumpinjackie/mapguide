@@ -138,6 +138,16 @@ void TestMappingService::TestStart()
         Ptr<MgByteReader> ldfrdr6 = ldfsrc6->GetReader();
         m_svcResource->SetResource(ldfres6, ldfrdr6, NULL);
 
+        Ptr<MgResourceIdentifier> ldfres7 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiCTS.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc7 = new MgByteSource(L"../UnitTestFiles/UT_MultiCTS.ldf", false);
+        Ptr<MgByteReader> ldfrdr7 = ldfsrc7->GetReader();
+        m_svcResource->SetResource(ldfres7, ldfrdr7, NULL);
+
+        Ptr<MgResourceIdentifier> ldfres8 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiCTSWithTheme.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc8 = new MgByteSource(L"../UnitTestFiles/UT_MultiCTSWithTheme.ldf", false);
+        Ptr<MgByteReader> ldfrdr8 = ldfsrc8->GetReader();
+        m_svcResource->SetResource(ldfres8, ldfrdr8, NULL);
+
         //publish the feature sources
         Ptr<MgResourceIdentifier> fsres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/HydrographicPolygons.FeatureSource");
         Ptr<MgByteSource> fssrc1 = new MgByteSource(L"../UnitTestFiles/UT_HydrographicPolygons.fs", false);
@@ -241,6 +251,12 @@ void TestMappingService::TestEnd()
 
         Ptr<MgResourceIdentifier> ldfres6 = new MgResourceIdentifier(L"Library://UnitTests/Layers/VotingDistricts.LayerDefinition");
         m_svcResource->DeleteResource(ldfres6);
+
+        Ptr<MgResourceIdentifier> ldfres7 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiCTS.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres7);
+
+        Ptr<MgResourceIdentifier> ldfres8 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiCTSWithTheme.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres8);
 
         //delete the feature sources
         Ptr<MgResourceIdentifier> fsres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/HydrographicPolygons.FeatureSource");
@@ -1010,6 +1026,404 @@ void TestMappingService::TestCase_GetLegendImagePointStyleWithConstRotations()
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 14);
         sink = new MgByteSink(rdr);
         sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_25_32x16.png");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestMappingService::TestCase_GetLegendImageConvenience()
+{
+    try
+    {
+        Ptr<MgResourceIdentifier> mapres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mapres, L"TestCase_GetLegendImageConvenience");
+
+        Ptr<MgResourceIdentifier> ldf = new MgResourceIdentifier(L"Library://UnitTests/Layers/Parcels.LayerDefinition");
+        Ptr<MgLayer> layer = new MgLayer(ldf, m_svcResource);
+        layer->SetName(L"TestCase_GetLegendImageConvenience");
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+        layers->Insert(0, layer);
+
+        Ptr<MgIntCollection> types = layer->GetGeometryTypeStyles(10000.0);
+        CPPUNIT_ASSERT(1 == types->GetCount());
+        CPPUNIT_ASSERT(types->IndexOf(1) < 0);
+        CPPUNIT_ASSERT(types->IndexOf(2) < 0);
+        CPPUNIT_ASSERT(types->IndexOf(3) >= 0);
+        CPPUNIT_ASSERT(types->IndexOf(4) < 0);
+
+        CPPUNIT_ASSERT(8 == layer->GetThemeCategoryCount(10000.0, 3));
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(10000.0, 1));
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(10000.0, 2));
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(10000.0, 4));
+
+        types = layer->GetGeometryTypeStyles(14000.0);
+        CPPUNIT_ASSERT(NULL == types.p);
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(14000.0, 3));
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(14000.0, 1));
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(14000.0, 2));
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(14000.0, 4));
+
+        Ptr<MgByteReader> rdr = layer->GenerateLegendImage(10000.0, 16, 16, MgImageFormats::Png, 3, 0);
+        Ptr<MgByteSink> sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/GenerateLegendImageConvenience_Parcels_16x16_PNG.png");
+
+        rdr = layer->GenerateLegendImage(10000.0, 16, 16, MgImageFormats::Png8, 3, 0);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/GenerateLegendImageConvenience_Parcels_16x16_PNG8.png");
+
+        rdr = layer->GenerateLegendImage(10000.0, 16, 16, MgImageFormats::Jpeg, 3, 0);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/GenerateLegendImageConvenience_Parcels_16x16_JPG.jpg");
+
+        rdr = layer->GenerateLegendImage(10000.0, 16, 16, MgImageFormats::Gif, 3, 0);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/GenerateLegendImageConvenience_Parcels_16x16_GIF.gif");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestMappingService::TestCase_GetLegendImageCompositeConvenience()
+{
+    try
+    {
+        Ptr<MgResourceIdentifier> mapres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mapres, L"TestCase_GetLegendImageCompositeConvenience");
+
+        Ptr<MgResourceIdentifier> ldf = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiCTS.LayerDefinition");
+        Ptr<MgLayer> layer = new MgLayer(ldf, m_svcResource);
+        layer->SetName(L"TestCase_GetLegendImageCompositeConvenience");
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+        layers->Insert(0, layer);
+
+        Ptr<MgIntCollection> types = layer->GetGeometryTypeStyles(10000.0);
+        CPPUNIT_ASSERT(3 == types->GetCount());
+        CPPUNIT_ASSERT(types->IndexOf(1) < 0);
+        CPPUNIT_ASSERT(types->IndexOf(2) < 0);
+        CPPUNIT_ASSERT(types->IndexOf(3) < 0);
+        CPPUNIT_ASSERT(types->IndexOf(4) >= 0);
+        for (INT32 i = 0; i < types->GetCount(); i++)
+        {
+            CPPUNIT_ASSERT(4 == types->GetItem(i));
+        }
+
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(10000.0, 1));
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(10000.0, 2));
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(10000.0, 3));
+        CPPUNIT_ASSERT(1 == layer->GetThemeCategoryCount(10000.0, 4));
+        CPPUNIT_ASSERT(1 == layer->GetCompositeThemeCategoryCount(10000.0, 0));
+        CPPUNIT_ASSERT(1 == layer->GetCompositeThemeCategoryCount(10000.0, 1));
+        CPPUNIT_ASSERT(1 == layer->GetCompositeThemeCategoryCount(10000.0, 2));
+        CPPUNIT_ASSERT(-1 == layer->GetCompositeThemeCategoryCount(10000.0, 3));
+
+        INT32 rulesProcessed = 0;
+        for (INT32 ctype = 0; ctype < 3; ctype++)
+        {
+            INT32 rules = layer->GetCompositeThemeCategoryCount(10000.0, ctype);
+            for (INT32 offset = rulesProcessed; offset < (rulesProcessed + rules); offset++)
+            {
+                STRING prefix = L"../UnitTestFiles/GenerateLegendImageConvenience_MultiCTS_type";
+                STRING sNum;
+                MgUtil::Int32ToString(ctype, sNum);
+                prefix += sNum;
+                prefix += L"_offset";
+                MgUtil::Int32ToString(offset, sNum);
+                prefix += sNum;
+
+                STRING fileNamePNG = prefix;
+                fileNamePNG += L"_16x16_PNG.png";
+                Ptr<MgByteReader> rdr = layer->GenerateLegendImage(10000.0, 16, 16, MgImageFormats::Png, 4, offset);
+                Ptr<MgByteSink> sink = new MgByteSink(rdr);
+                sink->ToFile(fileNamePNG);
+
+                STRING fileNamePNG8 = prefix;
+                fileNamePNG8 += L"_16x16_PNG8.png";
+                rdr = layer->GenerateLegendImage(10000.0, 16, 16, MgImageFormats::Png8, 4, offset);
+                sink = new MgByteSink(rdr);
+                sink->ToFile(fileNamePNG8);
+
+                STRING fileNameJPG = prefix;
+                fileNameJPG += L"_16x16_JPG.jpg";
+                rdr = layer->GenerateLegendImage(10000.0, 16, 16, MgImageFormats::Jpeg, 4, offset);
+                sink = new MgByteSink(rdr);
+                sink->ToFile(fileNameJPG);
+
+                STRING fileNameGIF = prefix;
+                fileNameGIF += L"_16x16_JPG.jpg";
+                rdr = layer->GenerateLegendImage(10000.0, 16, 16, MgImageFormats::Gif, 4, offset);
+                sink = new MgByteSink(rdr);
+                sink->ToFile(fileNameGIF);
+            }
+            rulesProcessed += rules;
+        }
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestMappingService::TestCase_GetLegendImageCompositeThemedConvenience()
+{
+    try
+    {
+        Ptr<MgResourceIdentifier> mapres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mapres, L"TestCase_GetLegendImageCompositeThemedConvenience");
+
+        Ptr<MgResourceIdentifier> ldf = new MgResourceIdentifier(L"Library://UnitTests/Layers/MultiCTSWithTheme.LayerDefinition");
+        Ptr<MgLayer> layer = new MgLayer(ldf, m_svcResource);
+        layer->SetName(L"TestCase_GetLegendImageCompositeThemedConvenience");
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+        layers->Insert(0, layer);
+
+        Ptr<MgIntCollection> types = layer->GetGeometryTypeStyles(10000.0);
+        CPPUNIT_ASSERT(3 == types->GetCount());
+        CPPUNIT_ASSERT(types->IndexOf(1) < 0);
+        CPPUNIT_ASSERT(types->IndexOf(2) < 0);
+        CPPUNIT_ASSERT(types->IndexOf(3) < 0);
+        CPPUNIT_ASSERT(types->IndexOf(4) >= 0);
+        for (INT32 i = 0; i < types->GetCount(); i++)
+        {
+            CPPUNIT_ASSERT(4 == types->GetItem(i));
+        }
+
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(10000.0, 1));
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(10000.0, 2));
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(10000.0, 3));
+        CPPUNIT_ASSERT(1 == layer->GetThemeCategoryCount(10000.0, 4));
+        CPPUNIT_ASSERT(1 == layer->GetCompositeThemeCategoryCount(10000.0, 0));
+        CPPUNIT_ASSERT(3 == layer->GetCompositeThemeCategoryCount(10000.0, 1));
+        CPPUNIT_ASSERT(1 == layer->GetCompositeThemeCategoryCount(10000.0, 2));
+        CPPUNIT_ASSERT(-1 == layer->GetCompositeThemeCategoryCount(10000.0, 3));
+
+        INT32 rulesProcessed = 0;
+        for (INT32 ctype = 0; ctype < 3; ctype++)
+        {
+            INT32 rules = layer->GetCompositeThemeCategoryCount(10000.0, ctype);
+            for (INT32 offset = rulesProcessed; offset < (rulesProcessed + rules); offset++)
+            {
+                STRING prefix = L"../UnitTestFiles/GenerateLegendImageConvenience_MultiCTSWithTheme_type";
+                STRING sType;
+                MgUtil::Int32ToString(ctype, sType);
+                prefix += sType;
+                prefix += L"_offset";
+                STRING sOffset;
+                MgUtil::Int32ToString(offset, sOffset);
+                prefix += sOffset;
+
+                STRING fileNamePNG = prefix;
+                fileNamePNG += L"_16x16_PNG.png";
+                Ptr<MgByteReader> rdr = layer->GenerateLegendImage(10000.0, 16, 16, MgImageFormats::Png, 4, offset);
+                Ptr<MgByteSink> sink = new MgByteSink(rdr);
+                sink->ToFile(fileNamePNG);
+
+                STRING fileNamePNG8 = prefix;
+                fileNamePNG8 += L"_16x16_PNG8.png";
+                rdr = layer->GenerateLegendImage(10000.0, 16, 16, MgImageFormats::Png8, 4, offset);
+                sink = new MgByteSink(rdr);
+                sink->ToFile(fileNamePNG8);
+
+                STRING fileNameJPG = prefix;
+                fileNameJPG += L"_16x16_JPG.jpg";
+                rdr = layer->GenerateLegendImage(10000.0, 16, 16, MgImageFormats::Jpeg, 4, offset);
+                sink = new MgByteSink(rdr);
+                sink->ToFile(fileNameJPG);
+
+                STRING fileNameGIF = prefix;
+                fileNameGIF += L"_16x16_JPG.jpg";
+                rdr = layer->GenerateLegendImage(10000.0, 16, 16, MgImageFormats::Gif, 4, offset);
+                sink = new MgByteSink(rdr);
+                sink->ToFile(fileNameGIF);
+            }
+            rulesProcessed += rules;
+        }
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestMappingService::TestCase_GetLegendImagePointStyleWithConstRotationsConvenience()
+{
+    try
+    {
+        Ptr<MgResourceIdentifier> mapres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mapres, L"TestCase_GetLegendImageConvenience");
+
+        Ptr<MgResourceIdentifier> ldfId = new MgResourceIdentifier(L"Library://UnitTests/Layers/RotatedPointStyles.LayerDefinition");
+        Ptr<MgLayer> layer = new MgLayer(ldfId, m_svcResource);
+        layer->SetName(L"TestCase_GetLegendImagePointStyleWithConstRotationsConvenience");
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+        layers->Insert(0, layer);
+
+        Ptr<MgIntCollection> types = layer->GetGeometryTypeStyles(1000.0);
+        CPPUNIT_ASSERT(1 == types->GetCount());
+        CPPUNIT_ASSERT(types->IndexOf(1) >= 0);
+        CPPUNIT_ASSERT(types->IndexOf(2) < 0);
+        CPPUNIT_ASSERT(types->IndexOf(3) < 0);
+        CPPUNIT_ASSERT(types->IndexOf(4) < 0);
+
+        CPPUNIT_ASSERT(15 == layer->GetThemeCategoryCount(1000.0, 1));
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(1000.0, 2));
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(1000.0, 3));
+        CPPUNIT_ASSERT(-1 == layer->GetThemeCategoryCount(1000.0, 4));
+        
+        //Do 16x16 icons first. Our common scenario.
+
+        Ptr<MgByteReader> rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 0);
+        Ptr<MgByteSink> sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Square_0_16x16.png");
+        
+        rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 1);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Square_45_16x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 2);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Square_25_16x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 3);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Star_0_16x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 4);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Star_45_16x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 5);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Star_25_16x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 6);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Triangle_0_16x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 7);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Triangle_45_16x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 8);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Triangle_25_16x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 9);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Cross_0_16x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 10);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Cross_45_16x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 11);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Cross_25_16x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 12);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_XMark_0_16x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 13);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_XMark_45_16x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 16, 16, MgImageFormats::Png, 1, 14);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_XMark_25_16x16.png");
+
+        //Now try 32x16 to see if the rotation handling is acceptable with non-square sizes
+
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 0);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Square_0_32x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 1);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Square_45_32x16.png");
+        
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 2);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Square_25_32x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 3);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Star_0_32x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 4);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Star_45_32x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 5);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Star_25_32x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 6);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Triangle_0_32x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 7);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Triangle_45_32x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 8);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Triangle_25_32x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 9);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Cross_0_32x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 10);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Cross_45_32x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 11);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_Cross_25_32x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 12);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_XMark_0_32x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 13);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_XMark_45_32x16.png");
+
+        rdr = layer->GenerateLegendImage(1000.0, 32, 16, MgImageFormats::Png, 1, 14);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPointConvenience_XMark_25_32x16.png");
     }
     catch (MgException* e)
     {

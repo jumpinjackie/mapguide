@@ -369,7 +369,7 @@ namespace OSGeo.MapGuide.Test.Common.ExternalTests
     {
         public void Execute(IPlatformFactory factory, ITestLogger logger)
         {
-            MgMapBase mb = factory.CreateMap();
+            MgMapBase mb = new MgMapBase();
             Assert.AreEqual("", mb.Name);
             Assert.AreEqual("", mb.SessionId);
             Assert.IsNull(mb.MapDefinition);

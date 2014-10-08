@@ -86,6 +86,8 @@ INTERNAL_API:
 
     virtual MgSerializableCollection* EnumerateParentMapDefinitions(MgSerializableCollection* resources);
 
+    virtual MgSerializableCollection* EnumerateParentTileSetDefinitions(MgSerializableCollection* resources);
+
     STRING GetContentDirectory(MgResourceIdentifier* resId);
 	STRING ResolveContentPath(MgResourceIdentifier* resId);
 	STRING ResolveDataPath(MgResourceIdentifier* resId);

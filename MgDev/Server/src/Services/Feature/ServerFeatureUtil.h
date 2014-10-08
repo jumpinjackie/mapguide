@@ -130,6 +130,8 @@ public:
     static void UpdateObjectPropertyDefinition(MgObjectPropertyDefinition* objPropDef, FdoObjectPropertyDefinition* fdoPropDef, FdoClassCollection* fdoClassCol);
     static void UpdateGeometricPropertyDefinition(MgGeometricPropertyDefinition* mgPropDef, FdoGeometricPropertyDefinition* fdoPropDef);
     static void UpdateRasterPropertyDefinition(MgRasterPropertyDefinition* mgPropDef, FdoRasterPropertyDefinition* fdoPropDef);
+
+    static STRING GetSpatialContextCoordSys(MgFeatureService* featSvc, MgResourceIdentifier* featureSourceId, CREFSTRING className);
 private:
     static bool Initialize();
 

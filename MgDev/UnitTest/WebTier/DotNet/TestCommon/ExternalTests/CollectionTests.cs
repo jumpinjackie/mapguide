@@ -807,14 +807,13 @@ namespace OSGeo.MapGuide.Test.Common.ExternalTests
         {
             string coordsys = "GEOGCS[\"LL84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]],AXIS[\"Lat\",NORTH],AXIS[\"Long\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]";
             MgEnvelope env = new MgEnvelope(10, 10, 20, 20);
-            MgMapBase map1 = factory.CreateMap();
-            map1.Create(coordsys, env, "map1");
-            MgMapBase map2 = factory.CreateMap();
-            map2.Create(coordsys, env, "map2");
-            MgMapBase map3 = factory.CreateMap();
-            map3.Create(coordsys, env, "map3");
-            MgMapBase map4 = factory.CreateMap();
-            map4.Create(coordsys, env, "map4");
+
+
+
+            MgMapBase map1 = factory.CreateMap(coordsys, env, "map1");
+            MgMapBase map2 = factory.CreateMap(coordsys, env, "map2");
+            MgMapBase map3 = factory.CreateMap(coordsys, env, "map3");
+            MgMapBase map4 = factory.CreateMap(coordsys, env, "map4");
 
             MgMapCollection coll = new MgMapCollection();
             coll.Add(map1);

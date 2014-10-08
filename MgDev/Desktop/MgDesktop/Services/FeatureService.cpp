@@ -1057,9 +1057,9 @@ MgFeatureReader* MgdFeatureService::InsertFeatures(MgResourceIdentifier* resourc
 	return reader.Detach();
 }
 
-MgPropertyCollection* MgdFeatureService::InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues)
+MgFeatureReader* MgdFeatureService::InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues)
 {
-    Ptr<MgPropertyCollection> ret;
+    Ptr<MgFeatureReader> ret;
     MG_LOG_OPERATION_MESSAGE(L"InsertFeatures");
 
     MG_FEATURE_SERVICE_TRY()
@@ -1077,8 +1077,28 @@ MgPropertyCollection* MgdFeatureService::InsertFeatures(MgResourceIdentifier* re
 
     MG_LOG_TRACE_ENTRY(L"MgdFeatureService::InsertFeatures()");
 
-    MgdUpdateFeaturesCommand cmd;
-    ret = cmd.ExecuteInsert(resource, className, batchPropertyValues, NULL);
+    Ptr<MgFeatureCommandCollection> commands = new MgFeatureCommandCollection();
+    Ptr<MgInsertFeatures> insertCmd = new MgInsertFeatures(className, batchPropertyValues);
+    commands->Add(insertCmd);
+    
+    Ptr<MgPropertyCollection> props = UpdateFeatures(resource, commands, (MgTransaction*)NULL);
+    if (props->GetCount() == 1)
+    {
+        INT32 i = 0;
+        Ptr<MgProperty> prop = props->GetItem(i);
+        if (prop->GetPropertyType() == MgPropertyType::String) //FDO error in non-transactional mode
+        {
+            MgStringProperty* sp = static_cast<MgStringProperty*>(prop.p);
+            MgStringCollection args;
+            args.Add(sp->GetValue());
+            throw new MgFdoException(L"MgdFeatureService::InsertFeatures", __LINE__, __WFILE__, &args, L"MgFormatInnerExceptionMessage", NULL);
+        }
+        else if (prop->GetPropertyType() == MgPropertyType::Feature) //Insert result
+        {
+            MgFeatureProperty* fp = static_cast<MgFeatureProperty*>(prop.p);
+            ret = fp->GetValue();
+        }
+    }
     
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -1099,9 +1119,9 @@ MgPropertyCollection* MgdFeatureService::InsertFeatures(MgResourceIdentifier* re
     return ret.Detach();
 }
 
-MgPropertyCollection* MgdFeatureService::InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues, MgTransaction* trans)
+MgFeatureReader* MgdFeatureService::InsertFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues, MgTransaction* trans)
 {
-    Ptr<MgPropertyCollection> ret;
+    Ptr<MgFeatureReader> ret;
     MG_LOG_OPERATION_MESSAGE(L"InsertFeatures");
 
     MG_FEATURE_SERVICE_TRY()
@@ -1121,8 +1141,28 @@ MgPropertyCollection* MgdFeatureService::InsertFeatures(MgResourceIdentifier* re
 
     MG_LOG_TRACE_ENTRY(L"MgdFeatureService::InsertFeatures()");
 
-    MgdUpdateFeaturesCommand cmd;
-    ret = cmd.ExecuteInsert(resource, className, batchPropertyValues, trans);
+    Ptr<MgFeatureCommandCollection> commands = new MgFeatureCommandCollection();
+    Ptr<MgInsertFeatures> insertCmd = new MgInsertFeatures(className, batchPropertyValues);
+    commands->Add(insertCmd);
+    
+    Ptr<MgPropertyCollection> props = UpdateFeatures(resource, commands, trans);
+    if (props->GetCount() == 1)
+    {
+        INT32 i = 0;
+        Ptr<MgProperty> prop = props->GetItem(i);
+        if (prop->GetPropertyType() == MgPropertyType::String) //FDO error in non-transactional mode
+        {
+            MgStringProperty* sp = static_cast<MgStringProperty*>(prop.p);
+            MgStringCollection args;
+            args.Add(sp->GetValue());
+            throw new MgFdoException(L"MgdFeatureService::InsertFeatures", __LINE__, __WFILE__, &args, L"MgFormatInnerExceptionMessage", NULL);
+        }
+        else if (prop->GetPropertyType() == MgPropertyType::Feature) //Insert result
+        {
+            MgFeatureProperty* fp = static_cast<MgFeatureProperty*>(prop.p);
+            ret = fp->GetValue();
+        }
+    }
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -1143,14 +1183,14 @@ MgPropertyCollection* MgdFeatureService::InsertFeatures(MgResourceIdentifier* re
     return ret.Detach();
 }
 
-INT32 MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter)
+INT32 MgdFeatureService::UpdateMatchingFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter)
 {
     INT32 ret = 0;
-    MG_LOG_OPERATION_MESSAGE(L"UpdateFeatures");
+    MG_LOG_OPERATION_MESSAGE(L"UpdateMatchingFeatures");
 
     MG_FEATURE_SERVICE_TRY()
 
-    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::UpdateFeatures");
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::UpdateMatchingFeatures");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -1163,14 +1203,14 @@ INT32 MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRI
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"STRING");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::UpdateFeatures()");
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::UpdateMatchingFeatures()");
 
-	ret = UpdateFeatures(resource, className, propertyValues, filter, NULL);
+	ret = UpdateMatchingFeatures(resource, className, propertyValues, filter, NULL);
     
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::UpdateFeatures", resource)
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::UpdateMatchingFeatures", resource)
 
     if (mgException != NULL)
     {
@@ -1186,14 +1226,14 @@ INT32 MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRI
     return ret;
 }
 
-INT32 MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* batchPropertyValues, CREFSTRING filter, MgTransaction* trans)
+INT32 MgdFeatureService::UpdateMatchingFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* batchPropertyValues, CREFSTRING filter, MgTransaction* trans)
 {
     INT32 updated = 0;
-    MG_LOG_OPERATION_MESSAGE(L"UpdateFeatures");
+    MG_LOG_OPERATION_MESSAGE(L"UpdateMatchingFeatures");
 
     MG_FEATURE_SERVICE_TRY()
 
-    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::UpdateFeatures");
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::UpdateMatchingFeatures");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 5);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -1208,7 +1248,7 @@ INT32 MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRI
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgTransaction");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::UpdateFeatures()");
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::UpdateMatchingFeatures()");
 
     MgdUpdateFeaturesCommand cmd;
     updated = cmd.ExecuteUpdate(resource, className, batchPropertyValues, filter, trans);
@@ -1216,7 +1256,7 @@ INT32 MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRI
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH(resource, L"MgdFeatureService::UpdateFeatures")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH(resource, L"MgdFeatureService::UpdateMatchingFeatures")
 
     if (mgException != NULL)
     {

@@ -1246,6 +1246,134 @@ void TestFeatureService::TestCase_SelectFeatures()
     }
 }
 
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises selecting features transformed to a specific coordinate system.
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_SelectFeaturesWithXform()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_SelectFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_SelectFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        //Create our test data store
+        Ptr<MgFeatureSchema> fs = new MgFeatureSchema(L"Default", L"");
+        Ptr<MgClassDefinition> cls = new MgClassDefinition();
+        cls->SetName(L"Test");
+        
+        Ptr<MgDataPropertyDefinition> id = new MgDataPropertyDefinition(L"ID");
+        id->SetAutoGeneration(true);
+        id->SetDataType(MgPropertyType::Int32);
+        
+        Ptr<MgGeometricPropertyDefinition> geom = new MgGeometricPropertyDefinition(L"Geometry");
+        geom->SetGeometryTypes(MgFeatureGeometricType::Point);
+        geom->SetSpatialContextAssociation(L"Default");
+
+        Ptr<MgPropertyDefinitionCollection> props = cls->GetProperties();
+        Ptr<MgPropertyDefinitionCollection> idProps = cls->GetIdentityProperties();
+
+        props->Add(id);
+        props->Add(geom);
+        idProps->Add(id);
+
+        cls->SetDefaultGeometryPropertyName(L"Geometry");
+        Ptr<MgClassDefinitionCollection> classes = fs->GetClasses();
+        classes->Add(cls);
+
+        //We'll use a transform guaranteed to work. ArbitraryXY (unitA to unitB)
+        //We just check that the transformed values are not the original, that way
+        //we know that CS-Map did its job
+        Ptr<MgCoordinateSystemFactory> csFact = new MgCoordinateSystemFactory();
+        STRING srcWkt = csFact->ConvertCoordinateSystemCodeToWkt(L"XY-M");
+        STRING dstWkt = csFact->ConvertCoordinateSystemCodeToWkt(L"XY-IN");
+
+        Ptr<MgGeometryFactory> geomFact = new MgGeometryFactory();
+        Ptr<MgAgfReaderWriter> agfRw = new MgAgfReaderWriter();
+        Ptr<MgFileFeatureSourceParams> create = new MgFileFeatureSourceParams(L"OSGeo.SDF", L"Default", srcWkt, fs);
+        Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(L"Library://UnitTests/Data/TransformTest.FeatureSource");
+        pService->CreateFeatureSource(fsId, create);
+
+        //Populate data store with test points
+
+        Ptr<MgCoordinate> coord1 = geomFact->CreateCoordinateXY(-37.1020, 144.0020);
+        Ptr<MgPoint> pt1 = geomFact->CreatePoint(coord1);
+        Ptr<MgByteReader> agf1 = agfRw->Write(pt1);
+
+        Ptr<MgPropertyCollection> propVals = new MgPropertyCollection();
+        Ptr<MgGeometryProperty> pGeom = new MgGeometryProperty(L"Geometry", agf1);
+        propVals->Add(pGeom);
+
+        Ptr<MgFeatureReader> fr = pService->InsertFeatures(fsId, L"Default:Test", propVals);
+        fr->Close();
+
+        Ptr<MgCoordinate> coord2 = geomFact->CreateCoordinateXY(-37.2020, 144.2020);
+        Ptr<MgPoint> pt2 = geomFact->CreatePoint(coord2);
+        Ptr<MgByteReader> agf2 = agfRw->Write(pt2);
+
+        pGeom->SetValue(agf2);
+        fr = pService->InsertFeatures(fsId, L"Default:Test", propVals);
+        fr->Close();
+
+        //Now select from this data store
+        Ptr<MgFeatureQueryOptions> query = new MgFeatureQueryOptions();
+        Ptr<MgReader> reader = pService->SelectFeatures(fsId, L"Default:Test", query, dstWkt);
+        
+        CPPUNIT_ASSERT(reader->ReadNext());
+        CPPUNIT_ASSERT(!reader->IsNull(L"Geometry"));
+
+        Ptr<MgByteReader> txAgf1 = reader->GetGeometry(L"Geometry");
+        Ptr<MgGeometry> txGeom1 = agfRw->Read(txAgf1);
+        MgPoint* txPt1 = dynamic_cast<MgPoint*>(txGeom1.p);
+        CPPUNIT_ASSERT(txPt1 != NULL);
+        Ptr<MgCoordinate> txCoord1 = txPt1->GetCoordinate();
+
+        //TODO: Maybe we should really check that it matches the expected transformed result
+        CPPUNIT_ASSERT(txCoord1->GetX() != -37.1020);
+        CPPUNIT_ASSERT(txCoord1->GetY() != 144.0020);
+
+        CPPUNIT_ASSERT(reader->ReadNext());
+        CPPUNIT_ASSERT(!reader->IsNull(L"Geometry"));
+
+        Ptr<MgByteReader> txAgf2 = reader->GetGeometry(L"Geometry");
+        Ptr<MgGeometry> txGeom2 = agfRw->Read(txAgf2);
+        MgPoint* txPt2 = dynamic_cast<MgPoint*>(txGeom2.p);
+        CPPUNIT_ASSERT(txPt2 != NULL);
+        Ptr<MgCoordinate> txCoord2 = txPt2->GetCoordinate();
+
+        //TODO: Maybe we should really check that it matches the expected transformed result
+        CPPUNIT_ASSERT(txCoord2->GetX() != -37.2020);
+        CPPUNIT_ASSERT(txCoord2->GetY() != 144.2020);
+
+        reader->Close();
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occurred");
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
 
 ///----------------------------------------------------------------------------
 /// Test Case Description:
@@ -2971,4 +3099,557 @@ void TestFeatureService::TestCase_UpdateFeaturesPartialFailure()
     {
         throw;
     }
+}
+
+void TestFeatureService::TestCase_InsertFeatures()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_InsertFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> featSvc = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (featSvc == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_InsertFeatures",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(L"Library://UnitTests/Data/TestCase_InsertFeatures.FeatureSource");
+        STRING className = CreateTestDataStore(featSvc, L"OSGeo.SDF", fsId);
+
+        Ptr<MgPropertyCollection> props = new MgPropertyCollection();
+        Ptr<MgStringProperty> nameProp = new MgStringProperty(L"Name", L"");
+        Ptr<MgGeometryProperty> geomProp = new MgGeometryProperty(L"Geometry", NULL);
+        props->Add(nameProp);
+        props->Add(geomProp);
+
+        MgAgfReaderWriter agfRw;
+        MgWktReaderWriter wktRw;
+
+        nameProp->SetValue(L"Test");
+        Ptr<MgGeometry> geom = wktRw.Read(L"POINT (1 1)");
+        Ptr<MgByteReader> agf = agfRw.Write(geom);
+        geomProp->SetValue(agf);
+
+        Ptr<MgReader> fr = featSvc->InsertFeatures(fsId, className, props);
+        INT32 count = 0;
+        while (fr->ReadNext())
+        {
+            count++;
+        }
+        fr->Close();
+        CPPUNIT_ASSERT(1 == count);
+
+        Ptr<MgFeatureQueryOptions> query = new MgFeatureQueryOptions();
+        fr = featSvc->SelectFeatures(fsId, className, query);
+        count = 0;
+        while(fr->ReadNext())
+        {
+            CPPUNIT_ASSERT(fr->GetString(L"Name") == L"Test");
+            agf = fr->GetGeometry(L"Geometry");
+            geom = agfRw.Read(agf);
+            CPPUNIT_ASSERT(wktRw.Write(geom) == L"POINT (1 1)");
+            count++;
+        }
+        fr->Close();
+        CPPUNIT_ASSERT(1 == count);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        STRING message = L"FdoException occurred: ";
+        message += e->GetExceptionMessage();
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+void TestFeatureService::TestCase_InsertFeaturesBatch()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_InsertFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> featSvc = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (featSvc == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_InsertFeatures",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(L"Library://UnitTests/Data/TestCase_InsertFeatures.FeatureSource");
+        STRING className = CreateTestDataStore(featSvc, L"OSGeo.SDF", fsId);
+
+        Ptr<MgBatchPropertyCollection> batchProps = new MgBatchPropertyCollection();
+
+        for (INT32 i = 0; i < 5; i++)
+        {
+            Ptr<MgPropertyCollection> props = new MgPropertyCollection();
+            Ptr<MgStringProperty> nameProp = new MgStringProperty(L"Name", L"");
+            Ptr<MgGeometryProperty> geomProp = new MgGeometryProperty(L"Geometry", NULL);
+            props->Add(nameProp);
+            props->Add(geomProp);
+
+            MgAgfReaderWriter agfRw;
+            MgWktReaderWriter wktRw;
+
+            STRING str = L"Test";
+            STRING sNum;
+            MgUtil::Int32ToString((i+1), sNum);
+            str += sNum;
+
+            nameProp->SetValue(str);
+            Ptr<MgGeometry> geom = wktRw.Read(L"POINT (1 1)");
+            Ptr<MgByteReader> agf = agfRw.Write(geom);
+            geomProp->SetValue(agf);
+
+            batchProps->Add(props);
+        }
+        Ptr<MgReader> fr = featSvc->InsertFeatures(fsId, className, batchProps);
+        INT32 count = 0;
+        while (fr->ReadNext())
+        {
+            count++;
+        }
+        fr->Close();
+        CPPUNIT_ASSERT(5 == count);
+
+        Ptr<MgFeatureQueryOptions> query = new MgFeatureQueryOptions();
+        fr = featSvc->SelectFeatures(fsId, className, query);
+        count = 0;
+        while(fr->ReadNext())
+        {
+            count++;
+        }
+        fr->Close();
+        CPPUNIT_ASSERT(5 == count);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        STRING message = L"FdoException occurred: ";
+        message += e->GetExceptionMessage();
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+void TestFeatureService::TestCase_UpdateMatchingFeatures()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_UpdateMatchingFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> featSvc = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (featSvc == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_UpdateMatchingFeatures",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(L"Library://UnitTests/Data/TestCase_InsertFeatures.FeatureSource");
+        STRING className = CreateTestDataStore(featSvc, L"OSGeo.SDF", fsId);
+
+        Ptr<MgPropertyCollection> props = new MgPropertyCollection();
+        Ptr<MgStringProperty> nameProp = new MgStringProperty(L"Name", L"");
+        Ptr<MgGeometryProperty> geomProp = new MgGeometryProperty(L"Geometry", NULL);
+        props->Add(nameProp);
+        props->Add(geomProp);
+
+        MgAgfReaderWriter agfRw;
+        MgWktReaderWriter wktRw;
+
+        for (INT32 i = 0; i < 5; i++)
+        {
+            STRING str = L"Test";
+            STRING sNum;
+            MgUtil::Int32ToString((i+1), sNum);
+            str += sNum;
+            nameProp->SetValue(str);
+            Ptr<MgGeometry> geom = wktRw.Read(L"POINT (1 1)");
+            Ptr<MgByteReader> agf = agfRw.Write(geom);
+            geomProp->SetValue(agf);
+
+            Ptr<MgReader> fr = featSvc->InsertFeatures(fsId, className, props);
+            INT32 count = 0;
+            while (fr->ReadNext())
+            {
+                count++;
+            }
+            fr->Close();
+            CPPUNIT_ASSERT(1 == count);
+        }
+
+        Ptr<MgFeatureQueryOptions> query = new MgFeatureQueryOptions();
+        Ptr<MgReader> fr = featSvc->SelectFeatures(fsId, className, query);
+        INT32 count = 0;
+        while(fr->ReadNext())
+        {
+            count++;
+        }
+        fr->Close();
+        CPPUNIT_ASSERT(5 == count);
+
+        Ptr<MgPropertyCollection> updateProps = new MgPropertyCollection();
+        Ptr<MgStringProperty> newNameProp = new MgStringProperty(L"Name", L"Test3Updated");
+        updateProps->Add(newNameProp);
+        Ptr<MgGeometry> newGeom = wktRw.Read(L"POINT (2 2)");
+        Ptr<MgByteReader> newAgf = agfRw.Write(newGeom);
+        Ptr<MgGeometryProperty> newGeomProp = new MgGeometryProperty(L"Geometry", newAgf);
+        updateProps->Add(newGeomProp);
+
+        INT32 updated = featSvc->UpdateMatchingFeatures(fsId, className, updateProps, L"Name = 'Test3'");
+        CPPUNIT_ASSERT(1 == updated);
+
+        query->SetFilter(L"Name = 'Test3'");
+        fr = featSvc->SelectFeatures(fsId, className, query);
+        count = 0;
+        while(fr->ReadNext())
+        {
+            count++;
+        }
+        fr->Close();
+        CPPUNIT_ASSERT(0 == count);
+
+        query->SetFilter(L"Name = 'Test3Updated'");
+        fr = featSvc->SelectFeatures(fsId, className, query);
+        count = 0;
+        while(fr->ReadNext())
+        {
+            count++;
+        }
+        fr->Close();
+        CPPUNIT_ASSERT(1 == count);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        STRING message = L"FdoException occurred: ";
+        message += e->GetExceptionMessage();
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+void TestFeatureService::TestCase_DeleteFeatures()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_DeleteFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> featSvc = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (featSvc == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_DeleteFeatures",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(L"Library://UnitTests/Data/TestCase_InsertFeatures.FeatureSource");
+        STRING className = CreateTestDataStore(featSvc, L"OSGeo.SDF", fsId);
+
+        Ptr<MgPropertyCollection> props = new MgPropertyCollection();
+        Ptr<MgStringProperty> nameProp = new MgStringProperty(L"Name", L"");
+        Ptr<MgGeometryProperty> geomProp = new MgGeometryProperty(L"Geometry", NULL);
+        props->Add(nameProp);
+        props->Add(geomProp);
+
+        MgAgfReaderWriter agfRw;
+        MgWktReaderWriter wktRw;
+
+        for (INT32 i = 0; i < 5; i++)
+        {
+            STRING str = L"Test";
+            STRING sNum;
+            MgUtil::Int32ToString((i+1), sNum);
+            str += sNum;
+            nameProp->SetValue(str);
+            Ptr<MgGeometry> geom = wktRw.Read(L"POINT (1 1)");
+            Ptr<MgByteReader> agf = agfRw.Write(geom);
+            geomProp->SetValue(agf);
+
+            Ptr<MgReader> fr = featSvc->InsertFeatures(fsId, className, props);
+            INT32 count = 0;
+            while (fr->ReadNext())
+            {
+                count++;
+            }
+            fr->Close();
+            CPPUNIT_ASSERT(1 == count);
+        }
+
+        Ptr<MgFeatureQueryOptions> query = new MgFeatureQueryOptions();
+        Ptr<MgReader> fr = featSvc->SelectFeatures(fsId, className, query);
+        INT32 count = 0;
+        while(fr->ReadNext())
+        {
+            count++;
+        }
+        fr->Close();
+        CPPUNIT_ASSERT(5 == count);
+
+        INT32 deleted = featSvc->DeleteFeatures(fsId, className, L"Name = 'Test3'");
+        CPPUNIT_ASSERT(1 == deleted);
+
+        query->SetFilter(L"Name = 'Test3'");
+        fr = featSvc->SelectFeatures(fsId, className, query);
+        count = 0;
+        while(fr->ReadNext())
+        {
+            count++;
+        }
+        fr->Close();
+        CPPUNIT_ASSERT(0 == count);
+
+        query = new MgFeatureQueryOptions();
+        fr = featSvc->SelectFeatures(fsId, className, query);
+        count = 0;
+        while(fr->ReadNext())
+        {
+            count++;
+        }
+        fr->Close();
+        CPPUNIT_ASSERT(4 == count);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        STRING message = L"FdoException occurred: ";
+        message += e->GetExceptionMessage();
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+void TestFeatureService::TestCase_TransactedCrud()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_TransactedCrud", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> featSvc = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (featSvc == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_TransactedCrud",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(L"Library://UnitTests/Data/TestCase_InsertFeatures.FeatureSource");
+        STRING className = CreateTestDataStore(featSvc, L"OSGeo.SQLite", fsId);
+
+        Ptr<MgPropertyCollection> props = new MgPropertyCollection();
+        Ptr<MgStringProperty> nameProp = new MgStringProperty(L"Name", L"");
+        Ptr<MgGeometryProperty> geomProp = new MgGeometryProperty(L"Geometry", NULL);
+        props->Add(nameProp);
+        props->Add(geomProp);
+
+        MgAgfReaderWriter agfRw;
+        MgWktReaderWriter wktRw;
+
+        for (INT32 i = 0; i < 5; i++)
+        {
+            STRING str = L"Test";
+            STRING sNum;
+            MgUtil::Int32ToString((i+1), sNum);
+            str += sNum;
+            nameProp->SetValue(str);
+            Ptr<MgGeometry> geom = wktRw.Read(L"POINT (1 1)");
+            Ptr<MgByteReader> agf = agfRw.Write(geom);
+            geomProp->SetValue(agf);
+
+            Ptr<MgReader> fr = featSvc->InsertFeatures(fsId, className, props);
+            INT32 count = 0;
+            while (fr->ReadNext())
+            {
+                count++;
+            }
+            fr->Close();
+            CPPUNIT_ASSERT(1 == count);
+        }
+
+        Ptr<MgFeatureQueryOptions> query = new MgFeatureQueryOptions();
+        Ptr<MgReader> fr = featSvc->SelectFeatures(fsId, className, query);
+        INT32 count = 0;
+        while(fr->ReadNext())
+        {
+            count++;
+        }
+        fr->Close();
+        CPPUNIT_ASSERT(5 == count);
+
+        //Do a transacted update
+        Ptr<MgTransaction> trans = featSvc->BeginTransaction(fsId);
+        
+        Ptr<MgPropertyCollection> updateProps = new MgPropertyCollection();
+        Ptr<MgStringProperty> newNameProp = new MgStringProperty(L"Name", L"Test3Updated");
+        updateProps->Add(newNameProp);
+        Ptr<MgGeometry> newGeom = wktRw.Read(L"POINT (2 2)");
+        Ptr<MgByteReader> newAgf = agfRw.Write(newGeom);
+        Ptr<MgGeometryProperty> newGeomProp = new MgGeometryProperty(L"Geometry", newAgf);
+        updateProps->Add(newGeomProp);
+
+        INT32 updated = featSvc->UpdateMatchingFeatures(fsId, className, updateProps, L"Name = 'Test3'", trans);
+        CPPUNIT_ASSERT(1 == updated);
+
+        //This hasn't been commited yet. So roll it back and verify our update never made it
+        trans->Rollback();
+        query->SetFilter(L"Name = 'Test3Updated'");
+        fr = featSvc->SelectFeatures(fsId, className, query);
+        count = 0;
+        while(fr->ReadNext())
+        {
+            count++;
+        }
+        fr->Close();
+        CPPUNIT_ASSERT(0 == count);
+
+        //Do a transacted update. This time, commit it.
+        trans = featSvc->BeginTransaction(fsId);
+        
+        updateProps = new MgPropertyCollection();
+        newNameProp = new MgStringProperty(L"Name", L"Test3Updated");
+        updateProps->Add(newNameProp);
+        newGeom = wktRw.Read(L"POINT (2 2)");
+        newAgf = agfRw.Write(newGeom);
+        newGeomProp = new MgGeometryProperty(L"Geometry", newAgf);
+        updateProps->Add(newGeomProp);
+
+        updated = featSvc->UpdateMatchingFeatures(fsId, className, updateProps, L"Name = 'Test3'", trans);
+        CPPUNIT_ASSERT(1 == updated);
+        trans->Commit();
+
+        //Verify the update came through
+        query->SetFilter(L"Name = 'Test3Updated'");
+        fr = featSvc->SelectFeatures(fsId, className, query);
+        count = 0;
+        while(fr->ReadNext())
+        {
+            count++;
+        }
+        fr->Close();
+        CPPUNIT_ASSERT(1 == count);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        STRING message = L"FdoException occurred: ";
+        message += e->GetExceptionMessage();
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+STRING TestFeatureService::CreateTestDataStore(MgFeatureService* svcFeature, CREFSTRING provider, MgResourceIdentifier* fsId)
+{
+    Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+    STRING scName = L"Default";
+    STRING csWkt = csFactory->ConvertCoordinateSystemCodeToWkt(L"LL84");
+
+    Ptr<MgFeatureSchema> schema = new MgFeatureSchema(L"Default", L"Default Feature Schema");
+    Ptr<MgClassDefinition> klass = new MgClassDefinition();
+    klass->SetName(L"Test");
+
+    Ptr<MgPropertyDefinitionCollection> clsProps = klass->GetProperties();
+    Ptr<MgPropertyDefinitionCollection> clsIdProps = klass->GetIdentityProperties();
+
+    Ptr<MgDataPropertyDefinition> id = new MgDataPropertyDefinition(L"ID");
+    id->SetDataType(MgPropertyType::Int32);
+    id->SetAutoGeneration(true);
+    
+    Ptr<MgDataPropertyDefinition> name = new MgDataPropertyDefinition(L"Name");
+    name->SetDataType(MgPropertyType::String);
+    name->SetLength(255);
+    name->SetNullable(true);
+
+    Ptr<MgGeometricPropertyDefinition> geom = new MgGeometricPropertyDefinition(L"Geometry");
+    geom->SetGeometryTypes(MgFeatureGeometricType::Point);
+    geom->SetSpatialContextAssociation(scName);
+
+    clsProps->Add(id);
+    clsProps->Add(name);
+    clsProps->Add(geom);
+
+    clsIdProps->Add(id);
+
+    klass->SetDefaultGeometryPropertyName(L"Geometry");
+
+    Ptr<MgClassDefinitionCollection> classes = schema->GetClasses();
+    classes->Add(klass);
+
+    Ptr<MgFileFeatureSourceParams> fsParams = new MgFileFeatureSourceParams(provider, scName, csWkt, schema);
+    svcFeature->CreateFeatureSource(fsId, fsParams);
+
+    Ptr<MgFeatureSchemaCollection> schemas = svcFeature->DescribeSchema(fsId, L"");
+    Ptr<MgFeatureSchema> theSchema = schemas->GetItem(0);
+    Ptr<MgClassDefinitionCollection> theClasses = theSchema->GetClasses();
+    Ptr<MgClassDefinition> theClass = theClasses->GetItem(0);
+
+    STRING qClassName = theSchema->GetName();
+    qClassName += L":";
+    qClassName += theClass->GetName();
+    return qClassName;
 }

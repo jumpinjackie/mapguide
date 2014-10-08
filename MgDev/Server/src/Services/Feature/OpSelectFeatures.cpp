@@ -91,6 +91,39 @@ void MgOpSelectFeatures::Execute()
         // Write the response
         EndExecution(featureReader);
     }
+    else if (4 == m_packet.m_NumArguments)
+    {
+        // Get the feature source
+        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
+        // Get the schema name
+        STRING className;
+        m_stream->GetString(className);
+
+        // Get properties collection
+        Ptr<MgFeatureQueryOptions> qryOptions = (MgFeatureQueryOptions*)m_stream->GetObject();
+        STRING coordinateSystem;
+        m_stream->GetString(coordinateSystem);
+
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(className.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureQueryOptions");
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"STRING");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        // Execute the operation
+        Ptr<MgFeatureReader> featureReader = m_service->SelectFeatures(resource, className, qryOptions, coordinateSystem);
+
+        // Write the response
+        EndExecution(featureReader);
+    }
     else
     {
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
