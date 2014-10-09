@@ -76,6 +76,7 @@ include_SOURCES = \
   Services/FeatureService.cpp \
   Services/FeatureSet.cpp \
   Services/FeatureSourceParams.cpp \
+  Services/FeatureSpatialOperations.cpp \
   Services/FileFeatureSourceParams.cpp \
   Services/GeometricPropertyDefinition.cpp \
   Services/GeometryProperty.cpp \
@@ -85,6 +86,7 @@ include_SOURCES = \
   Services/LongTransactionData.cpp \
   Services/LongTransactionReader.cpp \
   Services/ObjectPropertyDefinition.cpp \
+  Services/OrderingOption.cpp \
   Services/Parameter.cpp \
   Services/ParameterCollection.cpp \
   Services/Raster.cpp \

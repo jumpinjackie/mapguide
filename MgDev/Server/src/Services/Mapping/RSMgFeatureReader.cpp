@@ -202,7 +202,7 @@ bool RSMgFeatureReader::GetBoolean(const wchar_t* propertyName)
 }
 
 
-unsigned char RSMgFeatureReader::GetByte(const wchar_t* propertyName)
+FdoInt8 RSMgFeatureReader::GetByte(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetByte(propertyName);
@@ -246,7 +246,7 @@ double RSMgFeatureReader::GetDouble(const wchar_t* propertyName)
 }
 
 
-short RSMgFeatureReader::GetInt16(const wchar_t* propertyName)
+FdoInt16 RSMgFeatureReader::GetInt16(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetInt16(propertyName);
@@ -254,7 +254,7 @@ short RSMgFeatureReader::GetInt16(const wchar_t* propertyName)
 }
 
 
-int RSMgFeatureReader::GetInt32(const wchar_t* propertyName)
+FdoInt32 RSMgFeatureReader::GetInt32(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetInt32(propertyName);
@@ -262,7 +262,7 @@ int RSMgFeatureReader::GetInt32(const wchar_t* propertyName)
 }
 
 
-long long RSMgFeatureReader::GetInt64(const wchar_t* propertyName)
+FdoInt64 RSMgFeatureReader::GetInt64(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetInt64(propertyName);

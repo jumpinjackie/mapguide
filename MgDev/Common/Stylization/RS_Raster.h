@@ -21,6 +21,7 @@
 #include "RS_InputStream.h"
 #include "Bounds.h"
 #include "RendererStyles.h"
+#include <stdint.h>
 
 class RS_Raster
 {
@@ -44,7 +45,7 @@ public:
     virtual RS_String       GetVerticalUnits()  = 0;
 
     virtual int             GetNullValueType()  = 0;
-    virtual long long       GetNullValueData()  = 0;
+    virtual int64_t         GetNullValueData()  = 0;
 };
 
 #endif

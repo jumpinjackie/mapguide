@@ -50,13 +50,13 @@ public:
 
     virtual bool            IsNull         (const wchar_t* propertyName);
     virtual bool            GetBoolean     (const wchar_t* propertyName);
-    virtual unsigned char   GetByte        (const wchar_t* propertyName);
+    virtual FdoInt8         GetByte        (const wchar_t* propertyName);
     virtual FdoDateTime     GetDateTime    (const wchar_t* propertyName);
     virtual float           GetSingle      (const wchar_t* propertyName);
     virtual double          GetDouble      (const wchar_t* propertyName);
-    virtual short           GetInt16       (const wchar_t* propertyName);
-    virtual int             GetInt32       (const wchar_t* propertyName);
-    virtual long long       GetInt64       (const wchar_t* propertyName);
+    virtual FdoInt16        GetInt16       (const wchar_t* propertyName);
+    virtual FdoInt32        GetInt32       (const wchar_t* propertyName);
+    virtual FdoInt64        GetInt64       (const wchar_t* propertyName);
     virtual const wchar_t*  GetString      (const wchar_t* propertyName);
     virtual LineBuffer*     GetGeometry    (const wchar_t* propertyName, LineBuffer* lb, CSysTransformer* xformer);
     virtual RS_Raster*      GetRaster      (const wchar_t* propertyName);
