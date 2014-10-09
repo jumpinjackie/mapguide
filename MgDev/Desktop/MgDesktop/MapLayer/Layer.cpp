@@ -17,6 +17,12 @@
 
 #include "Layer.h"
 #include "FSDSAX2Parser.h"
+#include "AreaTypeStyle.h"
+#include "LineTypeStyle.h"
+#include "PointTypeStyle.h"
+#include "CompositeTypeStyle.h"
+#include "VectorScaleRange.h"
+#include "VectorLayerDefinition.h"
 #include "Services/ServiceFactory.h"
 #include "Services/ScrollableFeatureReader.h"
 
@@ -614,6 +620,216 @@ bool MgdLayer::IsPotentiallyVisibleAtScale(double scale, bool bConsiderParentGro
             return true;
     }
     return false;
+}
+
+MgIntCollection* MgdLayer::GetGeometryTypeStyles()
+{
+    Ptr<MgIntCollection> ret;
+
+    MG_TRY()
+
+    ret = GetGeometryTypeStyles(GetMap()->GetViewScale());
+
+    MG_CATCH_AND_THROW(L"MgdLayer.GetGeometryTypeStyles");
+
+    return ret.Detach();
+}
+
+INT32 MgdLayer::GetThemeCategoryCount(INT32 geomType)
+{
+    return GetThemeCategoryCount(GetMap()->GetViewScale(), geomType);
+}
+
+MgByteReader* MgdLayer::GenerateLegendImage(INT32 width, INT32 height, CREFSTRING format, INT32 geomType, INT32 themeCategory)
+{
+    Ptr<MgByteReader> ret;
+
+    MG_TRY()
+
+    ret = GenerateLegendImage(GetMap()->GetViewScale(), width, height, format, geomType, themeCategory);
+
+    MG_CATCH_AND_THROW(L"MgdLayer.GenerateLegendImage");
+
+    return ret.Detach();
+}
+
+MgIntCollection* MgdLayer::GetGeometryTypeStyles(double scale)
+{
+    Ptr<MgIntCollection> ret;
+
+    MG_TRY()
+
+    Ptr<MgResourceService> resSvc = dynamic_cast<MgResourceService*>(GetMap()->GetService(MgServiceType::ResourceService));
+    std::auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resSvc, m_definition));
+    if (ldf.get() != NULL)
+    {
+        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+        if(vl != NULL)
+        {
+            MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
+            if (scaleRanges != NULL)
+            {
+                for (INT32 i = 0; i < scaleRanges->GetCount(); i++)
+                {
+                    MdfModel::VectorScaleRange* vsr = scaleRanges->GetAt(i);
+                    if (scale >= vsr->GetMinScale() && scale < vsr->GetMaxScale())
+                    {
+                        MdfModel::FeatureTypeStyleCollection* ftsc = vsr->GetFeatureTypeStyles();
+
+                        ret = new MgIntCollection();
+
+                        for (INT32 j = 0; j < ftsc->GetCount(); j++)
+                        {
+                            MdfModel::PointTypeStyle* pts = dynamic_cast<MdfModel::PointTypeStyle*>(ftsc->GetAt(j));
+                            MdfModel::LineTypeStyle* lts = dynamic_cast<MdfModel::LineTypeStyle*>(ftsc->GetAt(j));
+                            MdfModel::AreaTypeStyle* ats = dynamic_cast<MdfModel::AreaTypeStyle*>(ftsc->GetAt(j));
+                            MdfModel::CompositeTypeStyle* cts = dynamic_cast<MdfModel::CompositeTypeStyle*>(ftsc->GetAt(j));
+
+                            if (pts != NULL)
+                            {
+                                if (ret->IndexOf(1) < 0)
+                                    ret->Add(1);
+                            }
+                            else if (lts != NULL)
+                            {
+                                if (ret->IndexOf(2) < 0)
+                                    ret->Add(2);
+                            }
+                            else if (ats != NULL)
+                            {
+                                if (ret->IndexOf(3) < 0)
+                                    ret->Add(3);
+                            }
+                            else if (cts != NULL)
+                            {
+                                ret->Add(4);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    MG_CATCH_AND_THROW(L"MgdLayer.GenerateLegendImage");
+
+    return ret.Detach();
+}
+
+INT32 MgdLayer::GetThemeCategoryCount(double scale, INT32 geomType)
+{
+    INT32 ret = -1;
+
+    Ptr<MgResourceService> resSvc = dynamic_cast<MgResourceService*>(GetMap()->GetService(MgServiceType::ResourceService));
+    std::auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resSvc, m_definition));
+    if (ldf.get() != NULL)
+    {
+        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+        if(vl != NULL)
+        {
+            MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
+            if (scaleRanges != NULL)
+            {
+                for (INT32 i = 0; i < scaleRanges->GetCount(); i++)
+                {
+                    MdfModel::VectorScaleRange* vsr = scaleRanges->GetAt(i);
+                    if (scale >= vsr->GetMinScale() && scale < vsr->GetMaxScale())
+                    {
+                        MdfModel::FeatureTypeStyleCollection* ftsc = vsr->GetFeatureTypeStyles();
+                        for (INT32 j = 0; j < ftsc->GetCount(); j++)
+                        {
+                            MdfModel::PointTypeStyle* pts = dynamic_cast<MdfModel::PointTypeStyle*>(ftsc->GetAt(j));
+                            MdfModel::LineTypeStyle* lts = dynamic_cast<MdfModel::LineTypeStyle*>(ftsc->GetAt(j));
+                            MdfModel::AreaTypeStyle* ats = dynamic_cast<MdfModel::AreaTypeStyle*>(ftsc->GetAt(j));
+                            MdfModel::CompositeTypeStyle* cts = dynamic_cast<MdfModel::CompositeTypeStyle*>(ftsc->GetAt(j));
+
+                            if (pts != NULL && geomType == 1)
+                            {
+                                ret = pts->GetRules()->GetCount();
+                                break;
+                            }
+                            else if (lts != NULL && geomType == 2)
+                            {
+                                ret = lts->GetRules()->GetCount();
+                                break;
+                            }
+                            else if (ats != NULL && geomType == 3)
+                            {
+                                ret = ats->GetRules()->GetCount();
+                                break;
+                            }
+                            else if (cts != NULL && geomType == 4)
+                            {
+                                ret = cts->GetRules()->GetCount();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    return ret;
+}
+
+INT32 MgdLayer::GetCompositeThemeCategoryCount(INT32 compositeOffset)
+{
+    return GetCompositeThemeCategoryCount(GetMap()->GetViewScale(), compositeOffset);
+}
+
+INT32 MgdLayer::GetCompositeThemeCategoryCount(double scale, INT32 compositeOffset)
+{
+    INT32 ret = -1;
+
+    Ptr<MgResourceService> resSvc = dynamic_cast<MgResourceService*>(GetMap()->GetService(MgServiceType::ResourceService));
+    std::auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resSvc, m_definition));
+    if (ldf.get() != NULL)
+    {
+        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+        if(vl != NULL)
+        {
+            MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
+            if (scaleRanges != NULL)
+            {
+                for (INT32 i = 0; i < scaleRanges->GetCount(); i++)
+                {
+                    MdfModel::VectorScaleRange* vsr = scaleRanges->GetAt(i);
+                    if (scale >= vsr->GetMinScale() && scale < vsr->GetMaxScale())
+                    {
+                        MdfModel::FeatureTypeStyleCollection* ftsc = vsr->GetFeatureTypeStyles();
+                        //NOTE: If a Layer Definition has basic and composite types, then this offset will probably be wrong
+                        //but such layers are technically illegal and we shouldn't try to be catering to such layers
+                        if (compositeOffset < ftsc->GetCount())
+                        {
+                            MdfModel::CompositeTypeStyle* cts = dynamic_cast<MdfModel::CompositeTypeStyle*>(ftsc->GetAt(compositeOffset));
+                            if (cts != NULL)
+                            {
+                                ret = cts->GetRules()->GetCount();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    return ret;
+}
+
+MgByteReader* MgdLayer::GenerateLegendImage(double scale, INT32 width, INT32 height, CREFSTRING format, INT32 geomType, INT32 themeCategory)
+{
+    Ptr<MgByteReader> ret;
+
+    MG_TRY()
+
+    Ptr<MgdMappingService> svcMapping = dynamic_cast<MgdMappingService*>(GetMap()->GetService(MgServiceType::MappingService));
+    ret = svcMapping->GenerateLegendImage(m_definition, scale, width, height, format, geomType, themeCategory);
+
+    MG_CATCH_AND_THROW(L"MgdLayer.GenerateLegendImage");
+
+    return ret.Detach();
 }
 
 bool MgdLayer::HasTooltips()
