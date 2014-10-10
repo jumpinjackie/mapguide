@@ -140,7 +140,7 @@ shim_thirdparty_lib_paths()
             ln -s /usr/lib ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME
             echo "[info]: Symlinked PostgreSQL lib path (x86)"
         else
-            ln -s /usr/lib64 ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME
+            ln -s /usr/lib ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME
             echo "[info]: Symlinked PostgreSQL lib path (x64)"
         fi
     else
@@ -204,7 +204,12 @@ modify_sdk_paths()
         mkdir -p $FDO_BUILD_AREA/Thirdparty/libcurl/lib
         if [ ! -e $FDO_BUILD_AREA/Thirdparty/libcurl/lib/linux ];
         then
-            ln -s /usr/lib/i386-linux-gnu $FDO_BUILD_AREA/Thirdparty/libcurl/lib/linux
+            if [ ${FDO_PLATFORM} -eq 32 ]; 
+            then
+                ln -s /usr/lib/i386-linux-gnu $FDO_BUILD_AREA/Thirdparty/libcurl/lib/linux
+            else
+                ln -s /usr/lib/x86_64-linux-gnu $FDO_BUILD_AREA/Thirdparty/libcurl/lib/linux
+            fi
         fi
 
         # symlink openssl to system installed copy
@@ -219,7 +224,12 @@ modify_sdk_paths()
         mkdir -p $FDO_BUILD_AREA/Thirdparty/openssl/lib
         if [ ! -e $FDO_BUILD_AREA/Thirdparty/openssl/lib/linux ];
         then
-            ln -s /usr/lib/i386-linux-gnu $FDO_BUILD_AREA/Thirdparty/openssl/lib/linux
+            if [ ${FDO_PLATFORM} -eq 32 ]; 
+            then
+                ln -s /usr/lib/i386-linux-gnu $FDO_BUILD_AREA/Thirdparty/openssl/lib/linux
+            else
+                ln -s /usr/lib/x86_64-linux-gnu $FDO_BUILD_AREA/Thirdparty/openssl/lib/linux
+            fi
         fi
         echo "[info]: Replace internal openssl/libcurl with symlinks to Ubuntu-installed copies"
     fi
