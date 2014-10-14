@@ -13,8 +13,8 @@ MGVER_REV=0
 MG_ARCH=i386
 MGVER_MAJOR_MINOR_REV=${MGVER_MAJOR_MINOR}.${MGVER_POINT}
 MGVER=${MGVER_MAJOR_MINOR_REV}.${MGVER_REV}
-FDO_TARBALL=fdosdk-centos6-${FDO_ARCH}-${FDOVER}.tar.gz
-MG_TARBALL=mapguideopensource-${MGVER}.${MG_ARCH}.tar.gz
+FDO_TARBALL=fdosdk-centos6-${FDO_ARCH}-${FDOVER}.tar.xz
+MG_TARBALL=mapguideopensource-${MGVER}.${MG_ARCH}.tar.xz
 MG_URL=${URL}/${MG_TARBALL}
 FDO_URL=${URL}/${FDO_TARBALL}
 
@@ -31,14 +31,14 @@ fi
 #tar -C / -zxvf ${FDO_TARBALL}
 mkdir -p /usr/local/fdo-${FDOVER_MAJOR_MINOR_REV}
 echo "[install]: Extracting FDO"
-tar -C /usr/local/fdo-${FDOVER_MAJOR_MINOR_REV}/ -zxf ${FDO_TARBALL}
+tar -C /usr/local/fdo-${FDOVER_MAJOR_MINOR_REV}/ -Jxf ${FDO_TARBALL}
 
 if [ ! -f ${MG_TARBALL} ]; then
 wget -N ${MG_URL}
 fi
 
 echo "[install]: Extracting MapGuide"
-tar -C / -zxf ${MG_TARBALL}
+tar -C / -Jxf ${MG_TARBALL}
 
 # All of this is to make SELinux happy
 pushd /usr/local/fdo-${FDOVER_MAJOR_MINOR_REV}/lib

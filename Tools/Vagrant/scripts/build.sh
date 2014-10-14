@@ -226,7 +226,7 @@ then
         mkdir -p bin
     fi
 
-    tar -zcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.${MGCPUPLATFORM}.tar.gz ${INSTALLROOT} ${LOCKFILEDIR}
+    tar -Jcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.${MGCPUPLATFORM}.tar.xz ${INSTALLROOT} ${LOCKFILEDIR}
 fi
 echo "Build complete!"
 echo Main build execution: `expr $end_time - $start_time` s

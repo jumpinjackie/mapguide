@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "vagrant-centos64-x64"
+  config.vm.box = "centos6-amd64"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
@@ -183,8 +183,6 @@ else
     sudo mkdir -p /usr/include/asm
     sudo cp /mapguide_sources/atomic.h /usr/include/asm
 fi
-#echo [provision]: Checking all tools and libs are in place
-#yum install -y gcc-* gd-* automake bison byacc flex doxygen expat expat-devel libtool libjpeg-devel libpng libpng-devel libxml2 libxml2-devel openssl curl curl-devel libxslt libxslt-devel subversion java-1.7.0-openjdk java-1.7.0-openjdk-devel ant dos2unix openssh-server openldap-devel alsa-lib-devel pcre-devel unixODBC-devel libcom_err-devel krb5-devel openssl-devel mysql-devel postgresql-devel unixODBC
 echo [provision]: Clean line endings
 sudo dos2unix /vagrant/*.sh
 sudo dos2unix /vagrant/*.pl
@@ -293,7 +291,7 @@ then
     cd $SCRIPT_ROOT/mgdev/Server/src/Core
     sudo make unittest.sh
     # Run the test suites individually except for TileService/ResourceService for reasons already stated
-    for comp in CoordinateSystem FeatureService Geometry KmlService LogManager MdfModel Misc RenderingService ServerAdminService ServerManager ServiceManager SiteManager SiteService ProfilingService TransformMesh
+    for comp in CoordinateSystem FeatureService Geometry KmlService LogManager MappingService MdfModel Misc Performance RenderingService ServerAdminService ServerManager ServiceManager SiteManager SiteService ProfilingService TransformMesh
     do
         sudo -E ./mgserver test $comp UnitTestResults_${comp}.xml 2>&1 | tee ~/mapguide_${comp}_unit_test.log
         check_test
@@ -308,8 +306,8 @@ sudo mkdir -p /vagrant/build
 echo [provision]: Copy log files to output dir
 sudo mv -f ~/*.log /vagrant/build
 echo [provision]: Copy tarballs to output dir
-sudo cp bin/*.tar.gz /vagrant/build
-sudo cp fdosdk-centos6-i386-${FDO_VER_FULL}_${FDO_REV}.tar.gz /vagrant/build
+sudo cp bin/*.tar.xz /vagrant/build
+sudo cp fdosdk-centos6-amd64-${FDO_VER_FULL}_${FDO_REV}.tar.xz /vagrant/build
 if [ $MAKE_FDO_SDK -eq 1 ]; then
     echo [provision]: Copy FDO SDK for Ubuntu builds
     # Copy SDK also to sources, so Ubuntu can pick it up

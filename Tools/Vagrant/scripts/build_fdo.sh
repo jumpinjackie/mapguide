@@ -543,7 +543,7 @@ then
     FDO_BUILD_COMPONENT="Make tarball"
     # Create a binary tar ball for FDO
     cd ${FDO_INST}
-    tar -zcf ${BUILDROOT}/fdosdk-centos6-${FDO_BUILD_CPU}-${FDO_VER_FULL}_${REVISION}.tar.gz *
+    tar -Jcf ${BUILDROOT}/fdosdk-centos6-${FDO_BUILD_CPU}-${FDO_VER_FULL}_${REVISION}.tar.xz *
     check_build
 
     if [ ${UBUNTU} -eq 1 ];
