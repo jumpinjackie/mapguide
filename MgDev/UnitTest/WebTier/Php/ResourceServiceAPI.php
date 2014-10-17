@@ -22,7 +22,7 @@
 //operation and executes the operation
 //Edit that file to add more operations for Resource Service API
 
-require_once("../../../Web/src/PhpApi/Constants.php");
+require_once("../../../Web/src/PhpApi/constants.php");
 require_once("Utils.php");
 require_once("Result.php");
 

@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__)."/../Web/src/mapadmin/constants.php";
+require_once dirname(__FILE__)."/../Web/src/PhpApi/constants.php";
 
 $file = dirname(__FILE__)."/webconfig.ini";
 $mgp = dirname(__FILE__)."/TestData/Samples/Sheboygan/Sheboygan.mgp";

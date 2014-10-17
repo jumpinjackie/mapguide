@@ -18,7 +18,7 @@
 //
 
 
-require_once("../../../Web/src/PhpApi/Constants.php");
+require_once("../../../Web/src/PhpApi/constants.php");
 require_once("Utils.php");
 
 try

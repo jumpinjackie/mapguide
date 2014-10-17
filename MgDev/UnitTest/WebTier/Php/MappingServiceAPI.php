@@ -19,7 +19,7 @@
 
 require_once("Result.php");
 require_once("Utils.php");
-require_once("../../../Web/src/PhpApi/Constants.php");
+require_once("../../../Web/src/PhpApi/constants.php");
 
 //This file defines the operations that are currently supported for Mapping Service API by the unit test infrastructure.
 //There is one function per operation. Each function tries to retrieve the parameters that are required for its corresponding

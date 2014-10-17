@@ -81,9 +81,15 @@ class Utils
 
     public static function GetPath($fileName)
     {
+        if (strpos($fileName, "/") === 0)
+        {
+            //echo "Utils::GetPath($fileName) - $fileName\n";
+            return $fileName;
+        }
         $pos = strrpos($fileName, ':');
         if($pos)
         {
+            //echo "Utils::GetPath($fileName) - $fileName\n";
             return $fileName;
         }
 
@@ -98,13 +104,14 @@ class Utils
 
         //Replace the back slashes in the path with forward slashes for Linux compatibility
         $relPath = str_replace("\\", "/", $relPath);
-
+        //echo "Utils::GetPath($fileName) - $relPath\n";
         return $relPath;
     }
 
     public static function MapAgentInit($webConfigIniPath)
     {
         $cfgFile = self::GetPath($webConfigIniPath);
+        //echo "Initializing from $cfgFile\n\n";
         MgInitializeWebTier($cfgFile);
     }
 
