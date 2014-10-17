@@ -4,10 +4,10 @@
 # run_tests.sh
 #
 # Simple wrapper script to execute all applicable tests on Linux
-SERVER_SAFE_SUBSET=1
+SERVER_FAST_SUBSET=1
 MG_INST=/usr/local/mapguideopensource
 PHP_CMD=$MG_INST/webserverextensions/php/bin/php
-TEST_SERVER=0
+TEST_SERVER=1
 TEST_PHP=0
 TEST_JAVA=1
 LOG_PATH=~
