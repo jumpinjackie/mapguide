@@ -327,6 +327,8 @@ echo [provision]: Copy install/uninstall scripts to output dir
 sudo cp /vagrant/mginstallcentos.sh /vagrant/build/mginstallcentos.sh
 sudo sed -i 's/FDOVER_REV=0/FDOVER_REV='"$FDO_REV"'/g' /vagrant/build/mginstallcentos.sh
 sudo sed -i 's/MGVER_REV=0/MGVER_REV='"$MG_REV"'/g' /vagrant/build/mginstallcentos.sh
+sudo sed -i 's/FDO_ARCH=i386/FDO_ARCH=amd64/g' /vagrant/build/mginstallcentos.sh
+sudo sed -i 's/MG_ARCH=i386/MG_ARCH=amd64/g' /vagrant/build/mginstallcentos.sh
 if [ ! -d /mapguide_sources/updated ]; then
     sudo mkdir -p /mapguide_sources/updated
     cd $MG_SRC_ROOT

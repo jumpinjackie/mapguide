@@ -1,8 +1,7 @@
 libACE.so
-libACE.so.5.8.0
-libdwfcore-1.1.1.so
-libdwfemap-1.0.0.so
-libdwftk-7.1.1.so
+libACE.so.6.2.6
+libdwfcore-1.7.0.so
+libdwftk-7.7.0.so
 libMgFoundation-3.0.0.so
 libMgFoundation.so
 libMgGeometry-3.0.0.so

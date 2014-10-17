@@ -18,24 +18,22 @@ MG_TARBALL=mapguideopensource-${MGVER}.${MG_ARCH}.tar.xz
 MG_URL=${URL}/${MG_TARBALL}
 FDO_URL=${URL}/${FDO_TARBALL}
 
+# Must make sure we have .tar.xz support and any other deps if this is a minimal install
+yum install -y xz-lzma-compat wget libxslt libpng 
+
 # Must have root
 if [[ $EUID -ne 0 ]]; then
     echo "You must run this script with superuser privileges"
     exit 1
 fi
 
-if [ ! -f ${FDO_TARBALL} ]; then
-wget -N ${FDO_URL}
-fi
+wget -N -c ${FDO_URL}
 
-#tar -C / -zxvf ${FDO_TARBALL}
 mkdir -p /usr/local/fdo-${FDOVER_MAJOR_MINOR_REV}
 echo "[install]: Extracting FDO"
 tar -C /usr/local/fdo-${FDOVER_MAJOR_MINOR_REV}/ -Jxf ${FDO_TARBALL}
 
-if [ ! -f ${MG_TARBALL} ]; then
-wget -N ${MG_URL}
-fi
+wget -N -c ${MG_URL}
 
 echo "[install]: Extracting MapGuide"
 tar -C / -Jxf ${MG_TARBALL}

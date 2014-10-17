@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "vagrant-precise64"
+  config.vm.box = "ubuntu12-amd64"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
@@ -196,8 +196,6 @@ else
     sudo mkdir -p /usr/include/asm
     sudo cp /mapguide_sources/atomic.h /usr/include/asm
 fi
-#echo [provision]: Checking libraries
-#sudo apt-get install -y libpq-dev libmysqlclient-dev
 echo [provision]: Clean line endings
 sudo dos2unix /vagrant/*.sh
 sudo dos2unix /vagrant/*.pl
@@ -346,7 +344,7 @@ then
     cd $SCRIPT_ROOT/mgdev/Server/src/Core
     sudo make unittest.sh
     # Run the test suites individually except for TileService for reasons already stated
-    for comp in CoordinateSystem FeatureService Geometry KmlService LogManager MdfModel Misc RenderingService ServerAdminService ServerManager ServiceManager SiteManager SiteService ProfilingService TransformMesh
+    for comp in CoordinateSystem FeatureService Geometry KmlService LogManager MappingService MdfModel Misc Performance RenderingService ServerAdminService ServerManager ServiceManager SiteManager SiteService ProfilingService TransformMesh
     do
         sudo -E ./mgserver test $comp UnitTestResults_${comp}.xml 2>&1 | tee ~/mapguide_${comp}_unit_test.log
         check_test
@@ -370,6 +368,8 @@ sudo cp ~/UnitTestResults_*.xml /vagrant/build
 sudo cp /vagrant/mginstallubuntu.sh /vagrant/build/mginstallubuntu.sh
 sudo sed -i 's/FDOBUILD=0/FDOBUILD='"$FDO_REV"'/g' /vagrant/build/mginstallubuntu.sh
 sudo sed -i 's/MGBUILD=0/MGBUILD='"$MG_REV"'/g' /vagrant/build/mginstallubuntu.sh
+sudo sed -i 's/FDOARCH=i386/FDOARCH=amd64/g' /vagrant/build/mginstallubuntu.sh
+sudo sed -i 's/MGARCH=i386/MGARCH=amd64/g' /vagrant/build/mginstallubuntu.sh
 # Do not update the working copy tarballs. Ubuntu 14.04 uses svn 1.8 which will break
 # the working copy if copied over to a CentOS VM (which is still on 1.6)
 #

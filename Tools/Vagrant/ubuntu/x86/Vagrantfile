@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "vagrant-precise32"
+  config.vm.box = "ubuntu12-i386"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
@@ -196,8 +196,6 @@ else
     sudo mkdir -p /usr/include/asm
     sudo cp /mapguide_sources/atomic.h /usr/include/asm
 fi
-#echo [provision]: Checking libraries
-#sudo apt-get install -y libpq-dev libmysqlclient-dev
 echo [provision]: Clean line endings
 sudo dos2unix /vagrant/*.sh
 sudo dos2unix /vagrant/*.pl
@@ -346,7 +344,7 @@ then
     cd $SCRIPT_ROOT/mgdev/Server/src/Core
     sudo make unittest.sh
     # Run the test suites individually except for TileService for reasons already stated
-    for comp in CoordinateSystem FeatureService Geometry KmlService LogManager MdfModel Misc RenderingService ServerAdminService ServerManager ServiceManager SiteManager SiteService ProfilingService TransformMesh
+    for comp in CoordinateSystem FeatureService Geometry KmlService LogManager MappingService MdfModel Misc Performance RenderingService ServerAdminService ServerManager ServiceManager SiteManager SiteService ProfilingService TransformMesh
     do
         sudo -E ./mgserver test $comp UnitTestResults_${comp}.xml 2>&1 | tee ~/mapguide_${comp}_unit_test.log
         check_test
