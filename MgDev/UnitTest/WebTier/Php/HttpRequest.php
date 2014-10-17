@@ -41,6 +41,11 @@ class HttpRequest
         curl_setopt($this->ch, CURLOPT_HTTPGET, true);
         if ("POST" == $requestType)
         {
+            foreach ($arrayParam as $key => $value) {
+                if (strpos($value, "@") === 0) {
+                    $arrayParam[$key] = new CURLFile(substr($value, 1));
+                }
+            }
             curl_setopt($this->ch, CURLOPT_POST,1);
             curl_setopt($this->ch, CURLOPT_POSTFIELDS, $arrayParam);
         }
