@@ -761,12 +761,16 @@ class ResourceServiceAPI
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"PACKAGE\"");
             $arrayParam["PACKAGE"]=Utils::GetPath($this->unitTestParamVm->GetString("ParamValue"));
 
-            $packageSource = new MgByteSource($arrayParam["PACKAGE"]);
-            $package = $packageSource->GetReader();
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                $packageSource = new MgByteSource($arrayParam["PACKAGE"]);
+                $package = $packageSource->GetReader();
 
-            $byteReader = $this->resourceSrvc->ApplyResourcePackage($package);
+                $byteReader = $this->resourceSrvc->ApplyResourcePackage($package);
 
-            return Utils::GetResponse($byteReader);
+                return Utils::GetResponse($byteReader);
+            } else {
+                return new Result("FIXME: ApplyResourcePackage will kill the mgserver on invalid package files", "text/plain");
+            }
         }
         catch (MgException $e)
         {
