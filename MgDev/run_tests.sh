@@ -265,7 +265,7 @@ if [ $TEST_PHP -eq 1 ]; then
 		export SERVER_ADDR=$WEB_SERVER_ADDR
 		export SERVER_PORT=$WEB_SERVER_PORT
 		export WEBCONFIGINI=$PWD/../../webconfig.ini
-		$PHP_CMD RunTests.php 2>&1 | tee $LOG_PATH/php_test.log
+		$PHP_CMD -d error_reporting=E_ALL^E_DEPRECATED RunTests.php 2>&1 | tee $LOG_PATH/php_test.log
 		check_test
 	popd > /dev/null
 	stop_mapguide_server
