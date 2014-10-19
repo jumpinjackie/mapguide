@@ -1,0 +1,26 @@
+#!/bin/sh
+# MapGuide init script
+. /lib/lsb/init-functions
+case "$1" in
+ start)
+   log_daemon_msg "Starting MapGuide Server"
+   pushd /usr/local/mapguideopensource/server/bin > /dev/null
+   ./mgserverd.sh
+   popd > /dev/null
+   log_end_msg 0
+   ;;
+ stop)
+   log_daemon_msg "Stopping MapGuide Server"
+   MGPROCESS=`/usr/bin/pgrep -f -u root "mgserver daemon"`
+   if [ "$MGPROCESS" != "" ]
+   then
+     /bin/kill $MGPROCESS
+   fi
+   log_end_msg 0
+   ;;
+ *)
+   echo "Usage: $0 {start|stop}"
+   exit 1
+   ;;
+esac
+exit 0

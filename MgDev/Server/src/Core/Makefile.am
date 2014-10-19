@@ -441,3 +441,5 @@ install-data-hook:
 	@echo 'popd' >> ${prefix}/bin/mgserver.sh
 	@echo 'popd' >> ${prefix}/bin/mgserverd.sh
 	@chmod a+x ${prefix}/bin/mgserver*.sh
+	@sed -e 's#/usr/local/mapguideopensource/server#${prefix}#g' mapguidectl > ${prefix}/bin/mapguidectl
+	@chmod a+x ${prefix}/bin/mapguidectl
