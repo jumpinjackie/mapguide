@@ -79,12 +79,40 @@ class Utils
         }
     }
 
+    public static function IsWindows() {
+        return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+    }
+
+    private static function GetAbsolutePath($path, $encoding = "UTF-8") {
+        // Attempt to avoid path encoding problems.
+        $path = iconv($encoding, "$encoding//IGNORE//TRANSLIT", $path);
+ 
+        // Process the components
+        $parts = explode('/', $path);
+        $safe = array();  
+        foreach ($parts as $idx => $part) {
+    
+            if (($idx > 0 && trim($part)=="") || $part=='.') {
+                continue;
+            } elseif ('..' == $part) {
+                array_pop($safe);
+                continue;
+            } else {
+                $safe[] = $part;
+            }
+        }
+  
+        // Return the "clean" path
+        $path = implode(DIRECTORY_SEPARATOR, $safe);
+        return $path;
+    }
+
     public static function GetPath($fileName)
     {
         if (strpos($fileName, "/") === 0)
         {
             //echo "Utils::GetPath($fileName) - $fileName\n";
-            return $fileName;
+            return self::GetAbsolutePath($fileName);
         }
         $pos = strrpos($fileName, ':');
         if($pos)
@@ -104,6 +132,7 @@ class Utils
 
         //Replace the back slashes in the path with forward slashes for Linux compatibility
         $relPath = str_replace("\\", "/", $relPath);
+        $relPath = self::GetAbsolutePath($relPath);
         //echo "Utils::GetPath($fileName) - $relPath\n";
         return $relPath;
     }

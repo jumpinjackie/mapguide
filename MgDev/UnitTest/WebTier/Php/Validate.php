@@ -198,7 +198,7 @@ class Validate
             if ($outcome=="fail")
             {
                 printf("****".$serviceType." ".$paramSet." ".$operation." failed.\n");
-                $str = sprintf("\n****ACTUAL RESULT****\n%s\n****EXPECTED RESULT****\n%s\n********\n\n\n", $resultData, $expectedResult);
+                $str = sprintf("\n****ACTUAL RESULT (%d)****\n%s\n****EXPECTED RESULT (%d)****\n%s\n********\n\n\n", strlen($resultData), $resultData, strlen($expectedResult), $expectedResult);
                 echo $str;
                 fwrite($file, $str);
             }
@@ -400,7 +400,7 @@ class Validate
             if ($outcome=="fail")
             {
                 printf("****".$serviceType." ".$paramSet." ".$operation." failed.\n");
-                $str = sprintf("\n****ACTUAL RESULT****\n%s\n****EXPECTED RESULT****\n%s\n********\n\n\n", $resultData, $expectedResult);
+                $str = sprintf("\n****ACTUAL RESULT (%d)****\n%s\n****EXPECTED RESULT (%d)****\n%s\n********\n\n\n", strlen($resultData), $resultData, strlen($expectedResult), $expectedResult);
                 echo $str;
                 fwrite($file, $str);
             }
