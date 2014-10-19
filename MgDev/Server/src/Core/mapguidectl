@@ -11,7 +11,7 @@ fi
 case "$1" in
  start)
    log_daemon_msg "Starting MapGuide Server"
-   pushd /usr/local/mapguideopensource-3.0.0/server/bin > /dev/null
+   pushd /usr/local/mapguideopensource/server/bin > /dev/null
    ./mgserverd.sh
    popd > /dev/null
    log_end_msg 0
