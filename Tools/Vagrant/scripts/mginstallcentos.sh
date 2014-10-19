@@ -19,7 +19,7 @@ MG_URL=${URL}/${MG_TARBALL}
 FDO_URL=${URL}/${FDO_TARBALL}
 
 # Must make sure we have .tar.xz support and any other deps if this is a minimal install
-yum install -y xz-lzma-compat wget libxslt libpng 
+yum install -y xz-lzma-compat wget libxslt libpng redhat-lsb-core 
 
 # Must have root
 if [[ $EUID -ne 0 ]]; then
