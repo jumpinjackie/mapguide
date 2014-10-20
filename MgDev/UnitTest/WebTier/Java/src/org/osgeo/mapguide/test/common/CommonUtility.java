@@ -19,6 +19,11 @@ import org.w3c.dom.Node;
 
 public class CommonUtility
 {
+    public static boolean IsWindows()
+    {
+        return System.getProperty("os.name").toLowerCase().contains("win");
+    }
+
     public static String DoubleToString(double d)
     {
         if(d == (long) d)

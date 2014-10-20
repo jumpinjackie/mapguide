@@ -25,7 +25,7 @@ public class ApplyResourcePackage extends ResourceServiceOperationExecutor
             if (param.get("PACKAGE") != null)
                 packagePath = param.get("PACKAGE");
 
-            if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            if (CommonUtility.IsWindows()) {
                 //Console.WriteLine("\t\tPackage Path: " + packagePath);
                 MgByteReader reader = CommonUtility.GetByteReaderFromPath(packagePath, false);
 
