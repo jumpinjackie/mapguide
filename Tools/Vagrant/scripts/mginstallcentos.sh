@@ -39,53 +39,66 @@ echo "[install]: Extracting MapGuide"
 tar -C / -Jxf ${MG_TARBALL}
 
 # All of this is to make SELinux happy
-pushd /usr/local/fdo-${FDOVER_MAJOR_MINOR_REV}/lib
+pushd /usr/local/fdo-${FDOVER_MAJOR_MINOR_REV}/lib > /dev/null
 echo "[config]: Making binaries SELinux compatible"
 chcon -t textrel_shlib_t *.so
-popd
+popd > /dev/null
 
-pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin
+pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin > /dev/null
 echo "[config]: Making binaries SELinux compatible"
 chcon -t textrel_shlib_t *.so
 chcon -t textrel_shlib_t mgserver
-popd
+popd > /dev/null
 
-pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/lib
+pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/lib > /dev/null
 echo "[config]: Making binaries SELinux compatible"
 chcon -t textrel_shlib_t *.so
-popd
+popd > /dev/null
 
-pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/lib
+pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/lib > /dev/null
 echo "[config]: Making binaries SELinux compatible"
 chcon -t textrel_shlib_t *.so
-popd
+popd > /dev/null
 
-pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/lib
+pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/lib > /dev/null
 echo "[config]: Making binaries SELinux compatible"
 chcon -t textrel_shlib_t *.so
-popd
+popd > /dev/null
 
-pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/lib
+pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/lib > /dev/null
 echo "[config]: Making binaries SELinux compatible"
 chcon -t textrel_shlib_t *.so
-popd
+popd > /dev/null
 
-pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/modules
+pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/modules > /dev/null
 echo "[config]: Making binaries SELinux compatible"
 chcon -t textrel_shlib_t *.so
-popd
+popd > /dev/null
 
 echo "[config]: Fixing permissions for certain folders"
 chmod 777 /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/www/TempDir
 
-pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/bin
-echo "[install]: Starting httpd"
-./apachectl start
-popd
+echo "[install]: Registering services"
+# The service control scripts as-is won't register as services as they lack chkconfig information
+# We'll inject this information by prepending this information and appending the existing script bodies
+# afterwards to the destination. We are not making symlinks.
+echo "#!/bin/sh" > /etc/init.d/mapguide
+echo "# chkconfig: 345 35 65" >> /etc/init.d/mapguide
+echo "# description: MapGuide Server Daemon" >> /etc/init.d/mapguide
+sed "s/\#\!\/bin\/sh//g" /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin/mapguidectl >> /etc/init.d/mapguide
+chmod +x /etc/init.d/mapguide
+chkconfig --add mapguide
+echo "#!/bin/sh" > /etc/init.d/apache-mapguide
+echo "# chkconfig: 345 35 65" >> /etc/init.d/apache-mapguide
+echo "# description: MapGuide Server Daemon" >> /etc/init.d/apache-mapguide
+sed "s/\#\!\/bin\/sh//g" /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/bin/apachectl >> /etc/init.d/apache-mapguide
+chmod +x /etc/init.d/apache-mapguide
+chkconfig --add apache-mapguide
 
-pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin
+echo "[install]: Starting httpd"
+/etc/init.d/mapguide start
+
 echo "[install]: Starting mgserver"
-./mgserverd.sh
-popd
+/etc/init.d/apache-mapguide start
 
 echo DONE

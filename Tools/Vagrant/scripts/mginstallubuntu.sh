@@ -472,23 +472,20 @@ post_install()
     echo "[config]: Fixing permissions for certain folders"
     chmod 777 /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/www/TempDir
 
-    echo "Creating lock file directory for MapGuide Server"
-    # Create lock file directory for Server
-    if [ ! -d /var/lock/mgserver ]; then
-      mkdir /var/lock/mgserver
-    fi
-    echo "Starting httpd"
-    pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/bin
-    ./apachectl start
-    popd
-    echo "Starting tomcat"
+    echo "[config]: Registering Services"
+    ln -s /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin/mapguidectl /etc/init.d/mapguide
+    ln -s /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/bin/apachectl /etc/init.d/apache-mapguide
+    update-rc.d mapguide defaults 35 65
+    update-rc.d apache-mapguide defaults 30 70
+    
+    echo "[install]: Starting httpd"
+    /etc/init.d/apache-mapguide start
+    echo "[install]: Starting tomcat"
     pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/tomcat/bin
     sh ./startup.sh
     popd
-    echo "Starting mgserver"
-    pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin
-    ./mgserverd.sh
-    popd
+    echo "[install]: Starting mgserver"
+    /etc/init.d/mapguide start
     echo "DONE!"
 }
 

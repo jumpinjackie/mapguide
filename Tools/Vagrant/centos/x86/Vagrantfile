@@ -327,6 +327,7 @@ sudo mv ~/fdo_*_unit_test.log /vagrant/build
 sudo mv ~/UnitTestResults_*.xml /vagrant/build
 echo [provision]: Copy install/uninstall scripts to output dir
 sudo cp /vagrant/mginstallcentos.sh /vagrant/build/mginstallcentos.sh
+sudo cp /vagrant/mguninstallcentos.sh /vagrant/build/mguninstallcentos.sh
 sudo sed -i 's/FDOVER_REV=0/FDOVER_REV='"$FDO_REV"'/g' /vagrant/build/mginstallcentos.sh
 sudo sed -i 's/MGVER_REV=0/MGVER_REV='"$MG_REV"'/g' /vagrant/build/mginstallcentos.sh
 if [ ! -d /mapguide_sources/updated ]; then
