@@ -80,9 +80,9 @@ SET PATH=%PATH%;%PARAFFIN%;%NSIS%;%WIX%\bin\;%CD%\..\MgDev\BuildTools\WebTools\7
 rem ==================================================
 rem Web dependencies
 rem ==================================================
-SET HTTPD_VERSION=2.4.9
-SET PHP_VERSION=5.5.11
-SET TOMCAT_VERSION=7.0.42
+SET HTTPD_VERSION=2.4.10
+SET PHP_VERSION=5.5.17
+SET TOMCAT_VERSION=7.0.56
 SET HTTPD_PACKAGE=httpd-%HTTPD_VERSION%-%PLATFORM_CLR%-VC11.zip
 SET TOMCAT_PACKAGE_NAME=apache-tomcat-%TOMCAT_VERSION%
 SET TOMCAT_PACKAGE=%MG_OEM%\LinuxApt\%TOMCAT_PACKAGE_NAME%.tar.gz
