@@ -30,7 +30,7 @@ lib_LTLIBRARIES = libMapGuideJavaApi.la
 
 nodist_libMapGuideJavaApi_la_SOURCES = MgApi_wrap.cpp
 
-AM_CXXFLAGS = @CXXFLAGS@ -fno-strict-aliasing -DJAVA
+AM_CXXFLAGS = @CXXFLAGS@ -fno-strict-aliasing -fno-var-tracking-assignments -DJAVA
 
 libMapGuideJavaApi_la_LIBADD = \
     -lACE \

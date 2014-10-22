@@ -28,7 +28,7 @@ lib_LTLIBRARIES = libphp_MapGuideApi.la
 
 nodist_libphp_MapGuideApi_la_SOURCES = MgApi_wrap.cpp
 
-AM_CXXFLAGS = @CXXFLAGS@ -DPHP -DPHPPROXYAPI_EXPORTS
+AM_CXXFLAGS = @CXXFLAGS@ -fno-var-tracking-assignments -DPHP -DPHPPROXYAPI_EXPORTS
 
 libphp_MapGuideApi_la_LIBADD = \
     -lACE \
