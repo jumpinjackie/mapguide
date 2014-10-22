@@ -72,7 +72,7 @@ AC_ARG_WITH([httpd],
 
 if test $with_httpd = "no"; then
     AC_MSG_NOTICE([Using httpd 2.4.10 from included Oem Directory])
-	httpd_src=`pwd`/Oem/LinuxApt/httpd-2.4.20
+	httpd_src=`pwd`/Oem/LinuxApt/httpd-2.4.10
 else
     AC_MSG_NOTICE([Using custom httpd source directory])
 	httpd_src=$with_httpd
