@@ -1085,7 +1085,6 @@
     <ClInclude Include="..\..\include\cppunit\extensions\TestFactoryRegistry.h" />
     <ClInclude Include="..\..\include\cppunit\extensions\TestFixtureFactory.h" />
     <ClInclude Include="..\..\include\cppunit\extensions\TestNamer.h" />
-    <ClInclude Include="..\..\include\cppunit\extensions\TestSuiteBuilder.h" />
     <ClInclude Include="..\..\include\cppunit\extensions\TestSuiteBuilderContext.h" />
     <ClInclude Include="..\..\include\cppunit\extensions\TestSuiteFactory.h" />
     <ClInclude Include="..\..\include\cppunit\extensions\TypeInfoHelper.h" />

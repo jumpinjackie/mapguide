@@ -361,9 +361,6 @@
     <ClInclude Include="..\..\include\cppunit\extensions\TestNamer.h">
       <Filter>helper</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\cppunit\extensions\TestSuiteBuilder.h">
-      <Filter>helper</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\cppunit\extensions\TestSuiteBuilderContext.h">
       <Filter>helper</Filter>
     </ClInclude>

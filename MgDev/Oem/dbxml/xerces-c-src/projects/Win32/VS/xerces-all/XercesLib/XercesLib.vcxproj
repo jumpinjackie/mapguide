@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -692,7 +692,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\src\xercesc\util\ArrayIndexOutOfBoundsException.hpp" />
-    <ClInclude Include="..\..\..\..\..\src\xercesc\util\AutoSense.hpp" />
     <ClInclude Include="..\..\..\..\..\src\xercesc\util\Base64.hpp" />
     <ClInclude Include="..\..\..\..\..\src\xercesc\util\BaseRefVectorOf.hpp" />
     <ClInclude Include="..\..\..\..\..\src\xercesc\util\BinFileInputStream.hpp" />
@@ -826,7 +825,6 @@ copy "%(RootDir)%(Directory)%(Filename).msvc.hpp" "%(FullPath)"
     <ClInclude Include="..\..\..\..\..\src\xercesc\util\XMLException.hpp" />
     <ClInclude Include="..\..\..\..\..\src\xercesc\util\XMLExceptMsgs.hpp" />
     <ClInclude Include="..\..\..\..\..\src\xercesc\util\XMLFloat.hpp" />
-    <ClInclude Include="..\..\..\..\..\src\xercesc\util\XMLHolder.hpp" />
     <ClInclude Include="..\..\..\..\..\src\xercesc\util\XMLIBM1047Transcoder.hpp" />
     <ClInclude Include="..\..\..\..\..\src\xercesc\util\XMLIBM1140Transcoder.hpp" />
     <ClInclude Include="..\..\..\..\..\src\xercesc\util\XMLInitializer.hpp" />

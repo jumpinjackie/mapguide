@@ -410,9 +410,6 @@
     <ClInclude Include="..\..\..\src\dwf\whiptk\embedded_font.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\dwf\whiptk\endian.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\dwf\whiptk\endofdwf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
