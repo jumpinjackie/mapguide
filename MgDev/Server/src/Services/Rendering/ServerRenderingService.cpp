@@ -414,7 +414,7 @@ MgByteReader* MgServerRenderingService::RenderTileXYZ(MgMap* map,
     baseGroup->SetVisible(true);
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, NULL, roLayers, dr.get(), drawWidth, drawHeight, width, height, tileImageFormat, scale, extent, true, true, false);
+    ret = RenderMapInternal(map, NULL, roLayers, dr.get(), drawWidth, drawHeight, width, height, tileImageFormat, scale, extent, true, true, false, NULL);
 
     // restore the base group's visibility
     baseGroup->SetVisible(groupVisible);
@@ -483,7 +483,7 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
     baseGroup->SetVisible(true);
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, NULL, roLayers, dr.get(), width, height, width, height, format, scale, extent, true, true, false);
+    ret = RenderMapInternal(map, NULL, roLayers, dr.get(), width, height, width, height, format, scale, extent, true, true, false, NULL);
 
     // restore the base group's visibility
     baseGroup->SetVisible(groupVisible);
@@ -666,12 +666,25 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 ///////////////////////////////////////////////////////////////////////////////
 // render complete map around center point in given scale using map's background
 // color and display sizes as default arguments to call the real rendermap method
-// default arg (bKeepSelection = true, bClip = false)
+// default arg (bKeepSelection = true, bClip = false, selectionColor = NULL)
 MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   MgSelection* selection,
                                                   CREFSTRING format,
                                                   bool bKeepSelection,
                                                   bool bClip)
+{
+    return RenderMap(map, selection, format, bKeepSelection, bClip, NULL);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// render complete map around center point in given scale using map's background
+// color and display sizes as default arguments to call the real rendermap method
+MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
+                                                  MgSelection* selection,
+                                                  CREFSTRING format,
+                                                  bool bKeepSelection,
+                                                  bool bClip,
+                                                  MgColor* selectionColor)
 {
     Ptr<MgByteReader> ret;
 
@@ -688,15 +701,14 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     RS_Color col;
     StylizationUtil::ParseColor(map->GetBackgroundColor(), col);
     Ptr<MgColor> bgColor = new MgColor(col.red(), col.green(), col.blue(), col.alpha());
-
+    
     // punt to more specific RenderMap API
-    ret = RenderMap(map, selection, center, scale, map->GetDisplayWidth(), map->GetDisplayHeight(), bgColor, format, bKeepSelection, bClip);
+    ret = RenderMap(map, selection, center, scale, map->GetDisplayWidth(), map->GetDisplayHeight(), bgColor, format, bKeepSelection, bClip, selectionColor);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
     return ret.Detach();
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bKeepSelection = true
@@ -812,7 +824,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     auto_ptr<SE_Renderer> dr(CreateRenderer(drawWidth, drawHeight, bgcolor, false));
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, NULL, dr.get(), drawWidth, drawHeight, width, height, format, scale, b, false, bKeepSelection, true);
+    ret = RenderMapInternal(map, selection, NULL, dr.get(), drawWidth, drawHeight, width, height, format, scale, b, false, bKeepSelection, true, NULL);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
@@ -848,7 +860,22 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   CREFSTRING format,
                                                   bool bKeepSelection)
 {
-    return RenderMap(map, selection, center, scale, width, height, backgroundColor, format, bKeepSelection, false);
+    Ptr<MgColor> selColor = new MgColor(0, 0, 255);
+    return RenderMap(map, selection, center, scale, width, height, backgroundColor, format, bKeepSelection, false, selColor);
+}
+
+MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
+                                                  MgSelection* selection,
+                                                  MgCoordinate* center,
+                                                  double scale,
+                                                  INT32 width,
+                                                  INT32 height,
+                                                  MgColor* backgroundColor,
+                                                  CREFSTRING format,
+                                                  bool bKeepSelection,
+                                                  MgColor* selectionColor)
+{
+    return RenderMap(map, selection, center, scale, width, height, backgroundColor, format, bKeepSelection, false, selectionColor);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -864,7 +891,8 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   bool bKeepSelection,
                                                   ProfileRenderMapResult* pPRMResult)
 {
-    return RenderMap(map, selection, center, scale, width, height, backgroundColor, format, bKeepSelection, false, pPRMResult);
+    Ptr<MgColor> selColor = new MgColor(0, 0, 255);
+    return RenderMap(map, selection, center, scale, width, height, backgroundColor, format, bKeepSelection, false, selColor, pPRMResult);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -881,6 +909,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   CREFSTRING format,
                                                   bool bKeepSelection,
                                                   bool bClip,
+                                                  MgColor* selectionColor,
                                                   ProfileRenderMapResult* pPRMResult)
 {
     Ptr<MgByteReader> ret;
@@ -943,7 +972,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     }
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, NULL, dr.get(), width, height, width, height, format, scale, b, false, bKeepSelection, true, pPRMResult);
+    ret = RenderMapInternal(map, selection, NULL, dr.get(), width, height, width, height, format, scale, b, false, bKeepSelection, true, selectionColor, pPRMResult);
 
     MG_CATCH(L"MgServerRenderingService.RenderMap")
     if (mgException.p)
@@ -1139,10 +1168,12 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           bool expandExtents,
                                                           bool bKeepSelection,
                                                           bool renderWatermark,
+                                                          MgColor* selectionColor,
                                                           ProfileRenderMapResult* pPRMResult)
 {
-    MgRenderingOptions options(format, MgRenderingOptions::RenderSelection |
-        MgRenderingOptions::RenderLayers | (bKeepSelection? MgRenderingOptions::KeepSelection : 0), NULL);
+    MgRenderingOptions options(format, 
+                               MgRenderingOptions::RenderSelection | MgRenderingOptions::RenderLayers | (bKeepSelection? MgRenderingOptions::KeepSelection : 0),
+                               selectionColor);
     return RenderMapInternal(map, selection, roLayers, dr, drawWidth, drawHeight, saveWidth, saveHeight, scale, b, expandExtents, &options, renderWatermark, pPRMResult);
 }
 

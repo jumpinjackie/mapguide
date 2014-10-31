@@ -417,6 +417,58 @@ MgByteReader* MgProxyRenderingService::RenderMap(
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Renders the specified MgMap to the requested image format.
+/// </summary>
+/// <param name="map">Input
+/// map object containing current state of map.
+/// </param>
+/// <param name="selection">Input
+/// map feature selection. Specifies the selected features on the map
+/// </param>
+/// <param name="format">Input
+/// image format. Defines the format of the resulting image
+/// </param>
+/// <param name="bKeepSelection">Input
+/// true if you want to keep the selection
+/// </param>
+/// <param name="bClip">Input
+/// true if you want to clip feature geometry
+/// </param>
+/// <param name="selectionColor">Input
+/// The color to render selections
+/// </param>
+/// <returns>
+/// A byte reader containing the rendered image
+/// </returns>
+MgByteReader* MgProxyRenderingService::RenderMap(
+    MgMap* map,
+    MgSelection* selection,
+    CREFSTRING format,
+    bool bKeepSelection,
+    bool bClip,
+    MgColor* selectionColor)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                          // Connection
+                       MgCommand::knObject,                 // Return type expected
+                       MgRenderingServiceOpId::RenderMap7,  // Command Code
+                       6,                                   // No of arguments
+                       Rendering_Service,                   // Service Id
+                       BUILD_VERSION(3,0,0),                // Operation version
+                       MgCommand::knObject, map,            // Argument#1
+                       MgCommand::knObject, selection,      // Argument#2
+                       MgCommand::knString, &format,        // Argument#3
+                       MgCommand::knInt8, (INT8)bKeepSelection, // Argument#4
+                       MgCommand::knInt8, (INT8)bClip,      // Argument#5
+                       MgCommand::knObject, selectionColor, // Argument#6
+                       MgCommand::knNone);                  // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -629,6 +681,42 @@ MgByteReader* MgProxyRenderingService::RenderMap(
                         MgCommand::knObject, backgroundColor,   // Argument#7
                         MgCommand::knString, &format,           // Argument#8
                         MgCommand::knInt8, (INT8)bKeepSelection,// Argument#9
+                        MgCommand::knNone);                     // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
+MgByteReader* MgProxyRenderingService::RenderMap(
+    MgMap* map,
+    MgSelection* selection,
+    MgCoordinate* center,
+    double scale,
+    INT32 width,
+    INT32 height,
+    MgColor* backgroundColor,
+    CREFSTRING format,
+    bool bKeepSelection,
+    MgColor* selectionColor)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                              // Connection
+                        MgCommand::knObject,                    // Return type expected
+                        MgRenderingServiceOpId::RenderMap6,     // Command Code
+                        10,                                     // No of arguments
+                        Rendering_Service,                      // Service Id
+                        BUILD_VERSION(3,0,0),                   // Operation version
+                        MgCommand::knObject, map,               // Argument#1
+                        MgCommand::knObject, selection,         // Argument#2
+                        MgCommand::knObject, center,            // Argument#3
+                        MgCommand::knDouble, scale,             // Argument#4
+                        MgCommand::knInt32, width,              // Argument#5
+                        MgCommand::knInt32, height,             // Argument#6
+                        MgCommand::knObject, backgroundColor,   // Argument#7
+                        MgCommand::knString, &format,           // Argument#8
+                        MgCommand::knInt8, (INT8)bKeepSelection,// Argument#9
+                        MgCommand::knObject, selectionColor,    // Argument#10
                         MgCommand::knNone);                     // End of arguments
 
     SetWarning(cmd.GetWarningObject());

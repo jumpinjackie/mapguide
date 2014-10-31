@@ -105,6 +105,13 @@ public:
 
     virtual MgByteReader* RenderMap(MgMap* map,
                                     MgSelection* selection,
+                                    CREFSTRING format,
+                                    bool bKeepSelection,
+                                    bool bClip,
+                                    MgColor* selectionColor);
+
+    virtual MgByteReader* RenderMap(MgMap* map,
+                                    MgSelection* selection,
                                     MgEnvelope* extents,
                                     INT32 width,
                                     INT32 height,
@@ -138,6 +145,17 @@ public:
                                     MgColor* backgroundColor,
                                     CREFSTRING format,
                                     bool bKeepSelection);
+
+    virtual MgByteReader* RenderMap(MgMap* map,
+                                    MgSelection* selection,
+                                    MgCoordinate* center,
+                                    double scale,
+                                    INT32 width,
+                                    INT32 height,
+                                    MgColor* backgroundColor,
+                                    CREFSTRING format,
+                                    bool bKeepSelection,
+                                    MgColor* selectionColor);
 
     virtual MgByteReader* RenderMap(MgMap* map,
                                     MgSelection* selection,
@@ -160,6 +178,7 @@ public:
                                     CREFSTRING format,
                                     bool bKeepSelection,
                                     bool bClip,
+                                    MgColor* selectionColor,
                                     ProfileRenderMapResult* pPRMResult = NULL);
 
     virtual MgByteReader* RenderMapLegend(MgMap* map,
@@ -235,6 +254,7 @@ private:
                                     bool expandExtents,
                                     bool bKeepSelection,
                                     bool renderWatermark,
+                                    MgColor* selectionColor,
                                     ProfileRenderMapResult* pPRMResult = NULL);
 
     MgByteReader* RenderMapInternal(MgMap* map,

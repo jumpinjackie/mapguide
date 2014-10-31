@@ -51,6 +51,14 @@ public:
     /// </returns>
     MgRequestClassification GetRequestClassification() { return MgHttpRequestResponseHandler::mrcViewer; }
 
+protected:
+    /// <summary>
+    /// This method is responsible for checking if
+    /// a valid version was given
+    /// </summary>
+    /// <returns>Returns nothing</returns>
+    virtual void ValidateOperationVersion();
+
 private:
     STRING m_mapName;
     STRING m_mapDefinition;

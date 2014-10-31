@@ -344,6 +344,37 @@ EXTERNAL_API:
     /// \param selection
     /// Input
     /// map feature selection. Specifies the selected features on the map
+    /// \param format
+    /// Input
+    /// image format. Defines the format of the resulting image
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to keep the selection
+    /// \param bClip
+    /// Input
+    /// true if you want to clip feature geometry
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
+    virtual MgByteReader* RenderMap(
+        MgMap* map,
+        MgSelection* selection,
+        CREFSTRING format,
+        bool bKeepSelection,
+        bool bClip,
+        MgColor* selectionColor);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders the specified MgMap to the requested image format.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
     /// \param extents
     /// Input
     /// map extents. Specifies the extents for the map
@@ -413,6 +444,56 @@ EXTERNAL_API:
         MgColor* backgroundColor,
         CREFSTRING format,
         bool bKeepSelection);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders the specified MgMap to the requested image format.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
+    /// \param center
+    /// Input
+    /// map center point. Specifies the center point for the map
+    /// \param scale
+    /// Input
+    /// map scale. Specifies the scale for the map
+    /// \param width
+    /// Input
+    /// image width. Specifies the image width in pixels
+    /// \param height
+    /// Input
+    /// image height. Specifies the image height in pixels
+    /// \param backgroundColor
+    /// Input
+    /// background color. Specifies the map background color
+    /// \param format
+    /// Input
+    /// image format. Defines the format of the resulting image
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to keep the selection
+    /// \param selectionColor
+    /// Input
+    /// The color to use for rendered selections
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
+    virtual MgByteReader* RenderMap(
+        MgMap* map,
+        MgSelection* selection,
+        MgCoordinate* center,
+        double scale,
+        INT32 width,
+        INT32 height,
+        MgColor* backgroundColor,
+        CREFSTRING format,
+        bool bKeepSelection,
+        MgColor* selectionColor);
 
     /////////////////////////////////////////////////////////////////
     /// \brief

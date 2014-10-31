@@ -96,6 +96,39 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Processes a GetMapImage request from the Viewer and returns an image of the specified map.
+    ///
+    /// \param map
+    /// Map object to use
+    /// \param selection
+    /// Selection to use
+    /// \param format
+    /// Image format, from MgImageFormats
+    /// \param mapViewCommands
+    /// Commands to be applied to the map before generation
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to keep the selection
+    /// \param bClip
+    /// Input
+    /// true if you want to clip the feature geometry
+    /// \param selectionColor
+    /// The color to render selections with
+    ///
+    /// \return
+    /// A byte reader containing the map image
+    ///
+    MgByteReader* GetMapImage(
+        MgMap* map,
+        MgSelection* selection,
+        CREFSTRING format,
+        MgPropertyCollection* mapViewCommands,
+        bool bKeepSelection,
+        bool bClip,
+        MgColor* selectionColor);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Processes a GetVisibleMapExtent request from the Viewer and returns info the specified map.
     ///
     /// \param mapName

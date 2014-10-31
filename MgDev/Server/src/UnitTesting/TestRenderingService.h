@@ -42,6 +42,7 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderDynamicOverlayPNG);
     CPPUNIT_TEST(TestCase_RenderDynamicOverlayTiledMapPNG);
     CPPUNIT_TEST(TestCase_RenderMapPNG);
+    CPPUNIT_TEST(TestCase_RenderMapWithSelectionPNG);
     CPPUNIT_TEST(TestCase_RenderMapWithWatermarkPNG);
     CPPUNIT_TEST(TestCase_RenderLegendPNG);
     CPPUNIT_TEST(TestCase_RenderLegendEmptyGroupsPNG);
@@ -70,6 +71,7 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderDynamicOverlayPNG8);
     CPPUNIT_TEST(TestCase_RenderDynamicOverlayTiledMapPNG8);
     CPPUNIT_TEST(TestCase_RenderMapPNG8);
+    CPPUNIT_TEST(TestCase_RenderMapWithSelectionPNG8);
     CPPUNIT_TEST(TestCase_RenderMapWithWatermarkPNG8);
     CPPUNIT_TEST(TestCase_RenderLegendPNG8);
     CPPUNIT_TEST(TestCase_RenderLegendEmptyGroupsPNG8);
@@ -98,6 +100,7 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderDynamicOverlayGIF);
     CPPUNIT_TEST(TestCase_RenderDynamicOverlayTiledMapGIF);
     CPPUNIT_TEST(TestCase_RenderMapGIF);
+    CPPUNIT_TEST(TestCase_RenderMapWithSelectionGIF);
     CPPUNIT_TEST(TestCase_RenderMapWithWatermarkGIF);
     CPPUNIT_TEST(TestCase_RenderLegendGIF);
     CPPUNIT_TEST(TestCase_RenderLegendEmptyGroupsGIF);
@@ -126,6 +129,7 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderDynamicOverlayJPG);
     CPPUNIT_TEST(TestCase_RenderDynamicOverlayTiledMapJPG);
     CPPUNIT_TEST(TestCase_RenderMapJPG);
+    CPPUNIT_TEST(TestCase_RenderMapWithSelectionJPG);
     CPPUNIT_TEST(TestCase_RenderMapWithWatermarkJPG);
     CPPUNIT_TEST(TestCase_RenderLegendJPG);
     CPPUNIT_TEST(TestCase_RenderLegendEmptyGroupsJPG);
@@ -164,6 +168,7 @@ public:
     void TestCase_RenderDynamicOverlay(CREFSTRING imageFormat, CREFSTRING extension);
     void TestCase_RenderDynamicOverlayTiledMap(CREFSTRING imageFormat, CREFSTRING extension);
     void TestCase_RenderMap(CREFSTRING imageFormat, CREFSTRING extension);
+    void TestCase_RenderMapWithSelection(CREFSTRING imageFormat, CREFSTRING extension);
     void TestCase_RenderMapWithWatermark(CREFSTRING imageFormat, CREFSTRING extension);
     void TestCase_RenderLegend(CREFSTRING imageFormat, CREFSTRING extension);
     void TestCase_RenderLegendEmptyGroups(CREFSTRING imageFormat, CREFSTRING extension);
@@ -192,6 +197,7 @@ public:
     void TestCase_RenderDynamicOverlayPNG() { TestCase_RenderDynamicOverlay(L"PNG", L"png"); }
     void TestCase_RenderDynamicOverlayTiledMapPNG() { TestCase_RenderDynamicOverlayTiledMap(L"PNG", L"png"); }
     void TestCase_RenderMapPNG() { TestCase_RenderMap(L"PNG", L"png"); }
+    void TestCase_RenderMapWithSelectionPNG() { TestCase_RenderMapWithSelection(L"PNG", L"png"); }
     void TestCase_RenderMapWithWatermarkPNG() { TestCase_RenderMapWithWatermark(L"PNG", L"png"); }
     void TestCase_RenderLegendPNG() { TestCase_RenderLegend(L"PNG", L"png"); }
     void TestCase_RenderLegendEmptyGroupsPNG() { TestCase_RenderLegendEmptyGroups(L"PNG", L"png"); }
@@ -218,6 +224,7 @@ public:
     void TestCase_RenderDynamicOverlayPNG8() { TestCase_RenderDynamicOverlay(L"PNG8", L"png"); }
     void TestCase_RenderDynamicOverlayTiledMapPNG8() { TestCase_RenderDynamicOverlayTiledMap(L"PNG8", L"png"); }
     void TestCase_RenderMapPNG8() { TestCase_RenderMap(L"PNG8", L"png"); }
+    void TestCase_RenderMapWithSelectionPNG8() { TestCase_RenderMapWithSelection(L"PNG8", L"png"); }
     void TestCase_RenderMapWithWatermarkPNG8() { TestCase_RenderMapWithWatermark(L"PNG8", L"png"); }
     void TestCase_RenderLegendPNG8() { TestCase_RenderLegend(L"PNG8", L"png"); }
     void TestCase_RenderLegendEmptyGroupsPNG8() { TestCase_RenderLegendEmptyGroups(L"PNG8", L"png"); }
@@ -244,6 +251,7 @@ public:
     void TestCase_RenderDynamicOverlayGIF() { TestCase_RenderDynamicOverlay(L"GIF", L"gif"); }
     void TestCase_RenderDynamicOverlayTiledMapGIF() { TestCase_RenderDynamicOverlayTiledMap(L"GIF", L"gif"); }
     void TestCase_RenderMapGIF() { TestCase_RenderMap(L"GIF", L"gif"); }
+    void TestCase_RenderMapWithSelectionGIF() { TestCase_RenderMapWithSelection(L"GIF", L"gif"); }
     void TestCase_RenderMapWithWatermarkGIF() { TestCase_RenderMapWithWatermark(L"GIF", L"gif"); }
     void TestCase_RenderLegendGIF() { TestCase_RenderLegend(L"GIF", L"gif"); }
     void TestCase_RenderLegendEmptyGroupsGIF() { TestCase_RenderLegendEmptyGroups(L"GIF", L"gif"); }
@@ -270,6 +278,7 @@ public:
     void TestCase_RenderDynamicOverlayJPG() { TestCase_RenderDynamicOverlay(L"JPG", L"jpg"); }
     void TestCase_RenderDynamicOverlayTiledMapJPG() { TestCase_RenderDynamicOverlayTiledMap(L"JPG", L"jpg"); }
     void TestCase_RenderMapJPG() { TestCase_RenderMap(L"JPG", L"jpg"); }
+    void TestCase_RenderMapWithSelectionJPG() { TestCase_RenderMapWithSelection(L"JPG", L"jpg"); }
     void TestCase_RenderMapWithWatermarkJPG() { TestCase_RenderMapWithWatermark(L"JPG", L"jpg"); }
     void TestCase_RenderLegendJPG() { TestCase_RenderLegend(L"JPG", L"jpg"); }
     void TestCase_RenderLegendEmptyGroupsJPG() { TestCase_RenderLegendEmptyGroups(L"JPG", L"jpg"); }

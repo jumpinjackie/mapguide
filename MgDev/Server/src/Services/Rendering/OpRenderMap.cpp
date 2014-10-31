@@ -169,6 +169,68 @@ void MgOpRenderMap::Execute()
 
         EndExecution(byteReader);
     }
+    else if (6 == m_packet.m_NumArguments)
+    {
+        Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
+        Ptr<MgSelection> selection = (MgSelection*)m_stream->GetObject();
+        if(selection)
+            selection->SetMap(map);
+
+        Ptr<MgEnvelope> env = map->GetDataExtent();
+        Ptr<MgCoordinate> ll = env->GetLowerLeftCoordinate();
+        Ptr<MgCoordinate> ur = env->GetUpperRightCoordinate();
+
+        STRING format;
+        m_stream->GetString(format);
+
+        bool bKeepSelection = false;
+        m_stream->GetBoolean(bKeepSelection);
+
+        bool bClip = false;
+        m_stream->GetBoolean(bClip);
+
+        Ptr<MgColor> selColor = (MgColor*)m_stream->GetObject();
+
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bClip);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+         // [(llx lly) (urx ury)]
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" [");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START()
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ll->GetX());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ll->GetY());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ur->GetX());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ur->GetY());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"] ");
+
+        Validate();
+
+        Ptr<MgByteReader> byteReader =
+            m_service->RenderMap(map, selection, format, bKeepSelection, bClip, selColor);
+
+        EndExecution(byteReader);
+    }
     else if (8 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
@@ -342,39 +404,77 @@ void MgOpRenderMap::Execute()
         bool bKeepSelection = false;
         m_stream->GetBoolean(bKeepSelection);
 
-        auto_ptr<ProfileRenderMapResult> pProfileRenderMapResult;
-        pProfileRenderMapResult.reset((ProfileRenderMapResult*)m_stream->GetObject());
+        if (m_packet.m_OperationVersion == MG_API_VERSION(3, 0, 0)) //10th arg here is selection color
+        {
+            Ptr<MgColor> selColor = (MgColor*)m_stream->GetObject();
 
-        BeginExecution();
+            BeginExecution();
 
-        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgCoordinate");
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(scale);
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_INT32(width);
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_INT32(height);
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgColor");
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"ProfileRenderMapResult");
-        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+            MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgCoordinate");
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(scale);
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_INT32(width);
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_INT32(height);
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgColor");
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgColor");
+            MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Validate();
+            Validate();
 
-        Ptr<MgByteReader> byteReader =
-            m_service->RenderMap(map, selection, center, scale, width, height, color, format, bKeepSelection, pProfileRenderMapResult.get());
+            Ptr<MgByteReader> byteReader =
+                m_service->RenderMap(map, selection, center, scale, width, height, color, format, bKeepSelection, selColor);
 
-        EndExecution(byteReader);
+            EndExecution(byteReader);
+        }
+        else
+        {
+            auto_ptr<ProfileRenderMapResult> pProfileRenderMapResult;
+            pProfileRenderMapResult.reset((ProfileRenderMapResult*)m_stream->GetObject());
+
+            BeginExecution();
+
+            MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgCoordinate");
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(scale);
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_INT32(width);
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_INT32(height);
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgColor");
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"ProfileRenderMapResult");
+            MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+            Validate();
+
+            Ptr<MgByteReader> byteReader =
+                m_service->RenderMap(map, selection, center, scale, width, height, color, format, bKeepSelection, pProfileRenderMapResult.get());
+
+            EndExecution(byteReader);
+        }
     }
     else
     {

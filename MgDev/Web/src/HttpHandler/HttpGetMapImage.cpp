@@ -111,7 +111,20 @@ void MgHttpGetMapImage::Execute(MgHttpResponse& hResponse)
 
     // Call the HTML controller to render the map image
     MgHtmlController controller(m_siteConn);
-    Ptr<MgByteReader> reader = controller.GetMapImage(map, selection, m_mapFormat, commands, m_bKeepSelection, m_bClip);
+
+    // v3.0 supports a selection color parameter
+    Ptr<MgColor> selColor;
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version == MG_API_VERSION(3,0,0))
+    {
+        STRING strSelColor = params->GetParameterValue(MgHttpResourceStrings::reqRenderingSelectionColor);
+        if (!strSelColor.empty())
+        {
+            selColor = new MgColor(strSelColor);
+        }
+    }
+
+    Ptr<MgByteReader> reader = controller.GetMapImage(map, selection, m_mapFormat, commands, m_bKeepSelection, m_bClip, selColor);
 
     // If we opened the map from the repository then save it back to ensure
     // any track changes are removed from the persisted version, since these
@@ -123,4 +136,25 @@ void MgHttpGetMapImage::Execute(MgHttpResponse& hResponse)
     hResult->SetResultObject(reader, reader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetMapImage.Execute")
+}
+
+/// <summary>
+/// This method is responsible for checking if
+/// a valid version was given
+/// </summary>
+/// <returns>Returns nothing</returns>
+void MgHttpGetMapImage::ValidateOperationVersion()
+{
+    MG_HTTP_HANDLER_TRY()
+
+    // There are multiple supported versions
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version != MG_API_VERSION(1,0,0) &&
+        version != MG_API_VERSION(3,0,0))
+    {
+        throw new MgInvalidOperationVersionException(
+        L"MgHttpGetMapImage.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    MG_HTTP_HANDLER_CATCH_AND_THROW(L"MgHttpGetMapImage.ValidateOperationVersion");
 }
