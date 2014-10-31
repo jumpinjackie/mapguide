@@ -324,6 +324,10 @@ then
     cd $SCRIPT_ROOT/fdo_build_area/Providers/GDAL/Src/UnitTest
     sudo -E ./UnitTest 2>&1 | tee ~/fdo_gdal_unit_test.log
     check_test
+    BUILD_COMPONENT="Unit Test OGR Provider"
+    cd $SCRIPT_ROOT/fdo_build_area/Providers/OGR/Src/UnitTest
+    sudo -E ./UnitTest 2>&1 | tee ~/fdo_ogr_unit_test.log
+    check_test
     BUILD_COMPONENT="Unit Test WMS Provider"
     cd $SCRIPT_ROOT/fdo_build_area/Providers/WMS/Src/UnitTest
     sudo -E ./UnitTest 2>&1 | tee ~/fdo_wms_unit_test.log
