@@ -200,6 +200,7 @@
   <ItemGroup>
     <ClInclude Include="CppUnitExtensions.h" />
     <ClInclude Include="TestCoordinateSystem.h" />
+    <ClInclude Include="TestDrawingService.h" />
     <ClInclude Include="TestFeatureService.h" />
     <ClInclude Include="TestGeometry.h" />
     <ClInclude Include="TestKmlService.h" />
@@ -223,6 +224,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestCoordinateSystem.cpp" />
+    <ClCompile Include="TestDrawingService.cpp" />
     <ClCompile Include="TestFeatureService.cpp" />
     <ClCompile Include="TestGeometry.cpp" />
     <ClCompile Include="TestKmlService.cpp" />

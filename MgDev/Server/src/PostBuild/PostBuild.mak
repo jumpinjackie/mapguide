@@ -212,6 +212,10 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\World.mgp \
         ..\..\bin\UnitTestFiles\World_Countries.sdf \
         ..\..\bin\UnitTestFiles\Shuttle.zip \
+        ..\..\bin\UnitTestFiles\test.dwf \
+        ..\..\bin\UnitTestFiles\SpaceShip.dwf \
+        ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml \
+        ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml \
         ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource \
         ..\..\bin\UnitTestFiles\Redding_Parcels.shp \
         ..\..\bin\UnitTestFiles\Redding_Parcels.dbf \
@@ -484,6 +488,10 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\World.mgp \
         ..\..\bin\UnitTestFiles\World_Countries.sdf \
         ..\..\bin\UnitTestFiles\Shuttle.zip \
+        ..\..\bin\UnitTestFiles\test.dwf \
+        ..\..\bin\UnitTestFiles\SpaceShip.dwf \
+        ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml \
+        ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml \
         ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource \
         ..\..\bin\UnitTestFiles\Redding_Parcels.shp \
         ..\..\bin\UnitTestFiles\Redding_Parcels.dbf \
@@ -756,6 +764,10 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\World.mgp \
           ..\..\bin\UnitTestFiles\World_Countries.sdf \
           ..\..\bin\UnitTestFiles\Shuttle.zip \
+          ..\..\bin\UnitTestFiles\test.dwf \
+          ..\..\bin\UnitTestFiles\SpaceShip.dwf \
+          ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml \
+          ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml \
           ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource \
           ..\..\bin\UnitTestFiles\Redding_Parcels.shp \
           ..\..\bin\UnitTestFiles\Redding_Parcels.dbf \
@@ -1028,6 +1040,10 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\World.mgp \
           ..\..\bin\UnitTestFiles\World_Countries.sdf \
           ..\..\bin\UnitTestFiles\Shuttle.zip \
+          ..\..\bin\UnitTestFiles\test.dwf \
+          ..\..\bin\UnitTestFiles\SpaceShip.dwf \
+          ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml \
+          ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml \
           ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource \
           ..\..\bin\UnitTestFiles\Redding_Parcels.shp \
           ..\..\bin\UnitTestFiles\Redding_Parcels.dbf \
@@ -1173,6 +1189,10 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
     if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
     if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
+    if EXIST ..\..\bin\UnitTestFiles\test.dwf                       del /F ..\..\bin\UnitTestFiles\test.dwf
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShip.dwf                  del /F ..\..\bin\UnitTestFiles\SpaceShip.dwf
+    if EXIST ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml      del /F ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml     del /F ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource  del /F ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shp            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shp
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.dbf            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.dbf
@@ -1313,6 +1333,10 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
     if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
     if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
+    if EXIST ..\..\bin\UnitTestFiles\test.dwf                       del /F ..\..\bin\UnitTestFiles\test.dwf
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShip.dwf                  del /F ..\..\bin\UnitTestFiles\SpaceShip.dwf
+    if EXIST ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml      del /F ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml     del /F ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource  del /F ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shp            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shp
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.dbf            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.dbf
@@ -1453,6 +1477,10 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
     if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
     if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
+    if EXIST ..\..\bin\UnitTestFiles\test.dwf                       del /F ..\..\bin\UnitTestFiles\test.dwf
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShip.dwf                  del /F ..\..\bin\UnitTestFiles\SpaceShip.dwf
+    if EXIST ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml      del /F ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml     del /F ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource  del /F ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shp            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shp
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.dbf            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.dbf
@@ -1591,6 +1619,10 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
     if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
     if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
+    if EXIST ..\..\bin\UnitTestFiles\test.dwf                       del /F ..\..\bin\UnitTestFiles\test.dwf
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShip.dwf                  del /F ..\..\bin\UnitTestFiles\SpaceShip.dwf
+    if EXIST ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml      del /F ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml     del /F ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource  del /F ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shp            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shp
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.dbf            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.dbf
@@ -1849,6 +1881,10 @@ debug(v100) : ..\..\bin\debug(v100)\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\World.mgp \
         ..\..\bin\UnitTestFiles\World_Countries.sdf \
         ..\..\bin\UnitTestFiles\Shuttle.zip \
+        ..\..\bin\UnitTestFiles\test.dwf \
+        ..\..\bin\UnitTestFiles\SpaceShip.dwf \
+        ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml \
+        ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml \
         ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource \
         ..\..\bin\UnitTestFiles\Redding_Parcels.shp \
         ..\..\bin\UnitTestFiles\Redding_Parcels.dbf \
@@ -2114,6 +2150,10 @@ debug(v100)64 : ..\..\bin\debug(v100)64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\World.mgp \
         ..\..\bin\UnitTestFiles\World_Countries.sdf \
         ..\..\bin\UnitTestFiles\Shuttle.zip \
+        ..\..\bin\UnitTestFiles\test.dwf \
+        ..\..\bin\UnitTestFiles\SpaceShip.dwf \
+        ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml \
+        ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml \
         ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource \
         ..\..\bin\UnitTestFiles\Redding_Parcels.shp \
         ..\..\bin\UnitTestFiles\Redding_Parcels.dbf \
@@ -2379,6 +2419,10 @@ release(v100) : ..\..\bin\release(v100)\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\World.mgp \
           ..\..\bin\UnitTestFiles\World_Countries.sdf \
           ..\..\bin\UnitTestFiles\Shuttle.zip \
+          ..\..\bin\UnitTestFiles\test.dwf \
+          ..\..\bin\UnitTestFiles\SpaceShip.dwf \
+          ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml \
+          ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml \
           ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource \
           ..\..\bin\UnitTestFiles\Redding_Parcels.shp \
           ..\..\bin\UnitTestFiles\Redding_Parcels.dbf \
@@ -2644,6 +2688,10 @@ release(v100)64 : ..\..\bin\release(v100)64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\World.mgp \
           ..\..\bin\UnitTestFiles\World_Countries.sdf \
           ..\..\bin\UnitTestFiles\Shuttle.zip \
+          ..\..\bin\UnitTestFiles\test.dwf \
+          ..\..\bin\UnitTestFiles\SpaceShip.dwf \
+          ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml \
+          ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml \
           ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource \
           ..\..\bin\UnitTestFiles\Redding_Parcels.shp \
           ..\..\bin\UnitTestFiles\Redding_Parcels.dbf \
@@ -2782,6 +2830,10 @@ cleandebug(v100):
     if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
     if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
     if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
+    if EXIST ..\..\bin\UnitTestFiles\test.dwf                       del /F ..\..\bin\UnitTestFiles\test.dwf
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShip.dwf                  del /F ..\..\bin\UnitTestFiles\SpaceShip.dwf
+    if EXIST ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml      del /F ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml     del /F ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource  del /F ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shp            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shp
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.dbf            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.dbf
@@ -2915,6 +2967,10 @@ cleandebug(v100)64:
     if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
     if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
     if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
+    if EXIST ..\..\bin\UnitTestFiles\test.dwf                       del /F ..\..\bin\UnitTestFiles\test.dwf
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShip.dwf                  del /F ..\..\bin\UnitTestFiles\SpaceShip.dwf
+    if EXIST ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml      del /F ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml     del /F ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource  del /F ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shp            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shp
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.dbf            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.dbf
@@ -3048,6 +3104,10 @@ cleanrelease(v100):
     if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
     if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
     if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
+    if EXIST ..\..\bin\UnitTestFiles\test.dwf                       del /F ..\..\bin\UnitTestFiles\test.dwf
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShip.dwf                  del /F ..\..\bin\UnitTestFiles\SpaceShip.dwf
+    if EXIST ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml      del /F ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml     del /F ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource  del /F ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shp            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shp
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.dbf            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.dbf
@@ -3179,6 +3239,10 @@ cleanrelease(v100)64:
     if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
     if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
     if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
+    if EXIST ..\..\bin\UnitTestFiles\test.dwf                       del /F ..\..\bin\UnitTestFiles\test.dwf
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShip.dwf                  del /F ..\..\bin\UnitTestFiles\SpaceShip.dwf
+    if EXIST ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml      del /F ..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml
+    if EXIST ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml     del /F ..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource  del /F ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shp            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shp
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.dbf            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.dbf
@@ -3235,6 +3299,10 @@ cleanrelease(v100)64:
 "..\..\..\UnitTest\TestData\ResourceService\SampleRepositoryHeader.xml" :
 "..\..\..\UnitTest\TestData\ResourceService\SampleRepositoryContent.xml" :
 "..\..\..\UnitTest\TestData\ResourceService\Shuttle.zip" :
+"..\..\..\UnitTest\TestData\DrawingService\test.dwf" :
+"..\..\..\UnitTest\TestData\DrawingService\SpaceShip.dwf" :
+"..\..\..\UnitTest\TestData\DrawingService\MapGuideDrawingSource.xml" :
+"..\..\..\UnitTest\TestData\DrawingService\SpaceShipDrawingSource.xml" :
 "..\..\..\UnitTest\TestData\ResourceService\World_Countries.sdf" :
 "..\..\..\UnitTest\TestData\ResourceService\TEST.LayerDefinition" :
 "..\..\..\UnitTest\TestData\FeatureService\SDF\TEST.FeatureSource" :
@@ -3349,6 +3417,22 @@ cleanrelease(v100)64:
 ..\..\bin\UnitTestFiles\Shuttle.zip : "..\..\..\UnitTest\TestData\ResourceService\Shuttle.zip"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\ResourceService\Shuttle.zip" xcopy /r /d /y "..\..\..\UnitTest\TestData\ResourceService\Shuttle.zip" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\test.dwf : "..\..\..\UnitTest\TestData\DrawingService\test.dwf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\DrawingService\test.dwf" xcopy /r /d /y "..\..\..\UnitTest\TestData\DrawingService\test.dwf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\SpaceShip.dwf : "..\..\..\UnitTest\TestData\DrawingService\SpaceShip.dwf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\DrawingService\SpaceShip.dwf" xcopy /r /d /y "..\..\..\UnitTest\TestData\DrawingService\SpaceShip.dwf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\MapGuideDrawingSource.xml : "..\..\..\UnitTest\TestData\DrawingService\MapGuideDrawingSource.xml"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\DrawingService\MapGuideDrawingSource.xml" xcopy /r /d /y "..\..\..\UnitTest\TestData\DrawingService\MapGuideDrawingSource.xml" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\SpaceShipDrawingSource.xml : "..\..\..\UnitTest\TestData\DrawingService\SpaceShipDrawingSource.xml"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\DrawingService\SpaceShipDrawingSource.xml" xcopy /r /d /y "..\..\..\UnitTest\TestData\DrawingService\SpaceShipDrawingSource.xml" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\World.mgp : "..\..\..\UnitTest\TestData\ResourceService\Shuttle.zip"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles

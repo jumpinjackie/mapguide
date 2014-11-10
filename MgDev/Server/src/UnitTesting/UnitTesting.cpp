@@ -47,6 +47,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests - Excluding Performance. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestCoordinateSystem").makeTest());
 #endif
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestDrawingService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestFeatureService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestGeometry").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestLogManager").makeTest());
@@ -68,6 +69,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_TEXT("AllExceptCoordSys")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests - Excluding Performance and CoordinateSystem. <<<<<\n\n")));
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestDrawingService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestFeatureService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestGeometry").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestLogManager").makeTest());
@@ -99,6 +101,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
 #endif
             ACE_OS::printf("  AllExceptCoordSys\n");
             ACE_OS::printf("  CoordinateSystem\n");
+            ACE_OS::printf("  DrawingService\n");
             ACE_OS::printf("  FeatureService\n");
             ACE_OS::printf("  Geometry\n");
             ACE_OS::printf("  KmlService\n");
@@ -125,6 +128,11 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Coordinate System tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestCoordinateSystem").makeTest());
+        }
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_TEXT("DrawingService")) == 0)
+        {
+            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Drawing Service tests. <<<<<\n\n")));
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestDrawingService").makeTest());
         }
         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_TEXT("FeatureService")) == 0)
         {
