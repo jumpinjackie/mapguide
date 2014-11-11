@@ -31,6 +31,7 @@ check_LTLIBRARIES = libMgUnitTesting.la
 
 libMgUnitTesting_la_SOURCES = \
   TestCoordinateSystem.cpp \
+  TestDrawingService.cpp \
   TestFeatureService.cpp \
   TestGeometry.cpp\
   TestKmlService.cpp \
