@@ -58,7 +58,7 @@ MgService* MgController::GetService(INT32 serviceType)
 //////////////////////////////////////////////////////////////////
 // Apply the specified set of commands to the map.
 //
-void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapViewCommands)
+void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapViewCommands, bool layersAndGroupsAreIds)
 {
     if(mapViewCommands == NULL)
         return;
@@ -265,7 +265,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
                 __LINE__, __WFILE__, &arguments, L"MgInvalidPropertyTypeForCommand", NULL);
         }
 
-        ShowLayers(map, ((MgStringProperty*)((MgProperty*)val))->GetValue(), true);
+        ShowLayers(map, ((MgStringProperty*)((MgProperty*)val))->GetValue(), true, layersAndGroupsAreIds);
     }
 
     //Hide layers
@@ -285,7 +285,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
                 __LINE__, __WFILE__, &arguments, L"MgInvalidPropertyTypeForCommand", NULL);
         }
 
-        ShowLayers(map, ((MgStringProperty*)((MgProperty*)val))->GetValue(), false);
+        ShowLayers(map, ((MgStringProperty*)((MgProperty*)val))->GetValue(), false, layersAndGroupsAreIds);
     }
 
     //Show groups
@@ -305,7 +305,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
                 __LINE__, __WFILE__, &arguments, L"MgInvalidPropertyTypeForCommand", NULL);
         }
 
-        ShowGroups(map, ((MgStringProperty*)((MgProperty*)val))->GetValue(), true);
+        ShowGroups(map, ((MgStringProperty*)((MgProperty*)val))->GetValue(), true, layersAndGroupsAreIds);
     }
 
     //Hide groups
@@ -325,7 +325,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
                 __LINE__, __WFILE__, &arguments, L"MgInvalidPropertyTypeForCommand", NULL);
         }
 
-        ShowGroups(map, ((MgStringProperty*)((MgProperty*)val))->GetValue(), false);
+        ShowGroups(map, ((MgStringProperty*)((MgProperty*)val))->GetValue(), false, layersAndGroupsAreIds);
     }
 
     //Refresh layers - applies only to DwfController
@@ -334,7 +334,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
 //////////////////////////////////////////////////////////////////
 // Show or Hide a set of layers in the specified map.
 //
-void MgController::ShowLayers(MgMap* map, CREFSTRING strLayers, bool show)
+void MgController::ShowLayers(MgMap* map, CREFSTRING strLayers, bool show, bool layersAndGroupsAreIds)
 {
     Ptr<MgStringCollection> layerIds = MgStringCollection::ParseCollection(strLayers, L",");
     if(layerIds != NULL && layerIds->GetCount() > 0)
@@ -342,18 +342,30 @@ void MgController::ShowLayers(MgMap* map, CREFSTRING strLayers, bool show)
         Ptr<MgLayerCollection> layers = map->GetLayers();
         for(INT32 index = 0; index < layerIds->GetCount(); index++)
         {
-            Ptr<MgLayer> layer;
+            Ptr<MgLayerBase> layer;
             STRING id = layerIds->GetItem(index);
-
-            for(INT32 li = 0; li < layers->GetCount(); li++)
+            if (layersAndGroupsAreIds)
             {
-                layer = (MgLayer*)layers->GetItem(li);
-                if(!layer->GetObjectId().compare(id))
+                for(INT32 li = 0; li < layers->GetCount(); li++)
                 {
-                    if (layer->GetLayerType() != MgLayerType::BaseMap)
-                        layer->SetVisible(show);
+                    layer = layers->GetItem(li);
+                    if(!layer->GetObjectId().compare(id))
+                    {
+                        if (layer->GetLayerType() != MgLayerType::BaseMap)
+                            layer->SetVisible(show);
 
-                    break;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                //id is a name in this case
+                INT32 li = layers->IndexOf(id);
+                if (li >= 0)
+                {
+                    layer = layers->GetItem(li);
+                    layer->SetVisible(show);
                 }
             }
         }
@@ -363,7 +375,7 @@ void MgController::ShowLayers(MgMap* map, CREFSTRING strLayers, bool show)
 //////////////////////////////////////////////////////////////////
 // Show or Hide a set of groups in the specified map.
 //
-void MgController::ShowGroups(MgMap* map, CREFSTRING strGroups, bool show)
+void MgController::ShowGroups(MgMap* map, CREFSTRING strGroups, bool show, bool layersAndGroupsAreIds)
 {
     Ptr<MgStringCollection> groupIds = MgStringCollection::ParseCollection(strGroups, L",");
     if(groupIds != NULL && groupIds->GetCount() > 0)
@@ -373,14 +385,26 @@ void MgController::ShowGroups(MgMap* map, CREFSTRING strGroups, bool show)
         {
             Ptr<MgLayerGroup> group;
             STRING id = groupIds->GetItem(index);
-
-            for(INT32 gi = 0; gi < groups->GetCount(); gi++)
+            if (layersAndGroupsAreIds)
             {
-                group = (MgLayerGroup*)groups->GetItem(gi);
-                if(!group->GetObjectId().compare(id))
+                for(INT32 gi = 0; gi < groups->GetCount(); gi++)
                 {
+                    group = (MgLayerGroup*)groups->GetItem(gi);
+                    if(!group->GetObjectId().compare(id))
+                    {
+                        group->SetVisible(show);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                //id is a name in this case
+                INT32 gi = groups->IndexOf(id);
+                if (gi >= 0)
+                {
+                    group = groups->GetItem(gi);
                     group->SetVisible(show);
-                    break;
                 }
             }
         }

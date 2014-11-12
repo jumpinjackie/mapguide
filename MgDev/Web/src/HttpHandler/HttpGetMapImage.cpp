@@ -88,6 +88,7 @@ void MgHttpGetMapImage::Execute(MgHttpResponse& hResponse)
     // Create MgMap and selection
     Ptr<MgMap> map = new MgMap();
     Ptr<MgSelection> selection;
+    bool bLayersAndGroupsAreIds = true;
     if (!m_mapName.empty() && !sessionId.empty())
     {
         openedMap = true;
@@ -104,6 +105,7 @@ void MgHttpGetMapImage::Execute(MgHttpResponse& hResponse)
         map->Create(resourceService, resId, resId->GetName());
 
         // No selection in this case
+        bLayersAndGroupsAreIds = false;
     }
 
     // Get the commands
@@ -124,7 +126,7 @@ void MgHttpGetMapImage::Execute(MgHttpResponse& hResponse)
         }
     }
 
-    Ptr<MgByteReader> reader = controller.GetMapImage(map, selection, m_mapFormat, commands, m_bKeepSelection, m_bClip, selColor);
+    Ptr<MgByteReader> reader = controller.GetMapImage(map, selection, m_mapFormat, commands, m_bKeepSelection, m_bClip, selColor, bLayersAndGroupsAreIds);
 
     // If we opened the map from the repository then save it back to ensure
     // any track changes are removed from the persisted version, since these

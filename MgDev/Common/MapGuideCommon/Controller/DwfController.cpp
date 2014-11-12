@@ -78,7 +78,7 @@ void MgDwfController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* map
         return;
 
     //apply commands common to both type of viewers
-    MgController::ApplyMapViewCommands(map, mapViewCommands);
+    MgController::ApplyMapViewCommands(map, mapViewCommands, true);
 
     //apply commands specific to ADV
     Ptr<MgProperty> val;

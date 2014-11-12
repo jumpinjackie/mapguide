@@ -83,19 +83,19 @@ protected:
     /// \brief
     /// Apply the specified set of commands to a map view.
     ///
-    virtual void ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapViewCommands);
+    virtual void ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapViewCommands, bool layersAndGroupsAreIds);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Show or Hide a set of layers in the specified map.
     ///
-    void ShowLayers(MgMap* map, CREFSTRING strLayers, bool show);
+    void ShowLayers(MgMap* map, CREFSTRING strLayers, bool show, bool layersAndGroupsAreIds);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Show or Hide a set of groups in the specified map.
     ///
-    void ShowGroups(MgMap* map, CREFSTRING strGroups, bool show);
+    void ShowGroups(MgMap* map, CREFSTRING strGroups, bool show, bool layersAndGroupsAreIds);
 
     //////////////////////////////////////////////////////////////////
     /// \brief

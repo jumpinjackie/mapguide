@@ -60,7 +60,7 @@ MgByteReader* MgHtmlController::GetDynamicMapOverlayImage(CREFSTRING mapName, Mg
     selection->Open(resourceService, mapName);
 
     // Apply map view commands
-    ApplyMapViewCommands(map, mapViewCommands);
+    ApplyMapViewCommands(map, mapViewCommands, true);
 
     // Make sure we clear any track changes - these are not applicable for AJAX.
     map->ClearChanges();
@@ -81,17 +81,17 @@ MgByteReader* MgHtmlController::GetDynamicMapOverlayImage(CREFSTRING mapName, Mg
 MgByteReader* MgHtmlController::GetMapImage(MgMap* map, MgSelection* selection,
     CREFSTRING format, MgPropertyCollection* mapViewCommands, bool bKeepSelection, bool bClip)
 {
-    return GetMapImage(map, selection, format, mapViewCommands, bKeepSelection, bClip, NULL);
+    return GetMapImage(map, selection, format, mapViewCommands, bKeepSelection, bClip, NULL, true);
 }
 
 //////////////////////////////////////////////////////////////////
 // Processes a GetMapImage request from the Viewer and returns an image of the specified map.
 //
 MgByteReader* MgHtmlController::GetMapImage(MgMap* map, MgSelection* selection,
-    CREFSTRING format, MgPropertyCollection* mapViewCommands, bool bKeepSelection, bool bClip, MgColor* selectionColor)
+    CREFSTRING format, MgPropertyCollection* mapViewCommands, bool bKeepSelection, bool bClip, MgColor* selectionColor, bool layersAndGroupsAreIds)
 {
     // Apply map view commands
-    ApplyMapViewCommands(map, mapViewCommands);
+    ApplyMapViewCommands(map, mapViewCommands, layersAndGroupsAreIds);
 
     // Make sure we clear any track changes - these are not applicable for AJAX.
     if (NULL != map)
@@ -118,7 +118,7 @@ MgByteReader* MgHtmlController::GetVisibleMapExtent(CREFSTRING mapName,
     map->Open(resourceService, mapName);
 
     // Apply map view commands
-    ApplyMapViewCommands(map, mapViewCommands);
+    ApplyMapViewCommands(map, mapViewCommands, true);
 
     // Make sure we clear any track changes - these are not applicable for AJAX.
     map->ClearChanges();
@@ -740,13 +740,13 @@ STRING MgHtmlController::ScriptViewUpdate(MgPoint* center, double scale,
 //////////////////////////////////////////////////////////////////
 // Apply the specified set of commands to the map.
 //
-void MgHtmlController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapViewCommands)
+void MgHtmlController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapViewCommands, bool layersAndGroupsAreIds)
 {
     if(mapViewCommands == NULL)
         return;
 
     //apply commands common to both type of viewers
-    MgController::ApplyMapViewCommands(map, mapViewCommands);
+    MgController::ApplyMapViewCommands(map, mapViewCommands, layersAndGroupsAreIds);
 }
 
 //////////////////////////////////////////////////////////////////

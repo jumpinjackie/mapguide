@@ -125,7 +125,8 @@ INTERNAL_API:
         MgPropertyCollection* mapViewCommands,
         bool bKeepSelection,
         bool bClip,
-        MgColor* selectionColor);
+        MgColor* selectionColor,
+        bool layersAndGroupsAreIds);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -298,7 +299,7 @@ protected:
     /// \brief
     /// Apply the specified set of commands to a map view.
     ///
-    virtual void ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapViewCommands);
+    virtual void ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapViewCommands, bool layersAndGroupsAreIds);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
