@@ -29,7 +29,7 @@ STRING MgdResourceContentCache::GetContentEntry(MgResourceIdentifier* resource)
     CHECKARGUMENTNULL(resource, L"MgdResourceContentCache::PutContentEntry");
     STRING resId = resource->ToString();
 
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, L""));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, L""));
     MgdResourceContentCacheEntries::iterator i = m_resourceContentCacheEntries.find(resId);
 
     STRING ret;
@@ -42,13 +42,13 @@ STRING MgdResourceContentCache::GetContentEntry(MgResourceIdentifier* resource)
 
 INT32 MgdResourceContentCache::GetCacheSize()
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, 0));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, 0));
     return m_resourceContentCacheEntries.size();
 }
 
 void MgdResourceContentCache::Clear()
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     m_resourceContentCacheEntries.clear();
 }
 
@@ -57,7 +57,7 @@ void MgdResourceContentCache::RemoveContentEntry(MgResourceIdentifier* resource)
     CHECKARGUMENTNULL(resource, L"MgdResourceContentCache::PutContentEntry");
     STRING resId = resource->ToString();
 
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     MgdResourceContentCacheEntries::iterator i = m_resourceContentCacheEntries.find(resId);
 
     if (m_resourceContentCacheEntries.end() != i)
@@ -76,6 +76,6 @@ void MgdResourceContentCache::PutContentEntry(MgResourceIdentifier* resource, CR
     STRING resId = resource->ToString();
     //ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgdResourceContentCache::PutContentEntry - %W\n"), resId.c_str()));
     
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     m_resourceContentCacheEntries[resId] = content;
 }

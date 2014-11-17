@@ -31,7 +31,7 @@ struct PoolHolder
 
     ConnPool freePool;
     //ConnPool busyPool;
-    MgdMutex    MgdMutex;
+    MgdMutex    m_mutex;
 };
 
 //The One instance of the connection pool
@@ -46,7 +46,7 @@ FdoIConnection* MgdFdoConnectionPool::GetConnection(MgResourceIdentifier* featur
 
     CHECK_FEATURE_SOURCE_ARGUMENT(featureSourceId, L"MgdFdoConnectionPool::GetConnection");
 
-    ScopedLock scc(g_pool.MgdMutex);
+    ScopedLock scc(g_pool.m_mutex);
     STRING fsIdStr = featureSourceId->ToString();
     ConnPool::iterator it = g_pool.freePool.find(fsIdStr);
 
@@ -112,7 +112,7 @@ void MgdFdoConnectionPool::ReturnConnection(MgdFeatureConnection* conn)
 {
     MG_FEATURE_SERVICE_TRY()
 
-    ScopedLock scc(g_pool.MgdMutex);
+    ScopedLock scc(g_pool.m_mutex);
     STRING providerName = conn->GetProviderName();
     FdoPtr<FdoIConnection> fdoConn = conn->m_fdoConn; //conn->GetConnection();
     
@@ -220,7 +220,7 @@ void MgdFdoConnectionPool::Cleanup()
 {
     MG_FEATURE_SERVICE_TRY()
 
-    ScopedLock scc(g_pool.MgdMutex);
+    ScopedLock scc(g_pool.m_mutex);
 
     for (ConnPool::iterator it = g_pool.freePool.begin(); it != g_pool.freePool.end(); ++it)
     {
@@ -250,7 +250,7 @@ void MgdFdoConnectionPool::PurgeCachedConnections(MgResourceIdentifier* resId)
     if (MgResourceType::FeatureSource != resId->GetResourceType())
         return;
 
-    ScopedLock scc(g_pool.MgdMutex);
+    ScopedLock scc(g_pool.m_mutex);
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -288,7 +288,7 @@ void MgdFdoConnectionPool::PurgeCachedConnectionsUnderFolder(MgResourceIdentifie
 
     MG_FEATURE_SERVICE_TRY()
 
-    ScopedLock scc(g_pool.MgdMutex);
+    ScopedLock scc(g_pool.m_mutex);
 
     STRING fsIdStr = resId->ToString();
     INT32 purged = 0;
@@ -330,7 +330,7 @@ bool MgdFdoConnectionPool::StringStartsWith(CREFSTRING haystack, CREFSTRING need
     if (haystack.length() < needle.length())
         return false;
 
-    for (INT32 i = 0; i < needle.length(); i++)
+    for (STRING::size_type i = 0; i < needle.length(); i++)
     {
         if (needle[i] != haystack[i])
             return false;
@@ -340,7 +340,7 @@ bool MgdFdoConnectionPool::StringStartsWith(CREFSTRING haystack, CREFSTRING need
 
 void MgdFdoConnectionPool::GetCacheInfo(std::vector<PoolCacheEntry*>& entries)
 {
-    ScopedLock scc(g_pool.MgdMutex);
+    ScopedLock scc(g_pool.m_mutex);
 
     for (ConnPool::iterator it = g_pool.freePool.begin(); it != g_pool.freePool.end(); ++it)
     {

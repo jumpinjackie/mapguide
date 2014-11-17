@@ -1,6 +1,6 @@
 #include "TransformCache.h"
 
-ACE_Recursive_Thread_Mutex MgdTransformCache::sm_MgdMutex;
+ACE_Recursive_Thread_Mutex MgdTransformCache::sm_mutex;
 
 
 MgdTransformCache::MgdTransformCache(MgdCSTrans* transform, MgCoordinateSystem* coordinateSystem)
@@ -59,7 +59,7 @@ MgdTransformCache* MgdTransformCache::GetLayerToMapTransform(MgdTransformCacheMa
                                                        MgFeatureService* svcFeature)
 {
     // prevent separate threads from simultaneously creating coordinate systems
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_MgdMutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
     MgdTransformCache* item = NULL;
 

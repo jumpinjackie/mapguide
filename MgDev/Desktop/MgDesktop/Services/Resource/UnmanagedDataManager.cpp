@@ -384,7 +384,7 @@ void MgdUnmanagedDataManager::RefreshUnmanagedDataMappings()
     MgConfiguration* configuration = MgConfiguration::GetInstance();
     ACE_ASSERT(NULL != configuration);
 
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     m_unmanagedDataMappings = configuration->GetProperties(
         MgdConfigProperties::UnmanagedDataMappingsSection);
@@ -392,7 +392,7 @@ void MgdUnmanagedDataManager::RefreshUnmanagedDataMappings()
 
 void MgdUnmanagedDataManager::AddAliasMapping(CREFSTRING aliasName, CREFSTRING path)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     if (m_unmanagedDataMappings->Contains(aliasName))
     {
@@ -413,7 +413,7 @@ void MgdUnmanagedDataManager::AddAliasMapping(CREFSTRING aliasName, CREFSTRING p
 ///
 MgPropertyCollection* MgdUnmanagedDataManager::GetUnmanagedDataMappings()
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     return SAFE_ADDREF(m_unmanagedDataMappings.p);
 }

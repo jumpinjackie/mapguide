@@ -25,7 +25,7 @@ protected:
 
 private:
     /// Needed for thread-safety
-    ACE_Recursive_Thread_Mutex m_MgdMutex;
+    ACE_Recursive_Thread_Mutex m_mutex;
 
     typedef std::map<STRING, STRING> MgdResourceContentCacheEntries;
     MgdResourceContentCacheEntries m_resourceContentCacheEntries;

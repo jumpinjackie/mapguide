@@ -231,7 +231,7 @@ void MgdLogManager::LoadConfigurationProperties()
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
 
@@ -354,7 +354,7 @@ void MgdLogManager::SetAccessLogInfo(bool bEnabled, CREFSTRING filename, CREFSTR
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     // Disable existing log in use if there is one
     DisableLog(mltAccess);
@@ -368,7 +368,7 @@ void MgdLogManager::SetAccessLogInfo(bool bEnabled, CREFSTRING filename, CREFSTR
 
 bool MgdLogManager::IsAccessLogEnabled()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     return m_bAccessLogEnabled;
 }
@@ -377,7 +377,7 @@ void MgdLogManager::SetAccessLogEnabled(bool bEnabled)
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     m_bAccessLogEnabled = bEnabled;
     if(m_bAccessLogEnabled)
@@ -395,14 +395,14 @@ void MgdLogManager::SetAccessLogEnabled(bool bEnabled)
 
 STRING MgdLogManager::GetAccessLogFileName()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return (STRING)m_AccessLogFileName.c_str();
 }
 
 void MgdLogManager::SetAccessLogFileName(CREFSTRING filename)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     DisableLog(mltAccess);
     m_AccessLogFileName = ValidateLogFileName(filename);
@@ -411,7 +411,7 @@ void MgdLogManager::SetAccessLogFileName(CREFSTRING filename)
 
 STRING MgdLogManager::GetAccessLogParameters()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return (STRING)m_AccessLogParameters.c_str();
 }
@@ -420,7 +420,7 @@ void MgdLogManager::SetAccessLogParameters(CREFSTRING parameters)
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     if (0 != parameters.compare(m_AccessLogParameters))
     {
@@ -437,7 +437,7 @@ bool MgdLogManager::ClearAccessLog()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Disable the log which closes the log for us
     DisableLog(mltAccess);
@@ -460,7 +460,7 @@ MgByteReader* MgdLogManager::GetAccessLog()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltAccess);
@@ -483,7 +483,7 @@ MgByteReader* MgdLogManager::GetAccessLog(INT32 numEntries)
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltAccess);
@@ -506,7 +506,7 @@ MgByteReader* MgdLogManager::GetAccessLog(MgDateTime* fromDate, MgDateTime* toDa
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltAccess);
@@ -525,7 +525,7 @@ void MgdLogManager::SetAdminLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRI
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     // Disable existing log in use if there is one
     DisableLog(mltAdmin);
@@ -539,7 +539,7 @@ void MgdLogManager::SetAdminLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRI
 
 bool MgdLogManager::IsAdminLogEnabled()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     return m_bAdminLogEnabled;
 }
@@ -548,7 +548,7 @@ void MgdLogManager::SetAdminLogEnabled(bool bEnabled)
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     m_bAdminLogEnabled = bEnabled;
     if(m_bAdminLogEnabled)
@@ -566,14 +566,14 @@ void MgdLogManager::SetAdminLogEnabled(bool bEnabled)
 
 STRING MgdLogManager::GetAdminLogFileName()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return (STRING)m_AdminLogFileName.c_str();
 }
 
 void MgdLogManager::SetAdminLogFileName(CREFSTRING filename)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     DisableLog(mltAdmin);
     m_AdminLogFileName = ValidateLogFileName(filename);
@@ -582,7 +582,7 @@ void MgdLogManager::SetAdminLogFileName(CREFSTRING filename)
 
 STRING MgdLogManager::GetAdminLogParameters()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return (STRING)m_AdminLogParameters.c_str();
 }
@@ -591,7 +591,7 @@ void MgdLogManager::SetAdminLogParameters(CREFSTRING parameters)
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     if (0 != parameters.compare(m_AdminLogParameters))
     {
@@ -608,7 +608,7 @@ bool MgdLogManager::ClearAdminLog()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Disable the log which closes the log for us
     DisableLog(mltAdmin);
@@ -631,7 +631,7 @@ MgByteReader* MgdLogManager::GetAdminLog()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltAdmin);
@@ -654,7 +654,7 @@ MgByteReader* MgdLogManager::GetAdminLog(INT32 numEntries)
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltAdmin);
@@ -677,7 +677,7 @@ MgByteReader* MgdLogManager::GetAdminLog(MgDateTime* fromDate, MgDateTime* toDat
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltAdmin);
@@ -696,7 +696,7 @@ void MgdLogManager::SetAuthenticationLogInfo(bool bEnabled, CREFSTRING filename,
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     // Disable existing log in use if there is one
     DisableLog(mltAuthentication);
@@ -710,7 +710,7 @@ void MgdLogManager::SetAuthenticationLogInfo(bool bEnabled, CREFSTRING filename,
 
 bool MgdLogManager::IsAuthenticationLogEnabled()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     return m_bAuthenticationLogEnabled;
 }
@@ -719,7 +719,7 @@ void MgdLogManager::SetAuthenticationLogEnabled(bool bEnabled)
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     m_bAuthenticationLogEnabled = bEnabled;
     if(m_bAuthenticationLogEnabled)
@@ -737,14 +737,14 @@ void MgdLogManager::SetAuthenticationLogEnabled(bool bEnabled)
 
 STRING MgdLogManager::GetAuthenticationLogFileName()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return (STRING)m_AuthenticationLogFileName.c_str();
 }
 
 void MgdLogManager::SetAuthenticationLogFileName(CREFSTRING filename)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     DisableLog(mltAuthentication);
     m_AuthenticationLogFileName = ValidateLogFileName(filename);
@@ -753,7 +753,7 @@ void MgdLogManager::SetAuthenticationLogFileName(CREFSTRING filename)
 
 STRING MgdLogManager::GetAuthenticationLogParameters()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return (STRING)m_AuthenticationLogParameters.c_str();
 }
@@ -762,7 +762,7 @@ void MgdLogManager::SetAuthenticationLogParameters(CREFSTRING parameters)
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     if (0 != parameters.compare(m_AuthenticationLogParameters))
     {
@@ -779,7 +779,7 @@ bool MgdLogManager::ClearAuthenticationLog()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Disable the log which closes the log for us
     DisableLog(mltAuthentication);
@@ -802,7 +802,7 @@ MgByteReader* MgdLogManager::GetAuthenticationLog()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltAuthentication);
@@ -825,7 +825,7 @@ MgByteReader* MgdLogManager::GetAuthenticationLog(INT32 numEntries)
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltAuthentication);
@@ -848,7 +848,7 @@ MgByteReader* MgdLogManager::GetAuthenticationLog(MgDateTime* fromDate, MgDateTi
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltAuthentication);
@@ -868,7 +868,7 @@ void MgdLogManager::SetErrorLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRI
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     // Disable existing log in use if there is one
     DisableLog(mltError);
@@ -882,7 +882,7 @@ void MgdLogManager::SetErrorLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRI
 
 bool MgdLogManager::IsErrorLogEnabled()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     return m_bErrorLogEnabled;
 }
@@ -891,7 +891,7 @@ void MgdLogManager::SetErrorLogEnabled(bool bEnabled)
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     m_bErrorLogEnabled = bEnabled;
     if(m_bErrorLogEnabled)
@@ -909,14 +909,14 @@ void MgdLogManager::SetErrorLogEnabled(bool bEnabled)
 
 STRING MgdLogManager::GetErrorLogFileName()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return (STRING)m_ErrorLogFileName.c_str();
 }
 
 void MgdLogManager::SetErrorLogFileName(CREFSTRING filename)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     DisableLog(mltError);
     m_ErrorLogFileName = ValidateLogFileName(filename);
@@ -925,7 +925,7 @@ void MgdLogManager::SetErrorLogFileName(CREFSTRING filename)
 
 STRING MgdLogManager::GetErrorLogParameters()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return (STRING)m_ErrorLogParameters.c_str();
 }
@@ -934,7 +934,7 @@ void MgdLogManager::SetErrorLogParameters(CREFSTRING parameters)
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     if (0 != parameters.compare(m_ErrorLogParameters))
     {
@@ -951,7 +951,7 @@ bool MgdLogManager::ClearErrorLog()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Disable the log which closes the log for us
     DisableLog(mltError);
@@ -974,7 +974,7 @@ MgByteReader* MgdLogManager::GetErrorLog()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltError);
@@ -997,7 +997,7 @@ MgByteReader* MgdLogManager::GetErrorLog(INT32 numEntries)
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltError);
@@ -1020,7 +1020,7 @@ MgByteReader* MgdLogManager::GetErrorLog(MgDateTime* fromDate, MgDateTime* toDat
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltError);
@@ -1039,7 +1039,7 @@ void MgdLogManager::SetPerformanceLogInfo(bool bEnabled, CREFSTRING filename, CR
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     // Disable existing log in use if there is one
     DisableLog(mltError);
@@ -1053,7 +1053,7 @@ void MgdLogManager::SetPerformanceLogInfo(bool bEnabled, CREFSTRING filename, CR
 
 bool MgdLogManager::IsPerformanceLogEnabled()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     return m_bPerformanceLogEnabled;
 }
@@ -1062,7 +1062,7 @@ void MgdLogManager::SetPerformanceLogEnabled(bool bEnabled)
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     m_bPerformanceLogEnabled = bEnabled;
     if(m_bPerformanceLogEnabled)
@@ -1080,14 +1080,14 @@ void MgdLogManager::SetPerformanceLogEnabled(bool bEnabled)
 
 STRING MgdLogManager::GetPerformanceLogFileName()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return (STRING)m_PerformanceLogFileName.c_str();
 }
 
 void MgdLogManager::SetPerformanceLogFileName(CREFSTRING filename)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     DisableLog(mltPerformance);
     m_PerformanceLogFileName = ValidateLogFileName(filename);
@@ -1096,7 +1096,7 @@ void MgdLogManager::SetPerformanceLogFileName(CREFSTRING filename)
 
 STRING MgdLogManager::GetPerformanceLogParameters()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return (STRING)m_PerformanceLogParameters.c_str();
 }
@@ -1105,7 +1105,7 @@ void MgdLogManager::SetPerformanceLogParameters(CREFSTRING parameters)
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     if (0 != parameters.compare(m_PerformanceLogParameters))
     {
@@ -1122,7 +1122,7 @@ bool MgdLogManager::ClearPerformanceLog()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Disable the log which closes the log for us
     DisableLog(mltPerformance);
@@ -1145,7 +1145,7 @@ MgByteReader* MgdLogManager::GetPerformanceLog()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltPerformance);
@@ -1168,7 +1168,7 @@ MgByteReader* MgdLogManager::GetPerformanceLog(INT32 numEntries)
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltPerformance);
@@ -1191,7 +1191,7 @@ MgByteReader* MgdLogManager::GetPerformanceLog(MgDateTime* fromDate, MgDateTime*
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltPerformance);
@@ -1210,7 +1210,7 @@ void MgdLogManager::SetSessionLogInfo(bool bEnabled, CREFSTRING filename, CREFST
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     // Disable existing log in use if there is one
     DisableLog(mltSession);
@@ -1224,7 +1224,7 @@ void MgdLogManager::SetSessionLogInfo(bool bEnabled, CREFSTRING filename, CREFST
 
 bool MgdLogManager::IsSessionLogEnabled()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     return m_bSessionLogEnabled;
 }
@@ -1233,7 +1233,7 @@ void MgdLogManager::SetSessionLogEnabled(bool bEnabled)
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     m_bSessionLogEnabled = bEnabled;
     if(m_bSessionLogEnabled)
@@ -1251,14 +1251,14 @@ void MgdLogManager::SetSessionLogEnabled(bool bEnabled)
 
 STRING MgdLogManager::GetSessionLogFileName()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return (STRING)m_SessionLogFileName.c_str();
 }
 
 void MgdLogManager::SetSessionLogFileName(CREFSTRING filename)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     DisableLog(mltSession);
     m_SessionLogFileName = ValidateLogFileName(filename);
@@ -1267,7 +1267,7 @@ void MgdLogManager::SetSessionLogFileName(CREFSTRING filename)
 
 STRING MgdLogManager::GetSessionLogParameters()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return (STRING)m_SessionLogParameters.c_str();
 }
@@ -1276,7 +1276,7 @@ void MgdLogManager::SetSessionLogParameters(CREFSTRING parameters)
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     if (0 != parameters.compare(m_SessionLogParameters))
     {
@@ -1293,7 +1293,7 @@ bool MgdLogManager::ClearSessionLog()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Disable the log which closes the log for us
     DisableLog(mltSession);
@@ -1316,7 +1316,7 @@ MgByteReader* MgdLogManager::GetSessionLog()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltSession);
@@ -1339,7 +1339,7 @@ MgByteReader* MgdLogManager::GetSessionLog(INT32 numEntries)
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltSession);
@@ -1362,7 +1362,7 @@ MgByteReader* MgdLogManager::GetSessionLog(MgDateTime* fromDate, MgDateTime* toD
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltSession);
@@ -1381,7 +1381,7 @@ void MgdLogManager::SetTraceLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRI
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     // Disable existing log in use if there is one
     DisableLog(mltTrace);
@@ -1395,7 +1395,7 @@ void MgdLogManager::SetTraceLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRI
 
 bool MgdLogManager::IsTraceLogEnabled()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     return m_bTraceLogEnabled;
 }
@@ -1404,7 +1404,7 @@ void MgdLogManager::SetTraceLogEnabled(bool bEnabled)
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     m_bTraceLogEnabled = bEnabled;
     if(m_bTraceLogEnabled)
@@ -1422,14 +1422,14 @@ void MgdLogManager::SetTraceLogEnabled(bool bEnabled)
 
 STRING MgdLogManager::GetTraceLogFileName()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return (STRING)m_TraceLogFileName.c_str();
 }
 
 void MgdLogManager::SetTraceLogFileName(CREFSTRING filename)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     DisableLog(mltTrace);
     m_TraceLogFileName = ValidateLogFileName(filename);
@@ -1438,7 +1438,7 @@ void MgdLogManager::SetTraceLogFileName(CREFSTRING filename)
 
 STRING MgdLogManager::GetTraceLogParameters()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return(STRING) m_TraceLogParameters.c_str();
 }
@@ -1447,7 +1447,7 @@ void MgdLogManager::SetTraceLogParameters(CREFSTRING parameters)
 {
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     if (0 != parameters.compare(m_TraceLogParameters))
     {
@@ -1460,7 +1460,7 @@ void MgdLogManager::SetTraceLogParameters(CREFSTRING parameters)
 
 INT8 MgdLogManager::GetDetailLevelForService(INT16 serviceNum)
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, 0));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, 0));
 
     return m_logsDetail[serviceNum];
 }
@@ -1471,7 +1471,7 @@ bool MgdLogManager::ClearTraceLog()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Disable the log which closes the log for us
     DisableLog(mltTrace);
@@ -1494,7 +1494,7 @@ MgByteReader* MgdLogManager::GetTraceLog()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltTrace);
@@ -1517,7 +1517,7 @@ MgByteReader* MgdLogManager::GetTraceLog(INT32 numEntries)
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltTrace);
@@ -1540,7 +1540,7 @@ MgByteReader* MgdLogManager::GetTraceLog(MgDateTime* fromDate, MgDateTime* toDat
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     // Disable the log which closes the log for us
     DisableLog(mltTrace);
@@ -1561,7 +1561,7 @@ MgByteReader* MgdLogManager::GetLogFile( CREFSTRING filename )
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     enum MgLogType logType = mltSystem; // Assign to log type not associated with a file
 
@@ -1587,14 +1587,14 @@ MgByteReader* MgdLogManager::GetLogFile( CREFSTRING filename )
 
 void MgdLogManager::LogToSysLog(ACE_Log_Msg* pAce, char* application)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     pAce->open(ACE_TEXT_CHAR_TO_TCHAR(application), ACE_Log_Msg::SYSLOG, ACE_TEXT_CHAR_TO_TCHAR(application));
 }
 
 void MgdLogManager::LogToOStream(ACE_Log_Msg* pAce, ACE_OSTREAM_TYPE* output)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     m_outputStream = output;
     pAce->msg_ostream(m_outputStream);
@@ -1604,7 +1604,7 @@ void MgdLogManager::LogToOStream(ACE_Log_Msg* pAce, ACE_OSTREAM_TYPE* output)
 
 void MgdLogManager::LogToStderr(ACE_Log_Msg* pAce)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     pAce->clr_flags(ACE_Log_Msg::OSTREAM | ACE_Log_Msg::LOGGER | ACE_Log_Msg::SYSLOG);
     pAce->set_flags(ACE_Log_Msg::STDERR);
@@ -2076,7 +2076,7 @@ void MgdLogManager::RenameLog(CREFSTRING oldFileName, CREFSTRING newFileName)
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     enum MgLogType logType = mltSystem;
     bool bInUse = IsLogFileInUse(oldFileName, logType);
@@ -2119,7 +2119,7 @@ void MgdLogManager::DeleteLog(CREFSTRING fileName)
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     enum MgLogType logType = mltSystem;
     bool bInUse = IsLogFileInUse(fileName, logType);
@@ -2205,7 +2205,7 @@ void MgdLogManager::StopLogThread()
 
 void MgdLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, ACE_Log_Priority logPriority)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     ACE_Log_Msg* pAce = ACE_Log_Msg::instance();
 
@@ -2413,7 +2413,7 @@ void MgdLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, 
 
 bool MgdLogManager::RemoveLogFile(CREFSTRING filename)
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Does the file exist? If so remove it.
     int nResult = ACE_OS::unlink(MG_WCHAR_TO_TCHAR(filename));
@@ -2437,7 +2437,7 @@ MgByteReader* MgdLogManager::GetLogHeader(enum MgLogType logType)
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     STRING filename = L"";
 
@@ -2505,7 +2505,7 @@ MgByteReader* MgdLogManager::GetLogHeader(CREFSTRING filename)
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     pReadFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(filename), ACE_TEXT("rb"));
 
@@ -2545,7 +2545,7 @@ MgByteReader* MgdLogManager::GetLogContents(CREFSTRING filename)
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     pReadFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(filename), ACE_TEXT("rb"));
 
@@ -2604,7 +2604,7 @@ MgByteReader* MgdLogManager::GetLogContents(CREFSTRING filename, INT32 numEntrie
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     if (numEntries < 0)
     {
@@ -2719,7 +2719,7 @@ MgByteReader* MgdLogManager::GetLogContents(CREFSTRING filename, INT32 numEntrie
 
 MgByteReader* MgdLogManager::GetLogContents(enum MgLogType logType, MgDateTime* fromDate, MgDateTime* toDate)
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     if (fromDate == NULL || toDate == NULL)
     {
@@ -2936,7 +2936,7 @@ MgByteReader* MgdLogManager::GetLogContents(enum MgLogType logType, MgDateTime* 
 
 MgStringCollection* MgdLogManager::DeterminePotentialFileNames(enum MgLogType logType, MgDateTime* fromDate, MgDateTime* toDate)
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     Ptr<MgStringCollection> filenames;
 
@@ -3447,7 +3447,7 @@ bool MgdLogManager::IsMaxSizeExceeded(CREFSTRING logFileName)
 
 void MgdLogManager::ArchiveLog(enum MgLogType logType)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     STRING logFileName = L"";
     std::ofstream* pLogStream = NULL;
@@ -3565,7 +3565,7 @@ void MgdLogManager::ArchiveLog(enum MgLogType logType)
 //
 void MgdLogManager::ValidateLogHeaders(enum MgLogType logType)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     switch(logType)
     {
@@ -3639,7 +3639,7 @@ bool MgdLogManager::ValidateAccessLogHeader()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Compare the log file parameters list with the current logging parameters
     STRING logFileParameters = ReadParametersFromLogFile(mltAccess);
@@ -3660,7 +3660,7 @@ bool MgdLogManager::ValidateAdminLogHeader()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Compare the log file parameters list with the current logging parameters
     STRING logFileParameters = ReadParametersFromLogFile(mltAdmin);
@@ -3681,7 +3681,7 @@ bool MgdLogManager::ValidateAuthenticationLogHeader()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Compare the log file parameters list with the current logging parameters
     STRING logFileParameters = ReadParametersFromLogFile(mltAuthentication);
@@ -3702,7 +3702,7 @@ bool MgdLogManager::ValidateErrorLogHeader()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Compare the log file parameters list with the current logging parameters
     STRING logFileParameters = ReadParametersFromLogFile(mltError);
@@ -3723,7 +3723,7 @@ bool MgdLogManager::ValidatePerformanceLogHeader()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Compare the log file parameters list with the current logging parameters
     STRING logFileParameters = ReadParametersFromLogFile(mltPerformance);
@@ -3744,7 +3744,7 @@ bool MgdLogManager::ValidateSessionLogHeader()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Compare the log file parameters list with the current logging parameters
     STRING logFileParameters = ReadParametersFromLogFile(mltSession);
@@ -3765,7 +3765,7 @@ bool MgdLogManager::ValidateTraceLogHeader()
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Compare the log file parameters list with the current logging parameters
     STRING logFileParameters = ReadParametersFromLogFile(mltTrace);
@@ -3786,7 +3786,7 @@ STRING MgdLogManager::ReadParametersFromLogFile(enum MgLogType logType)
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     Ptr<MgByteReader> bytes;
     bytes = GetLogHeader(logType);
@@ -3865,7 +3865,7 @@ STRING MgdLogManager::ReadLogTypeFromLogFile(CREFSTRING logFilename)
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     Ptr<MgByteReader> bytes;
     bytes = GetLogHeader(logFilename);
@@ -3910,7 +3910,7 @@ STRING MgdLogManager::DetermineLogFileStatus(CREFSTRING logFilename, CREFSTRING 
 
     MG_LOGMANAGER_TRY()
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     STRING currentLogName = L"";
 
@@ -4015,14 +4015,14 @@ void MgdLogManager::SetMaximumLogSize(INT32 size)
 
 void MgdLogManager::SetLogDelimiter(CREFSTRING delimiter)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     m_delimiter = delimiter;
 }
 
 STRING MgdLogManager::GetLogDelimiter()
 {
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, STRING(L"")));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
     return m_delimiter;
 }
@@ -4041,7 +4041,7 @@ bool MgdLogManager::CheckArchiveFrequency(enum MgLogType logType, CREFSTRING log
 {
     bool bCurrentLog = true;
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Get the frequency specifier from the filename, and the filetimestamp from the cache
     STRING rawFilename;
@@ -4150,7 +4150,7 @@ bool MgdLogManager::IsLogFileInUse(CREFSTRING filename, enum MgLogType& logType)
 {
     bool bResult = false;
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     logType = mltSystem; // Assign to log type not associated with a file
 
@@ -4204,7 +4204,7 @@ bool MgdLogManager::IsLogInUse(enum MgLogType& logType)
 {
     bool bResult = false;
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     switch(logType)
     {
@@ -4238,7 +4238,7 @@ bool MgdLogManager::IsLogInUse(enum MgLogType& logType)
 
 void MgdLogManager::DisableLog(enum MgLogType logType)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     switch(logType)
     {
@@ -4298,7 +4298,7 @@ void MgdLogManager::DisableLog(enum MgLogType logType)
 
 void MgdLogManager::EnableLog(enum MgLogType logType)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     switch(logType)
     {
@@ -4367,7 +4367,7 @@ void MgdLogManager::EnableLog(enum MgLogType logType)
 
 void MgdLogManager::SetLogHasHeader(enum MgLogType logType, bool bHeader)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     switch(logType)
     {
@@ -4401,7 +4401,7 @@ bool MgdLogManager::LogHasHeader(enum MgLogType logType)
 {
     bool bResult = false;
 
-    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, false));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     switch(logType)
     {

@@ -60,7 +60,7 @@ protected:
 
 private:
     /// Needed for thread-safety
-    ACE_Recursive_Thread_Mutex m_MgdMutex;
+    ACE_Recursive_Thread_Mutex m_mutex;
 
     typedef std::map<STRING, MgdFeatureServiceCacheEntry*> MgdFeatureServiceCacheEntries;
     MgdFeatureServiceCacheEntries m_featureServiceCacheEntries;

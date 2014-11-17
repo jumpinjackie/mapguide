@@ -108,17 +108,17 @@ private:
 class ScopedLock
 {
 public:
-    ScopedLock(MgdMutex& MgdMutex):m_MgdMutex(MgdMutex)
+    ScopedLock(MgdMutex& MgdMutex):m_mutex(MgdMutex)
     {
-        m_MgdMutex.Enter();
+        m_mutex.Enter();
     }
     ~ScopedLock()
     {
-        m_MgdMutex.Leave();
+        m_mutex.Leave();
     }
 private:
     ScopedLock();
-    MgdMutex& m_MgdMutex;
+    MgdMutex& m_mutex;
 };
 
 #endif

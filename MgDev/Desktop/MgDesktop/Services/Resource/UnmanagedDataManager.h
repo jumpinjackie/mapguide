@@ -81,7 +81,7 @@ private:
     static const STRING SquareBracketEnd;
     static const wchar_t SquareBracketCharEnd;
 
-    ACE_Recursive_Thread_Mutex m_MgdMutex;
+    ACE_Recursive_Thread_Mutex m_mutex;
     Ptr<MgPropertyCollection> m_unmanagedDataMappings;
 };
 

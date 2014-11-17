@@ -1,7 +1,7 @@
 #include "MgDesktop.h"
 #include "TileService.h"
 
-ACE_Recursive_Thread_Mutex MgdTileService::sm_MgdMutex;
+ACE_Recursive_Thread_Mutex MgdTileService::sm_mutex;
 bool MgdTileService::sm_initialized = false;
 MgdTileService::MapCache MgdTileService::sm_mapCache;
 bool MgdTileService::sm_renderOnly = false;
@@ -14,7 +14,7 @@ MgdTileService::MgdTileService() : MgService()
     if (!sm_initialized)
     {
         // Perform Double-Checked Locking Optimization.
-        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_MgdMutex));
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
         if (!sm_initialized)
         {
@@ -63,7 +63,7 @@ MgdTileService::~MgdTileService()
 ///
 bool MgdTileService::IsTileCacheEmpty() const
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_MgdMutex, false));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
     return sm_mapCache.empty();
 }
@@ -181,7 +181,7 @@ MgByteReader* MgdTileService::GetTile(MgResourceIdentifier* mapDefinition,
         // Lockfile test and creation is in same protected scope.
         {
             // Attempt to lock the tile file.
-            ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_MgdMutex, NULL));
+            ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
             // Bail out if the tile file has been locked for so long.
             if (DetectTileLockFile(lockPathname))
@@ -346,7 +346,7 @@ MgByteReader* MgdTileService::GetTile(MgdMap* map,
     {
         {
             // Attemp to lock the tile file.
-            ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_MgdMutex, NULL));
+            ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
             // Bail out if the tile file has been locked for so long.
             if (DetectTileLockFile(lockPathname))
@@ -488,7 +488,7 @@ void MgdTileService::SetTile(MgByteReader* img,
 
     {
         // Attemp to lock the tile file.
-        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_MgdMutex));
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
         if (DetectTileLockFile(lockPathname))
         {
@@ -662,7 +662,7 @@ void MgdTileService::SetConnectionProperties(MgConnectionProperties*)
 ///////////////////////////////////////////////////////////////////////////////
 void MgdTileService::ClearMapCache(CREFSTRING mapDefinition)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_MgdMutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
     MapCache::iterator iter = sm_mapCache.end();
     if (mapDefinition.empty())
     {

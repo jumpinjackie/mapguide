@@ -563,7 +563,7 @@ private:
     STRING m_TraceLogFileName;
     STRING m_TraceLogParameters;
 
-    ACE_Recursive_Thread_Mutex m_MgdMutex;
+    ACE_Recursive_Thread_Mutex m_mutex;
     ACE_Thread_Manager m_threadManager;
     MgdLogThread* m_pLogThread;
     INT64 m_writeCount;
