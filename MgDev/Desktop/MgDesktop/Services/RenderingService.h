@@ -22,6 +22,9 @@ template class Ptr<MgdDrawingService>;
 
 /// \ingroup Desktop_Service_Module
 /// \{
+
+/// \brief
+/// This class provides services to render a map into an image
 class MG_DESKTOP_API MgdRenderingService : public MgService
 {
     DECLARE_CLASSNAME(MgdRenderingService)
@@ -35,52 +38,286 @@ public:
     //void SetConnectionProperties(MgConnectionProperties* connProp);
 
 PUBLISHED_API:
-
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the specified base map tile for the given map.
+    ///
+    /// \remarks
+    /// This method only renders the given tile. No tile caching is performed
+    /// by this method. To render and cache the tile, use the 
+    /// \link MgdTileService::GetTile GetTile \endlink method instead
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param baseMapLayerGroupName
+    /// Input
+    /// Specifies the name of the baseMapLayerGroup for which to render the tile.
+    /// \param tileColumn
+    /// Input
+    /// Specifies the column index of the tile to return.
+    /// \param tileRow
+    /// Input
+    /// Specifies the row index of the tile to return.
+    ///
+    /// \return
+    /// A byte reader containing the rendered tile image.
+    ///
     virtual MgByteReader* RenderTile(MgdMap* map,
                                      CREFSTRING baseMapLayerGroupName,
                                      INT32 tileColumn,
                                      INT32 tileRow);
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders all dynamic layers in the specified MgdMap to a dynamic overlay image
+    /// with a transparent background. The center, scale, size, and layers to be
+    /// rendered are defined by the specified map instance.  The format parameter
+    /// must be set to an image format that supports transparency.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
+    /// \param format
+    /// Input
+    /// image format. Defines the format of the resulting image
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
     virtual MgByteReader* RenderDynamicOverlay(MgdMap* map,
                                                MgdSelection* selection,
                                                CREFSTRING format);
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders all dynamic layers in the specified MgdMap to a dynamic overlay image
+    /// with a transparent background. The center, scale, size, and layers to be
+    /// rendered are defined by the specified map instance.  The format parameter
+    /// must be set to an image format that supports transparency.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
+    /// \param format
+    /// Input
+    /// image format. Defines the format of the resulting image
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to keep the selection
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
     virtual MgByteReader* RenderDynamicOverlay(MgdMap* map,
                                                MgdSelection* selection,
                                                CREFSTRING format,
                                                bool bKeepSelection);
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders all dynamic layers in the specified MgdMap to a dynamic overlay image
+    /// with a transparent background. The center, scale, size, and layers to be
+    /// rendered are defined by the specified map instance.  The format parameter
+    /// must be set to an image format that supports transparency.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
+    /// \param options
+    /// Input
+    /// rendering options
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
     virtual MgByteReader* RenderDynamicOverlay(MgdMap* map,
                                                MgdSelection* selection,
                                                MgdRenderingOptions* options);
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders the specified MgdMap to the requested image format.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
+    /// \param format
+    /// Input
+    /// image format. Defines the format of the resulting image
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
     virtual MgByteReader* RenderMap(MgdMap* map,
                                     MgdSelection* selection,
                                     CREFSTRING format);
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders the specified MgdMap to the requested image format.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
+    /// \param format
+    /// Input
+    /// image format. Defines the format of the resulting image
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to keep the selection
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
     virtual MgByteReader* RenderMap(MgdMap* map,
                                     MgdSelection* selection,
                                     CREFSTRING format,
                                     bool bKeepSelection);
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders the specified MgdMap to the requested image format.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
+    /// \param format
+    /// Input
+    /// image format. Defines the format of the resulting image
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to keep the selection
+    /// \param bClip
+    /// Input
+    /// true if you want to clip feature geometry
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
     virtual MgByteReader* RenderMap(MgdMap* map,
                                     MgdSelection* selection,
                                     CREFSTRING format,
                                     bool bKeepSelection,
                                     bool bClip);
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders the legend for the specified MgdMap to the requested size and format
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param width
+    /// Input
+    /// width of legend image in pixels
+    /// \param height
+    /// Input
+    /// height of legend image in pixels
+    /// \param backgroundColor
+    /// Input
+    /// background color. Specifies the map legend background color
+    /// \param format
+    /// Input
+    /// image format. Defines the format of the resulting image
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
     virtual MgByteReader* RenderMapLegend(MgdMap* map,
                                           INT32 width,
                                           INT32 height,
                                           MgColor* backgroundColor,
                                           CREFSTRING format);
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// The QueryFeatures operation identifies those features that
+    /// meet the specified spatial selection criteria. This operation
+    /// is used to implement server-side selection. In addition to
+    /// a selection set, this operation returns attribute information
+    /// in case only one feature is selected
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param layerNames
+    /// Input
+    /// Active layer names for which to query features
+    /// \param filterGeometry
+    /// Input
+    /// geometry object specifying the selection area
+    /// \param selectionVariant
+    /// Input
+    /// selection criterion - integer value corresponding to one of
+    /// the MgFeatureSpatialOperations values
+    /// \param maxFeatures
+    /// Input
+    /// the maximum number of features to return
+    ///
+    /// \return
+    /// An MgSelection instance identifying the features that meet the
+    /// selection criteria. Returns null if no features are identified.
+    ///
     virtual MgdFeatureInformation* QueryFeatures(MgdMap* map,
                                                  MgStringCollection* layerNames,
                                                  MgGeometry* filterGeometry,
                                                  INT32 selectionVariant,
                                                  INT32 maxFeatures);
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// The QueryFeatures operation identifies those features that
+    /// meet the specified spatial selection criteria. This operation
+    /// is used to implement server-side selection. In addition to
+    /// a selection set, this operation returns attribute information
+    /// in case only one feature is selected
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param layerNames
+    /// Input
+    /// Active layer names for which to query features
+    /// \param filterGeometry
+    /// Input
+    /// geometry object specifying the selection area
+    /// \param selectionVariant
+    /// Input
+    /// selection criterion - integer value corresponding to one of
+    /// the MgFeatureSpatialOperations values
+    /// \param featureFilter
+    /// Input
+    /// an XML selection string containing the required feature IDs
+    /// \param maxFeatures
+    /// Input
+    /// the maximum number of features to return
+    /// \param layerAttributeFilter
+    /// Input
+    /// bitmask values - 1=Visible, 2=Selectable, 4=HasTooltips
+    ///
+    /// \return
+    /// An MgSelection instance identifying the features that meet the
+    /// selection criteria. Returns null if no features are identified.
+    ///
     virtual MgdFeatureInformation* QueryFeatures(MgdMap* map,
                                                  MgStringCollection* layerNames,
                                                  MgGeometry* filterGeometry,

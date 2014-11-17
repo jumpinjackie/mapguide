@@ -5,6 +5,38 @@
 
 /// \ingroup Desktop_Service_Module
 /// \{
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Allows low level access to \link DWF DWF™ \endlink
+/// (Design Web Format™) data stored in a resource repository as
+/// part of a drawing source.
+///
+/// \remarks
+/// The Drawing Service contains one class: MgDrawingService.
+/// \n
+/// DWF files contain:
+/// <ol>
+///   <li>An XML file, manifest.xml, listing information about the
+///      DWF.</li>
+///   <li>One or more <i>resources</i>. These are typically design
+///      data in various formats (such as W2D, JPG, PNG, AVI, and
+///      XML).</li>
+/// </ol>
+/// Typically the contents are organized into <i>sections</i>,
+/// each of which represents a logical component being published,
+/// such as a mechanical part or a page of a multi-page diagram.
+/// Each section may have a descriptor.xml file containing
+/// section-specific metadata, and each section may contain
+/// drawing <i>layers</i>. Sections are sometimes also referred
+/// to as <i>sheets.</i>
+/// \n
+/// The Drawing Service allows you to enumerate parts of the DWF,
+/// such as layers, sections, and resources, and to get the
+/// binary data from drawings, layers, and a resources. It also
+/// provides access to the coordinate space assigned to the DWF
+/// in the DrawingSource resource.
+///
 class MG_DESKTOP_API MgdDrawingService : public MgService
 {
     DECLARE_CLASSNAME(MgdDrawingService)
@@ -23,229 +55,317 @@ public:
     MgdDrawingService();
 
 PUBLISHED_API:
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// GetDrawing() returns the DWF stream for a drawing specified by resource identifier.
-    /// </summary>
-    /// <param name="resource">Input
-    /// MgResourceIdentifier object identifying the DWF resource
-    /// </param>
-    /// <returns>
-    /// Returns DWF stream.
-    /// </returns>
-    /// EXCEPTIONS:
-    /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
-    /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - See MgResourceService for additional exceptions.
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the DWF stream for a drawing specified by resource
+    /// identifier.
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// Resource identifier specifying the drawing
+    /// source which has the DWF resource data.
+    ///
+    /// \return
+    /// Returns an MgByteReader object containing the DWF.
+    ///
+    /// \exception MgServiceNotAvailableException if the underlying resource
+    /// service cannot be obtained to access the drawing in the
+    /// resource repository.
+    /// \exception MgXmlParserException if there are problems parsing the resource content
+    /// specified by the resource identifier.
+    ///
+    /// \note
+    /// See MgResourceService for additional exceptions.
+    ///
     MgByteReader* GetDrawing(MgResourceIdentifier* resource);
 
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// DescribeDrawing() returns manifest.xml document located in the DWF.
-    /// Refer to the DWF Format Specification at http://viewers/web/Olema/pdf/DWF%206%20Corporate%20Publishing%20Format.pdf for more information on the manifest.
-    /// </summary>
-    /// <param name="resource">Input
-    /// MgResourceIdentifier object identifying the DWF resource
-    /// </param>
-    /// <returns>
-    /// Returns the byte stream containing XML (manifest.xml).
-    /// </returns>
-    /// EXCEPTIONS:
-    /// - MgInvalidCastException if there are problems reading the DWF into memory.
-    /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
-    /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - MgdInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
-    /// - MgdDwfException if the DWF component encounters errors.
-    /// - See MgResourceService for additional exceptions.
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the <c>manifest.xml</c> document which describes the
+    /// supported document interfaces, the document properties, the
+    /// sections and their contents, and section dependencies.
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// Resource identifier specifying the drawing
+    /// source which has the DWF resource data.
+    ///
+    /// \return
+    /// Returns an MgByteReader object containing the manifest.xml
+    /// file.
+    ///
+    /// \exception MgInvalidCastException if there are problems reading the
+    /// DWF into memory.
+    /// \exception MgServiceNotAvailableException if the underlying resource
+    ///  service cannot be obtained to access the drawing in the
+    ///  resource repository.
+    /// \exception MgXmlParserException if there are problems parsing the
+    ///  resource content specified by the resource identifier.
+    /// \exception MgInvalidDwfPackageException if the DWF specified by the
+    ///  resource identifier is not a DWF of version 6.0 or greater.
+    /// \exception MgDwfException if the DWF component encounters errors.
+    ///
+    /// \note
+    /// See MgResourceService for additional exceptions.
+    ///
     MgByteReader* DescribeDrawing(MgResourceIdentifier* resource);
 
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// GetSection() returns a DWF containing only the requested section.  The section is specified by resource identifier (to get the DWF from the repository),
-    /// and the section name.  The section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
-    /// </summary>
-    /// <param name="resource">Input
-    /// MgResourceIdentifier object identifying the DWF resource
-    /// </param>
-    /// <param name="sectionName">Input
-    /// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
-    /// </param>
-    /// <returns>
-    /// Returns DWF stream containing the specified section.
-    /// </returns>
-    /// EXCEPTIONS:
-    /// - MgdDwfSectionNotFoundException if the requested section does not exist in the DWF package.
-    /// - MgdInvalidDwfSectionException if the 2d graphics resource for the DWF section cannot be found.
-    /// - MgNullReferenceException no data could be read from the DWF resource.
-    /// - MgOutOfMemoryException if there is insufficient memory to complete the operation.
-    /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
-    /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - MgdInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
-    /// - MgdDwfException if the DWF component encounters errors.
-    /// - MgTemporaryFileNotAvailableException if a temporary file need to complete the operation cannot be generated or accessed.
-    /// - See MgResourceService for additional exceptions.
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets a DWF containing only the requested section (sometimes
+    /// called a sheet).
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// Resource identifier specifying the drawing source
+    /// which has the DWF resource data.
+    /// \param sectionName (String/string)
+    /// Name of the section. Section names can be
+    /// retrieved via EnumerateSections or from the <c>manifest.xml</c>
+    /// file via DescribeDrawing.
+    ///
+    /// \return
+    /// Returns an MgByteReader object containing the DWF for the
+    /// specified section.
+    ///
+    /// \exception  MgDwfSectionNotFoundException if the requested section
+    ///  does not exist in the DWF package.
+    /// \exception  MgInvalidDwfSectionException if the 2d graphics resource
+    ///  for the DWF section cannot be found.
+    /// \exception  MgNullReferenceException no data could be read from the
+    ///  DWF resource.
+    /// \exception  MgOutOfMemoryException if there is insufficient memory to
+    ///  complete the operation.
+    /// \exception  MgServiceNotAvailableException if the underlying resource
+    ///  service cannot be obtained to access the drawing in the
+    ///  resource repository.
+    /// \exception  MgXmlParserException if there are problems parsing the
+    ///  resource content specified by the resource identifier.
+    /// \exception  MgInvalidDwfPackageException if the DWF specified by the
+    ///  resource identifier is not a DWF of version 6.0 or greater.
+    /// \exception  MgDwfException if the DWF component encounters errors.
+    /// \exception  MgTemporaryFileNotAvailableException if a temporary file needed
+    ///  to complete the operation cannot be generated or accessed.
+    ///
+    /// \note
+    /// See MgResourceService for additional exceptions.
+    ///
     MgByteReader* GetSection(MgResourceIdentifier* resource, CREFSTRING sectionName);
 
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// GetSectionResource() extracts a specific resource from the DWF package.
-    /// It is specified by the resource identifier (to get the DWF from the repository)
-    /// and the resource name (to get the DWF resource from the DWF package).
-    /// A list of resource names can be retrieved via call to MgdDrawingServices::EnumerateSectionResources(),
-    /// or from the manifest.xml via call to MgdDrawingServices::DescribeDrawing().
-    /// Refer to the DWF Format Specification at http://viewers/web/Olema/pdf/DWF%206%20Corporate%20Publishing%20Format.pdf for more information resource files associated with a particular section.
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets a specific resource from the DWF.
     ///
-    /// </summary>
-    /// <param name="resource">Input
-    /// MgResourceIdentifier object identifying the DWF resource
-    /// </param>
-    /// <param name="resourceName">Input
-    /// Unique resource name of an item in the DWF.
-    /// The item's name can be retrieved from call to MgdDrawingServices::EnumerateDrawingServices(),
-    /// or from the manifest.xml via call to MgdDrawingServices::DescribeDrawing().
-    /// </param>
-    /// <returns>
-    /// Returns byte stream for the item.
-    /// Content type will be same as what is specified in manifest.xml for
-    /// the specified item e.g. image/png or text/xml etc.
-    /// </returns>
-    /// EXCEPTIONS:
-    /// - MgInvalidArgumentException if the requested resourceName does not specify a section name.
-    /// - MgdDwfSectionNotFoundException if the requested section does not exist in the DWF package.
-    /// - MgdDwfSectionResourceNotFoundException if the requested section resource does not exist in the DWF package.
-    /// - MgInvalidCastException if there are problems reading the DWF into memory.
-    /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
-    /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - MgdInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
-    /// - MgdDwfException if the DWF component encounters errors.
-    /// - MgTemporaryFileNotAvailableException if a temporary file need to complete the operation cannot be generated or accessed.
-    /// - See MgResourceService for additional exceptions.
+    /// \param resource (MgResourceIdentifier)
+    /// Resource identifier specifying the drawing source
+    /// which has the DWF resource data.
+    /// \param resourceName (String/string)
+    /// Name of the resource. Resource names can be
+    /// retrieved via EnumerateSectionResources or from
+    /// the <c>manifest.xml</c> file via DescribeDrawing.
+    ///
+    /// \return
+    /// Returns an MgByteReader object containing the resource. The
+    /// MIME type will be what is specified in manifest.xml for the
+    /// specified resource (for example, image/png or text/xml).
+    ///
+    /// \exception MgInvalidArgumentException if the requested resourceName
+    ///  does not specify a section name.
+    /// \exception MgDwfSectionNotFoundException if the requested section
+    ///  does not exist in the DWF package.
+    /// \exception MgDwfSectionResourceNotFoundException if the requested
+    ///  section resource does not exist in the DWF package.
+    /// \exception MgInvalidCastException if there are problems reading the
+    ///  DWF into memory.
+    /// \exception MgServiceNotAvailableException if the underlying resource
+    ///  service cannot be obtained to access the drawing in the
+    ///  resource repository.
+    /// \exception MgXmlParserException if there are problems parsing the
+    ///  resource content specified by the resource identifier.
+    /// \exception MgInvalidDwfPackageException if the DWF specified by the
+    ///  resource identifier is not a DWF of version 6.0 or greater.
+    /// \exception MgDwfException if the DWF component encounters errors.
+    /// \exception MgTemporaryFileNotAvailableException if a temporary file needed
+    ///  to complete the operation cannot be generated or accessed.
+    ///
+    /// \note
+    /// See MgResourceService for additional exceptions.
+    ///
     MgByteReader* GetSectionResource(MgResourceIdentifier* resource, CREFSTRING resourceName);
 
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// EnumerateLayers() returns the layer names in a DWF ePlot section.  An ePlot section is also known as a "sheet" in DWF viewers.
-    /// The ePlot section is specified by resource identifier (to get the DWF from the repository), and section name.
-    /// A list of all sections in a DWF can be retrieved from call to MgdDrawingServices::EnumerateSections(),
-    /// or from the manifest.xml via call to MgdDrawingServices::DescribeDrawing().
-    //  Refer to the DWF Format Specification at http://viewers/web/Olema/pdf/DWF%206%20Corporate%20Publishing%20Format.pdf for more information on the manifest and sections.
-    /// </summary>
-    /// <param name="resource">Input
-    /// MgResourceIdentifier object identifying the DWF resource
-    /// </param>
-    /// <param name="sectionName">Input
-    /// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
-    /// </param>
-    /// <returns>
-    /// Returns the pointer to a StringCollection of layer names.
-    /// </returns>
-    /// EXCEPTIONS:
-    /// - MgdDwfSectionNotFoundException if the requested section does not exist in the DWF package.
-    /// - MgdInvalidDwfSectionException if the 2d graphics resource for the DWF section cannot be found.
-    /// - MgNullReferenceException no data could be read from the DWF resource.
-    /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
-    /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - MgdInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
-    /// - MgdDwfException if the DWF component encounters errors.
-    /// - MgTemporaryFileNotAvailableException if a temporary file need to complete the operation cannot be generated or accessed.
-    /// - See MgResourceService for additional exceptions.
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the names of the layers in a DWF section.
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// Resource identifier specifying the drawing source
+    /// which has the DWF resource data.
+    /// \param sectionName (String/string)
+    /// Name of the section. Section names can be
+    /// retrieved via EnumerateSections or from the <c>manifest.xml</c>
+    /// file via DescribeDrawing.
+    ///
+    /// \return
+    /// Returns a collection of layer names.
+    ///
+    /// \exception MgDwfSectionNotFoundException if the requested section
+    ///  does not exist in the DWF package.
+    /// \exception MgInvalidDwfSectionException if the 2d graphics resource
+    ///  for the DWF section cannot be found.
+    /// \exception MgNullReferenceException no data could be read from the
+    ///  DWF resource.
+    /// \exception MgServiceNotAvailableException if the underlying resource
+    ///  service cannot be obtained to access the drawing in the
+    ///  resource repository.
+    /// \exception MgXmlParserException if there are problems parsing the
+    ///  resource content specified by the resource identifier.
+    /// \exception MgInvalidDwfPackageException if the DWF specified by the
+    ///  resource identifier is not a DWF of version 6.0 or greater.
+    /// \exception MgDwfException if the DWF component encounters errors.
+    /// \exception MgTemporaryFileNotAvailableException if a temporary file needed
+    ///  to complete the operation cannot be generated or accessed.
+    ///
+    /// \note
+    /// See MgResourceService for additional exceptions.
+    ///
     MgStringCollection* EnumerateLayers(MgResourceIdentifier* resource, CREFSTRING sectionName);
 
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// GetLayer() extracts a layer from a particular ePlot section of a DWF.
-    /// </summary>
-    /// <param name="resource">Input
-    /// MgResourceIdentifier object identifying the DWF resource
-    /// </param>
-    /// <param name="sectionName">Input
-    /// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
-    /// </param>
-    /// <param name="layerName">Input
-    /// layerName specifies the name of the layer to retrieve from a particular section.  A list of layer names can can be retrieved via call to MgdDrawingService::EnumerateLayers().
-    /// </param>
-    /// <returns>
-    /// Returns DWF stream containing the specified layer (in a section)
-    /// </returns>
-    /// EXCEPTIONS:
-    /// - MgdDwfSectionNotFoundException if the requested section does not exist in the DWF package.
-    /// - MgdInvalidDwfSectionException if the 2d graphics resource for the DWF section cannot be found.
-    /// - MgNullReferenceException if data could not be read from the DWF resource.
-    /// - MgOutOfMemoryException if there is insufficient memory to complete the operation.
-    /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
-    /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - MgdInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
-    /// - MgLayerNotFoundException if the requested layer does not exist in the requested section of the DWF package.
-    /// - MgdDwfException if the DWF component encounters errors.
-    /// - See MgResourceService for additional exceptions.
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets a layer from a particular section of a DWF.
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// Resource identifier specifying the drawing source
+    /// which has the DWF resource data.
+    /// \param sectionName (String/string)
+    /// Name of the section. Section names can be
+    /// retrieved via EnumerateSections or from the the <c>manifest.xml</c>
+    /// file file via DescribeDrawing.
+    /// \param layerName (String/string)
+    /// Name of the layer. Layer names can can be
+    /// retrieved via EnumerateLayers.
+    ///
+    /// \return
+    /// Returns DWF stream containing the specified layer in the
+    /// specified section.
+    ///
+    /// \exception MgDwfSectionNotFoundException if the requested section
+    ///  does not exist in the DWF package.
+    /// \exception MgInvalidDwfSectionException if the 2d graphics resource
+    ///  for the DWF section cannot be found.
+    /// \exception MgNullReferenceException if data could not be read from
+    ///  the DWF resource.
+    /// \exception MgOutOfMemoryException if there is insufficient memory to
+    ///  complete the operation.
+    /// \exception MgServiceNotAvailableException if the underlying resource
+    ///  service cannot be obtained to access the drawing in the
+    ///  resource repository.
+    /// \exception MgXmlParserException if there are problems parsing the
+    ///  resource content specified by the resource identifier.
+    /// \exception MgInvalidDwfPackageException if the DWF specified by the
+    ///  resource identifier is not a DWF of version 6.0 or greater.
+    /// \exception MgLayerNotFoundException if the requested layer does not
+    ///  exist in the requested section of the DWF package.
+    /// \exception MgDwfException if the DWF component encounters errors.
+    ///
+    /// \note See MgResourceService for additional exceptions.
+    ///
     MgByteReader* GetLayer( MgResourceIdentifier* resource,
                             CREFSTRING sectionName,
                             CREFSTRING layerName );
 
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// EnumerateSections() enumerates only the ePlot sections in a DWF.  The returned sections are in ascending order based on its plotOrder attribute.
-    /// The DWF is identified by it's resource identifier.
-    /// </summary>
-    /// <param name="resource">Input
-    /// MgResourceIdentifier object identifying the DWF resource
-    /// </param>
-    /// <returns>
-    /// Returns MgByteReader object representing the ePlot sections in a DWF sorted in ascending order based on plotOrder attribute.
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Enumerates only the \link ePlot ePlot \endlink sections (sheets) in
+    /// a DWF.
     ///
-    /// </returns>
-    /// EXCEPTIONS:
-    /// - MgNullReferenceException no data could be read from the DWF resource.
-    /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
-    /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - MgdInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
-    /// - MgdDwfException if the DWF component encounters errors.
-    /// - See MgResourceService for additional exceptions.
+    /// \param resource (MgResourceIdentifier)
+    /// Resource identifier specifying the drawing
+    /// source which has the DWF resource data.
+    ///
+    /// \return
+    /// Returns an MgByteReader object containing the list of
+    /// sections in XML format using the \link DrawingSectionList_schema DrawingSectionList \endlink
+    /// schema. The sections are sorted in ascending order based on
+    /// their <c>plotOrder</c> attribute.
+    ///
+    /// \exception MgNullReferenceException no data could be read from the
+    ///  DWF resource.
+    /// \exception MgServiceNotAvailableException if the underlying resource
+    ///  service cannot be obtained to access the drawing in the
+    ///  resource repository.
+    /// \exception MgXmlParserException if there are problems parsing the
+    ///  resource content specified by the resource identifier.
+    /// \exception MgInvalidDwfPackageException if the DWF specified by the
+    ///  resource identifier is not a DWF of version 6.0 or greater.
+    /// \exception MgDwfException if the DWF component encounters errors.
+    ///
+    /// \note
+    /// See MgResourceService for additional exceptions.
+    ///
     MgByteReader* EnumerateSections(MgResourceIdentifier* resource);
 
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// EnumerateSectionResources() enumerates the resources of a DWF section.  The DWF is identified by it's
-    /// resource identifier and the section is identified by name.  The section name
-    /// will be retrieved from manifest.xml or from MgdDrawingServices::EnumerateSections() API.
-    /// </summary>
-    /// <param name="resource">Input
-    /// MgResourceIdentifier object identifying the DWF resource
-    /// </param>
-    /// <param name="sectionName">Input
-    /// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
-    /// </param>
-    /// <returns>
-    /// Returns MgByteReader object representing resources in a DWF section.
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Enumerates the resources of a DWF section (sometimes called a
+    /// sheet).
     ///
-    /// </returns>
-    /// EXCEPTIONS:
-    /// - MgdDwfSectionNotFoundException if the requested section does not exist in the DWF package.
-    /// - MgdInvalidDwfSectionException if the 2d graphics resource for the DWF section cannot be found.
-    /// - MgNullReferenceException no data could be read from the DWF resource.
-    /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
-    /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - MgdInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
-    /// - MgdDwfException if the DWF component encounters errors.
-    /// - See MgResourceService for additional exceptions.
+    /// \param resource (MgResourceIdentifier)
+    /// Resource identifier specifying the drawing source
+    /// which has the DWF resource data.
+    /// \param sectionName (String/string)
+    /// Name of the section. Section names can be
+    /// retrieved via EnumerateSections or from the <c>manifest.xml</c>
+    /// file via DescribeDrawing.
+    ///
+    /// \return
+    /// Returns an MgByteReader object containing the list of
+    /// resources in XML format using the \link DrawingSectionResourceList_schema DrawingSectionResourceList \endlink
+    /// schema.
+    ///
+    /// \exception MgDwfSectionNotFoundException if the requested section
+    ///  does not exist in the DWF package.
+    /// \exception MgInvalidDwfSectionException if the 2d graphics resource
+    ///  for the DWF section cannot be found.
+    /// \exception MgNullReferenceException no data could be read from the
+    ///  DWF resource.
+    /// \exception MgServiceNotAvailableException if the underlying resource
+    ///  service cannot be obtained to access the drawing in the
+    ///  resource repository.
+    /// \exception MgXmlParserException if there are problems parsing the
+    ///  resource content specified by the resource identifier.
+    /// \exception MgInvalidDwfPackageException if the DWF specified by the
+    ///  resource identifier is not a DWF of version 6.0 or greater.
+    /// \exception MgDwfException if the DWF component encounters errors.
+    ///
+    /// \note
+    /// See MgResourceService for additional exceptions.
+    ///
     MgByteReader* EnumerateSectionResources(MgResourceIdentifier* resource, CREFSTRING sectionName);
 
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// GetCoordinateSpace() returns the coordinate system assigned to the DWF drawing.
-    /// The coordinate system will be retrieved from the drawing source content document.
-    /// If no coordinate system is specified, the default will be LL84.
-    /// </summary>
-    /// <param name="resource">Input
-    /// MgResourceIdentifier object identifying the DWF resource
-    /// </param>
-    /// <returns>
-    /// Returns the STRING representing the coordinate system in AWKT format.
-    /// </returns>
-    /// EXCEPTIONS:
-    /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing resource in the repository.
-    /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - See MgResourceService for additional exceptions.
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system assigned to the DWF drawing.
+    ///
+    /// \remarks
+    /// If no coordinate system is specified for the DWF, the default
+    /// is <c>GEOGCS["LL84",DATUM["WGS_1984",SPHEROID["WGS
+    /// 84",6378137,298.25722293287],TOWGS84[0,0,0,0,0,0,0]],PRIMEM["Greenwich",0],UNIT["Degrees",1]]</c>
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// Resource identifier specifying the drawing
+    /// source which has the DWF resource data.
+    ///
+    /// \return
+    /// Returns a string representing the coordinate system in OGC \link WKT WKT \endlink
+    /// format.
+    ///
+    /// \exception MgServiceNotAvailableException if the underlying resource
+    ///  service cannot be obtained to access the drawing resource in
+    ///  the repository.
+    /// \exception MgXmlParserException if there are problems parsing the
+    ///  resource content specified by the resource identifier.
+    ///
+    /// \note
+    /// See MgResourceService for additional exceptions.
+    ///
     virtual STRING GetCoordinateSpace(MgResourceIdentifier* resource);
 
 CLASS_ID:
