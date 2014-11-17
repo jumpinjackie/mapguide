@@ -13,12 +13,12 @@ class MgdFeatureConnection;
 class MG_DESKTOP_API MgdScrollableFeatureReader : public MgdFeatureReader
 {
 INTERNAL_API:
-	MgdScrollableFeatureReader(MgdFeatureConnection* conn, FdoIScrollableFeatureReader* reader);
+    MgdScrollableFeatureReader(MgdFeatureConnection* conn, FdoIScrollableFeatureReader* reader);
 
 EXTERNAL_API:
-	virtual ~MgdScrollableFeatureReader();
+    virtual ~MgdScrollableFeatureReader();
 
-	//MgReader
+    //MgReader
 PUBLISHED_API:
     // --------- Scrollable API ----------- //
     virtual INT32 Count();
@@ -36,13 +36,13 @@ PUBLISHED_API:
     virtual UINT32 IndexOf(MgPropertyCollection* key);
 
 protected:
-	virtual void Dispose() { delete this; }
+    virtual void Dispose() { delete this; }
 
 INTERNAL_API:
     FdoIScrollableFeatureReader* GetInternalReader();
 
 private:
-	FdoIScrollableFeatureReader* m_scrollReader;
+    FdoIScrollableFeatureReader* m_scrollReader;
 };
 /// \}
 #endif

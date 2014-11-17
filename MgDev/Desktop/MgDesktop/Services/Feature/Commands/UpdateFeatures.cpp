@@ -227,12 +227,12 @@ MgFeatureReader* MgdUpdateFeaturesCommand::ExecuteInsert(MgResourceIdentifier* r
     MG_FEATURE_SERVICE_TRY()
 
     CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdUpdateFeaturesCommand::ExecuteInsert");
-	CHECKARGUMENTNULL(propertyValues, L"MgdUpdateFeaturesCommand::ExecuteInsert");
-	if (className.empty())
-		throw new MgNullArgumentException(L"MgdUpdateFeaturesCommand::ExecuteInsert", __LINE__, __WFILE__, NULL, L"", NULL);
-	
+    CHECKARGUMENTNULL(propertyValues, L"MgdUpdateFeaturesCommand::ExecuteInsert");
+    if (className.empty())
+        throw new MgNullArgumentException(L"MgdUpdateFeaturesCommand::ExecuteInsert", __LINE__, __WFILE__, NULL, L"", NULL);
+    
     Ptr<MgdFeatureConnection> connWrap;
-	FdoPtr<FdoIConnection> conn;
+    FdoPtr<FdoIConnection> conn;
     FdoPtr<FdoITransaction> fdoTrans;
     Ptr<MgdTransaction> mgTrans = dynamic_cast<MgdTransaction*>(trans);
     if (NULL != mgTrans)
@@ -252,25 +252,25 @@ MgFeatureReader* MgdUpdateFeaturesCommand::ExecuteInsert(MgResourceIdentifier* r
     }
 
     conn = connWrap->GetConnection();
-	FdoPtr<FdoIInsert> insert = (FdoIInsert*)conn->CreateCommand(FdoCommandType_Insert);
-	
-	insert->SetFeatureClassName(className.c_str());
+    FdoPtr<FdoIInsert> insert = (FdoIInsert*)conn->CreateCommand(FdoCommandType_Insert);
+    
+    insert->SetFeatureClassName(className.c_str());
 
-	FdoPtr<FdoPropertyValueCollection> propVals = insert->GetPropertyValues();
-	for (INT32 i = 0; i < propertyValues->GetCount(); i++)
-	{
-		Ptr<MgProperty> mgp = propertyValues->GetItem(i);
-		FdoPtr<FdoPropertyValue> pv = MgdFeatureUtil::MgPropertyToFdoProperty(mgp);
+    FdoPtr<FdoPropertyValueCollection> propVals = insert->GetPropertyValues();
+    for (INT32 i = 0; i < propertyValues->GetCount(); i++)
+    {
+        Ptr<MgProperty> mgp = propertyValues->GetItem(i);
+        FdoPtr<FdoPropertyValue> pv = MgdFeatureUtil::MgPropertyToFdoProperty(mgp);
 
-		propVals->Add(pv);
-	}
+        propVals->Add(pv);
+    }
 
     if (NULL != fdoTrans.p)
         insert->SetTransaction(fdoTrans);
 
-	FdoPtr<FdoIFeatureReader> insertRes = insert->Execute();
+    FdoPtr<FdoIFeatureReader> insertRes = insert->Execute();
 
-	reader = new MgdFeatureReader(connWrap, insertRes);
+    reader = new MgdFeatureReader(connWrap, insertRes);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgdUpdateFeaturesCommand::ExecuteInsert", resource)
 
@@ -284,12 +284,12 @@ INT32 MgdUpdateFeaturesCommand::ExecuteUpdate(MgResourceIdentifier* resource, CR
     MG_FEATURE_SERVICE_TRY()
 
     CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdUpdateFeaturesCommand::ExecuteUpdate");
-	CHECKARGUMENTNULL(propertyValues, L"MgdUpdateFeaturesCommand::ExecuteUpdate");
-	if (className.empty())
-		throw new MgNullArgumentException(L"MgdUpdateFeaturesCommand::ExecuteUpdate", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(propertyValues, L"MgdUpdateFeaturesCommand::ExecuteUpdate");
+    if (className.empty())
+        throw new MgNullArgumentException(L"MgdUpdateFeaturesCommand::ExecuteUpdate", __LINE__, __WFILE__, NULL, L"", NULL);
 
     Ptr<MgdFeatureConnection> connWrap;
-	FdoPtr<FdoIConnection> conn;
+    FdoPtr<FdoIConnection> conn;
     FdoPtr<FdoITransaction> fdoTrans;
     Ptr<MgdTransaction> mgTrans = dynamic_cast<MgdTransaction*>(trans);
     if (NULL != mgTrans)
@@ -309,25 +309,25 @@ INT32 MgdUpdateFeaturesCommand::ExecuteUpdate(MgResourceIdentifier* resource, CR
     }
 
     conn = connWrap->GetConnection();
-	FdoPtr<FdoIUpdate> update = (FdoIUpdate*)conn->CreateCommand(FdoCommandType_Update);
-	update->SetFeatureClassName(className.c_str());
-	
-	if (!filter.empty())
-		update->SetFilter(filter.c_str());
+    FdoPtr<FdoIUpdate> update = (FdoIUpdate*)conn->CreateCommand(FdoCommandType_Update);
+    update->SetFeatureClassName(className.c_str());
+    
+    if (!filter.empty())
+        update->SetFilter(filter.c_str());
 
     if (NULL != fdoTrans.p)
         update->SetTransaction(fdoTrans);
 
-	FdoPtr<FdoPropertyValueCollection> propVals = update->GetPropertyValues();
-	for (INT32 i = 0; i < propertyValues->GetCount(); i++)
-	{
-		Ptr<MgProperty> mgp = propertyValues->GetItem(i);
-		FdoPtr<FdoPropertyValue> pv = MgdFeatureUtil::MgPropertyToFdoProperty(mgp);
+    FdoPtr<FdoPropertyValueCollection> propVals = update->GetPropertyValues();
+    for (INT32 i = 0; i < propertyValues->GetCount(); i++)
+    {
+        Ptr<MgProperty> mgp = propertyValues->GetItem(i);
+        FdoPtr<FdoPropertyValue> pv = MgdFeatureUtil::MgPropertyToFdoProperty(mgp);
 
-		propVals->Add(pv);
-	}
+        propVals->Add(pv);
+    }
 
-	updated = update->Execute();
+    updated = update->Execute();
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgdUpdateFeaturesCommand::ExecuteUpdate", resource)
 
@@ -341,11 +341,11 @@ INT32 MgdUpdateFeaturesCommand::ExecuteDelete(MgResourceIdentifier* resource, CR
     MG_FEATURE_SERVICE_TRY()
 
     CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdUpdateFeaturesCommand::ExecuteDelete");
-	if (className.empty())
-		throw new MgNullArgumentException(L"MgdUpdateFeaturesCommand::ExecuteDelete", __LINE__, __WFILE__, NULL, L"", NULL);
+    if (className.empty())
+        throw new MgNullArgumentException(L"MgdUpdateFeaturesCommand::ExecuteDelete", __LINE__, __WFILE__, NULL, L"", NULL);
 
     Ptr<MgdFeatureConnection> connWrap;
-	FdoPtr<FdoIConnection> conn;
+    FdoPtr<FdoIConnection> conn;
     FdoPtr<FdoITransaction> fdoTrans;
 
     Ptr<MgdTransaction> mgTrans = dynamic_cast<MgdTransaction*>(trans);
@@ -366,15 +366,15 @@ INT32 MgdUpdateFeaturesCommand::ExecuteDelete(MgResourceIdentifier* resource, CR
     }
 
     conn = connWrap->GetConnection();
-	FdoPtr<FdoIDelete> fdoDelete = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete);
-	fdoDelete->SetFeatureClassName(className.c_str());
+    FdoPtr<FdoIDelete> fdoDelete = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete);
+    fdoDelete->SetFeatureClassName(className.c_str());
     if (!filter.empty())
-	    fdoDelete->SetFilter(filter.c_str());
+        fdoDelete->SetFilter(filter.c_str());
     
     if (NULL != fdoTrans.p)
         fdoDelete->SetTransaction(fdoTrans);
 
-	deleted = fdoDelete->Execute();
+    deleted = fdoDelete->Execute();
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgdUpdateFeaturesCommand::ExecuteDelete", resource)
 

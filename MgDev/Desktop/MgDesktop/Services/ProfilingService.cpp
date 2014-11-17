@@ -5,13 +5,13 @@
 
 MgdProfilingService::MgdProfilingService()
 {
-	Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
-	m_svcRendering = static_cast<MgdRenderingService*>(fact->CreateService(MgServiceType::RenderingService));
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
+    m_svcRendering = static_cast<MgdRenderingService*>(fact->CreateService(MgServiceType::RenderingService));
 }
 
 MgdProfilingService::~MgdProfilingService()
 {
-	SAFE_RELEASE(m_svcRendering);
+    SAFE_RELEASE(m_svcRendering);
 }
 
 MgByteReader* MgdProfilingService::ProfileRenderDynamicOverlay(
@@ -19,7 +19,7 @@ MgByteReader* MgdProfilingService::ProfileRenderDynamicOverlay(
         MgdSelection* selection,
         MgdRenderingOptions* options)
 {
-	Ptr<MgByteReader> ret;
+    Ptr<MgByteReader> ret;
     
     MG_TRY()
 
@@ -61,7 +61,7 @@ MgByteReader* MgdProfilingService::ProfileRenderMap(
         CREFSTRING format,
         bool bKeepSelection)
 {
-	 Ptr<MgByteReader> ret;
+     Ptr<MgByteReader> ret;
     
     MG_TRY()
 

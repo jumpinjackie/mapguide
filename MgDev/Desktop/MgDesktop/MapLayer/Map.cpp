@@ -437,7 +437,7 @@ void MgdMap::Create(MgResourceService* resourceService, MgResourceIdentifier* ma
 
     // Now that we've added all the layers (dynamic and base map) to the m_layers collection,
     // bulk load the identity properties for all layers
-	Ptr<MgFeatureService> featureService = static_cast<MgFeatureService*>(GetService(MgServiceType::FeatureService));
+    Ptr<MgFeatureService> featureService = static_cast<MgFeatureService*>(GetService(MgServiceType::FeatureService));
     BulkLoadIdentityProperties(featureService);
 
     // build the sorted list of finite display scales
@@ -506,7 +506,7 @@ void MgdMap::Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapName
 //
 void MgdMap::Open(MgResourceService* resourceService, CREFSTRING mapName)
 {
-	
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////////

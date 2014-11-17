@@ -15,7 +15,7 @@ class MgdServiceFactory;
 /// \{
 class MG_DESKTOP_API MgdMap : public MgMapBase
 {
-	MG_DECL_DYNCREATE()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgdMap)
 
 PUBLISHED_API:
@@ -104,14 +104,14 @@ protected:
         return m_cls_id;
     }
 
-	virtual void Dispose() { delete this; }
+    virtual void Dispose() { delete this; }
 
 private:
 
     void InitializeResourceService(MgResourceService* resourceService);
 
 CLASS_ID:
-	static const INT32 m_cls_id = MapGuide_Desktop_MapLayer_Map;
+    static const INT32 m_cls_id = MapGuide_Desktop_MapLayer_Map;
 
 private:
 

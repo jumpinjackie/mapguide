@@ -8,7 +8,7 @@
 
 MgdDataReader::MgdDataReader(MgdFeatureConnection* conn, FdoIDataReader* reader)
 {
-	m_reader = FDO_SAFE_ADDREF(reader);
+    m_reader = FDO_SAFE_ADDREF(reader);
     m_connection = SAFE_ADDREF(conn);
 
     // The reader takes ownership of the FDO connection
@@ -17,41 +17,41 @@ MgdDataReader::MgdDataReader(MgdFeatureConnection* conn, FdoIDataReader* reader)
 
 MgdDataReader::~MgdDataReader() 
 {
-	FDO_SAFE_RELEASE(m_reader);
+    FDO_SAFE_RELEASE(m_reader);
     m_connection = NULL;
 } 
 
 bool MgdDataReader::ReadNext() 
 { 
-	bool ret = false;
-	MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->ReadNext(); 
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::ReadNext")
-	return ret;
+    bool ret = false;
+    MG_FEATURE_SERVICE_TRY()
+    ret = m_reader->ReadNext(); 
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::ReadNext")
+    return ret;
 }
 
 INT32 MgdDataReader::GetPropertyCount() 
 { 
-	INT32 ret = 0;
-	MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetPropertyCount(); 
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetPropertyCount")
-	return ret;
+    INT32 ret = 0;
+    MG_FEATURE_SERVICE_TRY()
+    ret = m_reader->GetPropertyCount(); 
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetPropertyCount")
+    return ret;
 }
 
 STRING MgdDataReader::GetPropertyName(INT32 index) 
 { 
-	STRING ret = L"";
-	MG_FEATURE_SERVICE_TRY()
-	FdoString* name = m_reader->GetPropertyName(index);
-	ret = STRING(name);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetPropertyName")
-	return ret;
+    STRING ret = L"";
+    MG_FEATURE_SERVICE_TRY()
+    FdoString* name = m_reader->GetPropertyName(index);
+    ret = STRING(name);
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetPropertyName")
+    return ret;
 }
 
 INT32 MgdDataReader::GetPropertyType(CREFSTRING propertyName) 
 { 
-	INT32 type = MgPropertyType::Null;
+    INT32 type = MgPropertyType::Null;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -96,27 +96,27 @@ INT32 MgdDataReader::GetPropertyType(CREFSTRING propertyName)
 
 INT32 MgdDataReader::GetPropertyType(INT32 index) 
 { 
-	INT32 ret = 0;
-	MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetPropertyType(index);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetPropertyType")
-	return ret;
+    INT32 ret = 0;
+    MG_FEATURE_SERVICE_TRY()
+    ret = m_reader->GetPropertyType(index);
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetPropertyType")
+    return ret;
 }
 
 bool MgdDataReader::IsNull(CREFSTRING propertyName) 
 { 
-	bool ret = false;
-	MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->IsNull(propertyName.c_str());
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::IsNull")
-	return ret;
+    bool ret = false;
+    MG_FEATURE_SERVICE_TRY()
+    ret = m_reader->IsNull(propertyName.c_str());
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::IsNull")
+    return ret;
 }
 
 bool MgdDataReader::GetBoolean(CREFSTRING propertyName) 
 { 
-	bool ret = false;
-	MG_FEATURE_SERVICE_TRY()
-	try
+    bool ret = false;
+    MG_FEATURE_SERVICE_TRY()
+    try
     {
         ret = m_reader->GetBoolean(propertyName.c_str());
     }
@@ -133,15 +133,15 @@ bool MgdDataReader::GetBoolean(CREFSTRING propertyName)
         else
             throw;
     }
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetBoolean")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetBoolean")
+    return ret;
 }
 
 BYTE MgdDataReader::GetByte(CREFSTRING propertyName) 
 { 
-	BYTE ret = 0;
-	MG_FEATURE_SERVICE_TRY()
-	try
+    BYTE ret = 0;
+    MG_FEATURE_SERVICE_TRY()
+    try
     {
         ret = (BYTE)m_reader->GetByte(propertyName.c_str());
     }
@@ -158,15 +158,15 @@ BYTE MgdDataReader::GetByte(CREFSTRING propertyName)
         else
             throw;
     }
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetByte")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetByte")
+    return ret;
 }
 
 MgDateTime* MgdDataReader::GetDateTime(CREFSTRING propertyName) 
 { 
-	Ptr<MgDateTime> mdt;
-	MG_FEATURE_SERVICE_TRY()
-	try
+    Ptr<MgDateTime> mdt;
+    MG_FEATURE_SERVICE_TRY()
+    try
     {
         FdoDateTime val = m_reader->GetDateTime(propertyName.c_str());
         mdt = new MgDateTime((INT16)val.year, (INT8)val.month, (INT8)val.day,
@@ -185,15 +185,15 @@ MgDateTime* MgdDataReader::GetDateTime(CREFSTRING propertyName)
         else
             throw;
     }
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetByte")
-	return mdt.Detach();
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetByte")
+    return mdt.Detach();
 }
 
 float MgdDataReader::GetSingle(CREFSTRING propertyName) 
 { 
-	float ret = 0.0f;
-	MG_FEATURE_SERVICE_TRY()
-	try
+    float ret = 0.0f;
+    MG_FEATURE_SERVICE_TRY()
+    try
     {
         ret = m_reader->GetSingle(propertyName.c_str());
     }
@@ -210,15 +210,15 @@ float MgdDataReader::GetSingle(CREFSTRING propertyName)
         else
             throw;
     }
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetSingle")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetSingle")
+    return ret;
 }
 
 double MgdDataReader::GetDouble(CREFSTRING propertyName) 
 { 
-	double ret = 0.0;
-	MG_FEATURE_SERVICE_TRY()
-	try
+    double ret = 0.0;
+    MG_FEATURE_SERVICE_TRY()
+    try
     {
         ret = m_reader->GetDouble(propertyName.c_str());
     }
@@ -235,15 +235,15 @@ double MgdDataReader::GetDouble(CREFSTRING propertyName)
         else
             throw;
     }
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetDouble")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetDouble")
+    return ret;
 }
 
 INT16 MgdDataReader::GetInt16(CREFSTRING propertyName) 
 { 
-	INT16 ret = 0;
-	MG_FEATURE_SERVICE_TRY()
-	try
+    INT16 ret = 0;
+    MG_FEATURE_SERVICE_TRY()
+    try
     {
         ret = (INT16)m_reader->GetInt16(propertyName.c_str());
     }
@@ -260,15 +260,15 @@ INT16 MgdDataReader::GetInt16(CREFSTRING propertyName)
         else
             throw;
     }
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetInt16")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetInt16")
+    return ret;
 }
 
 INT32 MgdDataReader::GetInt32(CREFSTRING propertyName) 
 { 
-	INT32 ret = 0;
-	MG_FEATURE_SERVICE_TRY()
-	try
+    INT32 ret = 0;
+    MG_FEATURE_SERVICE_TRY()
+    try
     {
         ret = (INT32)m_reader->GetInt32(propertyName.c_str());
     }
@@ -285,15 +285,15 @@ INT32 MgdDataReader::GetInt32(CREFSTRING propertyName)
         else
             throw;
     }
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetInt32")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetInt32")
+    return ret;
 }
 
 INT64 MgdDataReader::GetInt64(CREFSTRING propertyName) 
 { 
-	INT64 ret = 0;
-	MG_FEATURE_SERVICE_TRY()
-	try
+    INT64 ret = 0;
+    MG_FEATURE_SERVICE_TRY()
+    try
     {
         ret = (INT64)m_reader->GetInt64(propertyName.c_str());
     }
@@ -310,15 +310,15 @@ INT64 MgdDataReader::GetInt64(CREFSTRING propertyName)
         else
             throw;
     }
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetInt64")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetInt64")
+    return ret;
 }
 
 STRING MgdDataReader::GetString(CREFSTRING propertyName) 
 { 
-	STRING ret = L"";
-	MG_FEATURE_SERVICE_TRY()
-	try
+    STRING ret = L"";
+    MG_FEATURE_SERVICE_TRY()
+    try
     {
         INT32 length = 0;
         const wchar_t* str = this->GetString(propertyName.c_str(), length);
@@ -340,14 +340,14 @@ STRING MgdDataReader::GetString(CREFSTRING propertyName)
         else
             throw;
     }
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetString")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetString")
+    return ret;
 }
 
 MgByteReader* MgdDataReader::GetBLOB(CREFSTRING propertyName) 
 { 
-	Ptr<MgByteReader> blob;
-	MG_FEATURE_SERVICE_TRY()
+    Ptr<MgByteReader> blob;
+    MG_FEATURE_SERVICE_TRY()
     FdoPtr<FdoLOBValue> fdoVal = m_reader->GetLOB(propertyName.c_str());
     if (fdoVal != NULL)
     {
@@ -360,14 +360,14 @@ MgByteReader* MgdDataReader::GetBLOB(CREFSTRING propertyName)
             blob = byteSource->GetReader();
         }
     }
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetBLOB")
-	return blob.Detach();
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetBLOB")
+    return blob.Detach();
 }
 
 MgByteReader* MgdDataReader::GetCLOB(CREFSTRING propertyName)
 { 
-	Ptr<MgByteReader> clob;
-	MG_FEATURE_SERVICE_TRY()
+    Ptr<MgByteReader> clob;
+    MG_FEATURE_SERVICE_TRY()
     FdoPtr<FdoLOBValue> fdoVal = m_reader->GetLOB(propertyName.c_str());
     if (fdoVal != NULL)
     {
@@ -380,14 +380,14 @@ MgByteReader* MgdDataReader::GetCLOB(CREFSTRING propertyName)
             clob = byteSource->GetReader();
         }
     }
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetCLOB")
-	return clob.Detach();
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetCLOB")
+    return clob.Detach();
 }
 
 MgByteReader* MgdDataReader::GetGeometry(CREFSTRING propertyName) 
 { 
-	Ptr<MgByteReader> geom;
-	MG_FEATURE_SERVICE_TRY()
+    Ptr<MgByteReader> geom;
+    MG_FEATURE_SERVICE_TRY()
     try
     {
         FdoPtr<FdoByteArray> byteArray = m_reader->GetGeometry(propertyName.c_str());
@@ -415,8 +415,8 @@ MgByteReader* MgdDataReader::GetGeometry(CREFSTRING propertyName)
         else
             throw;
     }
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetGeometry")
-	return geom.Detach();
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetGeometry")
+    return geom.Detach();
 }
 
 MgRaster* MgdDataReader::GetRaster(CREFSTRING propertyName) 
@@ -442,7 +442,7 @@ MgRaster* MgdDataReader::GetRaster(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetRaster")
 
-	return retVal.Detach();
+    return retVal.Detach();
 }
 
 MgByteReader* MgdDataReader::GetRaster(STRING rasterPropName, INT32 xSize, INT32 ySize)
@@ -492,151 +492,151 @@ STRING MgdDataReader::GetRasterPropertyName()
 
 INT32 MgdDataReader::GetPropertyIndex(CREFSTRING propertyName) 
 { 
-	INT32 ret = -1;
-	MG_FEATURE_SERVICE_TRY()
+    INT32 ret = -1;
+    MG_FEATURE_SERVICE_TRY()
     ret = m_reader->GetPropertyIndex(propertyName.c_str());
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetPropertyIndex")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetPropertyIndex")
+    return ret;
 }
 
 bool MgdDataReader::IsNull(INT32 index) 
 { 
-	bool ret = false;
-	MG_FEATURE_SERVICE_TRY()
-	STRING propertyName = GetPropertyName(index);
+    bool ret = false;
+    MG_FEATURE_SERVICE_TRY()
+    STRING propertyName = GetPropertyName(index);
     ret = IsNull(propertyName);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::IsNull")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::IsNull")
+    return ret;
 }
 
 bool MgdDataReader::GetBoolean(INT32 index) 
 {
-	bool ret = false;
-	MG_FEATURE_SERVICE_TRY()
-	STRING propertyName = GetPropertyName(index);
+    bool ret = false;
+    MG_FEATURE_SERVICE_TRY()
+    STRING propertyName = GetPropertyName(index);
     ret = GetBoolean(propertyName);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetBoolean")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetBoolean")
+    return ret;
 }
 
 BYTE MgdDataReader::GetByte(INT32 index) 
 { 
-	BYTE ret = 0;
-	MG_FEATURE_SERVICE_TRY()
-	STRING propertyName = GetPropertyName(index);
+    BYTE ret = 0;
+    MG_FEATURE_SERVICE_TRY()
+    STRING propertyName = GetPropertyName(index);
     ret = GetByte(propertyName);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetByte")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetByte")
+    return ret;
 }
 
 MgDateTime* MgdDataReader::GetDateTime(INT32 index) 
 { 
-	Ptr<MgDateTime> ret;
-	MG_FEATURE_SERVICE_TRY()
-	STRING propertyName = GetPropertyName(index);
+    Ptr<MgDateTime> ret;
+    MG_FEATURE_SERVICE_TRY()
+    STRING propertyName = GetPropertyName(index);
     ret = GetDateTime(propertyName);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetDateTime")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetDateTime")
+    return ret;
 }
 
 float MgdDataReader::GetSingle(INT32 index) 
 {
-	float ret = 0.0f;
-	MG_FEATURE_SERVICE_TRY()
-	STRING propertyName = GetPropertyName(index);
+    float ret = 0.0f;
+    MG_FEATURE_SERVICE_TRY()
+    STRING propertyName = GetPropertyName(index);
     ret = GetSingle(propertyName);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetSingle")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetSingle")
+    return ret;
 }
 
 double MgdDataReader::GetDouble(INT32 index) 
 { 
-	double ret = 0.0;
-	MG_FEATURE_SERVICE_TRY()
-	STRING propertyName = GetPropertyName(index);
+    double ret = 0.0;
+    MG_FEATURE_SERVICE_TRY()
+    STRING propertyName = GetPropertyName(index);
     ret = GetDouble(propertyName);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetDouble")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetDouble")
+    return ret;
 }
 
 INT16 MgdDataReader::GetInt16(INT32 index) 
 { 
-	INT16 ret = 0;
-	MG_FEATURE_SERVICE_TRY()
-	STRING propertyName = GetPropertyName(index);
+    INT16 ret = 0;
+    MG_FEATURE_SERVICE_TRY()
+    STRING propertyName = GetPropertyName(index);
     ret = GetInt16(propertyName);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetInt16")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetInt16")
+    return ret;
 }
 
 INT32 MgdDataReader::GetInt32(INT32 index)
 { 
-	INT32 ret = 0;
-	MG_FEATURE_SERVICE_TRY()
-	STRING propertyName = GetPropertyName(index);
+    INT32 ret = 0;
+    MG_FEATURE_SERVICE_TRY()
+    STRING propertyName = GetPropertyName(index);
     ret = GetInt32(propertyName);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetInt32")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetInt32")
+    return ret;
 }
 
 INT64 MgdDataReader::GetInt64(INT32 index) 
 { 
-	INT64 ret = 0;
-	MG_FEATURE_SERVICE_TRY()
-	STRING propertyName = GetPropertyName(index);
+    INT64 ret = 0;
+    MG_FEATURE_SERVICE_TRY()
+    STRING propertyName = GetPropertyName(index);
     ret = GetInt64(propertyName);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetInt64")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetInt64")
+    return ret;
 }
 
 STRING MgdDataReader::GetString(INT32 index) 
 { 
-	STRING ret = L"";
-	MG_FEATURE_SERVICE_TRY()
-	STRING propertyName = GetPropertyName(index);
+    STRING ret = L"";
+    MG_FEATURE_SERVICE_TRY()
+    STRING propertyName = GetPropertyName(index);
     ret = GetString(propertyName);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetString")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetString")
+    return ret;
 }
 
 MgByteReader* MgdDataReader::GetBLOB(INT32 index) 
 { 
-	Ptr<MgByteReader> ret;
-	MG_FEATURE_SERVICE_TRY()
-	STRING propertyName = GetPropertyName(index);
+    Ptr<MgByteReader> ret;
+    MG_FEATURE_SERVICE_TRY()
+    STRING propertyName = GetPropertyName(index);
     ret = GetBLOB(propertyName);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetBLOB")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetBLOB")
+    return ret;
 }
 
 MgByteReader* MgdDataReader::GetCLOB(INT32 index) 
 { 
-	Ptr<MgByteReader> ret;
-	MG_FEATURE_SERVICE_TRY()
-	STRING propertyName = GetPropertyName(index);
+    Ptr<MgByteReader> ret;
+    MG_FEATURE_SERVICE_TRY()
+    STRING propertyName = GetPropertyName(index);
     ret = GetCLOB(propertyName);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetCLOB")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetCLOB")
+    return ret;
 }
 
 MgByteReader* MgdDataReader::GetGeometry(INT32 index) 
 { 
-	Ptr<MgByteReader> ret;
-	MG_FEATURE_SERVICE_TRY()
-	STRING propertyName = GetPropertyName(index);
+    Ptr<MgByteReader> ret;
+    MG_FEATURE_SERVICE_TRY()
+    STRING propertyName = GetPropertyName(index);
     ret = GetGeometry(propertyName);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetGeometry")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetGeometry")
+    return ret;
 }
 
 MgRaster* MgdDataReader::GetRaster(INT32 index) 
 { 
-	Ptr<MgRaster> ret;
-	MG_FEATURE_SERVICE_TRY()
-	STRING propertyName = GetPropertyName(index);
+    Ptr<MgRaster> ret;
+    MG_FEATURE_SERVICE_TRY()
+    STRING propertyName = GetPropertyName(index);
     ret = GetRaster(propertyName);
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetRaster")
-	return ret;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetRaster")
+    return ret;
 }
 
 void MgdDataReader::Close() 
@@ -654,19 +654,19 @@ void MgdDataReader::Close()
     m_connection = NULL;
     //MgdFdoConnectionUtil::CloseConnection(fdoConnection);
 
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::Close");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::Close");
 }
 
 INT32 MgdDataReader::GetReaderType() 
 { 
-	return MgReaderType::FeatureReader;
+    return MgReaderType::FeatureReader;
 }
 
 //EXTERNAL_API:
 
 MgByteReader* MgdDataReader::ToXml() 
 { 
-	throw new MgNotImplementedException(L"MgdDataReader::ToXml", __LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgNotImplementedException(L"MgdDataReader::ToXml", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 //INTERNAL_API:
@@ -718,10 +718,10 @@ const wchar_t* MgdDataReader::GetString(CREFSTRING propertyName, INT32& length)
 
 void MgdDataReader::Serialize(MgStream* stream) 
 { 
-	throw new MgNotImplementedException(L"MgdDataReader::Serialize", __LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgNotImplementedException(L"MgdDataReader::Serialize", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 void MgdDataReader::Deserialize(MgStream* stream) 
 { 
-	throw new MgNotImplementedException(L"MgdDataReader::Deserialize", __LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgNotImplementedException(L"MgdDataReader::Deserialize", __LINE__, __WFILE__, NULL, L"", NULL);
 }

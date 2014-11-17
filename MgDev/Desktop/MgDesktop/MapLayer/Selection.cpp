@@ -115,7 +115,7 @@ MgFeatureReader* MgdSelection::GetSelectedFeatures(MgLayerBase* layer, CREFSTRIN
 //
 void MgdSelection::Open(MgResourceService* resourceService, CREFSTRING mapName)
 {
-	/*
+    /*
     STRING sessionId;
     Ptr<MgUserInformation> userInfo = resourceService->GetUserInfo();
     if (userInfo.p != NULL) sessionId = userInfo->GetMgSessionId();
@@ -126,7 +126,7 @@ void MgdSelection::Open(MgResourceService* resourceService, CREFSTRING mapName)
 
     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(GetResourceName(sessionId, mapName));
     MgResource::Open(resourceService, resId);
-	*/
+    */
 }
 
 
@@ -135,7 +135,7 @@ void MgdSelection::Open(MgResourceService* resourceService, CREFSTRING mapName)
 //
 void MgdSelection::Save(MgResourceService* resourceService, CREFSTRING mapName)
 {
-	/*
+    /*
     STRING sessionId;
     Ptr<MgUserInformation> userInfo = resourceService->GetUserInfo();
     if (userInfo.p != NULL) sessionId = userInfo->GetMgSessionId();
@@ -146,7 +146,7 @@ void MgdSelection::Save(MgResourceService* resourceService, CREFSTRING mapName)
 
     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(GetResourceName(sessionId, mapName));
     MgResource::Save(resourceService, resId);
-	*/
+    */
 }
 
 

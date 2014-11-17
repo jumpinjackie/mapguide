@@ -94,7 +94,7 @@ INTERNAL_API:
     MgdProfilingService();
 
 EXTERNAL_API:
-	virtual ~MgdProfilingService();
+    virtual ~MgdProfilingService();
 
 protected:
 
@@ -105,7 +105,7 @@ protected:
     /// \return
     /// The integer value
     ///
-	virtual INT32 GetClassId() { return m_cls_id; }
+    virtual INT32 GetClassId() { return m_cls_id; }
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -114,10 +114,10 @@ protected:
     /// \return
     /// Nothing
     ///
-	virtual void Dispose() { delete this; }
+    virtual void Dispose() { delete this; }
 
 private:
-	MgdRenderingService* m_svcRendering;
+    MgdRenderingService* m_svcRendering;
 
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_Desktop_ProfilingService_ProfilingService;

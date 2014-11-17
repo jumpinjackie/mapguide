@@ -89,8 +89,8 @@ INTERNAL_API:
     virtual MgSerializableCollection* EnumerateParentTileSetDefinitions(MgSerializableCollection* resources);
 
     STRING GetContentDirectory(MgResourceIdentifier* resId);
-	STRING ResolveContentPath(MgResourceIdentifier* resId);
-	STRING ResolveDataPath(MgResourceIdentifier* resId);
+    STRING ResolveContentPath(MgResourceIdentifier* resId);
+    STRING ResolveDataPath(MgResourceIdentifier* resId);
 
     void DeleteSessionFiles();
     void AddAliasMapping(CREFSTRING aliasName, CREFSTRING path);
@@ -102,7 +102,7 @@ protected:
     virtual INT32 GetClassId() { return m_cls_id; }
 
 protected:
-	virtual void Dispose() { delete this; }
+    virtual void Dispose() { delete this; }
 
 private:
     MgByteReader* GetRawCredentials(MgResourceIdentifier* resource);
@@ -111,10 +111,10 @@ private:
     void WriteResourceFolderEntry(REFSTRING xml, INT32 maxDepth, STRING type, MgResourceIdentifier* resId, CREFSTRING enumeratedFolderId = L"");
     void WriteResourceDocumentEntry(REFSTRING xml, MgResourceIdentifier* resId);
 
-	STRING m_libraryContentPath;
-	STRING m_libraryDataPath;
-	STRING m_sessionContentPath;
-	STRING m_sessionDataPath;
+    STRING m_libraryContentPath;
+    STRING m_libraryDataPath;
+    STRING m_sessionContentPath;
+    STRING m_sessionDataPath;
     STRING m_schemaPath;
 };
 /// \}

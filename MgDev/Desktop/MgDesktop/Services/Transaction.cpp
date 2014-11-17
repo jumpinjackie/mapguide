@@ -11,14 +11,14 @@ MgdTransaction::MgdTransaction(MgdFeatureConnection* conn, MgResourceIdentifier*
     m_conn = SAFE_ADDREF(conn);
     FdoPtr<FdoIConnection> fdoConn = m_conn->GetConnection();
 
-	m_trans = fdoConn->BeginTransaction();
-	m_resource = SAFE_ADDREF(resource);
+    m_trans = fdoConn->BeginTransaction();
+    m_resource = SAFE_ADDREF(resource);
 }
 MgdTransaction::~MgdTransaction()
 {
     SAFE_RELEASE(m_conn);
-	FDO_SAFE_RELEASE(m_trans);
-	SAFE_RELEASE(m_resource);
+    FDO_SAFE_RELEASE(m_trans);
+    SAFE_RELEASE(m_resource);
 }
 
 FdoITransaction* MgdTransaction::GetFdoTransaction()
@@ -44,20 +44,20 @@ void MgdTransaction::Deserialize(MgStream* stream)
 void MgdTransaction::Commit()
 {
     MG_FEATURE_SERVICE_TRY()
-	m_trans->Commit();
+    m_trans->Commit();
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdTransaction::Commit")
 }
 
 void MgdTransaction::Rollback()
 {
     MG_FEATURE_SERVICE_TRY()
-	m_trans->Rollback();
+    m_trans->Rollback();
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdTransaction::Rollback")
 }
 
 MgResourceIdentifier* MgdTransaction::GetFeatureSource()
 {
-	return SAFE_ADDREF(m_resource);
+    return SAFE_ADDREF(m_resource);
 }
 
 STRING MgdTransaction::AddSavePoint(CREFSTRING suggestName)

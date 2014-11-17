@@ -17,8 +17,8 @@ public:
     void RemoveContentEntry(MgResourceIdentifier* resource);
     void PutContentEntry(MgResourceIdentifier* resource, CREFSTRING content);
 
-	void Clear();
-	INT32 GetCacheSize();
+    void Clear();
+    INT32 GetCacheSize();
 
 protected:
     virtual void Dispose() { delete this; }

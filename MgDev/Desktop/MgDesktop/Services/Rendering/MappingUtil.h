@@ -58,7 +58,7 @@ public:
                               double scale,
                               bool selection = false,
                               bool extractColors = false,
-							  ProfileRenderLayersResultBase* = NULL,
+                              ProfileRenderLayersResultBase* = NULL,
                               CancelStylization cancel = NULL);
 
     static RSMgdFeatureReader* ExecuteFeatureQuery(MgFeatureService* svcFeature,

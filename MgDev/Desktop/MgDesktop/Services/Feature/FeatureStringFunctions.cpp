@@ -70,11 +70,11 @@ void MgdFeatureStringFunctions::Initialize(MgReader* reader, FdoFunction* custom
 
     // TODO: Should we really check this, may be we can ignore ??
     // because we can only come to here if property type is numeric
-	if (!this->CheckSupportedPropertyType()) 
-	{
-		throw new MgInvalidPropertyTypeException(
+    if (!this->CheckSupportedPropertyType()) 
+    {
+        throw new MgInvalidPropertyTypeException(
             L"MgdFeatureStringFunctions.Initialize", __LINE__, __WFILE__, NULL, L"", NULL);
-	}
+    }
     // We must have an property alias
     // Though we can name a property with same name as function expression
     // But Fdo forces to have an alias. Therefore we implement this restriction.

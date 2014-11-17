@@ -33,18 +33,18 @@ FdoIConnection* MgdFdoConnectionUtil::CreateConnection(CREFSTRING providerName, 
     providerNoVersion += L".";
     providerNoVersion += (FdoString*)local->GetString();
 
-	FdoPtr<IConnectionManager> connMgr = FdoFeatureAccessManager::GetConnectionManager();
-	conn = connMgr->CreateConnection(providerNoVersion.c_str());
+    FdoPtr<IConnectionManager> connMgr = FdoFeatureAccessManager::GetConnectionManager();
+    conn = connMgr->CreateConnection(providerNoVersion.c_str());
 
     //Some providers may be sensitive to being assigned an empty string
     if (!connectionString.empty())
     {
-	    conn->SetConnectionString(connectionString.c_str());
+        conn->SetConnectionString(connectionString.c_str());
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFdoConnectionUtil::CreateConnection")
 
-	return conn.Detach();
+    return conn.Detach();
 }
 
 FdoIConnection* MgdFdoConnectionUtil::CreateConnection(MgResourceIdentifier* resource)
@@ -53,22 +53,22 @@ FdoIConnection* MgdFdoConnectionUtil::CreateConnection(MgResourceIdentifier* res
 
     FdoPtr<FdoIConnection> conn;
 
-	MG_FEATURE_SERVICE_TRY()
+    MG_FEATURE_SERVICE_TRY()
 
     CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFdoConnectionUtil::CreateConnection");
     Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
     Ptr<MgdResourceService> resSvc = static_cast<MgdResourceService*>(fact->CreateService(MgServiceType::ResourceService));
 
-	std::string xmlContent;
-	Ptr<MgByteReader> content = resSvc->GetResourceContent(resource, L"");
+    std::string xmlContent;
+    Ptr<MgByteReader> content = resSvc->GetResourceContent(resource, L"");
 
-	content->ToStringUtf8(xmlContent);
+    content->ToStringUtf8(xmlContent);
 
     MdfModel::FeatureSource* fs = GetFeatureSource(resource);
-	STRING provider = (STRING)fs->GetProvider();
+    STRING provider = (STRING)fs->GetProvider();
     STRING configDoc = (STRING)fs->GetConfigurationDocument();
 
-	FdoPtr<IConnectionManager> connMgr = FdoFeatureAccessManager::GetConnectionManager();
+    FdoPtr<IConnectionManager> connMgr = FdoFeatureAccessManager::GetConnectionManager();
     
     FdoPtr<FdoProviderNameTokens> tokens = FdoProviderNameTokens::Create(provider.c_str());
     FdoStringsP tokenValues = tokens->GetNameTokens();
@@ -80,9 +80,9 @@ FdoIConnection* MgdFdoConnectionUtil::CreateConnection(MgResourceIdentifier* res
     providerNoVersion += L".";
     providerNoVersion += (FdoString*)local->GetString();
 
-	conn = connMgr->CreateConnection(providerNoVersion.c_str());
-	FdoPtr<FdoIConnectionInfo> connInfo = conn->GetConnectionInfo();
-	FdoPtr<FdoIConnectionPropertyDictionary> dict = connInfo->GetConnectionProperties();
+    conn = connMgr->CreateConnection(providerNoVersion.c_str());
+    FdoPtr<FdoIConnectionInfo> connInfo = conn->GetConnectionInfo();
+    FdoPtr<FdoIConnectionPropertyDictionary> dict = connInfo->GetConnectionProperties();
 
     STRING username;
     STRING password;
@@ -111,10 +111,10 @@ FdoIConnection* MgdFdoConnectionUtil::CreateConnection(MgResourceIdentifier* res
         }
     }
 
-	MdfModel::NameStringPairCollection* params = fs->GetParameters();
-	for (INT32 i = 0; i < params->GetCount(); i++)
-	{
-		MdfModel::NameStringPair* pair = params->GetAt(i);
+    MdfModel::NameStringPairCollection* params = fs->GetParameters();
+    for (INT32 i = 0; i < params->GetCount(); i++)
+    {
+        MdfModel::NameStringPair* pair = params->GetAt(i);
         
         STRING n = pair->GetName();
         STRING v = pair->GetValue();
@@ -122,8 +122,8 @@ FdoIConnection* MgdFdoConnectionUtil::CreateConnection(MgResourceIdentifier* res
         //Perform tag substitution if found
         PerformTagSubstitution(resSvc, v, resource, username, password);
 
-		dict->SetProperty(n.c_str(), v.c_str());
-	}
+        dict->SetProperty(n.c_str(), v.c_str());
+    }
 
     MgdLogDetail logDetail(MgServiceType::FeatureService, MgdLogDetail::InternalTrace, L"MgdFdoConnectionUtil::CreateConnection", mgStackParams);
     logDetail.AddResourceIdentifier(L"resource", resource);
@@ -162,9 +162,9 @@ FdoIConnection* MgdFdoConnectionUtil::CreateConnection(MgResourceIdentifier* res
         }
     }
 
-	MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgdFdoConnectionUtil::CreateConnection", resource)
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgdFdoConnectionUtil::CreateConnection", resource)
 
-	return conn.Detach();
+    return conn.Detach();
 }
 
 void MgdFdoConnectionUtil::PerformTagSubstitution(MgdResourceService* resSvc, REFSTRING str, MgResourceIdentifier* resource, CREFSTRING username, CREFSTRING password)

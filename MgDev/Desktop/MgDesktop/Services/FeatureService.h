@@ -35,13 +35,13 @@ class MG_DESKTOP_API MgdFeatureService : public MgFeatureService
     DECLARE_CLASSNAME(MgdFeatureService)
 
 INTERNAL_API:
-	MgdFeatureService();
+    MgdFeatureService();
 
 EXTERNAL_API:
-	virtual ~MgdFeatureService();
+    virtual ~MgdFeatureService();
 
 protected:
-	virtual void Dispose() { delete this; }
+    virtual void Dispose() { delete this; }
 
 PUBLISHED_API:
     virtual MgByteReader* GetFeatureProviders();
@@ -181,7 +181,7 @@ PUBLISHED_API:
 
     virtual INT32 DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter);
 
-	virtual INT32 DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans);
+    virtual INT32 DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans);
     
     virtual INT32 UpdateMatchingFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter);
 

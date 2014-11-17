@@ -62,11 +62,11 @@ private:
 
     MgReader* GetReader(MgGeometryCollection* returnGeom);
 
-	//WTF: The original method was void and threw MgInvalidPropertyTypeException if not supported
-	//MSVC 2008 blows up on the linker phase with a combination of C1001 at this method and LNK1000
-	//
-	//Changing this method to return bool (supported = true) and throwing MgInvalidPropertyTypeException in
-	//the method that calls this (Initialize()) makes the problem go away. Real WTF there!
+    //WTF: The original method was void and threw MgInvalidPropertyTypeException if not supported
+    //MSVC 2008 blows up on the linker phase with a combination of C1001 at this method and LNK1000
+    //
+    //Changing this method to return bool (supported = true) and throwing MgInvalidPropertyTypeException in
+    //the method that calls this (Initialize()) makes the problem go away. Real WTF there!
     bool CheckSupportedPropertyType();
 
 private:

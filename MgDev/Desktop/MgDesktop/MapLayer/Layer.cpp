@@ -121,14 +121,14 @@ void MgdLayer::GetLayerInfoFromDefinition(MgResourceService* resourceService)
             // If we cannot pull the identity properties, silently ignore it.
             try
             {
-				/*
+                /*
                 //TODO: Pull site connection directly from resource service
                 Ptr<MgUserInformation> userInfo = resourceService->GetUserInfo();
                 Ptr<MgSiteConnection> conn = new MgSiteConnection();
                 conn->Open(userInfo);
-				*/
+                */
                 Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
-				Ptr<MgFeatureService> featureService = static_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
+                Ptr<MgFeatureService> featureService = static_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
                 Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(m_featureSourceId);
 
                 // If the class name is fully qualified (prefixed with a schema name),
@@ -338,7 +338,7 @@ MgPropertyCollection* MgdLayer::UpdateFeatures(MgFeatureCommandCollection* comma
         MgStringCollection arguments;
         arguments.Add(errorMsg);
         //TODO: MgdInvalidFeatureSourceException
-		throw new MgFeatureServiceException(L"MgdLayer::UpdateFeatures", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgdLayer::UpdateFeatures", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     auto_ptr<MdfModel::FeatureSource> featureSource;
@@ -436,7 +436,7 @@ MgdScrollableFeatureReader* MgdLayer::SelectFeaturesExtended(MgFeatureQueryOptio
 
 MgSpatialContextReader* MgdLayer::GetSpatialContexts(bool active)
 {
-	Ptr<MgSpatialContextReader> reader;
+    Ptr<MgSpatialContextReader> reader;
 
     MG_TRY()
 
@@ -562,7 +562,7 @@ void MgdLayer::ParseFeatureName(MgFeatureService* featureService, REFSTRING clas
         {
             //TODO:  How do we deal with different schemas?  Just use first one for now...
             Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(m_featureSourceId);
-			if (resId->GetResourceType().compare(L"FeatureSource") == 0) //MgResourceType::FeatureSource gives LNK2001 (huh?)
+            if (resId->GetResourceType().compare(L"FeatureSource") == 0) //MgResourceType::FeatureSource gives LNK2001 (huh?)
             {
                 try
                 {

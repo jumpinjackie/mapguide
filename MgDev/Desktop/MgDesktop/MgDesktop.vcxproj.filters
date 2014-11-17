@@ -30,9 +30,6 @@
     <ClCompile Include="Exception\ConnectionFailedException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Services\Feature\CreateFeatureSource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Services\Rendering\CustomLogoInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -61,9 +58,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Services\Rendering\DwfVersion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Services\Feature\FdoConnection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Services\Feature\FdoConnectionPool.cpp">
@@ -416,9 +410,6 @@
     <ClInclude Include="Exception\ConnectionFailedException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Services\Feature\CreateFeatureSource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Services\Rendering\CustomLogoInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -450,9 +441,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Services\Rendering\DwfVersion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Services\Feature\FdoConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Services\Feature\FdoConnectionPool.h">

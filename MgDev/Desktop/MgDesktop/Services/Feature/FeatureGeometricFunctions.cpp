@@ -72,10 +72,10 @@ void MgdFeatureGeometricFunctions::Initialize(MgReader* reader, FdoFunction* cus
     // TODO: Should we really check this, may be we can ignore ??
     // because we can only come to here if property type is numeric
     if (!this->CheckSupportedPropertyType())
-	{
-		throw new MgInvalidPropertyTypeException(
-			L"MgdFeatureGeometricFunctions.Initialize", __LINE__, __WFILE__, NULL, L"", NULL);
-	}
+    {
+        throw new MgInvalidPropertyTypeException(
+            L"MgdFeatureGeometricFunctions.Initialize", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     // We must have an property alias
     // Though we can name a property with same name as function expression
@@ -247,7 +247,7 @@ MgGeometryCollection* MgdFeatureGeometricFunctions::ExecuteOperation()
 // Check whether property type is a supported type
 bool MgdFeatureGeometricFunctions::CheckSupportedPropertyType()
 {
-	return MgPropertyType::Geometry == m_type;
+    return MgPropertyType::Geometry == m_type;
 }
 
 

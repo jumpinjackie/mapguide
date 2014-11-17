@@ -760,7 +760,7 @@ MgByteReader* MgdRenderingService::RenderDynamicOverlayInternal(MgdMap* map,
         {
             //MgServerManager* serverManager = MgServerManager::GetInstance();
             //STRING locale = (NULL == serverManager)? MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
-			STRING locale = MgResources::DefaultMessageLocale;
+            STRING locale = MgResources::DefaultMessageLocale;
 
             Ptr<MgResourceIdentifier> mapResId = map->GetMapDefinition();
             pPRMResult->SetResourceId(mapResId ? mapResId->ToString() : L"");
@@ -1208,7 +1208,7 @@ MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
         {
             //MgServerManager* serverManager = MgServerManager::GetInstance();
             //STRING locale = (NULL == serverManager)? MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
-			STRING locale = MgResources::DefaultMessageLocale;
+            STRING locale = MgResources::DefaultMessageLocale;
 
             Ptr<MgResourceIdentifier> mapResId = map->GetMapDefinition();
             pPRMResult->SetResourceId(mapResId ? mapResId->ToString() : L"");
@@ -1856,7 +1856,7 @@ inline void MgdRenderingService::RenderWatermarks(MgdMap* map,
                     //       layer failed in addition to logging the error.
                     //MgServerManager* serverManager = MgServerManager::GetInstance();
                     //STRING locale = (NULL == serverManager)? MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
-					STRING locale = MgResources::DefaultMessageLocale;
+                    STRING locale = MgResources::DefaultMessageLocale;
                     //MG_LOG_EXCEPTION_ENTRY(mgException->GetExceptionMessage(locale).c_str(), mgException->GetStackTrace(locale).c_str());
 
 #if defined(_DEBUG) || defined(_DEBUG_PNG8)

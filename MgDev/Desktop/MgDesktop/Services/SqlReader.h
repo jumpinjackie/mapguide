@@ -10,7 +10,7 @@ class MgdFeatureConnection;
 class MG_DESKTOP_API MgdSqlDataReader : public MgSqlDataReader
 {
 INTERNAL_API:
-	MgdSqlDataReader(MgdFeatureConnection* conn, FdoISQLDataReader* reader);
+    MgdSqlDataReader(MgdFeatureConnection* conn, FdoISQLDataReader* reader);
 
 EXTERNAL_API:
     virtual ~MgdSqlDataReader();
@@ -183,10 +183,10 @@ INTERNAL_API:
     virtual void Deserialize(MgStream* stream);
 
 protected:
-	virtual void Dispose() { delete this; }
+    virtual void Dispose() { delete this; }
 
 private:
-	FdoISQLDataReader* m_reader;
+    FdoISQLDataReader* m_reader;
     Ptr<MgdFeatureConnection> m_connection;
 };
 /// \}

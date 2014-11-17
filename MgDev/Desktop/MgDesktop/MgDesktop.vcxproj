@@ -489,12 +489,6 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Services\Feature\CreateFeatureSource.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Services\Rendering\CustomLogoInfo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -550,12 +544,6 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Services\Rendering\DwfVersion.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Services\Feature\FdoConnection.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -1045,7 +1033,6 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
     <ClInclude Include="System\ClassId.h" />
     <ClInclude Include="System\ConfigProperties.h" />
     <ClInclude Include="Exception\ConnectionFailedException.h" />
-    <ClInclude Include="Services\Feature\CreateFeatureSource.h" />
     <ClInclude Include="Services\Rendering\CustomLogoInfo.h" />
     <ClInclude Include="Services\Rendering\CustomTextInfo.h" />
     <ClInclude Include="Services\DataReader.h" />
@@ -1057,7 +1044,6 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
     <ClInclude Include="Exception\DwfSectionNotFoundException.h" />
     <ClInclude Include="Exception\DwfSectionResourceNotFoundException.h" />
     <ClInclude Include="Services\Rendering\DwfVersion.h" />
-    <ClInclude Include="Services\Feature\FdoConnection.h" />
     <ClInclude Include="Services\Feature\FdoConnectionPool.h" />
     <ClInclude Include="Services\Feature\FdoConnectionUtil.h" />
     <ClInclude Include="Services\Feature\FdoForcedOneToOneFeatureReader.h" />

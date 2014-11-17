@@ -8,7 +8,7 @@
 /// \{
 class MG_DESKTOP_API MgdSelection : public MgSelectionBase
 {
-	MG_DECL_DYNCREATE()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgdSelection)
 
 PUBLISHED_API: 
@@ -33,7 +33,7 @@ public:
 
 protected:
 
-	void Dispose() { delete this; }
+    void Dispose() { delete this; }
 
     virtual INT32 GetClassId()
     {

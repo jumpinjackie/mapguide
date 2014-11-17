@@ -75,8 +75,8 @@ MgService* MgdServiceFactory::CreateService(INT32 serviceType)
         return new MgdFeatureService();
     case MgServiceType::MappingService:
         return new MgdMappingService();
-	case MgServiceType::ProfilingService:
-		return new MgdProfilingService();
+    case MgServiceType::ProfilingService:
+        return new MgdProfilingService();
     case MgServiceType::RenderingService:
         return new MgdRenderingService();
     case MgServiceType::ResourceService:

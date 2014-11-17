@@ -44,7 +44,7 @@ public:
 
     INT32 ExecuteUpdate(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans);
 
-	INT32 ExecuteDelete(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans);
+    INT32 ExecuteDelete(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans);
 
 private:
     void Connect(MgResourceIdentifier* resource, MgTransaction* transaction);

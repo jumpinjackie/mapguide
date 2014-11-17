@@ -65,14 +65,14 @@ PUBLISHED_API:
 
 private:
     virtual MgByteReader* GenerateMultiPlotInternal(MgdMapPlotCollection* mapPlots, MgdDwfVersion* dwfVersion);
-	bool FeatureTypeStyleSupportsGeomType(MdfModel::FeatureTypeStyle* fts, INT32 geomType);
+    bool FeatureTypeStyleSupportsGeomType(MdfModel::FeatureTypeStyle* fts, INT32 geomType);
 
     // member data
     Ptr<MgFeatureService> m_svcFeature;
     Ptr<MgResourceService> m_svcResource;
     Ptr<MgdDrawingService> m_svcDrawing;
     Ptr<MgCoordinateSystemFactory> m_pCSFactory;
-	
+    
     // Mapping Service configuration properties
     INT32 m_rasterGridSizeForPlot;
     INT32 m_minRasterGridSizeForPlot;

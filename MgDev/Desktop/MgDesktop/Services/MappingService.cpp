@@ -88,7 +88,7 @@ MgdMappingService::MgdMappingService() : MgService()
                           MgdConfigProperties::DefaultRenderingServicePropertyMaxRasterImageHeight);
 
     // Set Mapping Service related properties
-	pConf->GetIntValue(MgdConfigProperties::RenderingServicePropertiesSection,
+    pConf->GetIntValue(MgdConfigProperties::RenderingServicePropertiesSection,
                           MgdConfigProperties::RenderingServicePropertyRasterGridSizeForPlot,
                           m_rasterGridSizeForPlot,
                           MgdConfigProperties::DefaultRenderingServicePropertyRasterGridSizeForPlot);

@@ -64,7 +64,7 @@ bool MgdProjectedFeatureReader::IsNull(CREFSTRING propertyName)
 { 
     bool ret = false;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->IsNull(propertyName);
+    ret = m_reader->IsNull(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::IsNull")
     return ret;
 }
@@ -73,7 +73,7 @@ bool MgdProjectedFeatureReader::GetBoolean(CREFSTRING propertyName)
 { 
     bool ret = false;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetBoolean(propertyName);
+    ret = m_reader->GetBoolean(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetBoolean")
     return ret;
 }
@@ -82,7 +82,7 @@ BYTE MgdProjectedFeatureReader::GetByte(CREFSTRING propertyName)
 { 
     BYTE ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetByte(propertyName);
+    ret = m_reader->GetByte(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetByte")
     return ret;
 }
@@ -91,7 +91,7 @@ MgDateTime* MgdProjectedFeatureReader::GetDateTime(CREFSTRING propertyName)
 { 
     Ptr<MgDateTime> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetDateTime(propertyName);
+    ret = m_reader->GetDateTime(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetDateTime")
     return ret.Detach();
 }
@@ -100,7 +100,7 @@ float MgdProjectedFeatureReader::GetSingle(CREFSTRING propertyName)
 { 
     float ret = 0.0f;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetSingle(propertyName);
+    ret = m_reader->GetSingle(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetSingle")
     return ret;
 }
@@ -109,7 +109,7 @@ double MgdProjectedFeatureReader::GetDouble(CREFSTRING propertyName)
 { 
     double ret = 0.0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetDouble(propertyName);
+    ret = m_reader->GetDouble(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetDouble")
     return ret;
 }
@@ -118,7 +118,7 @@ INT16 MgdProjectedFeatureReader::GetInt16(CREFSTRING propertyName)
 { 
     INT16 ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetInt16(propertyName);
+    ret = m_reader->GetInt16(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetInt16")
     return ret;
 }
@@ -127,7 +127,7 @@ INT32 MgdProjectedFeatureReader::GetInt32(CREFSTRING propertyName)
 { 
     INT32 ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetInt32(propertyName);
+    ret = m_reader->GetInt32(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetInt32")
     return ret;
 }
@@ -136,7 +136,7 @@ INT64 MgdProjectedFeatureReader::GetInt64(CREFSTRING propertyName)
 { 
     INT64 ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetInt64(propertyName);
+    ret = m_reader->GetInt64(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetInt32")
     return ret;
 }
@@ -145,7 +145,7 @@ STRING MgdProjectedFeatureReader::GetString(CREFSTRING propertyName)
 { 
     STRING ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetString(propertyName);
+    ret = m_reader->GetString(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetString")
     return ret;
 }
@@ -154,7 +154,7 @@ MgByteReader* MgdProjectedFeatureReader::GetBLOB(CREFSTRING propertyName)
 { 
     Ptr<MgByteReader> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetBLOB(propertyName);
+    ret = m_reader->GetBLOB(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetBLOB")
     return ret.Detach();
 }
@@ -163,7 +163,7 @@ MgByteReader* MgdProjectedFeatureReader::GetCLOB(CREFSTRING propertyName)
 { 
     Ptr<MgByteReader> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetCLOB(propertyName);
+    ret = m_reader->GetCLOB(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetCLOB")
     return ret.Detach();
 }
@@ -172,7 +172,7 @@ MgByteReader* MgdProjectedFeatureReader::GetCLOB(CREFSTRING propertyName)
 //that will not return this type of reader
 BYTE_ARRAY_OUT MgdProjectedFeatureReader::GetGeometry(CREFSTRING propertyName, INT32& length) 
 { 
-	NOT_IMPLEMENTED(L"MgdProjectedFeatureReader::GetGeometry");
+    NOT_IMPLEMENTED(L"MgdProjectedFeatureReader::GetGeometry");
 }
 
 //This won't be used by RS_FeatureReader because stylization will use SelectFeatures()
@@ -186,7 +186,7 @@ MgRaster* MgdProjectedFeatureReader::GetRaster(CREFSTRING propertyName)
 { 
     Ptr<MgRaster> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetRaster(propertyName);
+    ret = m_reader->GetRaster(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetRaster")
     return ret.Detach();
 }
@@ -200,7 +200,7 @@ bool MgdProjectedFeatureReader::IsNull(INT32 index)
 { 
     bool ret = false;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->IsNull(index);
+    ret = m_reader->IsNull(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::IsNull")
     return ret;
 }
@@ -209,7 +209,7 @@ bool MgdProjectedFeatureReader::GetBoolean(INT32 index)
 {
     bool ret = false;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetBoolean(index);
+    ret = m_reader->GetBoolean(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetBoolean")
     return ret;
 }
@@ -218,7 +218,7 @@ BYTE MgdProjectedFeatureReader::GetByte(INT32 index)
 { 
     BYTE ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetByte(index);
+    ret = m_reader->GetByte(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetByte")
     return ret;
 }
@@ -227,7 +227,7 @@ MgDateTime* MgdProjectedFeatureReader::GetDateTime(INT32 index)
 { 
     Ptr<MgDateTime> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetDateTime(index);
+    ret = m_reader->GetDateTime(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetDateTime")
     return ret.Detach();
 }
@@ -236,7 +236,7 @@ float MgdProjectedFeatureReader::GetSingle(INT32 index)
 { 
     float ret = 0.0f;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetSingle(index);
+    ret = m_reader->GetSingle(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetSingle")
     return ret;
 }
@@ -245,7 +245,7 @@ double MgdProjectedFeatureReader::GetDouble(INT32 index)
 { 
     double ret = 0.0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetDouble(index);
+    ret = m_reader->GetDouble(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetDouble")
     return ret;
 }
@@ -254,7 +254,7 @@ INT16 MgdProjectedFeatureReader::GetInt16(INT32 index)
 { 
     INT16 ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetInt16(index);
+    ret = m_reader->GetInt16(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetInt16")
     return ret;
 }
@@ -263,7 +263,7 @@ INT32 MgdProjectedFeatureReader::GetInt32(INT32 index)
 { 
     INT32 ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetInt32(index);
+    ret = m_reader->GetInt32(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetInt32")
     return ret;
 }
@@ -272,7 +272,7 @@ INT64 MgdProjectedFeatureReader::GetInt64(INT32 index)
 { 
     INT64 ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetInt64(index);
+    ret = m_reader->GetInt64(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetInt64")
     return ret;
 }
@@ -281,7 +281,7 @@ STRING MgdProjectedFeatureReader::GetString(INT32 index)
 { 
     STRING ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetString(index);
+    ret = m_reader->GetString(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetString")
     return ret;
 }
@@ -290,7 +290,7 @@ MgByteReader* MgdProjectedFeatureReader::GetBLOB(INT32 index)
 { 
     Ptr<MgByteReader> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetBLOB(index);
+    ret = m_reader->GetBLOB(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetBLOB")
     return ret.Detach();
 }
@@ -299,7 +299,7 @@ MgByteReader* MgdProjectedFeatureReader::GetCLOB(INT32 index)
 { 
     Ptr<MgByteReader> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetCLOB(index);
+    ret = m_reader->GetCLOB(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetCLOB")
     return ret.Detach();
 }
@@ -308,14 +308,14 @@ MgRaster* MgdProjectedFeatureReader::GetRaster(INT32 index)
 { 
     Ptr<MgRaster> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetRaster(index);
+    ret = m_reader->GetRaster(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetRaster")
     return ret.Detach();
 }
 
 INT32 MgdProjectedFeatureReader::GetReaderType() 
 { 
-	return m_reader->GetReaderType();
+    return m_reader->GetReaderType();
 }
 
 //EXTERNAL_API:
@@ -324,7 +324,7 @@ MgByteReader* MgdProjectedFeatureReader::ToXml()
 { 
     Ptr<MgByteReader> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->ToXml();
+    ret = m_reader->ToXml();
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::ToXml")
     return ret.Detach();
 }
@@ -349,20 +349,20 @@ void MgdProjectedFeatureReader::HeaderToStringUtf8(string& str) { NOT_IMPLEMENTE
 
 const wchar_t* MgdProjectedFeatureReader::GetString(CREFSTRING propertyName, INT32& length) 
 {
-	return m_reader->GetString(propertyName, length);
+    return m_reader->GetString(propertyName, length);
 }
 
 void MgdProjectedFeatureReader::Serialize(MgStream* stream) 
 { 
     MG_FEATURE_SERVICE_TRY()
-	m_reader->Serialize(stream);
+    m_reader->Serialize(stream);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::Serialize")
 }
 
 void MgdProjectedFeatureReader::Deserialize(MgStream* stream) 
 { 
     MG_FEATURE_SERVICE_TRY()
-	m_reader->Deserialize(stream);
+    m_reader->Deserialize(stream);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::Deserialize")
 }
 
@@ -382,7 +382,7 @@ MgClassDefinition* MgdProjectedFeatureReader::GetClassDefinitionNoXml()
 { 
     Ptr<MgClassDefinition> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetClassDefinitionNoXml();
+    ret = m_reader->GetClassDefinitionNoXml();
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetClassDefinitionNoXml")
     return ret.Detach();
 }
@@ -391,7 +391,7 @@ MgFeatureReader* MgdProjectedFeatureReader::GetFeatureObject(CREFSTRING property
 { 
     Ptr<MgFeatureReader> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetFeatureObject(propertyName);
+    ret = m_reader->GetFeatureObject(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetFeatureObject")
     return ret.Detach();
 }
@@ -400,7 +400,7 @@ MgFeatureReader* MgdProjectedFeatureReader::GetFeatureObject(INT32 index)
 { 
     Ptr<MgFeatureReader> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetFeatureObject(index);
+    ret = m_reader->GetFeatureObject(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetFeatureObject")
     return ret.Detach();
 }
@@ -411,7 +411,7 @@ MgFeatureSet* MgdProjectedFeatureReader::GetFeatures(INT32 count)
 { 
     Ptr<MgFeatureSet> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_reader->GetFeatures(count);
+    ret = m_reader->GetFeatures(count);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdProjectedFeatureReader::GetFeatures")
     return ret.Detach();
 }

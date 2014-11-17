@@ -6,12 +6,12 @@ class MgdFeatureSetReader : public MgFeatureReader
     DECLARE_CLASSNAME(MgdFeatureSetReader);
 
 INTERNAL_API:
-	MgdFeatureSetReader(MgFeatureSet* featureSet);
+    MgdFeatureSetReader(MgFeatureSet* featureSet);
 
 EXTERNAL_API:
-	virtual ~MgdFeatureSetReader();
+    virtual ~MgdFeatureSetReader();
 
-	//MgReader
+    //MgReader
 PUBLISHED_API:
     virtual bool ReadNext();
 
@@ -173,7 +173,7 @@ INTERNAL_API:
 
     void AssignFeatureSet(MgFeatureSet* featureSet);
 
-	//MgFeatureReader
+    //MgFeatureReader
 PUBLISHED_API:
     virtual MgClassDefinition* GetClassDefinition();
 
@@ -196,7 +196,7 @@ INTERNAL_API:
     MgByteReader* GetRaster(STRING rasterPropName, INT32 xSize, INT32 ySize);
 
 protected:
-	virtual void Dispose() { delete this; }
+    virtual void Dispose() { delete this; }
 
 private:
     MgProperty* GetProperty(CREFSTRING propertyName, INT16 expectedType);

@@ -13,12 +13,12 @@ class MgdFeatureConnection;
 class MG_DESKTOP_API MgdFeatureReader : public MgFeatureReader
 {
 INTERNAL_API:
-	MgdFeatureReader(MgdFeatureConnection* conn, FdoIFeatureReader* reader, MgStringCollection* forceIdProps = NULL);
+    MgdFeatureReader(MgdFeatureConnection* conn, FdoIFeatureReader* reader, MgStringCollection* forceIdProps = NULL);
 
 EXTERNAL_API:
-	virtual ~MgdFeatureReader();
+    virtual ~MgdFeatureReader();
 
-	//MgReader
+    //MgReader
 PUBLISHED_API:
     virtual bool ReadNext();
 
@@ -174,7 +174,7 @@ INTERNAL_API:
 
     virtual void Deserialize(MgStream* stream);
 
-	//MgFeatureReader
+    //MgFeatureReader
 PUBLISHED_API:
     virtual MgClassDefinition* GetClassDefinition();
 
@@ -197,13 +197,13 @@ INTERNAL_API:
     MgByteReader* GetRaster(STRING rasterPropName, INT32 xSize, INT32 ySize);
 
 protected:
-	virtual void Dispose() { delete this; }
+    virtual void Dispose() { delete this; }
 
 INTERNAL_API:
     FdoIFeatureReader* GetInternalReader();
 
 protected:
-	FdoIFeatureReader* m_reader;
+    FdoIFeatureReader* m_reader;
     Ptr<MgClassDefinition> m_classDef;
     Ptr<MgdFeatureConnection> m_connection;
     Ptr<MgStringCollection> m_forceIdProps;

@@ -76,7 +76,7 @@
 #include "Services/Resource/UnmanagedDataType.h"
 
 #define NOT_IMPLEMENTED(method) \
-	throw new MgNotImplementedException(method, __LINE__, __WFILE__, NULL, L"", NULL)
+    throw new MgNotImplementedException(method, __LINE__, __WFILE__, NULL, L"", NULL)
 
 //Uncomment to debug memory leaks. This is the header for Visual Leak Detector
 //See: http://vld.codeplex.com for download and setup

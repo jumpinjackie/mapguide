@@ -352,7 +352,7 @@ void MgdMappingUtil::StylizeLayers(MgResourceService* svcResource,
                                   bool selection,
                                   bool extractColors,
                                   ProfileRenderLayersResultBase* pPRLsResult,
-								  CancelStylization cancel)
+                                  CancelStylization cancel)
 {
     #ifdef _DEBUG
     long dwStart = GetTickCount();
@@ -419,13 +419,13 @@ void MgdMappingUtil::StylizeLayers(MgResourceService* svcResource,
             ldf.reset(MgLayerBase::GetLayerDefinition(svcResource, layerid));
 
             Ptr<MgLayerGroup> group = mapLayer->GetGroup();
-			
+            
             MgdLogDetail logDetail(MgServiceType::MappingService, MgdLogDetail::InternalTrace, L"MgdMappingUtil.StylizeLayers", mgStackParams);
             logDetail.AddString(L"Map",map->GetName());
 
             logDetail.AddResourceIdentifier(L"LayerId",layerid);
             logDetail.Create();
-			
+            
             //base map layers are not editable
             bool bEditable = true;
             if (mapLayer->GetLayerType() == MgLayerType::BaseMap)
@@ -863,7 +863,7 @@ void MgdMappingUtil::StylizeLayers(MgResourceService* svcResource,
             //       layer failed in addition to logging the error.
             //MgServerManager* serverManager = MgServerManager::GetInstance();
             //STRING locale = (NULL == serverManager)? MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
-			STRING locale = MgResources::DefaultMessageLocale;
+            STRING locale = MgResources::DefaultMessageLocale;
 
             // Get the layer that failed
             MgStringCollection arguments;

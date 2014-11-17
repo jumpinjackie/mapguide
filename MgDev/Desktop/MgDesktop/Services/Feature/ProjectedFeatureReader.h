@@ -165,7 +165,7 @@ INTERNAL_API:
 
     virtual void Deserialize(MgStream* stream);
 
-	//MgFeatureReader
+    //MgFeatureReader
 PUBLISHED_API:
     virtual MgClassDefinition* GetClassDefinition();
 

@@ -30,7 +30,7 @@ private:
     static FdoIConnection* CreateConnection(MgResourceIdentifier* resource);
 
     //Createa a connection by raw FDO connection string. No tag subsitution is performed.
-	static FdoIConnection* CreateConnection(CREFSTRING provider, CREFSTRING connectionString);    
+    static FdoIConnection* CreateConnection(CREFSTRING provider, CREFSTRING connectionString);    
 #ifdef DEBUG_FDO_CONNECTION_POOL
     static void CheckCallStats();
 #endif

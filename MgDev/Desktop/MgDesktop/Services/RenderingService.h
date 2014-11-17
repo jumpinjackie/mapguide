@@ -15,7 +15,7 @@ class Renderer;
 namespace MdfModel
 {
     class FeatureTypeStyle;
-	class ProfileRenderMapResult;
+    class ProfileRenderMapResult;
 }
 
 template class Ptr<MgdDrawingService>;
@@ -206,7 +206,7 @@ private:
                                     bool bKeepSelection,
                                     bool renderWatermark,
                                     MdfModel::ProfileRenderMapResult* pPRMResult = NULL);
-	
+    
     MgByteReader* RenderMapInternal(MgdMap* map,
                                     MgdSelection* selection,
                                     MgReadOnlyLayerCollection* roLayers,

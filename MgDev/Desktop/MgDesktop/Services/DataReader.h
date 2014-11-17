@@ -11,10 +11,10 @@ class MgdFeatureConnection;
 class MG_DESKTOP_API MgdDataReader : public MgDataReader
 {
 INTERNAL_API:
-	MgdDataReader(MgdFeatureConnection* conn, FdoIDataReader* reader);
+    MgdDataReader(MgdFeatureConnection* conn, FdoIDataReader* reader);
 
 EXTERNAL_API:
-	virtual ~MgdDataReader();
+    virtual ~MgdDataReader();
 
 PUBLISHED_API:
     virtual bool ReadNext();
@@ -184,12 +184,12 @@ INTERNAL_API:
     MgByteReader* GetRaster(STRING rasterPropName, INT32 xSize, INT32 ySize);
 
 protected:
-	virtual void Dispose() { delete this; }
+    virtual void Dispose() { delete this; }
 
 private:
     STRING GetRasterPropertyName();
 
-	FdoIDataReader* m_reader;
+    FdoIDataReader* m_reader;
     Ptr<MgdFeatureConnection> m_connection;
 };
 /// \}

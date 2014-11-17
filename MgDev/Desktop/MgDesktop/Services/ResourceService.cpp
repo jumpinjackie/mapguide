@@ -24,10 +24,10 @@ static int MgDirEntryComparator(const ACE_DIRENT **d1, const ACE_DIRENT **d2)
 MgdResourceService::MgdResourceService(CREFSTRING libraryContentRoot, CREFSTRING libraryDataRoot, CREFSTRING sessionContentRoot, CREFSTRING sessionDataRoot, CREFSTRING schemaPath)
 : MgResourceService()
 { 
-	m_libraryContentPath = libraryContentRoot;
-	m_libraryDataPath = libraryDataRoot;
-	m_sessionContentPath = sessionContentRoot;
-	m_sessionDataPath = sessionDataRoot;
+    m_libraryContentPath = libraryContentRoot;
+    m_libraryDataPath = libraryDataRoot;
+    m_sessionContentPath = sessionContentRoot;
+    m_sessionDataPath = sessionDataRoot;
     m_schemaPath = schemaPath;
 }
 
@@ -35,42 +35,42 @@ MgdResourceService::~MgdResourceService() { }
 
 MgByteReader* MgdResourceService::EnumerateRepositories(CREFSTRING repositoryType) 
 { 
-	NOT_IMPLEMENTED(L"MgdResourceService::EnumerateRepositories");
+    NOT_IMPLEMENTED(L"MgdResourceService::EnumerateRepositories");
 }
 
 void MgdResourceService::CreateRepository(MgResourceIdentifier* resource, MgByteReader* content, MgByteReader* header) 
 { 
-	NOT_IMPLEMENTED(L"MgdResourceService::CreateRepository");
+    NOT_IMPLEMENTED(L"MgdResourceService::CreateRepository");
 }
 
 void MgdResourceService::DeleteRepository(MgResourceIdentifier* resource) 
 { 
-	NOT_IMPLEMENTED(L"MgdResourceService::DeleteRepository");
+    NOT_IMPLEMENTED(L"MgdResourceService::DeleteRepository");
 }
 
 //PUBLISHED_API:
 void MgdResourceService::UpdateRepository(MgResourceIdentifier* resource, MgByteReader* content, MgByteReader* header) 
 { 
-	NOT_IMPLEMENTED(L"MgdResourceService::UpdateRepository");
+    NOT_IMPLEMENTED(L"MgdResourceService::UpdateRepository");
 }
 
 STRING MgdResourceService::GetContentDirectory(MgResourceIdentifier* resId)
 {
     CHECKARGUMENTNULL(resId, L"MgdResourceService::ResolveContentPath");
 
-	STRING type = resId->GetRepositoryType();
-	STRING cntPath;
-	if (type == L"Library")
-	{
-		// [ROOT]/Content/[path]/
+    STRING type = resId->GetRepositoryType();
+    STRING cntPath;
+    if (type == L"Library")
+    {
+        // [ROOT]/Content/[path]/
 
-		STRING path = resId->GetPath();
-		STRING type = resId->GetResourceType();
-		
-		cntPath = m_libraryContentPath;
-		MgFileUtil::AppendSlashToEndOfPath(cntPath);
+        STRING path = resId->GetPath();
+        STRING type = resId->GetResourceType();
+        
+        cntPath = m_libraryContentPath;
+        MgFileUtil::AppendSlashToEndOfPath(cntPath);
 
-		cntPath += path;
+        cntPath += path;
         MgFileUtil::AppendSlashToEndOfPath(cntPath);
 
         if (MgResourceType::Folder == resId->GetResourceType())
@@ -79,23 +79,23 @@ STRING MgdResourceService::GetContentDirectory(MgResourceIdentifier* resId)
             MgFileUtil::AppendSlashToEndOfPath(cntPath);
         }
 
-		return cntPath;
-	}
-	else if (type == L"Session")
-	{
-		// [ROOT]/Content/[sessionID]/[path]/
+        return cntPath;
+    }
+    else if (type == L"Session")
+    {
+        // [ROOT]/Content/[sessionID]/[path]/
 
-		STRING path = resId->GetPath();
-		STRING type = resId->GetResourceType();
-		STRING sessionId = resId->GetRepositoryName();
-		
-		cntPath = m_sessionContentPath;
-		MgFileUtil::AppendSlashToEndOfPath(cntPath);
+        STRING path = resId->GetPath();
+        STRING type = resId->GetResourceType();
+        STRING sessionId = resId->GetRepositoryName();
+        
+        cntPath = m_sessionContentPath;
+        MgFileUtil::AppendSlashToEndOfPath(cntPath);
 
-		cntPath += sessionId;
-		MgFileUtil::AppendSlashToEndOfPath(cntPath);
+        cntPath += sessionId;
+        MgFileUtil::AppendSlashToEndOfPath(cntPath);
 
-		cntPath += path;
+        cntPath += path;
         MgFileUtil::AppendSlashToEndOfPath(cntPath);
 
         if (MgResourceType::Folder == resId->GetResourceType())
@@ -104,12 +104,12 @@ STRING MgdResourceService::GetContentDirectory(MgResourceIdentifier* resId)
             MgFileUtil::AppendSlashToEndOfPath(cntPath);
         }
 
-		return cntPath;
-	}
-	else 
-	{
-		throw new MgInvalidArgumentException(L"MgdResourceService::ResolveContentPath", __LINE__, __WFILE__, NULL, L"", NULL);
-	}
+        return cntPath;
+    }
+    else 
+    {
+        throw new MgInvalidArgumentException(L"MgdResourceService::ResolveContentPath", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 }
 
 STRING MgdResourceService::ResolveContentPath(MgResourceIdentifier* resId)
@@ -120,7 +120,7 @@ STRING MgdResourceService::ResolveContentPath(MgResourceIdentifier* resId)
 
     CHECKARGUMENTNULL(resId, L"MgdResourceService::ResolveContentPath");
 
-	path = GetContentDirectory(resId);
+    path = GetContentDirectory(resId);
     STRING type = resId->GetResourceType();
     if (MgResourceType::Folder != type)
     {
@@ -146,61 +146,61 @@ STRING MgdResourceService::ResolveDataPath(MgResourceIdentifier* resId)
     STRING cntPath;
     MG_RESOURCE_SERVICE_TRY()
 
-	CHECKARGUMENTNULL(resId, L"MgdResourceService::ResolveDataPath");
+    CHECKARGUMENTNULL(resId, L"MgdResourceService::ResolveDataPath");
 
-	STRING type = resId->GetRepositoryType();
-	if (type == L"Library")
-	{
-		// [ROOT]/Data/[path]/[name].[resourceType]/
+    STRING type = resId->GetRepositoryType();
+    if (type == L"Library")
+    {
+        // [ROOT]/Data/[path]/[name].[resourceType]/
 
-		STRING path = resId->GetPath();
-		STRING type = resId->GetResourceType();
+        STRING path = resId->GetPath();
+        STRING type = resId->GetResourceType();
         STRING resName = resId->GetName();
-		
-		cntPath = m_libraryDataPath;
-		MgFileUtil::AppendSlashToEndOfPath(cntPath);
+        
+        cntPath = m_libraryDataPath;
+        MgFileUtil::AppendSlashToEndOfPath(cntPath);
 
-		cntPath += path;
+        cntPath += path;
         MgFileUtil::AppendSlashToEndOfPath(cntPath);
 
         cntPath += resName;
         if (resId->GetResourceType() != MgResourceType::Folder)
         {
-		    cntPath += L".";
-		    cntPath += type;
+            cntPath += L".";
+            cntPath += type;
         }
-		MgFileUtil::AppendSlashToEndOfPath(cntPath);
-	}
-	else if (type == L"Session")
-	{
-		// [ROOT]/Data/[sessionID]/[path].[resourceType]/
+        MgFileUtil::AppendSlashToEndOfPath(cntPath);
+    }
+    else if (type == L"Session")
+    {
+        // [ROOT]/Data/[sessionID]/[path].[resourceType]/
 
-		STRING path = resId->GetPath();
-		STRING type = resId->GetResourceType();
+        STRING path = resId->GetPath();
+        STRING type = resId->GetResourceType();
         STRING resName = resId->GetName();
-		STRING sessionId = resId->GetRepositoryName();
-		
-		cntPath = m_sessionDataPath;
-		MgFileUtil::AppendSlashToEndOfPath(cntPath);
+        STRING sessionId = resId->GetRepositoryName();
+        
+        cntPath = m_sessionDataPath;
+        MgFileUtil::AppendSlashToEndOfPath(cntPath);
 
-		cntPath += sessionId;
-		MgFileUtil::AppendSlashToEndOfPath(cntPath);
+        cntPath += sessionId;
+        MgFileUtil::AppendSlashToEndOfPath(cntPath);
 
-		cntPath += path;
+        cntPath += path;
         MgFileUtil::AppendSlashToEndOfPath(cntPath);
 
         cntPath += resName;
         if (resId->GetResourceType() != MgResourceType::Folder)
         {
-		    cntPath += L".";
-		    cntPath += type;
+            cntPath += L".";
+            cntPath += type;
         }
-		MgFileUtil::AppendSlashToEndOfPath(cntPath);
-	}
-	else 
-	{
-		throw new MgInvalidArgumentException(L"MgdResourceService::ResolveDataPath", __LINE__, __WFILE__, NULL, L"", NULL);
-	}
+        MgFileUtil::AppendSlashToEndOfPath(cntPath);
+    }
+    else 
+    {
+        throw new MgInvalidArgumentException(L"MgdResourceService::ResolveDataPath", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     MgdLogDetail logDetail(MgServiceType::ResourceService, MgdLogDetail::InternalTrace, L"MgdResourceService::ResolveDataPath", mgStackParams);
     logDetail.AddResourceIdentifier(L"resId", resId);
@@ -318,7 +318,7 @@ void MgdResourceService::SetResource(MgResourceIdentifier* resource, MgByteReade
     if (!MgFileUtil::IsDirectory(dir))
         MgFileUtil::CreateDirectory(dir, false, true);
 
-	STRING path = ResolveContentPath(resource);
+    STRING path = ResolveContentPath(resource);
 
     if (NULL != content)
     {
@@ -452,14 +452,14 @@ void MgdResourceService::DeleteResource(MgResourceIdentifier* resource)
         ReleasePotentialLocks(resource);
 
         STRING contentPath = ResolveContentPath(resource);
-	    STRING dataPath = ResolveDataPath(resource);
-	    if (MgFileUtil::IsFile(contentPath))
-	    {
-		    MgFileUtil::DeleteFile(contentPath);
+        STRING dataPath = ResolveDataPath(resource);
+        if (MgFileUtil::IsFile(contentPath))
+        {
+            MgFileUtil::DeleteFile(contentPath);
 
-		    if (MgFileUtil::IsDirectory(dataPath))
-			    MgFileUtil::DeleteDirectory(dataPath);
-	    }
+            if (MgFileUtil::IsDirectory(dataPath))
+                MgFileUtil::DeleteDirectory(dataPath);
+        }
         else if (MgFileUtil::IsDirectory(contentPath))
         {
             //For directory deletes, everything underneath
@@ -467,7 +467,7 @@ void MgdResourceService::DeleteResource(MgResourceIdentifier* resource)
             MgFileUtil::DeleteDirectory(contentPath, true);
 
             if (MgFileUtil::IsDirectory(dataPath))
-			    MgFileUtil::DeleteDirectory(dataPath, true);
+                MgFileUtil::DeleteDirectory(dataPath, true);
         }
     }
     // Successful operation
@@ -536,11 +536,11 @@ void MgdResourceService::CopyResource(MgResourceIdentifier* sourceResource, MgRe
     if (sourceResource->ToString() == destResource->ToString())
         throw new MgInvalidArgumentException(L"MgdResourceService::CopyResource", __LINE__, __WFILE__, NULL, L"", NULL);
 
-	if (!ResourceExists(sourceResource))
+    if (!ResourceExists(sourceResource))
     {
         MgStringCollection arguments;
         arguments.Add(sourceResource->ToString());
-		throw new MgResourceNotFoundException(L"MgdResourceService::CopyResource", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgResourceNotFoundException(L"MgdResourceService::CopyResource", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if (ResourceExists(destResource) && !overwrite)
@@ -550,20 +550,20 @@ void MgdResourceService::CopyResource(MgResourceIdentifier* sourceResource, MgRe
         throw new MgDuplicateResourceException(L"MgdResourceService::CopyResource", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-	STRING srcContentPath = ResolveContentPath(sourceResource);
-	STRING srcDataPath = ResolveDataPath(sourceResource);
-	STRING dstContentPath = ResolveContentPath(destResource);
+    STRING srcContentPath = ResolveContentPath(sourceResource);
+    STRING srcDataPath = ResolveDataPath(sourceResource);
+    STRING dstContentPath = ResolveContentPath(destResource);
     STRING dstContentDir = GetContentDirectory(destResource);
-	STRING dstDataPath = ResolveDataPath(destResource);
+    STRING dstDataPath = ResolveDataPath(destResource);
 
-	//Copy content
-	if (!overwrite)
+    //Copy content
+    if (!overwrite)
     {
         if (!MgFileUtil::IsFile(dstContentPath))
         {   
             if (!MgFileUtil::PathnameExists(dstContentDir))
                 MgFileUtil::CreateDirectory(dstContentDir, false, true);
-	        MgFileUtil::CopyFile(srcContentPath, dstContentPath, overwrite);
+            MgFileUtil::CopyFile(srcContentPath, dstContentPath, overwrite);
         }
     }
     else
@@ -573,29 +573,29 @@ void MgdResourceService::CopyResource(MgResourceIdentifier* sourceResource, MgRe
             MgFileUtil::CreateDirectory(dstContentDir, false, true);
         MgFileUtil::CopyFile(srcContentPath, dstContentPath, overwrite);
     }
-	
+    
     //Copy data files
     if (MgFileUtil::IsDirectory(srcDataPath))
     {
-	    Ptr<MgStringCollection> dataFiles = new MgStringCollection();
-	    MgFileUtil::GetFilesInDirectory(dataFiles, srcDataPath, false, true);
+        Ptr<MgStringCollection> dataFiles = new MgStringCollection();
+        MgFileUtil::GetFilesInDirectory(dataFiles, srcDataPath, false, true);
 
         if (!MgFileUtil::IsDirectory(dstDataPath))
             MgFileUtil::CreateDirectory(dstDataPath, false, true);
 
-	    for (int i = 0; i < dataFiles->GetCount(); i++)
-	    {
-		    STRING fileName = dataFiles->GetItem(i);
+        for (int i = 0; i < dataFiles->GetCount(); i++)
+        {
+            STRING fileName = dataFiles->GetItem(i);
 
-		    STRING src = srcDataPath + fileName;
-		    STRING dst = dstDataPath + fileName;
+            STRING src = srcDataPath + fileName;
+            STRING dst = dstDataPath + fileName;
 
             //Overwrite flag not set and destination file exists
             if (!overwrite && MgFileUtil::IsFile(dst))
                 continue;
 
-		    MgFileUtil::CopyFile(src, dst, overwrite);
-	    }
+            MgFileUtil::CopyFile(src, dst, overwrite);
+        }
     }
 
     // Successful operation
@@ -685,23 +685,23 @@ void MgdResourceService::MoveResource(MgResourceIdentifier* sourceResource, MgRe
     {
         MgStringCollection arguments;
         arguments.Add(sourceResource->ToString());
-		throw new MgResourceNotFoundException(L"MgdResourceService::MoveResource", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgResourceNotFoundException(L"MgdResourceService::MoveResource", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-	STRING srcContentPath = ResolveContentPath(sourceResource);
-	STRING srcDataPath = ResolveDataPath(sourceResource);
-	STRING dstContentPath = ResolveContentPath(destResource);
+    STRING srcContentPath = ResolveContentPath(sourceResource);
+    STRING srcDataPath = ResolveDataPath(sourceResource);
+    STRING dstContentPath = ResolveContentPath(destResource);
     STRING dstContentDir = GetContentDirectory(destResource);
-	STRING dstDataPath = ResolveDataPath(destResource);
+    STRING dstDataPath = ResolveDataPath(destResource);
 
-	//Copy content
+    //Copy content
     if (!overwrite)
     {
         if (!MgFileUtil::IsFile(dstContentPath))
         {
             if (!MgFileUtil::PathnameExists(dstContentDir))
                 MgFileUtil::CreateDirectory(dstContentDir, false, true);
-	        MgFileUtil::CopyFile(srcContentPath, dstContentPath, overwrite);
+            MgFileUtil::CopyFile(srcContentPath, dstContentPath, overwrite);
         }
     }
     else
@@ -711,29 +711,29 @@ void MgdResourceService::MoveResource(MgResourceIdentifier* sourceResource, MgRe
             MgFileUtil::CreateDirectory(dstContentDir, false, true);
         MgFileUtil::CopyFile(srcContentPath, dstContentPath, overwrite);
     }
-	
+    
      //Copy data files
     if (MgFileUtil::IsDirectory(srcDataPath))
     {  
-	    Ptr<MgStringCollection> dataFiles = new MgStringCollection();
-	    MgFileUtil::GetFilesInDirectory(dataFiles, srcDataPath, false, true);
+        Ptr<MgStringCollection> dataFiles = new MgStringCollection();
+        MgFileUtil::GetFilesInDirectory(dataFiles, srcDataPath, false, true);
 
         if (!MgFileUtil::PathnameExists(dstDataPath))
             MgFileUtil::CreateDirectory(dstDataPath, false, true);
 
-	    for (int i = 0; i < dataFiles->GetCount(); i++)
-	    {
-		    STRING fileName = dataFiles->GetItem(i);
+        for (int i = 0; i < dataFiles->GetCount(); i++)
+        {
+            STRING fileName = dataFiles->GetItem(i);
 
-		    STRING src = srcDataPath + fileName;
-		    STRING dst = dstDataPath + fileName;
+            STRING src = srcDataPath + fileName;
+            STRING dst = dstDataPath + fileName;
 
             //Overwrite flag not set and destination file exists
             if (!overwrite && MgFileUtil::IsFile(dst))
                 continue;
 
-		    MgFileUtil::CopyFile(src, dst, overwrite);
-	    }
+            MgFileUtil::CopyFile(src, dst, overwrite);
+        }
     }
     DeleteResource(sourceResource);
 
@@ -757,18 +757,18 @@ void MgdResourceService::MoveResource(MgResourceIdentifier* sourceResource, MgRe
 
 MgByteReader* MgdResourceService::GetResourceHeader(MgResourceIdentifier* resource) 
 { 
-	NOT_IMPLEMENTED(L"MgdResourceService::GetResourceHeader");
+    NOT_IMPLEMENTED(L"MgdResourceService::GetResourceHeader");
 }
 
 void MgdResourceService::ChangeResourceOwner(MgResourceIdentifier* resource,
     CREFSTRING owner, bool includeDescendants) 
 { 
-	NOT_IMPLEMENTED(L"MgdResourceService::ChangeResourceOwner");
+    NOT_IMPLEMENTED(L"MgdResourceService::ChangeResourceOwner");
 }
 
 void MgdResourceService::InheritPermissionsFrom(MgResourceIdentifier* resource) 
 { 
-	NOT_IMPLEMENTED(L"MgdResourceService::InheritPermissionsFrom");
+    NOT_IMPLEMENTED(L"MgdResourceService::InheritPermissionsFrom");
 }
 
 void MgdResourceService::SetResourceData(MgResourceIdentifier* resource,
@@ -796,14 +796,14 @@ void MgdResourceService::SetResourceData(MgResourceIdentifier* resource,
     if (dataName.empty())
         throw new MgNullArgumentException(L"MgdResourceService::SetResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
 
-	STRING path = ResolveDataPath(resource);
+    STRING path = ResolveDataPath(resource);
     if (!MgFileUtil::IsDirectory(path))
         MgFileUtil::CreateDirectory(path, false, true);
 
-	path += dataName;
+    path += dataName;
 
-	Ptr<MgByteSink> sink = new MgByteSink(data);
-	sink->ToFile(path);
+    Ptr<MgByteSink> sink = new MgByteSink(data);
+    sink->ToFile(path);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -844,10 +844,10 @@ void MgdResourceService::DeleteResourceData(MgResourceIdentifier* resource, CREF
         throw new MgNullArgumentException(L"MgdResourceService::DeleteResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
 
     ReleasePotentialLocks(resource);
-	STRING path = ResolveDataPath(resource);
-	path += dataName;
+    STRING path = ResolveDataPath(resource);
+    path += dataName;
 
-	if (!MgFileUtil::IsFile(path))
+    if (!MgFileUtil::IsFile(path))
         throw new MgResourceDataNotFoundException(L"MgdResourceService::DeleteResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
 
     MgFileUtil::DeleteFile(path);
@@ -904,13 +904,13 @@ void MgdResourceService::RenameResourceData(MgResourceIdentifier* resource,
     if (newDataName.empty())
         throw new MgNullArgumentException(L"MgdResourceService::RenameResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
 
-	STRING path = ResolveDataPath(resource);
+    STRING path = ResolveDataPath(resource);
 
     STRING src = path + oldDataName;
     if (!MgFileUtil::IsFile(src))
         throw new MgResourceDataNotFoundException(L"MgdResourceService::RenameResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
 
-	MgFileUtil::RenameFile(path, oldDataName, newDataName, overwrite);
+    MgFileUtil::RenameFile(path, oldDataName, newDataName, overwrite);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -1340,30 +1340,30 @@ MgByteReader* MgdResourceService::EnumerateResourceData(MgResourceIdentifier* re
         throw new MgResourceNotFoundException(L"MgdResourceService::EnumerateResourceData", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-	STRING path = ResolveDataPath(resource);
-	STRING content = L"<ResourceDataList>\n";
+    STRING path = ResolveDataPath(resource);
+    STRING content = L"<ResourceDataList>\n";
 
     if (MgFileUtil::IsDirectory(path))
     {
         Ptr<MgStringCollection> dataFiles = new MgStringCollection();
-	    MgFileUtil::GetFilesInDirectory(dataFiles, path, false, true);
-	    for (INT32 i = 0; i < dataFiles->GetCount(); i++)
-	    {
-		    content += L"\t<ResourceData>\n";
-		    content += L"\t\t<Name>";
-		    content += dataFiles->GetItem(i);
-		    content += L"</Name>\n";
-		    content += L"\t\t<Type>File</Type>\n";
-		    content += L"\t</ResourceData>\n";
-	    }
+        MgFileUtil::GetFilesInDirectory(dataFiles, path, false, true);
+        for (INT32 i = 0; i < dataFiles->GetCount(); i++)
+        {
+            content += L"\t<ResourceData>\n";
+            content += L"\t\t<Name>";
+            content += dataFiles->GetItem(i);
+            content += L"</Name>\n";
+            content += L"\t\t<Type>File</Type>\n";
+            content += L"\t</ResourceData>\n";
+        }
     }
-	content += L"</ResourceDataList>";
+    content += L"</ResourceDataList>";
 
     std::string ccontent = MgUtil::WideCharToMultiByte(content);
 
-	Ptr<MgByteSource> byteSource = new MgByteSource((unsigned char*)ccontent.c_str(), (INT32)ccontent.length());
+    Ptr<MgByteSource> byteSource = new MgByteSource((unsigned char*)ccontent.c_str(), (INT32)ccontent.length());
     byteSource->SetMimeType(MgMimeType::Xml);
-	reader = byteSource->GetReader();
+    reader = byteSource->GetReader();
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -1382,22 +1382,22 @@ MgByteReader* MgdResourceService::EnumerateResourceData(MgResourceIdentifier* re
 
     MG_RESOURCE_SERVICE_THROW()
 
-	return reader.Detach();
+    return reader.Detach();
 }
 
 MgByteReader* MgdResourceService::GetRepositoryContent(MgResourceIdentifier* resource) 
 { 
-	NOT_IMPLEMENTED(L"MgdResourceService::GetRepositoryContent");
+    NOT_IMPLEMENTED(L"MgdResourceService::GetRepositoryContent");
 }
 
 MgByteReader* MgdResourceService::GetRepositoryHeader(MgResourceIdentifier* resource) 
 {
-	NOT_IMPLEMENTED(L"MgdResourceService::GetRepositoryHeader");
+    NOT_IMPLEMENTED(L"MgdResourceService::GetRepositoryHeader");
 }
 
 MgByteReader* MgdResourceService::EnumerateReferences(MgResourceIdentifier* resource) 
 {
-	NOT_IMPLEMENTED(L"MgdResourceService::EnumerateReferences");
+    NOT_IMPLEMENTED(L"MgdResourceService::EnumerateReferences");
 }
 
 bool MgdResourceService::ResourceExists(MgResourceIdentifier* resource) 
@@ -1416,13 +1416,13 @@ bool MgdResourceService::ResourceExists(MgResourceIdentifier* resource)
 
     CHECKARGUMENTNULL(resource, L"MgdResourceService::ResourceExists");
 
-	STRING path = ResolveContentPath(resource);
+    STRING path = ResolveContentPath(resource);
     STRING type = resource->GetResourceType();
 
     if (MgResourceType::Folder == type)
         ret = MgFileUtil::IsDirectory(path);
     else
-	    ret = MgFileUtil::IsFile(path);
+        ret = MgFileUtil::IsFile(path);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -1511,7 +1511,7 @@ MgByteReader* MgdResourceService::GetResourceContent(MgResourceIdentifier* resou
 
     MG_LOG_TRACE_ENTRY(L"MgdResourceService::GetResourceContent()");
 
-	CHECKARGUMENTNULL(resource, L"MgdResourceService::GetResourceContent");
+    CHECKARGUMENTNULL(resource, L"MgdResourceService::GetResourceContent");
     
     STRING resType = resource->GetResourceType();
     if (MgResourceType::Folder == resType ||
@@ -1584,7 +1584,7 @@ MgByteReader* MgdResourceService::GetResourceData(MgResourceIdentifier* resource
 
     MG_RESOURCE_SERVICE_TRY()
 
-	CHECKARGUMENTNULL(resource, L"MgdResourceService::GetResourceData");
+    CHECKARGUMENTNULL(resource, L"MgdResourceService::GetResourceData");
     if (!ResourceExists(resource))
     {
         MgStringCollection arguments;
@@ -1595,13 +1595,13 @@ MgByteReader* MgdResourceService::GetResourceData(MgResourceIdentifier* resource
     if (dataName.empty())
         throw new MgNullArgumentException(L"MgdResourceService::GetResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
 
-	STRING path = ResolveDataPath(resource);
-	path += dataName;
+    STRING path = ResolveDataPath(resource);
+    path += dataName;
 
-	if (!MgFileUtil::IsFile(path))
-		throw new MgResourceDataNotFoundException(L"MgdResourceService::GetResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
+    if (!MgFileUtil::IsFile(path))
+        throw new MgResourceDataNotFoundException(L"MgdResourceService::GetResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
 
-	Ptr<MgByteSource> source;
+    Ptr<MgByteSource> source;
 
     //As per MapGuide Server behaviour, if request is for MG_USER_CREDENTIALS return the decrypted username only
     if (dataName == MgResourceDataName::UserCredentials)
@@ -1625,7 +1625,7 @@ MgByteReader* MgdResourceService::GetResourceData(MgResourceIdentifier* resource
     else
     {
         source = new MgByteSource(path);
-	    reader = source->GetReader();
+        reader = source->GetReader();
 
         if (preProcessTags == MgResourcePreProcessingType::Substitution)
         {
@@ -1647,7 +1647,7 @@ MgByteReader* MgdResourceService::GetResourceData(MgResourceIdentifier* resource
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourceService::GetResourceData")
 
-	return reader.Detach();
+    return reader.Detach();
 }
 
 MgByteReader* MgdResourceService::GetRawCredentials(MgResourceIdentifier* resource)
@@ -1667,8 +1667,8 @@ MgByteReader* MgdResourceService::GetRawCredentials(MgResourceIdentifier* resour
     STRING path = ResolveDataPath(resource);
     path += MgResourceDataName::UserCredentials;
 
-	if (!MgFileUtil::IsFile(path))
-		throw new MgResourceDataNotFoundException(L"MgdResourceService::GetResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
+    if (!MgFileUtil::IsFile(path))
+        throw new MgResourceDataNotFoundException(L"MgdResourceService::GetResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
 
     Ptr<MgByteSource> source = new MgByteSource(path);
     blob = source->GetReader();
@@ -1680,7 +1680,7 @@ MgByteReader* MgdResourceService::GetRawCredentials(MgResourceIdentifier* resour
 
 MgDateTime* MgdResourceService::GetResourceModifiedDate(MgResourceIdentifier* resource) 
 { 
-	CHECKARGUMENTNULL(resource, L"MgdResourceService::GetResourceModifiedDate");
+    CHECKARGUMENTNULL(resource, L"MgdResourceService::GetResourceModifiedDate");
 
     STRING path = ResolveContentPath(resource);
     if (!MgFileUtil::IsFile(path))
@@ -1697,7 +1697,7 @@ MgDateTime* MgdResourceService::GetResourceModifiedDate(MgResourceIdentifier* re
 MgSerializableCollection* MgdResourceService::EnumerateParentMapDefinitions(
     MgSerializableCollection* resources) 
 { 
-	NOT_IMPLEMENTED(L"MgdResourceService::EnumerateParentMapDefinitions");
+    NOT_IMPLEMENTED(L"MgdResourceService::EnumerateParentMapDefinitions");
 }
 
 MgSerializableCollection* MgdResourceService::EnumerateParentTileSetDefinitions(MgSerializableCollection* resources)

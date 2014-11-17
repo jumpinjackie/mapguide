@@ -8,7 +8,7 @@
 MgdScrollableFeatureReader::MgdScrollableFeatureReader(MgdFeatureConnection* conn, FdoIScrollableFeatureReader* reader)
 : MgdFeatureReader(conn, (FdoIFeatureReader*)reader)
 {
-	m_scrollReader = FDO_SAFE_ADDREF(reader);
+    m_scrollReader = FDO_SAFE_ADDREF(reader);
     m_connection = SAFE_ADDREF(conn);
 
     // The reader takes ownership of the FDO connection
@@ -17,7 +17,7 @@ MgdScrollableFeatureReader::MgdScrollableFeatureReader(MgdFeatureConnection* con
 
 MgdScrollableFeatureReader::~MgdScrollableFeatureReader() 
 {
-	FDO_SAFE_RELEASE(m_scrollReader);
+    FDO_SAFE_RELEASE(m_scrollReader);
     m_connection = NULL;
 } 
 

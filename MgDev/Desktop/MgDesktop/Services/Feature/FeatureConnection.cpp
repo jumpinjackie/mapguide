@@ -217,7 +217,7 @@ void MgdFeatureConnection::OwnReader()
 
 bool MgdFeatureConnection::IsSupportedFunction(FdoFunction* fdoFunc)
 {
-	CHECKNULL(m_fdoConn, L"MgdFeatureConnection.SupportsFunction");
+    CHECKNULL(m_fdoConn, L"MgdFeatureConnection.SupportsFunction");
 
     FdoPtr<FdoIExpressionCapabilities> fec = m_fdoConn->GetExpressionCapabilities();
     CHECKNULL((FdoIExpressionCapabilities*)fec, L"MgdFeatureConnection.SupportsFunction");

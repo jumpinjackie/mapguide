@@ -10,8 +10,8 @@ class FdoITransaction;
 class MG_DESKTOP_API MgdTransaction : public MgTransaction
 {
 INTERNAL_API:
-	MgdTransaction(MgdFeatureConnection* conn, MgResourceIdentifier* resource);
-	virtual ~MgdTransaction();
+    MgdTransaction(MgdFeatureConnection* conn, MgResourceIdentifier* resource);
+    virtual ~MgdTransaction();
 
     FdoITransaction* GetFdoTransaction();
     MgdFeatureConnection* GetConnection();
@@ -19,7 +19,7 @@ INTERNAL_API:
     virtual void Deserialize(MgStream* stream);
 
 PUBLISHED_API:
-	
+    
     virtual STRING AddSavePoint(CREFSTRING suggestName);
 
     virtual void ReleaseSavePoint(CREFSTRING savePointName);
@@ -33,11 +33,11 @@ PUBLISHED_API:
     virtual MgResourceIdentifier* GetFeatureSource();
 
 protected:
-	virtual void Dispose() { delete this; }
+    virtual void Dispose() { delete this; }
 
 private:
-	MgResourceIdentifier* m_resource;
-	FdoITransaction* m_trans;
+    MgResourceIdentifier* m_resource;
+    FdoITransaction* m_trans;
     MgdFeatureConnection* m_conn;
 
 };

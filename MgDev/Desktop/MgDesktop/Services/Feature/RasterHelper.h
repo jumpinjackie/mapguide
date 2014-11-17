@@ -144,7 +144,7 @@ PUBLISHED_API:
 
     virtual INT32 DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter);
 
-	virtual INT32 DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans);
+    virtual INT32 DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans);
     
     virtual INT32 UpdateMatchingFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter);
 
