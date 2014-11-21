@@ -20,7 +20,7 @@
 #include "CriticalSection.h"
 
 #include "CoordSysCategory.h"                   //for CCoordinateSystemCategory
-#include "CoordSysUtil.h"                       //for Convert_Wide_To_Ascii, CsDictionaryOpenMode
+#include "CoordSysUtil.h"                       //for Convert_Wide_To_UTF8, CsDictionaryOpenMode
 #include "CoordSysCategoryDictionary.h"         //for CCoordinateSystemCategoryDictionary
 #include "CoordSysEnumCategory.h"               //for CCoordinateSystemEnumCategory
 
@@ -345,7 +345,7 @@ void CCoordinateSystemCategoryDictionary::Remove(CREFSTRING sName)
     MG_TRY()
 
     //Look for it in our index
-    pName = Convert_Wide_To_Ascii(sName.c_str());
+    pName = Convert_Wide_To_UTF8(sName.c_str());
 
     CCategoryNameIndexMap::const_iterator iter = Index().find(CCategoryName(pName));
 
@@ -432,7 +432,7 @@ void CCoordinateSystemCategoryDictionary::Modify(MgGuardDisposable *pDefinition)
         {
             throw new MgInvalidArgumentException(L"MgCoordinateSystemCategoryDictionary.Modify", __LINE__, __WFILE__, NULL, L"", NULL);
         }
-        pName = Convert_Wide_To_Ascii(str.c_str());
+        pName = Convert_Wide_To_UTF8(str.c_str());
 
         CCategoryNameIndexMap::const_iterator iter = Index().find(CCategoryName(pName));
 
@@ -495,7 +495,7 @@ MgCoordinateSystemCategory* CCoordinateSystemCategoryDictionary::GetCategory(CRE
     MG_TRY()
 
         //Look for it in our index
-        pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
+        pName = Convert_Wide_To_UTF8(sName.c_str());    //need to delete [] pName
         CCategoryNameIndexMap::const_iterator iter = Index().find(CCategoryName(pName));
 
         //Did we find it?
@@ -547,7 +547,7 @@ bool CCoordinateSystemCategoryDictionary::Has(CREFSTRING sName)
     MG_TRY()
 
         //Look in our index
-        pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
+        pName = Convert_Wide_To_UTF8(sName.c_str());    //need to delete [] pName
 
         SmartCriticalClass csmapLock;
 
@@ -605,7 +605,7 @@ void CCoordinateSystemCategoryDictionary::Rename(CREFSTRING sOldName, CREFSTRING
     MG_TRY()
 
         //Make sure def with old name is present
-        pOldName = Convert_Wide_To_Ascii(sOldName.c_str());
+        pOldName = Convert_Wide_To_UTF8(sOldName.c_str());
         CCategoryName oldCategory(pOldName);
 
         CCategoryNameIndexMap::iterator iter = Index().find(oldCategory);
@@ -626,7 +626,7 @@ void CCoordinateSystemCategoryDictionary::Rename(CREFSTRING sOldName, CREFSTRING
             throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemCategoryDictionary.Rename", __LINE__, __WFILE__, &arguments, L"MgCoordinateSystemNotFoundException", NULL);
         }
 
-        pNewName = Convert_Wide_To_Ascii(sNewName.c_str());
+        pNewName = Convert_Wide_To_UTF8(sNewName.c_str());
         if (CSrplCatNameEx(pOldName, pNewName))
             throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemCategoryDictionary.Rename", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotFoundException", NULL);
 

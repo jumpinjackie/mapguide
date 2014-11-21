@@ -17,7 +17,7 @@
 
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
-#include "CoordSysUtil.h"       //for Convert_Wide_To_Ascii
+#include "CoordSysUtil.h"       //for Convert_Wide_To_UTF8
 #include "CriticalSection.h"    //for SmartCriticalClass
 
 #include "Spatial/MathUtility.h"

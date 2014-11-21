@@ -18,7 +18,7 @@
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
 #include "CriticalSection.h"
-#include "CoordSysUtil.h"                   //for Convert_Wide_To_Ascii, CsDictionaryOpenMode
+#include "CoordSysUtil.h"                   //for Convert_Wide_To_UTF8, CsDictionaryOpenMode
 #include "MentorUtil.h"                     //for BuildDtDefFromInterface + various utilities
 
 #include "CoordSysGeodeticTransformDef.h"   //for CCoordinateSystemGeodeticTransformDef

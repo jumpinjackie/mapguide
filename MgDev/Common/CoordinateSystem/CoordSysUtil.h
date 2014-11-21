@@ -85,6 +85,26 @@ inline void AppendSlashToEndOfPath(REFSTRING path)
 }
 
 inline char *
+Convert_Wide_To_UTF8 (const wchar_t *wstr)
+{
+  // Short circuit null pointer case
+  if (wstr == 0)
+    return 0;
+
+  return MgUtil::WideCharToMultiByte(wstr);
+}
+
+inline wchar_t *
+Convert_UTF8_To_Wide (const char *str)
+{
+  // Short circuit null pointer case
+  if (str == 0)
+    return 0;
+
+  return MgUtil::MultiByteToWideChar(str);
+}
+
+inline char *
 Convert_Wide_To_Ascii (const wchar_t *wstr)
 {
   // Short circuit null pointer case

@@ -24,7 +24,7 @@
 #include "CoordSysEnumEllipsoid.h"          //for CCoordinateSystemEnumEllipsoid
 #include "CoordSysEllipsoidDictionary.h"    //for CCoordinateSystemEllipsoidDictionary
 
-#include "CoordSysUtil.h"                   //for Convert_Wide_To_Ascii
+#include "CoordSysUtil.h"                   //for Convert_Wide_To_UTF8
 #include "MentorUtil.h"                     //for OpenDictionaryFile()
 #include "MentorDictionary.h"
 #include "cs_map.h"
@@ -471,7 +471,7 @@ MgCoordinateSystemEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEllipsoid(
     MG_TRY()
 
     //Get the name to search for
-    pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
+    pName = Convert_Wide_To_UTF8(sName.c_str()); //need to delete [] pName
 
     //Look in the dictionary
     pDef = eldef(pName);
@@ -529,7 +529,7 @@ bool CCoordinateSystemEllipsoidDictionary::Has(CREFSTRING sName)
     MG_TRY()
 
     //Get the name to search for
-    char *pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
+    char *pName = Convert_Wide_To_UTF8(sName.c_str()); //need to delete [] pName
     if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoidDictionary.Has", __LINE__, __WFILE__, NULL, L"", NULL);

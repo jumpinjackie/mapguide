@@ -21,7 +21,7 @@
 
 #include "CoordSys.h"           //for CCoordinateSystem
 #include "CoordSysEnum.h"       //for CCoordinateSystemEnum
-#include "CoordSysUtil.h"       //for Convert_Wide_To_Ascii, CsDictionaryOpenMode
+#include "CoordSysUtil.h"       //for Convert_Wide_To_UTF8, CsDictionaryOpenMode
 #include "CoordSysDictionary.h" //for CCoordinateSystemDictionary
 #include "MentorUtil.h"            //for OpenDictionaryFile()
 #include "MentorDictionary.h"   //for MentorDictionary
@@ -553,7 +553,7 @@ MgCoordinateSystem* CCoordinateSystemDictionary::GetCoordinateSystem(CREFSTRING 
     MG_TRY()
 
     //Get the name to search for
-    pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
+    pName = Convert_Wide_To_UTF8(sName.c_str()); //need to delete [] pName
 
     if (NULL == pName)
     {
@@ -630,7 +630,7 @@ bool CCoordinateSystemDictionary::Has(CREFSTRING sName)
 
     MG_TRY()
     //Get the name to search for
-    char *pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
+    char *pName = Convert_Wide_To_UTF8(sName.c_str()); //need to delete [] pName
     if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDictionary.Has", __LINE__, __WFILE__, NULL, L"", NULL);

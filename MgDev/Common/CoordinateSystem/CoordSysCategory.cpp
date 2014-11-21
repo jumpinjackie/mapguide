@@ -22,7 +22,7 @@
 
 #include "CoordSysCategory.h"                   //for CCoordinateSystemCategory
 #include "CoordSysEnumCoordinateSystemInCategory.h"   //for CCoordinateSystemEnumCoordinateSystemInCategory
-#include "CoordSysUtil.h"                       //for Convert_Wide_To_Ascii
+#include "CoordSysUtil.h"                       //for Convert_Wide_To_UTF8
 #include "MentorUtil.h"                            //for IsLegalMentorName
 #include <algorithm>                            //for std::find
 
@@ -141,7 +141,7 @@ STRING CCoordinateSystemCategory::GetName()
 
     MG_TRY()
 
-        pszwName = Convert_Ascii_To_Wide(this->mp_ctDef->ctName);
+        pszwName = Convert_UTF8_To_Wide(this->mp_ctDef->ctName);
         categoryName = pszwName;
 
     MG_CATCH(L"MgCoordinateSystemCategory.GetName");
@@ -168,7 +168,7 @@ void CCoordinateSystemCategory::SetName(CREFSTRING sName)
             throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.SetName", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        pszNewName = Convert_Wide_To_Ascii(sName.c_str());
+        pszNewName = Convert_Wide_To_UTF8(sName.c_str());
         CS_stncp(this->mp_ctDef->ctName, pszNewName, cs_CATDEF_CATNMSZ);
 
     MG_CATCH(L"MgCoordinateSystemCategory.SetName")
@@ -351,7 +351,7 @@ std::vector<STRING>& CCoordinateSystemCategory::GetAllCsNames()
         {
             for(ulong32_t i = 0; i < this->mp_ctDef->nameCnt; ++i)
             {
-                wchar_t *pszwCsName = Convert_Ascii_To_Wide(this->mp_ctDef->csNames[i].csName);
+                wchar_t *pszwCsName = Convert_UTF8_To_Wide(this->mp_ctDef->csNames[i].csName);
                 this->m_listCoordinateSystemNames.push_back(pszwCsName);
                 delete[] pszwCsName;
             }
@@ -400,7 +400,7 @@ void CCoordinateSystemCategory::AddCoordinateSystem(CREFSTRING sName)
     std::vector<STRING>& allCsNames = this->GetAllCsNames();
 
     //Make sure it's a legal name
-    pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
+    pName = Convert_Wide_To_UTF8(sName.c_str());    //need to delete [] pName
     if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.AddCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -455,7 +455,7 @@ void CCoordinateSystemCategory::RemoveCoordinateSystem(CREFSTRING sName)
         std::vector<STRING>& allCsNames = this->GetAllCsNames();
 
         //Make sure it's a legal name
-        pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
+        pName = Convert_Wide_To_UTF8(sName.c_str());    //need to delete [] pName
         _ASSERT(NULL != pName); //would throw an exception otherwise
 
         if (!IsLegalMentorName(pName))
@@ -503,7 +503,7 @@ bool CCoordinateSystemCategory::HasCoordinateSystem(CREFSTRING sName)
     MG_TRY()
 
         //Make sure it's a legal name
-        pName = Convert_Wide_To_Ascii(sName.c_str());
+        pName = Convert_Wide_To_UTF8(sName.c_str());
         if (IsLegalMentorName(pName))
         {
             //Try to find it

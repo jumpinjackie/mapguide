@@ -910,7 +910,7 @@ MgCoordinateSystemGeodeticTransformDef* CCoordinateSystemTransform::GetGeodeticT
 
         //actually, CSMAP automatically sets a name up for the transformation
         //presumably, [xfrmName] is never empty
-        pDefinitionName = Convert_Ascii_To_Wide (xfrmDefPtr->xfrmName);
+        pDefinitionName = Convert_UTF8_To_Wide (xfrmDefPtr->xfrmName);
         bool hasCatalogDef = (NULL != pDefinitionName && L'\0' != pDefinitionName[0]);
         if (hasCatalogDef)
         {
@@ -982,7 +982,7 @@ MgCoordinateSystemGeodeticPath* CCoordinateSystemTransform::GetExplicitGeodeticP
     // CS-MAP transformation object.
     if (m_pDtcprm->pathName [0] != '\0')
     {
-        wchar_t* pwszDtName = Convert_Ascii_To_Wide (m_pDtcprm->pathName);
+        wchar_t* pwszDtName = Convert_UTF8_To_Wide (m_pDtcprm->pathName);
         pathDefName = pwszDtName;
         delete[] pwszDtName;
         pCatalog = csFactory.GetCatalog();

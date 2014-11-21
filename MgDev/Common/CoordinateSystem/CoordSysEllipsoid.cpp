@@ -20,7 +20,7 @@
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
 
-#include "CoordSysUtil.h"               //for Convert_Wide_To_Ascii
+#include "CoordSysUtil.h"               //for Convert_Wide_To_UTF8
 #include "MentorUtil.h"                 //for IsLegalMentorName
 #include "CoordSysEllipsoid.h"          //for CCoordinateSystemEllipsoid
 
@@ -77,7 +77,7 @@ void CCoordinateSystemEllipsoid::SetString(CREFSTRING sSrc, char* pDest, int nMa
     }
 
     //Convert to a C++ string, for Mentor's sake
-    char *pStr = Convert_Wide_To_Ascii(sSrc.c_str()); //need to delete[] pStr
+    char *pStr = Convert_Wide_To_UTF8(sSrc.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoid.SetString", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -119,7 +119,7 @@ STRING CCoordinateSystemEllipsoid::GetElCode()
 
     MG_TRY()
 
-    wchar_t *pName = Convert_Ascii_To_Wide(m_def.key_nm);
+    wchar_t *pName = Convert_UTF8_To_Wide(m_def.key_nm);
     if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoid.GetElCode", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -150,7 +150,7 @@ void CCoordinateSystemEllipsoid::SetElCode(CREFSTRING sCode)
     }
 
     //Convert to a C++ string, for Mentor's sake
-    char *pStr = Convert_Wide_To_Ascii(sCode.c_str()); //need to delete[] pStr
+    char *pStr = Convert_Wide_To_UTF8(sCode.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoid.SetElCode", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -328,7 +328,7 @@ STRING CCoordinateSystemEllipsoid::GetDescription()
     STRING sDesc;
 
     MG_TRY()
-    wchar_t *pDesc = Convert_Ascii_To_Wide(m_def.name);
+    wchar_t *pDesc = Convert_UTF8_To_Wide(m_def.name);
     if (NULL == pDesc)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoid.GetDescription", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -366,7 +366,7 @@ STRING CCoordinateSystemEllipsoid::GetGroup()
     STRING sGroup;
 
     MG_TRY()
-    wchar_t *pGroup = Convert_Ascii_To_Wide(m_def.group);
+    wchar_t *pGroup = Convert_UTF8_To_Wide(m_def.group);
     if (NULL == pGroup)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoid.GetGroup", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -403,7 +403,7 @@ STRING CCoordinateSystemEllipsoid::GetSource()
     STRING sSource;
 
     MG_TRY()
-    wchar_t *pSource = Convert_Ascii_To_Wide(m_def.source);
+    wchar_t *pSource = Convert_UTF8_To_Wide(m_def.source);
     if (NULL == pSource)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoid.GetSource", __LINE__, __WFILE__, NULL, L"", NULL);

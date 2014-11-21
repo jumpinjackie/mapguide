@@ -21,7 +21,7 @@
 #include "CoordSysCommon.h"
 #include "CriticalSection.h"
 
-#include "CoordSysUtil.h"               //for Convert_Wide_To_Ascii
+#include "CoordSysUtil.h"               //for Convert_Wide_To_UTF8
 #include "MentorUtil.h"                 //for OpenDictionaryFile()
 #include "MentorDictionary.h"
 

@@ -17,7 +17,7 @@
 
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
-#include "CoordSysUtil.h"       //for Convert_Wide_To_Ascii
+#include "CoordSysUtil.h"       //for Convert_Wide_To_UTF8
 #include "CriticalSection.h"    //for SmartCriticalClass
 
 #include "CoordSysGrids.h"
@@ -146,7 +146,7 @@ void CCoordinateSystemMgrs::InitFromEllipsoid(CREFSTRING sEllipsoidCode)
     short sBessel=GetBesselFromLetteringScheme(m_nLetteringScheme);
 
     //Convert to a C++ string, for Mentor's sake
-    char *pStr = Convert_Wide_To_Ascii(sEllipsoidCode.c_str()); //need to delete[] pStr
+    char *pStr = Convert_Wide_To_UTF8(sEllipsoidCode.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
         if (m_bExceptionsOn)
@@ -187,7 +187,7 @@ void CCoordinateSystemMgrs::InitFromDatum(CREFSTRING sDatumCode)
     short sBessel=GetBesselFromLetteringScheme(m_nLetteringScheme);
 
     //Convert to a C++ string, for Mentor's sake
-    char *pStr = Convert_Wide_To_Ascii(sDatumCode.c_str()); //need to delete[] pStr
+    char *pStr = Convert_Wide_To_UTF8(sDatumCode.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
         if (m_bExceptionsOn)
@@ -738,7 +738,7 @@ INT32 CCoordinateSystemMgrs::ConvertFromLonLat(double dLongitude, double dLatitu
     if (0==nResult)
     {
         //success, return the MGRS string
-        wchar_t* pMgrs = Convert_Ascii_To_Wide(szMgrs);
+        wchar_t* pMgrs = Convert_UTF8_To_Wide(szMgrs);
         if (NULL == pMgrs)
         {
             if (m_bExceptionsOn)
@@ -861,7 +861,7 @@ INT32 CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs, double& dLongitud
     }
 
     //Convert to a char*
-    char *pMgrs = Convert_Wide_To_Ascii(sMgrs.c_str()); //need to delete[] pStr
+    char *pMgrs = Convert_Wide_To_UTF8(sMgrs.c_str()); //need to delete[] pStr
     if (NULL == pMgrs)
     {
         if (m_bExceptionsOn)

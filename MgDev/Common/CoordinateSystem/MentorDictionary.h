@@ -615,7 +615,7 @@ namespace MentorDictionary
         const wchar_t* kpName)
     {
         //Make sure the specified definition is present
-        char *pName = Convert_Wide_To_Ascii(kpName);    //need to delete [] pName;
+        char *pName = Convert_Wide_To_UTF8(kpName);    //need to delete [] pName;
         if (NULL == pName)
         {
             throw new MgOutOfMemoryException(L"MentorDictionary.RemoveDef", __LINE__, __WFILE__, NULL, L"", NULL);

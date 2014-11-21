@@ -20,7 +20,7 @@
 
 #include "CoordSysEnumInteger32.h"      //for CCoordinateSystemEnumInteger32
 #include "CoordSysUnitInformation.h"    //for CCoordinateSystemUnitInformation
-#include "CoordSysUtil.h"               //for Convert_Ascii_To_Wide
+#include "CoordSysUtil.h"               //for Convert_UTF8_To_Wide
 #include "MentorUtil.h"                 //for IsLegalMentorName()
 
 using namespace CSLibrary;
@@ -252,7 +252,7 @@ INT32 CCoordinateSystemUnitInformation::GetUnitType(INT32 unit)
 //
 STRING CCoordinateSystemUnitInformation::GetTagString(INT32 unit)
 {
-    wchar_t* pszTag = Convert_Ascii_To_Wide(StringFromUnit(unit));
+    wchar_t* pszTag = Convert_UTF8_To_Wide(StringFromUnit(unit));
     if (NULL == pszTag)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemUnitInformation.GetTagString", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -293,7 +293,7 @@ STRING CCoordinateSystemUnitInformation::GetAbbreviation(INT32 unit)
             if (0 != strcmp(kpAbbrev, " z"))
             {
                 //The unit has an abbreviation.
-                wchar_t* pAbbrev = Convert_Ascii_To_Wide(kpAbbrev);
+                wchar_t* pAbbrev = Convert_UTF8_To_Wide(kpAbbrev);
                 sAbbrev=pAbbrev;
                 delete[] pAbbrev;
             }

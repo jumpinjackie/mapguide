@@ -23,7 +23,7 @@
 
 #include "CoordSysDatum.h"                      //for CCoordinateSystemDatum
 #include "CoordSysGeodeticTransformation.h"     //for CCoordinateSystemGeodeticTransformation
-#include "CoordSysUtil.h"                       //for Convert_Wide_To_Ascii
+#include "CoordSysUtil.h"                       //for Convert_Wide_To_UTF8
 #include "MentorUtil.h"                         //for BuildDtDefFromInterface
 
 using namespace CSLibrary;
@@ -149,7 +149,7 @@ void CCoordinateSystemDatum::InitFromCatalog(const cs_Dtdef_& def,
     }
 
     //Get the ellipsoid name the datum uses
-    wchar_t* pwszElName=Convert_Ascii_To_Wide(def.ell_knm);
+    wchar_t* pwszElName=Convert_UTF8_To_Wide(def.ell_knm);
     if (!pwszElName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.InitFromCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -221,7 +221,7 @@ STRING CCoordinateSystemDatum::GetDtCode()
     STRING sCode;
 
     MG_TRY()
-    wchar_t* pName = Convert_Ascii_To_Wide(m_DtDef.key_nm);
+    wchar_t* pName = Convert_UTF8_To_Wide(m_DtDef.key_nm);
     if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetDtCode", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -255,7 +255,7 @@ void CCoordinateSystemDatum::SetDtCode(CREFSTRING sCode)
     }
 
     //Convert to a C++ string, for Mentor's sake
-    char *pStr = Convert_Wide_To_Ascii(sCode.c_str()); //need to delete[] pStr
+    char *pStr = Convert_Wide_To_UTF8(sCode.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.SetDtCode", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -373,7 +373,7 @@ bool CCoordinateSystemDatum::IsUsable(MgCoordinateSystemCatalog *pCatalog)
     }
 
     //Build a wchar_t* from the ellipsoid name
-    wchar_t* pStrEl = Convert_Ascii_To_Wide(m_datum.ell_knm);
+    wchar_t* pStrEl = Convert_UTF8_To_Wide(m_datum.ell_knm);
     if (NULL == pStrEl)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.IsUsable", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -503,7 +503,7 @@ STRING CCoordinateSystemDatum::GetDescription()
     STRING sDesc;
 
     MG_TRY()
-    wchar_t* pDesc = Convert_Ascii_To_Wide(m_datum.dt_name);
+    wchar_t* pDesc = Convert_UTF8_To_Wide(m_datum.dt_name);
     if (NULL == pDesc)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetDescription", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -543,7 +543,7 @@ STRING CCoordinateSystemDatum::GetGroup()
     STRING sGroup;
 
     MG_TRY()
-    wchar_t *pGroup = Convert_Ascii_To_Wide(m_DtDef.group);
+    wchar_t *pGroup = Convert_UTF8_To_Wide(m_DtDef.group);
     if (NULL == pGroup)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetGroup", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -579,7 +579,7 @@ STRING CCoordinateSystemDatum::GetSource()
     STRING sSource;
 
     MG_TRY()
-    wchar_t *pSource = Convert_Ascii_To_Wide(m_DtDef.source);
+    wchar_t *pSource = Convert_UTF8_To_Wide(m_DtDef.source);
     if (NULL == pSource)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetSource", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -662,7 +662,7 @@ STRING CCoordinateSystemDatum::GetLocation()
     STRING sLoc;
 
     MG_TRY()
-    wchar_t* pLoc = Convert_Ascii_To_Wide(m_DtDef.locatn);
+    wchar_t* pLoc = Convert_UTF8_To_Wide(m_DtDef.locatn);
     if (NULL == pLoc)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetLocation", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -699,7 +699,7 @@ STRING CCoordinateSystemDatum::GetCountryOrState()
     STRING sCountryOrState;
 
     MG_TRY()
-    wchar_t *pCountryOrState = Convert_Ascii_To_Wide(m_DtDef.cntry_st);
+    wchar_t *pCountryOrState = Convert_UTF8_To_Wide(m_DtDef.cntry_st);
     if (NULL == pCountryOrState)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetCountryOrState", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -737,7 +737,7 @@ STRING CCoordinateSystemDatum::GetEllipsoid()
     STRING sEllipsoid;
 
     MG_TRY()
-    wchar_t* pEllipsoid = Convert_Ascii_To_Wide(m_DtDef.ell_knm);
+    wchar_t* pEllipsoid = Convert_UTF8_To_Wide(m_DtDef.ell_knm);
     if (NULL == pEllipsoid)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -771,7 +771,7 @@ void CCoordinateSystemDatum::SetEllipsoid(CREFSTRING sEllipsoid)
     }
 
     //Convert wchar_t* to C++ string
-    char *pStr = Convert_Wide_To_Ascii(sEllipsoid.c_str()); //need to delete [] pStr
+    char *pStr = Convert_Wide_To_UTF8(sEllipsoid.c_str()); //need to delete [] pStr
     if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.SetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -857,7 +857,7 @@ void CCoordinateSystemDatum::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid 
     }
 
     //Convert wchar_t* to C++ string
-    char *pStr = Convert_Wide_To_Ascii(sEllipsoid.c_str()); //need to delete [] pStr
+    char *pStr = Convert_Wide_To_UTF8(sEllipsoid.c_str()); //need to delete [] pStr
     if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.SetEllipsoidDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -984,7 +984,7 @@ void CCoordinateSystemDatum::SetString(CREFSTRING sSrc, char *pDest, UINT32 nMax
     }
 
     //Convert to a C++ string, for Mentor's sake
-    char *pStr = Convert_Wide_To_Ascii(sSrc.c_str()); //need to delete[] pStr
+    char *pStr = Convert_Wide_To_UTF8(sSrc.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.SetString", __LINE__, __WFILE__, NULL, L"", NULL);

@@ -21,7 +21,7 @@
 #include "CoordSysCommon.h"
 
 #include "CoordSysEnumCoordinateSystemInCategory.h"     //for CCoordinateSystemEnumCoordinateSystemInCategory
-#include "CoordSysUtil.h"                               //for Convert_Ascii_To_Wide
+#include "CoordSysUtil.h"                               //for Convert_UTF8_To_Wide
 #include "MentorUtil.h"                                 //for IsLegalMentorName()
 
 using namespace CSLibrary;

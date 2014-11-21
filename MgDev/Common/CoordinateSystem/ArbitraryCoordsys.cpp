@@ -18,7 +18,7 @@
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
 
-#include "CoordSysUtil.h"                       //for Convert_Wide_To_Ascii, CsDictionaryOpenMode
+#include "CoordSysUtil.h"                       //for Convert_Wide_To_UTF8, CsDictionaryOpenMode
 #include "ArbitraryCoordsys.h"
 #include "MentorUtil.h"            //for BuildCsprmFromArbitraryDef
 
@@ -165,7 +165,7 @@ bool CCsArbitraryCoordinateSystemUtil::IsArbitrary(const wchar_t* wszWktCoordina
 {
     if(wszWktCoordinateSystem)
     {
-        char* tempSrsWkt = Convert_Wide_To_Ascii(wszWktCoordinateSystem);
+        char* tempSrsWkt = Convert_Wide_To_UTF8(wszWktCoordinateSystem);
         string srsWkt = tempSrsWkt;
         delete [] tempSrsWkt;
         tempSrsWkt = NULL;
@@ -187,7 +187,7 @@ bool CCsArbitraryCoordinateSystemUtil::WktToCsmapCoordSys(const wchar_t* wszCoor
     {
         return false;
     }
-    char* tempSrsWkt = Convert_Wide_To_Ascii(wszCoordSys);
+    char* tempSrsWkt = Convert_Wide_To_UTF8(wszCoordSys);
     string srsWkt = tempSrsWkt;
     delete [] tempSrsWkt;
     tempSrsWkt = NULL;
@@ -280,7 +280,7 @@ bool CCsArbitraryCoordinateSystemUtil::WktToCsmapCoordSys(const wchar_t* wszCoor
                         string sUnitWkt = vComponents.at(0);
                         if(sUnitWkt.length() > 0)
                         {
-                            wchar_t* wsUnits = Convert_Ascii_To_Wide(sUnitWkt.c_str());
+                            wchar_t* wsUnits = Convert_UTF8_To_Wide(sUnitWkt.c_str());
 
                             //-- ensure the scale is valid
                             string sScale = vComponents.at(1);
@@ -301,8 +301,8 @@ bool CCsArbitraryCoordinateSystemUtil::WktToCsmapCoordSys(const wchar_t* wszCoor
                             {
                                 if(_wcsicmp(wsUnits, CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].unitsCode) == 0)
                                 {
-                                    char* tempname = Convert_Wide_To_Ascii(CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].code);
-                                    char* tempunit = Convert_Wide_To_Ascii(CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].unitsCode);
+                                    char* tempname = Convert_Wide_To_UTF8(CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].code);
+                                    char* tempunit = Convert_Wide_To_UTF8(CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].unitsCode);
                                     CS_stncp(csdef.key_nm, tempname, sizeof (csdef.key_nm));
                                     CS_stncp(csdef.unit, tempunit, sizeof (csdef.unit));
                                     delete [] tempname;
@@ -321,8 +321,8 @@ bool CCsArbitraryCoordinateSystemUtil::WktToCsmapCoordSys(const wchar_t* wszCoor
                                 {
                                     if (bResult && fabs (CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].conversionToMeters - csdef.unit_scl) < 5.0E-8)
                                     {
-                                        char* tempname = Convert_Wide_To_Ascii(CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].code);
-                                        char* tempunit = Convert_Wide_To_Ascii(CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].unitsCode);
+                                        char* tempname = Convert_Wide_To_UTF8(CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].code);
+                                        char* tempunit = Convert_Wide_To_UTF8(CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].unitsCode);
                                         CS_stncp(csdef.key_nm, tempname, sizeof (csdef.key_nm));
                                         CS_stncp(csdef.unit, tempunit, sizeof (csdef.unit));
                                         delete [] tempname;

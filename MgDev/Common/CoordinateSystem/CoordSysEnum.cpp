@@ -19,7 +19,7 @@
 #include "CoordSysCommon.h"
 
 #include "CoordSysEnum.h"           //for CCoordinateSystemEnum
-#include "CoordSysUtil.h"           //for Convert_Ascii_To_Wide
+#include "CoordSysUtil.h"           //for Convert_UTF8_To_Wide
 #include "MentorUtil.h"                //for IsLegalMentorName()
 
 using namespace CSLibrary;
@@ -133,7 +133,7 @@ MgDisposableCollection* CCoordinateSystemEnum::Next(UINT32 ulCount)
             return pOutput.Detach();
         }
         const char *kpName = (*m_iter).first.Name();
-        wchar_t* pStr = Convert_Ascii_To_Wide(kpName);
+        wchar_t* pStr = Convert_UTF8_To_Wide(kpName);
         if (NULL == pStr)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -187,7 +187,7 @@ MgStringCollection* CCoordinateSystemEnum::NextName(UINT32 ulCount)
         {
             continue;
         }
-        wchar_t *pwName = Convert_Ascii_To_Wide(kpName);
+        wchar_t *pwName = Convert_UTF8_To_Wide(kpName);
         if (NULL == pwName)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextName", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -222,7 +222,7 @@ MgStringCollection* CCoordinateSystemEnum::NextDescription(UINT32 ulCount)
             continue;
         }
         const char *kpDecsription = (*m_iter).second.Name();
-        wchar_t *pwDecsription = Convert_Ascii_To_Wide(kpDecsription);
+        wchar_t *pwDecsription = Convert_UTF8_To_Wide(kpDecsription);
         if (NULL == pwDecsription)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextDescription", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -300,7 +300,7 @@ bool CCoordinateSystemEnum::IsFilteredOut(const char *kpName)
     }
 
     //Get a def from the set for the Filter to work with
-    wchar_t* pStr = Convert_Ascii_To_Wide(kpName);
+    wchar_t* pStr = Convert_UTF8_To_Wide(kpName);
     if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);

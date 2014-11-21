@@ -21,7 +21,7 @@
 #include "CoordSysEnumInteger32.h"          //for CCoordinateSystemEnumInteger32
 #include "CoordSysProjectionInformation.h"  //for CCoordinateSystemProjectionInformation
 
-#include "CoordSysUtil.h"                   //for Convert_Ascii_To_Wide
+#include "CoordSysUtil.h"                   //for Convert_UTF8_To_Wide
 #include "MentorUtil.h"                        //for IsLegalMentorName()
 
 using namespace CSLibrary;
@@ -563,7 +563,7 @@ STRING CCoordinateSystemProjectionInformation::GetTagString(INT32 nProjectionCod
         throw new MgInvalidArgumentException(L"MgCoordinateSystemProjectionInformation.GetTagString", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    wchar_t* pszTag=Convert_Ascii_To_Wide(StringFromProjection(nProjectionCode));
+    wchar_t* pszTag=Convert_UTF8_To_Wide(StringFromProjection(nProjectionCode));
     if (NULL == pszTag)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemProjectionInformation.GetTagString", __LINE__, __WFILE__, NULL, L"", NULL);

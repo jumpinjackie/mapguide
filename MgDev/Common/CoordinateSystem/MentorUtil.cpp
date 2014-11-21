@@ -25,7 +25,7 @@
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
 #include "CriticalSection.h"
-#include "CoordSysUtil.h"           //for Convert_Wide_To_Ascii, CsDictionaryOpenMode
+#include "CoordSysUtil.h"           //for Convert_Wide_To_UTF8, CsDictionaryOpenMode
 #include "MentorDictionary.h"
 #ifdef _WIN32
 #include <io.h>                        //for _dup()
@@ -533,7 +533,7 @@ STRING ProjectionDescriptionFromString(const char *kpStr)
             if (!CS_stricmp (kpStr, cs_Prjtab[i].key_nm))
             {
                 // Found a match!
-                wchar_t* pwszDesc = Convert_Ascii_To_Wide(cs_Prjtab[i].descr);
+                wchar_t* pwszDesc = Convert_UTF8_To_Wide(cs_Prjtab[i].descr);
 
                 if (NULL != pwszDesc)
                 {
@@ -1643,7 +1643,7 @@ STRING MentorReadString(const char* mentorString)
 
     MG_TRY()
 
-    pString = Convert_Ascii_To_Wide(mentorString);
+    pString = Convert_UTF8_To_Wide(mentorString);
     if (NULL == pString) //ABA: this cannot be null, can it?
         throw new MgOutOfMemoryException(L"MentorUtil.ReadString", __LINE__, __WFILE__, NULL, L"", NULL);
 
@@ -1679,7 +1679,7 @@ void MentorSetString(CREFSTRING sSrc, char *pDest, UINT32 nMaxSize)
     }
 
     //Convert to a C++ string, for Mentor's sake
-    pStr = Convert_Wide_To_Ascii(sSrc.c_str()); //need to delete[] pStr
+    pStr = Convert_Wide_To_UTF8(sSrc.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MentorSetString", __LINE__, __WFILE__, NULL, L"", NULL);

@@ -19,7 +19,7 @@
 #include "CoordSysCommon.h"
 
 #include "CoordSysEnumCategory.h"           //for CCoordinateSystemEnumCategory
-#include "CoordSysUtil.h"                   //for Convert_Ascii_To_Wide
+#include "CoordSysUtil.h"                   //for Convert_UTF8_To_Wide
 #include "MentorUtil.h"                        //for IsLegalMentorName()
 
 using namespace CSLibrary;
@@ -103,7 +103,7 @@ bool CCoordinateSystemEnumCategory::IsFilteredOut(const char *kpName)
     }
 
     //Get a def from the set for the filter to work with
-    wchar_t* pStr = Convert_Ascii_To_Wide(kpName);
+    wchar_t* pStr = Convert_UTF8_To_Wide(kpName);
     if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -176,7 +176,7 @@ MgDisposableCollection* CCoordinateSystemEnumCategory::Next(UINT32 ulCount)
 
         //get the category definition for the next name in the list
         const char *kpName = (*(m_iter)).Name();
-        pStr = Convert_Ascii_To_Wide(kpName);
+        pStr = Convert_UTF8_To_Wide(kpName);
         if (NULL == pStr)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -234,7 +234,7 @@ MgStringCollection* CCoordinateSystemEnumCategory::NextName(UINT32 ulCount)
             continue;
         }
 
-        wchar_t *pwName = Convert_Ascii_To_Wide(kpName);
+        wchar_t *pwName = Convert_UTF8_To_Wide(kpName);
         if (NULL == pwName)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextName", __LINE__, __WFILE__, NULL, L"", NULL);

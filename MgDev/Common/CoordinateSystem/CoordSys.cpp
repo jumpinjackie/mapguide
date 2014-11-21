@@ -17,7 +17,7 @@
 
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
-#include "CoordSysUtil.h"      //for Convert_Wide_To_Ascii
+#include "CoordSysUtil.h"      //for Convert_Wide_To_UTF8
 #include "CriticalSection.h"
 
 #include "CoordSys.h"          //for CCoordinateSystem
@@ -136,7 +136,7 @@ void CCoordinateSystem::InitFromCatalog(const cs_Csdef_& csdef,
     bool bGeodetic=CsdefIsGeodetic(csdef);
     if (bGeodetic)
     {
-        wchar_t* pwszDtName = Convert_Ascii_To_Wide(csdef.dat_knm);
+        wchar_t* pwszDtName = Convert_UTF8_To_Wide(csdef.dat_knm);
         STRING sDtName(::ToLower(pwszDtName));
 
         delete[] pwszDtName;
@@ -180,7 +180,7 @@ void CCoordinateSystem::InitFromCatalog(const cs_Csdef_& csdef,
     }   //if it's geodetic
     else
     {
-        wchar_t* pwszElName = Convert_Ascii_To_Wide(csdef.elp_knm);
+        wchar_t* pwszElName = Convert_UTF8_To_Wide(csdef.elp_knm);
         STRING sElName(::ToLower(pwszElName));
         delete[] pwszElName;
         pwszElName = NULL;
@@ -818,7 +818,7 @@ STRING CCoordinateSystem::ToString()
 /// </summary>
 STRING CCoordinateSystem::GetUnits()
 {
-    wchar_t* pUnit = Convert_Ascii_To_Wide(m_csprm.csdef.unit);
+    wchar_t* pUnit = Convert_UTF8_To_Wide(m_csprm.csdef.unit);
     if (NULL == pUnit)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetUnits", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -984,7 +984,7 @@ STRING CCoordinateSystem::GetCsCode()
     STRING sName;
 
     MG_TRY()
-    wchar_t* pName = Convert_Ascii_To_Wide(m_csprm.csdef.key_nm);
+    wchar_t* pName = Convert_UTF8_To_Wide(m_csprm.csdef.key_nm);
     if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetCsCode", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1018,7 +1018,7 @@ void CCoordinateSystem::SetCsCode(CREFSTRING sCode)
     }
 
     //Convert to a C++ string, for Mentor's sake
-    char *pStr = Convert_Wide_To_Ascii(sCode.c_str()); //need to delete[] pStr
+    char *pStr = Convert_Wide_To_UTF8(sCode.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.SetCsCode", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1064,7 +1064,7 @@ STRING CCoordinateSystem::GetProjection()
 
     MG_TRY()
 
-    wchar_t* pProjection = Convert_Ascii_To_Wide(m_csprm.csdef.prj_knm);
+    wchar_t* pProjection = Convert_UTF8_To_Wide(m_csprm.csdef.prj_knm);
     if (NULL == pProjection)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetProjection", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1210,7 +1210,7 @@ STRING CCoordinateSystem::GetDatum()
         return L"";
     }
 
-    wchar_t* pDatum = Convert_Ascii_To_Wide(m_csprm.csdef.dat_knm);
+    wchar_t* pDatum = Convert_UTF8_To_Wide(m_csprm.csdef.dat_knm);
     if (NULL == pDatum)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetDatum", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1272,7 +1272,7 @@ STRING CCoordinateSystem::GetEllipsoid()
         return L"";
     }
 
-    wchar_t* pEllipsoid = Convert_Ascii_To_Wide(m_csprm.csdef.elp_knm);
+    wchar_t* pEllipsoid = Convert_UTF8_To_Wide(m_csprm.csdef.elp_knm);
     if (NULL == pEllipsoid)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1546,7 +1546,7 @@ bool CCoordinateSystem::IsUsable(MgCoordinateSystemCatalog *pCatalog)
         }
 
         //Build a wchar_t* from the datum name
-        wchar_t* pStrDt = Convert_Ascii_To_Wide(m_csprm.csdef.dat_knm);
+        wchar_t* pStrDt = Convert_UTF8_To_Wide(m_csprm.csdef.dat_knm);
         if (NULL == pStrDt)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystem.IsUsable", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1570,7 +1570,7 @@ bool CCoordinateSystem::IsUsable(MgCoordinateSystemCatalog *pCatalog)
         }
 
         //Build a wchar_t* from the ellipsoid name
-        wchar_t* pStrEl = Convert_Ascii_To_Wide(m_csprm.csdef.elp_knm);
+        wchar_t* pStrEl = Convert_UTF8_To_Wide(m_csprm.csdef.elp_knm);
         if (NULL == pStrEl)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystem.IsUsable", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1769,7 +1769,7 @@ STRING CCoordinateSystem::GetDescription()
     STRING sDesc;
 
     MG_TRY()
-    wchar_t* pDesc = Convert_Ascii_To_Wide(m_csprm.csdef.desc_nm);
+    wchar_t* pDesc = Convert_UTF8_To_Wide(m_csprm.csdef.desc_nm);
     if (NULL == pDesc)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetDescription", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1809,7 +1809,7 @@ STRING CCoordinateSystem::GetGroup()
 
     MG_TRY()
 
-    wchar_t* pGroup = Convert_Ascii_To_Wide(m_csprm.csdef.group);
+    wchar_t* pGroup = Convert_UTF8_To_Wide(m_csprm.csdef.group);
     if (NULL == pGroup)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetGroup", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1847,7 +1847,7 @@ STRING CCoordinateSystem::GetSource()
 
     MG_TRY()
 
-    wchar_t* pSource = Convert_Ascii_To_Wide(m_csprm.csdef.source);
+    wchar_t* pSource = Convert_UTF8_To_Wide(m_csprm.csdef.source);
     if (NULL == pSource)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetSource", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1929,7 +1929,7 @@ STRING CCoordinateSystem::GetLocation()
 
     MG_TRY()
 
-    wchar_t* pLoc = Convert_Ascii_To_Wide(m_csprm.csdef.locatn);
+    wchar_t* pLoc = Convert_UTF8_To_Wide(m_csprm.csdef.locatn);
     if (NULL == pLoc)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetLocation", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1969,7 +1969,7 @@ STRING CCoordinateSystem::GetCountryOrState()
 
     MG_TRY()
 
-    wchar_t* pCntrySt = Convert_Ascii_To_Wide(m_csprm.csdef.cntry_st);
+    wchar_t* pCntrySt = Convert_UTF8_To_Wide(m_csprm.csdef.cntry_st);
     if (NULL == pCntrySt)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetCountryOrState", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -2550,7 +2550,7 @@ void CCoordinateSystem::SetDatum(CREFSTRING sDatum)
     {
         throw new MgInvalidArgumentException(L"MgCoordinateSystem.SetDatum", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    char *pStr = Convert_Wide_To_Ascii(sDatum.c_str()); //need to delete[] pStr
+    char *pStr = Convert_Wide_To_UTF8(sDatum.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.SetDatum", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -2579,7 +2579,7 @@ void CCoordinateSystem::SetEllipsoid(CREFSTRING sEllipsoid)
     {
         throw new MgInvalidArgumentException(L"MgCoordinateSystem.SetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    char *pStr = Convert_Wide_To_Ascii(sEllipsoid.c_str()); //need to delete[] pStr
+    char *pStr = Convert_Wide_To_UTF8(sEllipsoid.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.SetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -3097,7 +3097,7 @@ void CCoordinateSystem::SetString(CREFSTRING sSrc, char *pDest, UINT32 nMaxSize)
     }
 
     //Convert to a C++ string, for Mentor's sake
-    char *pStr = Convert_Wide_To_Ascii(sSrc.c_str()); //need to delete[] pStr
+    char *pStr = Convert_Wide_To_UTF8(sSrc.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.SetString", __LINE__, __WFILE__, NULL, L"", NULL);

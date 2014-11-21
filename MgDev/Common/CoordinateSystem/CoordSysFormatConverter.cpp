@@ -84,7 +84,7 @@ STRING CCoordinateSystemFormatConverter::DefinitionToWkt(MgCoordinateSystem* pSo
         SmartCriticalClass critical(true);
         if (0==CScs2WktEx(csWktBufr,sizeof(csWktBufr),GetWktFlavor(nWktFlavor),pCsDef, pDtDef, pElDef,cs_WKTFLG_MAPNAMES))
         {
-            wchar_t* pwszWkt=Convert_Ascii_To_Wide(csWktBufr);
+            wchar_t* pwszWkt=Convert_UTF8_To_Wide(csWktBufr);
             if (!pwszWkt)
             {
                 throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.DefinitionToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -171,7 +171,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
         }
     }
 
-    pszWkt = Convert_Wide_To_Ascii(sWkt.c_str());
+    pszWkt = Convert_Wide_To_UTF8(sWkt.c_str());
     if (NULL == pszWkt)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.WktToDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -280,18 +280,18 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
         //the system had been loaded from the dictionary file
         //So, if one expects to have a description that matches the one in our dictionaries we need
         //to updat it here
-        wchar_t* pswCsName=Convert_Ascii_To_Wide(csDef.key_nm);
+        wchar_t* pswCsName=Convert_UTF8_To_Wide(csDef.key_nm);
         wchar_t* pswDtName=NULL;
         wchar_t* pswElName=NULL;
         STRING sCsNameFromDict, sDtNameFromDict, sElNameFromDict;
 
         if (dtDef.key_nm[0] != '\0')
         {
-            pswDtName=Convert_Ascii_To_Wide(dtDef.key_nm);
+            pswDtName=Convert_UTF8_To_Wide(dtDef.key_nm);
         }
         if (elDef.key_nm[0] != '\0')
         {
-            pswElName=Convert_Ascii_To_Wide(elDef.key_nm);
+            pswElName=Convert_UTF8_To_Wide(elDef.key_nm);
         }
         try
         {
@@ -486,7 +486,7 @@ STRING CCoordinateSystemFormatConverter::CodeToWkt(INT32 nFormatSource, CREFSTRI
     }
     else if (MgCoordinateSystemCodeFormat::Mentor==nFormatSource)
     {
-        char *pszCsSource = Convert_Wide_To_Ascii(sCodeSource.c_str());
+        char *pszCsSource = Convert_Wide_To_UTF8(sCodeSource.c_str());
         if (!pszCsSource)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -510,7 +510,7 @@ STRING CCoordinateSystemFormatConverter::CodeToWkt(INT32 nFormatSource, CREFSTRI
     char csWktBufr [2048];
 
     //is it an arbitrary system, one that uses NERTH projection?
-    wchar_t* wszMsiName=Convert_Ascii_To_Wide(szMsiName.c_str());
+    wchar_t* wszMsiName=Convert_UTF8_To_Wide(szMsiName.c_str());
     if (!wszMsiName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -535,7 +535,7 @@ STRING CCoordinateSystemFormatConverter::CodeToWkt(INT32 nFormatSource, CREFSTRI
         SmartCriticalClass critical(true);
         if (0==CS_cs2Wkt(csWktBufr,sizeof(csWktBufr),szMsiName.c_str(),GetWktFlavor(nWktFlavor)))
         {
-            wchar_t* wszWkt=Convert_Ascii_To_Wide(csWktBufr);
+            wchar_t* wszWkt=Convert_UTF8_To_Wide(csWktBufr);
             if (!wszWkt)
             {
                 throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -580,7 +580,7 @@ STRING CCoordinateSystemFormatConverter::WktToCode(INT32 nWktFlavor, CREFSTRING 
     cs_Csprm_ csprm;
     struct cs_Csdef_ csDef;
 
-    pszWkt = Convert_Wide_To_Ascii(sWkt.c_str());
+    pszWkt = Convert_Wide_To_UTF8(sWkt.c_str());
     if (NULL == pszWkt)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.WktToCode", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -670,7 +670,7 @@ STRING CCoordinateSystemFormatConverter::WktToCode(INT32 nWktFlavor, CREFSTRING 
             //treat various output formats
             if (MgCoordinateSystemCodeFormat::Mentor==nFormatDestination)
             {
-                wchar_t* pwszCsDestination=Convert_Ascii_To_Wide(pszCsDestination);
+                wchar_t* pwszCsDestination=Convert_UTF8_To_Wide(pszCsDestination);
                 if (pwszCsDestination)
                 {
                     sCsCodeDestination=pwszCsDestination;
@@ -743,7 +743,7 @@ STRING CCoordinateSystemFormatConverter::DefinitionToCode(MgCoordinateSystem* pS
         throw new MgInvalidArgumentException(L"MgCoordinateSystemFormatConverter.DefinitionToCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    pszCsSource = Convert_Wide_To_Ascii(sCsSource.c_str());
+    pszCsSource = Convert_Wide_To_UTF8(sCsSource.c_str());
     if (NULL == pszCsSource)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.DefinitionToCode", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -761,7 +761,7 @@ STRING CCoordinateSystemFormatConverter::DefinitionToCode(MgCoordinateSystem* pS
     if (MgCoordinateSystemCodeFormat::Mentor==nFormatDestination)
     {
         //stupid case but better than returning E_INVALIDARG
-        wchar_t* pwszCsDestination=Convert_Ascii_To_Wide(pszCsSource);
+        wchar_t* pwszCsDestination=Convert_UTF8_To_Wide(pszCsSource);
         if (pwszCsDestination)
         {
             sCsCodeDestination=pwszCsDestination;
@@ -805,7 +805,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::CodeToDefinition(INT32 nFo
 
     MG_TRY()
 
-    pszCsSource = Convert_Wide_To_Ascii(sCodeSource.c_str());
+    pszCsSource = Convert_Wide_To_UTF8(sCodeSource.c_str());
     if (NULL == pszCsSource)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -859,7 +859,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::CodeToDefinition(INT32 nFo
     {
         assert(!szMsiName.empty());
 
-        wchar_t* wszMsiName=Convert_Ascii_To_Wide(szMsiName.c_str());
+        wchar_t* wszMsiName=Convert_UTF8_To_Wide(szMsiName.c_str());
         if (!wszMsiName)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -892,7 +892,7 @@ STRING CCoordinateSystemFormatConverter::CodeToCode(INT32 nFormatSource, CREFSTR
 
     MG_TRY()
 
-    pszCsSource = Convert_Wide_To_Ascii(sCodeSource.c_str());
+    pszCsSource = Convert_Wide_To_UTF8(sCodeSource.c_str());
     if (NULL == pszCsSource)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToCode", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -931,7 +931,7 @@ STRING CCoordinateSystemFormatConverter::CodeToCode(INT32 nFormatSource, CREFSTR
                     bool bIsCoordinateSystem=IsCoordinateSystem(const_cast<char*>(szMsiName.c_str()), NULL);
                     if (bIsCoordinateSystem)
                     {
-                        wchar_t *pwszCsDestination=Convert_Ascii_To_Wide(szMsiName.c_str());
+                        wchar_t *pwszCsDestination=Convert_UTF8_To_Wide(szMsiName.c_str());
                         if (!pwszCsDestination)
                         {
                             throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToCode", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1128,7 +1128,7 @@ void CCoordinateSystemFormatConverter::ConvertArbitraryToWkt(MgCoordinateSystem*
     char* szWkt=CCsArbitraryCoordinateSystemUtil::ConvertCoordinateSystemToWkt(&def);
     if (szWkt)
     {
-        wchar_t* pwszWkt=Convert_Ascii_To_Wide(szWkt);
+        wchar_t* pwszWkt=Convert_UTF8_To_Wide(szWkt);
         sWkt=pwszWkt;
         delete[] szWkt;
         delete[] pwszWkt;
@@ -1152,7 +1152,7 @@ bool CCoordinateSystemFormatConverter::IsCoordinateSystem(CREFSTRING sCsName, ch
     {
         //get the description
         STRING sDescription=pCsDef->GetDescription();
-        *ppCsDescription = Convert_Wide_To_Ascii(sDescription.c_str());
+        *ppCsDescription = Convert_Wide_To_UTF8(sDescription.c_str());
     }
     return true;
 }
@@ -1164,7 +1164,7 @@ bool CCoordinateSystemFormatConverter::IsCoordinateSystem(char *kpCsName, char**
     {
         return false;
     }
-    wchar_t* wszName=Convert_Ascii_To_Wide(kpCsName);
+    wchar_t* wszName=Convert_UTF8_To_Wide(kpCsName);
     STRING sCsName(wszName);
     delete[] wszName;
     return IsCoordinateSystem(sCsName, ppCsDescription);

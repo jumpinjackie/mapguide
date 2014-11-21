@@ -228,7 +228,7 @@ MgGuardDisposable* DICTIONARY_BASE_TEMPLATE_METHOD::Get(CREFSTRING sName)
     char *pName = NULL;
 
     //Get the name to search for
-    pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
+    pName = Convert_Wide_To_UTF8(sName.c_str()); //need to delete [] pName
     Ptr<T> pDefinition;
 
     MG_TRY()
