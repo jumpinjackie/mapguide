@@ -1275,6 +1275,8 @@ MgByteReader* MgApplicationRepositoryManager::GetResourceData(
 
         dataBindingInfo.SetLoginUsername(m_currUserInfo->GetUserName());
         dataBindingInfo.SetLoginPassword(m_currUserInfo->GetPassword());
+        dataBindingInfo.SetSubstituteUnmanagedDataMappings(
+            resource->IsResourceTypeOf(MgResourceType::FeatureSource));
 
         // Substitute all the tags.
 
