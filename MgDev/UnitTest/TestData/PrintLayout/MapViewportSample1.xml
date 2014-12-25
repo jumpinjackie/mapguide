@@ -5,7 +5,7 @@
 		<ResourceId>String</ResourceId>
 		<Stylization>
 			<ResourceId>String</ResourceId>
-			<ExtendedData1/>
+			<ExtendedData1 />
 		</Stylization>
 		<Data>
 			<ResourceId>String</ResourceId>
@@ -17,12 +17,12 @@
 					<TargetProperty>String</TargetProperty>
 					<SourceProperty>String</SourceProperty>
 					<SourceUnits>String</SourceUnits>
-					<ExtendedData1/>
+					<ExtendedData1 />
 				</PropertyMapping>
 			</PropertyMappings>
-			<ExtendedData1/>
+			<ExtendedData1 />
 		</Data>
-		<ExtendedData1/>
+		<ExtendedData1 />
 		<MapName>String</MapName>
 		<HiddenLayerNames>
 			<Name>String</Name>
@@ -43,7 +43,7 @@
 				<Z>0.0</Z>
 			</ViewDirection>
 			<ModelUnits>String</ModelUnits>
-			<ExtendedData1/>
+			<ExtendedData1 />
 		</MapView>
 	</MapViewportDefinition>
 </PrintLayoutElementDefinition>
