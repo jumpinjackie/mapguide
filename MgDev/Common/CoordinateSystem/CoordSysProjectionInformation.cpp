@@ -32,7 +32,7 @@ extern "C" struct cs_PrjprmMap_ cs_PrjprmMap [];
 //MENTOR_MAINTENANCE:  The following constant is the number of
 //different projections supported by the Mentor library.  It
 //will need to be adjusted if Mentor adds additional projections.
-const long klNumProjections = 71;
+const long klNumProjections = 72;
 
 
 //MENTOR_MAINTENANCE:  This is a list of all projections that
@@ -109,7 +109,8 @@ INT32 kProjections[klNumProjections] = {
     MgCoordinateSystemProjectionCode::Sys34_01,
     MgCoordinateSystemProjectionCode::EdcylE,
     MgCoordinateSystemProjectionCode::PlateCarree,
-    MgCoordinateSystemProjectionCode::PvMercator
+    MgCoordinateSystemProjectionCode::PvMercator,
+    MgCoordinateSystemProjectionCode::LmMich,
 };
 
 

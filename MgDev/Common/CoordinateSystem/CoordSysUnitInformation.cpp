@@ -35,7 +35,7 @@ extern "C"
 //the number of different linear and angular units which
 //the public API supports.  These will need to be adjusted if Mentor
 //adds more units.
-const INT32 klNumLinearUnits = 50;
+const INT32 klNumLinearUnits = 53;
 const INT32 klNumAngularUnits = 11;
 
 
@@ -96,7 +96,10 @@ INT32 kLinearUnits[klNumLinearUnits] = {
     MgCoordinateSystemUnitCode::IndianYd37,
     MgCoordinateSystemUnitCode::Decameter,
     MgCoordinateSystemUnitCode::InternationalChain,
-    MgCoordinateSystemUnitCode::InternationalLink
+    MgCoordinateSystemUnitCode::InternationalLink,
+    MgCoordinateSystemUnitCode::BrFootTrunc,
+    MgCoordinateSystemUnitCode::BrChainTrunc,
+    MgCoordinateSystemUnitCode::BrLinkTrunc,
 };
 
 //MENTOR_MAINTENANCE:  This is a list of all angular units

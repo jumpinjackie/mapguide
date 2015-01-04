@@ -316,6 +316,12 @@ PUBLISHED_API:
     /// Cartesian Rotation Angle
     ///
     static const INT32 Nrthrot = 47;        
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Ellipsoid scaling factor
+    ///
+    static const INT32 EllipsoidScale = 48;
 };
 /// \}
 

@@ -189,6 +189,7 @@ static const CCsPrjAdditionalInfo s_prjInfo[] = {
     { MgCoordinateSystemProjectionCode::EdcylE,       true,    true,    false,    true,    true },
     { MgCoordinateSystemProjectionCode::PlateCarree,  true,    true,    false,    true,    true },
     { MgCoordinateSystemProjectionCode::PvMercator,   false,   true,    false,    true,    true },
+    { MgCoordinateSystemProjectionCode::LmMich,       true,    true,    false,    true,    true },
     { MgCoordinateSystemProjectionCode::Unknown,      false,   false,   false,    false,   false }
 };
 
@@ -671,6 +672,9 @@ static const UnitStrPair unitmap[] =
     { MgCoordinateSystemUnitCode::CapeFoot, "CapeFoot" },
     { MgCoordinateSystemUnitCode::InternationalChain, "IntnlChain" },
     { MgCoordinateSystemUnitCode::InternationalLink, "IntnlLink" },
+    { MgCoordinateSystemUnitCode::BrFootTrunc, "BrFootTrunc" },
+    { MgCoordinateSystemUnitCode::BrChainTrunc, "BrChainTrunc" },
+    { MgCoordinateSystemUnitCode::BrLinkTrunc, "BrLinkTrunc" },
     { MgCoordinateSystemUnitCode::Brealey, "Brealey" }, //here starts angle units
     { MgCoordinateSystemUnitCode::Degree, "Degree" },
     { MgCoordinateSystemUnitCode::Grad, "Grad" },
