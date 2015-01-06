@@ -184,7 +184,7 @@ MgByteReader* MgProxyRenderingService::RenderTileXYZ(MgMap* map,
                         MgCommand::knInt32, y,                          // Argument#4
                         MgCommand::knInt32, z,                          // Argument#5
                         MgCommand::knInt32, dpi,                        // Argument#6
-                        MgCommand::knInt32, &tileImageFormat,           // Argument#7
+                        MgCommand::knString, &tileImageFormat,          // Argument#7
                         MgCommand::knNone);                             // End of arguments
 
     SetWarning(cmd.GetWarningObject());
