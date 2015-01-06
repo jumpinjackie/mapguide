@@ -14,6 +14,7 @@ public class MapGuideTests
         
         //--------------- BEGIN Test Registration -----------------//
         tests.add(new ReadOnlyLayerCollectionTest());
+        tests.add(new RenderingServiceTest());
         //--------------- END Test Registration -------------------//
 
         for (IExternalTest test : tests)

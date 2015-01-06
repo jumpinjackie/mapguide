@@ -70,6 +70,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -80,6 +81,7 @@
     <Compile Include="DrawingService\DrawingServiceOperationExecutor.cs" />
     <Compile Include="DrawingService\Operations.cs" />
     <Compile Include="ExternalTests\CollectionTests.cs" />
+    <Compile Include="ExternalTests\RenderingServiceTests.cs" />
     <Compile Include="ExternalTests\ResourceServiceTests.cs" />
     <Compile Include="MapGuideTests.cs" />
     <Compile Include="MappingService\MappingServiceOperationExecutor.cs" />

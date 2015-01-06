@@ -56,6 +56,12 @@ namespace OSGeo.MapGuide.Test.Common
                 throw new AssertException("Reference is not null");
         }
 
+        public static void IsNotNull(object obj)
+        {
+            if (obj == null)
+                throw new AssertException("Reference is null");
+        }
+
         public static void IsTrue(bool condition)
         {
             if (!condition)
