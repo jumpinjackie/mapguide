@@ -83,7 +83,7 @@ rem set the appropriate environment variables before
 rem running
 rem ==================================================
 
-IF "%JAVA_HOME%" == "" SET JAVA_HOME=C:\Program Files (x86\Java\jdk1.6.0_33
+IF "%JAVA_HOME%" == "" SET JAVA_HOME=C:\Program Files\Java\jdk1.6.0_31
 IF "%DOXYGEN%" == "" SET DOXYGEN=%MG_DEV%\BuildTools\doxygen
 IF "%GNUWIN32%" == "" SET GNUWIN32=C:\Program Files (x86)\GnuWin32\bin
 IF "%SEVENZ%" == "" SET SEVENZ=%MG_DEV%\BuildTools\WebTools\7-Zip
