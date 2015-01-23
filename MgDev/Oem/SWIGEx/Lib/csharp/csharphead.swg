@@ -57,19 +57,22 @@ DllExport void SWIGSTDCALL SWIGRegisterCustomExceptionCallbacks_$module(SWIG_CSh
             parameters[1] = true;
 
             Type type = Type.GetType(className);
+            //NOTE: For .net Core, this will be one monolithic assembly (due to lack of AppDomain class) so no 
+            //need to probe type information from other loaded assemblies, it should all be there and populated
+            //by the SWIG-generated code
+            #if !ASPNETCORE50
             if(type == null)
             {
-              // Find the specified class in the pre-defined assemblies
-              System.Reflection.Assembly[] assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
-              foreach (System.Reflection.Assembly assem in assemblies)
-              {
-                  System.Reflection.AssemblyName assemblyName = new System.Reflection.AssemblyName(assem.FullName);
-                  String dllName = assemblyNameMap[assemblyName.Name] as String;
-                  if (!String.IsNullOrEmpty(dllName))
-                  {
+                // Find the specified class in the pre-defined assemblies
+                System.Reflection.Assembly[] assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+                foreach (System.Reflection.Assembly assem in assemblies)
+                {
+                    System.Reflection.AssemblyName assemblyName = new System.Reflection.AssemblyName(assem.FullName);
+                    if (assemblyNameMap.ContainsKey(assemblyName.Name))
+                    {
                         type = assem.GetType(className, false);
                         if (type != null)
-                          break;
+                            break;
                     }
                 }            
             
@@ -80,6 +83,7 @@ DllExport void SWIGSTDCALL SWIGRegisterCustomExceptionCallbacks_$module(SWIG_CSh
                         break;
                 }
             }
+            #endif
             if (type == null)
                 exception = new Exception("Exception (" + className + ") was thrown. No .net type could be found for this exception type");
             else
@@ -97,15 +101,19 @@ DllExport void SWIGSTDCALL SWIGRegisterCustomExceptionCallbacks_$module(SWIG_CSh
 
     static SWIGExceptionHelper() {
       SWIGRegisterCustomExceptionCallbacks_$module(customExceptionDelegate);
-      assemblyNameMap = new Hashtable();
+      assemblyNameMap = new System.Collections.Generic.Dictionary<string, string>();
+      #if ASPNETCORE50
+      assemblyNameMap["OSGeo.MapGuide"] = "OSGeo.MapGuide";
+      #else
       assemblyNameMap["OSGeo.MapGuide.Foundation"] = "OSGeo.MapGuide.Foundation";
       assemblyNameMap["OSGeo.MapGuide.Geometry"] = "OSGeo.MapGuide.Geometry";
       assemblyNameMap["OSGeo.MapGuide.PlatformBase"] = "OSGeo.MapGuide.PlatformBase";
       assemblyNameMap["OSGeo.MapGuide.MapGuideCommon"] = "OSGeo.MapGuide.MapGuideCommon";
       assemblyNameMap["OSGeo.MapGuide.Web"] = "OSGeo.MapGuide.Web";
       assemblyNameMap["Autodesk.Map.PlatformEx"] = "Autodesk.Map.PlatformEx";
+      #endif
     }
-    protected static Hashtable assemblyNameMap;
+    protected static System.Collections.Generic.Dictionary<string, string> assemblyNameMap;
   }
 
   static SWIGExceptionHelper exceptionHelper = new SWIGExceptionHelper();
@@ -154,28 +162,42 @@ DllExport void SWIGSTDCALL SWIGRegisterStringCallback_$module(SWIG_CSharpStringH
 %pragma(csharp) imclasscode=%{
   static $modulePINVOKE()
   {
-      classMap = new Hashtable();
-      classNameMap = new Hashtable();
-      assemblyNameMap = new Hashtable();
+      classMap = new System.Collections.Generic.Dictionary<int, Type>();
+      classNameMap = new System.Collections.Generic.Dictionary<int, string>();
+      assemblyNameMap = new System.Collections.Generic.Dictionary<string, string>();
+      #if ASPNETCORE50
+      assemblyNameMap["OSGeo.MapGuide"] = "OSGeo.MapGuide";
+      #else
       assemblyNameMap["OSGeo.MapGuide.Foundation"] = "OSGeo.MapGuide.Foundation";
       assemblyNameMap["OSGeo.MapGuide.Geometry"] = "OSGeo.MapGuide.Geometry";
       assemblyNameMap["OSGeo.MapGuide.PlatformBase"] = "OSGeo.MapGuide.PlatformBase";
       assemblyNameMap["OSGeo.MapGuide.MapGuideCommon"] = "OSGeo.MapGuide.MapGuideCommon";
       assemblyNameMap["OSGeo.MapGuide.Web"] = "OSGeo.MapGuide.Web";
       assemblyNameMap["Autodesk.Map.PlatformEx"] = "Autodesk.Map.PlatformEx";
+      #endif
 $initMap
   }
   static public object createObject(int id, IntPtr nameSpaceNamePtr, IntPtr classNamePtr, IntPtr cPtr, bool ownMemory)
   {
-      Type type = classMap[id] as Type;
-      if(type == null)
+      Type type = null;
+      if (classMap.ContainsKey(id))
+          type = classMap[id];
+      //NOTE: For .net Core, this will be one monolithic assembly (due to lack of AppDomain class) so no 
+      //need to probe type information from other loaded assemblies, it should all be there and populated
+      //by the SWIG-generated code
+      #if !ASPNETCORE50
+      if (type == null)
       {
-          String className = classNameMap[id] as String;
-          if (String.IsNullOrEmpty(className))
+          String className = null;
+          if (!classNameMap.ContainsKey(id))
           {
               // Marshall strings in nameSpaceNamePtr and classNamePtr from unmanaged char * to managed strings
               String nameSpaceName = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(nameSpaceNamePtr);
               className = nameSpaceName + "."  + System.Runtime.InteropServices.Marshal.PtrToStringAnsi(classNamePtr);
+          }
+          else
+          {
+              className = classNameMap[id];
           }
           
           // Find the specified class in the pre-defined assemblies
@@ -183,8 +205,7 @@ $initMap
           foreach (System.Reflection.Assembly assem in assemblies)
           {
               System.Reflection.AssemblyName assemblyName = new System.Reflection.AssemblyName(assem.FullName);
-              String dllName = assemblyNameMap[assemblyName.Name] as String;
-              if (!String.IsNullOrEmpty(dllName))
+              if (assemblyNameMap.ContainsKey(assemblyName.Name))
               {
                   type = assem.GetType(className, false);
                   if (type != null)
@@ -210,14 +231,14 @@ $initMap
       }
       
       if (type == null)
-        return null;
-      
+          return null;
+      #endif
       object[] args = new object[2] { cPtr, ownMemory };
       return Activator.CreateInstance(type, args);
   }
-  protected static Hashtable classMap;
-  protected static Hashtable classNameMap;
-  protected static Hashtable assemblyNameMap;
+  protected static System.Collections.Generic.Dictionary<int, Type> classMap;
+  protected static System.Collections.Generic.Dictionary<int, string> classNameMap;
+  protected static System.Collections.Generic.Dictionary<string, string> assemblyNameMap;
 %}
     
 %insert(runtime) %{
