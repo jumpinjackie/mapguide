@@ -12,8 +12,8 @@ FDO_DEBUG=0
 FDO_BUILD_COMPONENT=
 
 # FDO version. Make sure this matches your FDO build source
-FDO_VER_MAJOR=3
-FDO_VER_MINOR=9
+FDO_VER_MAJOR=4
+FDO_VER_MINOR=0
 FDO_VER_REV=0
 
 # Extra flags to pass to FDO build scripts

@@ -152,7 +152,7 @@ FDO_UNIT_TEST=1
 MAKE_FDO_SDK=0
 SCRIPT_ROOT=~/scripts
 FDO_SRC_ROOT=~/fdo
-FDO_VER_MM=3.9
+FDO_VER_MM=4.0
 FDO_VER_FULL=${FDO_VER_MM}.0
 MG_VER_MM=3.0
 MG_VER_FULL=${MG_VER_MM}.0
@@ -163,7 +163,9 @@ MG_SRC_ROOT=~/mapguide/trunk
 MG_SRC=$MG_SRC_ROOT/MgDev
 FDO_TARBALL=fdo-checkout.tar.gz
 MG_TARBALL=mapguide-checkout.tar.gz
-if [ -d $FDO_SRC ]; 
+FDO_INST_PATH=/usr/local/fdo-${FDO_VER_FULL}
+MG_INST_PATH=/usr/local/mapguideopensource-${MG_VER_FULL}
+if [ -d $FDO_SRC ];
 then
     HAVE_FDO=1
 fi
@@ -251,35 +253,40 @@ MG_REV=`svn info $MG_SRC | perl revnum.pl`
 > ~/unit_test_status.log
 if [ $FDO_UNIT_TEST -eq 1 ];
 then
-    export NLSPATH=/usr/local/fdo-${FDO_VER_FULL}/nls/%N
     echo [provision]: Unit test FDO
     BUILD_COMPONENT="Unit Test FDO Core"
     cd $SCRIPT_ROOT/fdo_build_area/Fdo/UnitTest
-    sudo -E ./UnitTest 2>&1 | tee ~/fdo_core_unit_test.log
+    sudo -E NLSPATH=${FDO_INST_PATH}/nls/%N ./UnitTest 2>&1 | tee ~/fdo_core_unit_test.log
     check_test
     BUILD_COMPONENT="Unit Test SHP Provider"
     cd $SCRIPT_ROOT/fdo_build_area/Providers/SHP/Src/UnitTest
-    sudo -E ./UnitTest 2>&1 | tee ~/fdo_shp_unit_test.log
+    sudo rm providers.xml
+    sudo -E NLSPATH=${FDO_INST_PATH}/nls/%N ./UnitTest 2>&1 | tee ~/fdo_shp_unit_test.log
     check_test
     BUILD_COMPONENT="Unit Test SDF Provider"
     cd $SCRIPT_ROOT/fdo_build_area/Providers/SDF/Src/UnitTest
-    sudo -E ./UnitTest 2>&1 | tee ~/fdo_sdf_unit_test.log
+    sudo rm providers.xml
+    sudo -E NLSPATH=${FDO_INST_PATH}/nls/%N ./UnitTest 2>&1 | tee ~/fdo_sdf_unit_test.log
     check_test
     BUILD_COMPONENT="Unit Test SQLite Provider"
     cd $SCRIPT_ROOT/fdo_build_area/Providers/SQLite/Src/UnitTest
-    sudo -E ./UnitTest 2>&1 | tee ~/fdo_sqlite_unit_test.log
+    sudo rm providers.xml
+    sudo -E NLSPATH=${FDO_INST_PATH}/nls/%N ./UnitTest 2>&1 | tee ~/fdo_sqlite_unit_test.log
     check_test
     BUILD_COMPONENT="Unit Test GDAL Provider"
     cd $SCRIPT_ROOT/fdo_build_area/Providers/GDAL/Src/UnitTest
-    sudo -E ./UnitTest 2>&1 | tee ~/fdo_gdal_unit_test.log
+    sudo rm providers.xml
+    sudo -E NLSPATH=${FDO_INST_PATH}/nls/%N ./UnitTest 2>&1 | tee ~/fdo_gdal_unit_test.log
     check_test
     BUILD_COMPONENT="Unit Test OGR Provider"
     cd $SCRIPT_ROOT/fdo_build_area/Providers/OGR/Src/UnitTest
-    sudo -E ./UnitTest 2>&1 | tee ~/fdo_ogr_unit_test.log
+    sudo rm providers.xml
+    sudo -E NLSPATH=${FDO_INST_PATH}/nls/%N ./UnitTest 2>&1 | tee ~/fdo_ogr_unit_test.log
     check_test
     BUILD_COMPONENT="Unit Test WMS Provider"
     cd $SCRIPT_ROOT/fdo_build_area/Providers/WMS/Src/UnitTest
-    sudo -E ./UnitTest 2>&1 | tee ~/fdo_wms_unit_test.log
+    sudo rm providers.xml
+    sudo -E NLSPATH=${FDO_INST_PATH}/nls/%N ./UnitTest 2>&1 | tee ~/fdo_wms_unit_test.log
     check_test
 fi
 if [ $MG_UNIT_TEST -eq 1 ];
@@ -305,6 +312,8 @@ then
             sudo mv UnitTestResults_${comp}.xml ~/UnitTestResults_${comp}.xml
         fi
     done
+    cd $SCRIPT_ROOT/mgdev
+    sudo -E ./run_tests.sh --prefix ${MG_INST_PATH} --with-php --with-java --logpath ~
 fi
 cd $SCRIPT_ROOT
 echo [provision]: Make output dir

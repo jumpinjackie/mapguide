@@ -1,7 +1,7 @@
 #!/bin/bash
 URL="http://download.osgeo.org/mapguide/releases/3.0.0/Release"
 #URL="http://192.168.0.4/downloads"
-FDOVER_MAJOR_MINOR=3.9
+FDOVER_MAJOR_MINOR=4.0
 FDOVER_POINT=0
 FDOVER_REV=0
 FDO_ARCH=i386

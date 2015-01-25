@@ -2,7 +2,7 @@
 TEMPDIR=/tmp/build_mapguide
 URL="http://download.osgeo.org/mapguide/releases/3.0.0/Release/ubuntu12"
 #URL="http://192.168.0.5/downloads/ubuntu12"
-FDOVER_MAJOR_MINOR=3.9
+FDOVER_MAJOR_MINOR=4.0
 FDOVER_MAJOR_MINOR_REV=${FDOVER_MAJOR_MINOR}.0
 FDOBUILD=0
 FDOARCH=i386
