@@ -73,7 +73,7 @@ void MgProxyFeatureTransaction::Rollback()
 STRING MgProxyFeatureTransaction::AddSavePoint(CREFSTRING suggestName)
 {
     CHECKNULL(m_service, L"MgProxyFeatureTransaction.AddSavePoint");
-	return m_service->AddSavePoint(m_transactionId, suggestName);
+    return m_service->AddSavePoint(m_transactionId, suggestName);
 }
 
 void MgProxyFeatureTransaction::ReleaseSavePoint(CREFSTRING savePointName)
@@ -136,7 +136,7 @@ void MgProxyFeatureTransaction::Deserialize(MgStream* stream)
 
 void MgProxyFeatureTransaction::SetService(MgFeatureService* service)
 {
-    CHECKNULL(service, L"MgProxyFeatureTransaction.SetService");
+    CHECKARGUMENTNULL(service, L"MgProxyFeatureTransaction.SetService");
 
     if (m_service == NULL)
     {

@@ -31,9 +31,9 @@
 MgSpatialUtilityCircularArc::MgSpatialUtilityCircularArc(MgCoordinate* start, MgCoordinate* mid, MgCoordinate* end) :
                                                            m_isValidArc(false), m_hasZ(false), m_isCircle(false)
 {
-    CHECKNULL(start, L"MgSpatialUtilityCircularArc.MgSpatialUtilityCircularArc");
-    CHECKNULL(mid, L"MgSpatialUtilityCircularArc.MgSpatialUtilityCircularArc");
-    CHECKNULL(end, L"MgSpatialUtilityCircularArc.MgSpatialUtilityCircularArc");
+    CHECKARGUMENTNULL(start, L"MgSpatialUtilityCircularArc.MgSpatialUtilityCircularArc");
+    CHECKARGUMENTNULL(mid, L"MgSpatialUtilityCircularArc.MgSpatialUtilityCircularArc");
+    CHECKARGUMENTNULL(end, L"MgSpatialUtilityCircularArc.MgSpatialUtilityCircularArc");
 
     MgGeometryFactory factory;
 

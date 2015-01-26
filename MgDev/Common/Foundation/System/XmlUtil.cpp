@@ -74,7 +74,7 @@ MgXmlUtil::MgXmlUtil(const char* rootElementName) :
     m_doc(NULL),
     m_ownDomDoc(true)
 {
-    CHECKNULL(rootElementName, L"MgXmlUtil.MgXmlUtil");
+    CHECKARGUMENTNULL(rootElementName, L"MgXmlUtil.MgXmlUtil");
 
     DOMImplementation* impl =
         DOMImplementationRegistry::getDOMImplementation(X("Core"));
@@ -106,7 +106,7 @@ MgXmlUtil::~MgXmlUtil()
 
 void MgXmlUtil::ParseString(const char* xmlContent)
 {
-    CHECKNULL(xmlContent, L"MgXmlUtil.MgXmlUtil");
+    CHECKARGUMENTNULL(xmlContent, L"MgXmlUtil.MgXmlUtil");
     assert(NULL == m_parser && NULL == m_bis);
     assert(NULL == m_doc && !m_ownDomDoc);
 
@@ -129,8 +129,8 @@ void MgXmlUtil::ParseString(const char* xmlContent)
 DOMElement* MgXmlUtil::AddChildNode(DOMElement* parentNode, const char* elementName)
 {
     CHECKNULL(m_doc,       L"MgXmlUtil.AddChildNode");
-    CHECKNULL(parentNode,  L"MgXmlUtil.AddChildNode");
-    CHECKNULL(elementName, L"MgXmlUtil.AddChildNode");
+    CHECKARGUMENTNULL(parentNode,  L"MgXmlUtil.AddChildNode");
+    CHECKARGUMENTNULL(elementName, L"MgXmlUtil.AddChildNode");
 
     // Add Feature Provider element
     DOMElement* childNode = m_doc->createElement(X(elementName));
@@ -152,8 +152,8 @@ void MgXmlUtil::AddTextNode(DOMElement* parentNode, const char* elementName, boo
 void MgXmlUtil::AddTextNode(DOMElement* parentNode, const char* elementName, const char* elementText)
 {
     CHECKNULL(m_doc,       L"MgXmlUtil.AddTextNode");
-    CHECKNULL(parentNode,  L"MgXmlUtil.AddTextNode");
-    CHECKNULL(elementName, L"MgXmlUtil.AddTextNode");
+    CHECKARGUMENTNULL(parentNode, L"MgXmlUtil.AddTextNode");
+    CHECKARGUMENTNULL(elementName, L"MgXmlUtil.AddTextNode");
 
     if (NULL != elementText)
     {
@@ -170,9 +170,9 @@ void MgXmlUtil::AddTextNode(DOMElement* parentNode, const char* elementName, con
 void MgXmlUtil::AddTextNode(DOMElement* parentNode, const char* elementName, const wchar_t* elementText)
 {
     CHECKNULL(m_doc,       L"MgXmlUtil.AddTextNode");
-    CHECKNULL(parentNode,  L"MgXmlUtil.AddTextNode");
-    CHECKNULL(elementName, L"MgXmlUtil.AddTextNode");
-    CHECKNULL(elementText, L"MgXmlUtil.AddTextNode");
+    CHECKARGUMENTNULL(parentNode, L"MgXmlUtil.AddTextNode");
+    CHECKARGUMENTNULL(elementName, L"MgXmlUtil.AddTextNode");
+    CHECKARGUMENTNULL(elementText, L"MgXmlUtil.AddTextNode");
 
     DOMElement* elemName = m_doc->createElement(X(elementName));
     if (NULL != elemName)
@@ -191,8 +191,8 @@ void MgXmlUtil::AddTextNode(DOMElement* parentNode, const char* elementName, con
 void MgXmlUtil::UpdateTextNode(DOMNode* parentNode, const char* elementText)
 {
     CHECKNULL(m_doc,       L"MgXmlUtil.UpdateTextNode");
-    CHECKNULL(parentNode,  L"MgXmlUtil.UpdateTextNode");
-    CHECKNULL(elementText, L"MgXmlUtil.UpdateTextNode");
+    CHECKARGUMENTNULL(parentNode, L"MgXmlUtil.UpdateTextNode");
+    CHECKARGUMENTNULL(elementText, L"MgXmlUtil.UpdateTextNode");
 
     DOMNode* child = parentNode->getFirstChild();
 
@@ -216,8 +216,8 @@ void MgXmlUtil::UpdateTextNode(DOMNode* parentNode, const char* elementText)
 void MgXmlUtil::UpdateTextNode(DOMNode* parentNode, const wchar_t* elementText)
 {
     CHECKNULL(m_doc,       L"MgXmlUtil.UpdateTextNode");
-    CHECKNULL(parentNode,  L"MgXmlUtil.UpdateTextNode");
-    CHECKNULL(elementText, L"MgXmlUtil.UpdateTextNode");
+    CHECKARGUMENTNULL(parentNode, L"MgXmlUtil.UpdateTextNode");
+    CHECKARGUMENTNULL(elementText, L"MgXmlUtil.UpdateTextNode");
 
     DOMNode* child = parentNode->getFirstChild();
 
@@ -241,8 +241,8 @@ void MgXmlUtil::UpdateTextNode(DOMNode* parentNode, const wchar_t* elementText)
 DOMNode* MgXmlUtil::GetNodeWithTextData(DOMDocument* doc, const char* elementName,
     const wchar_t* elementText)
 {
-    CHECKNULL( doc,             L"MgXmlUtil::GetNodeWithTextData" );
-    CHECKNULL( elementName,     L"MgXmlUtil::GetNodeWithTextData" );
+    CHECKARGUMENTNULL(doc, L"MgXmlUtil::GetNodeWithTextData");
+    CHECKARGUMENTNULL(elementName, L"MgXmlUtil::GetNodeWithTextData");
 
     DOMNode* ret = NULL;
 
@@ -355,7 +355,7 @@ DOMNodeList* MgXmlUtil::GetNodeList(DOMNode* parentNode,
 
 void MgXmlUtil::SetAttribute(DOMElement* node, const char* attributeName, const wchar_t* value)
 {
-    CHECKNULL(node,  L"MgXmlUtil.SetAttribute");
+    CHECKARGUMENTNULL(node, L"MgXmlUtil.SetAttribute");
 
     char* mbStr = MgUtil::WideCharToMultiByte(value);
     CHECKNULL(mbStr,  L"MgXmlUtil.SetAttribute");

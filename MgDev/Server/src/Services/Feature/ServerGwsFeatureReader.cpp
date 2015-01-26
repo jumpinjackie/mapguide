@@ -1248,25 +1248,25 @@ string MgServerGwsFeatureReader::GetBodyElementName()
 
 void MgServerGwsFeatureReader::ResponseStartUtf8(string& str)
 {
-	throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.ResponseStartUtf8",
+    throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.ResponseStartUtf8",
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 void MgServerGwsFeatureReader::ResponseEndUtf8(string& str)
 {
-	throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.ResponseEndUtf8",
+    throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.ResponseEndUtf8",
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 void MgServerGwsFeatureReader::BodyStartUtf8(string& str)
 {
-	throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.BodyStartUtf8",
+    throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.BodyStartUtf8",
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 void MgServerGwsFeatureReader::BodyEndUtf8(string& str)
 {
-	throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.BodyEndUtf8",
+    throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.BodyEndUtf8",
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
@@ -1278,7 +1278,7 @@ void MgServerGwsFeatureReader::HeaderToStringUtf8(string& str)
 
 void MgServerGwsFeatureReader::CurrentToStringUtf8(string& str)
 {
-	throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.CurrentToStringUtf8",
+    throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.CurrentToStringUtf8",
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
@@ -1756,7 +1756,7 @@ void MgServerGwsFeatureReader::AddFeatures(INT32 count)
 //////////////////////////////////////////////////////////////////
 void MgServerGwsFeatureReader::AddFeature(MgPropertyDefinitionCollection* propDefCol)
 {
-    CHECKNULL(propDefCol, L"MgServerGwsFeatureReader.AddFeature");
+    CHECKARGUMENTNULL(propDefCol, L"MgServerGwsFeatureReader.AddFeature");
 
     Ptr<MgPropertyCollection> propCol = new MgPropertyCollection();
     INT32 cnt = propDefCol->GetCount();
@@ -1938,7 +1938,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetMgClassDefinition(bool bSerializ
 
 MgByteReader* MgServerGwsFeatureReader::SerializeToXml(FdoClassDefinition* classDef)
 {
-    CHECKNULL(classDef, L"MgServerGwsFeatureReader.SerializeToXml");
+    CHECKARGUMENTNULL(classDef, L"MgServerGwsFeatureReader.SerializeToXml");
 
     FdoString* className = classDef->GetName();
     FdoFeatureSchemaP pSchema = classDef->GetFeatureSchema();

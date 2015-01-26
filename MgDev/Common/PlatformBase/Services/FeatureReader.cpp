@@ -126,7 +126,7 @@ INT32 MgFeatureReader::GetPropertyType(INT32 index)
 
 INT16 MgFeatureReader::GetMgPropertyType(MgPropertyDefinition* propDef)
 {
-    CHECKNULL((MgPropertyDefinition*)propDef, L"MgFeatureReader.GetMgPropertyType")
+    CHECKARGUMENTNULL((MgPropertyDefinition*)propDef, L"MgFeatureReader.GetMgPropertyType")
     INT32 mgPropType = 0;
 
     // Whether it is data,geometry,raster,object or association property

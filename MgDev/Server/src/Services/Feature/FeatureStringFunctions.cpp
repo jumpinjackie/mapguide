@@ -39,8 +39,8 @@ MgFeatureStringFunctions::MgFeatureStringFunctions(MgReader* reader, FdoFunction
 
 void MgFeatureStringFunctions::Initialize(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
 {
-    CHECKNULL((MgReader*)reader, L"MgFeatureStringFunctions.Initialize");
-    CHECKNULL((FdoFunction*)customFunction, L"MgFeatureStringFunctions.Initialize");
+    CHECKARGUMENTNULL((MgReader*)reader, L"MgFeatureStringFunctions.Initialize");
+    CHECKARGUMENTNULL((FdoFunction*)customFunction, L"MgFeatureStringFunctions.Initialize");
 
     if(1 == reader->GetPropertyCount())
     {

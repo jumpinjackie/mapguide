@@ -604,8 +604,8 @@ void MgSite::DeleteUsers(MgStringCollection* users)
 /// MgRoleNotFoundException
 void MgSite::GrantRoleMembershipsToUsers(MgStringCollection* roles, MgStringCollection* users)
 {
-    CHECKNULL      ( (MgStringCollection*) roles, L"MgSite::GrantRoleMembershipsToUsers" )
-    CHECKNULL      ( (MgStringCollection*) users, L"MgSite::GrantRoleMembershipsToUsers" )
+    CHECKARGUMENTNULL((MgStringCollection*)roles, L"MgSite::GrantRoleMembershipsToUsers")
+    CHECKARGUMENTNULL((MgStringCollection*)users, L"MgSite::GrantRoleMembershipsToUsers")
 
     MgCommand cmd;
 
@@ -647,8 +647,8 @@ void MgSite::GrantRoleMembershipsToUsers(MgStringCollection* roles, MgStringColl
 /// MgRoleNotFoundException
 void MgSite::RevokeRoleMembershipsFromUsers(MgStringCollection* roles, MgStringCollection* users)
 {
-    CHECKNULL      ( (MgStringCollection*) roles, L"MgSite::RevokeRoleMembershipsFromUsers" )
-    CHECKNULL      ( (MgStringCollection*) users, L"MgSite::RevokeRoleMembershipsFromUsers" )
+    CHECKARGUMENTNULL((MgStringCollection*)roles, L"MgSite::RevokeRoleMembershipsFromUsers")
+    CHECKARGUMENTNULL((MgStringCollection*)users, L"MgSite::RevokeRoleMembershipsFromUsers")
 
     MgCommand cmd;
 
@@ -690,8 +690,8 @@ void MgSite::RevokeRoleMembershipsFromUsers(MgStringCollection* roles, MgStringC
 /// MgGroupNotFoundException
 void MgSite::GrantGroupMembershipsToUsers(MgStringCollection* groups, MgStringCollection* users)
 {
-    CHECKNULL      ( (MgStringCollection*) groups, L"MgSite::GrantGroupMembershipsToUsers" )
-    CHECKNULL      ( (MgStringCollection*) users,  L"MgSite::GrantGroupMembershipsToUsers" )
+    CHECKARGUMENTNULL((MgStringCollection*)groups, L"MgSite::GrantGroupMembershipsToUsers")
+    CHECKARGUMENTNULL((MgStringCollection*)users, L"MgSite::GrantGroupMembershipsToUsers")
 
     MgCommand cmd;
 
@@ -733,8 +733,8 @@ void MgSite::GrantGroupMembershipsToUsers(MgStringCollection* groups, MgStringCo
 /// MgGroupNotFoundException
 void MgSite::RevokeGroupMembershipsFromUsers(MgStringCollection* groups, MgStringCollection* users)
 {
-    CHECKNULL      ( (MgStringCollection*) groups, L"MgSite::RevokeGroupMembershipsFromUsers" )
-    CHECKNULL      ( (MgStringCollection*) users,  L"MgSite::RevokeGroupMembershipsFromUsers" )
+    CHECKARGUMENTNULL((MgStringCollection*)groups, L"MgSite::RevokeGroupMembershipsFromUsers")
+    CHECKARGUMENTNULL((MgStringCollection*)users, L"MgSite::RevokeGroupMembershipsFromUsers")
 
     MgCommand cmd;
 
@@ -950,7 +950,7 @@ void MgSite::UpdateGroup( CREFSTRING group, CREFSTRING newGroup,
 /// MgGroupNotFoundException
 void MgSite::DeleteGroups( MgStringCollection* groups )
 {
-    CHECKNULL      ( (MgStringCollection*) groups,  L"MgSite::DeleteGroups" )
+    CHECKARGUMENTNULL((MgStringCollection*)groups, L"MgSite::DeleteGroups")
 
     MgCommand cmd;
 
@@ -991,8 +991,8 @@ void MgSite::DeleteGroups( MgStringCollection* groups )
 /// MgRoleNotFoundException
 void MgSite::GrantRoleMembershipsToGroups(MgStringCollection* roles, MgStringCollection* groups)
 {
-    CHECKNULL      ( (MgStringCollection*) roles,  L"MgSite::GrantRoleMembershipsToGroups" )
-    CHECKNULL      ( (MgStringCollection*) groups, L"MgSite::GrantRoleMembershipsToGroups" )
+    CHECKARGUMENTNULL((MgStringCollection*)roles, L"MgSite::GrantRoleMembershipsToGroups")
+    CHECKARGUMENTNULL((MgStringCollection*)groups, L"MgSite::GrantRoleMembershipsToGroups")
 
     MgCommand cmd;
 
@@ -1034,8 +1034,8 @@ void MgSite::GrantRoleMembershipsToGroups(MgStringCollection* roles, MgStringCol
 /// MgRoleNotFoundException
 void MgSite::RevokeRoleMembershipsFromGroups(MgStringCollection* roles, MgStringCollection* groups)
 {
-    CHECKNULL      ( (MgStringCollection*) roles,  L"MgSite::RevokeRoleMembershipsFromGroups" )
-    CHECKNULL      ( (MgStringCollection*) groups, L"MgSite::RevokeRoleMembershipsFromGroups" )
+    CHECKARGUMENTNULL((MgStringCollection*)roles, L"MgSite::RevokeRoleMembershipsFromGroups")
+    CHECKARGUMENTNULL((MgStringCollection*)groups, L"MgSite::RevokeRoleMembershipsFromGroups")
 
     MgCommand cmd;
 

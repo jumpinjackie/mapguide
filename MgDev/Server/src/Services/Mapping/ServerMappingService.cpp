@@ -1260,7 +1260,7 @@ MgByteReader* MgServerMappingService::DescribeRuntimeMap(MgMap* map,
                                                          INT32 requestedFeatures,
                                                          INT32 iconsPerScaleRange)
 {
-    CHECKNULL(map, L"MgServerMappingService.DescribeRuntimeMap");
+    CHECKARGUMENTNULL(map, L"MgServerMappingService.DescribeRuntimeMap");
     return DescribeRuntimeMap(map, MgImageFormats::Png, LEGEND_BITMAP_SIZE, LEGEND_BITMAP_SIZE, requestedFeatures, iconsPerScaleRange);
 }
 
@@ -1516,7 +1516,7 @@ MgByteReader* MgServerMappingService::CreateRuntimeMap(MgResourceIdentifier* map
                                                        INT32 requestedFeatures,
                                                        INT32 iconsPerScaleRange)
 {
-    CHECKNULL(mapDefinition, L"MgServerMappingService.CreateRuntimeMap");
+    CHECKARGUMENTNULL(mapDefinition, L"MgServerMappingService.CreateRuntimeMap");
     STRING mapName = mapDefinition->GetName();
     return CreateRuntimeMap(mapDefinition, mapName, sessionId, MgImageFormats::Png, LEGEND_BITMAP_SIZE, LEGEND_BITMAP_SIZE, requestedFeatures, iconsPerScaleRange);
 }

@@ -941,7 +941,7 @@ MgPoint*  MgGeosUtil::GetPointInRing(MgGeometryComponent* geom1)
 
 STRING MgGeosUtil::ToAwkt(MgGeometricEntity* geom1)
 {
-    CHECKNULL(geom1, L"MgGeosUtil::ToAwkt")
+    CHECKARGUMENTNULL(geom1, L"MgGeosUtil::ToAwkt")
 
     // Increment the refcount
     SAFE_ADDREF((MgGeometricEntity*) geom1);

@@ -526,7 +526,7 @@ void MgSiteResourceContentManager::DeleteUsers(MgStringCollection* users)
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    CHECKNULL(users, L"MgSiteResourceContentManager.DeleteUsers");
+    CHECKARGUMENTNULL(users, L"MgSiteResourceContentManager.DeleteUsers");
 
     //  iterate through user collection
     INT32 numUsers = users->GetCount();
@@ -1006,7 +1006,7 @@ void MgSiteResourceContentManager::DeleteGroups(MgStringCollection* groups)
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    CHECKNULL(groups, L"MgSiteResourceContentManager.DeleteGroups");
+    CHECKARGUMENTNULL(groups, L"MgSiteResourceContentManager.DeleteGroups");
 
     //  iterate through group collection
     INT32 numGroups = groups->GetCount();
@@ -1149,8 +1149,8 @@ void MgSiteResourceContentManager::GrantGroupMembershipsToUsers(
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    CHECKNULL( groups,      L"MgSiteResourceContentManager.GrantGroupMembershipsToUsers" );
-    CHECKNULL( users,       L"MgSiteResourceContentManager.GrantGroupMembershipsToUsers" );
+    CHECKARGUMENTNULL(groups, L"MgSiteResourceContentManager.GrantGroupMembershipsToUsers");
+    CHECKARGUMENTNULL(users, L"MgSiteResourceContentManager.GrantGroupMembershipsToUsers");
 
     //  check to make sure users exist
     INT32 numUsers = users->GetCount();
@@ -1294,8 +1294,8 @@ void MgSiteResourceContentManager::RevokeGroupMembershipsFromUsers(
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    CHECKNULL( groups,      L"MgSiteResourceContentManager.RevokeGroupMembershipsFromUsers" );
-    CHECKNULL( users,       L"MgSiteResourceContentManager.RevokeGroupMembershipsFromUsers" );
+    CHECKARGUMENTNULL(groups, L"MgSiteResourceContentManager.RevokeGroupMembershipsFromUsers");
+    CHECKARGUMENTNULL(users, L"MgSiteResourceContentManager.RevokeGroupMembershipsFromUsers");
 
     //  check to make sure users exist
     INT32 numUsers = users->GetCount();
@@ -1539,8 +1539,8 @@ void MgSiteResourceContentManager::GrantRoleMembershipsToUsers(
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    CHECKNULL( roles,      L"MgSiteResourceContentManager.GrantRoleMembershipsToUsers" );
-    CHECKNULL( users,       L"MgSiteResourceContentManager.GrantRoleMembershipsToUsers" );
+    CHECKARGUMENTNULL(roles, L"MgSiteResourceContentManager.GrantRoleMembershipsToUsers");
+    CHECKARGUMENTNULL(users, L"MgSiteResourceContentManager.GrantRoleMembershipsToUsers");
 
     //  check to make sure users exist
     INT32 numUsers = users->GetCount();
@@ -1684,8 +1684,8 @@ void MgSiteResourceContentManager::RevokeRoleMembershipsFromUsers(
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    CHECKNULL( roles,       L"MgSiteResourceContentManager.RevokeGroupMembershipsFromUsers" );
-    CHECKNULL( users,       L"MgSiteResourceContentManager.RevokeGroupMembershipsFromUsers" );
+    CHECKARGUMENTNULL(roles, L"MgSiteResourceContentManager.RevokeGroupMembershipsFromUsers");
+    CHECKARGUMENTNULL(users, L"MgSiteResourceContentManager.RevokeGroupMembershipsFromUsers");
 
     //  check to make sure users exist
     INT32 numUsers = users->GetCount();
@@ -1763,8 +1763,8 @@ void MgSiteResourceContentManager::GrantRoleMembershipsToGroups(
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    CHECKNULL( roles,       L"MgSiteResourceContentManager.GrantRoleMembershipsToGroups" );
-    CHECKNULL( groups,      L"MgSiteResourceContentManager.GrantRoleMembershipsToGroups" );
+    CHECKARGUMENTNULL(roles, L"MgSiteResourceContentManager.GrantRoleMembershipsToGroups");
+    CHECKARGUMENTNULL(groups, L"MgSiteResourceContentManager.GrantRoleMembershipsToGroups");
 
     //  check to make sure groups exist
     INT32 numGroups = groups->GetCount();
@@ -1917,8 +1917,8 @@ void MgSiteResourceContentManager::RevokeRoleMembershipsFromGroups(
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    CHECKNULL( roles,       L"MgSiteResourceContentManager.RevokeRoleMembershipsFromGroups" );
-    CHECKNULL( groups,      L"MgSiteResourceContentManager.RevokeRoleMembershipsFromGroups" );
+    CHECKARGUMENTNULL(roles, L"MgSiteResourceContentManager.RevokeRoleMembershipsFromGroups");
+    CHECKARGUMENTNULL(groups, L"MgSiteResourceContentManager.RevokeRoleMembershipsFromGroups");
 
     //  check to make sure groups exist
     INT32 numGroups = groups->GetCount();

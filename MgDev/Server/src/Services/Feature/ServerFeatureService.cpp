@@ -1671,7 +1671,7 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
 // Helper private method
 void MgServerFeatureService::FeatureSourceToString(MgResourceIdentifier* resource, string& resourceContent)
 {
-    CHECKNULL(resource, L"MgServerFeatureService.FeatureSourceToString");
+    CHECKARGUMENTNULL(resource, L"MgServerFeatureService.FeatureSourceToString");
 
     MgServiceManager* serviceMan = MgServiceManager::GetInstance();
     assert(NULL != serviceMan);

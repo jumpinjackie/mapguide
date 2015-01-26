@@ -50,8 +50,8 @@ MgFeatureNumericFunctions::MgFeatureNumericFunctions(MgReader* reader, FdoFuncti
 
 void MgFeatureNumericFunctions::Initialize(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
 {
-    CHECKNULL((MgReader*)reader, L"MgFeatureNumericFunctions.Initialize");
-    CHECKNULL((FdoFunction*)customFunction, L"MgFeatureNumericFunctions.Initialize");
+    CHECKARGUMENTNULL((MgReader*)reader, L"MgFeatureNumericFunctions.Initialize");
+    CHECKARGUMENTNULL((FdoFunction*)customFunction, L"MgFeatureNumericFunctions.Initialize");
 
     if(1 == reader->GetPropertyCount())
     {

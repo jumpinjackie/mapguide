@@ -109,7 +109,7 @@ void MgServerGetFeatureProviders::CreateFeatureProvidersDocument()
 
 void MgServerGetFeatureProviders::AddConnectionProperties(DOMElement* providerElem, FdoString* providerName)
 {
-    CHECKNULL(providerElem, L"MgServerGetFeatureProviders.AddConnectionProperties");
+    CHECKARGUMENTNULL(providerElem, L"MgServerGetFeatureProviders.AddConnectionProperties");
 
     // Get Properties
     FdoInt32 totalProperties = 0;
@@ -151,9 +151,9 @@ void MgServerGetFeatureProviders::AddConnectionProperty(DOMElement* connPropRoot
                                                    FdoString* propertyName,
                                                    FdoIConnectionPropertyDictionary* fdoConnPropertyDict)
 {
-    CHECKNULL(connPropRootElem,     L"MgServerGetFeatureProviders.AddConnectionProperty");
-    CHECKNULL(propertyName,         L"MgServerGetFeatureProviders.AddConnectionProperty");
-    CHECKNULL(fdoConnPropertyDict,  L"MgServerGetFeatureProviders.AddConnectionProperty");
+    CHECKARGUMENTNULL(connPropRootElem, L"MgServerGetFeatureProviders.AddConnectionProperty");
+    CHECKARGUMENTNULL(propertyName, L"MgServerGetFeatureProviders.AddConnectionProperty");
+    CHECKARGUMENTNULL(fdoConnPropertyDict, L"MgServerGetFeatureProviders.AddConnectionProperty");
 
     DOMElement* connPropElem = m_xmlUtil->AddChildNode(connPropRootElem, "ConnectionProperty"  /* NOXLATE */ );
 

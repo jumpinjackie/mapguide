@@ -659,7 +659,7 @@ STRING MgServerDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema)
         throw new MgNullArgumentException(L"MgServerDescribeSchema.SchemaToXml", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    CHECKNULL((MgFeatureSchemaCollection*)schema, L"MgServerDescribeSchema.SchemaToXml");
+    CHECKARGUMENTNULL((MgFeatureSchemaCollection*)schema, L"MgServerDescribeSchema.SchemaToXml");
 
     FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol = MgServerFeatureUtil::GetFdoFeatureSchemaCollection(schema);
 
@@ -683,7 +683,7 @@ STRING MgServerDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema, CR
         throw new MgNullArgumentException(L"MgServerDescribeSchema.SchemaToXml", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    CHECKNULL((MgFeatureSchemaCollection*)schema, L"MgServerDescribeSchema.SchemaToXml");
+    CHECKARGUMENTNULL((MgFeatureSchemaCollection*)schema, L"MgServerDescribeSchema.SchemaToXml");
 
     FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol = MgServerFeatureUtil::GetFdoFeatureSchemaCollection(schema);
 
@@ -780,7 +780,7 @@ STRING MgServerDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoS
     STRING serializedXml;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL(fdoSchemaCol, L"MgServerDescribeSchema.GetSerializedXml");
+    CHECKARGUMENTNULL(fdoSchemaCol, L"MgServerDescribeSchema.GetSerializedXml");
 
     FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
     CHECKNULL((FdoIoMemoryStream*)fmis, L"MgServerDescribeSchema.GetSerializedXml");
@@ -815,7 +815,7 @@ STRING MgServerDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoS
     STRING serializedXml;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL(fdoSchemaCol, L"MgServerDescribeSchema.GetSerializedXml");
+    CHECKARGUMENTNULL(fdoSchemaCol, L"MgServerDescribeSchema.GetSerializedXml");
 
     FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
     CHECKNULL((FdoIoMemoryStream*)fmis, L"MgServerDescribeSchema.GetSerializedXml");
@@ -1263,7 +1263,7 @@ bool MgServerDescribeSchema::GetIdentityProperties(CREFSTRING className,
 ///
 bool MgServerDescribeSchema::IsClassNameHintUsed(FdoIDescribeSchema* fdoCommand)
 {
-    CHECKNULL(fdoCommand, L"MgServerDescribeSchema.IsClassNameHintUsed");
+    CHECKARGUMENTNULL(fdoCommand, L"MgServerDescribeSchema.IsClassNameHintUsed");
 
     FdoPtr<FdoStringCollection> classNames = fdoCommand->GetClassNames();
     bool classNameHintUsed = (NULL != classNames.p);
@@ -1274,7 +1274,7 @@ bool MgServerDescribeSchema::IsClassNameHintUsed(FdoIDescribeSchema* fdoCommand)
 ///////////////////////////////////////////////////////////////////////////////
 MgStringCollection* MgServerDescribeSchema::GetSchemaNames(MgFeatureSchemaCollection* schemas)
 {
-    CHECKNULL(schemas, L"MgServerDescribeSchema.GetSchemaNames");
+    CHECKARGUMENTNULL(schemas, L"MgServerDescribeSchema.GetSchemaNames");
 
     Ptr<MgStringCollection> schemaNames = new MgStringCollection();
     INT32 schemaCount = schemas->GetCount();
@@ -1296,7 +1296,7 @@ MgStringCollection* MgServerDescribeSchema::GetSchemaNames(MgFeatureSchemaCollec
 ///////////////////////////////////////////////////////////////////////////////
 MgStringCollection* MgServerDescribeSchema::GetClassNames(MgFeatureSchemaCollection* schemas, CREFSTRING schemaName)
 {
-    CHECKNULL(schemas, L"MgServerDescribeSchema.GetClassNames");
+    CHECKARGUMENTNULL(schemas, L"MgServerDescribeSchema.GetClassNames");
 
     Ptr<MgStringCollection> classNames = new MgStringCollection();
     INT32 schemaCount = schemas->GetCount();
@@ -1335,7 +1335,7 @@ MgStringCollection* MgServerDescribeSchema::GetClassNames(MgFeatureSchemaCollect
 ///////////////////////////////////////////////////////////////////////////////
 MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(MgFeatureSchemaCollection* schemas, CREFSTRING schemaName, CREFSTRING className)
 {
-    CHECKNULL(schemas, L"MgServerDescribeSchema.GetClassDefinition");
+    CHECKARGUMENTNULL(schemas, L"MgServerDescribeSchema.GetClassDefinition");
 
     Ptr<MgClassDefinition> classDef;
     INT32 schemaCount = schemas->GetCount();
@@ -1389,7 +1389,7 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
     FdoFeatureSchemaCollection* schemas, MgResourceIdentifier* resource,
     CREFSTRING schemaName, CREFSTRING className)
 {
-    CHECKNULL(schemas, L"MgServerDescribeSchema.GetIdentityProperties");
+    CHECKARGUMENTNULL(schemas, L"MgServerDescribeSchema.GetIdentityProperties");
 
     Ptr<MgPropertyDefinitionCollection> idProps = new MgPropertyDefinitionCollection();
     INT32 schemaCount = schemas->GetCount();

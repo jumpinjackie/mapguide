@@ -189,7 +189,7 @@ MgColor* MgPrintLayout::GetBackgroundColor()
 // Helper method to get the layout properties from the PrintLayout xml resource.
 void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
 {
-    CHECKNULL(pXmlUtil, L"MgPrintLayout.GetLayoutPropertiesFromXml()");
+    CHECKARGUMENTNULL(pXmlUtil, L"MgPrintLayout.GetLayoutPropertiesFromXml()");
 
     MG_TRY()
 

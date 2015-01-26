@@ -41,8 +41,8 @@ MgFeatureGeometricFunctions::MgFeatureGeometricFunctions(MgReader* reader, FdoFu
 
 void MgFeatureGeometricFunctions::Initialize(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
 {
-    CHECKNULL((MgReader*)reader, L"MgFeatureGeometricFunctions.Initialize");
-    CHECKNULL((FdoFunction*)customFunction, L"MgFeatureGeometricFunctions.Initialize");
+    CHECKARGUMENTNULL((MgReader*)reader, L"MgFeatureGeometricFunctions.Initialize");
+    CHECKARGUMENTNULL((FdoFunction*)customFunction, L"MgFeatureGeometricFunctions.Initialize");
 
     if(1 == reader->GetPropertyCount())
     {
@@ -143,8 +143,8 @@ MgReader* MgFeatureGeometricFunctions::Execute()
 void MgFeatureGeometricFunctions::ComputeExtents(MgCoordinate* lowerLeft,
                                                     MgCoordinate* upperRight)
 {
-    CHECKNULL((MgCoordinate*)lowerLeft, L"MgFeatureGeometricFunctions.ComputeExtents");
-    CHECKNULL((MgCoordinate*)upperRight, L"MgFeatureGeometricFunctions.ComputeExtents");
+    CHECKARGUMENTNULL((MgCoordinate*)lowerLeft, L"MgFeatureGeometricFunctions.ComputeExtents");
+    CHECKARGUMENTNULL((MgCoordinate*)upperRight, L"MgFeatureGeometricFunctions.ComputeExtents");
 
     if (!m_extentsInitialized)
     {

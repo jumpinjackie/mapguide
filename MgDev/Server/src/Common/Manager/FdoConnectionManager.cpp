@@ -506,7 +506,7 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
 
 void MgFdoConnectionManager::Close(FdoIConnection* pFdoConnection)
 {
-    CHECKNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.Close()");
+    CHECKARGUMENTNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.Close()");
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
@@ -640,7 +640,7 @@ void MgFdoConnectionManager::RemoveExpiredFdoConnections()
 
 FdoIConnection* MgFdoConnectionManager::FindFdoConnection(MgResourceIdentifier* resourceIdentifier, bool reuseOnly)
 {
-    CHECKNULL(resourceIdentifier, L"MgFdoConnectionManager.FindFdoConnection");
+    CHECKARGUMENTNULL(resourceIdentifier, L"MgFdoConnectionManager.FindFdoConnection");
 
     FdoPtr<FdoIConnection> pFdoConnection;
 
@@ -788,57 +788,57 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING prov
 
 void MgFdoConnectionManager::SetConnectionProperties(FdoIConnection *pFdoConnection, MdfModel::FeatureSource *pFeatureSource)
 {
-        CHECKNULL(pFeatureSource, L"MgFdoConnectionManager.SetConnectionProperties");
-        CHECKNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.SetConnectionProperties");
+    CHECKARGUMENTNULL(pFeatureSource, L"MgFdoConnectionManager.SetConnectionProperties");
+    CHECKARGUMENTNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.SetConnectionProperties");
 
-        // Get FdoIConnectionInfo
-        FdoPtr<FdoIConnectionInfo> fdoConnInfo = pFdoConnection->GetConnectionInfo();
-        CHECKNULL((FdoIConnectionInfo*)fdoConnInfo, L"MgFdoConnectionManager.SetConnectionProperties");
+    // Get FdoIConnectionInfo
+    FdoPtr<FdoIConnectionInfo> fdoConnInfo = pFdoConnection->GetConnectionInfo();
+    CHECKNULL((FdoIConnectionInfo*)fdoConnInfo, L"MgFdoConnectionManager.SetConnectionProperties");
 
-        // GetFdoIConnectionPropertyDictionary
-        FdoPtr<FdoIConnectionPropertyDictionary> fdoConnPropertyDict = fdoConnInfo->GetConnectionProperties();
-        CHECKNULL((FdoIConnectionPropertyDictionary*)fdoConnPropertyDict, L"MgFdoConnectionManager.SetConnectionProperties");
+    // GetFdoIConnectionPropertyDictionary
+    FdoPtr<FdoIConnectionPropertyDictionary> fdoConnPropertyDict = fdoConnInfo->GetConnectionProperties();
+    CHECKNULL((FdoIConnectionPropertyDictionary*)fdoConnPropertyDict, L"MgFdoConnectionManager.SetConnectionProperties");
 
-        // Get all all connection properties
-        MdfModel::NameStringPairCollection* parameters = pFeatureSource->GetParameters();
-        CHECKNULL(parameters, L"MgFdoConnectionManager.SetConnectionProperties");
+    // Get all all connection properties
+    MdfModel::NameStringPairCollection* parameters = pFeatureSource->GetParameters();
+    CHECKNULL(parameters, L"MgFdoConnectionManager.SetConnectionProperties");
 
-        for (int i = 0; i < parameters->GetCount(); i++)
+    for (int i = 0; i < parameters->GetCount(); i++)
+    {
+        // Get the Name and Value elements
+        MdfModel::NameStringPair* pair = parameters->GetAt(i);
+        STRING name = (STRING)pair->GetName();
+        STRING value = (STRING)pair->GetValue();
+
+        // If name is null, means invalid xml
+        if (name.empty())
         {
-            // Get the Name and Value elements
-            MdfModel::NameStringPair* pair = parameters->GetAt(i);
-            STRING name = (STRING)pair->GetName();
-            STRING value = (STRING)pair->GetValue();
+            STRING message = MgUtil::GetResourceMessage(MgResources::FeatureService, L"MgInvalidPropertyName");
 
-            // If name is null, means invalid xml
-            if (name.empty())
+            Ptr<MgStringCollection> strCol;
+            if (!message.empty())
             {
-                STRING message = MgUtil::GetResourceMessage(MgResources::FeatureService, L"MgInvalidPropertyName");
-
-                Ptr<MgStringCollection> strCol;
-                if (!message.empty())
-                {
-                    strCol = new MgStringCollection();
-                    strCol->Add(message);
-                }
-
-                throw new MgInvalidFeatureSourceException(L"MgFdoConnectionManager.SetConnectionProperties",
-                    __LINE__, __WFILE__, (MgStringCollection*)strCol, L"", NULL);
+                strCol = new MgStringCollection();
+                strCol->Add(message);
             }
 
-            FdoString* propertyName = name.c_str();
-            CHECKNULL(propertyName, L"MgFdoConnectionManager.SetConnectionProperties");
+            throw new MgInvalidFeatureSourceException(L"MgFdoConnectionManager.SetConnectionProperties",
+                __LINE__, __WFILE__, (MgStringCollection*)strCol, L"", NULL);
+        }
 
-            // Property value can be null ( optional properties may not have values )
-            if (!value.empty())
+        FdoString* propertyName = name.c_str();
+        CHECKNULL(propertyName, L"MgFdoConnectionManager.SetConnectionProperties");
+
+        // Property value can be null ( optional properties may not have values )
+        if (!value.empty())
+        {
+            FdoString* propertyValue = value.c_str();
+            if (propertyValue != NULL)
             {
-                FdoString* propertyValue = value.c_str();
-                if (propertyValue != NULL)
-                {
-                    fdoConnPropertyDict->SetProperty(propertyName, propertyValue);
-                }
+                fdoConnPropertyDict->SetProperty(propertyName, propertyValue);
             }
         }
+    }
 }
 
 void MgFdoConnectionManager::SetConnectionTimeout(FdoIConnection* pFdoConnection, STRING providerName)
@@ -891,7 +891,7 @@ void MgFdoConnectionManager::SetConnectionTimeout(FdoIConnection* pFdoConnection
 
 void MgFdoConnectionManager::ActivateSpatialContext(FdoIConnection* pFdoConnection, STRING& spatialContextName)
 {
-    CHECKNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.ActivateSpatialContext()");
+    CHECKARGUMENTNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.ActivateSpatialContext()");
     // If command is not supported we simply return and ignore element from xml
     if (!SupportsCommand(pFdoConnection, FdoCommandType_ActivateSpatialContext))
     {
@@ -919,7 +919,7 @@ void MgFdoConnectionManager::ActivateSpatialContext(FdoIConnection* pFdoConnecti
 
 void MgFdoConnectionManager::ActivateLongTransaction(FdoIConnection* pFdoConnection, STRING& longTransactionName)
 {
-    CHECKNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.ActivateLongTransaction()");
+    CHECKARGUMENTNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.ActivateLongTransaction()");
 
     // If command is not supported we simply return and ignore element from xml
     if (!SupportsCommand(pFdoConnection, FdoCommandType_ActivateLongTransaction))
@@ -948,7 +948,7 @@ void MgFdoConnectionManager::ActivateLongTransaction(FdoIConnection* pFdoConnect
 
 bool MgFdoConnectionManager::SupportsConfiguration(FdoIConnection* pFdoConnection)
 {
-    CHECKNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.SupportsConfiguration");
+    CHECKARGUMENTNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.SupportsConfiguration");
 
     FdoPtr<FdoIConnectionCapabilities> ficc = pFdoConnection->GetConnectionCapabilities();
     CHECKNULL((FdoIConnectionCapabilities*)ficc, L"MgFdoConnectionManager.SupportsConfiguration");
@@ -958,8 +958,8 @@ bool MgFdoConnectionManager::SupportsConfiguration(FdoIConnection* pFdoConnectio
 
 void MgFdoConnectionManager::SetConfiguration(CREFSTRING provider, FdoIConnection* pFdoConnection, MgResourceIdentifier* resourceIdentifier, STRING& configDataName)
 {
-    CHECKNULL(resourceIdentifier, L"MgFdoConnectionManager.SetConfiguration");
-    CHECKNULL(pFdoConnection, L"MgFdoConnectionManager.SetConfiguration");
+    CHECKARGUMENTNULL(resourceIdentifier, L"MgFdoConnectionManager.SetConfiguration");
+    CHECKARGUMENTNULL(pFdoConnection, L"MgFdoConnectionManager.SetConfiguration");
 
     if (provider.empty())
     {
@@ -1027,7 +1027,7 @@ void MgFdoConnectionManager::SetConfiguration(CREFSTRING provider, FdoIConnectio
 
 bool MgFdoConnectionManager::SupportsCommand(FdoIConnection* pFdoConnection, INT32 commandType)
 {
-    CHECKNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.SupportsCommand()");
+    CHECKARGUMENTNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.SupportsCommand()");
 
     FdoPtr<FdoICommandCapabilities> fcc = pFdoConnection->GetCommandCapabilities();
     CHECKNULL((FdoICommandCapabilities*)fcc, L"MgFdoConnectionManager::SupportsCommand");

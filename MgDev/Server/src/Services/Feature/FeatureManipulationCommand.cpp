@@ -27,8 +27,8 @@
 
 MgFeatureManipulationCommand* MgFeatureManipulationCommand::CreateCommand(MgFeatureCommand* webCmd, MgServerFeatureConnection* connection, INT32 cmdId)
 {
-    CHECKNULL(webCmd, L"MgFeatureManipulationCommand.CreateCommand")
-    CHECKNULL(connection, L"MgFeatureManipulationCommand.CreateCommand")
+    CHECKARGUMENTNULL(webCmd, L"MgFeatureManipulationCommand.CreateCommand")
+    CHECKARGUMENTNULL(connection, L"MgFeatureManipulationCommand.CreateCommand")
 
     INT32 cmdType = webCmd->GetCommandType();
     bool supports = false;

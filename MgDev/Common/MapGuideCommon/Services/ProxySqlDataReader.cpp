@@ -753,7 +753,7 @@ void MgProxySqlDataReader::CurrentToStringUtf8(string& str)
 
 void MgProxySqlDataReader::SetService(MgFeatureService* service)
 {
-    CHECKNULL(service, L"MgProxySqlDataReader.SetService");
+    CHECKARGUMENTNULL(service, L"MgProxySqlDataReader.SetService");
 
     if (m_service == NULL)
     {
@@ -861,7 +861,7 @@ MgProperty* MgProxySqlDataReader::GetProperty(INT32 index)
 void MgProxySqlDataReader::UpdateCurrentSet(MgBatchPropertyCollection* bpCol)
 {
     CHECKNULL((MgBatchPropertyCollection*)m_set, L"MgProxySqlDataReader.UpdateCurrentSet");
-    CHECKNULL((MgBatchPropertyCollection*)bpCol, L"MgProxySqlDataReader.UpdateCurrentSet");
+    CHECKARGUMENTNULL((MgBatchPropertyCollection*)bpCol, L"MgProxySqlDataReader.UpdateCurrentSet");
 
     m_set->Clear();
 

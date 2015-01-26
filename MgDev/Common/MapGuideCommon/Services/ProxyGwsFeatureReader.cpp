@@ -843,7 +843,7 @@ void MgProxyGwsFeatureReader::CurrentToStringUtf8(string& str)
 
 void MgProxyGwsFeatureReader::SetService(MgFeatureService* service)
 {
-    CHECKNULL(service, L"MgProxyGwsFeatureReader.SetService");
+    CHECKARGUMENTNULL(service, L"MgProxyGwsFeatureReader.SetService");
 
     if (m_service == NULL)
     {

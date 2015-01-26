@@ -697,7 +697,7 @@ void MgServerSelectFeatures::AddFdoComputedProperty(CREFSTRING aliasName, FdoExp
 
 void MgServerSelectFeatures::AddCustomComputedProperty(CREFSTRING aliasName, FdoExpression* expression)
 {
-    CHECKNULL((FdoExpression*)expression, L"MgServerSelectFeatures.AddCustomComputedProperty");
+    CHECKARGUMENTNULL((FdoExpression*)expression, L"MgServerSelectFeatures.AddCustomComputedProperty");
 
     FdoPtr<FdoIdentifierCollection> fic = m_command->GetPropertyNames();
     CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.AddCustomComputedProperty");
@@ -1534,7 +1534,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
 void MgServerSelectFeatures::ParseQualifiedClassNameForCalculation(MdfModel::Extension* extension, CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className)
 {
-    CHECKNULL(extension, L"MgServerSelectFeatures.ParseQualifiedClassNameForCalculation");
+    CHECKARGUMENTNULL(extension, L"MgServerSelectFeatures.ParseQualifiedClassNameForCalculation");
 
     MgUtil::ParseQualifiedClassName(qualifiedClassName, schemaName, className);
 

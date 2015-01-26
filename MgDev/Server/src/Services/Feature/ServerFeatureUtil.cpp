@@ -127,7 +127,7 @@ STRING MgServerFeatureUtil::GetMessage(CREFSTRING messageId)
 
 INT16 MgServerFeatureUtil::GetMgPropertyType(MgPropertyDefinition* propDef)
 {
-    CHECKNULL((MgPropertyDefinition*)propDef, L"MgServerFeatureUtil.GetMgPropertyType")
+    CHECKARGUMENTNULL((MgPropertyDefinition*)propDef, L"MgServerFeatureUtil.GetMgPropertyType")
 
     INT32 mgPropType = 0;
 
@@ -170,7 +170,7 @@ INT16 MgServerFeatureUtil::GetMgPropertyType(MgPropertyDefinition* propDef)
 
 MgPropertyDefinitionCollection* MgServerFeatureUtil::GetPropertyDefinitions(MgReader* reader)
 {
-    CHECKNULL(reader, L"MgServerFeatureUtil.GetPropertyDefinitions");
+    CHECKARGUMENTNULL(reader, L"MgServerFeatureUtil.GetPropertyDefinitions");
 
     // Create a new collection
     Ptr<MgPropertyDefinitionCollection> propDefCol = new MgPropertyDefinitionCollection();
@@ -191,7 +191,7 @@ MgPropertyDefinitionCollection* MgServerFeatureUtil::GetPropertyDefinitions(MgRe
 
 void MgServerFeatureUtil::GetArguments(FdoFunction* customFunction, REFSTRING name, int &numCats, double& dataMin, double& dataMax, INT16 type)
 {
-    CHECKNULL(customFunction, L"MgFeatureDistribution.GetArguments");
+    CHECKARGUMENTNULL(customFunction, L"MgFeatureDistribution.GetArguments");
 
     dataMin = -DoubleMaxValue;
     dataMax = DoubleMaxValue;
@@ -283,7 +283,7 @@ void MgServerFeatureUtil::GetArguments(FdoFunction* customFunction, REFSTRING na
 
 INT32 MgServerFeatureUtil::GetPropertyDefinition(MgReader* reader, REFSTRING propName)
 {
-    CHECKNULL((MgReader*)reader, L"MgServerFeatureUtil.GetPropertyDefinition");
+    CHECKARGUMENTNULL((MgReader*)reader, L"MgServerFeatureUtil.GetPropertyDefinition");
 
     INT32 cnt = reader->GetPropertyCount();
     if (cnt != 1)
@@ -523,7 +523,7 @@ MgRaster* MgServerFeatureUtil::GetMgRaster(FdoIRaster* raster, STRING propName)
 MgByteReader* MgServerFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rasterPropName,INT32 xSize, INT32 ySize)
 {
     // Null Reader is invalid
-    CHECKNULL(reader, L"MgServerFeatureUtil.GetRaster");
+    CHECKARGUMENTNULL(reader, L"MgServerFeatureUtil.GetRaster");
 
     // Empty property name is invalid
     if (rasterPropName.empty())
@@ -582,8 +582,8 @@ MgByteReader* MgServerFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rast
 
 void MgServerFeatureUtil::FillFdoParameterCollection(MgParameterCollection* source, FdoParameterValueCollection* target)
 {
-    CHECKNULL(source, L"MgServerFeatureUtil.FillFdoParameterCollection")
-    CHECKNULL(target, L"MgServerFeatureUtil.FillFdoParameterCollection")
+    CHECKARGUMENTNULL(source, L"MgServerFeatureUtil.FillFdoParameterCollection")
+    CHECKARGUMENTNULL(target, L"MgServerFeatureUtil.FillFdoParameterCollection")
 
     INT32 cnt = source->GetCount();
     for (INT32 i = 0; i < cnt; i++)
@@ -596,8 +596,8 @@ void MgServerFeatureUtil::FillFdoParameterCollection(MgParameterCollection* sour
 
 void MgServerFeatureUtil::FillParameterCollection(FdoParameterValueCollection* source, MgParameterCollection* target)
 {
-    CHECKNULL(source, L"MgServerFeatureUtil.FillParameterCollection")
-    CHECKNULL(target, L"MgServerFeatureUtil.FillParameterCollection")
+    CHECKARGUMENTNULL(source, L"MgServerFeatureUtil.FillParameterCollection")
+    CHECKARGUMENTNULL(target, L"MgServerFeatureUtil.FillParameterCollection")
 
     INT32 cnt = source->GetCount();
     for (INT32 i = 0; i < cnt; i++)
@@ -610,8 +610,8 @@ void MgServerFeatureUtil::FillParameterCollection(FdoParameterValueCollection* s
 
 void MgServerFeatureUtil::UpdateParameterCollection(FdoParameterValueCollection* source, MgParameterCollection* target)
 {
-    CHECKNULL(source, L"MgServerFeatureUtil.UpdateParameterCollection")
-    CHECKNULL(target, L"MgServerFeatureUtil.UpdateParameterCollection")
+    CHECKARGUMENTNULL(source, L"MgServerFeatureUtil.UpdateParameterCollection")
+    CHECKARGUMENTNULL(target, L"MgServerFeatureUtil.UpdateParameterCollection")
 
     if (source->GetCount() != target->GetCount())
     {
@@ -637,8 +637,8 @@ void MgServerFeatureUtil::UpdateParameterCollection(FdoParameterValueCollection*
 
 void MgServerFeatureUtil::FillFdoPropertyCollection(MgPropertyCollection* srcCol, FdoPropertyValueCollection* paramCol)
 {
-    CHECKNULL(srcCol, L"MgServerFeatureUtil.FillFdoPropertyCollection")
-    CHECKNULL(paramCol, L"MgServerFeatureUtil.FillFdoPropertyCollection")
+    CHECKARGUMENTNULL(srcCol, L"MgServerFeatureUtil.FillFdoPropertyCollection")
+    CHECKARGUMENTNULL(paramCol, L"MgServerFeatureUtil.FillFdoPropertyCollection")
 
     INT32 cnt = srcCol->GetCount();
     for (INT32 i = 0; i < cnt; i++)
@@ -651,7 +651,7 @@ void MgServerFeatureUtil::FillFdoPropertyCollection(MgPropertyCollection* srcCol
 
 FdoParameterValueCollection* MgServerFeatureUtil::CreateFdoParameterCollection(MgPropertyCollection* srcCol)
 {
-    CHECKNULL(srcCol, L"MgServerFeatureUtil.FillFdoPropertyCollection")
+    CHECKARGUMENTNULL(srcCol, L"MgServerFeatureUtil.FillFdoPropertyCollection")
     FdoPtr<FdoParameterValueCollection> paramCol = FdoParameterValueCollection::Create();
 
     INT32 cnt = srcCol->GetCount();
@@ -667,7 +667,7 @@ FdoParameterValueCollection* MgServerFeatureUtil::CreateFdoParameterCollection(M
 
 MgParameter* MgServerFeatureUtil::FdoParameterValueToMgParameter(FdoParameterValue* fdoParamValue)
 {
-    CHECKNULL(fdoParamValue, L"MgServerFeatureUtil.FdoParameterValueToMgParameter")
+    CHECKARGUMENTNULL(fdoParamValue, L"MgServerFeatureUtil.FdoParameterValueToMgParameter")
     Ptr<MgNullableProperty> prop = dynamic_cast<MgNullableProperty*>(FdoParameterValueToMgProperty(fdoParamValue));
     CHECKNULL(prop, L"MgServerFeatureUtil.FdoParameterValueToMgParameter")
 
@@ -682,7 +682,7 @@ MgParameter* MgServerFeatureUtil::FdoParameterValueToMgParameter(FdoParameterVal
 
 MgProperty* MgServerFeatureUtil::FdoParameterValueToMgProperty(FdoParameterValue* fdoParamValue)
 {
-    CHECKNULL(fdoParamValue, L"MgServerFeatureUtil.FdoParameterValueToMgProperty")
+    CHECKARGUMENTNULL(fdoParamValue, L"MgServerFeatureUtil.FdoParameterValueToMgProperty")
 
     FdoPtr<FdoLiteralValue> fdoLiteralValue = fdoParamValue->GetValue();
     CHECKNULL(fdoLiteralValue, L"MgServerFeatureUtil.FdoParameterValueToMgProperty")
@@ -896,7 +896,7 @@ MgProperty* MgServerFeatureUtil::FdoParameterValueToMgProperty(FdoParameterValue
 
 FdoLiteralValue* MgServerFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcProp)
 {
-    CHECKNULL(srcProp, L"MgServerFeatureUtil.MgPropertyToFdoProperty")
+    CHECKARGUMENTNULL(srcProp, L"MgServerFeatureUtil.MgPropertyToFdoProperty")
 
     INT16 propType = srcProp->GetPropertyType();
     FdoPtr<FdoLiteralValue> fdoVal;
@@ -1289,7 +1289,7 @@ bool MgServerFeatureUtil::FdoClassExist(const wchar_t* name, FdoClassCollection*
 
 MgClassDefinition* MgServerFeatureUtil::GetMgClassDefinition(FdoClassDefinition* fdoClassDefinition, bool bSerialize)
 {
-    CHECKNULL(fdoClassDefinition, L"MgServerFeatureUtil.GetMgClassDefinition");
+    CHECKARGUMENTNULL(fdoClassDefinition, L"MgServerFeatureUtil.GetMgClassDefinition");
 
     // Create MgClassDefinition
     Ptr<MgClassDefinition> mgClassDef = new MgClassDefinition();
@@ -1414,7 +1414,7 @@ MgClassDefinition* MgServerFeatureUtil::GetMgClassDefinition(FdoClassDefinition*
 
 MgByteReader* MgServerFeatureUtil::SerializeToXml(FdoClassDefinition* classDef)
 {
-    CHECKNULL(classDef, L"MgServerFeatureUtil.SerializeToXml");
+    CHECKARGUMENTNULL(classDef, L"MgServerFeatureUtil.SerializeToXml");
 
     FdoString* className = classDef->GetName();
     FdoFeatureSchemaP pSchema = classDef->GetFeatureSchema();
@@ -1535,7 +1535,7 @@ void MgServerFeatureUtil::GetClassProperties(MgPropertyDefinitionCollection* pro
 
 MgPropertyDefinition* MgServerFeatureUtil::GetMgPropertyDefinition(FdoPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((FdoPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.GetMgPropertyDefinition");
+    CHECKARGUMENTNULL((FdoPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.GetMgPropertyDefinition");
 
     Ptr<MgPropertyDefinition> propDef;
 
@@ -1635,7 +1635,7 @@ MgDataPropertyDefinition* MgServerFeatureUtil::GetDataPropertyDefinition(FdoData
 
 MgObjectPropertyDefinition* MgServerFeatureUtil::GetObjectPropertyDefinition(FdoObjectPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((FdoObjectPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.GetObjectPropertyDefinition");
+    CHECKARGUMENTNULL((FdoObjectPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.GetObjectPropertyDefinition");
 
     STRING name = STRING(fdoPropDef->GetName());
     Ptr<MgObjectPropertyDefinition> propDef = new MgObjectPropertyDefinition(name);
@@ -1678,7 +1678,7 @@ MgObjectPropertyDefinition* MgServerFeatureUtil::GetObjectPropertyDefinition(Fdo
 
 MgGeometricPropertyDefinition* MgServerFeatureUtil::GetGeometricPropertyDefinition(FdoGeometricPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((FdoGeometricPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.GetGeometricPropertyDefinition");
+    CHECKARGUMENTNULL((FdoGeometricPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.GetGeometricPropertyDefinition");
 
     STRING name = STRING(fdoPropDef->GetName());
     Ptr<MgGeometricPropertyDefinition> propDef = new MgGeometricPropertyDefinition(name);
@@ -1729,7 +1729,7 @@ MgGeometricPropertyDefinition* MgServerFeatureUtil::GetGeometricPropertyDefiniti
 
 MgRasterPropertyDefinition* MgServerFeatureUtil::GetRasterPropertyDefinition(FdoRasterPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((FdoRasterPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.GetRasterPropertyDefinition");
+    CHECKARGUMENTNULL((FdoRasterPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.GetRasterPropertyDefinition");
 
     STRING name = STRING(fdoPropDef->GetName());
     Ptr<MgRasterPropertyDefinition> propDef = new MgRasterPropertyDefinition(name);
@@ -1771,7 +1771,7 @@ MgRasterPropertyDefinition* MgServerFeatureUtil::GetRasterPropertyDefinition(Fdo
 MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qualifiedPropName, INT16 type)
 {
     // Null Reader is invalid
-    CHECKNULL(reader, L"MgServerFeatureUtil.GetMgProperty");
+    CHECKARGUMENTNULL(reader, L"MgServerFeatureUtil.GetMgProperty");
 
     // No propertyname specified, return NULL
     if (qualifiedPropName.empty())
@@ -2022,7 +2022,7 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
 MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, INT32 index, CREFSTRING qualifiedPropName, INT16 type)
 {
     // Null Reader is invalid
-    CHECKNULL(reader, L"MgServerFeatureUtil.GetMgProperty");
+    CHECKARGUMENTNULL(reader, L"MgServerFeatureUtil.GetMgProperty");
 
     Ptr<MgNullableProperty> prop;
 
@@ -2274,7 +2274,7 @@ FdoFeatureSchemaCollection* MgServerFeatureUtil::GetFdoFeatureSchemaCollection(
 
     MG_FEATURE_SERVICE_TRY()
 
-    CHECKNULL(mgSchemaCol, L"MgServerFeatureUtil.GetFdoFeatureSchemaCollection");
+    CHECKARGUMENTNULL(mgSchemaCol, L"MgServerFeatureUtil.GetFdoFeatureSchemaCollection");
     fdoSchemaCol = FdoFeatureSchemaCollection::Create((FdoSchemaElement*)NULL);
 
     INT32 i = 0;
@@ -2309,7 +2309,7 @@ FdoFeatureSchema* MgServerFeatureUtil::GetFdoFeatureSchema(
     FdoPtr<FdoFeatureSchema> fdoSchema;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL(mgSchema, L"MgServerFeatureUtil.GetFdoFeatureSchema");
+    CHECKARGUMENTNULL(mgSchema, L"MgServerFeatureUtil.GetFdoFeatureSchema");
 
     fdoSchema = FdoFeatureSchema::Create();
     CHECKNULL(fdoSchema, L"MgServerFeatureUtil.GetFdoFeatureSchema");
@@ -2343,7 +2343,7 @@ void MgServerFeatureUtil::GetFdoClassCollection(
     MgClassDefinitionCollection* mgClassDefCol)
 {
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((MgClassDefinitionCollection*)mgClassDefCol, L"MgServerFeatureUtil.GetFdoClassCollection");
+    CHECKARGUMENTNULL((MgClassDefinitionCollection*)mgClassDefCol, L"MgServerFeatureUtil.GetFdoClassCollection");
 
     INT32 count = mgClassDefCol->GetCount();
     INT32 i = 0;
@@ -2371,8 +2371,8 @@ FdoClassDefinition* MgServerFeatureUtil::GetFdoClassDefinition(
     FdoPtr<FdoClassDefinition> fdoClassDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL(mgClassDef, L"MgServerFeatureUtil.GetFdoClassDefinition");
-    CHECKNULL(fdoClassCol, L"MgServerFeatureUtil.GetFdoClassDefinition");
+    CHECKARGUMENTNULL(mgClassDef, L"MgServerFeatureUtil.GetFdoClassDefinition");
+    CHECKARGUMENTNULL(fdoClassCol, L"MgServerFeatureUtil.GetFdoClassDefinition");
 
     STRING name = mgClassDef->GetName();
     assert(!name.empty());
@@ -2562,7 +2562,7 @@ FdoPropertyDefinition* MgServerFeatureUtil::GetFdoPropertyDefinition(
     MgPropertyDefinition* mgPropDef,
     FdoClassCollection* fdoClassCol)
 {
-    CHECKNULL((MgPropertyDefinition*)mgPropDef, L"MgServerFeatureUtil.GetFdoPropertyDefinition");
+    CHECKARGUMENTNULL((MgPropertyDefinition*)mgPropDef, L"MgServerFeatureUtil.GetFdoPropertyDefinition");
 
     FdoPtr<FdoPropertyDefinition> fdoPropDef;
     MG_FEATURE_SERVICE_TRY()
@@ -2676,7 +2676,7 @@ FdoObjectPropertyDefinition* MgServerFeatureUtil::GetObjectPropertyDefinition(
     FdoPtr<FdoObjectPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((MgObjectPropertyDefinition*)objPropDef, L"MgServerFeatureUtil.GetObjectPropertyDefinition");
+    CHECKARGUMENTNULL((MgObjectPropertyDefinition*)objPropDef, L"MgServerFeatureUtil.GetObjectPropertyDefinition");
 
     fdoPropDef = FdoObjectPropertyDefinition::Create();
     // Retrieve data from MgObjectProperty
@@ -2721,7 +2721,7 @@ FdoGeometricPropertyDefinition* MgServerFeatureUtil::GetGeometricPropertyDefinit
     FdoPtr<FdoGeometricPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((MgGeometricPropertyDefinition*)mgPropDef, L"MgServerFeatureUtil.GetGeometricPropertyDefinition");
+    CHECKARGUMENTNULL((MgGeometricPropertyDefinition*)mgPropDef, L"MgServerFeatureUtil.GetGeometricPropertyDefinition");
 
     STRING name = mgPropDef->GetName();
     fdoPropDef = FdoGeometricPropertyDefinition::Create();
@@ -2773,7 +2773,7 @@ FdoRasterPropertyDefinition* MgServerFeatureUtil::GetRasterPropertyDefinition(
     FdoPtr<FdoRasterPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((MgRasterPropertyDefinition*)mgPropDef, L"MgServerFeatureUtil.GetRasterPropertyDefinition");
+    CHECKARGUMENTNULL((MgRasterPropertyDefinition*)mgPropDef, L"MgServerFeatureUtil.GetRasterPropertyDefinition");
 
     fdoPropDef = FdoRasterPropertyDefinition::Create();
     STRING name = mgPropDef->GetName();
@@ -3005,8 +3005,8 @@ void MgServerFeatureUtil::UpdateFdoFeatureSchema(
     MgFeatureSchema* mgSchema,
     FdoFeatureSchema* fdoSchema)
 {
-    CHECKNULL(mgSchema, L"MgServerFeatureUtil.UpdateFdoFeatureSchema");
-    CHECKNULL(fdoSchema, L"MgServerFeatureUtil.UpdateFdoFeatureSchema");
+    CHECKARGUMENTNULL(mgSchema, L"MgServerFeatureUtil.UpdateFdoFeatureSchema");
+    CHECKARGUMENTNULL(fdoSchema, L"MgServerFeatureUtil.UpdateFdoFeatureSchema");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -3030,8 +3030,8 @@ void MgServerFeatureUtil::UpdateFdoClassCollection(
     MgClassDefinitionCollection* mgClassDefCol,
     FdoClassCollection* fdoClassCol)
 {
-    CHECKNULL(mgClassDefCol, L"MgServerFeatureUtil.UpdateFdoClassCollection");
-    CHECKNULL(fdoClassCol, L"MgServerFeatureUtil.UpdateFdoClassCollection");
+    CHECKARGUMENTNULL(mgClassDefCol, L"MgServerFeatureUtil.UpdateFdoClassCollection");
+    CHECKARGUMENTNULL(fdoClassCol, L"MgServerFeatureUtil.UpdateFdoClassCollection");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -3071,9 +3071,9 @@ void MgServerFeatureUtil::UpdateFdoClassDefinition(
     FdoClassDefinition* fdoClassDef,
     FdoClassCollection* fdoClassCol)
 {
-    CHECKNULL(mgClassDef, L"MgServerFeatureUtil.UpdateFdoClassDefinition");
-    CHECKNULL(fdoClassDef, L"MgServerFeatureUtil.UpdateFdoClassDefinition");
-    CHECKNULL(fdoClassCol, L"MgServerFeatureUtil.UpdateFdoClassDefinition");
+    CHECKARGUMENTNULL(mgClassDef, L"MgServerFeatureUtil.UpdateFdoClassDefinition");
+    CHECKARGUMENTNULL(fdoClassDef, L"MgServerFeatureUtil.UpdateFdoClassDefinition");
+    CHECKARGUMENTNULL(fdoClassCol, L"MgServerFeatureUtil.UpdateFdoClassDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -3267,7 +3267,7 @@ void MgServerFeatureUtil::UpdateFdoPropertyDefinition(
     FdoPropertyDefinition* fdoPropDef,
     FdoClassCollection* fdoClassCol)
 {
-    CHECKNULL((MgPropertyDefinition*)mgPropDef, L"MgServerFeatureUtil.UpdateFdoPropertyDefinition");
+    CHECKARGUMENTNULL((MgPropertyDefinition*)mgPropDef, L"MgServerFeatureUtil.UpdateFdoPropertyDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -3332,8 +3332,8 @@ void MgServerFeatureUtil::UpdateDataPropertyDefinition(
     MgDataPropertyDefinition* mgPropDef,
     FdoDataPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL(mgPropDef, L"MgServerFeatureUtil.UpdateFdoPropertyDefinition");
-    CHECKNULL(fdoPropDef, L"MgServerFeatureUtil.UpdateFdoPropertyDefinition");
+    CHECKARGUMENTNULL(mgPropDef, L"MgServerFeatureUtil.UpdateFdoPropertyDefinition");
+    CHECKARGUMENTNULL(fdoPropDef, L"MgServerFeatureUtil.UpdateFdoPropertyDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -3387,8 +3387,8 @@ void MgServerFeatureUtil::UpdateObjectPropertyDefinition(
     FdoObjectPropertyDefinition* fdoPropDef,
     FdoClassCollection* fdoClassCol)
 {
-    CHECKNULL((MgObjectPropertyDefinition*)objPropDef, L"MgServerFeatureUtil.UpdateObjectPropertyDefinition");
-    CHECKNULL((FdoObjectPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.UpdateObjectPropertyDefinition");
+    CHECKARGUMENTNULL((MgObjectPropertyDefinition*)objPropDef, L"MgServerFeatureUtil.UpdateObjectPropertyDefinition");
+    CHECKARGUMENTNULL((FdoObjectPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.UpdateObjectPropertyDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -3447,8 +3447,8 @@ void MgServerFeatureUtil::UpdateGeometricPropertyDefinition(
     MgGeometricPropertyDefinition* mgPropDef,
     FdoGeometricPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((MgGeometricPropertyDefinition*)mgPropDef, L"MgServerFeatureUtil.UpdateGeometricPropertyDefinition");
-    CHECKNULL((FdoGeometricPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.UpdateGeometricPropertyDefinition");
+    CHECKARGUMENTNULL((MgGeometricPropertyDefinition*)mgPropDef, L"MgServerFeatureUtil.UpdateGeometricPropertyDefinition");
+    CHECKARGUMENTNULL((FdoGeometricPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.UpdateGeometricPropertyDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -3519,8 +3519,8 @@ void MgServerFeatureUtil::UpdateRasterPropertyDefinition(
     MgRasterPropertyDefinition* mgPropDef,
     FdoRasterPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((MgRasterPropertyDefinition*)mgPropDef, L"MgServerFeatureUtil.UpdateRasterPropertyDefinition");
-    CHECKNULL((FdoRasterPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.UpdateRasterPropertyDefinition");
+    CHECKARGUMENTNULL((MgRasterPropertyDefinition*)mgPropDef, L"MgServerFeatureUtil.UpdateRasterPropertyDefinition");
+    CHECKARGUMENTNULL((FdoRasterPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.UpdateRasterPropertyDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -3558,7 +3558,7 @@ void MgServerFeatureUtil::UpdateRasterPropertyDefinition(
 
 FdoIdentifierCollection* MgServerFeatureUtil::ExtractIdentifiers(FdoExpression* expr)
 {
-    CHECKNULL(expr, L"MgServerFeatureUtil.ExtractIdentifiers");
+    CHECKARGUMENTNULL(expr, L"MgServerFeatureUtil.ExtractIdentifiers");
 
     FdoPtr<FdoIdentifierCollection> ret;
     MG_FEATURE_SERVICE_TRY()

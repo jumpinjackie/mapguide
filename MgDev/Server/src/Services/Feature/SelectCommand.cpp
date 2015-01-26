@@ -32,7 +32,7 @@
 
 MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource)
 {
-    CHECKNULL((MgResourceIdentifier*)resource, L"MgSelectCommand.MgSelectCommand");
+    CHECKARGUMENTNULL((MgResourceIdentifier*)resource, L"MgSelectCommand.MgSelectCommand");
 
     // Connect to provider
     m_connection = new MgServerFeatureConnection(resource);

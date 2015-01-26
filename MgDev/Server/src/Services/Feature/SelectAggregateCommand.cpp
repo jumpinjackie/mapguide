@@ -31,7 +31,7 @@
 
 MgSelectAggregateCommand::MgSelectAggregateCommand(MgResourceIdentifier* resource)
 {
-    CHECKNULL((MgResourceIdentifier*)resource, L"MgSelectAggregateCommand.MgSelectAggregateCommand");
+    CHECKARGUMENTNULL((MgResourceIdentifier*)resource, L"MgSelectAggregateCommand.MgSelectAggregateCommand");
 
     // Connect to provider
     m_connection = new MgServerFeatureConnection(resource);

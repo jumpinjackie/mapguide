@@ -272,8 +272,8 @@ void TestSiteService::TestCase_GrantGroupMembershipsToUsers()
         Ptr<MgStringCollection> userCollection = new MgStringCollection();
 
         //Try to use NULL arguments
-        CPPUNIT_ASSERT_THROW_MG(pService->GrantGroupMembershipsToUsers(NULL, userCollection), MgNullReferenceException*);
-        CPPUNIT_ASSERT_THROW_MG(pService->GrantGroupMembershipsToUsers(groupCollection, NULL), MgNullReferenceException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GrantGroupMembershipsToUsers(NULL, userCollection), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GrantGroupMembershipsToUsers(groupCollection, NULL), MgNullArgumentException*);
 
         //Make both new users members of first group
         groupCollection->Add(groupName1);
@@ -340,8 +340,8 @@ void TestSiteService::TestCase_GrantRoleMembershipsToUsers()
         //Try using NULL arguments
         roleCollection = new MgStringCollection();
         userCollection = new MgStringCollection();
-        CPPUNIT_ASSERT_THROW_MG(pService->GrantRoleMembershipsToUsers(NULL,  userCollection), MgNullReferenceException*);
-        CPPUNIT_ASSERT_THROW_MG(pService->GrantRoleMembershipsToUsers(roleCollection, NULL), MgNullReferenceException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GrantRoleMembershipsToUsers(NULL, userCollection), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GrantRoleMembershipsToUsers(roleCollection, NULL), MgNullArgumentException*);
 
         //Try using with a user that does not exist
         roleCollection = new MgStringCollection();
@@ -403,8 +403,8 @@ void TestSiteService::TestCase_GrantRoleMembershipsToGroups()
         //Try using NULL arguments
         roleCollection = new MgStringCollection();
         groupCollection = new MgStringCollection();
-        CPPUNIT_ASSERT_THROW_MG(pService->GrantRoleMembershipsToGroups(NULL,  groupCollection), MgNullReferenceException*);
-        CPPUNIT_ASSERT_THROW_MG(pService->GrantRoleMembershipsToGroups(roleCollection, NULL), MgNullReferenceException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GrantRoleMembershipsToGroups(NULL, groupCollection), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GrantRoleMembershipsToGroups(roleCollection, NULL), MgNullArgumentException*);
 
         //Try using with a group that does not exist
         roleCollection = new MgStringCollection();
@@ -625,8 +625,8 @@ void TestSiteService::TestCase_RevokeGroupMembershipsFromUsers()
         Ptr<MgStringCollection> userCollection = new MgStringCollection();
 
         //Try to use NULL arguments
-        CPPUNIT_ASSERT_THROW_MG(pService->RevokeGroupMembershipsFromUsers(NULL, userCollection), MgNullReferenceException*);
-        CPPUNIT_ASSERT_THROW_MG(pService->RevokeGroupMembershipsFromUsers(groupCollection, NULL), MgNullReferenceException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->RevokeGroupMembershipsFromUsers(NULL, userCollection), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->RevokeGroupMembershipsFromUsers(groupCollection, NULL), MgNullArgumentException*);
 
         //Remove both new users from first group
         groupCollection->Add(groupName1);
@@ -686,8 +686,8 @@ void TestSiteService::TestCase_RevokeRoleMembershipsFromUsers()
         //Try using NULL arguments
         roleCollection = new MgStringCollection();
         userCollection = new MgStringCollection();
-        CPPUNIT_ASSERT_THROW_MG(pService->RevokeRoleMembershipsFromUsers(NULL,  userCollection), MgNullReferenceException*);
-        CPPUNIT_ASSERT_THROW_MG(pService->RevokeRoleMembershipsFromUsers(roleCollection, NULL), MgNullReferenceException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->RevokeRoleMembershipsFromUsers(NULL, userCollection), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->RevokeRoleMembershipsFromUsers(roleCollection, NULL), MgNullArgumentException*);
 
         //Try using with a user that does not exist
         roleCollection = new MgStringCollection();
@@ -749,8 +749,8 @@ void TestSiteService::TestCase_RevokeRoleMembershipsFromGroups()
         //Try using NULL arguments
         roleCollection = new MgStringCollection();
         groupCollection = new MgStringCollection();
-        CPPUNIT_ASSERT_THROW_MG(pService->RevokeRoleMembershipsFromGroups(NULL,  groupCollection), MgNullReferenceException*);
-        CPPUNIT_ASSERT_THROW_MG(pService->RevokeRoleMembershipsFromGroups(roleCollection, NULL), MgNullReferenceException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->RevokeRoleMembershipsFromGroups(NULL, groupCollection), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->RevokeRoleMembershipsFromGroups(roleCollection, NULL), MgNullArgumentException*);
 
         //Try using with a group that does not exist
         roleCollection = new MgStringCollection();
@@ -807,7 +807,7 @@ void TestSiteService::TestCase_DeleteUsers()
         }
 
         //Try using a NULL argument
-        CPPUNIT_ASSERT_THROW_MG(pService->DeleteUsers(NULL), MgNullReferenceException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->DeleteUsers(NULL), MgNullArgumentException*);
 
         //Delete the two users added earlier
         MgStringCollection userCollection;
@@ -853,7 +853,7 @@ void TestSiteService::TestCase_DeleteGroups()
         }
 
         //Try to use a NULL argument
-        CPPUNIT_ASSERT_THROW_MG(pService->DeleteGroups(NULL), MgNullReferenceException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->DeleteGroups(NULL), MgNullArgumentException*);
 
         MgStringCollection groupCollection;
         groupCollection.Add(groupName1);

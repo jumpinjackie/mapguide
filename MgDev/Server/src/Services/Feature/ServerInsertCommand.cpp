@@ -32,8 +32,8 @@ MgServerInsertCommand::MgServerInsertCommand()
 
 MgServerInsertCommand::MgServerInsertCommand(MgFeatureCommand* command, MgServerFeatureConnection* connection, INT32 cmdId)
 {
-    CHECKNULL(command, L"MgServerInsertCommand.MgServerInsertCommand");
-    CHECKNULL(connection, L"MgServerInsertCommand.MgServerInsertCommand");
+    CHECKARGUMENTNULL(command, L"MgServerInsertCommand.MgServerInsertCommand");
+    CHECKARGUMENTNULL(connection, L"MgServerInsertCommand.MgServerInsertCommand");
 
     m_srvrFeatConn = SAFE_ADDREF((MgServerFeatureConnection*)connection);
     m_featCommand = SAFE_ADDREF((MgInsertFeatures*)command);

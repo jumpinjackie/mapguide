@@ -807,7 +807,7 @@ MgSelectionBase::SelectionList* MgSelectionBase::GetSelections(MgLayerBase* laye
 
 MgEnvelope* MgSelectionBase::GetExtents(MgFeatureService* featureService)
 {
-    CHECKNULL((MgFeatureService*)featureService, L"MgSelection.GetExtents");
+    CHECKARGUMENTNULL((MgFeatureService*)featureService, L"MgSelection.GetExtents");
 
     Ptr<MgEnvelope> env;
     Ptr<MgReadOnlyLayerCollection> roLayerCol = this->GetLayers();
@@ -851,7 +851,7 @@ MgEnvelope* MgSelectionBase::GetFeatureExtents(MgFeatureService* featureService,
                                            CREFSTRING filterText,
                                            CREFSTRING geomName)
 {
-    CHECKNULL((MgFeatureService*)featureService, L"MgSelection.GetFeatureExtents");
+    CHECKARGUMENTNULL((MgFeatureService*)featureService, L"MgSelection.GetFeatureExtents");
 
     Ptr<MgFeatureAggregateOptions> geomQryOptions = new MgFeatureAggregateOptions();
     STRING cmd = L"EXTENT(" + geomName + L")";

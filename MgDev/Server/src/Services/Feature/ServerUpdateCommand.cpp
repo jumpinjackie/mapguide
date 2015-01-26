@@ -32,8 +32,8 @@ MgServerUpdateCommand::MgServerUpdateCommand()
 
 MgServerUpdateCommand::MgServerUpdateCommand(MgFeatureCommand* command, MgServerFeatureConnection* connection, INT32 cmdId)
 {
-    CHECKNULL(command, L"MgServerUpdateCommand.MgServerUpdateCommand");
-    CHECKNULL(connection, L"MgServerUpdateCommand.MgServerUpdateCommand");
+    CHECKARGUMENTNULL(command, L"MgServerUpdateCommand.MgServerUpdateCommand");
+    CHECKARGUMENTNULL(connection, L"MgServerUpdateCommand.MgServerUpdateCommand");
 
     m_srvrFeatConn = SAFE_ADDREF((MgServerFeatureConnection*)connection);
     m_featCommand = SAFE_ADDREF((MgUpdateFeatures*)command);

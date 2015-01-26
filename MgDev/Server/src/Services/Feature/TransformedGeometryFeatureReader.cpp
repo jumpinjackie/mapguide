@@ -81,7 +81,7 @@ bool MgTransformedGeometryFeatureReader::IsNull(CREFSTRING propertyName)
 { 
     bool ret = false;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->IsNull(propertyName);
+    ret = m_innerReader->IsNull(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.IsNull")
     return ret;
 }
@@ -90,7 +90,7 @@ bool MgTransformedGeometryFeatureReader::GetBoolean(CREFSTRING propertyName)
 { 
     bool ret = false;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetBoolean(propertyName);
+    ret = m_innerReader->GetBoolean(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetBoolean")
     return ret;
 }
@@ -99,7 +99,7 @@ BYTE MgTransformedGeometryFeatureReader::GetByte(CREFSTRING propertyName)
 { 
     BYTE ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetByte(propertyName);
+    ret = m_innerReader->GetByte(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetByte")
     return ret;
 }
@@ -108,7 +108,7 @@ MgDateTime* MgTransformedGeometryFeatureReader::GetDateTime(CREFSTRING propertyN
 { 
     Ptr<MgDateTime> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetDateTime(propertyName);
+    ret = m_innerReader->GetDateTime(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetDateTime")
     return ret.Detach();
 }
@@ -117,7 +117,7 @@ float MgTransformedGeometryFeatureReader::GetSingle(CREFSTRING propertyName)
 { 
     float ret = 0.0f;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetSingle(propertyName);
+    ret = m_innerReader->GetSingle(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetSingle")
     return ret;
 }
@@ -126,7 +126,7 @@ double MgTransformedGeometryFeatureReader::GetDouble(CREFSTRING propertyName)
 { 
     double ret = 0.0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetDouble(propertyName);
+    ret = m_innerReader->GetDouble(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetDouble")
     return ret;
 }
@@ -135,7 +135,7 @@ INT16 MgTransformedGeometryFeatureReader::GetInt16(CREFSTRING propertyName)
 { 
     INT16 ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetInt16(propertyName);
+    ret = m_innerReader->GetInt16(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetInt16")
     return ret;
 }
@@ -144,7 +144,7 @@ INT32 MgTransformedGeometryFeatureReader::GetInt32(CREFSTRING propertyName)
 { 
     INT32 ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetInt32(propertyName);
+    ret = m_innerReader->GetInt32(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetInt32")
     return ret;
 }
@@ -153,7 +153,7 @@ INT64 MgTransformedGeometryFeatureReader::GetInt64(CREFSTRING propertyName)
 { 
     INT64 ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetInt64(propertyName);
+    ret = m_innerReader->GetInt64(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetInt32")
     return ret;
 }
@@ -162,7 +162,7 @@ STRING MgTransformedGeometryFeatureReader::GetString(CREFSTRING propertyName)
 { 
     STRING ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetString(propertyName);
+    ret = m_innerReader->GetString(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetString")
     return ret;
 }
@@ -171,7 +171,7 @@ MgByteReader* MgTransformedGeometryFeatureReader::GetBLOB(CREFSTRING propertyNam
 { 
     Ptr<MgByteReader> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetBLOB(propertyName);
+    ret = m_innerReader->GetBLOB(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetBLOB")
     return ret.Detach();
 }
@@ -180,7 +180,7 @@ MgByteReader* MgTransformedGeometryFeatureReader::GetCLOB(CREFSTRING propertyNam
 { 
     Ptr<MgByteReader> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetCLOB(propertyName);
+    ret = m_innerReader->GetCLOB(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetCLOB")
     return ret.Detach();
 }
@@ -203,7 +203,7 @@ MgRaster* MgTransformedGeometryFeatureReader::GetRaster(CREFSTRING propertyName)
 { 
     Ptr<MgRaster> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetRaster(propertyName);
+    ret = m_innerReader->GetRaster(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetRaster")
     return ret.Detach();
 }
@@ -217,7 +217,7 @@ bool MgTransformedGeometryFeatureReader::IsNull(INT32 index)
 { 
     bool ret = false;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->IsNull(index);
+    ret = m_innerReader->IsNull(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.IsNull")
     return ret;
 }
@@ -226,7 +226,7 @@ bool MgTransformedGeometryFeatureReader::GetBoolean(INT32 index)
 {
     bool ret = false;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetBoolean(index);
+    ret = m_innerReader->GetBoolean(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetBoolean")
     return ret;
 }
@@ -235,7 +235,7 @@ BYTE MgTransformedGeometryFeatureReader::GetByte(INT32 index)
 { 
     BYTE ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetByte(index);
+    ret = m_innerReader->GetByte(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetByte")
     return ret;
 }
@@ -244,7 +244,7 @@ MgDateTime* MgTransformedGeometryFeatureReader::GetDateTime(INT32 index)
 { 
     Ptr<MgDateTime> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetDateTime(index);
+    ret = m_innerReader->GetDateTime(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetDateTime")
     return ret.Detach();
 }
@@ -253,7 +253,7 @@ float MgTransformedGeometryFeatureReader::GetSingle(INT32 index)
 { 
     float ret = 0.0f;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetSingle(index);
+    ret = m_innerReader->GetSingle(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetSingle")
     return ret;
 }
@@ -262,7 +262,7 @@ double MgTransformedGeometryFeatureReader::GetDouble(INT32 index)
 { 
     double ret = 0.0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetDouble(index);
+    ret = m_innerReader->GetDouble(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetDouble")
     return ret;
 }
@@ -271,7 +271,7 @@ INT16 MgTransformedGeometryFeatureReader::GetInt16(INT32 index)
 { 
     INT16 ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetInt16(index);
+    ret = m_innerReader->GetInt16(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetInt16")
     return ret;
 }
@@ -280,7 +280,7 @@ INT32 MgTransformedGeometryFeatureReader::GetInt32(INT32 index)
 { 
     INT32 ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetInt32(index);
+    ret = m_innerReader->GetInt32(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetInt32")
     return ret;
 }
@@ -289,7 +289,7 @@ INT64 MgTransformedGeometryFeatureReader::GetInt64(INT32 index)
 { 
     INT64 ret = 0;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetInt64(index);
+    ret = m_innerReader->GetInt64(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetInt64")
     return ret;
 }
@@ -298,7 +298,7 @@ STRING MgTransformedGeometryFeatureReader::GetString(INT32 index)
 { 
     STRING ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetString(index);
+    ret = m_innerReader->GetString(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetString")
     return ret;
 }
@@ -307,7 +307,7 @@ MgByteReader* MgTransformedGeometryFeatureReader::GetBLOB(INT32 index)
 { 
     Ptr<MgByteReader> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetBLOB(index);
+    ret = m_innerReader->GetBLOB(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetBLOB")
     return ret.Detach();
 }
@@ -316,7 +316,7 @@ MgByteReader* MgTransformedGeometryFeatureReader::GetCLOB(INT32 index)
 { 
     Ptr<MgByteReader> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetCLOB(index);
+    ret = m_innerReader->GetCLOB(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetCLOB")
     return ret.Detach();
 }
@@ -325,14 +325,14 @@ MgRaster* MgTransformedGeometryFeatureReader::GetRaster(INT32 index)
 { 
     Ptr<MgRaster> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetRaster(index);
+    ret = m_innerReader->GetRaster(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetRaster")
     return ret.Detach();
 }
 
 INT32 MgTransformedGeometryFeatureReader::GetReaderType() 
 { 
-	return m_innerReader->GetReaderType();
+    return m_innerReader->GetReaderType();
 }
 
 //EXTERNAL_API:
@@ -341,7 +341,7 @@ MgByteReader* MgTransformedGeometryFeatureReader::ToXml()
 { 
     Ptr<MgByteReader> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->ToXml();
+    ret = m_innerReader->ToXml();
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.ToXml")
     return ret.Detach();
 }
@@ -390,7 +390,7 @@ void MgTransformedGeometryFeatureReader::HeaderToStringUtf8(string& str)
 
 const wchar_t* MgTransformedGeometryFeatureReader::GetString(CREFSTRING propertyName, INT32& length) 
 {
-	return m_innerReader->GetString(propertyName, length);
+    return m_innerReader->GetString(propertyName, length);
 }
 
 void MgTransformedGeometryFeatureReader::Serialize(MgStream* stream) 
@@ -463,7 +463,7 @@ MgClassDefinition* MgTransformedGeometryFeatureReader::GetClassDefinitionNoXml()
 { 
     Ptr<MgClassDefinition> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetClassDefinitionNoXml();
+    ret = m_innerReader->GetClassDefinitionNoXml();
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetClassDefinitionNoXml")
     return ret.Detach();
 }
@@ -472,7 +472,7 @@ MgFeatureReader* MgTransformedGeometryFeatureReader::GetFeatureObject(CREFSTRING
 { 
     Ptr<MgFeatureReader> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetFeatureObject(propertyName);
+    ret = m_innerReader->GetFeatureObject(propertyName);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetFeatureObject")
     return ret.Detach();
 }
@@ -481,7 +481,7 @@ MgFeatureReader* MgTransformedGeometryFeatureReader::GetFeatureObject(INT32 inde
 { 
     Ptr<MgFeatureReader> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetFeatureObject(index);
+    ret = m_innerReader->GetFeatureObject(index);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgTransformedGeometryFeatureReader.GetFeatureObject")
     return ret.Detach();
 }
@@ -492,7 +492,7 @@ MgFeatureSet* MgTransformedGeometryFeatureReader::GetFeatures(INT32 count)
 { 
     Ptr<MgFeatureSet> ret;
     MG_FEATURE_SERVICE_TRY()
-	ret = m_innerReader->GetFeatures(count);
+    ret = m_innerReader->GetFeatures(count);
     if (NULL != m_transform.p)
     {
         for (INT32 i = 0; i < ret->GetCount(); i++)

@@ -534,7 +534,7 @@ FdoClassDefinition* MgJoinFeatureReader::GetFdoClassDefinition(MgClassDefinition
     FdoPtr<FdoClassDefinition> fdoClassDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL(mgClassDef, L"MgJoinFeatureReader.GetFdoClassDefinition");
+    CHECKARGUMENTNULL(mgClassDef, L"MgJoinFeatureReader.GetFdoClassDefinition");
 
     STRING name = mgClassDef->GetName();
     assert(!name.empty());
@@ -776,7 +776,7 @@ void MgJoinFeatureReader::GetClassProperties(FdoDataPropertyDefinitionCollection
 
 FdoPropertyDefinition* MgJoinFeatureReader::GetFdoPropertyDefinition(MgPropertyDefinition* mgPropDef)
 {
-    CHECKNULL((MgPropertyDefinition*)mgPropDef, L"MgJoinFeatureReader.GetFdoPropertyDefinition");
+    CHECKARGUMENTNULL((MgPropertyDefinition*)mgPropDef, L"MgJoinFeatureReader.GetFdoPropertyDefinition");
 
     FdoPtr<FdoPropertyDefinition> fdoPropDef;
     MG_FEATURE_SERVICE_TRY()
@@ -885,7 +885,7 @@ FdoObjectPropertyDefinition* MgJoinFeatureReader::GetObjectPropertyDefinition(Mg
     FdoPtr<FdoObjectPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((MgObjectPropertyDefinition*)objPropDef, L"MgJoinFeatureReader.GetObjectPropertyDefinition");
+    CHECKARGUMENTNULL((MgObjectPropertyDefinition*)objPropDef, L"MgJoinFeatureReader.GetObjectPropertyDefinition");
 
     fdoPropDef = FdoObjectPropertyDefinition::Create();
     // Retrieve data from MgObjectProperty
@@ -922,7 +922,7 @@ FdoGeometricPropertyDefinition* MgJoinFeatureReader::GetGeometricPropertyDefinit
     FdoPtr<FdoGeometricPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((MgGeometricPropertyDefinition*)mgPropDef, L"MgJoinFeatureReader.GetGeometricPropertyDefinition");
+    CHECKARGUMENTNULL((MgGeometricPropertyDefinition*)mgPropDef, L"MgJoinFeatureReader.GetGeometricPropertyDefinition");
 
     STRING name = mgPropDef->GetName();
     fdoPropDef = FdoGeometricPropertyDefinition::Create();

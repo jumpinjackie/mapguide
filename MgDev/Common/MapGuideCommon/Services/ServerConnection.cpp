@@ -286,8 +286,8 @@ ACE_Time_Value* MgServerConnection::LastUsed()
 MgServerConnection* MgServerConnection::Acquire(MgUserInformation* userInformation,
                                                 MgConnectionProperties* connProp)
 {
-    CHECKNULL(userInformation, L"MgServerConnection.Acquire");
-    CHECKNULL((MgConnectionProperties*)connProp, L"MgServerConnection.Acquire");
+    CHECKARGUMENTNULL(userInformation, L"MgServerConnection.Acquire");
+    CHECKARGUMENTNULL((MgConnectionProperties*)connProp, L"MgServerConnection.Acquire");
 
     MgServerConnectionPool* connectionPool = MgServerConnectionPool::GetInstance();
     CHECKNULL(connectionPool, L"MgServerConnection.Acquire");
@@ -358,7 +358,7 @@ MgServerConnection* MgServerConnection::Acquire(MgUserInformation* userInformati
 /// TargetNotFound
 void MgServerConnection::Remove(MgConnectionProperties* connProp)
 {
-    CHECKNULL((MgConnectionProperties*)connProp, L"MgServerConnection.Remove");
+    CHECKARGUMENTNULL((MgConnectionProperties*)connProp, L"MgServerConnection.Remove");
 
     {
         ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));

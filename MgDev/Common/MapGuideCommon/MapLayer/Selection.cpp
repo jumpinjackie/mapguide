@@ -60,7 +60,7 @@ void MgSelection::Dispose()
 //
 MgFeatureReader* MgSelection::GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, bool mappedOnly)
 {
-    CHECKNULL((MgLayerBase*)layer, L"MgSelection.GetSelectedFeatures");
+    CHECKARGUMENTNULL((MgLayerBase*)layer, L"MgSelection.GetSelectedFeatures");
 
     if (!mappedOnly)
         return GetSelectedFeatures(layer, className, (MgStringCollection*)NULL);
@@ -97,7 +97,7 @@ MgFeatureReader* MgSelection::GetSelectedFeatures(MgLayerBase* layer, CREFSTRING
 ///
 MgFeatureReader* MgSelection::GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, MgStringCollection* propertyNames)
 {
-    CHECKNULL((MgLayerBase*)layer, L"MgSelection.GetSelectedFeatures");
+    CHECKARGUMENTNULL((MgLayerBase*)layer, L"MgSelection.GetSelectedFeatures");
 
     Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(
         m_map->GetService(MgServiceType::FeatureService));

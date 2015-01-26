@@ -184,7 +184,7 @@ MgGeometry * MgSpatialUtility::ApproximateGeometryWithLineStrings(
 
 MgLinearRing* MgSpatialUtility::CurveRingToLinearRing(MgCurveRing* curveRing, double maxSpacing, double maxOffset)
 {
-    CHECKNULL(curveRing, L"MgSpatialUtility.CurveRingToLinearRing")
+    CHECKARGUMENTNULL(curveRing, L"MgSpatialUtility.CurveRingToLinearRing")
 
     MgGeometryFactory factory;
 
@@ -197,7 +197,7 @@ MgLinearRing* MgSpatialUtility::CurveRingToLinearRing(MgCurveRing* curveRing, do
 
 MgLinearSegment* MgSpatialUtility::ArcSegmentToLinearSegment(MgArcSegment* segment, double maxSpacing, double maxOffset)
 {
-    CHECKNULL(segment, L"MgSpatialUtility.ArcSegmentToLinearSegment")
+    CHECKARGUMENTNULL(segment, L"MgSpatialUtility.ArcSegmentToLinearSegment")
 
     MgGeometryFactory factory;
 
@@ -481,7 +481,7 @@ MgGeometry* MgSpatialUtility::TesselateCurve(MgGeometry* curve)
 ///////////////////////////////////////////////////////////////////////////////
 MgGeometryComponent* MgSpatialUtility::TesselateGeometryComponent(MgGeometryComponent* curve)
 {
-    CHECKNULL(curve, L"MgSpatialUtility.TesselateCurve")
+    CHECKARGUMENTNULL(curve, L"MgSpatialUtility.TesselateCurve")
 
     Ptr<MgGeometryComponent> retGeomComp;
     Ptr<MgEnvelope> env = curve->Envelope();
@@ -555,11 +555,11 @@ INT32 MgSpatialUtility::SegmentIntersection (MgCoordinate* result,MgCoordinate* 
     double num, denom;          // numerator and denominator
     double tolerance;
 
-    CHECKNULL(result,   L"MgSpatialUtility.SegmentIntersection")
-    CHECKNULL(seg1From, L"MgSpatialUtility.SegmentIntersection")
-    CHECKNULL(seg1To,   L"MgSpatialUtility.SegmentIntersection")
-    CHECKNULL(seg2From, L"MgSpatialUtility.SegmentIntersection")
-    CHECKNULL(seg2To,   L"MgSpatialUtility.SegmentIntersection")
+    CHECKARGUMENTNULL(result, L"MgSpatialUtility.SegmentIntersection")
+    CHECKARGUMENTNULL(seg1From, L"MgSpatialUtility.SegmentIntersection")
+    CHECKARGUMENTNULL(seg1To, L"MgSpatialUtility.SegmentIntersection")
+    CHECKARGUMENTNULL(seg2From, L"MgSpatialUtility.SegmentIntersection")
+    CHECKARGUMENTNULL(seg2To, L"MgSpatialUtility.SegmentIntersection")
     if (magnitude < 1.0E-04)
     {
         throw new MgInvalidArgumentException(L"MgSpatialUtility.SegmentIntersection", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -893,9 +893,9 @@ MgCoordinateCollection* MgSpatialUtility::PolySegIntersection (MgCoordinateItera
     Ptr<MgCoordinate> polyFrom;
     Ptr<MgCoordinate> polyTo;
 
-    CHECKNULL(polyItr, L"MgSpatialUtility.PolySegIntersection")
-    CHECKNULL(segFrom, L"MgSpatialUtility.PolySegIntersection")
-    CHECKNULL(segTo,   L"MgSpatialUtility.PolySegIntersection")
+    CHECKARGUMENTNULL(polyItr, L"MgSpatialUtility.PolySegIntersection")
+    CHECKARGUMENTNULL(segFrom, L"MgSpatialUtility.PolySegIntersection")
+    CHECKARGUMENTNULL(segTo, L"MgSpatialUtility.PolySegIntersection")
 
     // We need this so we can determine a valid value to use for
     // "fuzzy" double comparisons.

@@ -908,7 +908,7 @@ void MgProxyFeatureReader::CurrentToStringUtf8(string& str)
 
 void MgProxyFeatureReader::SetService(MgFeatureService* service)
 {
-    CHECKNULL(service, L"MgProxyFeatureReader.SetService");
+    CHECKARGUMENTNULL(service, L"MgProxyFeatureReader.SetService");
 
     if (m_service == NULL)
     {

@@ -32,8 +32,8 @@ MgServerDeleteCommand::MgServerDeleteCommand()
 
 MgServerDeleteCommand::MgServerDeleteCommand(MgFeatureCommand* command, MgServerFeatureConnection* connection, INT32 cmdId)
 {
-    CHECKNULL(command, L"MgServerDeleteCommand.MgServerDeleteCommand");
-    CHECKNULL(connection, L"MgServerDeleteCommand.MgServerDeleteCommand");
+    CHECKARGUMENTNULL(command, L"MgServerDeleteCommand.MgServerDeleteCommand");
+    CHECKARGUMENTNULL(connection, L"MgServerDeleteCommand.MgServerDeleteCommand");
 
     m_srvrFeatConn = SAFE_ADDREF((MgServerFeatureConnection*)connection);
     m_featCommand = SAFE_ADDREF((MgDeleteFeatures*)command);

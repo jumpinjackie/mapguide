@@ -757,7 +757,7 @@ void MgProxyDataReader::CurrentToStringUtf8(string& str)
 
 void MgProxyDataReader::SetService(MgFeatureService* service)
 {
-    CHECKNULL(service, L"MgProxyDataReader.SetService");
+    CHECKARGUMENTNULL(service, L"MgProxyDataReader.SetService");
 
     if (m_service == NULL)
     {
@@ -865,7 +865,7 @@ MgProperty* MgProxyDataReader::GetProperty(INT32 index)
 void MgProxyDataReader::UpdateCurrentSet(MgBatchPropertyCollection* bpCol)
 {
     CHECKNULL((MgBatchPropertyCollection*)m_set, L"MgProxyDataReader.UpdateCurrentSet");
-    CHECKNULL((MgBatchPropertyCollection*)bpCol, L"MgProxyDataReader.UpdateCurrentSet");
+    CHECKARGUMENTNULL((MgBatchPropertyCollection*)bpCol, L"MgProxyDataReader.UpdateCurrentSet");
 
     m_set->Clear();
 
