@@ -21,7 +21,7 @@ SET PHP_EXT_DIR=%CD%\%CONF%\Web\Php\ext
 SET START_MGSERVER=1
 SET START_WEBSERVER=1
 SET PREPARE_PHP_WEBSERVER=1
-SET RUN_SERVER_TESTS=0
+SET RUN_SERVER_TESTS=1
 SET RUN_PHP_TESTS=1
 SET RUN_DOTNET_TESTS=1
 SET RUN_JAVA_TESTS=1
@@ -42,7 +42,7 @@ if "%RUN_SERVER_TESTS%" == "1" (
     pushd Server\bin\%CONF%
     rem Before we run, nuke the Repositories/ directory to ensure a clean slate
     rd /S /Q Repositories
-    mgserver.exe test
+    mgserver.exe test all UnitTestResults.xml
     if %ERRORLEVEL% neq 0 echo [test]: MapGuide Server tests had one or more failures. Check UnitTestResults.xml for more information
     rem Nuke again for future tests
     rd /S /Q Repositories
