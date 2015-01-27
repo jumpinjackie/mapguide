@@ -416,7 +416,7 @@ void TestCoordinateSystem::TestCase_InitializeValidUserDictionaryDir()
 
     //create the directory to make sure, [SetUserDictionaryDir]
     //can succeed
-    MgFileUtil::CreateDirectory(userDictionaryDir);
+    MgFileUtil::CreateDirectory(userDictionaryDir, false, true);
 
     pCsCatalog->SetUserDictionaryDir(userDictionaryDir);
     STRING setUserDictionaryDir = pCsCatalog->GetUserDictionaryDir();
