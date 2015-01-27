@@ -470,6 +470,8 @@ void TestCoordinateSystem::TestCase_InitializeInvalidUserDictionaryDir()
 
 bool TestCoordinateSystem::SetDefaultUserDictionaryDir()
 {
+    MG_TRY()
+
     MgCoordinateSystemFactory mgCsFactory;
     Ptr<MgCoordinateSystemCatalog> pCsCatalog = mgCsFactory.GetCatalog();
 
@@ -485,9 +487,18 @@ bool TestCoordinateSystem::SetDefaultUserDictionaryDir()
 
      //create the directory to make sure, [SetUserDictionaryDir]
     //can succeed
-    MgFileUtil::CreateDirectory(defUserDictionaryDir);
+    if (!MgFileUtil::PathnameExists(defUserDictionaryDir))
+        MgFileUtil::CreateDirectory(defUserDictionaryDir, false, true);
     pCsCatalog->SetUserDictionaryDir(defUserDictionaryDir);
 
+    MG_CATCH(L"TestCoordinateSystem.SetDefaultUserDictionaryDir")
+
+    if (NULL != mgException.p)
+    {
+        STRING errDetails = mgException->GetDetails();
+        ACE_DEBUG((LM_INFO, ACE_TEXT("Exception setting user dictionary dir: %W"), errDetails.c_str()));
+        return false;
+    }
     return true;
 }
 
