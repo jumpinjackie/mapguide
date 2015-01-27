@@ -20,6 +20,9 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+// Comment out the line below to disable the slow test cases
+#define ENABLE_SLOW_TESTS 1
+
 class TestCoordinateSystem : public CppUnit::TestFixture
 {
     CPPUNIT_TEST_SUITE(TestCoordinateSystem);
@@ -49,10 +52,14 @@ class TestCoordinateSystem : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_UpdateUserGeodeticTransformations);
     CPPUNIT_TEST(TestCase_UpdateUserGeodeticPaths);
 
+#ifdef ENABLE_SLOW_TESTS
     CPPUNIT_TEST(TestCase_CheckCoordinateSystems);
+#endif
     CPPUNIT_TEST(TestCase_CreateValidCoordinateSystem);
     CPPUNIT_TEST(TestCase_CreateInvalidCoordinateSystem);
+#ifdef ENABLE_SLOW_TESTS
     CPPUNIT_TEST(TestCase_EnumerateCategories);
+#endif
     CPPUNIT_TEST(TestCase_EnumerateCoordSys);
     CPPUNIT_TEST(TestCase_GetBaseLibrary);
     CPPUNIT_TEST(TestCase_IsValid);
@@ -245,10 +252,14 @@ class TestCoordinateSystem : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_NewYork_Projected);
 
     // EPSG
+#ifdef ENABLE_SLOW_TESTS
     CPPUNIT_TEST(TestCase_EPSG);
+#endif
 
     // Performance
+#ifdef ENABLE_SLOW_TESTS
     CPPUNIT_TEST(TestCase_Benchmark_Transformation);
+#endif
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
