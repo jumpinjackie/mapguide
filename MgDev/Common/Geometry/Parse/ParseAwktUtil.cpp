@@ -61,10 +61,7 @@ MgCoordinateCollection* MgParseAwktUtil::CreateCoordinateCollection(INT32 dimens
     assert(index >= 0);
     assert(numOfCoordinates > 0);
 
-    if (ordinates == NULL)
-    {
-        throw new MgNullArgumentException(L"MgParseAwktUtil.CreateCoordinateCollection", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(ordinates, L"MgParseAwktUtil.CreateCoordinateCollection");
 
     Ptr<MgCoordinateCollection> coordCol = new MgCoordinateCollection();
     for (INT32 i = 0; i < numOfCoordinates; i++)

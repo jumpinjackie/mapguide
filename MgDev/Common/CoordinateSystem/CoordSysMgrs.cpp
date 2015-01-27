@@ -777,7 +777,7 @@ INT32 CCoordinateSystemMgrs::ConvertFromLonLat(MgCoordinate* pLonLat, INT32 nPre
     {
         if (m_bExceptionsOn)
         {
-            throw new MgNullArgumentException(L"MgCoordinateSystemMgrs.ConvertFromLonLat", __LINE__, __WFILE__, NULL, L"", NULL);
+            CHECKARGUMENTNULL(pLonLat, L"MgCoordinateSystemMgrs.ConvertFromLonLat");
         }
         else
         {
@@ -803,7 +803,7 @@ INT32 CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs, MgCoordinate* pLo
     {
         if (m_bExceptionsOn)
         {
-            throw new MgNullArgumentException(L"MgCoordinateSystemMgrs.ConvertToLonLat", __LINE__, __WFILE__, NULL, L"", NULL);
+            CHECKARGUMENTNULL(pLonLat, L"MgCoordinateSystemMgrs.ConvertToLonLat");
         }
         else
         {

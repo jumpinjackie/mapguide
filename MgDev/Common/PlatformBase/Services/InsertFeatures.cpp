@@ -34,20 +34,8 @@ MG_IMPL_DYNCREATE(MgInsertFeatures)
 /// </returns>
 MgInsertFeatures::MgInsertFeatures(CREFSTRING className, MgPropertyCollection* propertyValues)
 {
-    if (className.empty())
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(MgResources::BlankArgument);
-
-        throw new MgInvalidArgumentException(L"MgInsertFeatures.MgInsertFeatures",
-            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
-    }
-
-    if (propertyValues == NULL)
-    {
-        throw new MgNullArgumentException(L"MgInsertFeatures.MgInsertFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(className, L"MgInsertFeatures.MgInsertFeatures")
+    CHECKARGUMENTNULL(propertyValues, L"MgInsertFeatures.MgInsertFeatures");
 
     if (propertyValues->GetCount() == 0)
     {
@@ -79,21 +67,9 @@ MgInsertFeatures::MgInsertFeatures(CREFSTRING className, MgPropertyCollection* p
 /// </returns>
 MgInsertFeatures::MgInsertFeatures(CREFSTRING className, MgBatchPropertyCollection* propertyValues)
 {
-    if (className.empty())
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(MgResources::BlankArgument);
-
-        throw new MgInvalidArgumentException(L"MgInsertFeatures.MgInsertFeatures",
-            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
-    }
-
-    if (propertyValues == NULL)
-    {
-        throw new MgNullArgumentException(L"MgInsertFeatures.MgInsertFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
+    CHECKARGUMENTEMPTYSTRING(className, L"MgInsertFeatures.MgInsertFeatures");
+    CHECKARGUMENTNULL(propertyValues, L"MgInsertFeatures.MgInsertFeatures");
+    
     if (propertyValues->GetCount() == 0)
     {
         MgStringCollection arguments;

@@ -141,11 +141,8 @@ bool MgFileUtil::EndsWithSlash(CREFSTRING str)
 ///----------------------------------------------------------------------------
 bool MgFileUtil::EndsWithExtension(CREFSTRING pathname, CREFSTRING extension)
 {
-    if (pathname.empty() || extension.empty())
-    {
-        throw new MgNullArgumentException(L"MgFileUtil.EndsWithExtension",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(pathname, L"MgFileUtil.EndsWithExtension");
+    CHECKARGUMENTEMPTYSTRING(extension, L"MgFileUtil.EndsWithExtension");
 
     bool result = false;
 
@@ -210,11 +207,7 @@ bool MgFileUtil::GetFileStatus(CREFSTRING pathname, struct _stat64& statInfo,
 
     MG_TRY()
 
-    if (pathname.empty())
-    {
-        throw new MgNullArgumentException(L"MgFileUtil.GetFileStatus",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(pathname, L"MgFileUtil.GetFileStatus");
 
     STRING path = pathname;
 
@@ -658,10 +651,7 @@ bool MgFileUtil::GetFilesInDirectory(
     bool recursive,
     bool fileNameOnly)
 {
-    if (files == NULL)
-    {
-        throw new MgNullArgumentException(L"MgFileUtil.GetFilesInDirectory", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(files, L"MgFileUtil.GetFilesInDirectory");
 
     struct dirent **dirEntries = NULL;
     int numEntries = 0;
@@ -826,11 +816,8 @@ void MgFileUtil::CopyFile(CREFSTRING sourcePathname, CREFSTRING destPathname,
 {
     MG_TRY()
 
-    if (sourcePathname.empty() || destPathname.empty())
-    {
-        throw new MgNullArgumentException(L"MgFileUtil.CopyFile",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(sourcePathname, L"MgFileUtil.CopyFile");
+    CHECKARGUMENTEMPTYSTRING(destPathname, L"MgFileUtil.CopyFile");
 
     if (_wcsicmp(sourcePathname.c_str(), destPathname.c_str()) == 0)
     {
@@ -881,11 +868,9 @@ void MgFileUtil::RenameFile(CREFSTRING path, CREFSTRING oldFileName,
 {
     MG_TRY()
 
-    if (path.empty() || oldFileName.empty() || newFileName.empty())
-    {
-        throw new MgNullArgumentException(L"MgFileUtil.RenameFile",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(path, L"MgFileUtil.RenameFile");
+    CHECKARGUMENTEMPTYSTRING(oldFileName, L"MgFileUtil.RenameFile");
+    CHECKARGUMENTEMPTYSTRING(newFileName, L"MgFileUtil.RenameFile");
 
     STRING oldPathname = path;
     AppendSlashToEndOfPath(oldPathname);
@@ -917,11 +902,8 @@ void MgFileUtil::RenameFile(CREFSTRING oldPathname, CREFSTRING newPathname,
 {
     MG_TRY()
 
-    if (oldPathname.empty() || newPathname.empty())
-    {
-        throw new MgNullArgumentException(L"MgFileUtil.RenameFile",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(oldPathname, L"MgFileUtil.RenameFile");
+    CHECKARGUMENTEMPTYSTRING(newPathname, L"MgFileUtil.RenameFile");
 
     if (_wcsicmp(oldPathname.c_str(), newPathname.c_str()) == 0)
     {
@@ -1207,11 +1189,7 @@ bool MgFileUtil::IsFileInUse(CREFSTRING pathname)
 
     MG_TRY()
 
-    if (pathname.empty())
-    {
-        throw new MgNullArgumentException(L"MgFileUtil.IsFileInUse",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(pathname, L"MgFileUtil.IsFileInUse");
 
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 

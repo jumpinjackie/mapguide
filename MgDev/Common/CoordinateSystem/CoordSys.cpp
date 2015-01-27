@@ -404,10 +404,8 @@ double CCoordinateSystem::ConvertMetersToCoordinateSystemUnits(double meters)
 ///////////////////////////////////////////////////////////////////////////
 double CCoordinateSystem::MeasureEuclideanDistance(MgCoordinate* coord1, MgCoordinate* coord2)
 {
-    if((NULL == coord1) || (NULL == coord2))
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystem.MeasureEuclideanDistance", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(coord1, L"MgCoordinateSystem.MeasureEuclideanDistance");
+    CHECKARGUMENTNULL(coord2, L"MgCoordinateSystem.MeasureEuclideanDistance");
 
     return MeasureEuclideanDistance(coord1->GetX(), coord1->GetY(), coord2->GetX(), coord2->GetY());
 }
@@ -459,10 +457,8 @@ double CCoordinateSystem::MeasureEuclideanDistance(double x1, double y1, double 
 ///</returns>
 double CCoordinateSystem::MeasureGreatCircleDistance(MgCoordinate* coord1, MgCoordinate* coord2)
 {
-    if((NULL == coord1) || (NULL == coord2))
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystem.MeasureGreatCircleDistance", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(coord1, L"MgCoordinateSystem.MeasureGreatCircleDistance");
+    CHECKARGUMENTNULL(coord2, L"MgCoordinateSystem.MeasureGreatCircleDistance");
 
     return MeasureGreatCircleDistance(coord1->GetX(), coord1->GetY(), coord2->GetX(), coord2->GetY());
 }
@@ -534,10 +530,8 @@ double CCoordinateSystem::MeasureGreatCircleDistance(double x1, double y1, doubl
 ///</returns>
 double CCoordinateSystem::GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2)
 {
-    if((NULL == coord1) || (NULL == coord2))
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystem.GetAzimuth", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(coord1, L"MgCoordinateSystem.GetAzimuth");
+    CHECKARGUMENTNULL(coord2, L"MgCoordinateSystem.GetAzimuth");
 
     return GetAzimuth(coord1->GetX(), coord1->GetY(), coord2->GetX(), coord2->GetY());
 }
@@ -621,10 +615,7 @@ double CCoordinateSystem::GetAzimuth(double x1, double y1, double x2, double y2)
 ///</returns>
 MgCoordinate* CCoordinateSystem::GetCoordinate(MgCoordinate* coord, double azimuth, double distance)
 {
-    if(NULL == coord)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystem.GetCoordinate", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(coord, L"MgCoordinateSystem.GetCoordinate");
 
     return GetCoordinate(coord->GetX(), coord->GetY(), azimuth, distance);
 }
@@ -1510,10 +1501,7 @@ bool CCoordinateSystem::IsUsable(MgCoordinateSystemCatalog *pCatalog)
     MG_TRY()
 
     assert(NULL != pCatalog);
-    if (NULL == pCatalog)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystem.IsUsable", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pCatalog, L"MgCoordinateSystem.IsUsable");
 
     //First, make sure it's valid in its own right; if it's
     //not, then it's not usable
@@ -1595,10 +1583,7 @@ bool CCoordinateSystem::IsSameAs(MgGuardDisposable *pDef)
     MG_TRY()
 
     assert(NULL != pDef);
-    if (NULL == pDef)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystem.IsSameAs", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDef, L"MgCoordinateSystem.IsSameAs");
 
     int i;
     double *pdParam1, *pdParam2;
@@ -2609,11 +2594,7 @@ void CCoordinateSystem::SetDatumDefinition(MgCoordinateSystemDatum *pDatum)
     MG_TRY()
 
     assert(NULL != pDatum);
-
-    if (!pDatum)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystem.SetDatumDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDatum, L"MgCoordinateSystem.SetDatumDefinition");
     //if we check the protection, we can never setup any system since all systems
     //are built via void CCoordinateSystem::InitFromCatalog(const cs_Csdef_& csdef)
     /*
@@ -2762,11 +2743,7 @@ void CCoordinateSystem::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid *pEll
     MG_TRY()
 
     assert(NULL != pEllipsoid);
-    if (!pEllipsoid)
-    {
-        //We were given an uninitialized datum.
-        throw new MgNullArgumentException(L"MgCoordinateSystem.SetEllipsoidDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pEllipsoid, L"MgCoordinateSystem.SetEllipsoidDefinition");
     //if we check the protection, we can never setup any system since all systems
     //are built via void CCoordinateSystem::InitFromCatalog(const cs_Csdef_& csdef)
     /*
@@ -3078,11 +3055,7 @@ void CCoordinateSystem::SetString(CREFSTRING sSrc, char *pDest, UINT32 nMaxSize)
     MG_TRY()
 
     assert(NULL != pDest);
-
-    if (NULL==pDest)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystem.SetString", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDest, L"MgCoordinateSystem.SetString");
 
     if (Protected())
     {
@@ -3253,10 +3226,8 @@ void CCoordinateSystem::ConvertPoint(chkfunc check, llcsfunc convert, double dSo
 
     assert(NULL != pdDestCoord1);
     assert(NULL != pdDestCoord2);
-    if (NULL == pdDestCoord1 || NULL == pdDestCoord2)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystem.ConvertPoint", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pdDestCoord1, L"MgCoordinateSystem.ConvertPoint");
+    CHECKARGUMENTNULL(pdDestCoord2, L"MgCoordinateSystem.ConvertPoint");
 
     //Make sure we're initialized
     if (!IsInitialized())
@@ -3297,10 +3268,7 @@ double CCoordinateSystem::GetDouble(doublefunc func, double dLongitude, double d
     MG_TRY()
 
     assert(NULL != func);
-    if (NULL == func)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystem.GetDouble", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(func, L"MgCoordinateSystem.GetDouble");
 
     //Make sure we're initialized
     if (!IsInitialized())

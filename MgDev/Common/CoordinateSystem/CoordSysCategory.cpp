@@ -40,8 +40,7 @@ void CCoordinateSystemCategory::CtorInit(CCoordinateSystemCategory* pToInitializ
     cs_Ctdef_* pSourceCtDef,
     bool copyDef)
 {
-    if (NULL == pCatalog)
-        throw new MgNullArgumentException(L"MgCoordinateSystemCategory.MgCoordinateSystemCategory()", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(pCatalog, L"MgCoordinateSystemCategory.MgCoordinateSystemCategory");
 
     _ASSERT(NULL != pToInitialize && NULL == pToInitialize->mp_ctDef);
 
@@ -111,8 +110,7 @@ void CCoordinateSystemCategory::Dispose()
 void CCoordinateSystemCategory::CopyFrom(CCoordinateSystemCategory const* pDef)
 {
     _ASSERT(NULL != pDef);
-    if (!pDef)
-        throw new MgNullArgumentException(L"MgCoordinateSystemCategory.CopyFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(pDef, L"MgCoordinateSystemCategory.CopyFrom");
 
     if (!const_cast<CCoordinateSystemCategory*>(pDef)->IsValid())
         throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.CopyFrom", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -203,10 +201,7 @@ bool CCoordinateSystemCategory::IsValid()
 bool CCoordinateSystemCategory::IsLegalName(const char *kpName)
 {
     //Null pointers are illegal
-    if (NULL == kpName)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemCategory.IsLegalName", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(kpName, L"MgCoordinateSystemCategory.IsLegalName");
 
     //String can't be empty or too long
     INT32 nLen = static_cast<UINT32>(strlen(kpName));
@@ -255,10 +250,7 @@ bool CCoordinateSystemCategory::IsSameAs(MgGuardDisposable *pDef)
 {
     MG_TRY()
 
-    if (NULL == pDef)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemCategory.IsSameAs", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDef, L"MgCoordinateSystemCategory.IsSameAs");
 
     //Make sure it's a category def
     CCoordinateSystemCategory* pCtDef=dynamic_cast<CCoordinateSystemCategory*>(pDef);

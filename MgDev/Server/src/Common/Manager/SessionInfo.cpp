@@ -81,11 +81,7 @@ double MgSessionInfo::GetAverageOperationTime() const
 ///
 void MgSessionInfo::SetUser(CREFSTRING user)
 {
-    if (user.empty())
-    {
-        throw new MgNullArgumentException(L"MgSessionInfo.SetUser",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(user, L"MgSessionInfo.SetUser");
 
     m_user = user;
 }

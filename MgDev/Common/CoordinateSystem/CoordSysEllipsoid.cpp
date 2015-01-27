@@ -58,11 +58,7 @@ void CCoordinateSystemEllipsoid::SetString(CREFSTRING sSrc, char* pDest, int nMa
 {
     MG_TRY()
     assert(NULL != pDest);
-
-    if (NULL==pDest)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemEllipsoid.SetString", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDest, L"MgCoordinateSystemEllipsoid.SetString");
 
     if (Protected())
     {
@@ -249,10 +245,7 @@ bool CCoordinateSystemEllipsoid::IsSameAs(MgGuardDisposable *pDef)
     bool bIsSame = false;
 
     assert(NULL != pDef);
-    if (NULL == pDef)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemEllipsoid.IsSameAs", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDef, L"MgCoordinateSystemEllipsoid.IsSameAs");
 
     //Make sure it's an ellipsoid definition
     MgCoordinateSystemEllipsoid *pElDef=dynamic_cast<MgCoordinateSystemEllipsoid*>(pDef);
@@ -656,10 +649,8 @@ void CCoordinateSystemEllipsoid::GreatCircle(double dLongitude1, double dLatitud
 
     assert(NULL != pdDistance);
     assert(NULL != pdAzimuth);
-    if (NULL == pdDistance || NULL == pdAzimuth)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemEllipsoid.GreatCircle", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pdDistance, L"MgCoordinateSystemEllipsoid.GreatCircle");
+    CHECKARGUMENTNULL(pdAzimuth, L"MgCoordinateSystemEllipsoid.GreatCircle");
 
     //set up our input variables
     double dFromLL[2], dToLL[2];
@@ -703,10 +694,8 @@ void CCoordinateSystemEllipsoid::GetRadiusBounds(double *pdMinRadius, double *pd
     MG_TRY()
     assert(NULL != pdMinRadius);
     assert(NULL != pdMaxRadius);
-    if (NULL == pdMinRadius || NULL == pdMaxRadius)
-    {
-        throw new MgNullArgumentException(L"MentorDictionary.GetRadiusBounds", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pdMinRadius, L"MentorDictionary.GetRadiusBounds");
+    CHECKARGUMENTNULL(pdMaxRadius, L"MentorDictionary.GetRadiusBounds");
 
     *pdMinRadius = kdMinEllipsoidRadius;
     *pdMaxRadius = kdMaxEllipsoidRadius;
@@ -749,10 +738,8 @@ void CCoordinateSystemEllipsoid::GetFlatteningRatioBounds(double *pdMinFlat, dou
     MG_TRY()
     assert(NULL != pdMinFlat);
     assert(NULL != pdMaxFlat);
-    if (NULL == pdMinFlat || NULL == pdMaxFlat)
-    {
-        throw new MgNullArgumentException(L"MentorDictionary.GetFlatteningRatioBounds", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pdMinFlat, L"MentorDictionary.GetFlatteningRatioBounds");
+    CHECKARGUMENTNULL(pdMaxFlat, L"MentorDictionary.GetFlatteningRatioBounds");
 
     *pdMinFlat = kdMinEllipsoidFlat;
     *pdMaxFlat = kdMaxEllipsoidFlat;

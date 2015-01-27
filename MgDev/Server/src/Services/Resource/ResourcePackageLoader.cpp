@@ -52,12 +52,7 @@ MgResourceIdentifier* MgResourcePackageLoader::CreateResourceIdentifier(
         resource = new MgResourceIdentifier(opParam.GetValue());
     }
 
-    if (resource == NULL)
-    {
-        throw new MgNullArgumentException(
-            L"MgResourcePackageLoader.CreateResourceIdentifier",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgResourcePackageLoader.CreateResourceIdentifier");
 
     // Ensure the resource package is only applied to the Library repository.
 

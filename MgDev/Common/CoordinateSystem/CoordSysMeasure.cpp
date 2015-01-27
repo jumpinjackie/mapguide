@@ -36,10 +36,7 @@ using namespace CSLibrary;
 ///</param>
 CCoordinateSystemMeasure::CCoordinateSystemMeasure(MgCoordinateSystem* pCoordSys)
 {
-    if(NULL == pCoordSys)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemMeasure.MgCoordinateSystemMeasure", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pCoordSys, L"MgCoordinateSystemMeasure.MgCoordinateSystemMeasure");
 
     m_pCoordSys = SAFE_ADDREF(pCoordSys);
 }
@@ -98,10 +95,8 @@ double CCoordinateSystemMeasure::GetDistance(MgCoordinate* coord1, MgCoordinate*
 {
     double distance = 0.0;
     MG_TRY()
-    if((NULL == coord1) || (NULL == coord2))
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemMeasure.GetDistance", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(coord1, L"MgCoordinateSystemMeasure.GetDistance");
+    CHECKARGUMENTNULL(coord2, L"MgCoordinateSystemMeasure.GetDistance");
 
     distance = GetDistance(coord1->GetX(), coord1->GetY(), coord2->GetX(), coord2->GetY());
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMeasure.GetDistance")
@@ -145,10 +140,8 @@ double CCoordinateSystemMeasure::GetAzimuth(MgCoordinate* coord1, MgCoordinate* 
 {
     double azimuth = 0.0;
     MG_TRY()
-    if((NULL == coord1) || (NULL == coord2))
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemMeasure.GetAzimuth", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(coord1, L"MgCoordinateSystemMeasure.GetAzimuth");
+    CHECKARGUMENTNULL(coord2, L"MgCoordinateSystemMeasure.GetAzimuth");
     azimuth = GetAzimuth(coord1->GetX(), coord1->GetY(), coord2->GetX(), coord2->GetY());
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMeasure.GetAzimuth")
 
@@ -196,10 +189,7 @@ MgCoordinate* CCoordinateSystemMeasure::GetCoordinate(double xStart, double ySta
 ///////////////////////////////////////////////////////////////////////////
 MgCoordinate* CCoordinateSystemMeasure::GetCoordinate(MgCoordinate* coord, double azimuth, double distance)
 {
-    if(NULL == coord)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemMeasure.GetCoordinate", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(coord, L"MgCoordinateSystemMeasure.GetCoordinate");
     return GetCoordinate(coord->GetX(), coord->GetY(), azimuth, distance);
 }
 

@@ -54,12 +54,7 @@ MgPackageLogHandler::MgPackageLogHandler(CREFSTRING packagePathname) :
 {
     MG_TRY()
 
-    if (m_packagePathname.empty())
-    {
-        throw new MgNullArgumentException(
-            L"MgPackageLogHandler.MgPackageLogHandler",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(m_packagePathname, L"MgPackageLogHandler.MgPackageLogHandler");
 
     m_logPathname = MgPackageManager::GetLogPathname(m_packagePathname);
 

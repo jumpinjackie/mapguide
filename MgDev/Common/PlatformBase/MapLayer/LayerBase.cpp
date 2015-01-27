@@ -288,10 +288,7 @@ MgResourceIdentifier* MgLayerBase::GetLayerDefinition()
 //
 void MgLayerBase::SetLayerDefinition(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService)
 {
-    if(layerDefinition == NULL)
-    {
-        throw new MgNullArgumentException(L"MgLayerBase.SetLayerDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(layerDefinition, L"MgLayerBase.SetLayerDefinition");
 
     if(m_definition != NULL && m_definition->ToString() == layerDefinition->ToString())
         return;
@@ -319,10 +316,7 @@ STRING MgLayerBase::GetLayerResourceContent()
 ///
 void MgLayerBase::SetLayerResourceContent(CREFSTRING resourceContent)
 {
-    if(resourceContent == L"")
-    {
-        throw new MgNullArgumentException(L"MgLayerBase.SetLayerResourceContent", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(resourceContent, L"MgLayerBase.SetLayerResourceContent");
 
     if(m_resourceContent == resourceContent)
         return;

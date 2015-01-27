@@ -30,11 +30,8 @@ MgMapPlot::MgMapPlot()
 // Create and initialize an MgMapPlot instance.
 MgMapPlot::MgMapPlot(MgMap* map, MgPlotSpecification* plotSpec, MgLayout* layout)
 {
-    if (NULL == map || NULL == plotSpec)
-    {
-        throw new MgNullArgumentException(L"MgMapPlot.MgMapPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
+    CHECKARGUMENTNULL(map, L"MgMapPlot.MgMapPlot");
+    CHECKARGUMENTNULL(plotSpec, L"MgMapPlot.MgMapPlot");
     Initialize();
 
     m_map = SAFE_ADDREF(map);
@@ -49,10 +46,9 @@ MgMapPlot::MgMapPlot(MgMap* map, MgPlotSpecification* plotSpec, MgLayout* layout
 MgMapPlot::MgMapPlot(MgMap* map, MgCoordinate* center, double scale,
                      MgPlotSpecification* plotSpec, MgLayout* layout)
 {
-    if (NULL == map || NULL == center || NULL == plotSpec)
-    {
-        throw new MgNullArgumentException(L"MgMapPlot.MgMapPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(map, L"MgMapPlot.MgMapPlot");
+    CHECKARGUMENTNULL(center, L"MgMapPlot.MgMapPlot");
+    CHECKARGUMENTNULL(plotSpec, L"MgMapPlot.MgMapPlot");
 
     Initialize();
 
@@ -71,10 +67,9 @@ MgMapPlot::MgMapPlot(MgMap* map, MgCoordinate* center, double scale,
 MgMapPlot::MgMapPlot(MgMap* map, MgEnvelope* extent, bool expandToFit,
                      MgPlotSpecification* plotSpec, MgLayout* layout)
 {
-    if (map == NULL || extent == NULL || plotSpec == NULL)
-    {
-        throw new MgNullArgumentException(L"MgMapPlot.MgMapPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(map, L"MgMapPlot.MgMapPlot");
+    CHECKARGUMENTNULL(extent, L"MgMapPlot.MgMapPlot");
+    CHECKARGUMENTNULL(plotSpec, L"MgMapPlot.MgMapPlot");
 
     Initialize();
 

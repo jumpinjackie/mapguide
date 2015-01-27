@@ -269,30 +269,23 @@ wchar_t* GisStringUtility::QuoteString(wchar_t* pszIn, wchar_t chQuote)
 
 size_t GisStringUtility::StringLength(wchar_t* string)
 {
-    if (string == NULL)
-    {
-        throw new MgNullArgumentException(L"GisStringUtility.StringLength", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(string, L"GisStringUtility.StringLength");
 
     return wcslen(string);
 }
 
 INT32 GisStringUtility::StringCompare(wchar_t* string1, wchar_t* string2)
 {
-    if (string1 == NULL || string2 == NULL)
-    {
-        throw new MgNullArgumentException(L"GisStringUtility.StringCompare", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(string1, L"GisStringUtility.StringCompare");
+    CHECKARGUMENTNULL(string2, L"GisStringUtility.StringCompare");
 
     return wcscmp(string1, string2);
 }
 
 INT32 GisStringUtility::StringCompareNoCase(wchar_t* string1, wchar_t* string2)
 {
-    if (string1 == NULL || string2 == NULL)
-    {
-        throw new MgNullArgumentException(L"GisStringUtility.StringCompareNoCase", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(string1, L"GisStringUtility.StringCompareNoCase");
+    CHECKARGUMENTNULL(string2, L"GisStringUtility.StringCompareNoCase");
 
 #ifdef _WIN32
     return wcsicmp(string1, string2);
@@ -303,30 +296,23 @@ INT32 GisStringUtility::StringCompareNoCase(wchar_t* string1, wchar_t* string2)
 
 void GisStringUtility::StringCopy(wchar_t* string1, wchar_t* string2)
 {
-    if (string1 == NULL || string2 == NULL)
-    {
-        throw new MgNullArgumentException(L"GisStringUtility.StringCopy", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(string1, L"GisStringUtility.StringCopy");
+    CHECKARGUMENTNULL(string2, L"GisStringUtility.StringCopy");
 
     wcscpy(string1, string2);
 }
 
 void GisStringUtility::SubstringCopy(wchar_t* string1, wchar_t* string2, size_t length)
 {
-    if (string1 == NULL || string2 == NULL)
-    {
-        throw new MgNullArgumentException(L"GisStringUtility.SubstringCopy", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(string1, L"GisStringUtility.SubstringCopy");
+    CHECKARGUMENTNULL(string2, L"GisStringUtility.SubstringCopy");
 
     wcsncpy(string1, string2, length);
 }
 
 void GisStringUtility::StringConcatenate(wchar_t* string1, wchar_t* string2)
 {
-    if (string1 == NULL)
-    {
-        throw new MgNullArgumentException(L"GisStringUtility.StringConcatenate", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(string1, L"GisStringUtility.StringConcatenate");
 
     if (string2 == NULL)
         return;
@@ -336,10 +322,7 @@ void GisStringUtility::StringConcatenate(wchar_t* string1, wchar_t* string2)
 
 wchar_t* GisStringUtility::FindCharacter(wchar_t* string, wchar_t character)
 {
-    if (string == NULL)
-    {
-        throw new MgNullArgumentException(L"GisStringUtility.FindCharacter", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(string, L"GisStringUtility.FindCharacter");
 
     return wcschr(string, character);
 }

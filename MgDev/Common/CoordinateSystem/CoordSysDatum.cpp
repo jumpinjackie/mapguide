@@ -349,10 +349,7 @@ bool CCoordinateSystemDatum::IsUsable(MgCoordinateSystemCatalog *pCatalog)
     MG_TRY()
 
     assert(NULL != pCatalog);
-    if (NULL == pCatalog)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemDatum.IsUsable", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pCatalog, L"MgCoordinateSystemDatum.IsUsable");
 
     //First, make sure it's valid in its own right; if it's
     //not, then it's not usable
@@ -399,10 +396,7 @@ bool CCoordinateSystemDatum::IsSameAs(MgGuardDisposable *pDef)
     MG_TRY()
 
     assert(NULL != pDef);
-    if (NULL == pDef)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemDatum.IsSameAs", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDef, L"MgCoordinateSystemDatum.IsSameAs");
 
     //Make sure it's a datum definition
     MgCoordinateSystemDatum* pDtDef=dynamic_cast<MgCoordinateSystemDatum*>(pDef);
@@ -842,11 +836,7 @@ void CCoordinateSystemDatum::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid 
     MG_TRY()
 
     assert(NULL != pEllipsoidDef);
-    if (NULL == pEllipsoidDef)
-    {
-        //We were given an uninitialized datum.
-        throw new MgNullArgumentException(L"MgCoordinateSystemDatum.SetEllipsoidDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pEllipsoidDef, L"MgCoordinateSystemDatum.SetEllipsoidDefinition");
 
     STRING sEllipsoid=pEllipsoidDef->GetElCode();
 
@@ -966,10 +956,7 @@ void CCoordinateSystemDatum::SetString(CREFSTRING sSrc, char *pDest, UINT32 nMax
 {
     MG_TRY()
     assert(NULL != pDest);
-    if (NULL==pDest)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemDatum.SetString", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDest, L"MgCoordinateSystemDatum.SetString");
 
     if (Protected())
     {

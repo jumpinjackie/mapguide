@@ -54,10 +54,7 @@ MgByteReader* MgServerDrawingService::GetDrawing(MgResourceIdentifier* resource)
 
     MG_LOG_TRACE_ENTRY(L"MgServerDrawingService::GetDrawing()");
 
-    if (0 == resource)
-    {
-        throw new MgNullArgumentException(L"MgServerDrawingService.GetDrawing", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerDrawingService.GetDrawing");
 
     // Get the name of the dwf file from the resource content and remove the path from the filename
     STRING dwfFileName = L"";
@@ -101,11 +98,7 @@ MgByteReader* MgServerDrawingService::DescribeDrawing(MgResourceIdentifier* reso
 
     MG_LOG_TRACE_ENTRY(L"MgServerDrawingService::DescribeDrawing()");
 
-    if (0 == resource)
-    {
-        throw new MgNullArgumentException(L"MgServerDrawingService.DescribeDrawing", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    else
+    CHECKARGUMENTNULL(resource, L"MgServerDrawingService.DescribeDrawing");
     {
         auto_ptr<DWFPackageReader> reader(MgServerDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
@@ -189,20 +182,8 @@ MgByteReader* MgServerDrawingService::GetSection(MgResourceIdentifier* resource,
 
     MG_LOG_TRACE_ENTRY(L"MgServerDrawingService::GetSection()");
 
-    if (0 == resource)
-    {
-        throw new MgNullArgumentException(L"MgServerDrawingService.GetSection", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    else if (sectionName.empty())
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"2");
-        arguments.Add(MgResources::BlankArgument);
-
-        throw new MgInvalidArgumentException(L"MgServerDrawingService.GetSection",
-            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
-    }
-    else
+    CHECKARGUMENTNULL(resource, L"MgServerDrawingService.GetSection");
+    CHECKARGUMENTEMPTYSTRING(sectionName, L"MgServerDrawingService.GetSection");
     {
         auto_ptr<DWFPackageReader> reader(MgServerDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
@@ -293,20 +274,8 @@ MgByteReader* MgServerDrawingService::GetSectionResource(MgResourceIdentifier* r
 
     MG_LOG_TRACE_ENTRY(L"MgServerDrawingService::GetSectionResource()");
 
-    if (0 == resource)
-    {
-        throw new MgNullArgumentException(L"MgServerDrawingService.GetSectionResource", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    else if (resourceName.empty())
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"2");
-        arguments.Add(MgResources::BlankArgument);
-
-        throw new MgInvalidArgumentException(L"MgServerDrawingService.GetSectionResource",
-            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
-    }
-    else
+    CHECKARGUMENTNULL(resource, L"MgServerDrawingService.GetSectionResource");
+    CHECKARGUMENTEMPTYSTRING(resourceName, L"MgServerDrawingService.GetSectionResource");
     {
         auto_ptr<DWFPackageReader> reader(MgServerDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
@@ -424,20 +393,8 @@ MgStringCollection* MgServerDrawingService::EnumerateLayers(MgResourceIdentifier
 
     MG_LOG_TRACE_ENTRY(L"MgServerDrawingService::EnumerateLayers()");
 
-    if (0 == resource)
-    {
-        throw new MgNullArgumentException(L"MgServerDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    else if (sectionName.empty())
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"2");
-        arguments.Add(MgResources::BlankArgument);
-
-        throw new MgInvalidArgumentException(L"MgServerDrawingService.EnumerateLayers",
-            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
-    }
-    else
+    CHECKARGUMENTNULL(resource, L"MgServerDrawingService.EnumerateLayers");
+    CHECKARGUMENTEMPTYSTRING(sectionName, L"MgServerDrawingService.EnumerateLayers");
     {
         auto_ptr<DWFPackageReader> reader(MgServerDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
@@ -588,20 +545,8 @@ MgByteReader* MgServerDrawingService::GetLayer( MgResourceIdentifier* resource, 
 
     MG_LOG_TRACE_ENTRY(L"MgServerDrawingService::GetLayer()");
 
-    if (0 == resource)
-    {
-        throw new MgNullArgumentException(L"MgServerDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    else if (sectionName.empty())
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"2");
-        arguments.Add(MgResources::BlankArgument);
-
-        throw new MgInvalidArgumentException(L"MgServerDrawingService.GetLayer",
-            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
-    }
-    else
+    CHECKARGUMENTNULL(resource, L"MgServerDrawingService.GetLayer");
+    CHECKARGUMENTEMPTYSTRING(sectionName, L"MgServerDrawingService.GetLayer");
     {
         auto_ptr<DWFPackageReader> reader(MgServerDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
@@ -879,11 +824,7 @@ MgByteReader* MgServerDrawingService::EnumerateSections(MgResourceIdentifier* re
 
     MG_LOG_TRACE_ENTRY(L"MgServerDrawingService::EnumerateSections()");
 
-    if (0 == resource)
-    {
-        throw new MgNullArgumentException(L"MgServerDrawingService.EnumerateSections", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    else
+    CHECKARGUMENTNULL(resource, L"MgServerDrawingService.EnumerateSections");
     {
         auto_ptr<DWFPackageReader> reader(MgServerDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
@@ -1001,20 +942,8 @@ MgByteReader* MgServerDrawingService::EnumerateSectionResources(MgResourceIdenti
 
     MG_LOG_TRACE_ENTRY(L"MgServerDrawingService::EnumerateSectionResources()");
 
-    if (0 == resource)
-    {
-        throw new MgNullArgumentException(L"MgServerDrawingService.EnumerateSectionResources", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    else if (sectionName.empty())
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"2");
-        arguments.Add(MgResources::BlankArgument);
-
-        throw new MgInvalidArgumentException(L"MgServerDrawingService.EnumerateSectionResources",
-            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
-    }
-    else
+    CHECKARGUMENTNULL(resource, L"MgServerDrawingService.EnumerateSectionResources");
+    CHECKARGUMENTEMPTYSTRING(sectionName, L"MgServerDrawingService.EnumerateSectionResources");
     {
         auto_ptr<DWFPackageReader> reader(MgServerDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
@@ -1128,10 +1057,7 @@ STRING MgServerDrawingService::GetCoordinateSpace(MgResourceIdentifier* resource
 
     MG_LOG_TRACE_ENTRY(L"MgServerDrawingService::GetCoordinateSpace()");
 
-    if (0 == resource)
-    {
-        throw new MgNullArgumentException(L"MgServerDrawingService.GetCoordinateSpace", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerDrawingService.GetCoordinateSpace");
 
     // Get the coordinate space from the resource content.
     STRING dwfFileName = L"";

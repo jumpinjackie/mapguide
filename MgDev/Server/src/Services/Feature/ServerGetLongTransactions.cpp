@@ -37,10 +37,7 @@ MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgReso
 
     MG_FEATURE_SERVICE_TRY()
 
-    if (NULL == resId)
-    {
-        throw new MgNullArgumentException(L"MgServerGetLongTransactions.GetLongTransactions", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resId, L"MgServerGetLongTransactions.GetLongTransactions");
 
     // Connect to provider
     Ptr<MgServerFeatureConnection> msfc = new MgServerFeatureConnection(resId);

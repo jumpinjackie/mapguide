@@ -286,8 +286,7 @@ STRING CCoordinateSystemCatalog::GetDictionaryDir()
 
 STRING CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath, bool dirWriteAccess, int (*CsMapDirFunc)(const char *pszDirectoryPath))
 {
-    if (NULL == CsMapDirFunc)
-        throw new MgNullArgumentException(L"MgCoordinateSystemCatalog.SetDictionaryDir", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(CsMapDirFunc, L"MgCoordinateSystemCatalog.SetDictionaryDir");
 
     if (sDirPath.empty())
     {

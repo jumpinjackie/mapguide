@@ -319,6 +319,21 @@ void TestMisc::TestCase_CommonExceptionMessages()
 
     try
     {
+        STRING arg5;
+        CHECKARGUMENTEMPTYSTRING(arg5, L"TestMisc::TestCase_CommonExceptionMessages");
+    }
+    catch (MgException* ex)
+    {
+        STRING msg = ex->GetExceptionMessage(TEST_LOCALE);
+        //ACE_DEBUG((LM_INFO, ACE_TEXT("Exception: %W\n"), msg.c_str()));
+        std::string assertMsg = "Expected identifier 'arg5' in exception message: ";
+        assertMsg += MgUtil::WideCharToMultiByte(msg);
+        CPPUNIT_ASSERT_MESSAGE(assertMsg, msg.find(L"arg5") != STRING::npos);
+        ex->Release();
+    }
+
+    try
+    {
         INT32 val = 1;
         MG_CHECK_RANGE(val, 2, 3, L"TestMisc::TestCase_CommonExceptionMessages");
     }

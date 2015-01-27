@@ -58,9 +58,7 @@ MgByteReader* MgServerProfilingService::ProfileRenderDynamicOverlay(MgMap* map,
     
     MG_TRY()
 
-    if (NULL == map)
-        throw new MgNullArgumentException(L"MgServerProfilingService.ProfileRenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"", NULL);
-
+    CHECKARGUMENTNULL(map, L"MgServerProfilingService.ProfileRenderDynamicOverlay");
     auto_ptr<ProfileRenderMapResult> pPRMResult; // a pointer points to Profile Render Map Result
     pPRMResult.reset(new ProfileRenderMapResult());
 
@@ -99,9 +97,7 @@ MgByteReader* MgServerProfilingService::ProfileRenderMap(MgMap* map,
     
     MG_TRY()
 
-    if (NULL == map)
-        throw new MgNullArgumentException(L"MgServerProfilingService.ProfileRenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
-
+    CHECKARGUMENTNULL(map, L"MgServerProfilingService.ProfileRenderMap");
     auto_ptr<ProfileRenderMapResult> pPRMResult; // a pointer points to Profile Render Map Result
     pPRMResult.reset(new ProfileRenderMapResult());
 

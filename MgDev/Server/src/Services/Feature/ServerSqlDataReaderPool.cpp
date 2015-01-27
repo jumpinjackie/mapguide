@@ -84,11 +84,7 @@ STRING MgServerSqlDataReaderPool::Add(MgServerSqlDataReader* sqlReader)
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, L""));
 
-    if(NULL == sqlReader)
-    {
-        throw new MgNullArgumentException(L"MgServerSqlDataReaderPool.Add",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(sqlReader, L"MgServerSqlDataReaderPool.Add");
 
     // Get a unique ID
     STRING uid = L"";

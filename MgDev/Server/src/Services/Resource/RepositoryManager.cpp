@@ -458,11 +458,7 @@ void MgRepositoryManager::AddResource(MgResourceIdentifier* resource,
     }
     else
     {
-        if (NULL == content)
-        {
-            throw new MgNullArgumentException(
-                L"MgRepositoryManager.AddResource", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKARGUMENTNULL(content, L"MgRepositoryManager.AddResource");
     }
 
     // Initialize resource information.
@@ -614,6 +610,8 @@ void MgRepositoryManager::UpdateResource(MgResourceIdentifier* resource,
 
     MG_RESOURCE_SERVICE_TRY()
 
+    CHECKARGUMENTNULL(resource, L"MgRepositoryManager.UpdateResource");
+
     // Validate input parameters.
 
     if (resource->IsFolder())
@@ -634,11 +632,7 @@ void MgRepositoryManager::UpdateResource(MgResourceIdentifier* resource,
                 __LINE__, __WFILE__, &arguments, L"MgContentNotNull", NULL);
         }
 
-        if (NULL == header)
-        {
-            throw new MgNullArgumentException(
-                L"MgRepositoryManager.UpdateResource", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKARGUMENTNULL(header, L"MgRepositoryManager.UpdateResource");
     }
     else
     {

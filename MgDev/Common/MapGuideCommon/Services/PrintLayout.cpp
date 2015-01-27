@@ -72,11 +72,8 @@ void MgPrintLayout::Create(MgResourceService* resourceService, MgResourceIdentif
 
     MG_TRY()
 
-    if (0 == resourceService || 0 == layoutDefinition)
-    {
-        throw new MgNullArgumentException(
-            L"MgPrintLayout.Create", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resourceService, L"MgPrintLayout.Create");
+    CHECKARGUMENTNULL(layoutDefinition, L"MgPrintLayout.Create");
 
     // Get the PrintLayout contents
     byteReader = resourceService->GetResourceContent(layoutDefinition);

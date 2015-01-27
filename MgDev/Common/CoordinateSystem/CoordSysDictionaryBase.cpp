@@ -22,8 +22,7 @@ DICTIONARY_BASE_TEMPLATE
 DICTIONARY_BASE_TEMPLATE_METHOD::CCoordinateSystemDictionaryBase(MgCoordinateSystemCatalog *pCatalog)
     : dictMagicNumber(0) /* no yet initialized - will be read in [SetFileName] */, dictionaryItems(NULL)
 {
-    if (NULL == pCatalog)
-        throw new MgNullArgumentException(L"CCoordinateSystemDictionaryBase.ctor()", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(pCatalog, L"CCoordinateSystemDictionaryBase.ctor()");
 
     this->catalog = SAFE_ADDREF(pCatalog); // 'Ptr = ' does not increment the ref counter
     this->fileName = defaultFileName; //template default parameter
@@ -148,8 +147,7 @@ DICTIONARY_BASE_TEMPLATE
 void DICTIONARY_BASE_TEMPLATE_METHOD::Add(MgGuardDisposable* pDefinition)
 {
     //we won't take ownership of [pDefinition]; i.e. it can be deleted by the caller after we're done here
-    if (NULL == pDefinition)
-        throw new MgNullArgumentException(L"CCoordinateSystemDictionaryBase.Add", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(pDefinition, L"CCoordinateSystemDictionaryBase.Add");
 
     T* pDictionaryDef = dynamic_cast<T*>(pDefinition);
     if (!pDictionaryDef)
@@ -191,8 +189,7 @@ void DICTIONARY_BASE_TEMPLATE_METHOD::Remove(CREFSTRING sName)
 DICTIONARY_BASE_TEMPLATE
 void DICTIONARY_BASE_TEMPLATE_METHOD::Modify(MgGuardDisposable *pDefinition)
 {
-    if (NULL == pDefinition)
-        throw new MgNullArgumentException(L"CCoordinateSystemDictionaryBase.Modify", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(pDefinition, L"CCoordinateSystemDictionaryBase.Modify");
 
     T* pDictionaryDef = dynamic_cast<T*>(pDefinition);
     if (!pDictionaryDef)
@@ -215,7 +212,7 @@ void DICTIONARY_BASE_TEMPLATE_METHOD::Modify(MgGuardDisposable *pDefinition)
         definitionAccess->setupCsStructFromMgInstance,
         pDictionaryDef,
         true, //the definition has to exist
-		checkProtectedOnUpdate); 
+        checkProtectedOnUpdate); 
 
     MG_CATCH_AND_THROW(L"CCoordinateSystemDictionaryBase.Modify")
 }

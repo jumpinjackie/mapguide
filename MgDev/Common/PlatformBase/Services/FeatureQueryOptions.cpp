@@ -155,22 +155,8 @@ void MgFeatureQueryOptions::SetSpatialFilter(CREFSTRING geometryProperty,
     // Validate spatial operator
     MgFeatureSpatialOperations::ValidateRange(spatialOperation);
     // Validate other arguments
-    if (geometryProperty.empty())
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(MgResources::BlankArgument);
-
-        throw new MgInvalidArgumentException(L"MgFeatureQueryOptions.SetSpatialFilter",
-            __LINE__, __WFILE__, &arguments, L"MgGeometryPropertyEmpty", NULL);
-    }
-
-    if (geometry == NULL)
-    {
-        throw new MgNullArgumentException(
-            L"MgFeatureQueryOptions.SetSpatialFilter",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(geometryProperty, L"MgFeatureQueryOptions.SetSpatialFilter");
+    CHECKARGUMENTNULL(geometry, L"MgFeatureQueryOptions.SetSpatialFilter");
 
     m_geometryProperty = geometryProperty;
     m_operation = spatialOperation;

@@ -298,7 +298,8 @@ STRING MgLibraryRepositoryManager::EnumerateResourceDocuments(
 
     if (type.empty())
     {
-        if (NULL == resources || resources->GetCount() <= 0)
+        CHECKARGUMENTNULL(resources, L"MgLibraryRepositoryManager.EnumerateResourceDocuments");
+        if (resources->GetCount() <= 0)
         {
             throw new MgNullArgumentException(
                 L"MgLibraryRepositoryManager.EnumerateResourceDocuments",

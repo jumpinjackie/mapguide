@@ -281,12 +281,7 @@ void MgPackageManager::MakePackage(MgResourceIdentifier* resource,
 {
     MG_TRY()
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.ApplyResourcePackage",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.ApplyResourcePackage");
 
     STRING packagePathname = GetPackagePathname(packageName);
 

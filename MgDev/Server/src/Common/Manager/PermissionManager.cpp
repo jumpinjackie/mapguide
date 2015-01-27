@@ -85,11 +85,7 @@ void MgPermissionManager::RefreshPermissionCache(MgPermissionCache* permissionCa
 
 void MgPermissionManager::UpdatePermissionCache(MgPermissionCache* permissionCache)
 {
-    if (NULL == permissionCache)
-    {
-        throw new MgNullArgumentException(
-            L"MgPermissionManager.UpdatePermissionCache", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(permissionCache, L"MgPermissionManager.UpdatePermissionCache");
 
     if (permissionCache->GetResourcePermissionMap().empty())
     {
@@ -159,11 +155,7 @@ bool MgPermissionManager::CheckPermission(
 
     MG_TRY()
 
-    if (NULL == permissionInfo)
-    {
-        throw new MgNullArgumentException(
-            L"MgPermissionManager.CheckPermission", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(permissionInfo, L"MgPermissionManager.CheckPermission");
 
     // Check the inherite flag.
 

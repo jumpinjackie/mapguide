@@ -306,12 +306,7 @@ void MgSiteManager::Initialize()
 MgConnectionProperties* MgSiteManager::GetConnectionProperties(
     MgUserInformation* userInfo, MgSiteInfo::MgPortType portType, bool useSessionIp)
 {
-    if (NULL == userInfo)
-    {
-        throw new MgNullArgumentException(
-            L"MgSiteManager.GetConnectionProperties",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(userInfo, L"MgSiteManager.GetConnectionProperties");
 
     Ptr<MgConnectionProperties> connProps;
 
@@ -368,12 +363,8 @@ MgConnectionProperties* MgSiteManager::GetConnectionProperties(
 MgConnectionProperties* MgSiteManager::GetConnectionProperties(
     MgUserInformation* userInfo, MgSiteInfo* siteInfo, MgSiteInfo::MgPortType portType)
 {
-    if (NULL == userInfo || NULL == siteInfo)
-    {
-        throw new MgNullArgumentException(
-            L"MgSiteManager.GetConnectionProperties",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(userInfo, L"MgSiteManager.GetConnectionProperties");
+    CHECKARGUMENTNULL(siteInfo, L"MgSiteManager.GetConnectionProperties");
 
     Ptr<MgConnectionProperties> connProps = new MgConnectionProperties(
         userInfo, siteInfo->GetTarget(), siteInfo->GetPort(portType));

@@ -53,11 +53,7 @@ MgMap::MgMap(MgSiteConnection* siteConnection)
     m_watermarkUsage(Viewer),
     m_tileSetId((MgResourceIdentifier*)NULL)
 {
-    if (NULL == siteConnection)
-    {
-        throw new MgNullArgumentException(L"MgMap.MgMap",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(siteConnection, L"MgMap.MgMap");
 
     m_siteConnection = SAFE_ADDREF(siteConnection);
 }
@@ -1438,11 +1434,7 @@ void MgMap::Deserialize(MgStream* stream)
 ///
 void MgMap::SetDelayedLoadResourceService(MgResourceService* resourceService)
 {
-    if (NULL == resourceService)
-    {
-        throw new MgNullArgumentException(L"MgMap.SetDelayedLoadResourceService",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resourceService, L"MgMap.SetDelayedLoadResourceService");
 
     m_resourceService = SAFE_ADDREF(resourceService);
 }

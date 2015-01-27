@@ -59,10 +59,7 @@ void CCoordinateSystemEnumInteger32::SetList(INT32 *pnValues, UINT32 ulSize)
 {
     MG_TRY()
     assert((NULL != pnValues) || (ulSize == 0));
-    if (!pnValues)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemEnumInteger32.SetList", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pnValues, L"MgCoordinateSystemEnumInteger32.SetList");
 
     delete [] m_pnValues;
     m_pnValues = NULL;

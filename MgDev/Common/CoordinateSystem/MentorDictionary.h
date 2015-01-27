@@ -144,9 +144,9 @@ namespace MentorDictionary
         /*IN*/ MgCoordinateSystemDictionaryBase* targetDictionary,
         /*IN*/ int (*CS_Trd)(csFILE*, T *, int *))
     {
-	typedef vector<T*> CsMapDefPtrVector;
+    typedef vector<T*> CsMapDefPtrVector;
         
-	TContainerPtr<T, CsMapDefPtrVector> allDefs;
+    TContainerPtr<T, CsMapDefPtrVector> allDefs;
         csFILE *pFile = NULL;
 
         MG_TRY()
@@ -259,7 +259,7 @@ namespace MentorDictionary
         const char * (*description)(const T&),
         int (*CS_TrdAll)(T **[]))
     {
-	typedef vector<T*> CsMapDefPtrVector;
+    typedef vector<T*> CsMapDefPtrVector;
 
         TContainerPtr<T*, CsMapDefPtrVector > definitions;
         definitions.reset(new vector<T*>);
@@ -287,9 +287,8 @@ namespace MentorDictionary
         /*IN, required*/ STRING (T::*GetCode)(),
         /*IN/OUT, required*/ std::map<STRING, Ptr<MgDisposable> >& definitions)
     {
-        if (NULL == targetDictionary || NULL == GetCode)
-            throw new MgNullArgumentException(L"MentorDictionary.ReadAllDefinitions", __LINE__, __WFILE__, NULL, L"", NULL);
-
+        CHECKARGUMENTNULL(targetDictionary, L"MentorDictionary.ReadAllDefinitions");
+        CHECKARGUMENTNULL(GetCode, L"MentorDictionary.ReadAllDefinitions");
         if (0 != definitions.size())
             throw new MgInvalidArgumentException(L"MentorDictionary.ReadAllDefinitions", __LINE__, __WFILE__, NULL, L"", NULL);
 
@@ -317,8 +316,7 @@ namespace MentorDictionary
         /*IN, required*/MgDisposableCollection* toBeFiltered,
         /*IN, optional*/const std::vector<MgCoordinateSystemFilter*>* const filters)
     {
-        if (NULL == toBeFiltered)
-            throw new MgNullArgumentException(L"MentorDictionary.FilterDefinitions", __LINE__, __WFILE__, NULL, L"", NULL);
+        CHECKARGUMENTNULL(toBeFiltered, L"MentorDictionary.FilterDefinitions");
 
         if (NULL == filters)
             return SAFE_ADDREF(toBeFiltered); //see coment - the caller does always have to release the collection being returned
@@ -357,12 +355,11 @@ namespace MentorDictionary
         /*IN, optional*/ const std::vector<MgCoordinateSystemFilter*>* const filters) //a list of filters - if passed in, the [MgDisposableCollection] will be filtered before being returned
     {
         //'true' input parameter check
-        if (NULL == primaryDictionary)
-            throw new MgNullArgumentException(L"MentorDictionary.ReadAllDefinitionsCascaded", __LINE__, __WFILE__, NULL, L"", NULL);
+        CHECKARGUMENTNULL(primaryDictionary, L"MentorDictionary.ReadAllDefinitionsCascaded");
 
         //method pointer checks
-        if (NULL == GetMgItem || NULL == CS_TrdAll)
-            throw new MgNullArgumentException(L"MentorDictionary.ReadAllDefinitionsCascaded", __LINE__, __WFILE__, NULL, L"", NULL);
+        CHECKARGUMENTNULL(GetMgItem, L"MentorDictionary.ReadAllDefinitionsCascaded");
+        CHECKARGUMENTNULL(CS_TrdAll, L"MentorDictionary.ReadAllDefinitionsCascaded");
 
         U** pDefArray = NULL;
         const int readStatus = CS_TrdAll(&pDefArray);
@@ -431,10 +428,7 @@ namespace MentorDictionary
         bool verifyNotProtected)
     {
         assert(NULL != kpDef);
-        if (NULL == kpDef)
-        {
-            throw new MgNullArgumentException(L"MentorDictionary.UpdateDef", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKARGUMENTNULL(kpDef, L"MentorDictionary.UpdateDef");
 
         //Make sure the def they've given us is valid
         if (NULL != isValid && !CALL_MEMBER_FN(kpDef, isValid)())

@@ -181,11 +181,8 @@ MgByteReader* MgTileCacheDefault::GetTileForResource(MgResourceIdentifier* resou
 
     MG_TRY()
 
-    if (NULL == (MgResourceIdentifier*)resource || baseMapLayerGroupName.empty())
-    {
-        throw new MgNullArgumentException(L"MgTileCacheDefault.GetTileForResource",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgTileCacheDefault.GetTileForResource");
+    CHECKARGUMENTEMPTYSTRING(baseMapLayerGroupName, L"MgTileCacheDefault.GetTileForResource");
 
     if (scaleIndex < 0)
     {
@@ -332,11 +329,8 @@ MgByteReader* MgTileCacheDefault::GetTileForMap(CREFSTRING baseMapLayerGroupName
 
     MG_TRY()
 
-    if (NULL == m_map || baseMapLayerGroupName.empty())
-    {
-        throw new MgNullArgumentException(L"MgServerTileService.GetTile",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(baseMapLayerGroupName, L"MgTileCacheDefault.SetTile");
+    CHECKNULL(m_map, L"MgTileCacheDefault.SetTile");
 
     // find the finite display scale closest to the requested map scale
     double scale = m_map->GetViewScale();
@@ -470,11 +464,9 @@ void MgTileCacheDefault::SetTile(CREFSTRING baseMapLayerGroupName,
 
     MG_TRY()
 
-    if (NULL == img || NULL == (MgMap*)m_map || baseMapLayerGroupName.empty())
-    {
-        throw new MgNullArgumentException(L"MgTileCacheDefault.SetTile",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(img, L"MgTileCacheDefault.SetTile");
+    CHECKARGUMENTEMPTYSTRING(baseMapLayerGroupName, L"MgTileCacheDefault.SetTile");
+    CHECKNULL((MgMap*)m_map, L"MgTileCacheDefault.SetTile");
 
     if (scaleIndex < 0)
     {

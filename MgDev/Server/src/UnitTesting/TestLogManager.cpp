@@ -244,8 +244,8 @@ void TestLogManager::TestCase_RenameLog()
         Ptr<MgStringProperty> newTestNameProp = new MgStringProperty(L"LogNameProperty", NewTestName);
         CPPUNIT_ASSERT(logs->Contains(newTestNameProp));
 
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(L"", NewTestName), MgNullArgumentException*);
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(NewTestName, L""), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(L"", NewTestName), MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(NewTestName, L""), MgInvalidArgumentException*);
         CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(TestName, TestName), MgDuplicateFileException*);
         CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(L"DoesNotExist.log", L"NewDoesNotExist.log"), MgFileNotFoundException*);
 #ifdef _WIN32

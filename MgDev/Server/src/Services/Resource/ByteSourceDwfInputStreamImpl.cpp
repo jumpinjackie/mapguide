@@ -32,12 +32,7 @@ MgByteSourceDwfInputStreamImpl::MgByteSourceDwfInputStreamImpl(
     DWFInputStream* inputStream) :
     m_inputStream(inputStream)
 {
-    if (NULL == m_inputStream)
-    {
-        throw new MgNullArgumentException(
-            L"MgByteSourceDwfInputStreamImpl.MgByteSourceDwfInputStreamImpl",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(m_inputStream, L"MgByteSourceDwfInputStreamImpl.MgByteSourceDwfInputStreamImpl");
 }
 
 ///----------------------------------------------------------------------------

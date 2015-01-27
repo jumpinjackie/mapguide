@@ -792,20 +792,8 @@ void MgServerSelectFeatures::CreateCommand(MgResourceIdentifier* resource, bool 
 void MgServerSelectFeatures::ValidateParam(MgResourceIdentifier* resource, CREFSTRING className)
 {
     // className and resource identifier can not be NULL
-    if (resource == NULL)
-    {
-        throw new MgNullArgumentException(L"MgServerSelectFeatures::ValidateParam()", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    if (className.empty())
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"2");
-        arguments.Add(MgResources::BlankArgument);
-
-        throw new MgInvalidArgumentException(L"MgServerSelectFeatures::ValidateParam()",
-            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerSelectFeatures::ValidateParam");
+    CHECKARGUMENTEMPTYSTRING(className, L"MgServerSelectFeatures::ValidateParam");
 }
 
 void MgServerSelectFeatures::ApplyAggregateOptions(bool isSelectAggregate)

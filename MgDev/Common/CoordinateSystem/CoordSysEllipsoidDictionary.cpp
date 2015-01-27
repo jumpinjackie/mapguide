@@ -374,10 +374,7 @@ void CCoordinateSystemEllipsoidDictionary::Add(MgGuardDisposable *pDefinition)
     MG_TRY()
 
     assert(NULL != pDefinition);
-    if (NULL == pDefinition)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemEllipsoidDictionary.Add", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDefinition, L"MgCoordinateSystemEllipsoidDictionary.Add");
 
     MgCoordinateSystemEllipsoid* pEllipsoidDef=dynamic_cast<MgCoordinateSystemEllipsoid*>(pDefinition);
     if (!pEllipsoidDef)
@@ -427,10 +424,7 @@ void CCoordinateSystemEllipsoidDictionary::Modify(MgGuardDisposable *pDefinition
 {
     MG_TRY()
     assert(NULL != pDefinition);
-    if (NULL == pDefinition)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemEllipsoidDictionary.Modify", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDefinition, L"MgCoordinateSystemEllipsoidDictionary.Modify");
 
     MgCoordinateSystemEllipsoid* pEllipsoidDef=dynamic_cast<MgCoordinateSystemEllipsoid*>(pDefinition);
     if (!pEllipsoidDef)
@@ -632,8 +626,7 @@ CCoordinateSystemEnumEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEnumImp
 MgDisposableCollection* CCoordinateSystemEllipsoidDictionary::ReadAllEllipsoids(/*IN, required*/MgCoordinateSystemDictionaryBase* targetDictionary,
                                                                                 /*IN, optional*/const std::vector<MgCoordinateSystemFilter*>* const filters)
 {
-    if (NULL == targetDictionary)
-        throw new MgNullArgumentException(L"CCoordinateSystemEllipsoidDictionary.ReadAllEllipsoids", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(targetDictionary, L"CCoordinateSystemEllipsoidDictionary.ReadAllEllipsoids");
 
     CCoordinateSystemEllipsoidDictionary* ellipsoidDictionary = dynamic_cast<CCoordinateSystemEllipsoidDictionary*>(targetDictionary);
     if (NULL == ellipsoidDictionary)

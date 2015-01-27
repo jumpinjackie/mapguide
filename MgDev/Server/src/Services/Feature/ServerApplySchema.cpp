@@ -37,10 +37,8 @@ void MgServerApplySchema::ApplySchema(MgResourceIdentifier* resource,
 {
     MG_FEATURE_SERVICE_TRY()
 
-    if (NULL == resource || NULL == schema)
-    {
-        throw new MgNullArgumentException(L"MgServerApplySchema.ApplySchema", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerApplySchema.ApplySchema");
+    CHECKARGUMENTNULL(schema, L"MgServerApplySchema.ApplySchema");
 
     // Connect to provider
     Ptr<MgServerFeatureConnection> msfc = new MgServerFeatureConnection(resource);

@@ -1272,7 +1272,7 @@ void TestResourceService::TestCase_SetResourceData()
             //Try to name the resource data with a 0 character string
             dataSource = new MgByteSource(dataFileName);
             Ptr<MgByteReader> dataReader = dataSource->GetReader();
-            CPPUNIT_ASSERT_THROW_MG(pService->SetResourceData(&resourceIdentifier, L"", L"File", dataReader), MgNullArgumentException*);
+            CPPUNIT_ASSERT_THROW_MG(pService->SetResourceData(&resourceIdentifier, L"", L"File", dataReader), MgInvalidArgumentException*);
 
             //Set the resource data
             dataSource = new MgByteSource(dataFileName);
@@ -1341,7 +1341,7 @@ void TestResourceService::TestCase_RenameResourceData()
             CPPUNIT_ASSERT_THROW_MG(pService->RenameResourceData(&resourceIdentifier, L"DoesNotExist", resourceDataName2, true), MgResourceDataNotFoundException*);
 
             //Try to name the resource data with a 0 character string
-            CPPUNIT_ASSERT_THROW_MG(pService->RenameResourceData(&resourceIdentifier, resourceDataName, L"", true), MgNullArgumentException*);
+            CPPUNIT_ASSERT_THROW_MG(pService->RenameResourceData(&resourceIdentifier, resourceDataName, L"", true), MgInvalidArgumentException*);
 
             //Try to do a valid rename
             pService->RenameResourceData(&resourceIdentifier, resourceDataName, resourceDataName2, false);
@@ -1398,7 +1398,7 @@ void TestResourceService::TestCase_GetResourceData()
         CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(NULL, resourceDataName, L""), MgNullArgumentException*);
 
         //Try to get resource data using an empty data name string
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(&resourceIdentifier, L"", L""), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(&resourceIdentifier, L"", L""), MgInvalidArgumentException*);
 
         //Try to get the resource data of a resource that does not exist
         CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(&resourceNotExist, resourceDataName, L""), MgResourceNotFoundException*);
@@ -1452,7 +1452,7 @@ void TestResourceService::TestCase_DeleteResourceData()
             CPPUNIT_ASSERT_THROW_MG(pService->DeleteResourceData(NULL, resourceDataName), MgNullArgumentException*);
 
             //Try using an empty string for the resource data name
-            CPPUNIT_ASSERT_THROW_MG(pService->DeleteResourceData(&resourceIdentifier, L""), MgNullArgumentException*);
+            CPPUNIT_ASSERT_THROW_MG(pService->DeleteResourceData(&resourceIdentifier, L""), MgInvalidArgumentException*);
 
             //Try deleting data that does not exist
             CPPUNIT_ASSERT_THROW_MG(pService->DeleteResourceData(&resourceIdentifier, L"DoesNotExist"), MgResourceDataNotFoundException*);

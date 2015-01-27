@@ -404,11 +404,7 @@ void MgServerResourceService::CreateRepository(MgResourceIdentifier* resource,
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::CreateRepository()");
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.CreateRepository", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.CreateRepository");
 
     if (!resource->IsRepositoryTypeOf(MgRepositoryType::Session))
     {
@@ -559,11 +555,7 @@ void MgServerResourceService::DeleteRepository(MgResourceIdentifier* resource)
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::DeleteRepository()");
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.DeleteRepository", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.DeleteRepository");
 
     if (!resource->IsRepositoryTypeOf(MgRepositoryType::Session))
     {
@@ -671,7 +663,8 @@ void MgServerResourceService::UpdateRepository(MgResourceIdentifier* resource,
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::UpdateRepository()");
 
-    if (NULL == resource || (NULL == content && NULL == header))
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.UpdateRepository");
+    if ((NULL == content && NULL == header))
     {
         throw new MgNullArgumentException(
             L"MgServerResourceService.UpdateRepository", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -725,12 +718,7 @@ MgByteReader* MgServerResourceService::GetRepositoryContent(
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::GetRepositoryContent()");
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.GetRepositoryContent",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.GetRepositoryContent");
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
@@ -765,12 +753,7 @@ MgByteReader* MgServerResourceService::GetRepositoryHeader(
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::GetRepositoryHeader()");
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.GetRepositoryHeader",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.GetRepositoryHeader");
 
     if (!resource->IsRepositoryTypeOf(MgRepositoryType::Library))
     {
@@ -804,12 +787,7 @@ void MgServerResourceService::ApplyResourcePackage(MgByteReader* packageStream)
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::ApplyResourcePackage()");
 
-    if (NULL == packageStream)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.ApplyResourcePackage",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(packageStream, L"MgServerResourceService.ApplyResourcePackage");
 
     auto_ptr<MgLibraryRepositoryManager> repositoryMan(
         new MgLibraryRepositoryManager(*sm_libraryRepository));
@@ -885,12 +863,7 @@ void MgServerResourceService::MakeResourcePackage(MgResourceIdentifier* resource
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::MakeResourcePackage()");
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.ApplyResourcePackage",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.ApplyResourcePackage");
 
     if (!resource->IsFolder())
     {
@@ -932,12 +905,7 @@ bool MgServerResourceService::ResourceExists(MgResourceIdentifier* resource)
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::ResourceExists()");
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.ResourceExists",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.ResourceExists");
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
@@ -972,13 +940,8 @@ MgByteReader* MgServerResourceService::EnumerateResources(
     MG_RESOURCE_SERVICE_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateResources()");
-
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.EnumerateResources",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.EnumerateResources");
 
     if (!resource->IsRepositoryTypeOf(MgRepositoryType::Library))
     {
@@ -1018,11 +981,7 @@ void MgServerResourceService::SetResource(MgResourceIdentifier* resource,
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.SetResource", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.SetResource");
 
     MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::Trace, L"MgServerResourceService.SetResource", mgStackParams);
     logDetail.AddResourceIdentifier(L"Id", resource);
@@ -1080,11 +1039,7 @@ void MgServerResourceService::DeleteResource(MgResourceIdentifier* resource)
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::DeleteResource()");
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.DeleteResource", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.DeleteResource");
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
@@ -1123,11 +1078,8 @@ void MgServerResourceService::MoveResource(MgResourceIdentifier* sourceResource,
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::MoveResource()");
 
-    if (NULL == sourceResource || NULL == destResource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.MoveResource", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(sourceResource, L"MgServerResourceService.MoveResource");
+    CHECKARGUMENTNULL(destResource, L"MgServerResourceService.MoveResource");
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(destResource));
@@ -1161,11 +1113,8 @@ void MgServerResourceService::CopyResource(MgResourceIdentifier* sourceResource,
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::CopyResource()");
 
-    if (NULL == sourceResource || NULL == destResource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.CopyResource", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(sourceResource, L"MgServerResourceService.CopyResource");
+    CHECKARGUMENTNULL(destResource, L"MgServerResourceService.CopyResource");
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(destResource));
@@ -1199,11 +1148,7 @@ MgByteReader* MgServerResourceService::GetResourceContent(
 
     MG_RESOURCE_SERVICE_TRY()
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.GetResourceContent", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.GetResourceContent");
 
     MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::Trace, L"MgServerResourceService.GetResourceContent", mgStackParams);
     logDetail.AddResourceIdentifier(L"Id", resource);
@@ -1231,11 +1176,7 @@ MgStringCollection* MgServerResourceService::GetResourceContents(MgStringCollect
 
     MG_RESOURCE_SERVICE_TRY()
 
-    if (NULL == resources)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.GetResourceContents", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resources, L"MgServerResourceService.GetResourceContents");
     bool hasPreprocess = (NULL != preProcessTags);
     if(hasPreprocess && resources->GetCount() != preProcessTags->GetCount())
     {
@@ -1292,11 +1233,7 @@ MgByteReader* MgServerResourceService::GetResourceHeader(
 
     MG_RESOURCE_SERVICE_TRY()
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.GetResourceHeader", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.GetResourceHeader");
 
     if (!resource->IsRepositoryTypeOf(MgRepositoryType::Library))
     {
@@ -1343,12 +1280,7 @@ MgDateTime* MgServerResourceService::GetResourceModifiedDate(
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::GetResourceModifiedDate()");
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.GetResourceModifiedDate",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.GetResourceModifiedDate");
 
     if (!resource->IsRepositoryTypeOf(MgRepositoryType::Library))
     {
@@ -1391,11 +1323,7 @@ MgByteReader* MgServerResourceService::EnumerateReferences(
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateReferences()");
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.EnumerateReferences", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.EnumerateReferences");
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
@@ -1425,12 +1353,7 @@ MgSerializableCollection* MgServerResourceService::EnumerateParentMapDefinitions
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateParentMapDefinitions()");
 
-    if (NULL == resources)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.EnumerateParentMapDefinitions",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resources, L"MgServerResourceService.EnumerateParentMapDefinitions");
 
     // Check if the resources come from the Library or Session repository.
 
@@ -1554,12 +1477,7 @@ MgSerializableCollection* MgServerResourceService::EnumerateParentTileSetDefinit
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateParentTileSetDefinitions()");
 
-    if (NULL == resources)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.EnumerateParentTileSetDefinitions",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resources, L"MgServerResourceService.EnumerateParentTileSetDefinitions");
 
     // Check if the resources come from the Library or Session repository.
 
@@ -1715,12 +1633,8 @@ void MgServerResourceService::ChangeResourceOwner(
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::ChangeResourceOwner()");
 
-    if (NULL == resource || owner.empty())
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.ChangeResourceOwner",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.ChangeResourceOwner");
+    CHECKARGUMENTEMPTYSTRING(owner, L"MgServerResourceService.ChangeResourceOwner");
 
     if (!resource->IsRepositoryTypeOf(MgRepositoryType::Library))
     {
@@ -1759,12 +1673,7 @@ void MgServerResourceService::InheritPermissionsFrom(MgResourceIdentifier* resou
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::InheritPermissionsFrom()");
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.InheritPermissionsFrom",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.InheritPermissionsFrom");
 
     if (!resource->IsRepositoryTypeOf(MgRepositoryType::Library))
     {
@@ -1805,11 +1714,7 @@ MgByteReader* MgServerResourceService::EnumerateResourceData(
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateResourceData()");
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.EnumerateResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.EnumerateResourceData");
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
@@ -1840,11 +1745,10 @@ void MgServerResourceService::SetResourceData(MgResourceIdentifier* resource,
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    if (NULL == resource || NULL == data || dataName.empty() || dataType.empty())
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.SetResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.SetResourceData");
+    CHECKARGUMENTNULL(data, L"MgServerResourceService.SetResourceData");
+    CHECKARGUMENTEMPTYSTRING(dataName, L"MgServerResourceService.SetResourceData");
+    CHECKARGUMENTEMPTYSTRING(dataType, L"MgServerResourceService.SetResourceData");
 
     MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::Trace, L"MgServerResourceService.SetResourceData", mgStackParams);
     logDetail.AddResourceIdentifier(L"Id", resource);
@@ -1896,11 +1800,8 @@ void MgServerResourceService::DeleteResourceData(
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::DeleteResourceData()");
 
-    if (NULL == resource || dataName.empty())
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.DeleteResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.DeleteResourceData");
+    CHECKARGUMENTEMPTYSTRING(dataName, L"MgServerResourceService.DeleteResourceData");
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
@@ -1934,11 +1835,9 @@ void MgServerResourceService::RenameResourceData(MgResourceIdentifier* resource,
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::RenameResourceData()");
 
-    if (NULL == resource || oldDataName.empty() || newDataName.empty())
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.RenameResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.RenameResourceData");
+    CHECKARGUMENTEMPTYSTRING(oldDataName, L"MgServerResourceService.RenameResourceData");
+    CHECKARGUMENTEMPTYSTRING(newDataName, L"MgServerResourceService.RenameResourceData");
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
@@ -1973,12 +1872,9 @@ MgByteReader* MgServerResourceService::GetResourceData(
 
     MG_RESOURCE_SERVICE_TRY()
 
-    if (NULL == resource || dataName.empty())
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.GetResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.GetResourceData");
+    CHECKARGUMENTEMPTYSTRING(dataName, L"MgServerResourceService.GetResourceData");
+    
     MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::Trace, L"MgServerResourceService.GetResourceData", mgStackParams);
     logDetail.AddResourceIdentifier(L"Id", resource);
     logDetail.AddString(L"DataName", dataName);
@@ -2682,12 +2578,7 @@ void MgServerResourceService::CheckPermission(MgResourceIdentifier* resource,
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerResourceService.CheckPermission",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerResourceService.CheckPermission");
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));

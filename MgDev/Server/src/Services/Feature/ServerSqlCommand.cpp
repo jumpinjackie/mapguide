@@ -137,20 +137,8 @@ INT32 MgServerSqlCommand::ExecuteNonQuery(
 void MgServerSqlCommand::Validate(MgResourceIdentifier* resource, CREFSTRING sqlStatement, INT32 commandType, MgTransaction* transaction)
 {
     // SQL statement can not be empty
-    if (resource == NULL)
-    {
-        throw new MgNullArgumentException(L"MgServerSqlCommand.Validate", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    if (sqlStatement.empty())
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"2");
-        arguments.Add(MgResources::BlankArgument);
-
-        throw new MgInvalidArgumentException(L"MgServerSqlCommand.Validate",
-            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerSqlCommand.Validate");
+    CHECKARGUMENTEMPTYSTRING(sqlStatement, L"MgServerSqlCommand.Validate");
 
     // Close any previously opened connection.
     CloseConnection();

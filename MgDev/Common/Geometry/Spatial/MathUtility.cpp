@@ -78,8 +78,8 @@ int MgMathUtility::LUDecompose(int n, double a[], int eindex[])
 
     // initialize static vars
 
-    if (a == NULL || eindex == NULL)
-        throw new MgNullArgumentException(L"GisMathUtility.LUDecompose", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(a, L"MgMathUtility.LUDecompose");
+    CHECKARGUMENTNULL(eindex, L"MgMathUtility.LUDecompose");
 
     if (n <= 0)
     {
@@ -90,7 +90,7 @@ int MgMathUtility::LUDecompose(int n, double a[], int eindex[])
         arguments.Add(L"1");
         arguments.Add(buffer);
 
-        throw new MgInvalidArgumentException(L"GisMathUtility.LUDecompose",
+        throw new MgInvalidArgumentException(L"MgMathUtility.LUDecompose",
             __LINE__, __WFILE__, &arguments, L"MgInvalidGeometryNoDimension", NULL);
     }
 
@@ -99,7 +99,7 @@ int MgMathUtility::LUDecompose(int n, double a[], int eindex[])
 
     // fill scale for each row
     scale = new double[n];
-    CHECKNULL(scale, L"GisMathUtility.LUDecompose")
+    CHECKNULL(scale, L"MgMathUtility.LUDecompose")
 
     for (i=0; i<n; ++i)
     {
@@ -185,7 +185,7 @@ double MgMathUtility::LinearInterpolate(double start, double end, double proport
             arguments.Add(L"3");
             arguments.Add(buffer);
 
-            throw new MgInvalidArgumentException(L"GisMathUtility.LUDecompose",
+            throw new MgInvalidArgumentException(L"MgMathUtility.LUDecompose",
                 __LINE__, __WFILE__, &arguments, L"MgInvalidGeometryBadProportion", NULL);
         }
 

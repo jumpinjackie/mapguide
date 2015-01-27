@@ -654,12 +654,7 @@ STRING MgServerDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema)
 
     MG_FEATURE_SERVICE_TRY()
 
-    if (NULL == schema)
-    {
-        throw new MgNullArgumentException(L"MgServerDescribeSchema.SchemaToXml", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    CHECKARGUMENTNULL((MgFeatureSchemaCollection*)schema, L"MgServerDescribeSchema.SchemaToXml");
+    CHECKARGUMENTNULL(schema, L"MgServerDescribeSchema.SchemaToXml");
 
     FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol = MgServerFeatureUtil::GetFdoFeatureSchemaCollection(schema);
 
@@ -678,12 +673,7 @@ STRING MgServerDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema, CR
 
     MG_FEATURE_SERVICE_TRY()
 
-    if (NULL == schema)
-    {
-        throw new MgNullArgumentException(L"MgServerDescribeSchema.SchemaToXml", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    CHECKARGUMENTNULL((MgFeatureSchemaCollection*)schema, L"MgServerDescribeSchema.SchemaToXml");
+    CHECKARGUMENTNULL(schema, L"MgServerDescribeSchema.SchemaToXml");
 
     FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol = MgServerFeatureUtil::GetFdoFeatureSchemaCollection(schema);
 
@@ -1214,11 +1204,8 @@ bool MgServerDescribeSchema::GetIdentityProperties(CREFSTRING className,
 
     MG_FEATURE_SERVICE_TRY()
 
-    if (NULL == classCol || NULL == idProps)
-    {
-        throw new MgNullArgumentException(L"MgServerDescribeSchema.GetIdentityProperties",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(classCol, L"MgServerDescribeSchema.GetIdentityProperties");
+    CHECKARGUMENTNULL(idProps, L"MgServerDescribeSchema.GetIdentityProperties");
 
     FdoInt32 classCount = classCol->GetCount();
 

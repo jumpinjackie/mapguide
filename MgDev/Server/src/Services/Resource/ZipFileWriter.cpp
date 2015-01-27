@@ -46,11 +46,7 @@ void MgZipFileWriter::AddArchive(CREFSTRING filePath, MgByteReader* byteReader)
 
     MG_RESOURCE_SERVICE_TRY()
 
-    if (NULL == byteReader)
-    {
-        throw new MgNullArgumentException(L"MgZipFileWriter.AddArchive",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(byteReader, L"MgZipFileWriter.AddArchive");
 
     DWFString archivedFile(filePath.c_str());
     outputStream = m_zipFileDescriptor->zip(archivedFile);

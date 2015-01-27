@@ -327,10 +327,7 @@ STRING MgLogManager::GetLogsPath()
 
 STRING MgLogManager::ValidateLogFileName(CREFSTRING filename)
 {
-    if (filename.empty())
-    {
-        throw new MgNullArgumentException(L"MgLogManager.ValidateLogFileName", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(filename, L"MgLogManager.ValidateLogFileName");
     if (STRING::npos != filename.find(L"\\") ||
         STRING::npos != filename.find(L"/"))
     {
@@ -2301,10 +2298,8 @@ MgPropertyCollection* MgLogManager::EnumerateLogs()
 
 void MgLogManager::RenameLog(CREFSTRING oldFileName, CREFSTRING newFileName)
 {
-    if (oldFileName.empty() || newFileName.empty())
-    {
-        throw new MgNullArgumentException(L"MgLogManager.RenameLog", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(oldFileName, L"MgLogManager.RenameLog");
+    CHECKARGUMENTEMPTYSTRING(newFileName, L"MgLogManager.RenameLog");
 
     MG_LOGMANAGER_TRY()
 
@@ -2330,10 +2325,7 @@ void MgLogManager::RenameLog(CREFSTRING oldFileName, CREFSTRING newFileName)
 
 void MgLogManager::DeleteLog(CREFSTRING fileName)
 {
-    if (fileName.empty())
-    {
-        throw new MgNullArgumentException(L"MgLogManager.DeleteLog", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(fileName, L"MgLogManager.DeleteLog");
 
     if (STRING::npos != fileName.find(L"\\") ||
         STRING::npos != fileName.find(L"/"))
@@ -2956,10 +2948,8 @@ MgByteReader* MgLogManager::GetLogContents(enum MgLogType logType, MgDateTime* f
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
-    if (fromDate == NULL || toDate == NULL)
-    {
-        throw new MgNullArgumentException(L"MgLogManager.GetLogContents", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(fromDate, L"MgLogManager.GetLogContents");
+    CHECKARGUMENTNULL(toDate, L"MgLogManager.GetLogContents");
 
     if (*fromDate > *toDate)
     {
@@ -3338,10 +3328,8 @@ INT32 MgLogManager::SearchClosestDateAfter(MgStringCollection* lines, MgDateTime
 {
     INT32 result = -1;
 
-    if (lines == NULL || searchDate == NULL)
-    {
-        throw new MgNullArgumentException(L"MgLogManager.SearchClosestDateAfter", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(lines, L"MgLogManager.SearchClosestDateAfter");
+    CHECKARGUMENTNULL(searchDate, L"MgLogManager.SearchClosestDateAfter");
 
     Ptr<MgDateTime> dateTime;
 
@@ -3418,10 +3406,8 @@ INT32 MgLogManager::SearchClosestDateBefore(MgStringCollection* lines, MgDateTim
 {
     INT32 result = -1;
 
-    if (lines == NULL || searchDate == NULL)
-    {
-        throw new MgNullArgumentException(L"MgLogManager.SearchClosestDateBefore", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(lines, L"MgLogManager.SearchClosestDateBefore");
+    CHECKARGUMENTNULL(searchDate, L"MgLogManager.SearchClosestDateBefore");
 
     Ptr<MgDateTime> dateTime;
 

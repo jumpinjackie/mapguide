@@ -901,8 +901,8 @@ void TestSiteService::TestCase_AddServer()
         }
 
         //Try using empty string arguments
-        CPPUNIT_ASSERT_THROW_MG(pService->AddServer(L"", L"", serverAddress1), MgNullArgumentException*);
-        CPPUNIT_ASSERT_THROW_MG(pService->AddServer(serverName1, L"", L""), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->AddServer(L"", L"", serverAddress1), MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->AddServer(serverName1, L"", L""), MgInvalidArgumentException*);
 
         // Disable ACE's ERROR message for the server name
         #ifdef _DEBUG
@@ -1009,7 +1009,7 @@ void TestSiteService::TestCase_UpdateServer()
         #endif
 
         //Try using a blank string for the name of the server
-        CPPUNIT_ASSERT_THROW_MG(pService->UpdateServer(L"", L"", L"", L""), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->UpdateServer(L"", L"", L"", L""), MgInvalidArgumentException*);
 
         //Try to update a server that doesn't exist
         CPPUNIT_ASSERT_THROW_MG(pService->UpdateServer(L"DoesNotExist", L"", L"This server doesn't exist", L""), MgServerNotFoundException*);

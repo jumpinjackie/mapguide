@@ -164,11 +164,9 @@ MgByteReader* MgServerMappingService::GeneratePlot(
 
     MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GeneratePlot()");
 
-    if (NULL == map  || NULL == dwfVersion || NULL == plotSpec )
-    {
-        throw new MgNullArgumentException(
-            L"MgServerMappingService.GeneratePlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(map, L"MgServerMappingService.GeneratePlot");
+    CHECKARGUMENTNULL(dwfVersion, L"MgServerMappingService.GeneratePlot");
+    CHECKARGUMENTNULL(plotSpec, L"MgServerMappingService.GeneratePlot");
 
     // Create a MgMapPlot which will be passed to GenerateMultiPlot
     Ptr<MgMapPlot> mapPlot = new MgMapPlot(map, plotSpec, layout);
@@ -221,11 +219,10 @@ MgByteReader* MgServerMappingService::GeneratePlot(
 
     MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GeneratePlot()");
 
-    if (NULL == map  || NULL == center || NULL == dwfVersion || NULL == plotSpec )
-    {
-        throw new MgNullArgumentException(
-            L"MgServerMappingService.GeneratePlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(map, L"MgServerMappingService.GeneratePlot");
+    CHECKARGUMENTNULL(center, L"MgServerMappingService.GeneratePlot");
+    CHECKARGUMENTNULL(dwfVersion, L"MgServerMappingService.GeneratePlot");
+    CHECKARGUMENTNULL(plotSpec, L"MgServerMappingService.GeneratePlot");
 
     // Create a MgMapPlot which will be passed to GenerateMultiPlot
     Ptr<MgMapPlot> mapPlot = new MgMapPlot(map, center, scale, plotSpec, layout);
@@ -279,21 +276,18 @@ MgByteReader* MgServerMappingService::GeneratePlot(
 
     MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GeneratePlot()");
 
-    if (NULL == map  || NULL == extents || NULL == plotSpec || NULL == dwfVersion )
-    {
-        throw new MgNullArgumentException(
-            L"MgServerMappingService.GeneratePlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(map, L"MgServerMappingService.GeneratePlot");
+    CHECKARGUMENTNULL(extents, L"MgServerMappingService.GeneratePlot");
+    CHECKARGUMENTNULL(plotSpec, L"MgServerMappingService.GeneratePlot");
+    CHECKARGUMENTNULL(dwfVersion, L"MgServerMappingService.GeneratePlot");
 
     // Make a copy of the extents
     Ptr<MgCoordinate> oldll = extents->GetLowerLeftCoordinate();
     Ptr<MgCoordinate> oldur = extents->GetUpperRightCoordinate();
     Ptr<MgCoordinate> ll = new MgCoordinateXY(oldll->GetX(), oldll->GetY());
     Ptr<MgCoordinate> ur = new MgCoordinateXY(oldur->GetX(), oldur->GetY());
-    if (ll == NULL || ur == NULL)
-    {
-        throw new MgNullArgumentException(L"MgServerMappingService.GeneratePlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(ll, L"MgServerMappingService.GeneratePlot");
+    CHECKNULL(ur, L"MgServerMappingService.GeneratePlot");
     Ptr<MgEnvelope> env = new MgEnvelope(ll, ur);
 
     // Create a MgMapPlot which will be passed to GenerateMultiPlot
@@ -301,10 +295,8 @@ MgByteReader* MgServerMappingService::GeneratePlot(
 
     // Add it to a MgMapPlotCollecion
     Ptr<MgMapPlotCollection> mapPlots = new MgMapPlotCollection();
-    if (mapPlot == NULL || mapPlots == NULL)
-    {
-        throw new MgNullArgumentException(L"MgServerMappingService.GeneratePlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(mapPlot, L"MgServerMappingService.GeneratePlot");
+    CHECKNULL(mapPlots, L"MgServerMappingService.GeneratePlot");
     mapPlots->Add(mapPlot);
 
     // Create the plot
@@ -344,11 +336,8 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
     MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GenerateMultiPlot()");
 
-    if (0 == mapPlots || 0 == dwfVersion)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(mapPlots, L"MgServerMappingService.GenerateMultiPlot");
+    CHECKARGUMENTNULL(dwfVersion, L"MgServerMappingService.GenerateMultiPlot");
 
     if (m_svcResource == NULL)
         InitializeResourceService();
@@ -758,11 +747,9 @@ MgByteReader* MgServerMappingService::GenerateLegendPlot(
 
     MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GenerateLegendPlot()");
 
-    if (0 == map || 0 == dwfVersion || 0 == plotSpec)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerMappingService.GenerateLegendPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(map, L"MgServerMappingService.GenerateLegendPlot");
+    CHECKARGUMENTNULL(dwfVersion, L"MgServerMappingService.GenerateLegendPlot");
+    CHECKARGUMENTNULL(plotSpec, L"MgServerMappingService.GenerateLegendPlot");
 
     if (m_svcResource == NULL)
         InitializeResourceService();
@@ -1002,11 +989,7 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
 
     MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GenerateLegendImage");
 
-    if (0 == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerMappingService.GenerateLegendImage", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerMappingService.GenerateLegendImage");
 
     if (m_svcResource == NULL)
         InitializeResourceService();

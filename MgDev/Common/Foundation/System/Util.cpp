@@ -578,11 +578,8 @@ STRING MgUtil::EncodeXss(CREFSTRING str)
 ///
 STRING MgUtil::ReplaceString(STRING str, const wchar_t* oldValue, const wchar_t* newValue)
 {
-    if (NULL == oldValue || NULL == newValue)
-    {
-        throw new MgNullArgumentException(L"MgUtil.ReplaceString",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(oldValue, L"MgUtil.ReplaceString");
+    CHECKARGUMENTNULL(newValue, L"MgUtil.ReplaceString");
 
     STRING newStr = str.c_str();
 
@@ -858,34 +855,34 @@ bool MgUtil::GetLinuxMemoryStatus(MgLinuxMemoryStatus* pMemoryStatus)
             throw new MgFileNotFoundException(L"MgUtil.GetLinuxMemoryStatus", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
-	    /*
+        /*
 
-	    /proc/meminfo looks like this:
+        /proc/meminfo looks like this:
 
-	    MemTotal:	    <size> kB	<-- Read this
-	    MemFree:	    <size> kB	<-- Read this
-	    Buffers:	    <size> kB	<-- Read this
-	    Cached:		    <size> kB	<-- Read this
-	    SwapCached:	    <size> kB
-	    Active:		    <size> kB
-	    Inactive:	    <size> kB
-	    Active(anon):	<size> kB
-	    Inactive(anon):	<size> kB
-	    Active(file):	<size> kB
-	    Inactive(file):	<size> kB
-	    Unevictable:	<size> kB
-	    Mlocked:	    <size> kB
-	    HighTotal:	    <size> kB
-	    HighFree:	    <size> kB
-	    LowTotal:	    <size> kB
-	    LowFree:	    <size> kB
-	    SwapTotal:	    <size> kB	<-- Read this
-	    SwapFree:	    <size> kB	<-- Read this
-	    ...
+        MemTotal:	    <size> kB	<-- Read this
+        MemFree:	    <size> kB	<-- Read this
+        Buffers:	    <size> kB	<-- Read this
+        Cached:		    <size> kB	<-- Read this
+        SwapCached:	    <size> kB
+        Active:		    <size> kB
+        Inactive:	    <size> kB
+        Active(anon):	<size> kB
+        Inactive(anon):	<size> kB
+        Active(file):	<size> kB
+        Inactive(file):	<size> kB
+        Unevictable:	<size> kB
+        Mlocked:	    <size> kB
+        HighTotal:	    <size> kB
+        HighFree:	    <size> kB
+        LowTotal:	    <size> kB
+        LowFree:	    <size> kB
+        SwapTotal:	    <size> kB	<-- Read this
+        SwapFree:	    <size> kB	<-- Read this
+        ...
 
-	    Infer the used amount by (total - free)
+        Infer the used amount by (total - free)
 
-	    */
+        */
 
         double total;
         double used;
@@ -946,11 +943,11 @@ bool MgUtil::GetLinuxMemoryStatus(MgLinuxMemoryStatus* pMemoryStatus)
                 swapFree *= 1024;                
             }
 
-	        if (lineNum > 19) //Past SwapFree line
-	        {
-	            bComplete = true; //All lines accounted for
-	            break;	
-	        }
+            if (lineNum > 19) //Past SwapFree line
+            {
+                bComplete = true; //All lines accounted for
+                break;	
+            }
         }
 
         if (bComplete) 

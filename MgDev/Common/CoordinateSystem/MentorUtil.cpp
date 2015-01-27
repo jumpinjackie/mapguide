@@ -1423,16 +1423,10 @@ void SetDictionaryFileName(CREFSTRING sFileName /* no directory information must
                            void (*FileNameTarget)(const char* newFileName),
                            const wchar_t* context)
 {
-    if (NULL == MagicNumberCallback || NULL == FileNameTarget)
-        throw new MgNullArgumentException(L"MentorUtil.SetDictionaryFileName", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    if (sFileName.empty() || dictionaryPath.empty())
-    {
-        MgStringCollection arguments;
-        arguments.Add(sFileName);
-
-        throw new MgArgumentOutOfRangeException(L"MentorUtil.SetDictionaryFileName", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(MagicNumberCallback, L"MentorUtil.SetDictionaryFileName");
+    CHECKARGUMENTNULL(FileNameTarget, L"MentorUtil.SetDictionaryFileName");
+    CHECKARGUMENTEMPTYSTRING(sFileName, L"MentorUtil.SetDictionaryFileName");
+    CHECKARGUMENTEMPTYSTRING(dictionaryPath, L"MentorUtil.SetDictionaryFileName");
 
     char* szCs = NULL;
     bool entered = false;
@@ -1670,11 +1664,7 @@ void MentorSetString(CREFSTRING sSrc, char *pDest, UINT32 nMaxSize)
     MG_TRY()
 
     assert(NULL != pDest);
-
-    if (NULL==pDest)
-    {
-        throw new MgNullArgumentException(L"MentorSetString", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDest, L"MentorSetString");
 
     if (!IsLegalString(sSrc.c_str(), nMaxSize))
     {

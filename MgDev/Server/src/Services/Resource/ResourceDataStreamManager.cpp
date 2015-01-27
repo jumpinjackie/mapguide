@@ -65,6 +65,7 @@ void MgResourceDataStreamManager::SetResourceData(const string& dataKey,
 
     MG_RESOURCE_SERVICE_TRY()
 
+    CHECKARGUMENTNULL(byteReader, L"MgResourceDataStreamManager.SetResourceData");
     // Ensure the current operation is transactionally protected.
     m_repositoryMan.ValidateTransaction();
 
@@ -75,7 +76,8 @@ void MgResourceDataStreamManager::SetResourceData(const string& dataKey,
     u_int32_t dataSize = buffer->GetLength();
     unsigned char* dataBuffer = (unsigned char*) buffer->Bytes();
 
-    if (NULL == dataBuffer || 0 == dataSize)
+    CHECKNULL(dataBuffer, L"MgResourceDataStreamManager.SetResourceData");
+    if (0 == dataSize)
     {
         throw new MgNullArgumentException(
             L"MgResourceDataStreamManager.SetResourceData",

@@ -163,11 +163,7 @@ void MgServiceOperation::Initialize(MgStreamData* data,
     m_currConnection = MgConnection::GetCurrentConnection();
     assert(NULL != m_currConnection);
 
-    if (NULL == data)
-    {
-        throw new MgNullArgumentException(L"MgServiceOperation.Init",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(data, L"MgServiceOperation.Init");
 
     // Pull first argument. It is the user information.
     m_stream = new MgMapGuideStream(m_data->GetStreamHelper());

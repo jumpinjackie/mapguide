@@ -35,8 +35,7 @@ using namespace CSLibrary;
 CCoordinateSystemGeodeticPath::CCoordinateSystemGeodeticPath(MgCoordinateSystemCatalog* pCatalog)
     : pathDefinition(NULL), catalog(SAFE_ADDREF(pCatalog))
 {
-    if (NULL == pCatalog)
-        throw new MgNullArgumentException(L"CCoordinateSystemGeodeticPath.ctor", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(pCatalog, L"CCoordinateSystemGeodeticPath.ctor");
 }
 
 CCoordinateSystemGeodeticPath::~CCoordinateSystemGeodeticPath()

@@ -115,12 +115,7 @@ MgFeatureServiceCacheEntry* MgFeatureServiceCache::SetEntry(MgResourceIdentifier
 ///
 MgFeatureServiceCacheEntry* MgFeatureServiceCache::GetEntry(MgResourceIdentifier* resource)
 {
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgFeatureServiceCache.GetEntry",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgFeatureServiceCache.GetEntry");
 
     resource->Validate();
 

@@ -159,11 +159,7 @@ MgByteSource::MgByteSource(MgByte* bytes)
 MgByteSource::MgByteSource(ByteSourceImpl* byteSourceImpl) :
     m_sourceImpl(byteSourceImpl)
 {
-    if (NULL == m_sourceImpl)
-    {
-        throw new MgNullArgumentException(L"MgByteSource.MgByteSource",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(m_sourceImpl, L"MgByteSource.MgByteSource");
 }
 
 /////////////////////////////////////////////////////////////////

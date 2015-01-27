@@ -326,11 +326,7 @@ MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema(MgResourceIden
 
     MG_FEATURE_SERVICE_TRY()
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerFeatureService.DescribeSchema", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerFeatureService.DescribeSchema");
 
     MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.DescribeSchema", mgStackParams);
     logDetail.AddResourceIdentifier(L"Resource", resource);
@@ -371,11 +367,7 @@ STRING MgServerFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resourc
 
     MG_FEATURE_SERVICE_TRY()
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerFeatureService.DescribeSchemaAsXml", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerFeatureService.DescribeSchemaAsXml");
 
     MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.DescribeSchemaAsXml", mgStackParams);
     logDetail.AddResourceIdentifier(L"Resource", resource);
@@ -445,11 +437,7 @@ MgFeatureReader* MgServerFeatureService::SelectFeatures(MgResourceIdentifier* re
 
     MG_FEATURE_SERVICE_TRY()
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerFeatureService.SelectFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerFeatureService.SelectFeatures");
 
     MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.SelectFeatures",mgStackParams);
     logDetail.AddResourceIdentifier(L"Resource", resource);
@@ -514,11 +502,7 @@ MgFeatureReader* MgServerFeatureService::SelectFeatures(MgResourceIdentifier* re
 
     MG_FEATURE_SERVICE_TRY()
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerFeatureService.SelectFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerFeatureService.SelectFeatures");
 
     MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.SelectFeatures",mgStackParams);
     logDetail.AddResourceIdentifier(L"Resource", resource);
@@ -1296,11 +1280,7 @@ MgSpatialContextReader* MgServerFeatureService::GetSpatialContexts(MgResourceIde
 
     MG_FEATURE_SERVICE_TRY()
 
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerFeatureService.GetSpatialContexts", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerFeatureService.GetSpatialContexts");
 
     MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.GetSpatialContexts", mgStackParams);
     logDetail.AddResourceIdentifier(L"Id", resource);
@@ -1438,11 +1418,7 @@ void MgServerFeatureService::FindClassDefinition(Ptr<MgFeatureSchemaCollection>&
     CREFSTRING schemaName, CREFSTRING className, REFSTRING schemaHash,
     Ptr<MgFeatureSchema>& schemaFound, Ptr<MgClassDefinition>& classFound)
 {
-    if (NULL == schemas.p)
-    {
-        throw new MgNullArgumentException(L"MgServerFeatureService.FindClassDefinition",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(schemas.p, L"MgServerFeatureService.FindClassDefinition");
 
     INT32 schemaCount = schemas->GetCount();
     bool hashed = (0 == schemaName.find_first_of(

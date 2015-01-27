@@ -36,21 +36,8 @@ MgUpdateFeatures::MgUpdateFeatures(CREFSTRING className,
                                    MgPropertyCollection* propertyValues,
                                    CREFSTRING filterText)
 {
-
-    if (className.empty())
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(MgResources::BlankArgument);
-
-        throw new MgInvalidArgumentException(L"MgUpdateFeatures.MgUpdateFeatures",
-            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
-    }
-
-    if (propertyValues == NULL)
-    {
-        throw new MgNullArgumentException(L"MgUpdateFeatures.MgUpdateFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(className, L"MgUpdateFeatures.MgUpdateFeatures");
+    CHECKARGUMENTNULL(propertyValues, L"MgUpdateFeatures.MgUpdateFeatures");
 
     if (propertyValues->GetCount() == 0)
     {

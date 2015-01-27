@@ -126,11 +126,8 @@ MgLegendPlotUtil::~MgLegendPlotUtil()
 
 void MgLegendPlotUtil::AddLegendElement(double dMapScale, Renderer& dr, MgMap* map, MgPlotSpecification* legendSpec, double legendOffsetX, double legendOffsetY)
 {
-    if (NULL == map || NULL == legendSpec)
-    {
-        throw new MgNullArgumentException(
-            L"MgLegendPlotUtil.AddLegendElement", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(map, L"MgLegendPlotUtil.AddLegendElement");
+    CHECKARGUMENTNULL(legendSpec, L"MgLegendPlotUtil.AddLegendElement");
 
     STRING pageUnits = legendSpec->GetPageSizeUnits();
     double convertUnits = 1.0;

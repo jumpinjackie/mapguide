@@ -324,12 +324,7 @@ void MgResourcePackageMaker::PackageResourceData(
 
     ACE_ASSERT(!resource.IsFolder());
 
-    if (NULL == byteReader)
-    {
-        throw new MgNullArgumentException(
-            L"MgResourcePackageMaker.PackageResourceData",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(byteReader, L"MgResourcePackageMaker.PackageResourceData");
 
     ++m_opsReceived;
 

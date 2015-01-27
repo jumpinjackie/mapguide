@@ -175,10 +175,7 @@ void MgServerFeatureTransaction::SetTimeout()
 
 void MgServerFeatureTransaction::Initialize(MgResourceIdentifier* resource)
 {
-    if (resource == NULL)
-    {
-        throw new MgNullArgumentException(L"MgServerFeatureTransaction.Initialize", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerFeatureTransaction.Initialize");
 
     m_resourceId     = SAFE_ADDREF(resource);
     m_connection     = new MgServerFeatureConnection(resource);

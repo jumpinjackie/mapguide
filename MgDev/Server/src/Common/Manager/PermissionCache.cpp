@@ -81,11 +81,8 @@ const MgPermissionInfo* MgPermissionCache::GetPermissionInfo(
 void MgPermissionCache::SetPermissionInfo(CREFSTRING resource,
     const MgPermissionInfo* permissionInfo)
 {
-    if (resource.empty() || NULL == permissionInfo)
-    {
-        throw new MgNullArgumentException(
-            L"MgPermissionCache.SetPermissionInfo", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(resource, L"MgPermissionCache.SetPermissionInfo");
+    CHECKARGUMENTNULL(permissionInfo, L"MgPermissionCache.SetPermissionInfo");
 
     MgPermissionInfoMap::iterator i =
         m_permissionInfoMap.find(resource);

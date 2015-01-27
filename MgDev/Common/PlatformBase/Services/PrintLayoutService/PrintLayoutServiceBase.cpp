@@ -97,12 +97,10 @@ MgPrintLayoutBase* MgPrintLayoutServiceBase::CreatePrintLayout(
         MgResourceService* resourceService,
         MgResourceIdentifier* resId)
 {
-    if (NULL == resourceService || NULL == resId)
-    {
-        throw new MgNullArgumentException(L"MgPrintLayoutServiceBase.CreatePrintLayout",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    else if (!resId->IsResourceTypeOf(MgResourceType::PrintLayoutDefinition))
+    CHECKARGUMENTNULL(resourceService, L"MgPrintLayoutServiceBase.CreatePrintLayout");
+    CHECKARGUMENTNULL(resId, L"MgPrintLayoutServiceBase.CreatePrintLayout");
+
+    if (!resId->IsResourceTypeOf(MgResourceType::PrintLayoutDefinition))
     {
         throw new MgInvalidResourceTypeException(L"MgPrintLayoutServiceBase.CreatePrintLayout",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -118,12 +116,9 @@ MgPrintLayoutElementBase* MgPrintLayoutServiceBase::CreatePrintLayoutElement(
         MgResourceService* resourceService,
         MgResourceIdentifier* resId)
 {
-    if (NULL == resourceService || NULL == resId)
-    {
-        throw new MgNullArgumentException(L"MgPrintLayoutServiceBase.CreatePrintLayoutElement",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    else if (!resId->IsResourceTypeOf(MgResourceType::PrintLayoutElementDefinition))
+    CHECKARGUMENTNULL(resourceService, L"MgPrintLayoutServiceBase.CreatePrintLayoutElement");
+    CHECKARGUMENTNULL(resId, L"MgPrintLayoutServiceBase.CreatePrintLayoutElement");
+    if (!resId->IsResourceTypeOf(MgResourceType::PrintLayoutElementDefinition))
     {
         throw new MgInvalidResourceTypeException(L"MgPrintLayoutServiceBase.CreatePrintLayoutElement",
             __LINE__, __WFILE__, NULL, L"", NULL);

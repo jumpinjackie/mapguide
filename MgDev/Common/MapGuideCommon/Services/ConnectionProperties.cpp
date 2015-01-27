@@ -29,23 +29,8 @@ MgConnectionProperties::MgConnectionProperties()
 ///
 MgConnectionProperties::MgConnectionProperties(MgUserInformation* userInfo, CREFSTRING url)
 {
-    if (NULL == userInfo)
-    {
-        throw new MgNullArgumentException(
-            L"MgConnectionProperties.MgConnectionProperties",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    if (url.empty())
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"2");
-        arguments.Add(MgResources::BlankArgument);
-
-        throw new MgInvalidArgumentException(
-            L"MgConnectionProperties.MgConnectionProperties",
-            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
-    }
+    CHECKARGUMENTNULL(userInfo, L"MgConnectionProperties.MgConnectionProperties");
+    CHECKARGUMENTEMPTYSTRING(url, L"MgConnectionProperties.MgConnectionProperties");
 
     m_userInfo = SAFE_ADDREF(userInfo);
     m_url = url;
@@ -57,12 +42,7 @@ MgConnectionProperties::MgConnectionProperties(MgUserInformation* userInfo, CREF
 ///
 MgConnectionProperties::MgConnectionProperties(MgUserInformation* userInfo, CREFSTRING target, INT32 port)
 {
-    if (NULL == userInfo)
-    {
-        throw new MgNullArgumentException(
-            L"MgConnectionProperties.MgConnectionProperties",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(userInfo, L"MgConnectionProperties.MgConnectionProperties");
 
     m_userInfo = SAFE_ADDREF(userInfo);
     m_target = target; // may be empty

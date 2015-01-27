@@ -1860,12 +1860,7 @@ void MgResourceHeaderManager::GetParentResources(MgResourceIdentifier& resource,
 void MgResourceHeaderManager::UpdatePermissionMaps(CREFSTRING resource,
     CREFSTRING permission, MgPermissionInfo::PermissionStatus status)
 {
-    if (resource.empty())
-    {
-        throw new MgNullArgumentException(
-            L"MgResourceHeaderManager.UpdatePermissionMaps",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(resource, L"MgResourceHeaderManager.UpdatePermissionMaps");
 
     MgResourcePermissionMap::iterator i;
 

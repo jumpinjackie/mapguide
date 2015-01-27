@@ -179,8 +179,8 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
 
     MG_TRY()
 
-    if (NULL == map || baseMapLayerGroupName.empty())
-        throw new MgNullArgumentException(L"MgServerRenderingService.RenderTile", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderTile");
+    CHECKARGUMENTEMPTYSTRING(baseMapLayerGroupName, L"MgServerRenderingService.RenderTile");
 
     // find the finite display scale closest to the requested map scale
     double scale = map->GetViewScale();
@@ -270,9 +270,9 @@ MgByteReader* MgServerRenderingService::RenderTileXYZ(MgMap* map,
 
     MG_TRY()
 
-    if (NULL == map || baseMapLayerGroupName.empty())
-        throw new MgNullArgumentException(L"MgServerRenderingService.RenderTileXYZ", __LINE__, __WFILE__, NULL, L"", NULL);
-
+    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderTileXYZ");
+    CHECKARGUMENTEMPTYSTRING(baseMapLayerGroupName, L"MgServerRenderingService.RenderTileXYZ");
+    
     // get the layer group associated with the name
     Ptr<MgLayerGroupCollection> layerGroups = map->GetLayerGroups();
     Ptr<MgLayerGroup> baseGroup = layerGroups->GetItem(baseMapLayerGroupName);
@@ -298,9 +298,9 @@ MgByteReader* MgServerRenderingService::RenderTileXYZ(MgMap* map,
     double nMin = M_PI - 2.0 * M_PI * y / pow(2.0, (int)z);
     double nMax = M_PI - 2.0 * M_PI * (y + 1) / pow(2.0, (int)z);
     double lonMin = x / pow(2.0, (int)z) * 360.0 - 180;
-	double latMin = 180.0 / M_PI * atan(0.5 * (exp(nMin) - exp(-nMin)));
+    double latMin = 180.0 / M_PI * atan(0.5 * (exp(nMin) - exp(-nMin)));
     double lonMax = (x + 1) / pow(2.0, (int)z) * 360.0 - 180;
-	double latMax = 180.0 / M_PI * atan(0.5 * (exp(nMax) - exp(-nMax)));
+    double latMax = 180.0 / M_PI * atan(0.5 * (exp(nMax) - exp(-nMax)));
 
     double mcsMinX = std::min(lonMin, lonMax);
     double mcsMinY = std::min(latMin, latMax);
@@ -442,9 +442,8 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
 
     MG_TRY()
 
-    if (NULL == map || NULL == baseGroup)
-        throw new MgNullArgumentException(L"MgServerRenderingService.RenderTile", __LINE__, __WFILE__, NULL, L"", NULL);
-
+    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderTile");
+    CHECKARGUMENTNULL(baseGroup, L"MgServerRenderingService.RenderTile");
     // get map extent that corresponds to tile extent
     RS_Bounds extent(mcsMinX, mcsMinY, mcsMaxX, mcsMaxY);
 
@@ -543,8 +542,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
 
     MG_TRY()
 
-    if (NULL == map)
-        throw new MgNullArgumentException(L"MgServerRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderDynamicOverlay");
 
     // validate map view parameters
     int width            = map->GetDisplayWidth();
@@ -690,8 +688,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 
     MG_TRY()
 
-    if (NULL == map)
-        throw new MgNullArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderMap");
 
     Ptr<MgPoint> pt = map->GetViewCenter();
     Ptr<MgCoordinate> center = pt->GetCoordinate();
@@ -741,8 +738,9 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 
     MG_TRY()
 
-    if (NULL == map || extents == NULL || backgroundColor == NULL)
-        throw new MgNullArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderMap");
+    CHECKARGUMENTNULL(extents, L"MgServerRenderingService.RenderMap");
+    CHECKARGUMENTNULL(backgroundColor, L"MgServerRenderingService.RenderMap");
 
     // validate map view parameters
     int dpi              = map->GetDisplayDpi();
@@ -916,8 +914,9 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 
     MG_TRY()
 
-    if (NULL == map || NULL == center || NULL == backgroundColor)
-        throw new MgNullArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderMap");
+    CHECKARGUMENTNULL(center, L"MgServerRenderingService.RenderMap");
+    CHECKARGUMENTNULL(backgroundColor, L"MgServerRenderingService.RenderMap");
 
     // validate map view parameters
     int dpi              = map->GetDisplayDpi();
@@ -1326,9 +1325,8 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
 
     MG_TRY()
 
-    if (NULL == map || NULL == backgroundColor)
-        throw new MgNullArgumentException(L"MgServerRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"", NULL);
-
+    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderMapLegend");
+    CHECKARGUMENTNULL(backgroundColor, L"MgServerRenderingService.RenderMapLegend");
     // validate map view parameters
     if (width <= 0)
         throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"MgMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
@@ -1425,7 +1423,8 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
     MG_TRY()
 
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): ** START **\n")));
-    if (NULL == map || (NULL == geometry && featureFilter.empty()))
+    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderForSelection");
+    if ((NULL == geometry && featureFilter.empty()))
         throw new MgNullArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"", NULL);
 
     if (maxFeatures < 0)

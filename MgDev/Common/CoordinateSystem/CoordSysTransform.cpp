@@ -408,10 +408,7 @@ void CCoordinateSystemTransform::TransformCoordinate(MgCoordinate* coordinate)
 
     MG_TRY()
 
-    if(NULL == coordinate)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformCoordinate", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(coordinate, L"MgCoordinateSystemTransform.TransformCoordinate");
 
     m_nTransformStatus = TransformOk;           // until we know different
 
@@ -538,10 +535,7 @@ MgCoordinate* CCoordinateSystemTransform::Transform(MgCoordinate* coordinate)
     MgCoordinate* pCoordinate = NULL;
     MG_TRY()
 
-    if(NULL == coordinate)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(coordinate, L"MgCoordinateSystemTransform.Transform");
     // Need to determine type of coordinate to transform
     if(coordinate->GetDimension() == MgCoordinateDimension::XY)
     {
@@ -626,10 +620,7 @@ MgEnvelope* CCoordinateSystemTransform::Transform(MgEnvelope* envelope)
 
     MG_TRY()
 
-    if(NULL == envelope)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(envelope, L"MgCoordinateSystemTransform.Transform");
 
     // Extract the two defining corners of this envelope.
     Ptr<MgCoordinate> lowerLeft  = envelope->GetLowerLeftCoordinate();
@@ -801,10 +792,8 @@ void CCoordinateSystemTransform::SetSourceAndTarget(MgCoordinateSystem* pSource,
 {
     MG_TRY()
 
-    if (NULL == pSource || NULL == pTarget)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.SetSourceAndTarget", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pSource, L"MgCoordinateSystemTransform.SetSourceAndTarget");
+    CHECKARGUMENTNULL(pTarget, L"MgCoordinateSystemTransform.SetSourceAndTarget");
 
     bool bValid;
 
@@ -1035,10 +1024,8 @@ void CCoordinateSystemTransform::Transform(double* x, double* y)
 
     assert(NULL != x);
     assert(NULL != y);
-    if (NULL == x || NULL == y)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(x, L"MgCoordinateSystemTransform.Transform");
+    CHECKARGUMENTNULL(y, L"MgCoordinateSystemTransform.Transform");
 
     // Optimization
     if(m_bSourceTargetSame)
@@ -1084,10 +1071,8 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], int arraySize
 
     assert(NULL != x);
     assert(NULL != y);
-    if (NULL == x || NULL == y)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(x, L"MgCoordinateSystemTransform.Transform");
+    CHECKARGUMENTNULL(y, L"MgCoordinateSystemTransform.Transform");
 
     // Optimization
     if(m_bSourceTargetSame)
@@ -1157,10 +1142,8 @@ void CCoordinateSystemTransform::TransformM(double* x, double* y, double* m)
 
     assert(NULL != x);
     assert(NULL != y);
-    if (NULL == x || NULL == y)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(x, L"MgCoordinateSystemTransform.Transform");
+    CHECKARGUMENTNULL(y, L"MgCoordinateSystemTransform.Transform");
 
     // Optimization
     if(m_bSourceTargetSame)
@@ -1207,10 +1190,9 @@ void CCoordinateSystemTransform::TransformM(double x[], double y[], double m[], 
     assert(NULL != x);
     assert(NULL != y);
     assert(NULL != m);
-    if (NULL == x || NULL == y || NULL == m)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(x, L"MgCoordinateSystemTransform.Transform");
+    CHECKARGUMENTNULL(y, L"MgCoordinateSystemTransform.Transform");
+    CHECKARGUMENTNULL(m, L"MgCoordinateSystemTransform.Transform");
 
     // Optimization
     if(m_bSourceTargetSame)
@@ -1284,10 +1266,9 @@ void CCoordinateSystemTransform::Transform(double* x, double* y, double* z)
     assert(NULL != x);
     assert(NULL != y);
     assert(NULL != z);
-    if (NULL == x || NULL == y || NULL == z)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(x, L"MgCoordinateSystemTransform.Transform");
+    CHECKARGUMENTNULL(y, L"MgCoordinateSystemTransform.Transform");
+    CHECKARGUMENTNULL(z, L"MgCoordinateSystemTransform.Transform");
 
     // Optimization
     if(m_bSourceTargetSame)
@@ -1334,10 +1315,9 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], double z[], i
     assert(NULL != x);
     assert(NULL != y);
     assert(NULL != z);
-    if (NULL == x || NULL == y || NULL == z)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(x, L"MgCoordinateSystemTransform.Transform");
+    CHECKARGUMENTNULL(y, L"MgCoordinateSystemTransform.Transform");
+    CHECKARGUMENTNULL(z, L"MgCoordinateSystemTransform.Transform");
 
     // Optimization
     if(m_bSourceTargetSame)
@@ -1411,10 +1391,10 @@ void CCoordinateSystemTransform::TransformM(double* x, double* y, double* z, dou
     assert(NULL != y);
     assert(NULL != z);
     assert(NULL != m);
-    if (NULL == x || NULL == y || NULL == z || NULL == m)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(x, L"MgCoordinateSystemTransform.TransformM");
+    CHECKARGUMENTNULL(y, L"MgCoordinateSystemTransform.TransformM");
+    CHECKARGUMENTNULL(z, L"MgCoordinateSystemTransform.TransformM");
+    CHECKARGUMENTNULL(m, L"MgCoordinateSystemTransform.TransformM");
 
     // Optimization
     if(m_bSourceTargetSame)
@@ -1461,10 +1441,10 @@ void CCoordinateSystemTransform::TransformM(double x[], double y[], double z[], 
     assert(NULL != y);
     assert(NULL != z);
     assert(NULL != m);
-    if (NULL == x || NULL == y || NULL == z || NULL == m)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(x, L"MgCoordinateSystemTransform.TransformM");
+    CHECKARGUMENTNULL(y, L"MgCoordinateSystemTransform.TransformM");
+    CHECKARGUMENTNULL(z, L"MgCoordinateSystemTransform.TransformM");
+    CHECKARGUMENTNULL(m, L"MgCoordinateSystemTransform.TransformM");
 
     // Optimization
     if(m_bSourceTargetSame)
@@ -1536,10 +1516,7 @@ void CCoordinateSystemTransform::Transform2D (double xy[][2],INT32 pointCount)
     double* pDblXY;
 
     assert(NULL != xy);
-    if (NULL == xy)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(xy, L"MgCoordinateSystemTransform.Transform");
     assert(pointCount > 0);
     if (0 >= pointCount)
     {
@@ -1600,10 +1577,7 @@ void CCoordinateSystemTransform::Transform3D (double xyz[][3],INT32 pointCount)
     double* pDblXYZ;
 
     assert(NULL != xyz);
-    if (NULL == xyz)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(xyz, L"MgCoordinateSystemTransform.Transform");
     assert(pointCount > 0);
     if (0 >= pointCount)
     {

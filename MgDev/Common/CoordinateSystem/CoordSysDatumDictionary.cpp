@@ -435,10 +435,7 @@ void CCoordinateSystemDatumDictionary::Add(MgGuardDisposable *pDefinition)
 {
     MG_TRY()
     assert(NULL != pDefinition);
-    if (NULL == pDefinition)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemDatumDictionary.Add", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDefinition, L"MgCoordinateSystemDatumDictionary.Add");
 
     MgCoordinateSystemDatum* pDatumDef=dynamic_cast<MgCoordinateSystemDatum*>(pDefinition);
     if (!pDatumDef)
@@ -485,10 +482,7 @@ void CCoordinateSystemDatumDictionary::Modify(MgGuardDisposable *pDefinition)
 {
     MG_TRY()
     assert(NULL != pDefinition);
-    if (NULL == pDefinition)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemDatumDictionary.Modify", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDefinition, L"MgCoordinateSystemDatumDictionary.Modify");
 
     MgCoordinateSystemDatum* pDatumDef=dynamic_cast<MgCoordinateSystemDatum*>(pDefinition);
     if (!pDatumDef)
@@ -745,8 +739,7 @@ CCoordinateSystemEnumDatum* CCoordinateSystemDatumDictionary::GetEnumImp()
 MgDisposableCollection* CCoordinateSystemDatumDictionary::ReadAllDatums(/*IN, required*/MgCoordinateSystemDictionaryBase* targetDictionary,
                                                                         /*IN, optional*/const std::vector<MgCoordinateSystemFilter*>* const filters)
 {
-    if (NULL == targetDictionary)
-        throw new MgNullArgumentException(L"CCoordinateSystemDatumDictionary.ReadAllDatums", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(targetDictionary, L"CCoordinateSystemDatumDictionary.ReadAllDatums");
 
     CCoordinateSystemDatumDictionary* datumDictionary = dynamic_cast<CCoordinateSystemDatumDictionary*>(targetDictionary);
     if (NULL == datumDictionary) //everything else is an implementation defect

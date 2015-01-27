@@ -224,12 +224,7 @@ void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name,
 void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name,
     MgDateTime* value)
 {
-    if (NULL == value)
-    {
-        throw new MgNullArgumentException(
-            L"MgPackageLogWriter.WriteEntry",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(value, L"MgPackageLogWriter.WriteEntry");
 
     WriteEntry(file, name, value->ToXmlString(false));
 }

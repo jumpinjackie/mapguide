@@ -410,11 +410,7 @@ MgPropertyCollection* MgConfiguration::GetProperties(CREFSTRING section)
 
     MG_CONFIGURATION_TRY()
 
-    if (section.empty())
-    {
-        throw new MgNullArgumentException(
-            L"MgConfiguration.GetProperties", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(section, L"MgConfiguration.GetProperties");
 
     // If the section does not exist, then an empty property collection will be
     // returned.
@@ -483,18 +479,10 @@ void MgConfiguration::SetProperties(CREFSTRING section,
 {
     MG_CONFIGURATION_TRY()
 
-    if (section.empty())
-    {
-        throw new MgNullArgumentException(
-            L"MgConfiguration.SetProperties", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    if (NULL == properties)
-    {
-        throw new MgNullReferenceException(
-            L"MgConfiguration.SetProperties", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    else if (properties->GetCount() <= 0)
+    CHECKARGUMENTEMPTYSTRING(section, L"MgConfiguration.SetProperties");
+    CHECKARGUMENTNULL(properties, L"MgConfiguration.SetProperties");
+    
+    if (properties->GetCount() <= 0)
     {
         // Do nothing if the property collection is empty.
         return;
@@ -573,11 +561,7 @@ void MgConfiguration::RemoveProperties(CREFSTRING section,
 {
     MG_CONFIGURATION_TRY()
 
-    if (section.empty())
-    {
-        throw new MgNullArgumentException(
-            L"MgConfiguration.RemoveProperties", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(section, L"MgConfiguration.RemoveProperties");
 
     bool success = true;
 

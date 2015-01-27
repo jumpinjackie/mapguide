@@ -83,11 +83,7 @@ bool MgIpUtil::IsIpAddress(CREFSTRING address, bool strict)
 
 bool MgIpUtil::IsIpv4Address(CREFSTRING address, bool strict)
 {
-    if (address.empty())
-    {
-        throw new MgNullArgumentException(L"MgIpUtil.IsIpv4Address",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(address, L"MgIpUtil.IsIpv4Address");
 
     unsigned int n1, n2, n3, n4;
     bool isv4Address = 4 == ::swscanf(address.c_str(), L"%u.%u.%u.%u", &n1, &n2, &n3, &n4);
@@ -132,11 +128,7 @@ bool MgIpUtil::IsIpv4Address(CREFSTRING address, bool strict)
 
 bool MgIpUtil::IsIpv6Address(CREFSTRING address, bool strict)
 {
-    if (address.empty())
-    {
-        throw new MgNullArgumentException(L"MgIpUtil.IsIpv6Address",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(address, L"MgIpUtil.IsIpv6Address");
 
     // An valid IPv6 address must have ":"
     bool isv6Address = wstring::npos != address.find(L":");
@@ -406,11 +398,7 @@ STRING MgIpUtil::GetLocalHostAddress()
 
 void MgIpUtil::ValidateAddress(CREFSTRING address, bool strict)
 {
-    if (address.empty())
-    {
-        throw new MgNullArgumentException(L"MgIpUtil.ValidateAddress",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(address, L"MgIpUtil.ValidateAddress");
 
     if (strict)
     {

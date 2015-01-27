@@ -53,10 +53,7 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, double dpi, CREFSTRING a
 
     MG_TRY()
 
-    if (NULL == map)
-    {
-        throw new MgNullArgumentException(L"MgServerKmlService.GetMapKml", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(map, L"MgServerKmlService.GetMapKml");
 
     STRING sessionId = GetSessionId();
 
@@ -137,10 +134,7 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
 
     MG_TRY()
 
-    if (NULL == layer)
-    {
-        throw new MgNullArgumentException(L"MgServerKmlService.GetLayerKml", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(layer, L"MgServerKmlService.GetLayerKml");
 
     STRING sessionId = GetSessionId();
 
@@ -242,10 +236,7 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
 
     MG_TRY()
 
-    if (NULL == layer)
-    {
-        throw new MgNullArgumentException(L"MgServerKmlService.GetFeaturesKml", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(layer, L"MgServerKmlService.GetFeaturesKml");
 
     double scale = GetScale(extents, width, height, dpi);
 

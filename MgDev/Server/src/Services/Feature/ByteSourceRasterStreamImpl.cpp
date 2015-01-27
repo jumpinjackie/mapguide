@@ -62,10 +62,7 @@ ByteSourceRasterStreamImpl::~ByteSourceRasterStreamImpl()
 ///<returns>Actual number of bytes put in the buffer. 0 means end of bytes</returns>
 INT32 ByteSourceRasterStreamImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
 {
-    if (buffer == NULL)
-    {
-        throw new MgNullArgumentException(L"ByteSourceRasterStreamImpl.Read", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(buffer, L"ByteSourceRasterStreamImpl.Read");
 
     if (length < 0)
     {

@@ -47,11 +47,7 @@ MgGeometry * MgSpatialUtility::ApproximateGeometryWithLineStrings(
 {
     MgGeometry* newGeometry = NULL;
 
-    if ( geometry == NULL )
-    {
-        throw new MgNullArgumentException(L"MgSpatialUtility.ApproximateGeometryWithLineStrings",
-        __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(geometry, L"MgSpatialUtility.ApproximateGeometryWithLineStrings");
 
     if ( maxSpacing < 0.0 )
     {

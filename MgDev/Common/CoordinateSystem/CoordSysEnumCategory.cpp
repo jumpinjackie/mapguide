@@ -60,10 +60,7 @@ bool CCoordinateSystemEnumCategory::IsFilteredOut(MgGuardDisposable *pDef)
     MG_TRY()
 
     assert(NULL != pDef);
-    if (!pDef)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDef, L"MgCoordinateSystemEnum.IsFilteredOut");
 
     for (size_t i=0; i<m_vectFilter.size(); i++)
     {
@@ -90,10 +87,7 @@ bool CCoordinateSystemEnumCategory::IsFilteredOut(const char *kpName)
     MG_TRY()
 
     assert(NULL != kpName);
-    if (!kpName)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(kpName, L"MgCoordinateSystemEnum.IsFilteredOut");
 
     //If a filter hasn't been specified, just return false.
     if (m_vectFilter.empty())

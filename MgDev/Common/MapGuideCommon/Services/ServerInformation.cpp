@@ -214,11 +214,7 @@ bool MgServerInformation::IsSiteServer() const
 /// </param>
 void MgServerInformation::CheckName(CREFSTRING name)
 {
-    if (name.empty())
-    {
-        throw new MgNullArgumentException(L"MgServerInformation.CheckName",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(name, L"MgServerInformation.CheckName");
 
     if (wstring::npos != name.find_first_of(L"[]="))
     {
@@ -265,11 +261,7 @@ void MgServerInformation::CheckDescription(CREFSTRING description)
 /// </param>
 void MgServerInformation::CheckAddress(CREFSTRING address)
 {
-    if (address.empty())
-    {
-        throw new MgNullArgumentException(L"MgServerInformation.CheckAddress",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(address, L"MgServerInformation.CheckAddress");
 
     if (wstring::npos != address.find_first_of(L"[]="))
     {

@@ -85,11 +85,7 @@ STRING MgServerFeatureReaderPool::Add(MgFeatureReader* featureReader)
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, L""));
 
-    if(NULL == featureReader)
-    {
-        throw new MgNullArgumentException(L"MgServerFeatureReaderPool.Add",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(featureReader, L"MgServerFeatureReaderPool.Add");
 
     // Get a unique ID
     STRING uid = L"";

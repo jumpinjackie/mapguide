@@ -43,11 +43,8 @@ MgByteReader* MgServerTileService::GetTile(
 
     MG_TRY()
 
-    if (NULL == map || baseMapLayerGroupName.empty())
-    {
-        throw new MgNullArgumentException(L"MgServerTileService.GetTile",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(map, L"MgServerTileService.GetTile");
+    CHECKARGUMENTEMPTYSTRING(baseMapLayerGroupName, L"MgServerTileService.GetTile");
 
     // find the finite display scale closest to the requested map scale
     double scale = map->GetViewScale();
@@ -79,11 +76,8 @@ MgByteReader* MgServerTileService::GetTile(
 
     MG_TRY()
 
-    if (NULL == resource || baseMapLayerGroupName.empty())
-    {
-        throw new MgNullArgumentException(L"MgServerTileService.GetTile",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerTileService.GetTile");
+    CHECKARGUMENTEMPTYSTRING(baseMapLayerGroupName, L"MgServerTileService.GetTile");
         
     Ptr<MgTileCache> cache = GetTileCache(resource);
     ret = cache->GetTile(baseMapLayerGroupName, tileColumn, tileRow, scaleIndex);

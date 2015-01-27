@@ -57,10 +57,8 @@ STRING CCoordinateSystemFormatConverter::DefinitionToWkt(MgCoordinateSystem* pSo
     //numbers in WKT string always use a dot a separator but the locale might say otherwise
     CCsNumericDotLocale dotLocale;
 
-    if (pSource==NULL)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemFormatConverter.DefinitionToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pSource, L"MgCoordinateSystemFormatConverter.DefinitionToWkt");
+
     if (wktFlvrUnknown==GetWktFlavor(nWktFlavor))
     {
         //invalid argument
@@ -731,10 +729,7 @@ STRING CCoordinateSystemFormatConverter::DefinitionToCode(MgCoordinateSystem* pS
 
     MG_TRY()
 
-    if (pSource==NULL)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemFormatConverter.DefinitionToCode", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pSource, L"MgCoordinateSystemFormatConverter.DefinitionToCode");
 
     //get the name of the source system
     STRING sCsSource=pSource->GetCsCode();

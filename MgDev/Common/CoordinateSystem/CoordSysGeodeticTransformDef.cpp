@@ -41,8 +41,7 @@ CCoordinateSystemGeodeticTransformDef::CCoordinateSystemGeodeticTransformDef(MgC
     : transformationDefType(0), transformDefinition(NULL), catalog(SAFE_ADDREF(pCatalog) /* make sure, we take a count on it */)
 {
     //have we been passed a non-null argument?
-    if (NULL == this->catalog)
-        throw new MgNullArgumentException(L"CCoordinateSystemGeodeticTransformDef.ctor", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKNULL(this->catalog, L"CCoordinateSystemGeodeticTransformDef.ctor");
 }
 
 CCoordinateSystemGeodeticTransformDef::~CCoordinateSystemGeodeticTransformDef()

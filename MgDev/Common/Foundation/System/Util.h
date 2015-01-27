@@ -603,6 +603,15 @@ if (pointer == NULL)     \
                                        __LINE__, __WFILE__, NULL, L"MgNullArgument", &args); \
 }
 
+#define CHECKARGUMENTEMPTYSTRING(str, methodname)      \
+if (str.empty())     \
+{                        \
+    MgStringCollection args; \
+    args.Add(L###str); \
+    throw new MgInvalidArgumentException(methodname, \
+                                         __LINE__, __WFILE__, NULL, L"MgEmptyStringArgument", &args); \
+}
+
 #define MG_CHECK_RANGE(value, min, max, methodName)                           \
     if (value < min || value > max)                                           \
     {                                                                         \

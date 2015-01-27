@@ -680,9 +680,7 @@ void MgWebLayout::ParseBuiltInCommand(DOMNode* node, MgWebCommand* cmd)
 {
     MG_TRY()
 
-    if (node == NULL)
-        throw new MgNullArgumentException(L"MgWebLayout.ParseBuiltInCommand", __LINE__, __WFILE__, NULL, L"", NULL);
-
+    CHECKARGUMENTNULL(node, L"MgWebLayout.ParseBuiltInCommand");
     do
     {
         if (MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
@@ -717,9 +715,7 @@ void MgWebLayout::ParseInvokeUrlCommand(DOMNode* node, MgWebInvokeUrlCommand* cm
 
     MG_TRY()
 
-    if (node == NULL)
-        throw new MgNullArgumentException(L"MgWebLayout.ParseInvokeUrlCommand", __LINE__, __WFILE__, NULL, L"", NULL);
-
+    CHECKARGUMENTNULL(node, L"MgWebLayout.ParseInvokeUrlCommand");
     do
     {
         if (MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
@@ -815,9 +811,7 @@ void MgWebLayout::ParseSearchCommand(DOMNode* node, MgWebSearchCommand* cmd)
 {
     MG_TRY()
 
-    if (node == NULL)
-        throw new MgNullArgumentException(L"MgWebLayout.ParseSearchCommand", __LINE__, __WFILE__, NULL, L"", NULL);
-
+    CHECKARGUMENTNULL(node, L"MgWebLayout.ParseSearchCommand");
     Ptr<MgPropertyCollection> resultColumns = cmd->GetResultColumns();
 
     do
@@ -923,9 +917,7 @@ void MgWebLayout::ParseInvokeScriptCommand(DOMNode* node, MgWebInvokeScriptComma
 {
     MG_TRY()
 
-    if (node == NULL)
-        throw new MgNullArgumentException(L"MgWebLayout.ParseInvokeScriptCommand", __LINE__, __WFILE__, NULL, L"", NULL);
-
+    CHECKARGUMENTNULL(node, L"MgWebLayout.ParseInvokeScriptCommand");
     do
     {
         if (MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
@@ -965,8 +957,7 @@ void MgWebLayout::ParsePrintCommand(DOMNode* node, MgWebPrintCommand* cmd)
 {
     MG_TRY()
 
-    if (node == NULL)
-        throw new MgNullArgumentException(L"MgWebLayout.ParsePrintCommand", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(node, L"MgWebLayout.ParsePrintCommand");
 
     Ptr<MgStringCollection> printLayouts = cmd->GetPrintLayouts();
 
@@ -1017,9 +1008,7 @@ void MgWebLayout::ParseHelpCommand(DOMNode* node, MgWebHelpCommand* cmd)
 {
     MG_TRY()
 
-    if (node == NULL)
-        throw new MgNullArgumentException(L"MgWebLayout.ParseHelpCommand", __LINE__, __WFILE__, NULL, L"", NULL);
-
+    CHECKARGUMENTNULL(node, L"MgWebLayout.ParseHelpCommand");
     do
     {
         if (MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
@@ -1059,9 +1048,7 @@ void MgWebLayout::ParseUiTargetCommand(DOMNode* node, MgWebUiTargetCommand* cmd)
 {
     MG_TRY()
 
-    if (node == NULL)
-        throw new MgNullArgumentException(L"MgWebLayout.ParseUiTargetCommand", __LINE__, __WFILE__, NULL, L"", NULL);
-
+    CHECKARGUMENTNULL(node, L"MgWebLayout.ParseUiTargetCommand");
     do
     {
         if (MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)

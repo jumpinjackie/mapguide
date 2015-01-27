@@ -456,10 +456,7 @@ void CCoordinateSystemDictionary::Add(MgGuardDisposable *pDefinition)
     MG_TRY()
 
     assert(NULL != pDefinition);
-    if (NULL == pDefinition)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemDictionary.Add", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDefinition, L"MgCoordinateSystemDictionary.Add");
 
     MgCoordinateSystem* pCoordinateSystem=dynamic_cast<MgCoordinateSystem*>(pDefinition);
     if (!pCoordinateSystem)
@@ -506,10 +503,7 @@ void CCoordinateSystemDictionary::Modify(MgGuardDisposable *pDefinition)
     MG_TRY()
 
     assert(NULL != pDefinition);
-    if (NULL == pDefinition)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemDictionary.Modify", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDefinition, L"MgCoordinateSystemDictionary.Modify");
 
     MgCoordinateSystem* pCoordinateSystem=dynamic_cast<MgCoordinateSystem*>(pDefinition);
     if (!pCoordinateSystem)
@@ -664,8 +658,7 @@ bool CCoordinateSystemDictionary::Has(CREFSTRING sName)
 MgDisposableCollection* CCoordinateSystemDictionary::ReadAllCoordinateSystems(/*IN, required*/ MgCoordinateSystemDictionaryBase* targetDictionary,
                                                                               /*IN, optional*/ const std::vector<MgCoordinateSystemFilter*>* const filters)
 {
-    if (NULL == targetDictionary)
-        throw new MgNullArgumentException(L"MgCoordinateSystemDictionary.ReadAllCoordinateSystems", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(targetDictionary, L"MgCoordinateSystemDictionary.ReadAllCoordinateSystems");
 
     CCoordinateSystemDictionary* csDictionary = dynamic_cast<CCoordinateSystemDictionary*>(targetDictionary);
     if (NULL == csDictionary)

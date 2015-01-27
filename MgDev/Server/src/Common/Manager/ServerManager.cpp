@@ -305,21 +305,11 @@ void MgServerManager::SetConfigurationProperties(CREFSTRING propertySection,
 
     MG_LOG_TRACE_ENTRY(L"MgServerManager::SetConfigurationProperties()");
 
-    if (NULL == properties)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerManager.SetConfigurationProperties",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(properties, L"MgServerManager.SetConfigurationProperties");
 
     MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
 
-    if (NULL == pConfiguration)
-    {
-        throw new MgNullReferenceException(
-            L"MgServerManager.SetConfigurationProperties",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pConfiguration, L"MgServerManager.SetConfigurationProperties");
 
     // Set the properties
     pConfiguration->SetProperties(propertySection, properties);
@@ -360,21 +350,11 @@ void MgServerManager::RemoveConfigurationProperties(CREFSTRING propertySection,
 
     MG_LOG_TRACE_ENTRY(L"MgServerManager::RemoveConfigurationProperties()");
 
-    if (NULL == properties)
-    {
-        throw new MgNullArgumentException(
-            L"MgServerManager.RemoveConfigurationProperties",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(properties, L"MgServerManager.RemoveConfigurationProperties");
 
     MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
 
-    if (NULL == pConfiguration)
-    {
-        throw new MgNullReferenceException(
-            L"MgServerManager.RemoveConfigurationProperties",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pConfiguration, L"MgServerManager.RemoveConfigurationProperties");
 
     // Remove the properties.
     pConfiguration->RemoveProperties(propertySection, properties);

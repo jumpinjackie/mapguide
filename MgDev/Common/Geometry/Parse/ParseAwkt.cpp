@@ -79,10 +79,7 @@ MgGeometry* MgParseAwkt::ParseAwkt(wchar_t* pwzAwkt)
 {
     assert(NULL != pwzAwkt);
 
-    if (NULL == pwzAwkt)
-    {
-        throw new MgNullArgumentException(L"MgParseAwkt.ParseAwkt", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pwzAwkt, L"MgParseAwkt.ParseAwkt");
 
     m_lex = new GisLexAwkt(pwzAwkt);
     if (m_lex == NULL)

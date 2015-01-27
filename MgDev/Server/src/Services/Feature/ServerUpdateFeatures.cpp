@@ -64,10 +64,8 @@ MgPropertyCollection* MgServerUpdateFeatures::Execute(MgResourceIdentifier* reso
 
     MG_FEATURE_SERVICE_TRY()
 
-    if (resource == NULL || commands == NULL)
-    {
-        throw new MgNullArgumentException(L"MgServerUpdateFeatures.UpdateFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerUpdateFeatures.UpdateFeatures");
+    CHECKARGUMENTNULL(commands, L"MgServerUpdateFeatures.UpdateFeatures");
 
     INT32 cnt = commands->GetCount();
     if (cnt == 0)
@@ -156,10 +154,8 @@ MgPropertyCollection* MgServerUpdateFeatures::Execute(MgResourceIdentifier* reso
 
     MG_FEATURE_SERVICE_TRY()
 
-    if (resource == NULL || commands == NULL)
-    {
-        throw new MgNullArgumentException(L"MgServerUpdateFeatures.UpdateFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(resource, L"MgServerUpdateFeatures.UpdateFeatures");
+    CHECKARGUMENTNULL(commands, L"MgServerUpdateFeatures.UpdateFeatures");
 
     INT32 cnt = commands->GetCount();
     if (cnt == 0)

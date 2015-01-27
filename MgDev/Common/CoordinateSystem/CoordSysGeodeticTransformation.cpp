@@ -46,8 +46,8 @@ CCoordinateSystemGeodeticTransformation::CCoordinateSystemGeodeticTransformation
                                                                                  bool createInversed)
 : m_pDtcprm(NULL), m_pDtSource(NULL), m_pDtTarget(NULL)
 {
-    if (NULL == pCatalog || NULL == transformationDef)
-        throw new MgNullArgumentException(L"CCoordinateSystemGeodeticTransformation.ctor", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(pCatalog, L"CCoordinateSystemGeodeticTransformation.ctor");
+    CHECKARGUMENTNULL(transformationDef, L"CCoordinateSystemGeodeticTransformation.ctor");
 
     //this->Uninitialize(); //not needed - this does release the resourced held by this instance; we haven't set anything yet
 

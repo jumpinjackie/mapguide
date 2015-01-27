@@ -317,7 +317,9 @@ DOMNodeList* MgXmlUtil::GetNodeList(DOMNode* parentNode,
 
     MG_XML_TRY()
 
-    if (NULL == parentNode || NULL == elementName || 0 == ::strlen(elementName))
+    CHECKARGUMENTNULL(parentNode, L"MgXmlUtil.GetNodeList");
+    CHECKARGUMENTNULL(elementName, L"MgXmlUtil.GetNodeList");
+    if (0 == ::strlen(elementName))
     {
         throw new MgNullArgumentException(L"MgXmlUtil.GetNodeList",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -398,7 +400,8 @@ void MgXmlUtil::GetElementNode(const char* elementName, const string& document,
 {
     MG_XML_TRY()
 
-    if (NULL == elementName || 0 == ::strlen(elementName))
+    CHECKARGUMENTNULL(elementName, L"MgXmlUtil.GetElementNode");
+    if (0 == ::strlen(elementName))
     {
         throw new MgNullArgumentException(L"MgXmlUtil.GetElementNode",
             __LINE__, __WFILE__, NULL, L"", NULL);

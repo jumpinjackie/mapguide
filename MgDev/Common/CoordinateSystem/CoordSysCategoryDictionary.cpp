@@ -283,10 +283,7 @@ void CCoordinateSystemCategoryDictionary::Add(MgGuardDisposable *pDefinition)
     MG_TRY()
 
     _ASSERT(NULL != pDefinition);
-    if (NULL == pDefinition)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemCategoryDictionary.Add", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(pDefinition, L"MgCoordinateSystemCategoryDictionary.Add");
 
     CCoordinateSystemCategory* pCategoryDef=dynamic_cast<CCoordinateSystemCategory*>(pDefinition);
     if (!pCategoryDef)
@@ -417,8 +414,7 @@ void CCoordinateSystemCategoryDictionary::Modify(MgGuardDisposable *pDefinition)
     MG_TRY()
 
         _ASSERT(NULL != pDefinition);
-        if (NULL == pDefinition)
-            throw new MgNullArgumentException(L"MgCoordinateSystemCategoryDictionary.Modify", __LINE__, __WFILE__, NULL, L"", NULL);
+        CHECKARGUMENTNULL(pDefinition, L"MgCoordinateSystemCategoryDictionary.Modify");
 
         CCoordinateSystemCategory* pCategoryDef=dynamic_cast<CCoordinateSystemCategory*>(pDefinition);
         if (!pCategoryDef)

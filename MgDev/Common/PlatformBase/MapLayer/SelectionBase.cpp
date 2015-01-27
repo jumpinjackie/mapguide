@@ -782,10 +782,7 @@ MgSelectionBase::SelectionList* MgSelectionBase::GetSelections(MgLayerBase* laye
 {
     SelectionList* selList = NULL;
 
-    if (0 == layer)
-    {
-        throw new MgNullArgumentException(L"MgSelectionBase.GetSelections", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(layer, L"MgSelectionBase.GetSelections");
 
     wstring layerName = layer->GetObjectId();
     SelectionMap::iterator lIter = m_selections.find(layerName);

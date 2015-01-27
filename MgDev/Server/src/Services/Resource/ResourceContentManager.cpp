@@ -146,12 +146,7 @@ void MgResourceContentManager::AddResource(MgResourceInfo& resourceInfo,
     MG_RESOURCE_SERVICE_TRY()
 
     // Check if the resource content is empty.
-
-    if (document.empty())
-    {
-        throw new MgNullArgumentException(
-            L"MgResourceContentManager.AddResource", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(document, L"MgResourceContentManager.AddResource");
 
     MgResourceIdentifier& resource = resourceInfo.GetIdentifier();
     string resourcePathname;

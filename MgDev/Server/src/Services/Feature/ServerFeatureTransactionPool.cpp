@@ -226,11 +226,7 @@ STRING MgServerFeatureTransactionPool::AddTransaction(MgServerFeatureTransaction
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, L""));
 
-    if(NULL == featTransaction)
-    {
-        throw new MgNullArgumentException(L"MgServerFeatureTransactionPool.AddTransaction",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(featTransaction, L"MgServerFeatureTransactionPool.AddTransaction");
 
     // Get a unique ID
     STRING uid = L"";
@@ -273,11 +269,7 @@ bool MgServerFeatureTransactionPool::RemoveTransaction(MgServerFeatureTransactio
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
-    if(NULL == featTransaction)
-    {
-        throw new MgNullArgumentException(L"MgServerFeatureTransactionPool.RemoveTransaction",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(featTransaction, L"MgServerFeatureTransactionPool.RemoveTransaction");
 
     bool bResult = false;
 

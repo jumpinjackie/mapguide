@@ -271,12 +271,7 @@ MgStringCollection* MgLoadBalanceManager::GetServerAddresses(INT32 serviceFlags,
 MgServerInformation* MgLoadBalanceManager::GetServerInfo(
     CREFSTRING address) const
 {
-    if (address.empty())
-    {
-        throw new MgNullArgumentException(
-            L"MgLoadBalanceManager.GetServerInfo",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(address, L"MgLoadBalanceManager.GetServerInfo");
 
     Ptr<MgServerInformation> serverInfo;
 
@@ -415,12 +410,7 @@ MgSerializableCollection* MgLoadBalanceManager::CopyServerInfoList(
 
 bool MgLoadBalanceManager::FindServerByName(CREFSTRING name) const
 {
-    if (name.empty())
-    {
-        throw new MgNullArgumentException(
-            L"MgLoadBalanceManager.FindServerByName",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(name, L"MgLoadBalanceManager.FindServerByName");
 
     return (m_supportServerMap.end() != m_supportServerMap.find(name));
 }
@@ -624,12 +614,7 @@ bool MgLoadBalanceManager::RegisterServices(MgServerInformation* newServerInfo,
 
     MG_TRY()
 
-    if (NULL == newServerInfo)
-    {
-        throw new MgNullArgumentException(
-            L"MgLoadBalanceManager.RegisterServices",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(newServerInfo, L"MgLoadBalanceManager.RegisterServices");
 
     // Register the site server and other support servers' services with the new server.
 
@@ -715,12 +700,7 @@ void MgLoadBalanceManager::UnregisterServices(MgServerInformation* removedServer
 {
     MG_TRY()
 
-    if (NULL == removedServerInfo)
-    {
-        throw new MgNullArgumentException(
-            L"MgLoadBalanceManager.UnregisterServices",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(removedServerInfo, L"MgLoadBalanceManager.UnregisterServices");
 
     // Un-register the site server and other support servers' services with the removed server.
 
@@ -1459,7 +1439,8 @@ MgSerializableCollection* MgLoadBalanceManager::RegisterServicesOnServers(
 
     MG_LOG_TRACE_ENTRY(L"MgLoadBalanceManager::RegisterServicesOnServers()");
 
-    if (NULL == serverInfoList || serverInfoList->GetCount() <= 0)
+    CHECKARGUMENTNULL(serverInfoList, L"MgLoadBalanceManager.RegisterServicesOnServers");
+    if (serverInfoList->GetCount() <= 0)
     {
         throw new MgNullArgumentException(
             L"MgLoadBalanceManager.RegisterServicesOnServers",
@@ -1527,7 +1508,8 @@ void MgLoadBalanceManager::UnregisterServicesOnServers(
 
     MG_LOG_TRACE_ENTRY(L"MgLoadBalanceManager::UnregisterServicesOnServers()");
 
-    if (NULL == serverInfoList || serverInfoList->GetCount() <= 0)
+    CHECKARGUMENTNULL(serverInfoList, L"MgLoadBalanceManager.UnregisterServicesOnServers");
+    if (serverInfoList->GetCount() <= 0)
     {
         throw new MgNullArgumentException(
             L"MgLoadBalanceManager.UnregisterServicesOnServers",

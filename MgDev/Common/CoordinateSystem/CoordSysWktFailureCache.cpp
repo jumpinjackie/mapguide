@@ -92,11 +92,8 @@ void CCoordinateSystemWktFailureCache::Clear()
 ///
 void CCoordinateSystemWktFailureCache::Set(CREFSTRING key, MgException* mgException)
 {
-    if (key.empty() || NULL == mgException)
-    {
-        throw new MgNullArgumentException(L"CCoordinateSystemWktFailureCache.Set",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(key, L"CCoordinateSystemWktFailureCache.Set");
+    CHECKARGUMENTNULL(mgException, L"CCoordinateSystemWktFailureCache.Set");
 
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
@@ -122,11 +119,7 @@ bool CCoordinateSystemWktFailureCache::Has(CREFSTRING key)
 {
     bool hasKey;
 
-    if (key.empty())
-    {
-        throw new MgNullArgumentException(L"CCoordinateSystemWktFailureCache.Has",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(key, L"CCoordinateSystemWktFailureCache.Has");
 
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
@@ -152,11 +145,7 @@ bool CCoordinateSystemWktFailureCache::Has(CREFSTRING key)
 ///
 MgException* CCoordinateSystemWktFailureCache::Get(CREFSTRING key)
 {
-    if (key.empty())
-    {
-        throw new MgNullArgumentException(L"CCoordinateSystemWktFailureCache.Get",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(key, L"CCoordinateSystemWktFailureCache.Get");
 
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 

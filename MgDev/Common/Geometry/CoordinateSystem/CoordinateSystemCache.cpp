@@ -86,11 +86,8 @@ void MgCoordinateSystemCache::Clear()
 ///
 void MgCoordinateSystemCache::Set(CREFSTRING key, MgCoordinateSystem* value)
 {
-    if (key.empty() || NULL == value)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemCache.Set",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(key, L"MgCoordinateSystemCache.Set");
+    CHECKARGUMENTNULL(value, L"MgCoordinateSystemCache.Set");
 
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
@@ -114,11 +111,7 @@ void MgCoordinateSystemCache::Set(CREFSTRING key, MgCoordinateSystem* value)
 ///
 MgCoordinateSystem* MgCoordinateSystemCache::Get(CREFSTRING key)
 {
-    if (key.empty())
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemCache.Get",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTEMPTYSTRING(key, L"MgCoordinateSystemCache.Get");
 
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
