@@ -22,10 +22,10 @@ namespace InstantSetupCmd
         [Option("admin-port", DefaultValue = 2820, HelpText = "The port to listen on for admin connections")]
         public int ServerAdminPort { get; set; }
 
-        [Option("client-port", DefaultValue = 2820, HelpText = "The port to listen on for client connections")]
+        [Option("client-port", DefaultValue = 2821, HelpText = "The port to listen on for client connections")]
         public int ServerClientPort { get; set; }
 
-        [Option("site-port", DefaultValue = 2820, HelpText = "The port to listen on for site connections")]
+        [Option("site-port", DefaultValue = 2822, HelpText = "The port to listen on for site connections")]
         public int ServerSitePort { get; set; }
 
         [Option("write-mentor-dictionary-path", DefaultValue = false, HelpText = "Write code to set up MENTOR_DICTIONARY_PATH on batch scripts. Only applicable for MGOS 2.2 or older")]
@@ -49,10 +49,10 @@ namespace InstantSetupCmd
         [Option("backup-path", HelpText = "The directory where backups of configuration files will be copied to")]
         public string BackupConfigPath { get; set; }
 
-        [Option("backup-files", DefaultValue = true, HelpText = "If true, will create backups of existing configuration files before overwriting")]
+        [Option("backup-files", DefaultValue = false, HelpText = "If true, will create backups of existing configuration files before overwriting")]
         public bool BackupConfigFiles { get; set; }
 
-        [Option("source-dir", HelpText = "The root path of the MapGuide installation (where InstantSetupCmd will do its configuration)")]
+        [Option("source-dir", Required = true, HelpText = "The root path of the MapGuide installation (where InstantSetupCmd will do its configuration)")]
         public string SourceRootDir { get; set; }
 
         [Option("virtual-dir", DefaultValue = "mapguide", HelpText = "The name of the mapguide virtual directory to create on IIS/Apache")]
@@ -60,6 +60,9 @@ namespace InstantSetupCmd
 
         [Option("webtier-config", Required = true, DefaultValue = MapGuideWebConfiguration.Apache, HelpText = "The web tier configuration to use (IIS / Apache)")]
         public MapGuideWebConfiguration WebTierConfig { get; set; }
+
+        [OptionArray("fdo-providers", Required = true, HelpText = "The list of FDO providers to register (eg: SDF SHP SQLite)")]
+        public string[] FdoProviders { get; set; }
 
 #region Apache-specific
         [Option("enable-java", DefaultValue = false, HelpText = "Enables Java for this MapGuide installation")]

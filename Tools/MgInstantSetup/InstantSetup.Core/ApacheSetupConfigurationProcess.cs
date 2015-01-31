@@ -38,6 +38,20 @@ namespace InstantSetup.Core
             this.ApacheDirName = "Apache24";
         }
 
+        public override void WriteSummary(FormatLineWriter writer)
+        {
+            writer("================ Summary ==================");
+            base.WriteSummary(writer);
+            writer("============= Apache Summary ==============");
+            writer("Apache dir name: {0}", this.ApacheDirName);
+            writer("Apache port: {0}", this.ApachePortNumber);
+            writer("Enable Java: {0}", this.EnableJava);
+            writer("Apache service name: {0}", this.HttpdServiceName);
+            writer("Tomcat port: {0}", this.TomcatPortNumber);
+            writer("Apache dir: {0}", this.ApacheDirName);
+            writer("Tomcat dir: {0}", this.WebTierTomcatDir);
+        }
+
         public bool EnableJava { get; set; }
 
         /// <summary>

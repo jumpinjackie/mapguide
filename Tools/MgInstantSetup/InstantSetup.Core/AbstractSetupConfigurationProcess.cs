@@ -31,6 +31,8 @@ namespace InstantSetup.Core
         DotNet
     }
 
+    public delegate void FormatLineWriter(string msg, params object [] args);
+
     /// <summary>
     /// Base configuration setup process
     /// </summary>
@@ -47,6 +49,31 @@ namespace InstantSetup.Core
             this.ServerAdminPort = 2820;
             this.ServerClientPort = 2821;
             this.ServerSitePort = 2822;
+        }
+
+        public virtual void WriteSummary(FormatLineWriter writer)
+        {
+            writer("Backup config files: {0}", this.BackupConfigFiles);
+            writer("Backup config path: {0}", this.BackupConfigPath);
+            writer("Batch file output dir: {0}", this.BatchFileOutputDirectory);
+            writer("Source directory: {0}", this.BuildOutputPath);
+            writer("CS-Map directory: {0}", this.CsMapDictionaryDir);
+            writer("Default Viewer: {0}", this.DefaultViewer);
+            writer("Enable PHP: {0}", this.EnablePhp);
+            writer("Install Services: {0}", this.InstallServices);
+            writer("64-bit MapGuide: {0}", this.Is64BitMapGuide);
+            writer("MapGuide Service Name: {0}", this.MapGuideServiceName);
+            writer("Server Admin Port: {0}", this.ServerAdminPort);
+            writer("Server Client Port: {0}", this.ServerClientPort);
+            writer("Server Site Port: {0}", this.ServerSitePort);
+            writer("Server root dir: {0}", this.ServerRootDir);
+            writer("Server bin dir: {0}", this.ServerBinDir);
+            writer("Virtual Directory: {0}", this.VirtualDirectoryName);
+            writer("Map Agent directory: {0}", this.WebTierMapAgentDir);
+            writer("PHP directory: {0}", this.WebTierPhpDir);
+            writer("Web tier public dir: {0}", this.WebTierPublicDir);
+            writer("Web tier root dir: {0}", this.WebTierRootDir);
+            writer("Write MENTOR_DICTIONARY_PATH: {0}", this.WriteMentorDictionaryPath);
         }
 
         /// <summary>

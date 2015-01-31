@@ -38,6 +38,17 @@ namespace InstantSetup.Core
             this.EnablePhp = false;
         }
 
+        public override void WriteSummary(FormatLineWriter writer)
+        {
+            writer("================ Summary ==================");
+            base.WriteSummary(writer);
+            writer("============== IIS Summary ================");
+            writer("appcmd path: {0}", this.AppCmdPath);
+            writer("Application Pool: {0}", this.ApplicationPool);
+            writer("Enable .net: {0}", this.EnableDotNet);
+            writer("Web Site Name: {0}", this.WebSiteName);
+        }
+
         public bool EnableDotNet { get; set; }
 
         /// <summary>

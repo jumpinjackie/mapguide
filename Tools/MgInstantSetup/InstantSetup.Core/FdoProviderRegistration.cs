@@ -36,6 +36,17 @@ namespace InstantSetup.Core
             _providerDllPaths = providerDllPaths;
         }
 
+        public void WriteSummary(FormatLineWriter writer)
+        {
+            writer("=============== FDO Summary =================");
+            writer("FdoRegUtil path: {0}", _fdoRegUtilPath);
+            writer("The following providers will be registered:");
+            foreach (var path in _providerDllPaths)
+            {
+                writer(" - {0}", path);
+            }
+        }
+
         public FdoRegistrationResult[] Execute()
         {
             var providersXmlPath = Path.Combine(Path.GetDirectoryName(_fdoRegUtilPath), "providers.xml");

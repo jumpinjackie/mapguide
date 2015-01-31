@@ -1,6 +1,7 @@
 ﻿using InstantSetup.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,19 @@ namespace InstantSetupCmd
                 }
                 if (proc != null)
                 {
+                    proc.WriteSummary(Console.WriteLine);
+                    //Do FDO registration first
+                    var fdoPath = Path.Combine(options.SourceRootDir, "Server", "FDO");
+                    var regUtil = Path.Combine(fdoPath, "FdoRegUtil.exe");
+                    var reg = new FdoProviderRegistration(regUtil, options.FdoProviders.Select(n => Path.Combine(fdoPath, n + "Provider.dll")));
+                    reg.WriteSummary(Console.WriteLine);
+                    
+                    var results = reg.Execute();
+                    foreach (var res in results)
+                    {
+                        Console.WriteLine("FdoRegUtil - {0} returned {1}", res.DllPath, res.ReturnCode);
+                    }
+
                     proc.Execute();
                     Console.WriteLine("Batch scripts saved to: {0}", options.BatchFileOutputDirectory);
                     Environment.Exit(0);
