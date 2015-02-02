@@ -3,7 +3,13 @@
 require_once dirname(__FILE__)."/../Web/src/PhpApi/constants.php";
 
 $file = dirname(__FILE__)."/webconfig.ini";
+if (array_key_exists("MG_WEBCONFIG_INI", $_SERVER))
+    $file = $_SERVER["MG_WEBCONFIG_INI"];
+
 $mgp = dirname(__FILE__)."/TestData/Samples/Sheboygan/Sheboygan.mgp";
+if (array_key_exists("MG_SHEBOYGAN_MGP", $_SERVER))
+    $mgp = $_SERVER["MG_SHEBOYGAN_MGP"];
+
 if (!file_exists($mgp)) {
     echo "Sheboygan.mgp not found. Please put this file in this directory before running this script\n";
     exit(255);

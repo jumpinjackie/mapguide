@@ -68,6 +68,7 @@ SET MG_BUILD_TEMP=%MG_DEV%\BuildTemp
 rem === Intermediate build vars ===
 SET MG_BUILD_DBXML_EXE_PATH=%MG_OEM%\%MG_OEM_DBXML%\bin64\%CONFIGURATION%
 SET MG_BUILD_SQLITE_PHP_API=%MG_OEM%\SQLite\bin\%TYPEBUILD%\php_SQLitePhpApi.dll
+SET MG_BUILD_SQLITE_DOTNET_API=%MG_OEM%\SQLite\bin\%TYPEBUILD%\SQLiteDotNet.dll
 SET MG_BUILD_MAPAGENT_PATH=%MG_WEB_SRC%\mapagent64
 SET MG_BUILD_MAPAGENT=%MG_BUILD_MAPAGENT_PATH%\mod_mgmapagent.so
 
@@ -75,6 +76,7 @@ SET MG_OUTPUT=%MG_DEV%\%TYPEBUILD%
 SET MG_OUTPUT_SERVER=%MG_OUTPUT%\Server
 SET MG_OUTPUT_WEB=%MG_OUTPUT%\Web
 SET MG_OUTPUT_CSMAP=%MG_OUTPUT%\CS-Map
+SET MG_OUTPUT_TEST=%MG_OUTPUT%\Test
 SET MG_BUILD_COMPONENT=
 
 SET MG_DEFAULT_INSTALLDIR=C:\Program Files\MapGuideOpenSource2.0
@@ -88,11 +90,11 @@ rem set the appropriate environment variables before
 rem running
 rem ==================================================
 
-IF "%JAVA_HOME%" == "" SET JAVA_HOME=C:\Program Files\Java\jdk1.6.0_31
+IF "%JAVA_HOME%" == "" SET JAVA_HOME=C:\Program Files\Java\jdk1.7.0_71
 IF "%DOXYGEN%" == "" SET DOXYGEN=C:\Program Files\doxygen\bin
 IF "%GNUWIN32%" == "" SET GNUWIN32=C:\Program Files (x86)\GnuWin32\bin
 IF "%SEVENZ%" == "" SET SEVENZ=%MG_DEV%\BuildTools\WebTools\7-Zip
-IF "%ANT_HOME%" == "" SET ANT_HOME=C:\apache-ant-1.8.3
+IF "%ANT_HOME%" == "" SET ANT_HOME=C:\apache-ant
 
 SET PATH=%PATH%;%DOXYGEN%;%GNUWIN32%;%SEVENZ%;%ANT_HOME%\bin
 rem ==================================================

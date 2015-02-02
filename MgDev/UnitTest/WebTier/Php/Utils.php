@@ -21,13 +21,6 @@
 
 require_once("SQLiteEngine.php");
 
-if (!defined('WEBCONFIGINI')) {
-    if (array_key_exists("WEBCONFIGINI", $_SERVER)) {
-        define("WEBCONFIGINI", $_SERVER["WEBCONFIGINI"]);
-    } else {
-        define('WEBCONFIGINI', "../../../Web/src/webconfig.ini");
-    }
-}
 class Utils
 {
     public static function SetCommonParams($paramSet, $db)

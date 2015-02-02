@@ -109,18 +109,22 @@
         <attribute name="Class-Path" value="MapGuideApiEx.jar sqlite4java.jar" />
       </manifest>
     </jar>
-    <copy todir="${dist}">
+    <copy todir="${dist}" verbose="true">
       <fileset dir="${classpath}">
         <include name="**/*" />
       </fileset>
     </copy>
-    <copy todir="${dist}">
+    <copy todir="${dist}" verbose="true">
       <fileset dir="${extlib}">
         <include name="**/*.dll" />
         <include name="**/*.so" />
       </fileset>
     </copy>
-    <copy file="${mapguide.res.src}" tofile="${mapguide.res}" />
+    <copy file="${mapguide.res.src}" tofile="${mapguide.res}" verbose="true" />
+    <copy file="${mapguide.config.src}" tofile="${mapguide.config}" verbose="true" overwrite="true" />
+  </target>
+  <target name="updatewebconfig">
+    <echo message="Updating ${mapguide.config} with default values" />
     <!-- write webconfig.ini -->
     <inifile dest="${mapguide.config}">
       <set section="GeneralProperties" property="DefaultMessageLocale" value="en" />
@@ -151,7 +155,7 @@
       <set section="OgcProperties" property="CITEWmsEnabled" value="0" />
     </inifile>
   </target>
-  <target name="checkwin" depends="dist">
+  <target name="checkwin_external" depends="dist">
     <echo message="Run Java tests for Windows" />
     <!-- Remove any log files and dumped binary files from previous run -->
     <delete>
@@ -170,7 +174,26 @@
       <env key="MENTOR_DICTIONARY_PATH" value="${mapguide.dictpath}" />
     </java>
   </target>
-  <target name="checkunix" depends="dist">
+  <target name="checkwin" depends="dist,updatewebconfig">
+    <echo message="Run Java tests for Windows" />
+    <!-- Remove any log files and dumped binary files from previous run -->
+    <delete>
+      <fileset dir="${dist}" includes="**/*.bin"/>
+      <fileset dir="${dist}" includes="**/*.log"/>
+    </delete>
+    <!--
+    <exec executable="java" dir="${dist}">
+      <arg line="-jar MgUnitTest.jar ${mapguide.config} ${unittest.logpath}" />
+      <env key="MENTOR_DICTIONARY_PATH" value="${mapguide.dictpath}" />
+    </exec>
+    -->
+    <java jar="${dist}/MgUnitTest.jar" fork="true" dir="${dist}">
+      <arg value="${mapguide.config}" />
+      <arg value="${unittest.logpath}" />
+      <env key="MENTOR_DICTIONARY_PATH" value="${mapguide.dictpath}" />
+    </java>
+  </target>
+  <target name="checkunix" depends="dist,updatewebconfig">
     <echo message="Run Java tests for Unix" />
     <!-- Remove any log files and dumped binary files from previous run -->
     <delete>

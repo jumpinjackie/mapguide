@@ -1,178 +1,380 @@
 @echo off
-SET PLAT=x86
-SET CONFIG=Release
-SET CONF=Release
-SET TEST_COMPONENT=
-IF NOT "%1"=="" SET PLAT=%1
-IF "%PLAT%"=="x64" SET CONF=Release64
-REM Time to wait for mgserver.exe to startup in seconds
-SET MGSERVER_WAIT=15
-REM Vars to inject into $_SERVER in PHP CLI
+REM 
+REM run_tests.bat
+REM 
+REM This batch file helps to execute the MapGuide test suite against a given
+REM installation of MapGuide
+REM
+SET PLATFORM=x86
+SET PHP_WEB_SERVER=0
 SET SERVER_ADDR=localhost
-SET WEBCONFIGINI=%CD%\UnitTest\webconfig.ini
-SET SERVER_PORT=8018
-SET PATH=%CD%\%CONF%\Web\Php;%PATH%;
-REM SET WEBCONFIGINI=C:\Program Files\OSGeo\MapGuide\Web\www\webconfig.ini
-REM SET SERVER_PORT=80
-SET PHP_TEST_CWD=%CD%\Web\src\mapagent
-REM SET PHP_EXT_DIR=C:\Program Files\OSGeo\MapGuide\Web\Php\ext
-SET PHP_EXT_DIR=%CD%\%CONF%\Web\Php\ext
+SET SERVER_PORT=8008
+SET TEST_SUITE=server
+SET WEB_ROOT=%CD%\Release\Web\www
+SET PHP_EXT_DIR=%CD%\Release\Web\Php\ext
+SET SERVER_PATH=%CD%\Server\bin
+SET CS_MAP_PATH=%WEB_ROOT%\..\..\CS-Map\Dictionaries
+SET MAPAGENT=http://localhost:8008/mapguide/mapagent/mapagent.fcgi
+SET CURRENT_DIR=%CD%
+SET OLDPATH=%PATH%
+SET SERVER_TEST_SCOPE=all
+SET TEST_DATA_SRC=%CD%\UnitTest\TestData
+SET MGSERVER_WAIT=15
 
-SET START_MGSERVER=1
-SET START_WEBSERVER=1
-SET PREPARE_PHP_WEBSERVER=1
-SET RUN_SERVER_TESTS=1
-SET RUN_PHP_TESTS=1
-SET RUN_DOTNET_TESTS=1
-SET RUN_JAVA_TESTS=1
+SET PATH=C:\Windows\Microsoft.NET\Framework\v4.0.30319;%PATH%
 
-SET RETURN_CODE=0
+:study_params
+if (%1)==()            goto pre_flight_check
 
-echo *************** TEST SUMMARY ******************
-echo Platform: %PLAT%
-echo Configuration: %CONF%
-echo Run PHP Tests: %RUN_PHP_TESTS%
-echo Run .net Tests: %RUN_DOTNET_TESTS%
-echo Run Java Tests: %RUN_JAVA_TESTS%
-echo ***********************************************
+if "%1"=="-help"       goto help_show
+if "%1"=="-h"          goto help_show
+
+if "%1"=="-iw"         goto get_phpwebserver
+
+if "%1"=="-ws"         goto get_webservername
+
+if "%1"=="-wp"         goto get_webserverport
+
+if "%1"=="-p"          goto get_platform
+if "%1"=="-platform"   goto get_platform
+
+if "%1"=="-t"          goto get_test
+if "%1"=="-test"       goto get_test
+
+if "%1"=="-m"          goto get_mapagent
+if "%1"=="-mapagent"   goto get_mapagent
+
+if "%1"=="-w"          goto get_webroot
+if "%1"=="-webroot"    goto get_webroot
+
+if "%1"=="-s"          goto get_serverpath
+if "%1"=="-serverpath" goto get_serverpath
+
+goto custom_error
+
+:next_param
+shift
+shift
+goto study_params
+
+:get_platform
+SET PLATFORM=%2
+if "%2" == "x86" goto next_param
+if "%2" == "x64" goto next_param
+SET ERRORMSG=Unrecognised value: %2
+goto custom_error
+
+:get_phpwebserver
+SET PHP_WEB_SERVER=%2
+if "%2" == "1" goto next_param
+if "%2" == "0" goto next_param
+SET ERRORMSG=Unrecognised value: %2
+goto custom_error
+
+:get_webservername
+SET SERVER_ADDR=%2
+SET SERVER_ADDR=%SERVER_ADDR:"=%
+goto next_param
+
+:get_webserverport
+SET SERVER_PORT=%2
+goto next_param
+
+:get_test
+SET TEST_SUITE=%2
+if "%2"=="server" goto next_param
+if "%2"=="php" goto next_param
+if "%2"=="dotnet" goto next_param
+if "%2"=="java" goto next_param
+if "%2"=="all" goto next_param
+SET ERRORMSG=Unrecognised action: %2
+goto custom_error
+
+:get_mapagent
+SET MAPAGENT=%2
+SET MAPAGENT=%MAPAGENT:"=%
+goto next_param
+
+:get_webroot
+SET WEB_ROOT=%2
+SET WEB_ROOT=%WEB_ROOT:"=%
+SET CS_MAP_PATH=%WEB_ROOT%\..\..\CS-Map\Dictionaries
+SET PHP_EXT_DIR=%WEB_ROOT%\..\Php\ext
+goto next_param
+
+:get_serverpath
+SET SERVER_PATH=%2
+SET SERVER_PATH=%SERVER_PATH:"=%
+goto next_param
+
+:pre_flight_check
+echo ******** Test Run Summary **********************
+echo Platform:           %PLATFORM%
+echo Use PHP Web Server: %PHP_WEB_SERVER%
+echo Test Suite to run:  %TEST_SUITE%
+echo Map Agent URL:      %MAPAGENT%
+echo Server Path:        %SERVER_PATH%
+echo Web Root Path:      %WEB_ROOT%
+echo CS-Map Path:        %CS_MAP_PATH%
+echo Web Server Name:    %SERVER_ADDR%
+echo Web Server Port:    %SERVER_PORT%
+echo ********* Paths to check ***********************
+echo PHP executable      %WEB_ROOT%\..\Php\php.exe
+echo .net Assemblies     %WEB_ROOT%\mapviewernet\bin
+echo Java jars           %WEB_ROOT%\WEB-INF\lib
+echo ************************************************
+SET PATH=%WEB_ROOT%\..\Php;%PATH%
+:check_dotnet
+echo [check]: .net
+if not exist "%WEB_ROOT%\mapviewernet\bin\*.dll" goto no_dotnet
+goto check_java
+:no_dotnet
+if "%TEST_SUITE%" == "dotnet" (
+    SET ERRORMSG=Could not find .net MapGuide assemblies and unmanaged dlls in this MapGuide installation
+    goto error_check
+)
+if "%TEST_SUITE%" == "all" (
+    SET ERRORMSG=Could not find .net MapGuide assemblies and unmanaged dlls in this MapGuide installation
+    goto error_check
+)
+:check_java
+echo [check]: Java
+if not exist "%WEB_ROOT%\WEB-INF\lib\*.jar" goto no_java
+goto check_php
+:no_java
+if "%TEST_SUITE%" == "java" (
+    SET ERRORMSG=Could not find required jars and unmanaged dlls in this MapGuide installation
+    goto error_check
+)
+if "%TEST_SUITE%" == "all" (
+    SET ERRORMSG=Could not find required jars and unmanaged dlls in this MapGuide installation
+    goto error_check
+)
+:check_php
+echo [check]: PHP
+if not exist "%WEB_ROOT%\..\Php\php.exe" goto no_php
+goto check_server
+:no_php
+if "%TEST_SUITE%" == "php" (
+    SET ERRORMSG=Could not find required PHP executable in this MapGuide installation
+    goto error_check
+)
+if "%TEST_SUITE%" == "all" (
+    SET ERRORMSG=Could not find required PHP executable in this MapGuide installation
+    goto error_check
+)
+:check_server
+if "%TEST_SUITE%" == "server" goto prepare_server_files
+if "%TEST_SUITE%" == "all" goto prepare_server_files
+if "%TEST_SUITE%" == "php" goto test_php
+if "%TEST_SUITE%" == "dotnet" goto test_dotnet
+if "%TEST_SUITE%" == "java" goto test_java
+goto test_php
+:prepare_server_files
+echo [prepare]: Test Data Files for Server Test Suite
+if not exist "%SERVER_PATH%\..\UnitTestFiles" mkdir "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\CoordinateSystems\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\DrawingService\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\FeatureService\SDF\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\FeatureService\SHP\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\FeatureService\SQLite\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\KmlService\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\MapLayer\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\MappingService\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\MdfModel\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\PrintLayout\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\ResourceService\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\ResourceService\Shuttle.zip" "%SERVER_PATH%\..\UnitTestFiles\World.mgp"
+copy /Y "%TEST_DATA_SRC%\ServerAdmin\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\SiteService\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\Symbology\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\TileService\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\Unicode\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\WebLayout\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\Wfs\*.*" "%SERVER_PATH%\..\UnitTestFiles"
+copy /Y "%TEST_DATA_SRC%\Wms\*.*" "%SERVER_PATH%\..\UnitTestFiles"
 :test_server
-if "%RUN_SERVER_TESTS%" == "1" (
-    echo [test]: MapGuide Server
-    SET TEST_COMPONENT=MapGuide Server Tests
-    pushd Server\bin\%CONF%
-    rem Before we run, nuke the Repositories/ directory to ensure a clean slate
-    rd /S /Q Repositories
-    mgserver.exe test all UnitTestResults.xml
-    if %ERRORLEVEL% neq 0 echo [test]: MapGuide Server tests had one or more failures. Check UnitTestResults.xml for more information
-    rem Nuke again for future tests
-    rd /S /Q Repositories
-    popd
-)
-:build_tests
-if "%RUN_DOTNET_TESTS%" == "1" (
-    echo [build]: DotNet test runner
-    SET TEST_COMPONENT=Build DotNet test runner
-    if exist UnitTest\WebTier\DotNet_x64 rd /S /Q UnitTest\WebTier\DotNet_x64
-    if exist UnitTest\WebTier\DotNet_x86 rd /S /Q UnitTest\WebTier\DotNet_x86
-    pushd UnitTest\WebTier\DotNet
-    if exist Libs rd /S /Q Libs
-    msbuild /p:Configuration=%CONFIG%;Platform=%PLAT% /fl /flp:logfile=build.log DotNet.sln
-    if "%ERRORLEVEL%" == "1" (
-        set RETURN_CODE=%ERRORLEVEL%
-        goto error
-    )
-    popd
-)
-:start_mgserver
-if "%START_MGSERVER%" == "1" (
-    echo [test]: Starting MapGuide Server. Waiting %MGSERVER_WAIT%s
-    pushd Server\bin\%CONF%
-    rem Before we run, nuke the Repositories/ directory to ensure a clean slate
-    rd /S /Q Repositories
+echo [test]: MapGuide Server
+pushd "%SERVER_PATH%"
+mgserver test %SERVER_TEST_SCOPE% UnitTestResults.xml
+move /Y UnitTestResults.xml "%CURRENT_DIR%"
+popd
+if "%TEST_SUITE%" == "server" goto quit
+if "%TEST_SUITE%" == "all" goto test_php
+:test_php
+echo [test]: PHP Binding
+pushd "%CURRENT_DIR%\UnitTest\TestData"
+if exist Unicode\UnicodeTest.db del /F Unicode\UnicodeTest.db
+if exist WmsTest\WmsTest.db del /F WmsTest\WmsTest.db
+if exist WebLayout\WebLayoutTest.db del /F WebLayout\WebLayoutTest.db
+if exist WfsTest\WfsTest.db del /F WfsTest\WfsTest.db
+if exist MapLayer\MapLayerTest.db del /F MapLayer\MapLayerTest.db
+if exist ServerAdmin\ServerAdminTest.db del /F ServerAdmin\ServerAdminTest.db
+if exist MappingService\MappingServiceTest.db del /F MappingService\MappingServiceTest.db
+if exist SiteService\SiteServiceTest.db del /F SiteService\SiteServiceTest.db
+if exist FeatureService\FeatureServiceTest.db del /F FeatureService\FeatureServiceTest.db
+if exist DrawingService\DrawingServiceTest.db del /F DrawingService\DrawingServiceTest.db
+if exist ResourceService\ResourceServiceTest.db del /F ResourceService\ResourceServiceTest.db
+popd
+if exist "%SERVER_PATH%" (
+    REM start mgserver for test
+    pushd "%SERVER_PATH%"
     start mgserver run
     REM An elegant hack to pause this script allowing mgserver to start up
     echo Waiting %MGSERVER_WAIT%s for mgserver.exe to start up
     ping -n %MGSERVER_WAIT% 127.0.0.1 > NUL
     popd
 )
-:prepare_webconfig
-if "%PREPARE_PHP_WEBSERVER%" == "1" (
-    pushd UnitTest
-    SET TEST_COMPONENT=Prepare webtier test suites
-    php -n -d display_errors=Off -d extension_dir="%PHP_EXT_DIR%" -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -d extension=php_SQLitePhpApi.dll prepare.php
-    if %ERRORLEVEL% neq 0 (
-        set RETURN_CODE=%ERRORLEVEL%
-        goto error
-    )
-    popd
-)
-:start_php_webserver
-if "%START_WEBSERVER%" == "1" (
-    echo [test]: Starting PHP web server. Waiting %MGSERVER_WAIT%s
-    start php -n -d display_errors=Off -d upload_max_filesize=20M -d extension_dir="%PHP_EXT_DIR%" -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -S %SERVER_ADDR%:%SERVER_PORT% -t %CD%\UnitTest\WebTier\MapAgent\MapAgentForms %CD%\UnitTest\WebTier\Php\MapAgentShim\index.php
-    ping -n %MGSERVER_WAIT% 127.0.0.1 > NUL
-)
-:test_php
-if "%RUN_PHP_TESTS%" == "1" (
-    echo [test]: PHP tests
-    REM Clear out old dbs before running
-    pushd UnitTest\TestData
-    if exist Unicode\UnicodeTest.db del /F Unicode\UnicodeTest.db
-    if exist WmsTest\WmsTest.db del /F WmsTest\WmsTest.db
-    if exist WebLayout\WebLayoutTest.db del /F WebLayout\WebLayoutTest.db
-    if exist WfsTest\WfsTest.db del /F WfsTest\WfsTest.db
-    if exist MapLayer\MapLayerTest.db del /F MapLayer\MapLayerTest.db
-    if exist ServerAdmin\ServerAdminTest.db del /F ServerAdmin\ServerAdminTest.db
-    if exist MappingService\MappingServiceTest.db del /F MappingService\MappingServiceTest.db
-    if exist SiteService\SiteServiceTest.db del /F SiteService\SiteServiceTest.db
-    if exist FeatureService\FeatureServiceTest.db del /F FeatureService\FeatureServiceTest.db
-    if exist DrawingService\DrawingServiceTest.db del /F DrawingService\DrawingServiceTest.db
-    if exist ResourceService\ResourceServiceTest.db del /F ResourceService\ResourceServiceTest.db
-    popd
-    pushd UnitTest\WebTier\Php
-    php.exe -n -d display_errors=Off -d extension_dir="%PHP_EXT_DIR%" -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -d extension=php_pdo_sqlite.dll RunTests.php
-    popd
-)
-:test_dotnet
-if "%RUN_DOTNET_TESTS%" == "1" (
-    echo [test]: .net tests
-    REM Clear out old dbs before running
-    pushd UnitTest\TestData
-    if exist Unicode\UnicodeTest.db del /F Unicode\UnicodeTest.db
-    if exist WmsTest\WmsTest.db del /F WmsTest\WmsTest.db
-    if exist WebLayout\WebLayoutTest.db del /F WebLayout\WebLayoutTest.db
-    if exist WfsTest\WfsTest.db del /F WfsTest\WfsTest.db
-    if exist MapLayer\MapLayerTest.db del /F MapLayer\MapLayerTest.db
-    if exist ServerAdmin\ServerAdminTest.db del /F ServerAdmin\ServerAdminTest.db
-    if exist MappingService\MappingServiceTest.db del /F MappingService\MappingServiceTest.db
-    if exist SiteService\SiteServiceTest.db del /F SiteService\SiteServiceTest.db
-    if exist FeatureService\FeatureServiceTest.db del /F FeatureService\FeatureServiceTest.db
-    if exist DrawingService\DrawingServiceTest.db del /F DrawingService\DrawingServiceTest.db
-    if exist ResourceService\ResourceServiceTest.db del /F ResourceService\ResourceServiceTest.db
-    popd
-    pushd UnitTest\WebTier\DotNet_%PLAT%
-    MgTestRunner.exe "%WEBCONFIGINI%" "../../../Oem/CsMap/Dictionaries"
-    if %ERRORLEVEL% neq 0 echo [test]: .net test runner had one or more test failures. Check log files for more information
-    popd
-)
-:test_java
-if "%RUN_JAVA_TESTS%" == "1" (
-    echo [test]: Java tests
-    REM Clear out old dbs before running
-    pushd UnitTest\TestData
-    if exist Unicode\UnicodeTest.db del /F Unicode\UnicodeTest.db
-    if exist WmsTest\WmsTest.db del /F WmsTest\WmsTest.db
-    if exist WebLayout\WebLayoutTest.db del /F WebLayout\WebLayoutTest.db
-    if exist WfsTest\WfsTest.db del /F WfsTest\WfsTest.db
-    if exist MapLayer\MapLayerTest.db del /F MapLayer\MapLayerTest.db
-    if exist ServerAdmin\ServerAdminTest.db del /F ServerAdmin\ServerAdminTest.db
-    if exist MappingService\MappingServiceTest.db del /F MappingService\MappingServiceTest.db
-    if exist SiteService\SiteServiceTest.db del /F SiteService\SiteServiceTest.db
-    if exist FeatureService\FeatureServiceTest.db del /F FeatureService\FeatureServiceTest.db
-    if exist DrawingService\DrawingServiceTest.db del /F DrawingService\DrawingServiceTest.db
-    if exist ResourceService\ResourceServiceTest.db del /F ResourceService\ResourceServiceTest.db
-    popd
-    pushd UnitTest\WebTier\Java
-    call ant checkwin
-    if %ERRORLEVEL% neq 0 echo [test]: Java test runner had one or more test failures. Check log files for more information
-    popd
-)
-:stop_mgserver
-if "%START_MGSERVER%" == "1" (
+REM Ensure constants.php exists
+if not exist "%CURRENT_DIR%\Web\src\PhpApi" mkdir "%CURRENT_DIR%\Web\src\PhpApi"
+copy /Y "%WEB_ROOT%\mapadmin\constants.php" "%CURRENT_DIR%\Web\src\PhpApi"
+REM Ensure we have the Sheboygan.mgp loaded first
+pushd "%CURRENT_DIR%\UnitTest"
+if exist "%WEB_ROOT%\webconfig.ini" SET MG_WEBCONFIG_INI=%WEB_ROOT%\webconfig.ini
+php -n -d display_errors=Off -d extension_dir="%PHP_EXT_DIR%" -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll prepare.php
+popd
+REM Now run the test suite
+pushd "%CURRENT_DIR%\UnitTest\WebTier\Php"
+php.exe -n -d display_errors=On -d extension_dir="%PHP_EXT_DIR%" -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -d extension=php_pdo_sqlite.dll RunTests.php -config "%WEB_ROOT%\webconfig.ini"
+popd
+if exist "%SERVER_PATH%" (
     echo [test]: Terminating mgserver.exe
     REM We're naturally assuming the only mgserver.exe that is running is the one this script started
     taskkill /im mgserver.exe
 )
-:stop_php_webserver
-if "%START_WEBSERVER%" == "1" (
-    echo [test]: Terminating php.exe
-    REM We're naturally assuming the only php.exe that is running is the one this script started
-    taskkill /im php.exe
+if "%TEST_SUITE%" == "php" goto quit
+:test_dotnet
+echo [test]: .net Binding
+echo [build]: DotNet test runner
+SET TEST_COMPONENT=Build DotNet test runner
+if exist "%CURRENT_DIR%\UnitTest\WebTier\DotNet_x64" rd /S /Q "%CURRENT_DIR%\UnitTest\WebTier\DotNet_x64"
+if exist "%CURRENT_DIR%\UnitTest\WebTier\DotNet_x86" rd /S /Q "%CURRENT_DIR%\UnitTest\WebTier\DotNet_x86"
+pushd "%CURRENT_DIR%\UnitTest\WebTier\DotNet"
+if exist Libs rd /S /Q Libs
+if not exist "%CURRENT_DIR%\Web\bin\release" mkdir "%CURRENT_DIR%\Web\bin\release"
+if not exist "%CURRENT_DIR%\Web\bin\release64" mkdir "%CURRENT_DIR%\Web\bin\release64"
+if "%PLATFORM%" == "x86" copy /y "%WEB_ROOT%\mapviewernet\bin\*.dll" "%CURRENT_DIR%\Web\bin\release"
+if "%PLATFORM%" == "x64" copy /y "%WEB_ROOT%\mapviewernet\bin\*.dll" "%CURRENT_DIR%\Web\bin\release64"
+if not exist "%CURRENT_DIR%\Common\MapGuideCommon\Resources" mkdir "%CURRENT_DIR%\Common\MapGuideCommon\Resources"
+copy /y "%WEB_ROOT%\mapagent\Resources\mapguide_en.res" "%CURRENT_DIR%\Common\MapGuideCommon\Resources"
+msbuild /p:Configuration=Release;Platform=%PLATFORM% /fl /flp:logfile=build.log DotNet.sln
+if "%ERRORLEVEL%" == "1" (
+    set RETURN_CODE=%ERRORLEVEL%
+    goto error_msbuild
 )
-goto done
-:error
+popd
+pushd "%CURRENT_DIR%\UnitTest\TestData"
+if exist Unicode\UnicodeTest.db del /F Unicode\UnicodeTest.db
+if exist WmsTest\WmsTest.db del /F WmsTest\WmsTest.db
+if exist WebLayout\WebLayoutTest.db del /F WebLayout\WebLayoutTest.db
+if exist WfsTest\WfsTest.db del /F WfsTest\WfsTest.db
+if exist MapLayer\MapLayerTest.db del /F MapLayer\MapLayerTest.db
+if exist ServerAdmin\ServerAdminTest.db del /F ServerAdmin\ServerAdminTest.db
+if exist MappingService\MappingServiceTest.db del /F MappingService\MappingServiceTest.db
+if exist SiteService\SiteServiceTest.db del /F SiteService\SiteServiceTest.db
+if exist FeatureService\FeatureServiceTest.db del /F FeatureService\FeatureServiceTest.db
+if exist DrawingService\DrawingServiceTest.db del /F DrawingService\DrawingServiceTest.db
+if exist ResourceService\ResourceServiceTest.db del /F ResourceService\ResourceServiceTest.db
+popd
+if exist "%SERVER_PATH%" (
+    REM start mgserver for test
+    pushd "%SERVER_PATH%"
+    start mgserver run
+    REM An elegant hack to pause this script allowing mgserver to start up
+    echo Waiting %MGSERVER_WAIT%s for mgserver.exe to start up
+    ping -n %MGSERVER_WAIT% 127.0.0.1 > NUL
+    popd
+)
+pushd "%CURRENT_DIR%\UnitTest\WebTier\DotNet_%PLATFORM%"
+MgTestRunner.exe "%WEB_ROOT%\webconfig.ini" "%CS_MAP_PATH%"
+if %ERRORLEVEL% neq 0 echo [test]: .net test runner had one or more test failures. Check log files for more information
+popd
+if exist "%SERVER_PATH%" (
+    echo [test]: Terminating mgserver.exe
+    REM We're naturally assuming the only mgserver.exe that is running is the one this script started
+    taskkill /im mgserver.exe
+)
+if "%TEST_SUITE%" == "dotnet" goto quit
+:test_java
+echo [test]: Java Binding
+pushd "%CURRENT_DIR%\UnitTest\TestData"
+if exist Unicode\UnicodeTest.db del /F Unicode\UnicodeTest.db
+if exist WmsTest\WmsTest.db del /F WmsTest\WmsTest.db
+if exist WebLayout\WebLayoutTest.db del /F WebLayout\WebLayoutTest.db
+if exist WfsTest\WfsTest.db del /F WfsTest\WfsTest.db
+if exist MapLayer\MapLayerTest.db del /F MapLayer\MapLayerTest.db
+if exist ServerAdmin\ServerAdminTest.db del /F ServerAdmin\ServerAdminTest.db
+if exist MappingService\MappingServiceTest.db del /F MappingService\MappingServiceTest.db
+if exist SiteService\SiteServiceTest.db del /F SiteService\SiteServiceTest.db
+if exist FeatureService\FeatureServiceTest.db del /F FeatureService\FeatureServiceTest.db
+if exist DrawingService\DrawingServiceTest.db del /F DrawingService\DrawingServiceTest.db
+if exist ResourceService\ResourceServiceTest.db del /F ResourceService\ResourceServiceTest.db
+popd
+if exist "%SERVER_PATH%" (
+    REM start mgserver for test
+    pushd "%SERVER_PATH%"
+    start mgserver run
+    REM An elegant hack to pause this script allowing mgserver to start up
+    echo Waiting %MGSERVER_WAIT%s for mgserver.exe to start up
+    ping -n %MGSERVER_WAIT% 127.0.0.1 > NUL
+    popd
+)
+if not exist "%CURRENT_DIR%\Web\src" mkdir "%CURRENT_DIR%\Web\src"
+xcopy /E /Y /I /Q /H "%WEB_ROOT%\WEB-INF" "%CURRENT_DIR%\Web\src\WEB-INF"
+pushd "%CURRENT_DIR%\UnitTest\WebTier\Java"
+call ant checkwin_external -Dmapguide.dictpath="%CS_MAP_PATH%" -Dbinsrc.web="%WEB_ROOT%\..\Tomcat\bin" -Dmapguide.config.src="%WEB_ROOT%\webconfig.ini"
+if %ERRORLEVEL% neq 0 echo [test]: Java test runner had one or more test failures. Check log files for more information
+popd
+if exist "%SERVER_PATH%" (
+    echo [test]: Terminating mgserver.exe
+    REM We're naturally assuming the only mgserver.exe that is running is the one this script started
+    taskkill /im mgserver.exe
+)
+if "%TEST_SUITE%" == "all" goto quit
+if "%TEST_SUITE%" == "java" goto quit
+
+:error_msbuild
 echo [error]: An error occured with %TEST_COMPONENT% (exit code: %RETURN_CODE%)
 goto quit
-:done
 
+:error_check
+echo [ERROR]: %ERRORMSG%
+SET ERRORMSG=
+SET PATH=%OLDPATH%
+popd
+exit /B 1
+
+:custom_error
+echo [ERROR]: %ERRORMSG%
+SET ERRORMSG=
+echo Please use the format:
+:help_show
+echo ************************************************************************
+echo run_tests.bat [-h]
+echo               [-p=Platform]
+echo               [-t=TestSuite]
+echo               [-m=MapAgent]
+echo               [-w=WebRoot]
+echo               [-s=ServerPath]
+echo               [-ws=WebServerName]
+echo               [-wp=WebServerPort]
+echo               [-iw=UsePHPWebServer]
+echo
+echo UsePHPWebServer: -iw=1 (default),0
+echo Platform: -p[latform]=x86 (default)
+echo                       x64
+echo TestSuite: -t[est]=server (default)
+echo                    php
+echo                    dotnet
+echo                    java
+echo                    all
+echo MapAgent:  -m[apagent]=your mapagent url
+echo WebRoot:   -w[ebroot]=path to your web root www
+echo ServerPath: -s[erverpath]=path to your server bin directory
+echo WebServerName: -ws=your web server name
+echo WebServerPort: -wp=your web server port
+echo ************************************************************************
 :quit
+SET PATH=%OLDPATH%
+SET TYPEACTION=
+popd

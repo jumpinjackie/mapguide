@@ -72,6 +72,7 @@ if "%2" == "def" SET MG_OUTPUT=%MG_DEFAULT_INSTALLDIR%
 SET MG_OUTPUT_SERVER=%MG_OUTPUT%\Server
 SET MG_OUTPUT_WEB=%MG_OUTPUT%\Web
 SET MG_OUTPUT_CSMAP=%MG_OUTPUT%\CS-Map
+SET MG_OUTPUT_TEST=%MG_OUTPUT%\Test
 goto next_param
 
 :get_action
@@ -88,6 +89,7 @@ if "%2"=="oem" goto next_param
 if "%2"=="server" goto next_param
 if "%2"=="web" goto next_param
 if "%2"=="doc" goto next_param
+if "%2"=="test" goto next_param
 if "%2"=="all" goto next_param
 if "%2"=="allnodoc" goto next_param
 SET ERRORMSG=Unrecognised component: %2
@@ -240,6 +242,7 @@ if "%TYPECOMPONENT%"=="allnodoc" goto install_server
 if "%TYPECOMPONENT%"=="server" goto install_server
 if "%TYPECOMPONENT%"=="web" goto install_web
 if "%TYPECOMPONENT%"=="doc" goto install_doc
+if "%TYPECOMPONENT%"=="test" goto install_test
 SET ERRORMSG=Unrecognised component: %TYPECOMPONENT%
 goto custom_error
 
@@ -362,6 +365,15 @@ if not exist "%MG_DEV%\UnitTest\TestData\Samples\Sheboygan\Sheboygan.mgp" (
     popd
 )
 copy /Y "%MG_DEV%\UnitTest\TestData\Samples\Sheboygan\Sheboygan.mgp" "%MG_OUTPUT%"
+if "%TYPECOMPONENT%"=="doc" goto quit
+:install_test
+echo [install]: Test Suite
+%XCOPY% "%MG_UNIT_TEST%" "%MG_OUTPUT_TEST%\UnitTest"
+if not exist "%MG_OUTPUT_TEST%\Oem\SQLite\bin\%TYPEBUILD%" mkdir "%MG_OUTPUT_TEST%\Oem\SQLite\bin\%TYPEBUILD%"
+copy /Y "%MG_BUILD_SQLITE_DOTNET_API%" "%MG_OUTPUT_TEST%\Oem\SQLite\bin\%TYPEBUILD%"
+copy /Y test_readme.txt "%MG_OUTPUT_TEST%"
+copy /Y run_tests.bat "%MG_OUTPUT_TEST%"
+copy /Y run_tests.sh "%MG_OUTPUT_TEST%"
 goto quit
 
 :error
@@ -394,4 +406,3 @@ echo                                web,
 echo                                doc
 echo ************************************************************************
 :quit
-SET TYPEACTION=
