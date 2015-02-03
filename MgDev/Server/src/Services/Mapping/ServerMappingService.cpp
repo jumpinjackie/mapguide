@@ -365,22 +365,13 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
     for (int nMapPlotIndex = 0; nMapPlotIndex < mapPlots->GetCount(); nMapPlotIndex++)
     {
         Ptr<MgMapPlot> mapPlot = mapPlots->GetItem(nMapPlotIndex);
-        if (NULL == mapPlot)
-        {
-            throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL((MgMapPlot*)mapPlot, L"MgServerMappingService.GenerateMultiPlot");
 
         Ptr<MgMap> map = mapPlot->GetMap();
-        if (NULL == map)
-        {
-            throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL((MgMap*)map, L"MgServerMappingService.GenerateMultiPlot");
 
         Ptr<MgPlotSpecification> plotSpec = mapPlot->GetPlotSpecification();
-        if (NULL == plotSpec)
-        {
-            throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL((MgPlotSpecification*)plotSpec, L"MgServerMappingService.GenerateMultiPlot");
 
         Ptr<MgLayout> layout = mapPlot->GetLayout();
 
@@ -400,17 +391,12 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
         // request extenst
         Ptr<MgEnvelope> env = map->GetDataExtent();
-        if (env == NULL)
-        {
-            throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL((MgEnvelope*)env, L"MgServerMappingService.GenerateMultiPlot");
 
         Ptr<MgCoordinate> ll = env->GetLowerLeftCoordinate();
         Ptr<MgCoordinate> ur = env->GetUpperRightCoordinate();
-        if (ll == NULL || ur == NULL)
-        {
-            throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL((MgCoordinate*)ll, L"MgServerMappingService.GenerateMultiPlot");
+        CHECKNULL((MgCoordinate*)ur, L"MgServerMappingService.GenerateMultiPlot");
         RS_Bounds b(ll->GetX(), ll->GetY(), ur->GetX(), ur->GetY());
 
         //if requested data extent is not valid, use map definition extent
@@ -418,17 +404,12 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
         if (!b.IsValid())
         {
             Ptr<MgEnvelope> env2 = map->GetMapExtent();
-            if (env2 == NULL)
-            {
-                throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-            }
+            CHECKNULL((MgEnvelope*)env2, L"MgServerMappingService.GenerateMultiPlot");
 
             Ptr<MgCoordinate> ll2 = env2->GetLowerLeftCoordinate();
             Ptr<MgCoordinate> ur2 = env2->GetUpperRightCoordinate();
-            if (ll2 == NULL || ur2 == NULL)
-            {
-                throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-            }
+            CHECKNULL((MgCoordinate*)ll2, L"MgServerMappingService.GenerateMultiPlot");
+            CHECKNULL((MgCoordinate*)ur2, L"MgServerMappingService.GenerateMultiPlot");
 
             b.minx = ll2->GetX();
             b.miny = ll2->GetY();
@@ -438,10 +419,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
         // Create a simple print layout containing only the map
         Ptr<MgPrintLayout> printLayout = new MgPrintLayout();
-        if (printLayout == NULL)
-        {
-            throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL((MgPrintLayout*)printLayout, L"MgServerMappingService.GenerateMultiPlot");
 
         if (NULL != layout)
         {
@@ -491,10 +469,8 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
         double dMapScale = 0.0;
         Ptr<MgCoordinate> center = new MgCoordinateXY(0, 0);
         Ptr<MgEnvelope> extents = map->GetMapExtent();
-        if (center == NULL || extents == NULL)
-        {
-            throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL((MgCoordinate*)center, L"MgServerMappingService.GenerateMultiPlot");
+        CHECKNULL((MgEnvelope*)extents, L"MgServerMappingService.GenerateMultiPlot");
 
         switch (mapPlot->GetMapPlotInstruction())
         {
@@ -504,10 +480,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
                 if (dMapScale <= 0)
                 {
                     Ptr<MgEnvelope> extents = map->GetDataExtent();
-                    if (extents == NULL)
-                    {
-                        throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-                    }
+                    CHECKNULL((MgEnvelope*)extents, L"MgServerMappingService.GenerateMultiPlot");
                     printLayout->ComputeMapOffsetAndSize(dMapScale, extents, metersPerUnit, dr.mapOffsetX(), dr.mapOffsetY(), dr.mapWidth(), dr.mapHeight());
                     double mapWidth = dr.mapWidth();
                     double mapHeight = dr.mapHeight();
@@ -539,10 +512,9 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
                 //...plotCenter
                 Ptr<MgCoordinate> plotll = extents->GetLowerLeftCoordinate();
                 Ptr<MgCoordinate> plotur = extents->GetUpperRightCoordinate();
-                if (plotll == NULL || plotur == NULL)
-                {
-                    throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-                }
+                CHECKNULL((MgCoordinate*)plotll, L"MgServerMappingService.GenerateMultiPlot");
+                CHECKNULL((MgCoordinate*)plotur, L"MgServerMappingService.GenerateMultiPlot");
+
                 double minX = plotll->GetX();
                 double minY = plotll->GetY();
                 double maxX = plotur->GetX();
@@ -566,15 +538,9 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
                 map->SetViewScale(dMapScale);
                 center = new MgCoordinateXY(centerX, centerY);
-                if (center == NULL)
-                {
-                    throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-                }
+                CHECKNULL((MgCoordinate*)center, L"MgServerMappingService.GenerateMultiPlot");
                 Ptr<MgPoint> centerpt = new MgPoint(center);
-                if (centerpt == NULL)
-                {
-                    throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-                }
+                CHECKNULL((MgPoint*)centerpt, L"MgServerMappingService.GenerateMultiPlot");
                 map->SetViewCenter(centerpt);
                 break;
             }
@@ -650,10 +616,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
         dr.StartMap(&mapInfo, b, dMapScale, dpi, metersPerUnit);
 
         Ptr<MgLayerCollection> layers = map->GetLayers();
-        if (layers == NULL)
-        {
-            throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL((MgLayerCollection*)layers, L"MgServerMappingService.GenerateMultiPlot");
 
         // Define a polygon to represent the map extents and fill it with the map background color
         dr.StartLayer(NULL, NULL);
@@ -759,16 +722,11 @@ MgByteReader* MgServerMappingService::GenerateLegendPlot(
 
     // request extenst
     Ptr<MgEnvelope> env = map->GetDataExtent();
-    if (env == NULL)
-    {
-        throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL((MgEnvelope*)env, L"MgServerMappingService.GenerateMultiPlot");
     Ptr<MgCoordinate> ll = env->GetLowerLeftCoordinate();
     Ptr<MgCoordinate> ur = env->GetUpperRightCoordinate();
-    if (ll == NULL|| ur == NULL)
-    {
-        throw new MgNullReferenceException(L"MgServerMappingService.GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL((MgCoordinate*)ll, L"MgServerMappingService.GenerateMultiPlot");
+    CHECKNULL((MgCoordinate*)ur, L"MgServerMappingService.GenerateMultiPlot");
     RS_Bounds b(ll->GetX(), ll->GetY(), ur->GetX(), ur->GetY());
 
     // get a temporary file to write out EPlot DWF to

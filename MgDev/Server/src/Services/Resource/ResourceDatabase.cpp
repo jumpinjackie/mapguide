@@ -127,11 +127,7 @@ string MgResourceDatabase::GetName()
 
         m_db.get_dbname(&fileName, &dbName);
 
-        if (NULL == fileName)
-        {
-            throw new MgNullReferenceException(L"MgResourceDatabase.GetName",
-                __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL(fileName, L"MgResourceDatabase.GetName");
 
         name = fileName;
     }

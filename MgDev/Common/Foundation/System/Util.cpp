@@ -62,16 +62,10 @@ void MgUtil::InitializeUuidGenerator()
 MgObject* MgUtil::CreateMgObject(INT32 classId)
 {
     MgClassFactory* factory = MgClassFactory::GetInstance();
-    if (NULL == factory)
-    {
-        throw new MgNullReferenceException(L"CreateMgObject", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(factory, L"MgUtil.CreateMgObject");
 
     MgObject* obj = factory->CreateMgObject(classId);
-    if (NULL == obj)
-    {
-        throw new MgNullReferenceException(L"CreateMgObject", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(obj, L"MgUtil.CreateMgObject");
 
     return obj;
 }

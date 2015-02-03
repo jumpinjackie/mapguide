@@ -435,24 +435,15 @@ MgStringCollection* MgServerDrawingService::EnumerateLayers(MgResourceIdentifier
             piResources = NULL;
         }
 
-        if (0 == pResource)
-        {
-            throw new MgNullReferenceException(L"MgServerDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL(pResource, L"MgServerDrawingService.EnumerateLayers");
 
         DWFInputStream* pStream = pResource->getInputStream();
-        if (0 == pStream)
-        {
-            throw new MgNullReferenceException(L"MgServerDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL(pStream, L"MgServerDrawingService.EnumerateLayers");
         size_t nBytes = pStream->available();
         char* pBuffer = DWFCORE_ALLOC_MEMORY( char, nBytes );
         pStream->read(pBuffer, nBytes);
         DWFCORE_FREE_OBJECT(pStream);
-        if (0 == pBuffer)
-        {
-            throw new MgNullReferenceException(L"MgServerDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL(pBuffer, L"MgServerDrawingService.EnumerateLayers");
 
         // Write the memory buffer to a temporary file
         m_tempW2dFileName = MgFileUtil::GenerateTempFileName(false, /*NOXLATE*/ L"MGDS");
@@ -588,24 +579,15 @@ MgByteReader* MgServerDrawingService::GetLayer( MgResourceIdentifier* resource, 
             piResources = NULL;
         }
 
-        if (0 == pResource)
-        {
-            throw new MgNullReferenceException(L"MgServerDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL(pResource, L"MgServerDrawingService.EnumerateLayers");
 
         DWFInputStream* pStream = pResource->getInputStream();
-        if (0 == pStream)
-        {
-            throw new MgNullReferenceException(L"MgServerDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL(pStream, L"MgServerDrawingService.GetLayer");
         size_t nBytes = pStream->available();
         char* pBuffer = DWFCORE_ALLOC_MEMORY( char, nBytes );
         pStream->read(pBuffer, nBytes);
         DWFCORE_FREE_OBJECT(pStream);
-        if (0 == pBuffer)
-        {
-            throw new MgNullReferenceException(L"MgServerDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL(pBuffer, L"MgServerDrawingService.GetLayer");
 
         // Write the memory buffer to a temporary file
         m_tempW2dFileName = MgFileUtil::GenerateTempFileName(false, /*NOXLATE*/ L"MGDS");

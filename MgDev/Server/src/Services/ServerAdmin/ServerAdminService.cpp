@@ -137,10 +137,7 @@ bool MgServerAdminService::ClearLog(CREFSTRING log)
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::ClearLog()");
 
     MgLogManager* pMan = MgLogManager::GetInstance();
-    if (NULL == pMan)
-    {
-        throw new MgNullReferenceException(L"MgServerAdminService::ClearLog", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pMan, L"MgServerAdminService::ClearLog");
 
     if (log == MgLogFileType::Access)
     {
@@ -231,10 +228,7 @@ MgByteReader* MgServerAdminService::GetLog(CREFSTRING log)
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::GetLog()");
 
     MgLogManager* pMan = MgLogManager::GetInstance();
-    if (NULL == pMan)
-    {
-        throw new MgNullReferenceException(L"MgServerAdminService::GetLog", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pMan, L"MgServerAdminService::GetLog");
 
     if (log == MgLogFileType::Access)
     {
@@ -293,10 +287,7 @@ MgByteReader* MgServerAdminService::GetLog(CREFSTRING log, INT32 numEntries)
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::GetLog()");
 
     MgLogManager* pMan = MgLogManager::GetInstance();
-    if (NULL == pMan)
-    {
-        throw new MgNullReferenceException(L"MgServerAdminService::GetLog", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pMan, L"MgServerAdminService::GetLog");
 
     if (log == MgLogFileType::Access)
     {
@@ -355,10 +346,7 @@ MgByteReader* MgServerAdminService::GetLog(CREFSTRING log, MgDateTime* fromDate,
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::GetLog()");
 
     MgLogManager* pMan = MgLogManager::GetInstance();
-    if (NULL == pMan)
-    {
-        throw new MgNullReferenceException(L"MgServerAdminService::GetLog", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pMan, L"MgServerAdminService::GetLog");
 
     if (log == MgLogFileType::Access)
     {
@@ -417,10 +405,7 @@ MgByteReader* MgServerAdminService::GetLogFile(CREFSTRING logFile)
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::GetLogFile()");
 
     MgLogManager* pMan = MgLogManager::GetInstance();
-    if (NULL == pMan)
-    {
-        throw new MgNullReferenceException(L"MgServerAdminService::GetLogFile", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pMan, L"MgServerAdminService::GetLogFile");
 
     byteReader = pMan->GetLogFile( logFile );
 
@@ -443,10 +428,7 @@ MgPropertyCollection* MgServerAdminService::EnumerateLogs()
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::EnumerateLogs()");
 
     MgLogManager* pMan = MgLogManager::GetInstance();
-    if (NULL == pMan)
-    {
-        throw new MgNullReferenceException(L"MgServerAdminService::GetLog", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pMan, L"MgServerAdminService::GetLog");
 
     logs = pMan->EnumerateLogs();
 
@@ -469,10 +451,7 @@ MgPropertyCollection* MgServerAdminService::GetConfigurationProperties(CREFSTRIN
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::GetConfigurationProperties()");
 
     MgServerManager* pMan = MgServerManager::GetInstance();
-    if (NULL == pMan)
-    {
-        throw new MgNullReferenceException(L"MgServerAdminService::GetConfigurationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pMan, L"MgServerAdminService::GetConfigurationProperties");
 
     pProperties = pMan->GetConfigurationProperties(propertySection);
 
@@ -492,10 +471,7 @@ void MgServerAdminService::SetConfigurationProperties(CREFSTRING propertySection
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::SetConfigurationProperties()");
 
     MgServerManager* pMan = MgServerManager::GetInstance();
-    if (NULL == pMan)
-    {
-        throw new MgNullReferenceException(L"MgServerAdminService::SetConfigurationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pMan, L"MgServerAdminService::SetConfigurationProperties");
 
     pMan->SetConfigurationProperties(propertySection, properties);
 
@@ -514,10 +490,7 @@ void MgServerAdminService::RemoveConfigurationProperties(CREFSTRING propertySect
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::SetConfigurationProperties()");
 
     MgServerManager* pMan = MgServerManager::GetInstance();
-    if (NULL == pMan)
-    {
-        throw new MgNullReferenceException(L"MgServerAdminService::SetConfigurationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pMan, L"MgServerAdminService::SetConfigurationProperties");
 
     pMan->RemoveConfigurationProperties(propertySection, properties);
 
@@ -538,10 +511,7 @@ MgPropertyCollection* MgServerAdminService::GetInformationProperties()
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::GetInformationProperties()");
 
     MgServerManager* pMan = MgServerManager::GetInstance();
-    if (NULL == pMan)
-    {
-        throw new MgNullReferenceException(L"MgServerAdminService::GetInformationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pMan, L"MgServerAdminService::GetInformationProperties");
 
     pProperties = pMan->GetInformationProperties();
 
@@ -563,10 +533,7 @@ STRING MgServerAdminService::GetSiteVersion()
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::GetSiteVersion()");
 
     MgServerManager* pMan = MgServerManager::GetInstance();
-    if (NULL == pMan)
-    {
-        throw new MgNullReferenceException(L"MgServerAdminService::GetSiteVersion", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pMan, L"MgServerAdminService::GetSiteVersion");
 
     version = pMan->GetSiteVersion();
 
@@ -589,10 +556,7 @@ MgPropertyCollection* MgServerAdminService::GetSiteStatus()
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::GetSiteStatus()");
 
     MgServerManager* pMan = MgServerManager::GetInstance();
-    if (NULL == pMan)
-    {
-        throw new MgNullReferenceException(L"MgServerAdminService::GetSiteStatus", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pMan, L"MgServerAdminService.GetSiteStatus");
 
     pProperties = pMan->GetSiteStatus();
 
@@ -995,10 +959,7 @@ void MgServerAdminService::SetDocument(CREFSTRING identifier, MgByteReader* data
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::SetDocument()");
 
     MgServerManager* pMan = MgServerManager::GetInstance();
-    if (NULL == pMan)
-    {
-        throw new MgNullReferenceException(L"MgServerAdminService::SetDocument", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pMan, L"MgServerAdminService::SetDocument");
 
     pMan->SetDocument(identifier, data);
 

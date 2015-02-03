@@ -90,11 +90,7 @@ MgMapBase* MgLayer::GetMap()
         baseMap = m_layers->GetMap();
     }
 
-    if (NULL == baseMap)
-    {
-        throw new MgNullReferenceException(L"MgLayer.GetMap",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(baseMap, L"MgLayer.GetMap");
 
     return baseMap;
 }

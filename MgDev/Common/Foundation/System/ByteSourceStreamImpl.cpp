@@ -29,11 +29,7 @@
 ///
 ByteSourceMgStreamImpl::ByteSourceMgStreamImpl(MgStream* stream)
 {
-    if (stream == NULL)
-    {
-        throw new MgNullReferenceException(L"ByteSourceMgStreamImpl.ByteSourceMgStreamImpl",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(stream, L"ByteSourceMgStreamImpl.ByteSourceMgStreamImpl");
 
     m_stream = SAFE_ADDREF(stream);
 }

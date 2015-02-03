@@ -395,11 +395,7 @@ INT32 MgServerInformation::ToServiceFlag(INT32 serviceType, bool strict)
 INT32 MgServerInformation::ToServiceFlags(MgPropertyCollection* hostProps,
     INT32 initialFlags)
 {
-    if (NULL == hostProps)
-    {
-        throw new MgNullReferenceException(
-            L"MgServerInformation.ToServiceFlags", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(hostProps, L"MgServerInformation.ToServiceFlags");
 
     INT32 serviceFlags = initialFlags;
 

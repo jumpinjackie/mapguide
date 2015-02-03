@@ -281,10 +281,7 @@ MgPropertyCollection* MgServerManager::GetConfigurationProperties(CREFSTRING pro
     MG_LOG_TRACE_ENTRY(L"MgServerManager::GetConfigurationProperties()");
 
     MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
-    if (NULL == pConfiguration)
-    {
-        throw new MgNullReferenceException(L"MgServerManager::GetConfigurationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(pConfiguration, L"MgServerManager::GetConfigurationProperties");
 
     // Retrieve the properties
     pProperties = pConfiguration->GetProperties(propertySection);

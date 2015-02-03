@@ -142,11 +142,7 @@ void MgByteSink::ToStream(ACE_SOCK_Stream* stream)
 ///
 MgByte* MgByteSink::ToBuffer()
 {
-    if (0 == m_reader)
-    {
-        throw new MgNullReferenceException(L"MgByteSink.ToBuffer",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(m_reader, L"MgByteSink.ToBuffer");
 
     Ptr<MgByte> bytes;
 

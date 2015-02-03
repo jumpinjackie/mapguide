@@ -89,12 +89,7 @@ STRING MgPackageManager::GetPackagePath()
     MgConfiguration* configuration = MgConfiguration::GetInstance();
     ACE_ASSERT(NULL != configuration);
 
-    if (NULL == configuration)
-    {
-        throw new MgNullReferenceException(
-            L"MgPackageManager.GetPackagePath",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(configuration, L"MgPackageManager.GetPackagePath");
 
     configuration->GetStringValue(
         MgConfigProperties::ResourceServicePropertiesSection,

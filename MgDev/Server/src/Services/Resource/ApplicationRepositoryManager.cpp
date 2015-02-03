@@ -212,16 +212,8 @@ void MgApplicationRepositoryManager::UpdateRepository(
     {
         MgResourceHeaderManager* resourceHeaderMan = GetResourceHeaderManager();
 
-        if (NULL == resourceHeaderMan)
-        {
-            throw new MgNullReferenceException(
-                L"MgApplicationRepositoryManager.UpdateRepository",
-                __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        else
-        {
-            resourceHeaderMan->UpdateRepository(resourceInfo, headerDoc);
-        }
+        CHECKNULL(resourceHeaderMan, L"MgApplicationRepositoryManager.UpdateRepository");
+        resourceHeaderMan->UpdateRepository(resourceInfo, headerDoc);
     }
 
     // Update the content document.

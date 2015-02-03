@@ -60,8 +60,7 @@ void MgResource::Open(MgResourceService* resourceService, MgResourceIdentifier* 
 //
 void MgResource::Save(MgResourceService* resourceService)
 {
-    if(m_resId == (MgResourceIdentifier*)NULL)
-        throw new MgNullReferenceException(L"MgResource.Save", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKNULL(m_resId.p, L"MgResource.Save");
 
     SerializeToRepository(resourceService, false);
 }
@@ -71,8 +70,7 @@ void MgResource::Save(MgResourceService* resourceService)
 void MgResource::Save(MgResourceService* resourceService, MgResourceIdentifier* resourceId)
 {
     m_resId = SAFE_ADDREF(resourceId);
-    if(m_resId == (MgResourceIdentifier*)NULL)
-        throw new MgNullReferenceException(L"MgResource.Save", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKNULL(m_resId.p, L"MgResource.Save");
 
     SerializeToRepository(resourceService, true);
 }

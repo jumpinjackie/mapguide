@@ -47,11 +47,7 @@ MgTimedEventHandler* MgTimedEventHandler::Create(MgEventTimer::Type type,
     MgServerManager* serverManager = MgServerManager::GetInstance();
     ACE_ASSERT(NULL != serverManager);
 
-    if (NULL == serverManager)
-    {
-        throw new MgNullReferenceException(L"MgTimedEventHandler.Create",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(serverManager, L"MgTimedEventHandler.Create");
 
     auto_ptr<MgTimedEventHandler> eventHandler;
     bool isSiteServer = serverManager->IsSiteServer();

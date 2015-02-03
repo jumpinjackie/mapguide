@@ -69,11 +69,7 @@ void MgMap::InitializeResourceService(MgResourceService* resourceService)
     }
     else if (NULL == m_resourceService.p)
     {
-        if (NULL == m_siteConnection.p)
-        {
-            throw new MgNullReferenceException(L"MgMap.InitializeResourceService",
-                __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        CHECKNULL(m_siteConnection.p, L"MgMap.InitializeResourceService");
 
         m_resourceService = dynamic_cast<MgResourceService*>(
             m_siteConnection->CreateService(MgServiceType::ResourceService));
@@ -88,11 +84,7 @@ void MgMap::InitializeResourceService(MgResourceService* resourceService)
 ///
 MgService* MgMap::GetService(INT32 serviceType)
 {
-    if (NULL == m_siteConnection.p)
-    {
-        throw new MgNullReferenceException(L"MgMap.GetService",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(m_siteConnection.p, L"MgMap.GetService");
 
     if (MgServiceType::ResourceService == serviceType)
     {
@@ -921,11 +913,7 @@ void MgMap::Save(MgResourceService* resourceService)
 
     InitializeResourceService(resourceService);
 
-    if (NULL == m_resId.p)
-    {
-        throw new MgNullReferenceException(L"MgMap.Save",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(m_resId.p, L"MgMap.Save");
 
     m_inSave = true;
 
@@ -963,11 +951,7 @@ void MgMap::Save(MgResourceService* resourceService, MgResourceIdentifier* resou
 
     m_resId = SAFE_ADDREF(resourceId);
 
-    if (NULL == m_resId.p)
-    {
-        throw new MgNullReferenceException(L"MgMap.Save",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKNULL(m_resId.p, L"MgMap.Save");
 
     m_inSave = true;
 

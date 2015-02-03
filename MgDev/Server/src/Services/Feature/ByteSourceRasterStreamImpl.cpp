@@ -30,10 +30,7 @@
 ///
 ByteSourceRasterStreamImpl::ByteSourceRasterStreamImpl(FdoIStreamReaderTmpl<FdoByte>* stream)
 {
-    if (stream == NULL)
-    {
-        throw new MgNullReferenceException(L"ByteSourceRasterStreamImpl", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(stream, L"ByteSourceRasterStreamImpl.ctor");
     m_stream = FDO_SAFE_ADDREF(stream);
 }
 
