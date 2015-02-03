@@ -39,6 +39,7 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_ApplySchema);
     CPPUNIT_TEST(TestCase_SelectFeatures);
     CPPUNIT_TEST(TestCase_SelectFeaturesWithXform);
+    CPPUNIT_TEST(TestCase_SelectFeaturesSdfWithOrdering);
     CPPUNIT_TEST(TestCase_SelectAggregate);
     CPPUNIT_TEST(TestCase_UpdateFeaturesInsert);
     CPPUNIT_TEST(TestCase_UpdateFeaturesPartialFailure);
@@ -93,6 +94,7 @@ public:
     void TestCase_ApplySchema();
     void TestCase_SelectFeatures();
     void TestCase_SelectFeaturesWithXform();
+    void TestCase_SelectFeaturesSdfWithOrdering();
     void TestCase_SelectAggregate();
     void TestCase_UpdateFeaturesInsert();
     void TestCase_UpdateFeaturesPartialFailure();

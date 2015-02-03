@@ -132,7 +132,7 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
 #ifdef DEBUG_FDO_JOIN
             ACE_DEBUG((LM_INFO, ACE_TEXT("\n(%t) Feature Source (%W) supports FDO join optimization"), fsIdStr.c_str()));
 #endif
-            m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_Select);
+            m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_Select, m_options);
             mgReader = SelectFdoJoin(resource, className, false);
         }
         else 
@@ -162,7 +162,7 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
 #endif
         // Perform the same select query as above, but route this through the FDO expression engine
         // Slow maybe, but anything is faster than going via the GWS query engine.
-        m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_Select);
+        m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_Select, m_options);
         mgReader = SelectFdoJoin(resource, className, true);
     }
     else
@@ -605,8 +605,17 @@ void MgServerSelectFeatures::ApplyOrderingOptions()
     if (cnt <= 0)
         return; // Nothing to do
 
+    bool bSupportsOrdering = m_command->SupportsSelectOrdering();
+    bool bExtended = m_command->IsExtended();
+    // Not supported? We can still support if it supports extended select. This may look like a bit of hack
+    // but the known implementations of FdoIExtendedSelect (SDF/SHP) will honor the ordering option if used
+    if (!bSupportsOrdering)
+    {
+        bSupportsOrdering = (cnt == 1) && bExtended;
+    }
+
     // Ordering options are supplied but provider does not support it
-    if (!m_command->SupportsSelectOrdering())
+    if (!bSupportsOrdering)
     {
         STRING message = MgServerFeatureUtil::GetMessage(L"MgOrderingOptionNotSupported");
 
@@ -615,23 +624,44 @@ void MgServerSelectFeatures::ApplyOrderingOptions()
         throw new MgFeatureServiceException(L"MgServerSelectFeatures.ApplyOrderingOptions", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    FdoPtr<FdoIdentifierCollection> fic = m_command->GetOrdering();
-    CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.ApplyOrderingOptions");
-
-    // Order option Asc or Desc (default is Asc)
-    FdoOrderingOption option = MgServerFeatureUtil::GetFdoOrderingOption(m_options->GetOrderOption());
-    m_command->SetOrderingOption(option);
-
-    for (INT32 i=0; i < cnt; i++)
+    if ((cnt == 1) && bExtended)
     {
-        STRING propertyName = properties->GetItem(i);
+        // Order option Asc or Desc (default is Asc)
+        FdoOrderingOption option = MgServerFeatureUtil::GetFdoOrderingOption(m_options->GetOrderOption());
+        STRING propertyName = properties->GetItem(0);
 
-        if (!propertyName.empty())
+        FdoPtr<FdoIdentifierCollection> fic = m_command->GetOrdering();
+        CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.ApplyOrderingOptions");
+
+        // Order option Asc or Desc (default is Asc)
+        //
+        // With extended select, we still have to make sure the base ordering option is set
+        m_command->SetOrderingOption(option);
+        FdoPtr<FdoIdentifier> ident = FdoIdentifier::Create((FdoString*)propertyName.c_str());
+        fic->Add(ident);
+
+        m_command->SetExtendedOrderingOption((FdoString*)propertyName.c_str(), option);
+    }
+    else
+    {
+        FdoPtr<FdoIdentifierCollection> fic = m_command->GetOrdering();
+        CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.ApplyOrderingOptions");
+
+        // Order option Asc or Desc (default is Asc)
+        FdoOrderingOption option = MgServerFeatureUtil::GetFdoOrderingOption(m_options->GetOrderOption());
+        m_command->SetOrderingOption(option);
+
+        for (INT32 i = 0; i < cnt; i++)
         {
-            FdoPtr<FdoIdentifier> fdoIden = FdoIdentifier::Create((FdoString*)propertyName.c_str());
-            CHECKNULL((FdoIdentifier*)fdoIden, L"MgServerSelectFeatures.ApplyOrderingOptions");
+            STRING propertyName = properties->GetItem(i);
 
-            fic->Add(fdoIden);
+            if (!propertyName.empty())
+            {
+                FdoPtr<FdoIdentifier> fdoIden = FdoIdentifier::Create((FdoString*)propertyName.c_str());
+                CHECKNULL((FdoIdentifier*)fdoIden, L"MgServerSelectFeatures.ApplyOrderingOptions");
+
+                fic->Add(fdoIden);
+            }
         }
     }
 }
@@ -780,11 +810,11 @@ void MgServerSelectFeatures::CreateCommand(MgResourceIdentifier* resource, bool 
 {
     if (!isSelectAggregate)
     {
-        m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_Select);
+        m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_Select, m_options);
     }
     else
     {
-        m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_SelectAggregates);
+        m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_SelectAggregates, m_options);
     }
     CHECKNULL((MgFeatureServiceCommand*)m_command, L"MgServerSelectFeatures.CreateCommand");
 }

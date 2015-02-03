@@ -30,7 +30,7 @@
 // The maximum size of the subfilter for a selection query.  Tune this value for optimal selection perfomance.
 #define MG_MAX_SUBFILTER_SIZE  250
 
-MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource)
+MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource, MgFeatureQueryOptions* options)
 {
     CHECKARGUMENTNULL((MgResourceIdentifier*)resource, L"MgSelectCommand.MgSelectCommand");
 
@@ -44,9 +44,40 @@ MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource)
     {
         throw new MgConnectionFailedException(L"MgSelectCommand.MgSelectCommand", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    // Create FdoISelect command
+
     FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
-    m_command = (FdoISelect*)fdoConn->CreateCommand(FdoCommandType_Select);
+
+    // For SDF/SHP providers, they do not support ordering. But, they can support ordering through the FdoIExtendedSelect
+    // command, provided that only a single property is being ordered on. So if it is the case that normal ordering is
+    // not supported, we should try for extended select if the conditions are met.
+    bool bTryExtendedSelect = false;
+    if (NULL != options)
+    {
+        Ptr<MgStringCollection> orderProps = options->GetOrderingProperties();
+        if (NULL != orderProps.p)
+        {
+            FdoPtr<FdoICommandCapabilities> cmdCaps = fdoConn->GetCommandCapabilities();
+            if (!cmdCaps->SupportsSelectOrdering())
+            {
+                FdoInt32 cmdCount;
+                FdoInt32* cmds = cmdCaps->GetCommands(cmdCount);
+                for (FdoInt32 i = 0; i < cmdCount; i++)
+                {
+                    if (FdoCommandType_ExtendedSelect == cmds[i] && orderProps->GetCount() == 1)
+                    {
+                        bTryExtendedSelect = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    // Create FdoISelect command
+    if (bTryExtendedSelect)
+        m_command = (FdoIExtendedSelect*)fdoConn->CreateCommand(FdoCommandType_ExtendedSelect);
+    else
+        m_command = (FdoISelect*)fdoConn->CreateCommand(FdoCommandType_Select);
     CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.MgSelectCommand");
 }
 
@@ -104,6 +135,27 @@ void MgSelectCommand::SetOrderingOption(FdoOrderingOption option)
 {
     CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetOrderingOption");
     m_command->SetOrderingOption(option);
+}
+
+bool MgSelectCommand::IsExtended()
+{
+    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetExtendedOrderingOption");
+    FdoIExtendedSelect* extSelect = dynamic_cast<FdoIExtendedSelect*>(m_command.p);
+    if (NULL != extSelect)
+    {
+        return true;
+    }
+    return false;
+}
+
+void MgSelectCommand::SetExtendedOrderingOption(FdoString* orderBy, FdoOrderingOption option)
+{
+    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetExtendedOrderingOption");
+    FdoIExtendedSelect* extSelect = dynamic_cast<FdoIExtendedSelect*>(m_command.p);
+    if (NULL != extSelect)
+    {
+        extSelect->SetOrderingOption(orderBy, option);
+    }
 }
 
 FdoOrderingOption MgSelectCommand::GetOrderingOption()
@@ -165,27 +217,37 @@ MgReader* MgSelectCommand::Execute()
 {
     FdoPtr<FdoIFeatureReader> reader;
 
-    // Break up the filter into smaller chunks
-    FdoPtr<MgFdoFilterCollection> subFilters = this->GetSubFilters();
-
     CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.Execute");
-
-    // Execute queries using the smaller filters and collect the results of the queries into a reader collection.
-    FdoPtr<MgFdoReaderCollection> frc = MgFdoReaderCollection::Create();
-
-    for (FdoInt32 filterIndex = 0; filterIndex < subFilters->GetCount(); filterIndex++)
+    FdoIExtendedSelect* extSelect = dynamic_cast<FdoIExtendedSelect*>(m_command.p);
+    if (NULL != extSelect)
     {
-        FdoPtr<FdoFilter> filter = subFilters->GetItem(filterIndex);
-        m_command->SetFilter(filter);
-        reader = m_command->Execute();
+        FdoPtr<FdoIScrollableFeatureReader> scReader = extSelect->ExecuteScrollable();
+        CHECKNULL((FdoIScrollableFeatureReader*)scReader, L"MgSelectCommand.Execute");
 
-        frc->Add(reader);
+        return new MgServerFeatureReader(m_connection, scReader);
     }
+    else
+    {
+        // Break up the filter into smaller chunks
+        FdoPtr<MgFdoFilterCollection> subFilters = this->GetSubFilters();
 
-    FdoPtr<MgFdoFeatureReader> featureReader = new MgFdoFeatureReader(frc);
-    CHECKNULL((FdoIFeatureReader*)featureReader, L"MgSelectCommand.Execute");
+        // Execute queries using the smaller filters and collect the results of the queries into a reader collection.
+        FdoPtr<MgFdoReaderCollection> frc = MgFdoReaderCollection::Create();
 
-    return new MgServerFeatureReader(m_connection, featureReader);
+        for (FdoInt32 filterIndex = 0; filterIndex < subFilters->GetCount(); filterIndex++)
+        {
+            FdoPtr<FdoFilter> filter = subFilters->GetItem(filterIndex);
+            m_command->SetFilter(filter);
+            reader = m_command->Execute();
+
+            frc->Add(reader);
+        }
+
+        FdoPtr<MgFdoFeatureReader> featureReader = new MgFdoFeatureReader(frc);
+        CHECKNULL((FdoIFeatureReader*)featureReader, L"MgSelectCommand.Execute");
+
+        return new MgServerFeatureReader(m_connection, featureReader);
+    }
 }
 
 bool MgSelectCommand::IsSupportedFunction(FdoFunction* fdoFunc)

@@ -22,14 +22,14 @@
 #include "SelectCommand.h"
 #include "SelectAggregateCommand.h"
 
-MgFeatureServiceCommand* MgFeatureServiceCommand::CreateCommand(MgResourceIdentifier* resource, FdoCommandType commandType)
+MgFeatureServiceCommand* MgFeatureServiceCommand::CreateCommand(MgResourceIdentifier* resource, FdoCommandType commandType, MgFeatureQueryOptions* options)
 {
     Ptr<MgFeatureServiceCommand> command;
     switch(commandType)
     {
         case FdoCommandType_Select:
         {
-            command = new MgSelectCommand(resource);
+            command = new MgSelectCommand(resource, options);
             break;
         }
         case FdoCommandType_SelectAggregates:

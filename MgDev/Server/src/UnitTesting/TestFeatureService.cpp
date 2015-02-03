@@ -1374,6 +1374,85 @@ void TestFeatureService::TestCase_SelectFeaturesWithXform()
     }
 }
 
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises selecting features against a SDF feature source
+/// with ordering (not supported in capabilities, but allowed through extended
+/// select but only on a single property)
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_SelectFeaturesSdfWithOrdering()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if (serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_SelectFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_SelectFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_VotingDistricts.FeatureSource");
+        STRING className = L"VotingDistricts";
+
+        Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
+        Ptr<MgStringCollection> orderProps = new MgStringCollection();
+        orderProps->Add(L"ID");
+        orderProps->Add(L"NAME");
+        options->SetOrderingFilter(orderProps, MgOrderingOption::Descending);
+
+        //Invalid conditions for ordered select
+        CPPUNIT_ASSERT_THROW_MG(pService->SelectFeatures(resource, className, options), MgFeatureServiceException*);
+        
+        orderProps->Clear();
+        orderProps->Add(L"ID");
+        options->SetOrderingFilter(orderProps, MgOrderingOption::Ascending);
+
+        STRING str;
+        //Now valid
+        Ptr<MgFeatureReader> reader = pService->SelectFeatures(resource, className, options);
+        while (reader->ReadNext())
+        {
+            str += reader->GetString(L"ID");
+        }
+        reader->Close();
+        CPPUNIT_ASSERT(str == L"12334456678");
+
+        orderProps->Clear();
+        orderProps->Add(L"ID");
+        options->SetOrderingFilter(orderProps, MgOrderingOption::Descending);
+
+        str.clear();
+        //Now valid
+        reader = pService->SelectFeatures(resource, className, options);
+        while (reader->ReadNext())
+        {
+            str += reader->GetString(L"ID");
+        }
+        reader->Close();
+        CPPUNIT_ASSERT(str == L"87665443321");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occurred");
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
 
 ///----------------------------------------------------------------------------
 /// Test Case Description:

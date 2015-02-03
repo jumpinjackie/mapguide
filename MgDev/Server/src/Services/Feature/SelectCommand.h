@@ -27,7 +27,7 @@ class MgSelectCommand : public MgFeatureServiceCommand
     DECLARE_CLASSNAME(MgServerSqlProcessor)
 
 public:
-    MgSelectCommand(MgResourceIdentifier* resource);
+    MgSelectCommand(MgResourceIdentifier* resource, MgFeatureQueryOptions* options);
     virtual ~MgSelectCommand();
 
     virtual FdoIdentifierCollection* GetPropertyNames();
@@ -41,6 +41,9 @@ public:
     virtual FdoIdentifierCollection* GetOrdering();
     virtual void SetOrderingOption( FdoOrderingOption  option );
     virtual FdoOrderingOption GetOrderingOption( );
+
+    virtual bool IsExtended();
+    virtual void SetExtendedOrderingOption(FdoString* orderBy, FdoOrderingOption option);
 
     virtual FdoIdentifierCollection* GetGrouping();
     virtual void SetGroupingFilter( FdoFilter* filter );

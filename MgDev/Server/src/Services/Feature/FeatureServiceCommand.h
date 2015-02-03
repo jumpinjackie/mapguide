@@ -21,7 +21,7 @@
 class MgFeatureServiceCommand : public MgDisposable
 {
 public:
-    static MgFeatureServiceCommand* CreateCommand(MgResourceIdentifier* resource, FdoCommandType commandType);
+    static MgFeatureServiceCommand* CreateCommand(MgResourceIdentifier* resource, FdoCommandType commandType, MgFeatureQueryOptions* options);
 
     virtual FdoIdentifierCollection* GetPropertyNames() = 0;
 
@@ -34,6 +34,9 @@ public:
     virtual FdoIdentifierCollection* GetOrdering() = 0;
     virtual void SetOrderingOption( FdoOrderingOption  option ) = 0;
     virtual FdoOrderingOption GetOrderingOption( ) = 0;
+
+    virtual bool IsExtended() { return false;  }
+    virtual void SetExtendedOrderingOption(FdoString* orderBy, FdoOrderingOption option) { }
 
     virtual FdoIdentifierCollection* GetGrouping() = 0;
     virtual void SetGroupingFilter( FdoFilter* filter ) = 0;
