@@ -35,6 +35,8 @@ if "%1"=="-ws"         goto get_webservername
 
 if "%1"=="-wp"         goto get_webserverport
 
+if "%1"=="-sts"        goto get_servertestscope
+
 if "%1"=="-p"          goto get_platform
 if "%1"=="-platform"   goto get_platform
 
@@ -80,6 +82,10 @@ goto next_param
 SET SERVER_PORT=%2
 goto next_param
 
+:get_servertestscope
+SET SERVER_TEST_SCOPE=%2
+goto next_param
+
 :get_test
 SET TEST_SUITE=%2
 if "%2"=="server" goto next_param
@@ -118,12 +124,19 @@ echo Web Root Path:      %WEB_ROOT%
 echo CS-Map Path:        %CS_MAP_PATH%
 echo Web Server Name:    %SERVER_ADDR%
 echo Web Server Port:    %SERVER_PORT%
+echo Server Test Scope:  %SERVER_TEST_SCOPE%
 echo ********* Paths to check ***********************
 echo PHP executable      %WEB_ROOT%\..\Php\php.exe
 echo .net Assemblies     %WEB_ROOT%\mapviewernet\bin
 echo Java jars           %WEB_ROOT%\WEB-INF\lib
 echo ************************************************
+SET WEBCONFIGINI=%WEB_ROOT%\webconfig.ini
 SET PATH=%WEB_ROOT%\..\Php;%PATH%
+if "%PHP_WEB_SERVER%" == "1" (
+    echo [prepare]: Starting PHP web server. Waiting %MGSERVER_WAIT%s
+    start php -n -d display_errors=Off -d upload_max_filesize=20M -d extension_dir="%PHP_EXT_DIR%" -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -S %SERVER_ADDR%:%SERVER_PORT% -t "%CURRENT_DIR%\UnitTest\WebTier\MapAgent\MapAgentForms" "%CURRENT_DIR%\UnitTest\WebTier\Php\MapAgentShim\index.php"
+    ping -n %MGSERVER_WAIT% 127.0.0.1 > NUL
+)
 :check_dotnet
 echo [check]: .net
 if not exist "%WEB_ROOT%\mapviewernet\bin\*.dll" goto no_dotnet
@@ -342,6 +355,11 @@ echo [ERROR]: %ERRORMSG%
 SET ERRORMSG=
 SET PATH=%OLDPATH%
 popd
+if "%PHP_WEB_SERVER%" == "1" (
+    echo [cleanup]: Terminating PHP web server
+    REM We're naturally assuming the only php.exe that is running is the one this script started
+    taskkill /im php.exe
+)
 exit /B 1
 
 :custom_error
@@ -356,6 +374,7 @@ echo               [-t=TestSuite]
 echo               [-m=MapAgent]
 echo               [-w=WebRoot]
 echo               [-s=ServerPath]
+echo               [-sts=ServerTestScope]
 echo               [-ws=WebServerName]
 echo               [-wp=WebServerPort]
 echo               [-iw=UsePHPWebServer]
@@ -377,4 +396,9 @@ echo ************************************************************************
 :quit
 SET PATH=%OLDPATH%
 SET TYPEACTION=
+if "%PHP_WEB_SERVER%" == "1" (
+    echo [cleanup]: Terminating PHP web server
+    REM We're naturally assuming the only php.exe that is running is the one this script started
+    taskkill /im php.exe
+)
 popd
