@@ -249,6 +249,7 @@ popd
 REM Now run the test suite
 pushd "%CURRENT_DIR%\UnitTest\WebTier\Php"
 php.exe -n -d display_errors=On -d extension_dir="%PHP_EXT_DIR%" -d extension=php_mbstring.dll -d extension=php_curl.dll -d extension=php_MapGuideApi.dll -d extension=php_pdo_sqlite.dll RunTests.php -config "%WEB_ROOT%\webconfig.ini"
+move /Y UnitTests.log "%CURRENT_DIR%\UnitTests_Php.log"
 popd
 if exist "%SERVER_PATH%" (
     echo [test]: Terminating mgserver.exe
@@ -301,6 +302,7 @@ if exist "%SERVER_PATH%" (
 pushd "%CURRENT_DIR%\UnitTest\WebTier\DotNet_%PLATFORM%"
 MgTestRunner.exe "%WEB_ROOT%\webconfig.ini" "%CS_MAP_PATH%"
 if %ERRORLEVEL% neq 0 echo [test]: .net test runner had one or more test failures. Check log files for more information
+move /Y UnitTests.log "%CURRENT_DIR%\UnitTests_DotNet.log"
 popd
 if exist "%SERVER_PATH%" (
     echo [test]: Terminating mgserver.exe
@@ -337,6 +339,9 @@ xcopy /E /Y /I /Q /H "%WEB_ROOT%\WEB-INF" "%CURRENT_DIR%\Web\src\WEB-INF"
 pushd "%CURRENT_DIR%\UnitTest\WebTier\Java"
 call ant checkwin_external -Dmapguide.dictpath="%CS_MAP_PATH%" -Dbinsrc.web="%WEB_ROOT%\..\Tomcat\bin" -Dmapguide.config.src="%WEB_ROOT%\webconfig.ini"
 if %ERRORLEVEL% neq 0 echo [test]: Java test runner had one or more test failures. Check log files for more information
+popd
+pushd "%CURRENT_DIR%\UnitTest\WebTier\java_dist"
+move /Y unittest.log "%CURRENT_DIR%\UnitTests_Java.log"
 popd
 if exist "%SERVER_PATH%" (
     echo [test]: Terminating mgserver.exe
