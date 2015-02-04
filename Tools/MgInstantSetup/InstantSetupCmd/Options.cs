@@ -58,7 +58,7 @@ namespace InstantSetupCmd
         [Option("virtual-dir", DefaultValue = "mapguide", HelpText = "The name of the mapguide virtual directory to create on IIS/Apache")]
         public string VirtualDirectoryName { get; set; }
 
-        [Option("webtier-config", Required = true, DefaultValue = MapGuideWebConfiguration.Apache, HelpText = "The web tier configuration to use (IIS / Apache)")]
+        [Option("webtier-config", Required = false, DefaultValue = MapGuideWebConfiguration.Apache, HelpText = "The web tier configuration to use (IIS / Apache)")]
         public MapGuideWebConfiguration WebTierConfig { get; set; }
 
         [OptionArray("fdo-providers", Required = true, HelpText = "The list of FDO providers to register (eg: SDF SHP SQLite)")]
