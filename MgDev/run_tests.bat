@@ -254,7 +254,7 @@ popd
 if exist "%SERVER_PATH%" (
     echo [test]: Terminating mgserver.exe
     REM We're naturally assuming the only mgserver.exe that is running is the one this script started
-    taskkill /im /f mgserver.exe
+    taskkill /f /im mgserver.exe
 )
 if "%TEST_SUITE%" == "php" goto quit
 :test_dotnet
@@ -307,7 +307,7 @@ popd
 if exist "%SERVER_PATH%" (
     echo [test]: Terminating mgserver.exe
     REM We're naturally assuming the only mgserver.exe that is running is the one this script started
-    taskkill /im /f mgserver.exe
+    taskkill /f /im mgserver.exe
 )
 if "%TEST_SUITE%" == "dotnet" goto quit
 :test_java
@@ -346,7 +346,7 @@ popd
 if exist "%SERVER_PATH%" (
     echo [test]: Terminating mgserver.exe
     REM We're naturally assuming the only mgserver.exe that is running is the one this script started
-    taskkill /im /f mgserver.exe
+    taskkill /f /im mgserver.exe
 )
 if "%TEST_SUITE%" == "all" goto quit
 if "%TEST_SUITE%" == "java" goto quit
@@ -363,7 +363,7 @@ popd
 if "%PHP_WEB_SERVER%" == "1" (
     echo [cleanup]: Terminating PHP web server
     REM We're naturally assuming the only php.exe that is running is the one this script started
-    taskkill /im /f php.exe
+    taskkill /f /im php.exe
 )
 exit /B 1
 
@@ -404,6 +404,6 @@ SET TYPEACTION=
 if "%PHP_WEB_SERVER%" == "1" (
     echo [cleanup]: Terminating PHP web server
     REM We're naturally assuming the only php.exe that is running is the one this script started
-    taskkill /im /f php.exe
+    taskkill /f /im php.exe
 )
 popd
