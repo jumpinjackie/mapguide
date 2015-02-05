@@ -449,8 +449,9 @@ void MgFileUtil::MkDir(CREFSTRING path)
             case ENOENT:
             case EACCES:
             default:
+                MG_FILE_IO_EXCEPTION_ADD_ERRNO();
                 throw new MgFileIoException(L"MgFileUtil.MkDir",
-                    __LINE__, __WFILE__, &arguments, L"", NULL);
+                    __LINE__, __WFILE__, &arguments, L"MgFileIoErrNo", &errNoArgs);
                 break;
         }
     }
@@ -495,8 +496,9 @@ void MgFileUtil::DeleteDirectory(CREFSTRING path, bool recursive, bool strict)
             case ENOTEMPTY:
             case EACCES:
             default:
+                MG_FILE_IO_EXCEPTION_ADD_ERRNO();
                 throw new MgFileIoException(L"MgFileUtil.DeleteDirectory",
-                    __LINE__, __WFILE__, &arguments, L"", NULL);
+                    __LINE__, __WFILE__, &arguments, L"MgFileIoErrNo", &errNoArgs);
                 break;
         }
     }
@@ -789,8 +791,9 @@ void MgFileUtil::DeleteFile(CREFSTRING pathname, bool strict)
             case ENOENT: // PathnameExists is more reliable. It gets called above, so this error should not be detected.
             case EACCES:
             default:
+                MG_FILE_IO_EXCEPTION_ADD_ERRNO();
                 throw new MgFileIoException(L"MgFileUtil.DeleteFile",
-                    __LINE__, __WFILE__, &arguments, L"", NULL);
+                    __LINE__, __WFILE__, &arguments, L"MgFileIoErrNo", &errNoArgs);
                 break;
         }
     }
@@ -970,8 +973,9 @@ void MgFileUtil::RenameFile(CREFSTRING oldPathname, CREFSTRING newPathname,
                          // different path.
             default:
                 arguments.Add(newPathname);
+                MG_FILE_IO_EXCEPTION_ADD_ERRNO();
                 throw new MgFileIoException(L"MgFileUtil.RenameFile",
-                    __LINE__, __WFILE__, &arguments, L"", NULL);
+                    __LINE__, __WFILE__, &arguments, L"MgFileIoErrNo", &errNoArgs);
                 break;
         }
     }

@@ -202,16 +202,17 @@ void MgByteSink::ToFile(CREFSTRING filename)
         {
             MgStringCollection arguments;
             arguments.Add(filename);
-
             if (errno == EEXIST)
             {
+                MG_FILE_IO_EXCEPTION_ADD_ERRNO();
                 throw new MgFileNotFoundException(L"MgByteSink.ToFile",
-                    __LINE__, __WFILE__, &arguments, L"", NULL);
+                    __LINE__, __WFILE__, &arguments, L"MgFileIoErrNo", &errNoArgs);
             }
             else
             {
+                MG_FILE_IO_EXCEPTION_ADD_ERRNO();
                 throw new MgFileIoException(L"MgByteSink.ToFile",
-                    __LINE__, __WFILE__, &arguments, L"", NULL);
+                    __LINE__, __WFILE__, &arguments, L"MgFileIoErrNo", &errNoArgs);
             }
         }
 

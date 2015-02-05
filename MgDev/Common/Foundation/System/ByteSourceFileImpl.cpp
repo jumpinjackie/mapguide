@@ -122,13 +122,15 @@ void ByteSourceFileImpl::LoadFile(CREFSTRING filename)
 
         if(errno == ENOENT)
         {
+            MG_FILE_IO_EXCEPTION_ADD_ERRNO();
             throw new MgFileNotFoundException(L"ByteSourceFileImpl.LoadFile",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
+                __LINE__, __WFILE__, &arguments, L"MgFileIoErrNo", &errNoArgs);
         }
         else
         {
+            MG_FILE_IO_EXCEPTION_ADD_ERRNO();
             throw new MgFileIoException(L"ByteSourceFileImpl.LoadFile",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
+                __LINE__, __WFILE__, &arguments, L"MgFileIoErrNo", &errNoArgs);
         }
     }
 

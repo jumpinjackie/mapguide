@@ -235,6 +235,7 @@ MgFailedToRetrieveThirdPartyExceptionMesage           = Failed to retrieve the t
 MgFeatureSourceFormatInnerExceptionMessage            = Error occurred in Feature Source (%1): %2 (Cause: %3, Root Cause: %4)
 MgFeatureReaderIdNotFound                             = The feature reader ID was not found.
 MgFilenamesIdentical                                  = The filenames cannot be the same.
+MgFileIoErrNo                                         = errno: %1 (%2)
 MgFormatAllExceptionDetail                            = - %1(%2)
 MgFormatAllExceptionStackTrace                        = - %1(%2) line %3 file %4
 MgFormatFdoExceptionMessage                           = %1 (Cause: %2, Root Cause: %3)

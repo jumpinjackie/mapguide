@@ -638,6 +638,17 @@ if (str.empty())     \
         }                                                                     \
     }                                                                         \
 
+#define MG_FILE_IO_EXCEPTION_ADD_ERRNO()                  \
+    MgStringCollection errNoArgs;                         \
+    std::string mbErrNoDesc;                              \
+    mbErrNoDesc += ACE_OS::strerror(errno);               \
+    STRING wErrNoDesc;                                    \
+    MgUtil::MultiByteToWideChar(mbErrNoDesc, wErrNoDesc); \
+    STRING wErrNo;                                        \
+    MgUtil::Int32ToString(errno, wErrNo);                 \
+    errNoArgs.Add(wErrNo);                                \
+    errNoArgs.Add(wErrNoDesc)
+
 #ifdef _WIN32
 #define MG_TCHAR_TO_WCHAR(x) ((wstring)x).c_str()
 #define MG_TCHAR_TO_CHAR(x) MgUtil::WideCharToMultiByte((wstring)x).c_str()
