@@ -79,5 +79,10 @@ namespace OSGeo.MapGuide.Test.Common
             if (!double.IsNaN(value))
                 throw new AssertException("Double is a number. Expected: NaN");
         }
+
+        public static void Fail(string msg)
+        {
+            throw new AssertException(msg);
+        }
     }
 }

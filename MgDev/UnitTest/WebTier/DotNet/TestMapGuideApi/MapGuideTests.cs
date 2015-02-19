@@ -18,7 +18,7 @@ namespace OSGeo.MapGuide.Test.Web
             var types = typeof(MapGuideTests).Assembly.GetTypes();
             foreach (var type in types)
             {
-                if (typeof(IExternalTest).IsAssignableFrom(type) && type.IsClass)
+                if (typeof(IExternalTest).IsAssignableFrom(type) && type.IsClass && !type.IsAbstract)
                 {
                     var test = (IExternalTest)Activator.CreateInstance(type);
                     try

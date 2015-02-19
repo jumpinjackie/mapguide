@@ -397,7 +397,9 @@
     <ClCompile Include="Exception\UnknownTileProviderException.cpp">
       <Filter>Exception</Filter>
     </ClCompile>
-    <ClCompile Include="Exception\UnsupportedTileProviderException.cpp" />
+    <ClCompile Include="Exception\UnsupportedTileProviderException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MapLayer\Layer.h">
@@ -776,7 +778,9 @@
     <ClInclude Include="Exception\UnknownTileProviderException.h">
       <Filter>Exception</Filter>
     </ClInclude>
-    <ClInclude Include="Exception\UnsupportedTileProviderException.h" />
+    <ClInclude Include="Exception\UnsupportedTileProviderException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MapGuideCommon.rc" />

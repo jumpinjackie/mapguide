@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MapDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MapDefinition-3.0.0.xsd" version="3.0.0">
+  <Name>Base Map</Name>
+  <CoordinateSystem>GEOGCS[&quot;LL84&quot;,DATUM[&quot;WGS 84&quot;,SPHEROID[&quot;WGS 84&quot;,6378137,298.25722293287],TOWGS84[0,0,0,0,0,0,0]],PRIMEM[&quot;Greenwich&quot;,0],UNIT[&quot;Degrees&quot;,0.01745329252]]</CoordinateSystem>
+  <Extents>
+    <MinX>-87.79786601383196</MinX>
+    <MaxX>-87.66452777186925</MaxX>
+    <MinY>43.6868578621819</MinY>
+    <MaxY>43.8037962206133</MaxY>
+  </Extents>
+  <BackgroundColor>FFF7E1D2</BackgroundColor>
+  <TileSetSource>
+    <ResourceId>{0}</ResourceId>
+  </TileSetSource>
+</MapDefinition>

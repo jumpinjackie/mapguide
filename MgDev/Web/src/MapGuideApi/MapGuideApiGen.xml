@@ -401,6 +401,8 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../Common/MapGuideCommon/Exception/SessionExpiredException.h" />
     <Header path="../../../Common/MapGuideCommon/Exception/SessionNotFoundException.h" />
     <Header path="../../../Common/MapGuideCommon/Exception/UnauthorizedAccessException.h" />
+    <Header path="../../../Common/MapGuideCommon/Exception/UnknownTileProviderException.h" />
+    <Header path="../../../Common/MapGuideCommon/Exception/UnsupportedTileProviderException.h" />
     <Header path="../../../Common/MapGuideCommon/Exception/UriFormatException.h" />
 
     <Header path="../../../Common/MapGuideCommon/Services/DrawingService.h" />

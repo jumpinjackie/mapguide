@@ -222,6 +222,18 @@ void MgMap::CreateFromMapDefinition(MgResourceService* resourceService, MgResour
 
             m_center = gf.CreatePoint(coordCenter);
         }
+        else //Both CSes match, so just set map/data extents and center as normal from the Map Definition
+        {
+            const Box2D& extent = mdef->GetExtents();
+            Ptr<MgCoordinate> lowerLeft = gf.CreateCoordinateXY(extent.GetMinX(), extent.GetMinY());
+            Ptr<MgCoordinate> upperRight = gf.CreateCoordinateXY(extent.GetMaxX(), extent.GetMaxY());
+            m_mapExtent = new MgEnvelope(lowerLeft, upperRight);
+            m_dataExtent = new MgEnvelope(lowerLeft, upperRight);
+
+            Ptr<MgCoordinate> coordCenter = gf.CreateCoordinateXY(extent.GetMinX() + (extent.GetMaxX() - extent.GetMinX()) / 2,
+                extent.GetMinY() + (extent.GetMaxY() - extent.GetMinY()) / 2);
+            m_center = gf.CreatePoint(coordCenter);
+        }
         m_backColor = mdef->GetBackgroundColor();
         m_tileSetId = SAFE_ADDREF((MgResourceIdentifier*)tileSetDefId);
     }

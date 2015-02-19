@@ -15,6 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include "SAX2Parser.h"
 #include "MapGuideCommon.h"
 #include "TestTileService.h"
 #include "../UnitTesting/CppUnitExtensions.h"
@@ -1474,6 +1475,93 @@ void TestTileService::TestCase_MgMap_Linked()
     }
 }
 
+void TestTileService::TestCase_MgMap_LinkedSameCS()
+{
+    try
+    {
+        STRING mapName = L"TestCase_MgMap_Linked";
+        Ptr<MgMap> map = CreateMapLinked2(mapName);
+
+        //Bounds should be that of the tile set
+        Ptr<MgEnvelope> extents = map->GetMapExtent();
+        CPPUNIT_ASSERT(NULL != extents.p);
+        Ptr<MgEnvelope> dataExtents = map->GetDataExtent();
+        CPPUNIT_ASSERT(NULL != dataExtents.p);
+        Ptr<MgCoordinate> ll = extents->GetLowerLeftCoordinate();
+        Ptr<MgCoordinate> ur = extents->GetUpperRightCoordinate();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.797866013831, ll->GetX(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(43.686857862181, ll->GetY(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.664527771869, ur->GetX(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(43.803796220613, ur->GetY(), 0.000000000001);
+        Ptr<MgResourceIdentifier> tsId = map->GetTileSetDefinition();
+        CPPUNIT_ASSERT(NULL != (MgResourceIdentifier*)tsId);
+        CPPUNIT_ASSERT(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition" == tsId->ToString());
+
+        Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
+        for (INT32 i = 0; i < groups->GetCount(); i++)
+        {
+            Ptr<MgLayerGroup> group = groups->GetItem(i);
+            CPPUNIT_ASSERT(MgLayerGroupType::BaseMapFromTileSet == group->GetLayerGroupType());
+        }
+
+        // Initialize service objects.
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        Ptr<MgServerSiteService> svcSite = dynamic_cast<MgServerSiteService*>(serviceManager->RequestService(MgServiceType::SiteService));
+        Ptr<MgResourceService> svcRes = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
+        assert(svcSite != NULL);
+        assert(svcRes != NULL);
+        // Set the current MgUserInformation
+        // This must be done before calling CreateSession()
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(
+            L"Administrator", L"admin");
+        userInfo->SetLocale(TEST_LOCALE);
+        MgUserInformation::SetCurrentUserInfo(userInfo);
+        STRING session = svcSite->CreateSession();
+
+        Ptr<MgResourceIdentifier> mapStateId = new MgResourceIdentifier(MgRepositoryType::Session, session, L"", map->GetName(), MgResourceType::Map);
+        map->Save(svcRes, mapStateId);
+
+        map = NULL;
+
+        Ptr<MgSiteConnection> siteConn = new MgSiteConnection();
+        userInfo = new MgUserInformation(session);
+        siteConn->Open(userInfo);
+        map = new MgMap(siteConn);
+        map->Open(mapName);
+
+        //Re-check. All should be the same
+        extents = map->GetMapExtent();
+        ll = extents->GetLowerLeftCoordinate();
+        ur = extents->GetUpperRightCoordinate();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.797866013831, ll->GetX(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(43.686857862181, ll->GetY(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-87.664527771869, ur->GetX(), 0.000000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(43.803796220613, ur->GetY(), 0.000000000001);
+        tsId = map->GetTileSetDefinition();
+        CPPUNIT_ASSERT(NULL != (MgResourceIdentifier*)tsId);
+        CPPUNIT_ASSERT(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition" == tsId->ToString());
+
+        groups = map->GetLayerGroups();
+        for (INT32 i = 0; i < groups->GetCount(); i++)
+        {
+            Ptr<MgLayerGroup> group = groups->GetItem(i);
+            CPPUNIT_ASSERT(MgLayerGroupType::BaseMapFromTileSet == group->GetLayerGroupType());
+        }
+
+        svcSite->DestroySession(session);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
 void TestTileService::TestCase_MgMapFromXYZTileSetStrict()
 {
     try
@@ -1669,6 +1757,70 @@ MgMap* TestTileService::CreateMapLinked(CREFSTRING mapName)
 
     // make a runtime map
     Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinkedTileSet.MapDefinition");
+    MgMap* map = new MgMap(m_siteConnection);
+    map->Create(mdfres, name);
+
+    // set the view
+    Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-87.723636, 43.715015);
+    Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
+    map->SetViewCenter(ptNewCenter);
+    map->SetDisplayDpi(96);
+    map->SetDisplayWidth(1024);
+    map->SetDisplayHeight(1024);
+
+    // render at a scale of 1:12500
+    map->SetViewScale(12500.0);
+
+    return map;
+}
+
+MgMap* TestTileService::CreateMapLinked2(CREFSTRING mapName)
+{
+    // set a default name if not supplied
+    STRING name = (mapName.empty()) ? L"UnitTestBaseMapLinked" : mapName;
+
+    Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinkedTileSet.MapDefinition");
+    // Parse the Map Definition and modify it so it matches its linked tile set
+    Ptr<MgResourceService> resSvc = dynamic_cast<MgResourceService*>(m_siteConnection->CreateService(MgServiceType::ResourceService));
+    
+    MdfModel::MapDefinition* mdf = MgMapBase::GetMapDefinition(resSvc, mdfres);
+    MdfModel::TileSetSource* tsRef = mdf->GetTileSetSource();
+    
+    Ptr<MgResourceIdentifier> tileSetId = new MgResourceIdentifier(tsRef->GetResourceId());
+    Ptr<MgByteReader> reader = resSvc->GetResourceContent(tileSetId);
+    Ptr<MgByteSink> sink = new MgByteSink(reader);
+    Ptr<MgByte> bytes = sink->ToBuffer();
+
+    MdfParser::SAX2Parser parser;
+    parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
+
+    CPPUNIT_ASSERT(parser.GetSucceeded());
+    MdfModel::TileSetDefinition* tsd = parser.DetachTileSetDefinition();
+    // Update coordinate systems to match
+    STRING csWkt;
+    MdfModel::NameStringPairCollection* params = tsd->GetTileStoreParameters()->GetParameters();
+    for (INT32 i = 0; i < params->GetCount(); i++)
+    {
+        MdfModel::NameStringPair* pair = params->GetAt(i);
+        if (pair->GetName() == L"CoordinateSystem")
+        {
+            csWkt = pair->GetValue();
+            mdf->SetCoordinateSystem(csWkt);
+            break;
+        }
+    }
+    // Fix up extents too
+    mdf->SetExtents(tsd->GetExtents());
+
+    // Save back out to XML
+    MdfModel::Version ver(3, 0, 0);
+    std::string mbXml = parser.SerializeToXML(mdf, &ver);
+    Ptr<MgByteSource> source = new MgByteSource((BYTE_ARRAY_IN)mbXml.c_str(), (INT32)mbXml.length());
+    Ptr<MgByteReader> content = source->GetReader();
+    mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinkedTileSet2.MapDefinition");
+    resSvc->SetResource(mdfres, content, NULL);
+
+    // make a runtime map from our changed map definition
     MgMap* map = new MgMap(m_siteConnection);
     map->Create(mdfres, name);
 
