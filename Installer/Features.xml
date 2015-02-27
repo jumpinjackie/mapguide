@@ -2,8 +2,8 @@
 <FeatureMap>
   <FeaturePattern Pattern="www\\mapagent\\(.*\.html|.*\.php|.*\.js)" Feature="WebExtMapAgentTestPagesFeature" />
   <FeaturePattern Pattern="www\\mapviewernet\\serveradminhelper.aspx" Feature="WebExtMapAgentTestPagesFeature" />
-  <FeaturePattern Pattern="www\\mapviewernet\\serveradminhelper.php" Feature="WebExtMapAgentTestPagesFeature" />
-  <FeaturePattern Pattern="www\\mapviewernet\\serveradminhelper.jsp" Feature="WebExtMapAgentTestPagesFeature" />
+  <FeaturePattern Pattern="www\\mapviewerphp\\serveradminhelper.php" Feature="WebExtMapAgentTestPagesFeature" />
+  <FeaturePattern Pattern="www\\mapviewerjava\\serveradminhelper.jsp" Feature="WebExtMapAgentTestPagesFeature" />
   <IdentifierOverride Pattern="Server\bin\mgserver.exe" Identifier="MGSERVER_EXE" />
   <IdentifierOverride Pattern="Apache24\bin\httpd.exe" Identifier="HTTPD_EXE" />
   <IdentifierOverride Pattern="Tomcat\bin\service.bat" Identifier="TOMCAT_SERVICE_BAT" />
