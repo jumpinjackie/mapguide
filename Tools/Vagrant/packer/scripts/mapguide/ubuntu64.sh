@@ -12,4 +12,6 @@ sudo apt-get install -y xz-utils
 sudo apt-get install -y rsync
 # For 32-bit swig binary in MapGuide source
 sudo apt-get install -y g++-multilib
+# To support Java test suite
+sudo apt-get install -y ant-contrib
 echo "JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-amd64" | sudo tee --append /etc/environment

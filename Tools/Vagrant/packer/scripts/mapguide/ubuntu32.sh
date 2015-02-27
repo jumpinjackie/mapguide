@@ -10,4 +10,6 @@ sudo apt-get install -y build-essential bison automake libtool libpng-dev libjpe
 sudo apt-get install -y xz-utils
 # For deb packaging
 sudo apt-get install -y rsync
+# To support Java test suite
+sudo apt-get install -y ant-contrib
 echo "JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-i386" | sudo tee --append /etc/environment

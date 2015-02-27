@@ -4,4 +4,6 @@ sudo yum install -y gcc make gcc-c++ gd-* automake bison byacc flex doxygen expa
 sudo yum install -y xz-lzma-compat
 # For 32-bit swig binary in MapGuide source
 sudo yum install -y libstdc++.i686 glibc.i686
+# To support Java test suite
+sudo yum install -y ant-contrib
 echo "JAVA_HOME=/usr/lib/jvm/java-openjdk" | sudo tee --append /etc/environment
