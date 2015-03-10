@@ -606,6 +606,8 @@ Function InstallAction([string]$comp, [string]$conf, [string]$plat, [string]$out
         }
         "web" {
             $mappings = @{
+                "Web\src\webconfig.ini" = "Web\www";
+                "Common\MapGuideCommon\Resources\*" = "Web\www\mapagent\Resources";
                 "Web\src\localized\*" = "Web\www\localized";
                 "Web\src\mapadmin\*" = "Web\www\mapadmin";
                 "Web\src\stdicons\*" = "Web\www\stdicons";
@@ -664,6 +666,8 @@ Function InstallAction([string]$comp, [string]$conf, [string]$plat, [string]$out
                     "Web\www\dotnetsamples\bin",
                     "Web\www\dotnetviewersample\bin"
                 );
+                "Oem\SQLite\bin\$typebuild\php_*.dll" = "Web\Php\ext";
+                "Web\bin\$typebuild\php_*.dll" = "Web\Php\ext";
                 "Web\src\mapviewerjava\*" = "Web\www\mapviewerjava";
                 "Web\src\WEB-INF\*" = "Web\www\WEB-INF";
             };
@@ -960,6 +964,9 @@ Try
 
                 BuildAction "web" $config $platform
                 InstallAction "web" $config $platform $output
+
+                BuildAction "doc" $config $platform
+                InstallAction "doc" $config $platform $output
 
                 PrepareInstallerStagingArea $output $config $platform $installerSupport $cwd $phpDist $apacheDist $tomcatDist
                 BuildAction "installer" $config $platform
