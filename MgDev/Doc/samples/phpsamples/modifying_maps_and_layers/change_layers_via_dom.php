@@ -62,15 +62,8 @@ try
 
     // Load the prototype layer definition into
     // a PHP DOM object.
-    $domDocument =
-      DOMDocument::load('RecentlyBuilt.LayerDefinition');
-    if ($domDocument == NULL)
-    {
-        echo "The layer definition
-          'RecentlyBuilt.LayerDefinition' could not be
-          found.<BR>\n";
-        return;
-    }
+    $domDocument = new DOMDocument();
+    $domDocument->load('RecentlyBuilt.LayerDefinition');
 
     // Change the filter
     $xpath = new DOMXPath($domDocument);

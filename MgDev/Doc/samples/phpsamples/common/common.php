@@ -16,45 +16,11 @@
 
 // Define some commonly used directories and files
 
-// -----------------------------------------------------------------------------------
-// Use the following for Windows installations
-// -----------------------------------------------------------------------------------
-//$webExtensionsDirectory = 'C:\Program Files\OSGeo\MapGuide\Web\\';
-$webExtensionsDirectory = 'D:\mg-trunk\MgDev\Release\Web\\';
-//$MapGuideServerDirectory = 'C:\Program Files\OSGeo\MapGuide\Server\\';
-$MapGuideServerDirectory = 'D:\mg-trunk\MgDev\Release\Server\\';
-$viewerFilesDirectory = $webExtensionsDirectory . 'www\viewerfiles\\';
-  
-$schemaDirectory = $MapGuideServerDirectory . 'Schema\\';
-  
-$webconfigDirectory = $webExtensionsDirectory . 'www\\';
-
-$webconfigFilePath = $webconfigDirectory . 'webconfig.ini';
-// -----------------------------------------------------------------------------------
-// End of Windows configuration
-// -----------------------------------------------------------------------------------
-
-// -----------------------------------------------------------------------------------
-// Use the following for Linux installations
-// -----------------------------------------------------------------------------------
-/************************************************************************************* 
-$webExtensionsDirectory = '/usr/local/mapguideopensource/webserverextensions/';
-  
-$MapGuideServerDirectory = '/usr/local/mapguideopensource/server/';
-  
-$viewerFilesDirectory = $webExtensionsDirectory . 'www/viewerfiles/';
-  
-$schemaDirectory = $MapGuideServerDirectory . 'Schema/';
-  
-$webconfigDirectory = $webExtensionsDirectory . 'www/';
-
-$webconfigFilePath = $webconfigDirectory . 'webconfig.ini';
-*************************************************************************************/
-// -----------------------------------------------------------------------------------
-// End of Linux configuration
-// -----------------------------------------------------------------------------------
-
+$webRootDirectory = dirname(__FILE__)."/../..";
+$viewerFilesDirectory = $webRootDirectory . '/viewerfiles';  
+$schemaDirectory = dirname(__FILE__);
+$webconfigFilePath = $webRootDirectory . '/webconfig.ini';
 // Include constants like MgServiceType::ResourceService
-require_once($webExtensionsDirectory . 'www/mapviewerphp/constants.php');	
+require_once($webRootDirectory . '/mapadmin/constants.php');	
 
 ?>

@@ -69,7 +69,7 @@
     // 
     // If the docs are located in that directory, this scripts links to them from the task pane.
     //
-    $helpDir = $webExtensionsDirectory . 'www/Help/';
+    $helpDir = $webRootDirectory . '/Help/';
     $helpUrl = '/mapguide/Help/';
     $devGuide = $helpDir . 'DevGuide.pdf';
     $apiRef = $helpDir . 'index.htm';
