@@ -39,7 +39,7 @@ param (
     [string]
     $action = "buildinstall",
     [Parameter(HelpMessage = "The components to build")]
-    [ValidateSet("all", "oem", "server", "web", "installer", "desktop", "doc")]
+    [ValidateSet("all", "oem", "server", "web", "installer", "instantsetup", "desktop", "doc")]
     [Alias("w")]
     [string]
     $component = "all",
