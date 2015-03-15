@@ -64,7 +64,7 @@ param (
     [string]
     $graphviz_path = "C:\Program Files (x86)\Graphviz2.30\bin",
     [string]
-    $log_path = ".\logs",
+    $artifact_path = ".\artifacts",
     [int]
     $major = 3,
     [int]
@@ -200,6 +200,16 @@ Function MsBuildAction([string]$comp, [string]$conf, [string]$plat, [string]$act
             msbuild /m /p:Configuration=$conf /p:Platform=$plat /v:n /t:$action $solutions["desktop_viewer"]
             CheckStatus "$action $comp" $LASTEXITCODE
         }
+        "instantsetup" {
+            Try {
+                pushd $output
+                Write-Host "Entering directory: $output"
+                Write-Host "Making instant setup bundle"
+                & sz a "$artifact_path\MapGuideOpenSource-$major.$minor.$build.$svnrev-InstantSetup-$plat.exe" -mmt -mx5 -sfx 7z.sfx CS-Map Server Web Setup | Out-Null
+            } Finally {
+                popd
+            }
+        }
         "installer" {
             $installerName="MapGuideOpenSource-$major.$minor.$build.$svnrev-$label-$plat";
             $installerCulture="en-US";
@@ -212,9 +222,9 @@ Function MsBuildAction([string]$comp, [string]$conf, [string]$plat, [string]$act
             }
 
             Write-Host "============ Installer Summary ================="
-            Write-Host "Name: $installerName"
+            Write-Host "Name:    $installerName"
             Write-Host "Culture: $installerCulture"
-            Write-Host "Title: $installerTitle"
+            Write-Host "Title:   $installerTitle"
             Write-Host "Version: $installerVersion"
             Write-Host "Reg Key: $installerRegKey"
             Write-Host "ArcSDE?: $installerArcSde"
@@ -489,6 +499,13 @@ Function MsBuildAction([string]$comp, [string]$conf, [string]$plat, [string]$act
             } Finally {
                 popd
             }
+
+            Try {
+                pushd $installerSrcRoot\Output\en-US
+                Move-Item -path "$installerName.exe" -destination "$artifact_path" -Force
+            } Finally {
+                popd
+            }
         }
         "doc" {
             Try {
@@ -522,7 +539,7 @@ Function MsBuildAction([string]$comp, [string]$conf, [string]$plat, [string]$act
                 Copy-Item -Path "..\..\MappingService\UT_HydrographicPolygons.sdf" -Destination "Library\Samples\Sheboygan\Data\HydrographicPolygons.FeatureSource_DATA_CityLimits.sdf" -Force
                 Copy-Item -Path "..\..\MappingService\UT_Rail.sdf" -Destination "Library\Samples\Sheboygan\Data\Rail.FeatureSource_DATA_CityLimits.sdf" -Force
                 Copy-Item -Path "..\..\TileService\UT_RoadCenterLines.sdf" -Destination "Library\Samples\Sheboygan\Data\RoadCenterLines.FeatureSource_DATA_CityLimits.sdf" -Force
-                & sz a -tzip Sheboygan.mgp Library/ MgResourcePackageManifest.xml
+                & sz a -tzip "$artifact_path\Sheboygan.mgp" Library/ MgResourcePackageManifest.xml
             } Finally {
                 popd
             }
@@ -801,6 +818,43 @@ Function PrepareInstallerStagingArea([string]$output, [string]$conf, [string]$pl
     Copy-Item "$installerSrcRoot\FdoRegUtil\$typebuild\FdoRegUtil.exe" -Destination "$output\Server\FDO" -Force
 }
 
+Function StampVersion([string]$buildRoot)
+{
+    Write-Host "Stamping version $major.$minor.$build.$svnrev to applicable files"
+    set-alias st "$buildRoot\BuildTools\WebTools\SetAssemblyVersion\SetAssemblyVersion\bin\Release\SetAssemblyVersion.exe"
+    if (-Not (Get-Command doxygen -errorAction SilentlyContinue)) {
+        throw "SetAssemblyVersion.exe not found"
+    }
+
+    Try {
+        pushd $buildRoot
+        cscript updateversion.vbs "/major:$major" "/minor:$minor" "/point:$build" "/build:$svnrev"
+    } Finally {
+        popd
+    }
+
+    $paths = @(
+        "$buildRoot\Web\src\DotNetApi",
+        "$buildRoot\Web\src\DotNetApi\Foundation",
+        "$buildRoot\Web\src\DotNetApi\Geometry",
+        "$buildRoot\Web\src\DotNetApi\MapGuideCommon",
+        "$buildRoot\Web\src\DotNetApi\PlatformBase",
+        "$buildRoot\Web\src\DotNetApi\Web",
+        "$buildRoot\Desktop\DesktopUnmanagedApi\DotNet\Partials",
+        "$buildRoot\Desktop\MgAppLayout\Properties",
+        "$buildRoot\Desktop\MapViewer\Properties",
+        "$buildRoot\Desktop\MapViewer.Desktop\Properties"
+    )
+    foreach ($path in $paths) {
+        Try {
+            pushd $path
+            st "-set:$major.$minor.$build.$svnrev" AssemblyInfo.cs
+        } Finally {
+            popd
+        }
+    }
+}
+
 Try
 {
     Import-Module Pscx
@@ -821,10 +875,13 @@ Try
         Write-Host "msbuild and nmake exist. Proceeding with build"
     }
     $cwd = (Get-Item -Path ".\" -Verbose).FullName
-    if (-Not [System.IO.Path]::IsPathRooted($log_path)) {
-        $log_path = [System.IO.Path]::GetFullPath((Join-Path $cwd $log_path));
-    }
+
+    MakeDirIfNotExists $artifact_path
+    $artifact_path = (Get-Item -Path $artifact_path -Verbose).FullName
+    $log_path = [System.IO.Path]::GetFullPath((Join-Path $artifact_path "\logs"));
     MakeDirIfNotExists $log_path
+
+    StampVersion $build_root
 
     $cwd = (Get-Item -Path "$build_root" -Verbose).FullName
     pushd $cwd
@@ -842,7 +899,14 @@ Try
     $tomcatDist = [System.IO.Path]::Combine($cwd, "Oem\LinuxApt", "apache-tomcat-$tomcatVersion.tar.gz")
 
     # Alias 7-zip for easy invocation
-    set-alias sz "$cwd\BuildTools\WebTools\7-Zip\7z.exe"  
+    if (!$env:PATH.Contains("$cwd\BuildTools\WebTools\7-Zip")) {
+        $env:PATH += ";$cwd\BuildTools\WebTools\7-Zip"
+        Write-Host "Appended 7zip to PATH"
+    } else {
+        Write-Host "7zip already in PATH"
+    }
+
+    set-alias sz "7z.exe"  
     if (-Not (Get-Command sz -errorAction SilentlyContinue)) {
         throw "7-Zip command not found"
     }
@@ -852,7 +916,7 @@ Try
     if (-Not (Get-Command doxygen -errorAction SilentlyContinue)) {
         # Retry
         set-alias doxygen "$doxygen_path\doxygen.exe"
-        if (-Not (Get-Commamnd doxygen -errorAction SilentlyContinue)) {
+        if (-Not (Get-Command doxygen -errorAction SilentlyContinue)) {
             throw "Doxygen not found"
         }
     }
@@ -936,6 +1000,7 @@ Try
     Write-Host "Component: $component"
     Write-Host "Output Dir: $output"
     Write-Host "Build Root: $build_root"
+    Write-Host "Artifact Root: $artifact_path"
     Write-Host "Version (major): $major"
     Write-Host "Version (minor): $minor"
     Write-Host "Version (build): $build"
@@ -969,6 +1034,7 @@ Try
                 InstallAction "doc" $config $platform $output
 
                 PrepareInstallerStagingArea $output $config $platform $installerSupport $cwd $phpDist $apacheDist $tomcatDist
+                BuildAction "instantsetup" $config $platform
                 BuildAction "installer" $config $platform
 
                 BuildAction "desktop" $config $platform
