@@ -794,9 +794,9 @@ STRING MgMap::GetCoordinateSystemFromTileSet(MdfModel::TileSetDefinition* tilese
     }
     else if (storeParams->GetTileProvider() == MG_TILE_PROVIDER_XYZ)
     {
-        //XYZ is always LL84
+        //XYZ is always WGS84.PseudoMercator
         Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
-        return csFactory->ConvertCoordinateSystemCodeToWkt(L"LL84"); //NOXLATE
+        return csFactory->ConvertCoordinateSystemCodeToWkt(L"WGS84.PseudoMercator"); //NOXLATE
     }
     if (strict)
     {
