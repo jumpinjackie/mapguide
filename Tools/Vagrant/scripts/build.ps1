@@ -149,15 +149,15 @@ Function EnvSetup([string]$plat, [string]$phpVer, [string]$apacheVer)
     }
 }
 
-Function CheckStatus([string]$action, [int]$status)
+Function CheckStatus([string]$action, [boolean]$status)
 {
+    #ZeroFileTrap $action, ""
     Write-Host "Status for action ($action) is: $status"
-    <#
     if (-Not $status) {
+        #ZeroFileTrap $action, ""
         $msg = "Action ($action) failed"
         throw $msg
     }
-    #>
 }
 
 Function MsBuildAction([string]$comp, [string]$conf, [string]$plat, [string]$action)
@@ -176,29 +176,31 @@ Function MsBuildAction([string]$comp, [string]$conf, [string]$plat, [string]$act
         "desktop" = ".\Desktop\MgDesktopApi.sln";
         "desktop_viewer" = ".\Desktop\MgDesktopDotNet.sln";
     };
-    #$msbParams = "/m /p:Configuration=$conf;Platform=$plat /v:n /t:$action"
+    #$msbParams = "/m /p:Configuration=$conf;Platform=$plat /t:$action"
 
     Write-Host "Action ($action) on $comp ($conf|$plat)"
     switch ($comp) {
         "oem" {
-            msbuild /m /p:Configuration=$conf /p:Platform=$uplat /v:n /t:$action $solutions["oem"]
-            CheckStatus "$action $comp" $LASTEXITCODE
-            msbuild /m /p:Configuration=$conf /p:Platform=$uplat /v:n /t:$action $solutions["csmap"]
-            CheckStatus "$action $comp" $LASTEXITCODE
+            #ZeroFileTrap "start_build" "oem"
+            msbuild /m /p:Configuration=$conf /p:Platform=$uplat /t:$action $solutions["oem"]
+            #ZeroFileTrap "build_completed" "oem"
+            CheckStatus "$action $comp" $? #$LASTEXITCODE
+            msbuild /m /p:Configuration=$conf /p:Platform=$uplat /t:$action $solutions["csmap"]
+            CheckStatus "$action $comp" $? #$LASTEXITCODE
         }
         "server" {
-            msbuild /m /p:Configuration=$conf /p:Platform=$uplat /v:n /t:$action $solutions["server"]
-            CheckStatus "$action $comp" $LASTEXITCODE
+            msbuild /m /p:Configuration=$conf /p:Platform=$uplat /t:$action $solutions["server"]
+            CheckStatus "$action $comp" $? #$LASTEXITCODE
         }
         "web" {
-            msbuild /m /p:Configuration=$conf /p:Platform=$uplat /v:n /t:$action $solutions["web"]
-            CheckStatus "$action $comp" $LASTEXITCODE
+            msbuild /m /p:Configuration=$conf /p:Platform=$uplat /t:$action $solutions["web"]
+            CheckStatus "$action $comp" $? #$LASTEXITCODE
         }
         "desktop" {
-            msbuild /m /p:Configuration=$conf /p:Platform=$uplat /v:n /t:$action $solutions["desktop"]
-            CheckStatus "$action $comp" $LASTEXITCODE
-            msbuild /m /p:Configuration=$conf /p:Platform=$plat /v:n /t:$action $solutions["desktop_viewer"]
-            CheckStatus "$action $comp" $LASTEXITCODE
+            msbuild /m /p:Configuration=$conf /p:Platform=$uplat /t:$action $solutions["desktop"]
+            CheckStatus "$action $comp" $? #$LASTEXITCODE
+            msbuild /m /p:Configuration=$conf /p:Platform=$plat /t:$action $solutions["desktop_viewer"]
+            CheckStatus "$action $comp" $? #$LASTEXITCODE
         }
         "instantsetup" {
             Try {
@@ -485,8 +487,8 @@ Function MsBuildAction([string]$comp, [string]$conf, [string]$plat, [string]$act
                         .\Paraffin.exe -guids -dir ("$output\" + $map["dirPart"]) -alias ('$(var.MgSource)\' + $map["dirPart"]) -custom $map["custom"] -dirref $map["dirref"] ($map["output"])
                     }
                 }
-                msbuild /m /p:Configuration=$conf /p:Platform=$plat /v:n /t:$action "/p:OutputName=$installerName;MgSource=$output;MgCulture=$installerCulture;MgTitle=$installerTitle;MgVersion=$installerVersion;MgRegKey=$installerRegKey;MgPlatform=$plat;Have_ArcSde=$installerArcSde" InstallerWix.sln
-                CheckStatus "$action $comp" $LASTEXITCODE
+                msbuild /m /p:Configuration=$conf /p:Platform=$plat /t:$action "/p:OutputName=$installerName;MgSource=$output;MgCulture=$installerCulture;MgTitle=$installerTitle;MgVersion=$installerVersion;MgRegKey=$installerRegKey;MgPlatform=$plat;Have_ArcSde=$installerArcSde" InstallerWix.sln
+                CheckStatus "$action $comp" $? #$LASTEXITCODE
                 Copy-Item "Bootstrapper\vcredist_2012_$plat.exe" -Destination "Output\$installerCulture\vcredist_2012_$plat.exe" -Force
             } Finally {
                 popd
@@ -548,11 +550,11 @@ Function MsBuildAction([string]$comp, [string]$conf, [string]$plat, [string]$act
             foreach ($sln in $solutions.GetEnumerator())
             {
                 if ($sln.Key -eq "desktop_viewer") {
-                    msbuild /m /p:Configuration=$conf /p:Platform=$plat /v:n /t:$action $sln.Value
+                    msbuild /m /p:Configuration=$conf /p:Platform=$plat /t:$action $sln.Value
                 } else {
-                    msbuild /m /p:Configuration=$conf /p:Platform=$uplat /v:n /t:$action $sln.Value
+                    msbuild /m /p:Configuration=$conf /p:Platform=$uplat /t:$action $sln.Value
                 }
-                CheckStatus ("$action " + $sln.Key) $LASTEXITCODE
+                CheckStatus ("$action " + $sln.Key) $? #$LASTEXITCODE
                 #$status = Invoke-MsBuild -Path $sln.Value -ShowBuildWindow -MsBuildParameters $msbParams
                 #CheckStatus ("Building " + $sln.Key) $status
             }
@@ -587,7 +589,8 @@ Function InstallAction([string]$comp, [string]$conf, [string]$plat, [string]$out
     }
 
     $exclude = @(".svn\*", "_svn\*", "Logs", "Packages", "Repositories", "Temp", "*.c", "OSTN02.txt", "OSTN97.txt", "cs-map.*", "*.par", "*.mrt", "*.asc", "Compiler.mak", "Compiler.nmk", "UnitTestResults.xml")
-    if ($conf.Equals("Release")) {
+    if ($conf.ToLower().Equals("release")) {
+        Write-Host "Excluding extra file patterns for release"
         $exclude += "*.pdb"
         $exclude += "*.exp"
         $exclude += "*.lib"
@@ -620,6 +623,17 @@ Function InstallAction([string]$comp, [string]$conf, [string]$plat, [string]$out
             $outPath = [System.IO.Path]::Combine($outDir, "Server\bin")
             $srcPath = [System.IO.Path]::Combine($outDir, "Server", "*.*")
             Move-Item -Path "$srcPath" -Destination "$outPath" -Force
+            # Remove old archive if it exists
+            $zipPath = "$artifact_path\MapGuideOpenSource-$major.$minor.$build.$svnrev-TestSuite-$plat.zip"
+            If (Test-Path $zipPath) {
+                Remove-Item $zipPath -Force
+            }
+            Try {
+                pushd $outDir
+                & sz a -tzip -mx9 $zipPath Test
+            } Finally {
+                popd
+            }
         }
         "web" {
             $mappings = @{
@@ -687,6 +701,7 @@ Function InstallAction([string]$comp, [string]$conf, [string]$plat, [string]$out
                 "Web\bin\$typebuild\php_*.dll" = "Web\Php\ext";
                 "Web\src\mapviewerjava\*" = "Web\www\mapviewerjava";
                 "Web\src\WEB-INF\*" = "Web\www\WEB-INF";
+                "UnitTest\*" = "Test\UnitTest";
             };
             if ($plat.Equals("x64")) {
                 $mappings.Add("Web\src\mapagent64\isapi_MapAgent*", "Web\www\mapagent");
@@ -722,6 +737,32 @@ Function InstallAction([string]$comp, [string]$conf, [string]$plat, [string]$out
             }
             # Fusion templates
             Copy-Item "Oem\fusionMG\*" -Destination "$outDir\Web\www\fusion" -Recurse -Force -Exclude $exclude
+
+            # Copy remaining unit test files
+            $testFiles = @{
+                "test_readme.txt" = "Test";
+                "run_tests.bat" = "Test";
+                "run_tests.sh" = "Test";
+            };
+
+            foreach ($testMap in $testFiles.GetEnumerator()) {
+                $key = $testMap.Key
+                $value = $testMap.Value
+                $outPath = [System.IO.Path]::Combine($outDir, $value)
+                Copy-Item ($key) -Destination "$outPath" -Force
+            }
+
+            # Remove old archive if it exists
+            $zipPath = "$artifact_path\MapGuideOpenSource-$major.$minor.$build.$svnrev-TestSuite-$plat.zip"
+            If (Test-Path $zipPath) {
+                Remove-Item $zipPath -Force
+            }
+            Try {
+                pushd $outDir
+                & sz a -tzip -mx9 $zipPath Test
+            } Finally {
+                popd
+            }
         }
         "doc" {
             $mappings = @{
@@ -763,6 +804,19 @@ Function InstallAction([string]$comp, [string]$conf, [string]$plat, [string]$out
                     MakeDirIfNotExists $outPath
                     Copy-Item ($key) -Destination "$outPath" -Recurse -Force -Exclude $exclude
                 }
+            }
+            Try {
+                $mgdRoot = [System.IO.Path]::Combine($outDir, "mg-desktop")
+                pushd $mgdRoot
+                Write-Host "Make mg-desktop zip distribution"
+                # Remove old archive if it exists
+                $zipPath = "$artifact_path\mg-desktop-$major.$minor.$build.$svnrev-net40-vc11-$plat.zip"
+                If (Test-Path $zipPath) {
+                    Remove-Item $zipPath -Force
+                }
+                & sz a -tzip -mx9 $zipPath Desktop DesktopSamples
+            } Finally {
+                popd
             }
         }
     }
@@ -855,6 +909,16 @@ Function StampVersion([string]$buildRoot)
     }
 }
 
+<#
+Function ZeroFileTrap([string]$action, [string]$comp, [string]$buildDir = "D:\mg-trunk\MgDev") {
+    $filePath = [System.IO.Path]::GetFullPath((Join-Path $buildDir "\0"));
+    if (Test-Path $filePath) {
+        Write-Host "Action ($action) for ($comp) caused a 0 file to be created"
+        $x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    }
+}
+#>
+
 Try
 {
     Import-Module Pscx
@@ -882,6 +946,7 @@ Try
     MakeDirIfNotExists $log_path
 
     StampVersion $build_root
+    #ZeroFileTrap "stamp_version", $component
 
     $cwd = (Get-Item -Path "$build_root" -Verbose).FullName
     pushd $cwd
@@ -941,17 +1006,22 @@ Try
 
     # Check and unpack the PHP and HTTPD sources
     EnvSetup $platform $phpVersion $apacheVersion
-
+    #ZeroFileTrap "env_setup" $component
     $env:PHP_SRC = "$cwd\Oem\LinuxApt\php-$phpVersion"
     $env:HTTPD_SRC = "$cwd\Oem\LinuxApt\httpd-$apacheVersion"
     if ($platform.Equals("x64")) {
         if ($java_home.Length > 0) {
             $env:JAVA_HOME = $java_home
+            #ZeroFileTrap "set_java_home_param", $component
         } else {
             $env:JAVA_HOME = "C:\Program Files\Java\jdk1.7.0_71"
+            #ZeroFileTrap "set_java_home_default", $component
         }
+        #ZeroFileTrap "set_java_home", $component
         $env:PHP_LIB = "$cwd\Oem\php\x64\Release_TS"
+        #ZeroFileTrap "set_php_lib", $component
         $env:HTTPD_LIB = "$cwd\Oem\httpd\lib64"
+        #ZeroFileTrap "set_httpd_lib", $component
     } else {
         if ($java_home.Length > 0) {
             $env:JAVA_HOME = $java_home
@@ -961,13 +1031,13 @@ Try
         $env:PHP_LIB = "$cwd\Oem\php\Release_TS"
         $env:HTTPD_LIB = "$cwd\Oem\httpd\lib"
     }
-
+    #ZeroFileTrap "set_env_vars", $component
     # JAVA_HOME must check out
     Write-Host "Checking for JAVA_HOME"
     if (-Not (Test-Path $env:JAVA_HOME)) {
         throw "JAVA_HOME ($env:JAVA_HOME) path does not exist"
     }
-
+    #ZeroFileTrap "check_java", $component
     # Check ant
     Write-Host "Checking for ant"
     if (-Not (Get-Command ant -errorAction SilentlyContinue)) {
@@ -977,7 +1047,7 @@ Try
             throw "ant not found. Please check that ant is in your PATH environment variable or that you passed in a valid path for -ant_path"
         }
     }
-
+    #ZeroFileTrap "check_ant", $component
     # Check makensis
     Write-Host "Checking for makensis"
     if (-Not (Get-Command makensis -errorAction SilentlyContinue)) {
@@ -987,11 +1057,13 @@ Try
             throw "makensis not found. Please check that you provided a valid path for -install_root"
         }
     }
-
+    #ZeroFileTrap "check_nsis", $component
     # Normalize the output path
     if (-Not [System.IO.Path]::IsPathRooted($output)) {
         $output = [System.IO.Path]::GetFullPath((Join-Path $cwd $output));
     }
+
+    #ZeroFileTrap "before_build", $component
 
     Write-Host "========= Action Summary ============"
     Write-Host "Platform: $platform"
@@ -1022,23 +1094,36 @@ Try
         "buildinstall" {
             if ($component.Equals("all")) {
                 BuildAction "oem" $config $platform
+                #ZeroFileTrap "build" "oem"
                 InstallAction "oem" $config $platform $output
+                #ZeroFileTrap "install" "oem"
 
                 BuildAction "server" $config $platform
+                #ZeroFileTrap "build" "server"
                 InstallAction "server" $config $platform $output
+                #ZeroFileTrap "install" "server"
 
                 BuildAction "web" $config $platform
+                #ZeroFileTrap "build" "web"
                 InstallAction "web" $config $platform $output
+                #ZeroFileTrap "install" "web"
 
                 BuildAction "doc" $config $platform
+                #ZeroFileTrap "build" "doc"
                 InstallAction "doc" $config $platform $output
+                #ZeroFileTrap "install" "doc"
 
                 PrepareInstallerStagingArea $output $config $platform $installerSupport $cwd $phpDist $apacheDist $tomcatDist
+                #ZeroFileTrap "prepare" "installer"
                 BuildAction "instantsetup" $config $platform
+                #ZeroFileTrap "build" "instantsetup"
                 BuildAction "installer" $config $platform
+                #ZeroFileTrap "build" "installer"
 
                 BuildAction "desktop" $config $platform
+                #ZeroFileTrap "build" "desktop"
                 InstallAction "desktop" $config $platform $output
+                #ZeroFileTrap "installer" "desktop"
             } else {
                 BuildAction $component $config $platform
                 InstallAction $component $config $platform $output
