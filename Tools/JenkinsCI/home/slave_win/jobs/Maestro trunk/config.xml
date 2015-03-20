@@ -15,7 +15,7 @@
         <hudson.model.StringParameterDefinition>
           <name>VersionLabel</name>
           <description>The release version label</description>
-          <defaultValue>6.0a3</defaultValue>
+          <defaultValue>6.0m4</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BASE_VERSION</name>
@@ -25,7 +25,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <scm class="hudson.scm.SubversionSCM" plugin="subversion@2.3">
+  <scm class="hudson.scm.SubversionSCM" plugin="subversion@2.5">
     <locations>
       <hudson.scm.SubversionSCM_-ModuleLocation>
         <remote>http://svn.osgeo.org/mapguide/trunk/Tools/Maestro</remote>
@@ -58,17 +58,18 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.BatchFile>
-      <command>pushd &quot;%WORKSPACE%&quot;
-rd /S /Q out
-popd
-pushd &quot;%WORKSPACE%\Properties&quot;
-%MG_TOOL_PATH%\SetAssemblyVersion.exe -set:%BASE_VERSION%.%SVN_REVISION% GlobalAssemblyInfo.cs
-popd
-pushd &quot;%WORKSPACE%\SDK&quot;
-rd /S /Q bin
-popd</command>
+      <command>pushd &quot;%WORKSPACE%&quot;&#xd;
+rd /S /Q out&#xd;
+popd&#xd;
+pushd &quot;%WORKSPACE%\Properties&quot;&#xd;
+%MG_TOOL_PATH%\SetAssemblyVersion.exe -set:%BASE_VERSION%.%SVN_REVISION% GlobalAssemblyInfo.cs&#xd;
+popd&#xd;
+pushd &quot;%WORKSPACE%\SDK&quot;&#xd;
+rd /S /Q bin&#xd;
+popd&#xd;
+if not exist &quot;%WORKSPACE%\TestResults&quot; mkdir &quot;%WORKSPACE%\TestResults&quot;</command>
     </hudson.tasks.BatchFile>
-    <hudson.plugins.msbuild.MsBuildBuilder plugin="msbuild@1.21">
+    <hudson.plugins.msbuild.MsBuildBuilder plugin="msbuild@1.24">
       <msBuildName>MSBUILD 4.0 x86</msBuildName>
       <msBuildFile>Maestro\Maestro_All.sln</msBuildFile>
       <cmdLineArgs>/p:Configuration=Release</cmdLineArgs>
@@ -77,40 +78,40 @@ popd</command>
       <unstableIfWarnings>false</unstableIfWarnings>
     </hudson.plugins.msbuild.MsBuildBuilder>
     <hudson.tasks.BatchFile>
-      <command>pushd &quot;%WORKSPACE%\out\Release\AddIns&quot;
-rd /S /Q GeoRest
+      <command>pushd &quot;%WORKSPACE%\Maestro\packages\NUnit.Runners.2.6.3\tools&quot;&#xd;
+nunit-console.exe &quot;%WORKSPACE%\OSGeo.MapGuide.ObjectModel.Tests\bin\Release\OSGeo.MapGuide.ObjectModels.Tests.dll&quot; &quot;%WORKSPACE%\OSGeo.MapGuide.MaestroAPI.Tests\bin\Release\OSGeo.MapGuide.MaestroAPI.Tests.dll&quot; /xml=&quot;%WORKSPACE%\TestResults\testresult.xml&quot;&#xd;
 popd</command>
     </hudson.tasks.BatchFile>
     <hudson.tasks.BatchFile>
-      <command>pushd &quot;%WORKSPACE%\UserDoc&quot;
-call make.bat html
-popd
-pushd &quot;%WORKSPACE%\UserDoc\build\html&quot;
-xcopy /S /Y *.* &quot;%WORKSPACE%\out\Release\UserDoc\&quot;
-popd
+      <command>pushd &quot;%WORKSPACE%\UserDoc&quot;&#xd;
+call make.bat html&#xd;
+popd&#xd;
+pushd &quot;%WORKSPACE%\UserDoc\build\html&quot;&#xd;
+xcopy /S /Y *.* &quot;%WORKSPACE%\out\Release\UserDoc\&quot;&#xd;
+popd&#xd;
 </command>
     </hudson.tasks.BatchFile>
     <hudson.tasks.BatchFile>
-      <command>pushd &quot;%WORKSPACE%\Thirdparty\NSIS&quot;
-makensis.exe /DSLN_CONFIG=Release /DCPU=x86 /DRELEASE_VERSION=%VersionLabel% &quot;%WORKSPACE%\Install\Maestro.nsi&quot;
-popd
-pushd &quot;%WORKSPACE%\out&quot;
-if not exist &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot; mkdir &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot;
-move /Y *.exe &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot;
+      <command>pushd &quot;%WORKSPACE%\Thirdparty\NSIS&quot;&#xd;
+makensis.exe /DSLN_CONFIG=Release /DCPU=x86 /DRELEASE_VERSION=%VersionLabel% &quot;%WORKSPACE%\Install\Maestro.nsi&quot;&#xd;
+popd&#xd;
+pushd &quot;%WORKSPACE%\out&quot;&#xd;
+if not exist &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot; mkdir &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot;&#xd;
+move /Y *.exe &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot;&#xd;
 popd</command>
     </hudson.tasks.BatchFile>
     <hudson.tasks.BatchFile>
-      <command>pushd &quot;%WORKSPACE%\out\Release\AddIns&quot;
-rd /S /Q Local
-rd /S /Q Scripting
-popd
-pushd &quot;%WORKSPACE%\out\Release&quot;
-del /Q LocalConfigure.*
-if not exist &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot; mkdir &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot;
-7z a -tzip -mx9 &quot;%MG_BUILD_ARTIFACT_PATH%\maestro\MapGuideMaestro-%VersionLabel%-Release.zip&quot; .
+      <command>pushd &quot;%WORKSPACE%\out\Release\AddIns&quot;&#xd;
+rd /S /Q Local&#xd;
+rd /S /Q Scripting&#xd;
+popd&#xd;
+pushd &quot;%WORKSPACE%\out\Release&quot;&#xd;
+del /Q LocalConfigure.*&#xd;
+if not exist &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot; mkdir &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot;&#xd;
+7z a -tzip -mx9 &quot;%MG_BUILD_ARTIFACT_PATH%\maestro\MapGuideMaestro-%VersionLabel%-Release.zip&quot; .&#xd;
 popd</command>
     </hudson.tasks.BatchFile>
-    <hudson.plugins.msbuild.MsBuildBuilder plugin="msbuild@1.21">
+    <hudson.plugins.msbuild.MsBuildBuilder plugin="msbuild@1.24">
       <msBuildName>MSBUILD 4.0 x86</msBuildName>
       <msBuildFile>Doc\MaestroAPI.shfbproj</msBuildFile>
       <cmdLineArgs></cmdLineArgs>
@@ -119,12 +120,12 @@ popd</command>
       <unstableIfWarnings>false</unstableIfWarnings>
     </hudson.plugins.msbuild.MsBuildBuilder>
     <hudson.tasks.BatchFile>
-      <command>pushd &quot;%WORKSPACE%\Doc\Help&quot;
-move /Y MaestroAPI.chm &quot;%WORKSPACE%\SDK&quot;
-popd
-pushd &quot;%WORKSPACE%\SDK&quot;
-if not exist &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot; mkdir &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot;
-7z a -tzip -mx9 &quot;%MG_BUILD_ARTIFACT_PATH%\maestro\MaestroSDK_%VersionLabel%.zip&quot; .
+      <command>pushd &quot;%WORKSPACE%\Doc\Help&quot;&#xd;
+move /Y MaestroAPI.chm &quot;%WORKSPACE%\SDK&quot;&#xd;
+popd&#xd;
+pushd &quot;%WORKSPACE%\SDK&quot;&#xd;
+if not exist &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot; mkdir &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot;&#xd;
+7z a -tzip -mx9 &quot;%MG_BUILD_ARTIFACT_PATH%\maestro\MaestroSDK_%VersionLabel%.zip&quot; .&#xd;
 popd</command>
     </hudson.tasks.BatchFile>
   </builders>
