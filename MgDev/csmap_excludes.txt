@@ -1,0 +1,14 @@
+coordsys.asc
+datums.asc
+ellipsoid.asc
+mreg.asc
+category.asc
+cs_comp.c
+cs_dictdiff.c
+OSTN02.txt
+OSTN97.txt
+TKY2JGD.par
+JGD2011V100.par
+.MRT
+compiler.
+cs-map.

@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<script type="text/javascript"">
+function Execute(value)
+{
+  window.parent.showform.location = "enumeratecoordinatesystems.php?CATEGORY=" + value;
+}
+</script>
+
+<html>
+<body>
+        <b>Coordinate System API: EnumerateCoordinateSystems</b><br><br>
+        <form name="input" action="" method="get" ID="Form1">
+        <b>Category:</b>
+        <input type="text" name="CATEGORY" value="Lat Longs" size="50" ID="Text1"><br>
+        <p>
+        <input type="button" value="Execute" onclick="Execute(CATEGORY.value)">
+        </form>
+</body>
+</html>

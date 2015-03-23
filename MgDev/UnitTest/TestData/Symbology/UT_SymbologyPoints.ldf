@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LayerDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LayerDefinition-1.2.0.xsd" version="1.2.0">
+  <VectorLayerDefinition>
+    <ResourceId>Library://UnitTests/Data/Capitals.FeatureSource</ResourceId>
+    <FeatureName>SDF_2_Schema:CN_Capitals</FeatureName>
+    <FeatureNameType>FeatureClass</FeatureNameType>
+    <PropertyMapping>
+      <Name>Name</Name>
+      <Value>Name</Value>
+    </PropertyMapping>
+    <PropertyMapping>
+      <Name>Url</Name>
+      <Value>Url</Value>
+    </PropertyMapping>
+    <PropertyMapping>
+      <Name>Key</Name>
+      <Value>Key</Value>
+    </PropertyMapping>
+    <Geometry>Data</Geometry>
+    <VectorScaleRange>
+      <CompositeTypeStyle>
+        <CompositeRule>
+          <LegendLabel/>
+          <CompositeSymbolization>
+            <SymbolInstance>
+              <ResourceId>Library://UnitTests/Symbols/PointSymbol.SymbolDefinition</ResourceId>
+              <ParameterOverrides/>
+              <ScaleX>1.0</ScaleX>
+              <ScaleY>1.0</ScaleY>
+              <SizeContext>DeviceUnits</SizeContext>
+              <DrawLast>False</DrawLast>
+              <CheckExclusionRegion>False</CheckExclusionRegion>
+              <AddToExclusionRegion>False</AddToExclusionRegion>
+            </SymbolInstance>
+          </CompositeSymbolization>
+        </CompositeRule>
+      </CompositeTypeStyle>
+    </VectorScaleRange>
+  </VectorLayerDefinition>
+</LayerDefinition>

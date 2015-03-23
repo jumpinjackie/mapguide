@@ -1,0 +1,13 @@
+﻿<root>
+	<configuration name="MgAppLayout">
+		<assembly name="OSGeo.MapGuide.Viewer" folder="MapViewer" namespace="OSGeo.MapGuide.Viewer" />
+        <assembly name="OSGeo.MapGuide.Viewer.Desktop" folder="MapViewer.Desktop" namespace="OSGeo.MapGuide.Viewer.Desktop" />
+
+		<keyfile>..\DesktopUnmanagedApi\DotNet\MgDesktop.snk</keyfile>
+		<versionassembly>..\bin\Release\MgAppLayout.exe</versionassembly>
+		<sourcefolder>..</sourcefolder>
+		<outputfolder>compiled</outputfolder>
+		<productname>MgAppLayout</productname>
+        <frameworkVersion>3.5</frameworkVersion>
+	</configuration>
+</root>

@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MapGuideDesktopMakefile" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{AB42A48E-8C9C-4D05-826A-1E5B6C457753}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <OutDir>..\..\bin\debug</OutDir>
+    <IntDir>..\..\obj\debug</IntDir>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <OutDir>..\..\bin\debug64</OutDir>
+    <IntDir>..\..\obj\debug64</IntDir>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <OutDir>..\..\bin\release</OutDir>
+    <IntDir>..\..\obj\release</IntDir>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <OutDir>..\..\bin\release64</OutDir>
+    <IntDir>..\..\obj\release64</IntDir>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <NMakeBuildCommandLine>nmake -f MapGuideDesktopMakefile SIGNER=SignApi40.bat PLATFORM=x86 OUTDIR="$(OutDir)" WEB_BIN_DIR="$(SolutionDir)..\Web\bin\debug" debug</NMakeBuildCommandLine>
+    <NMakeOutput>OSGeo.MapGuide.Desktop.Temp.dll</NMakeOutput>
+    <NMakeCleanCommandLine>nmake -f MapGuideDesktopMakefile SIGNER=SignApi40.bat OUTDIR="$(OutDir)" cleandebug</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>nmake -a -f MapGuideDesktopMakefile SIGNER=SignApi40.bat PLATFORM=x86 OUTDIR="$(OutDir)" WEB_BIN_DIR="$(SolutionDir)..\Web\bin\debug" debug</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <NMakeBuildCommandLine>nmake -f MapGuideDesktopMakefile SIGNER=SignApi40.bat PLATFORM=x64 OUTDIR="$(OutDir)" WEB_BIN_DIR="$(SolutionDir)..\Web\bin\debug64" debug</NMakeBuildCommandLine>
+    <NMakeOutput>OSGeo.MapGuide.Desktop.Temp.dll</NMakeOutput>
+    <NMakeCleanCommandLine>nmake -f MapGuideDesktopMakefile SIGNER=SignApi40.bat OUTDIR="$(OutDir)" cleandebug</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>nmake -a -f MapGuideDesktopMakefile SIGNER=SignApi40.bat PLATFORM=x64 OUTDIR="$(OutDir)" WEB_BIN_DIR="$(SolutionDir)..\Web\bin\debug64" debug</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NMakeBuildCommandLine>nmake -f MapGuideDesktopMakefile SIGNER=SignApi40.bat PLATFORM=x86 ASSEMBLY_DIR="$(OutDir)\..\Assemblies" OUTDIR="$(OutDir)" WEB_BIN_DIR="$(SolutionDir)..\Web\bin\release" release</NMakeBuildCommandLine>
+    <NMakeOutput>OSGeo.MapGuide.Desktop.dll</NMakeOutput>
+    <NMakeCleanCommandLine>nmake -f MapGuideDesktopMakefile SIGNER=SignApi40.bat OUTDIR="$(OutDir)" ASSEMBLY_DIR="$(OutDir)\..\Assemblies" cleanrelease</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>nmake -a -f MapGuideDesktopMakefile SIGNER=SignApi40.bat PLATFORM=x86 ASSEMBLY_DIR="$(OutDir)\..\Assemblies" OUTDIR="$(OutDir)" WEB_BIN_DIR="$(SolutionDir)..\Web\bin\release" release</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <NMakeBuildCommandLine>nmake -f MapGuideDesktopMakefile SIGNER=SignApi40.bat PLATFORM=x64 ASSEMBLY_DIR="$(OutDir)\..\Assemblies" OUTDIR="$(OutDir)" WEB_BIN_DIR="$(SolutionDir)..\Web\bin\release64" release</NMakeBuildCommandLine>
+    <NMakeOutput>OSGeo.MapGuide.Desktop.dll</NMakeOutput>
+    <NMakeCleanCommandLine>nmake -f MapGuideDesktopMakefile SIGNER=SignApi40.bat PLATFORM=x64 ASSEMBLY_DIR="$(OutDir)\..\Assemblies" OUTDIR="$(OutDir)" cleanrelease</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>nmake -a -f MapGuideDesktopMakefile SIGNER=SignApi40.bat PLATFORM=x64 ASSEMBLY_DIR="$(OutDir)\..\Assemblies" OUTDIR="$(OutDir)" WEB_BIN_DIR="$(SolutionDir)..\Web\bin\release64" release</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

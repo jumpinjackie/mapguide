@@ -1,0 +1,434 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{341D5463-186E-49BA-B942-3D3BE28D65C0}</ProjectGuid>
+    <RootNamespace>Stylization</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\obj\$(Configuration)\Stylization\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\bin\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\obj\$(Configuration)64\Stylization\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\obj\$(Configuration)\Stylization\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\bin\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\obj\$(Configuration)64\Stylization\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MgStylizationd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MgStylizationd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MgStylization</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MgStylization</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>$(USRCFLAGS) %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\MdfModel;..\Foundation;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)MgStylizationd.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\Oem\FDO\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>FDO.dll;FDOCommon.dll;ExpressionEngine.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)MgStylizationd.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\lib\$(Configuration)\MgStylizationd.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ForceFileOutput>
+      </ForceFileOutput>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalOptions>$(USRCFLAGS) %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\MdfModel;..\Foundation;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ShowIncludes>false</ShowIncludes>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)MgStylizationd.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\Oem\FDO\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>FDO.dll;FDOCommon.dll;ExpressionEngine.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)MgStylizationd.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <ImportLibrary>..\lib\$(Configuration)64\MgStylizationd.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+      <ForceFileOutput>
+      </ForceFileOutput>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>$(USRCFLAGS) %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>false</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\MdfModel;..\Foundation;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)MgStylization.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\Oem\FDO\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>FDO.dll;FDOCommon.dll;ExpressionEngine.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)MgStylization.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\lib\$(Configuration)\MgStylization.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ForceFileOutput>
+      </ForceFileOutput>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalOptions>$(USRCFLAGS) %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>false</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\MdfModel;..\Foundation;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)MgStylization.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\Oem\FDO\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>FDO.dll;FDOCommon.dll;ExpressionEngine.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)MgStylization.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <ImportLibrary>..\lib\$(Configuration)64\MgStylization.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+      <ForceFileOutput>
+      </ForceFileOutput>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="ExpressionFunctionArgb.cpp" />
+    <ClCompile Include="ExpressionFunctionDecap.cpp" />
+    <ClCompile Include="ExpressionFunctionFeatureClass.cpp" />
+    <ClCompile Include="ExpressionFunctionFeatureId.cpp" />
+    <ClCompile Include="ExpressionFunctionFeatureSource.cpp" />
+    <ClCompile Include="ExpressionFunctionHtmlColor.cpp" />
+    <ClCompile Include="ExpressionFunctionIf.cpp" />
+    <ClCompile Include="ExpressionFunctionLayerDefinition.cpp" />
+    <ClCompile Include="ExpressionFunctionLayerId.cpp" />
+    <ClCompile Include="ExpressionFunctionLookup.cpp" />
+    <ClCompile Include="ExpressionFunctionMapCenterX.cpp" />
+    <ClCompile Include="ExpressionFunctionMapCenterY.cpp" />
+    <ClCompile Include="ExpressionFunctionMapName.cpp" />
+    <ClCompile Include="ExpressionFunctionMapScale.cpp" />
+    <ClCompile Include="ExpressionFunctionRange.cpp" />
+    <ClCompile Include="ExpressionFunctionSession.cpp" />
+    <ClCompile Include="ExpressionFunctionUrlEncode.cpp" />
+    <ClCompile Include="ExpressionHelper.cpp" />
+    <ClCompile Include="LineBuffer.cpp" />
+    <ClCompile Include="Matrix3D.cpp" />
+    <ClCompile Include="Point2D.cpp" />
+    <ClCompile Include="Point3D.cpp" />
+    <ClCompile Include="PolygonUtils.cpp" />
+    <ClCompile Include="Vector2D.cpp" />
+    <ClCompile Include="Vector3D.cpp" />
+    <ClCompile Include="Stylizer.cpp" />
+    <ClCompile Include="DefaultStylizer.cpp" />
+    <ClCompile Include="GeometryAdapter.cpp" />
+    <ClCompile Include="PointAdapter.cpp" />
+    <ClCompile Include="PolygonAdapter.cpp" />
+    <ClCompile Include="PolylineAdapter.cpp" />
+    <ClCompile Include="RasterAdapter.cpp" />
+    <ClCompile Include="SE_AreaPositioning.cpp" />
+    <ClCompile Include="SE_Bounds.cpp" />
+    <ClCompile Include="SE_BufferPool.cpp" />
+    <ClCompile Include="SE_ExpressionBase.cpp" />
+    <ClCompile Include="SE_LineBuffer.cpp" />
+    <ClCompile Include="SE_LineRenderer.cpp" />
+    <ClCompile Include="SE_Matrix.cpp" />
+    <ClCompile Include="SE_PositioningAlgorithms.cpp" />
+    <ClCompile Include="SE_Renderer.cpp" />
+    <ClCompile Include="SE_StyleVisitor.cpp" />
+    <ClCompile Include="SE_SymbolDefProxies.cpp" />
+    <ClCompile Include="SE_SymbolManager.cpp" />
+    <ClCompile Include="StylizationEngine.cpp" />
+    <ClCompile Include="atom_element_abandonment.cpp" />
+    <ClCompile Include="atom_element_environment.cpp" />
+    <ClCompile Include="atom_element_location.cpp" />
+    <ClCompile Include="atom_element_structure.cpp" />
+    <ClCompile Include="atom_element_style.cpp" />
+    <ClCompile Include="atom_element_textrun.cpp" />
+    <ClCompile Include="atom_element_transform.cpp" />
+    <ClCompile Include="atom_element_universe.cpp" />
+    <ClCompile Include="atom_impl.cpp" />
+    <ClCompile Include="BIDIConverter.cpp" />
+    <ClCompile Include="mtext_parser.cpp" />
+    <ClCompile Include="RichTextEngine.cpp" />
+    <ClCompile Include="RS_FontEngine.cpp" />
+    <ClCompile Include="RS_TextMetrics.cpp" />
+    <ClCompile Include="Band.cpp" />
+    <ClCompile Include="BandData.cpp" />
+    <ClCompile Include="Color.cpp" />
+    <ClCompile Include="GeometryAlgorithms.cpp" />
+    <ClCompile Include="GridApplyStatusReporter.cpp" />
+    <ClCompile Include="GridChannelBand.cpp" />
+    <ClCompile Include="GridColorBandHandler.cpp" />
+    <ClCompile Include="GridColorBandsHandler.cpp" />
+    <ClCompile Include="GridColorHandler.cpp" />
+    <ClCompile Include="GridColorNullHandler.cpp" />
+    <ClCompile Include="GridColorThemeHandler.cpp" />
+    <ClCompile Include="GridData.cpp" />
+    <ClCompile Include="GridStyleColorHandler.cpp" />
+    <ClCompile Include="GridStyleSurfaceColorHandler.cpp" />
+    <ClCompile Include="GridStyleSurfaceHandler.cpp" />
+    <ClCompile Include="GridStylizer.cpp" />
+    <ClCompile Include="GridTheme.cpp" />
+    <ClCompile Include="GridThemeParser.cpp" />
+    <ClCompile Include="KeyEncode.cpp" />
+    <ClCompile Include="LabelRenderer.cpp" />
+    <ClCompile Include="LabelRendererBase.cpp" />
+    <ClCompile Include="LabelRendererLocal.cpp" />
+    <ClCompile Include="LineStyleDef.cpp" />
+    <ClCompile Include="SimpleOverpost.cpp" />
+    <ClCompile Include="StylizationUtil.cpp" />
+    <ClCompile Include="TransformMesh.cpp" />
+    <ClCompile Include="ThemeParameters.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ExpressionFunctionArgb.h" />
+    <ClInclude Include="ExpressionFunctionDecap.h" />
+    <ClInclude Include="ExpressionFunctionFeatureClass.h" />
+    <ClInclude Include="ExpressionFunctionFeatureId.h" />
+    <ClInclude Include="ExpressionFunctionFeatureSource.h" />
+    <ClInclude Include="ExpressionFunctionHtmlColor.h" />
+    <ClInclude Include="ExpressionFunctionIf.h" />
+    <ClInclude Include="ExpressionFunctionLayerDefinition.h" />
+    <ClInclude Include="ExpressionFunctionLayerId.h" />
+    <ClInclude Include="ExpressionFunctionLookup.h" />
+    <ClInclude Include="ExpressionFunctionMapCenterX.h" />
+    <ClInclude Include="ExpressionFunctionMapCenterY.h" />
+    <ClInclude Include="ExpressionFunctionMapName.h" />
+    <ClInclude Include="ExpressionFunctionMapScale.h" />
+    <ClInclude Include="ExpressionFunctionRange.h" />
+    <ClInclude Include="ExpressionFunctionSession.h" />
+    <ClInclude Include="ExpressionFunctionUrlEncode.h" />
+    <ClInclude Include="ExpressionHelper.h" />
+    <ClInclude Include="Bounds.h" />
+    <ClInclude Include="DataValueStack.h" />
+    <ClInclude Include="LineBuffer.h" />
+    <ClInclude Include="Matrix3D.h" />
+    <ClInclude Include="Point2D.h" />
+    <ClInclude Include="Point3D.h" />
+    <ClInclude Include="PolygonUtils.h" />
+    <ClInclude Include="Vector2D.h" />
+    <ClInclude Include="Vector3D.h" />
+    <ClInclude Include="CSysTransformer.h" />
+    <ClInclude Include="LineStyle.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RendererStyles.h" />
+    <ClInclude Include="RS_FeatureReader.h" />
+    <ClInclude Include="RS_Font.h" />
+    <ClInclude Include="RS_InputStream.h" />
+    <ClInclude Include="RS_OutputStream.h" />
+    <ClInclude Include="RS_Raster.h" />
+    <ClInclude Include="RS_SymbolManager.h" />
+    <ClInclude Include="SLDSymbols.h" />
+    <ClInclude Include="Stylizer.h" />
+    <ClInclude Include="DefaultStylizer.h" />
+    <ClInclude Include="FeatureTypeStyleVisitor.h" />
+    <ClInclude Include="GeometryAdapter.h" />
+    <ClInclude Include="PointAdapter.h" />
+    <ClInclude Include="PolygonAdapter.h" />
+    <ClInclude Include="PolylineAdapter.h" />
+    <ClInclude Include="RasterAdapter.h" />
+    <ClInclude Include="SymbolVisitor.h" />
+    <ClInclude Include="SE_AreaPositioning.h" />
+    <ClInclude Include="SE_Bounds.h" />
+    <ClInclude Include="SE_BufferPool.h" />
+    <ClInclude Include="SE_ExpressionBase.h" />
+    <ClInclude Include="SE_LineBuffer.h" />
+    <ClInclude Include="SE_Matrix.h" />
+    <ClInclude Include="SE_PositioningAlgorithms.h" />
+    <ClInclude Include="SE_Renderer.h" />
+    <ClInclude Include="SE_RendererStyles.h" />
+    <ClInclude Include="SE_RenderProxies.h" />
+    <ClInclude Include="SE_StyleVisitor.h" />
+    <ClInclude Include="SE_SymbolDefProxies.h" />
+    <ClInclude Include="SE_SymbolManager.h" />
+    <ClInclude Include="StylizationEngine.h" />
+    <ClInclude Include="atom.h" />
+    <ClInclude Include="atom_element.h" />
+    <ClInclude Include="atom_element_abandonment.h" />
+    <ClInclude Include="atom_element_environment.h" />
+    <ClInclude Include="atom_element_location.h" />
+    <ClInclude Include="atom_element_structure.h" />
+    <ClInclude Include="atom_element_style.h" />
+    <ClInclude Include="atom_element_textrun.h" />
+    <ClInclude Include="atom_element_transform.h" />
+    <ClInclude Include="atom_element_universe.h" />
+    <ClInclude Include="BIDIConverter.h" />
+    <ClInclude Include="mtext_parser.h" />
+    <ClInclude Include="RichTextEngine.h" />
+    <ClInclude Include="RS_FontEngine.h" />
+    <ClInclude Include="RS_TextMetrics.h" />
+    <ClInclude Include="Band.h" />
+    <ClInclude Include="BandData.h" />
+    <ClInclude Include="Color.h" />
+    <ClInclude Include="GeometryAlgorithms.h" />
+    <ClInclude Include="GridApplyStatusReporter.h" />
+    <ClInclude Include="GridChannelBand.h" />
+    <ClInclude Include="GridColorBandHandler.h" />
+    <ClInclude Include="GridColorBandsHandler.h" />
+    <ClInclude Include="GridColorHandler.h" />
+    <ClInclude Include="GridColorNullHandler.h" />
+    <ClInclude Include="GridColorThemeHandler.h" />
+    <ClInclude Include="GridData.h" />
+    <ClInclude Include="GridStatusReporter.h" />
+    <ClInclude Include="GridStyleColorHandler.h" />
+    <ClInclude Include="GridStyleHandler.h" />
+    <ClInclude Include="GridStyleSurfaceColorHandler.h" />
+    <ClInclude Include="GridStyleSurfaceHandler.h" />
+    <ClInclude Include="GridStylizer.h" />
+    <ClInclude Include="GridTheme.h" />
+    <ClInclude Include="GridThemeParser.h" />
+    <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="KeyEncode.h" />
+    <ClInclude Include="LabelRenderer.h" />
+    <ClInclude Include="LabelRendererBase.h" />
+    <ClInclude Include="LabelRendererLocal.h" />
+    <ClInclude Include="LineStyleDef.h" />
+    <ClInclude Include="RS_BufferOutputStream.h" />
+    <ClInclude Include="SimpleOverpost.h" />
+    <ClInclude Include="StylizationUtil.h" />
+    <ClInclude Include="TransformMesh.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Stylization.h" />
+    <ClInclude Include="StylizationAPI.h" />
+    <ClInclude Include="StylizationDefs.h" />
+    <ClInclude Include="ThemeParameters.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Stylization.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Foundation\Foundation.vcxproj">
+      <Project>{a82adc7d-4da4-42f2-9bf6-df5dcfb44425}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\MdfModel\MdfModel.vcxproj">
+      <Project>{c50254f2-654a-48de-af5b-20605aef8d10}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

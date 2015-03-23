@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WatermarkDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="2.4.0" xsi:noNamespaceSchemaLocation="WatermarkDefinition-2.4.0.xsd">
+  <Content>
+    <SimpleSymbolDefinition>
+      <Name/>
+      <Description/>
+      <Graphics>
+        <Text>
+          <Content>'MapGuide Sheboygan Tiled Sample'</Content>
+          <FontName>'Arial'</FontName>
+          <Height>3</Height>
+          <Frame>
+            <FillColor>0xFFFFFFFF</FillColor>
+            <OffsetX>0.0</OffsetX>
+            <OffsetY>0.0</OffsetY>
+          </Frame>
+        </Text>
+      </Graphics>
+      <PointUsage/>
+      <ParameterDefinition/>
+    </SimpleSymbolDefinition>
+  </Content>
+  <Appearance/>
+  <Position>
+    <XYPosition>
+      <XPosition>
+        <Offset>5</Offset>
+        <Unit>Pixels</Unit>
+        <Alignment>Right</Alignment>
+      </XPosition>
+      <YPosition>
+        <Offset>5</Offset>
+        <Unit>Points</Unit>
+        <Alignment>Bottom</Alignment>
+      </YPosition>
+    </XYPosition>
+  </Position>
+</WatermarkDefinition>

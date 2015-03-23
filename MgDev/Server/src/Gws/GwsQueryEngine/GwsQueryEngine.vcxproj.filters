@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Inc">
+      <UniqueIdentifier>{6dc04f07-222e-4cca-8223-cf581490ae34}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\GwsBinaryFeatureReader.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GwsBinaryFeatureWriter.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GwsBinaryReader.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GwsBinaryWriter.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\GwsFdoCommand.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GwsFlatFdoReader.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\GwsMutableFeature.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\GwsQuery.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\GwsQueryDefinition.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\GwsQueryEngineImp.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\utf8_.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GwsBatchSortedBlockJoinQueryResults.cpp" />
+    <ClCompile Include="GwsBinaryFeature.cpp" />
+    <ClCompile Include="GwsBinaryFeatureReader.cpp" />
+    <ClCompile Include="GwsBinaryFeatureWriter.cpp" />
+    <ClCompile Include="GwsBinaryReader.cpp" />
+    <ClCompile Include="GwsBinaryWriter.cpp" />
+    <ClCompile Include="GwsCsQueryProcessor.cpp" />
+    <ClCompile Include="GwsExtendedFeatureDescription.cpp" />
+    <ClCompile Include="GwsFdoCommand.cpp" />
+    <ClCompile Include="GwsFdoCommandDelete.cpp" />
+    <ClCompile Include="GwsFdoCommandInsert.cpp" />
+    <ClCompile Include="GwsFdoCommandLock.cpp" />
+    <ClCompile Include="GwsFdoCommandUnlock.cpp" />
+    <ClCompile Include="GwsFdoCommandUpdate.cpp" />
+    <ClCompile Include="GwsFeatureQueryDefinition.cpp" />
+    <ClCompile Include="GwsFeatureQueryResults.cpp" />
+    <ClCompile Include="GwsFeatureSourceQuery.cpp" />
+    <ClCompile Include="GwsFeaturesPool.cpp" />
+    <ClCompile Include="GwsFlatFdoReader.cpp" />
+    <ClCompile Include="GwsFlatGwsIterator.cpp" />
+    <ClCompile Include="GwsJoinQueryDefinition.cpp" />
+    <ClCompile Include="GwsJoinQueryResults.cpp" />
+    <ClCompile Include="GwsMultiSelectIterator.cpp" />
+    <ClCompile Include="GwsMutableFeature.cpp" />
+    <ClCompile Include="GwsNestedLoopsJoinQueryResults.cpp" />
+    <ClCompile Include="GwsNestedLoopSortedBlockJoinQueryResults.cpp" />
+    <ClCompile Include="GwsPooledFeature.cpp" />
+    <ClCompile Include="GwsPreparedFeatureQuery.cpp" />
+    <ClCompile Include="GwsPreparedJoinQuery.cpp" />
+    <ClCompile Include="GwsPropertyDesc.cpp" />
+    <ClCompile Include="GwsQueryDefinition.cpp" />
+    <ClCompile Include="GwsQueryEngine.cpp" />
+    <ClCompile Include="GwsQueryFactories.cpp" />
+    <ClCompile Include="GwsQueryUtils.cpp" />
+    <ClCompile Include="GwsQueryXml.cpp" />
+    <ClCompile Include="GwsRightBatchSortedBlockJoinQueryResults.cpp" />
+    <ClCompile Include="GwsRightJoinQueryResults.cpp" />
+    <ClCompile Include="GwsRightNestedLoopJoinQueryResults.cpp" />
+    <ClCompile Include="GwsRightNestedLoopSortedBlockJoinQueryResults.cpp" />
+    <ClCompile Include="GwsRightSortedJoinQueryResults.cpp" />
+    <ClCompile Include="GwsSortMergeJoinQueryResults.cpp" />
+    <ClCompile Include="utf8_.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GwsQueryEngine.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GwsQueryEngine.rc" />
+  </ItemGroup>
+</Project>

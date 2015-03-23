@@ -1,0 +1,38 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="setactiontarget.js" >
+</script>
+</head>
+<body>
+<form name="input" action="" method="get">
+<b>Request:</b>
+<input type="text" name="REQUEST" value="GETFEATURE" size="50">
+<p> Service:
+<input type="text" name="SERVICE" value="WFS" size="10">
+<p> Version:
+<input type="text" name="VERSION" value="1.1.0" size="10">
+<p> Property Name(s):
+<input type="text" name="PROPERTYNAME" value="" size="50">
+<p> Max Features:
+<input type="text" name="MAXFEATURES" value="1000" size="10">
+<p> SRS Name:
+<input type="text" name="SRSNAME" value="EPSG:4326" size="10">
+<p> Type Name(s):
+<input type="text" name="TYPENAME" value="ns55197509:VotingDistricts" size="50">
+<p> Feature ID(s):
+<input type="text" name="FEATUREID" value="" size="50">
+<p> Filter:
+<input type="text" name="FILTER" value="" size="50">
+<p> Bounding Box:
+<input type="text" name="BBOX" value="" size="50">
+<p> Output Format:
+<select name="OUTPUTFORMAT">
+<option value="GML3">GML3</option>
+<option value="GML2">GML2</option>
+</select>
+<p>
+<input type="submit" value="Submit" onclick="SetActionTarget()"> <input type="reset">
+</form>
+</body>
+</html>

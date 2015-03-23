@@ -1,0 +1,83 @@
+cleandebug:
+  echo clean - debug
+  del /Q .\Mg*.cs
+  del /Q .\SWIGTYPE*.cs
+  del /Q .\*Constants.cs
+  del /Q .\*PINVOKE.cs
+  del /Q .\*Api.cs
+  del /Q OSGeo.MapGuide.Desktop.Temp.xml
+  if exist $(OUTDIR)\OSGeo.MapGuide.Desktop.dll del $(OUTDIR)\OSGeo.MapGuide.Desktop.dll
+  if exist $(OUTDIR)\OSGeo.MapGuide.Desktop.Temp.dll del $(OUTDIR)\OSGeo.MapGuide.Desktop.Temp.dll
+  if exist $(ASSEMBLY_DIR)\OSGeo.MapGuide.Desktop.dll del $(OUTDIR)\OSGeo.MapGuide.Desktop.dll
+  if exist $(ASSEMBLY_DIR)\OSGeo.MapGuide.Foundation.dll del $(OUTDIR)\OSGeo.MapGuide.Foundation.dll
+  if exist $(ASSEMBLY_DIR)\OSGeo.MapGuide.Geometry.dll del $(OUTDIR)\OSGeo.MapGuide.Geometry.dll
+  if exist $(ASSEMBLY_DIR)\OSGeo.MapGuide.PlatformBase.dll del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
+
+cleanrelease:
+  echo clean - release
+  del /Q .\Mg*.cs
+  del /Q .\SWIGTYPE*.cs
+  del /Q .\*Constants.cs
+  del /Q .\*PINVOKE.cs
+  del /Q .\*Api.cs
+  del /Q OSGeo.MapGuide.Desktop.xml
+  if exist $(OUTDIR)\OSGeo.MapGuide.Desktop.dll del $(OUTDIR)\OSGeo.MapGuide.Desktop.dll
+  if exist $(ASSEMBLY_DIR)\OSGeo.MapGuide.Desktop.dll del $(OUTDIR)\OSGeo.MapGuide.Desktop.dll
+  if exist $(ASSEMBLY_DIR)\OSGeo.MapGuide.Foundation.dll del $(OUTDIR)\OSGeo.MapGuide.Foundation.dll
+  if exist $(ASSEMBLY_DIR)\OSGeo.MapGuide.Geometry.dll del $(OUTDIR)\OSGeo.MapGuide.Geometry.dll
+  if exist $(ASSEMBLY_DIR)\OSGeo.MapGuide.PlatformBase.dll del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
+
+debug: $(OUTDIR)\OSGeo.MapGuide.Desktop.Temp.dll
+
+release: $(OUTDIR)\OSGeo.MapGuide.Desktop.dll
+
+$(OUTDIR)\OSGeo.MapGuide.Desktop.Temp.dll:
+  echo target - OSGeo.MapGuide.Desktop.Temp.dll
+  copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.Foundation.dll $(OUTDIR)\OSGeo.MapGuide.Foundation.dll
+  copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.Geometry.dll $(OUTDIR)\OSGeo.MapGuide.Geometry.dll
+  copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.PlatformBase.dll $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
+  copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.Foundation.xml $(OUTDIR)\OSGeo.MapGuide.Foundation.xml
+  copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.Geometry.xml $(OUTDIR)\OSGeo.MapGuide.Geometry.xml
+  copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.PlatformBase.xml $(OUTDIR)\OSGeo.MapGuide.PlatformBase.xml
+  copy /Y SignMapGuideApi.exe $(OUTDIR)\SignMapGuideApi.exe
+  copy /Y maestroapi.key $(OUTDIR)\maestroapi.key
+  $(SIGNER) $(OUTDIR)
+  csc.exe /debug+ /debug:full /optimize- /out:$(OUTDIR)\OSGeo.MapGuide.Desktop.dll /doc:$(OUTDIR)\OSGeo.MapGuide.Desktop.xml /platform:$(PLATFORM) /target:library /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll .\*.cs .\Partials\*.cs
+  copy /y $(OUTDIR)\OSGeo.MapGuide.Desktop.dll $(OUTDIR)\OSGeo.MapGuide.Desktop.Temp.dll
+  copy /Y $(WEB_BIN_DIR)\FoundationUnmanagedApi.dll $(OUTDIR)\FoundationUnmanagedApi.dll
+  copy /Y $(WEB_BIN_DIR)\GeometryUnmanagedApi.dll $(OUTDIR)\GeometryUnmanagedApi.dll
+  copy /Y $(WEB_BIN_DIR)\PlatformBaseUnmanagedApi.dll $(OUTDIR)\PlatformBaseUnmanagedApi.dll
+  if not exist "$(ASSEMBLY_DIR)" mkdir "$(ASSEMBLY_DIR)"
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.Foundation.dll $(ASSEMBLY_DIR)\OSGeo.MapGuide.Foundation.dll
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.Geometry.dll $(ASSEMBLY_DIR)\OSGeo.MapGuide.Geometry.dll
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll $(ASSEMBLY_DIR)\OSGeo.MapGuide.PlatformBase.dll
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.Desktop.dll $(ASSEMBLY_DIR)\OSGeo.MapGuide.Desktop.dll
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.Foundation.xml $(ASSEMBLY_DIR)\OSGeo.MapGuide.Foundation.xml
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.Geometry.xml $(ASSEMBLY_DIR)\OSGeo.MapGuide.Geometry.xml
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.PlatformBase.xml $(ASSEMBLY_DIR)\OSGeo.MapGuide.PlatformBase.xml
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.Desktop.xml $(ASSEMBLY_DIR)\OSGeo.MapGuide.Desktop.xml
+
+$(OUTDIR)\OSGeo.MapGuide.Desktop.dll:
+  echo target - OSGeo.MapGuide.Desktop.dll
+  copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.Foundation.dll $(OUTDIR)\OSGeo.MapGuide.Foundation.dll
+  copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.Geometry.dll $(OUTDIR)\OSGeo.MapGuide.Geometry.dll
+  copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.PlatformBase.dll $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
+  copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.Foundation.xml $(OUTDIR)\OSGeo.MapGuide.Foundation.xml
+  copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.Geometry.xml $(OUTDIR)\OSGeo.MapGuide.Geometry.xml
+  copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.PlatformBase.xml $(OUTDIR)\OSGeo.MapGuide.PlatformBase.xml
+  copy /Y SignMapGuideApi.exe $(OUTDIR)\SignMapGuideApi.exe
+  copy /Y maestroapi.key $(OUTDIR)\maestroapi.key
+  $(SIGNER) $(OUTDIR)
+  csc.exe /debug+ /debug:pdbonly /optimize+ /out:$(OUTDIR)\OSGeo.MapGuide.Desktop.dll /doc:$(OUTDIR)\OSGeo.MapGuide.Desktop.xml /target:library /platform:$(PLATFORM) /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll .\*.cs .\Partials\*.cs 
+  copy /Y $(WEB_BIN_DIR)\FoundationUnmanagedApi.dll $(OUTDIR)\FoundationUnmanagedApi.dll
+  copy /Y $(WEB_BIN_DIR)\GeometryUnmanagedApi.dll $(OUTDIR)\GeometryUnmanagedApi.dll
+  copy /Y $(WEB_BIN_DIR)\PlatformBaseUnmanagedApi.dll $(OUTDIR)\PlatformBaseUnmanagedApi.dll
+  if not exist "$(ASSEMBLY_DIR)" mkdir "$(ASSEMBLY_DIR)"
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.Foundation.dll $(ASSEMBLY_DIR)\OSGeo.MapGuide.Foundation.dll
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.Geometry.dll $(ASSEMBLY_DIR)\OSGeo.MapGuide.Geometry.dll
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll $(ASSEMBLY_DIR)\OSGeo.MapGuide.PlatformBase.dll
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.Desktop.dll $(ASSEMBLY_DIR)\OSGeo.MapGuide.Desktop.dll
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.Foundation.xml $(ASSEMBLY_DIR)\OSGeo.MapGuide.Foundation.xml
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.Geometry.xml $(ASSEMBLY_DIR)\OSGeo.MapGuide.Geometry.xml
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.PlatformBase.xml $(ASSEMBLY_DIR)\OSGeo.MapGuide.PlatformBase.xml
+  copy /Y $(OUTDIR)\OSGeo.MapGuide.Desktop.xml $(ASSEMBLY_DIR)\OSGeo.MapGuide.Desktop.xml

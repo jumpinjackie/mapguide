@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompoundSymbolDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SymbolDefinition-1.1.0.xsd" version="1.1.0">
+  <Name>MTYP1500a</Name>
+  <SimpleSymbol>
+    <SimpleSymbolDefinition>
+      <Name>UpperLowerDashing</Name>
+      <Graphics>
+        <Path>
+          <Geometry>M 0,-2.5 h 8 m 2,0 h 8 m 2,0 h 2 M 0,2.5 h 8 m 2,0 h 8 m 2,0 h 2</Geometry>
+        </Path>
+      </Graphics>
+      <LineUsage>
+        <VertexControl>'OverlapWrap'</VertexControl>
+        <Repeat>24</Repeat>
+        <DefaultPath>
+          <Geometry></Geometry>
+          <LineColor>ff000000</LineColor>
+          <LineWeight>0.0</LineWeight>
+        </DefaultPath>
+      </LineUsage>
+      <ParameterDefinition/>
+    </SimpleSymbolDefinition>
+  </SimpleSymbol>
+  <SimpleSymbol>
+    <SimpleSymbolDefinition>
+      <Name>OffsetCrossTick</Name>
+      <Graphics>
+        <Path>
+          <Geometry>M 0.0,-2.5 v 5</Geometry>
+        </Path>
+      </Graphics>
+      <LineUsage>
+        <VertexControl>'OverlapWrap'</VertexControl>
+        <StartOffset>28</StartOffset>
+        <Repeat>24</Repeat>
+      </LineUsage>
+      <ParameterDefinition/>
+    </SimpleSymbolDefinition>
+  </SimpleSymbol>
+</CompoundSymbolDefinition>

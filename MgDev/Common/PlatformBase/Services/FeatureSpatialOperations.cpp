@@ -1,0 +1,34 @@
+//
+//  Copyright (C) 2004-2014 by Autodesk, Inc.
+//
+//  This library is free software; you can redistribute it and/or
+//  modify it under the terms of version 2.1 of the GNU Lesser
+//  General Public License as published by the Free Software Foundation.
+//
+//  This library is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//  Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with this library; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+
+#include "FeatureSpatialOperations.h"
+
+//NOTE: This is primarily for Linux to ensure that the symbols below are
+//included in the resulting binary, as the typedef changes to enable 64-bit support
+//caused these symbols below to be unresolved
+
+const int MgFeatureSpatialOperations::Contains;
+const int MgFeatureSpatialOperations::Crosses;
+const int MgFeatureSpatialOperations::Disjoint;
+const int MgFeatureSpatialOperations::Equals;
+const int MgFeatureSpatialOperations::Intersects;
+const int MgFeatureSpatialOperations::Overlaps;
+const int MgFeatureSpatialOperations::Touches;
+const int MgFeatureSpatialOperations::Within;
+const int MgFeatureSpatialOperations::CoveredBy;
+const int MgFeatureSpatialOperations::Inside;
+const int MgFeatureSpatialOperations::EnvelopeIntersects;

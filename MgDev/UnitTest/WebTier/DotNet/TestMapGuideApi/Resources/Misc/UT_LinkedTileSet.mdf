@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MapDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MapDefinition-3.0.0.xsd" version="3.0.0">
+  <Name>Base Map linked to Tile Set</Name>
+  <CoordinateSystem>{0}</CoordinateSystem>
+  <Extents>
+    <MinX>{1}</MinX>
+    <MaxX>{3}</MaxX>
+    <MinY>{2}</MinY>
+    <MaxY>{4}</MaxY>
+  </Extents>
+  <BackgroundColor>FFF7E1D2</BackgroundColor>
+  <TileSetSource>
+    <ResourceId>{5}</ResourceId>
+  </TileSetSource>
+</MapDefinition>

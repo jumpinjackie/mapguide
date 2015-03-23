@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Parameters>
+<!--
+   Module section.
+-->
+<Module name="MapGuideDesktopApi" />
+
+<!--
+   Custom file path.
+-->
+<CustomFile path="./DesktopCustom" />
+
+<!--
+   Target section.
+-->
+<Target path="./MapGuideDesktopApi.i" />
+<DocTarget path="./MapGuideDesktopApi_Doc.i" />
+
+<!--
+   C++ inline section.
+-->
+<CppInline>
+#ifdef _WIN32
+#pragma warning(disable: 4251)
+#endif
+
+#include &lt;string&gt;
+#include &lt;map&gt;
+
+#include "Foundation.h"
+#include "GeometryCommon.h"
+#include "MgDesktop.h"
+
+#if defined(PHP) || defined(JAVA)
+typedef std::wstring STRINGPARAM;
+#else
+typedef wchar_t* STRINGPARAM;
+#endif
+</CppInline>
+
+<!--
+   Type replacements.
+-->
+<TypeReplacements>
+    <TypeReplacement oldtype="CREFSTRING" newtype="STRINGPARAM" />
+    <TypeReplacement oldtype="INT64" newtype="long long" />
+</TypeReplacements>
+
+<!--
+   Swig inline section.
+-->
+<SwigInline>
+    %import "../../../Web/src/DotNetUnmanagedApi/Foundation/FoundationApi.i"
+    %import "../../../Web/src/DotNetUnmanagedApi/Geometry/GeometryApi.i"
+    %import "../../../Web/src/DotNetUnmanagedApi/PlatformBase/PlatformBaseApi.i"
+    %include "language.i"   //typemaps specific for each language
+    %include "../../MgDesktop/System/ClassId.h"
+
+    #if defined(PHPSWIG)
+    // We force UTF-8 encoding for PHP
+    typedef char*         STRINGPARAM;
+    typedef char*         STRING;
+    typedef char*         BYTE_ARRAY_IN;
+    typedef char*         BYTE_ARRAY_OUT;
+    typedef unsigned char BYTE;
+    #elseif defined(JAVA)
+    typedef std::wstring  STRINGPARAM;
+    typedef signed char   BYTE;  //mapped to byte in Java
+    #else // .Net
+    typedef char*         BYTE_ARRAY_IN;
+    typedef char*         BYTE_ARRAY_OUT;
+    typedef unsigned char BYTE;    //mapped to byte in C#
+    #endif
+
+    typedef int           STATUS;
+    typedef short         INT8;
+    typedef short         INT16;
+    typedef int           INT32;
+    typedef int           UINT32;
+
+</SwigInline>
+
+<!--
+   C++ Headers section.  If you add headers to this section then you
+   must also add them to Makefile.am in the JavaApi and PhpApi folders.
+-->
+<Headers>
+    
+    <!-- MapGuideDesktop classes -->
+
+    <Header path="../../MgDesktop/Exception/AliasNotFoundException.h" />
+    <Header path="../../MgDesktop/Exception/ConnectionFailedException.h" />
+    <Header path="../../MgDesktop/Exception/DuplicateParameterException.h" />
+    <Header path="../../MgDesktop/Exception/DwfException.h" />
+    <Header path="../../MgDesktop/Exception/DwfSectionNotFoundException.h" />
+    <Header path="../../MgDesktop/Exception/DwfSectionResourceNotFoundException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidDwfPackageException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidDwfSectionException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidFeatureSourceException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidLogEntryException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidPrintLayoutFontSizeUnitsException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidPrintLayoutPositionUnitsException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidPrintLayoutSizeUnitsException.h" />
+    <Header path="../../MgDesktop/Exception/ParameterNotFoundException.h" />
+    <Header path="../../MgDesktop/Exception/StylizeLayerFailedException.h" />
+
+    <Header path="../../MgDesktop/Services/DataReader.h" />
+    <Header path="../../MgDesktop/Services/DrawingService.h" />
+    <Header path="../../MgDesktop/Services/FeatureReader.h" />
+    <Header path="../../MgDesktop/Services/FeatureService.h" />
+    <Header path="../../MgDesktop/Services/MappingService.h" />
+    <Header path="../../MgDesktop/Services/ProfilingService.h" />
+    <Header path="../../MgDesktop/Services/RenderingService.h" />
+    <Header path="../../MgDesktop/Services/ResourceService.h" />
+    <Header path="../../MgDesktop/Services/ScrollableFeatureReader.h" />
+    <Header path="../../MgDesktop/Services/ServiceFactory.h" />
+    <Header path="../../MgDesktop/Services/SqlReader.h" />
+    <Header path="../../MgDesktop/Services/TileService.h" />
+    <Header path="../../MgDesktop/Services/Transaction.h" />
+
+    <Header path="../../MgDesktop/Services/Feature/RdbmsFeatureSourceParams.h" />
+
+    <Header path="../../MgDesktop/Services/Rendering/DwfVersion.h" />
+    <Header path="../../MgDesktop/Services/Rendering/FeatureInformation.h" />
+    <Header path="../../MgDesktop/Services/Rendering/Layout.h" />
+    <Header path="../../MgDesktop/Services/Rendering/MapPlot.h" />
+    <Header path="../../MgDesktop/Services/Rendering/DwfVersion.h" />
+    <Header path="../../MgDesktop/Services/Rendering/MapPlotCollection.h" />
+    <Header path="../../MgDesktop/Services/Rendering/PlotSpecification.h" />
+    <Header path="../../MgDesktop/Services/Rendering/RenderingOptions.h" />
+
+    <Header path="../../MgDesktop/System/PlatformInit.h" />
+
+    <Header path="../../MgDesktop/MapLayer/Layer.h" />
+    <Header path="../../MgDesktop/MapLayer/Map.h" />
+    <Header path="../../MgDesktop/MapLayer/Selection.h" />
+
+</Headers>
+
+</Parameters>

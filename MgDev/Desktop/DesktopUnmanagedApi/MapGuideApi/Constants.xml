@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Parameters>
+
+<!--
+   Type replacements.
+-->
+<PHPTypeReplacements>
+    <TypeReplacement oldtype="STRING" newtype="" />
+    <TypeReplacement oldtype="INT8" newtype="" />
+    <TypeReplacement oldtype="INT16" newtype="" />
+    <TypeReplacement oldtype="INT32" newtype="" />
+    <TypeReplacement oldtype="int" newtype="" />
+    <TypeReplacement oldtype="float" newtype="" />
+    <TypeReplacement oldtype="double" newtype="" />
+    <TypeReplacement oldtype="static" newtype="" />
+    <TypeReplacement oldtype="bool" newtype="" />
+</PHPTypeReplacements>
+<CSharpTypeReplacements>
+    <TypeReplacement oldtype="STRING" newtype="string" />
+    <TypeReplacement oldtype="INT8" newtype="byte" />
+    <TypeReplacement oldtype="INT16" newtype="short" />
+    <TypeReplacement oldtype="INT32" newtype="int" />
+    <TypeReplacement oldtype="int" newtype="int" />
+    <TypeReplacement oldtype="float" newtype="float" />
+    <TypeReplacement oldtype="double" newtype="double" />
+    <TypeReplacement oldtype="static" newtype="" />
+    <TypeReplacement oldtype="const" newtype="const" />
+</CSharpTypeReplacements>
+<JavaTypeReplacements>
+    <TypeReplacement oldtype="STRING" newtype="String" />
+    <TypeReplacement oldtype="INT8" newtype="short" />
+    <TypeReplacement oldtype="INT16" newtype="short" />
+    <TypeReplacement oldtype="INT32" newtype="int" />
+    <TypeReplacement oldtype="int" newtype="int" />
+    <TypeReplacement oldtype="float" newtype="float" />
+    <TypeReplacement oldtype="double" newtype="double" />
+    <TypeReplacement oldtype="const" newtype="final" />
+    <TypeReplacement oldtype="bool" newtype="boolean" />
+</JavaTypeReplacements>
+
+<!--
+   Inline section.
+-->
+<Inline>
+//
+//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//
+//  This library is free software; you can redistribute it and/or
+//  modify it under the terms of version 2.1 of the GNU Lesser
+//  General Public License as published by the Free Software Foundation.
+//
+//  This library is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//  Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with this library; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+</Inline>
+
+<Namespace>OSGeo.MapGuide</Namespace>
+<Package>org.osgeo.mapguide</Package>
+
+<Classes>
+  <Class name="MgServiceType" />
+  <Class name="MgUser" />
+  <Class name="MgGroup" />
+  <Class name="MgRole" />
+  <Class name="MgRepositoryType" />
+  <Class name="MgResourceType" />
+  <Class name="MgResourceTag" />
+  <Class name="MgResourceDataName" />
+  <Class name="MgResourceDataType" />
+  <Class name="MgResourcePermission" />
+  <Class name="MgMimeType" />
+  <Class name="MgPropertyType" />
+  <Class name="MgPageUnitsType" />
+  <Class name="MgCoordinateSpace" />
+  <Class name="MgGeometryEntityType" />
+  <Class name="MgCoordinateDimension" />
+  <Class name="MgGeometricPathInstructionType" />
+  <Class name="MgGeometryType" />
+  <Class name="MgGeometryComponentType" />
+  <Class name="MgLayerGroupType" />
+  <Class name="MgLayerType" />
+  <Class name="MgFeatureGeometricType" />
+  <Class name="MgReaderType" />
+  <Class name="MgOrderingOption" />
+  <Class name="MgFeatureSpatialOperations" />
+  <Class name="MgFeatureCommandType" />
+  <Class name="MgFeaturePropertyType" />
+  <Class name="MgObjectPropertyType" />
+  <Class name="MgParameterDirection" />
+  <Class name="MgSpatialContextExtentType" />
+  <Class name="MgConfigProperties" />
+  <Class name="MgLogFileType" />
+  <Class name="MgServerInformationProperties" />
+  <Class name="MgCoordinateSystemCodeFormat" />
+  <Class name="MgCoordinateSystemErrorCode" />
+  <Class name="MgCoordinateSystemGeodeticTransformationMethod" />
+  <Class name="MgCoordinateSystemGridOrientation" />
+  <Class name="MgCoordinateSystemGridSpecializationType" />
+  <Class name="MgCoordinateSystemMgrsGridLevel" />
+  <Class name="MgCoordinateSystemMgrsLetteringScheme" />
+  <Class name="MgCoordinateSystemMgrsGridSquarePosition" />
+  <Class name="MgCoordinateSystemProjectionCode" />
+  <Class name="MgCoordinateSystemProjectionFormatType" />
+  <Class name="MgCoordinateSystemProjectionLogicalType" />
+  <Class name="MgCoordinateSystemProjectionParameterType" />
+  <Class name="MgCoordinateSystemType" />
+  <Class name="MgCoordinateSystemUnitCode" />
+  <Class name="MgCoordinateSystemUnitType" />
+  <Class name="MgCoordinateSystemWktFlavor" />
+  <Class name="MgCoordinateSystemGeodeticTransformDefType" />
+  <Class name="MgCoordinateSystemGeodeticAnalyticalTransformationMethod" />
+  <Class name="MgCoordinateSystemGeodeticMultipleRegressionTransformationMethod" />
+  <Class name="MgCoordinateSystemGeodeticTransformGridFileFormat" />
+  <Class name="MgMapPlotInstruction" />
+  <Class name="MgUnitType" />
+  <Class name="MgPackageStatus" />
+  <Class name="MgRasterDataModelType" />
+</Classes>
+
+<!--
+   C++ Headers section.  If you add headers to this section then you
+   must also add them to Makefile.am in the JavaApi and PhpApi folders.
+-->
+<Headers>
+
+    <!-- API -->
+
+    <Header path="../../../Common/Foundation/Data/FeaturePropertyType.h" />
+    <Header path="../../../Common/Foundation/Data/MimeType.h" />
+    <Header path="../../../Common/Foundation/Data/PropertyType.h" />
+
+    <Header path="../../../Common/PlatformBase/MapLayer/LayerGroupType.h" />
+    <Header path="../../../Common/PlatformBase/MapLayer/LayerType.h" />
+    <Header path="../../../Common/PlatformBase/Services/BaseServiceDefs.h" />
+    <Header path="../../../Common/PlatformBase/Services/FeatureCommandType.h" />
+    <Header path="../../../Common/PlatformBase/Services/FeatureGeometricType.h" />
+    <Header path="../../../Common/PlatformBase/Services/FeatureSpatialOperations.h" />
+    <Header path="../../../Common/PlatformBase/Services/ObjectPropertyType.h" />
+    <Header path="../../../Common/PlatformBase/Services/OrderingOption.h" />
+    <Header path="../../../Common/PlatformBase/Services/ParameterDirection.h" />
+    <Header path="../../../Common/PlatformBase/Services/RasterTypes.h" />
+    <Header path="../../../Common/PlatformBase/Services/ReaderType.h" />
+    <Header path="../../../Common/PlatformBase/Services/ResourceDefs.h" />
+    <Header path="../../../Common/PlatformBase/Services/SpatialContextExtentType.h" />
+
+    <Header path="../../../Common/Geometry/CoordinateDimension.h" />
+    <Header path="../../../Common/Geometry/GeometricEntityType.h" />
+    <Header path="../../../Common/Geometry/GeometricPathInstructionType.h" />
+    <Header path="../../../Common/Geometry/GeometryComponentType.h" />
+    <Header path="../../../Common/Geometry/GeometryType.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemCodeFormat.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemErrorCode.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformationMethod.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGridOrientation.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGridSpecializationType.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemMgrsGridLevel.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemMgrsLetteringScheme.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemMgrsGridSquarePosition.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionCode.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionFormatType.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionLogicalType.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionParameterType.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemType.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitCode.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitType.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemWktFlavor.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefType.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformationMethod.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformationMethod.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformGridFileFormat.h" />
+
+</Headers>
+
+</Parameters>
