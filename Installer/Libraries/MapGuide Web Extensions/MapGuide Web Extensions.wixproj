@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>3.0</ProductVersion>
+    <ProjectGuid>{d41d53c4-433e-47b5-b663-e79b5569ee22}</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>MapGuide Web Extensions</OutputName>
+    <OutputType>Library</OutputType>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <MgRegKey Condition=" '$(MgRegKey)' == '' ">SOFTWARE\OSGeo\MapGuide</MgRegKey>
+    <MgSource Condition="('$(MgSource)'=='')">$(MSBuildProjectDirectory)\..\..\..\MgDev\$(Configuration)</MgSource>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Debug;MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DefineConstants>Debug;MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform)</DefineConstants>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DefineConstants>MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform)</DefineConstants>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Apache.wxs" />
+    <Compile Include="FileIncludes\incApacheFiles.wxs" />
+    <Compile Include="FileIncludes\incDotNetDevGuideFiles.wxs" />
+    <Compile Include="FileIncludes\incDotNetViewerSampleFiles.wxs" />
+    <Compile Include="FileIncludes\incFusionFiles.wxs" />
+    <Compile Include="FileIncludes\incHelpFiles.wxs" />
+    <Compile Include="FileIncludes\incJavaDevGuideFiles.wxs" />
+    <Compile Include="FileIncludes\incJavaViewerSampleFiles.wxs" />
+    <Compile Include="FileIncludes\incMapAgentFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerAspxFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerJspFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerLocalizedFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerMapAdminFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerPhpFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerSchemareportFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerStdiconFiles.wxs" />
+    <Compile Include="FileIncludes\incOpenLayersSampleFiles.wxs" />
+    <Compile Include="FileIncludes\incPhpDevGuideFiles.wxs" />
+    <Compile Include="FileIncludes\incPhpFiles.wxs" />
+    <Compile Include="FileIncludes\incPhpViewerSampleFiles.wxs" />
+    <Compile Include="FileIncludes\incTomcatFiles.wxs" />
+    <Compile Include="FileIncludes\incWebInfFiles.wxs" />
+    <Compile Include="FileIncludes\incWebRootFiles.wxs" />
+    <Compile Include="IIS7.wxs" />
+    <Compile Include="MapGuideWebExtensions.wxs" />
+    <Compile Include="Shortcuts.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="FileIncludes" />
+    <Folder Include="Lang" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Lang\MapGuideWebExtensions_en-US.wxl" />
+  </ItemGroup>
+  <ItemGroup>
+    <WixExtension Include="WixUtilExtension">
+      <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
+      <Name>WixUtilExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixNetFxExtension">
+      <HintPath>$(WixExtDir)\WixNetFxExtension.dll</HintPath>
+      <Name>WixNetFxExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixIIsExtension">
+      <HintPath>$(WixExtDir)\WixIIsExtension.dll</HintPath>
+      <Name>WixIIsExtension</Name>
+    </WixExtension>
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" />
+  <!--
+	To modify your build process, add your task inside one of the targets below and uncomment it.
+	Other similar extension points exist, see Wix.targets.
+	<Target Name="BeforeBuild">
+	</Target>
+	<Target Name="AfterBuild">
+	</Target>
+	-->
+</Project>

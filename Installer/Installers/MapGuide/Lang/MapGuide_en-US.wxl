@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-US" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+    <!-- 
+    Use this link to get the culture id
+    http://msdn.microsoft.com/en-us/library/system.globalization.cultureinfo(vs.80).aspx
+    -->
+    <String Id="LANG">1033</String>
+    <String Id="ProductName">MapGuide Open Source 2.4</String>
+    <String Id="ProductManufacturer">Open Source Geospatial Foundation</String>
+
+    <String Id="InstallerTitle">[ProductName] Setup</String>
+
+    <String Id="MapGuideFeature">MapGuide</String>
+    <String Id="MapGuideFeature_Description">MapGuide Install Location</String>
+
+    <String Id="NextButtonText">Next</String>
+    <String Id="BackButtonText">Back</String>
+    <String Id="CancelButtonText">Cancel</String>
+
+    <String Id="DisabledFeaturesDialog_Title">Disabled Features</String>
+    <String Id="DisabledFeaturesDialog_Description">Some features will not be available</String>
+    <String Id="DisabledFeaturesDialog_IIS">IIS is not installed, so it will not be available as an installation choice.</String>
+    <String Id="DisabledFeaturesDialog_DotNet">The .NET Framework 4.0 was not found, so the .NET Web Extensions for IIS will not be available</String>
+    <String Id="DisabledFeaturesDialog_Instructions">If you want to use these features, click on cancel and correct the problem before proceeding with installation</String>
+
+    <String Id="FastCgiDialog_Title">FastCGI is required</String>
+    <String Id="FastCgiDialog_Description">FastCGI needs to be installed</String>
+    <String Id="FastCgiDialog_Instructions">MapGuide IIS Configuration requires FastCGI to be installed on this system</String>
+    <String Id="FastCgiDialog_Instructions2">You can follow the link below for more information on how to enable FastCGI</String>
+    <String Id="FastCgiDialog_Link">http://www.iis.net/fastcgi/configuration</String>
+    <String Id="FastCgiDialog_Instructions3">You can ignore this message if FastCGI for IIS is already enabled. Otherwise you must cancel this installation and enable FastCGI first</String>
+
+    <String Id="ServerConfigDlg_Title">Server Port Configuration</String>
+    <String Id="ServerConfigDlg_Description">Set up the listening ports for MapGuide Server</String>
+    <String Id="ServerConfigDlg_Prompt">MapGuide Server will be installed using the following port numbers. The Server and Web Tier configuration files will be set to use the specified port numbers below.</String>
+    <String Id="ServerConfigDlg_AdminPortNo">Admin Connection Port</String>
+    <String Id="ServerConfigDlg_ClientPortNo">Client Connection Port</String>
+    <String Id="ServerConfigDlg_SitePortNo">Site Connection Port</String>
+    
+    <String Id="WebServerConfigDlg_Title">Select configuration type</String>
+    <String Id="WebServerConfigDlg_Description">Select the type of web server configuration you want</String>
+    <String Id="WebServerConfigDlg_Apache">Bundled Configuration</String>
+    <String Id="WebServerConfigDlg_IIS">IIS Configuration</String>
+    <String Id="WebServerConfigDlg_Manual">Manual Configuration</String>
+    <String Id="WebServerConfigDlg_Apache_Tooltip">Install and configure Apache, PHP, and Tomcat.</String>
+    <String Id="WebServerConfigDlg_IIS_Tooltip">Install PHP and auto-configure IIS.</String>
+    <String Id="WebServerConfigDlg_Manual_Tooltip">Manually install and configure MapGuide.</String>
+
+    <String Id="ApacheConfigDlg_Title">Bundled Configuration Settings</String>
+    <String Id="ApacheConfigDlg_Description">Set up the development environment</String>
+    <String Id="ApacheConfigDlg_PortNo">Web Server Port Number</String>
+    <String Id="ApacheConfigDlg_DevEnv">Development Environment</String>
+    <String Id="ApacheConfigDlg_VDirName">Virtual Directory Name</String>
+
+    <String Id="IISLangConfigDlg_Title">IIS Configuration Settings</String>
+    <String Id="IISLangConfigDlg_Description">Set up the development environment</String>
+    <String Id="IISLangConfigDlg_DevEnv">Development Environment</String>
+    <String Id="IISLangConfigDlg_VDirName">Virtual Directory Name</String>
+
+    <String Id="IIS6ConfigDlg_Title">IIS 6.0 Configuration</String>
+    <String Id="IIS6ConfigDlg_Description">Configure IIS 6.0 Settings</String>
+    <String Id="IIS6ConfigDlg_InstallTo">Install Web Extensions to the following website</String>
+    <String Id="IIS7ConfigDlg_AppPool">Create an application pool</String>
+    <String Id="IIS7ConfigDlg_AppPoolDescription">An application pool allows MapGuide applications to be isolated from other applications running on the web server</String>
+
+    <String Id="NoIISDlg_Title">IIS not found</String>
+    <String Id="NoIISDlg_Description">IIS not found</String>
+    <String Id="NoIISDlg_Text">IIS could not be found on your system. Please go back and choose a different web configuration or install IIS.</String>
+
+    <String Id="IPConfigDlg_Title">Server IP address</String>
+    <String Id="IPConfigDlg_Description">Enter the MapGuide Server site server IP address.</String>
+    <String Id="IPConfigDlg_IPAddress">Enter the MapGuide Server site server IP address:</String>
+    <String Id="IPConfigDlg_Note">The site server IP address defaults to localhost (127.0.0.1)</String>
+
+    <String Id="UpdateApacheConfig">Setting values for httpd.conf</String>
+    <String Id="UpdatePhpIni">Setting values for php.ini</String>
+    <String Id="InstallApacheServiceCA">Installing Apache Service</String>
+    <String Id="InstallTomcatServiceCA">Installing Tomcat Service</String>
+    <String Id="MgServerInstallCA">Installing MapGuide Service</String>
+    <String Id="MgServerUninstallCA">Removing MapGuide Service</String>
+    <String Id="RemoveApacheServiceCA">Removing Apache Service</String>
+    <String Id="RemoveTomcatServiceCA">Removing Tomcat Service</String>
+    
+    <String Id="MapGuideIIS7_I_UnlockSiteHandlers">Unlocking site handler config</String>
+    <String Id="MapGuideIIS7_I_CreateAppPool">Creating IIS application pool</String>
+    <String Id="MapGuideIIS7_I_CreateFastCgi">Creating FastCgi application mapping</String>
+    <String Id="MapGuideIIS7_I_SetAppPoolProp">Setting Application Pool properties</String>
+    <String Id="MapGuideIIS7_I_CreateMapGuideApp">Creating mapguide virtual dir</String>
+    <String Id="MapGuideIIS7_I_SelectXmlCompat">Applying compatibility settings for selection XML to work</String>
+    <String Id="MapGuideIIS7_I_CreatePhpScriptMapping">Creating PHP handler mapping</String>
+    <String Id="MapGuideIIS7_I_CreateMapAgentApp">Creating mapagent virtual dir</String>
+    <String Id="MapGuideIIS7_I_SetMapAgentHandlerAccess">Setting access policy for mapagent virtual dir</String>
+    <String Id="MapGuideIIS7_I_CreateMapAgentScriptHandling">Creating handler mapping for mapagent virtual dir</String>
+    <String Id="MapGuideIIS7_I_EnableMapAgentExtension">Enabling mapagent ISAPI extension</String>
+    <String Id="MapGuideIIS7_I_AssignMapGuideAppPool">Assigning application pool to mapguide virtual dir</String>
+    <String Id="MapGuideIIS7_I_AssignMapAgentAppPool">Assigning application pool to mapagent virtual dir</String>
+    <String Id="MapGuideIIS7_I_UnlockHttpErrorsMain">Unlocking http errors config</String>
+    <String Id="MapGuideIIS7_I_UnlockHttpErrorsWebSite">Unlocking http errors config for web site</String>
+    <String Id="MapGuideIIS7_I_UnlockHttpErrorsMapGuide">Unlocking http errors config for mapguide virtual dir</String>
+    <String Id="MapGuideIIS7_I_Reset401Handler">Resetting 401 handler</String>
+    <String Id="MapGuideIIS7_I_AddJsonMime">Adding JSON mime type</String>
+    <String Id="MapGuideIIS7_I_CreateViewerPhp">Creating mapviewerajax virtual dir to point to mapviewerphp</String>
+    <String Id="MapGuideIIS7_I_SetViewerDocPhp">Setting default document for mapviewerajax virtual dir</String>
+    <String Id="MapGuideIIS7_I_AssignViewerAppPoolPhp">Setting application pool for mapviewerajax</String>
+    <String Id="MapGuideIIS7_I_CreateViewerNet">Creating mapviewerajax virtual dir to point to mapviewernet</String>
+    <String Id="MapGuideIIS7_I_SetViewerDocNet">Setting default document for mapviewerajax virtual dir</String>
+    <String Id="MapGuideIIS7_I_AssignViewerAppPoolNet">Setting application pool for mapviewerajax</String>
+    <String Id="MapGuideIIS7_I_CreateMapViewerNet">Creating mapviewernet virtual dir</String>
+    <String Id="MapGuideIIS7_I_SetMapViewerDocNet">Setting default document for mapviewernet virtual dir</String>
+    <String Id="MapGuideIIS7_I_AssignMapViewerAppPoolNet">Setting application pool for mapviewernet virtual dir</String>
+    <String Id="MapGuideIIS7_I_CreateViewerSampleNet">Creating dotnetviewersample virtual dir</String>
+    <String Id="MapGuideIIS7_I_SetViewerDocViewerSampleNet">Setting default document for dotnetviewersample virtual dir</String>
+    <String Id="MapGuideIIS7_I_AssignViewerAppPoolViewerSampleNet">Setting application pool for dotnetviewersample virtual dir</String>
+    <String Id="MapGuideIIS7_I_CreateViewerDevGuideSamplesNet">Creating dotnetsamples virtual dir</String>
+    <String Id="MapGuideIIS7_I_SetViewerDocDevGuideSamplesNet">Setting default document for dotnetsamples virtual dir</String>
+    <String Id="MapGuideIIS7_I_AssignViewerAppPoolDevGuideSamplesNet">Setting application pool for dotnetsamples virtual dir</String>
+    <String Id="MapGuideIIS7_U_ClearMapAgentRestriction">Clearing mapagent restrictions</String>
+    <String Id="MapGuideIIS7_U_RemoveViewer">Removing mapviewerajax virtual dir</String>
+    <String Id="MapGuideIIS7_U_RemoveMapAgent">Removing mapagent virtual dir</String>
+    <String Id="MapGuideIIS7_U_RemoveMapGuide">Removing mapguide virtual dir</String>
+    <String Id="MapGuideIIS7_U_DeleteAppPool">Deleting application pool</String>
+    <String Id="AspNetRegIIS">Registering ASP.net</String>
+    <String Id="FdoRegArcSde">Registering FDO Provider: OSGeo.ArcSDE</String>
+    <String Id="FdoRegSdf">Registering FDO Provider: OSGeo.SDF</String>
+    <String Id="FdoRegShp">Registering FDO Provider: OSGeo.SHP</String>
+    <String Id="FdoRegWfs">Registering FDO Provider: OSGeo.WFS</String>
+    <String Id="FdoRegWms">Registering FDO Provider: OSGeo.WMS</String>
+    <String Id="FdoRegOdbc">Registering FDO Provider: OSGeo.ODBC</String>
+    <String Id="FdoRegMySql">Registering FDO Provider: OSGeo.MySQL</String>
+    <String Id="FdoRegGdal">Registering FDO Provider: OSGeo.Gdal</String>
+    <String Id="FdoRegOgr">Registering FDO Provider: OSGeo.OGR</String>
+    <String Id="FdoRegPostgreSql">Registering FDO Provider: OSGeo.PostgreSQL</String>
+    <String Id="FdoRegOracle">Registering FDO Provider: King.Oracle</String>
+    <String Id="FdoRegSqlServer">Registering FDO Provider: OSGeo.SQLServerSpatial</String>
+    <String Id="FdoRegSlt">Registering FDO Provider: OSGeo.SQLite</String>
+    <String Id="FdoUnRegArcSde">Un-registering FDO Provider: OSGeo.ArcSDE</String>
+    <String Id="FdoUnRegSdf">Un-registering FDO Provider: OSGeo.SDF</String>
+    <String Id="FdoUnRegShp">Un-registering FDO Provider: OSGeo.SHP</String>
+    <String Id="FdoUnRegWfs">Un-registering FDO Provider: OSGeo.WFS</String>
+    <String Id="FdoUnRegWms">Un-registering FDO Provider: OSGeo.WMS</String>
+    <String Id="FdoUnRegOdbc">Un-registering FDO Provider: OSGeo.ODBC</String>
+    <String Id="FdoUnRegMySql">Un-registering FDO Provider: OSGeo.MySQL</String>
+    <String Id="FdoUnRegGdal">Un-registering FDO Provider: OSGeo.Gdal</String>
+    <String Id="FdoUnRegOgr">Un-registering FDO Provider: OSGeo.OGR</String>
+    <String Id="FdoUnRegPostgreSql">Un-registering FDO Provider: OSGeo.PostgreSQL</String>
+    <String Id="FdoUnRegOracle">Un-registering FDO Provider: King.Oracle</String>
+    <String Id="FdoUnRegSqlServer">Un-registering FDO Provider: OSGeo.SQLServerSpatial</String>
+    <String Id="FdoUnRegSlt">Un-registering FDO Provider: OSGeo.SQLite</String>
+</WixLocalization>
