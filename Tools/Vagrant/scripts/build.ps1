@@ -62,7 +62,7 @@ param (
     [string]
     $ant_path = "C:\apache-ant\bin",
     [string]
-    $graphviz_path = "C:\Program Files (x86)\Graphviz2.30\bin",
+    $graphviz_path = "C:\Program Files (x86)\Graphviz2.38\bin",
     [string]
     $artifact_path = ".\artifacts",
     [int]

@@ -246,23 +246,6 @@ then
 fi
 if [ $HAVE_FDO_SDK -eq 0 ];
 then
-    echo [provision]: svn update FDO
-    BUILD_COMPONENT="svn update FDO"
-    # Only for Ubuntu 14.04 VM, svn is 1.8 so we have to upgrade the WC first before it can be updated
-    #svn upgrade $FDO_SRC
-    svn update $FDO_SRC
-    check_build
-else
-    echo [provision]: Using FDO SDK. No svn update of source required.
-fi
-echo [provision]: svn update MapGuide
-BUILD_COMPONENT="svn update MapGuide"
-# Only for Ubuntu 14.04 VM, svn is 1.8 so we have to upgrade the WC first before it can be updated
-#svn upgrade $MG_SRC
-svn update $MG_SRC
-check_build
-if [ $HAVE_FDO_SDK -eq 0 ];
-then
     if [ -d /mapguide_sources/patches/fdo ];
     then
         echo [provision]: Applying FDO source patches
@@ -381,24 +364,6 @@ sudo cp /vagrant/mginstallubuntu.sh /vagrant/build/mginstallubuntu.sh
 sudo cp /vagrant/mguninstallubuntu.sh /vagrant/build/mguninstallubuntu.sh
 sudo sed -i 's/FDOBUILD=0/FDOBUILD='"$FDO_REV"'/g' /vagrant/build/mginstallubuntu.sh
 sudo sed -i 's/MGBUILD=0/MGBUILD='"$MG_REV"'/g' /vagrant/build/mginstallubuntu.sh
-# Do not update the working copy tarballs. Ubuntu 14.04 uses svn 1.8 which will break
-# the working copy if copied over to a CentOS VM (which is still on 1.6)
-#
-# If anyone is doing to do the working copy update, it will be the CentOS VM
-#
-#if [ ! -d /mapguide_sources/updated ]; then
-#    sudo mkdir -p /mapguide_sources/updated
-#    cd $MG_SRC_ROOT
-#    echo [provision]: Updating mapguide source tarball
-#    tar -zcf $MG_TARBALL MgDev
-#    sudo mv $MG_TARBALL /mapguide_sources/updated
-#    cd $FDO_SRC_ROOT
-#    echo [provision]: Updating fdo source tarball
-#    tar -zcf $FDO_TARBALL $FDO_SRC_DIR
-#    sudo mv $FDO_TARBALL /mapguide_sources/updated
-#else
-#    echo [provision]: Updated tarballs already exist. Doing nothing
-#fi
 echo [provision]: Build complete
 SCRIPT
   

@@ -4,7 +4,7 @@ Vagrant Build Environment README
 This directory contains configurations and scripts to do the following:
 
  1. Create/register the necessary vagrant base boxes
- 2. Build MapGuide through vagrant-provisioned VMs
+ 2. Build MapGuide and FDO through vagrant-provisioned VMs
 
 Requirements
 ============
@@ -41,12 +41,19 @@ Run build.bat, this will build MapGuide and FDO for:
  * Ubuntu 12.04 32-bit
  * Ubuntu 12.04 64-bit
 
+If MG_SVN_UPDATE_SOURCES is set to 1 before running build.bat, a special CentOS VM will be spun up to svn update the MapGuide and FDO source
+tarballs to the latest revisions. Otherwise, the existing source tarballs will be built at their last updated svn revision.
+
 When each build completes, the build artifacts and assorted log files and unit test result XML files will be copied to these directories:
 
- * centos/x86/build
- * centos/x64/build
- * ubuntu/x86/build
- * ubuntu/x64/build
+ * builds/centos_x86
+ * builds/centos_x86/logs
+ * builds/centos_x64
+ * builds/centos_x64/logs
+ * builds/ubuntu_x86
+ * builds/ubuntu_x86/logs
+ * builds/ubuntu_x64
+ * builds/ubuntu_x64/logs
 
 For CentOS, the build will produce tarballs of FDO and MapGuide along with the necessary install scripts
 For Ubuntu, the build will produce debian package files of FDO and MapGuide along with the necessary install scripts

@@ -221,14 +221,6 @@ then
     mkdir -p $MG_SRC_ROOT
     tar -zxf /mapguide_sources/$MG_TARBALL -C $MG_SRC_ROOT
 fi
-echo [provision]: svn update FDO
-BUILD_COMPONENT="svn update FDO"
-svn update $FDO_SRC
-check_build
-echo [provision]: svn update MapGuide
-BUILD_COMPONENT="svn update MapGuide"
-svn update $MG_SRC
-check_build
 if [ -d /mapguide_sources/patches/fdo ];
 then
     echo [provision]: Applying FDO source patches
@@ -343,19 +335,6 @@ sudo cp /vagrant/mginstallcentos.sh /vagrant/build/mginstallcentos.sh
 sudo cp /vagrant/mguninstallcentos.sh /vagrant/build/mguninstallcentos.sh
 sudo sed -i 's/FDOVER_REV=0/FDOVER_REV='"$FDO_REV"'/g' /vagrant/build/mginstallcentos.sh
 sudo sed -i 's/MGVER_REV=0/MGVER_REV='"$MG_REV"'/g' /vagrant/build/mginstallcentos.sh
-if [ ! -d /mapguide_sources/updated ]; then
-    sudo mkdir -p /mapguide_sources/updated
-    cd $MG_SRC_ROOT
-    echo [provision]: Updating mapguide source tarball
-    tar -zcf $MG_TARBALL MgDev
-    sudo mv $MG_TARBALL /mapguide_sources/updated
-    cd $FDO_SRC_ROOT
-    echo [provision]: Updating fdo source tarball
-    tar -zcf $FDO_TARBALL $FDO_SRC_DIR
-    sudo mv $FDO_TARBALL /mapguide_sources/updated
-else
-    echo [provision]: Updated tarballs already exist. Doing nothing
-fi
 echo [provision]: Build complete
 SCRIPT
   
