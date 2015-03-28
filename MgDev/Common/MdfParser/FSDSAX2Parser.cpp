@@ -74,7 +74,9 @@ void FSDSAX2Parser::DisableTabs()
 
 void FSDSAX2Parser::error(const SAXException& exc)
 {
-    m_strParserError = toMdfString(XMLString::transcode(exc.getMessage()));
+    char* str = XMLString::transcode(exc.getMessage());
+    m_strParserError = toMdfString(str);
+    XMLString::release(&str);
 }
 
 
