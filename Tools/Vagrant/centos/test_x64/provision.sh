@@ -11,4 +11,6 @@ sed -i 's/#URL="http:\/\/192.168.0.4\/downloads"/URL="http:\/\/'"$DOWNLOAD_HOST"
 chmod +x smoke_test.sh
 chmod +x mginstallcentos.sh
 sudo -E ./mginstallcentos.sh
+echo Wait 10s before running smoke test
+sleep 10s
 sudo -E ./smoke_test.sh

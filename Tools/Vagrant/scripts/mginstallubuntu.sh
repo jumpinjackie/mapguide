@@ -35,25 +35,124 @@ site_port=2812
 httpd_port=8008
 tomcat_port=8009
 
+fdo_provider_choice=""
+
 # Must have root
 if [[ $EUID -ne 0 ]]; then
     echo "You must run this script with superuser privileges"
     exit 1
 fi
 
+while [ $# -gt 0 ]; do    # Until you run out of parameters...
+    case "$1" in
+        -headless|--headless)
+	    HEADLESS=1
+            #shift
+	    ;;
+        -with-sdf|--with-sdf)
+            fdo_provider_choice="$fdo_provider_choice sdf"
+            #shift
+            ;;
+        -with-shp|--with-shp)
+            fdo_provider_choice="$fdo_provider_choice shp"
+            #shift
+            ;;
+        -with-sqlite|--with-sqlite)
+            fdo_provider_choice="$fdo_provider_choice sqlite"
+            #shift
+            ;;
+        -with-gdal|--with-gdal)
+            fdo_provider_choice="$fdo_provider_choice gdal"
+            #shift
+            ;;
+        -with-ogr|--with-ogr)
+            fdo_provider_choice="$fdo_provider_choice ogr"
+            #shift
+            ;;
+        -with-kingoracle|--with-kingoracle)
+            fdo_provider_choice="$fdo_provider_choice kingoracle"
+            #shift
+            ;;
+        -with-wfs|--with-wfs)
+            fdo_provider_choice="$fdo_provider_choice wfs"
+            #shift
+            ;;
+        -with-wms|--with-wms)
+            fdo_provider_choice="$fdo_provider_choice wms"
+            #shift
+            ;;
+        -server-ip|--server-ip)
+            server_ip="$2"
+            webtier_server_ip="$2"
+            shift
+            ;;
+        -admin-port|--admin-port)
+            admin_port=$2
+            shift
+            ;;
+        -client-port|--client-port)
+            client_port=$2
+            shift
+            ;;
+        -site-port|--site-port)
+            site_port=$2
+            shift
+            ;;
+        -httpd-port|--httpd-port)
+            httpd_port=$2
+            shift
+            ;;
+        -tomcat-port|--tomcat-port)
+            tomcat_port=$2
+            shift
+            ;;
+        -help|--help)
+            echo "Usage: $0 (options)"
+            echo "Options:"
+            echo "  --headless [Install headlessly (skip UI)]"
+            echo "  --with-sdf [Include SDF Provider]"
+            echo "  --with-shp [Include SHP Provider]"
+            echo "  --with-sqlite [Include SQLite Provider]"
+            echo "  --with-gdal [Include GDAL Provider]"
+            echo "  --with-ogr [Include OGR Provider]"
+            echo "  --with-kingoracle [Include King Oracle Provider]"
+            echo "  --with-wfs [Include WFS Provider]"
+            echo "  --with-wms [Include WMS Provider]"
+            echo "  --server-ip [Server IP, default: 127.0.0.1]"
+            echo "  --admin-port [Admin Server Port, default: 2810]"
+            echo "  --client-port [Client Server Port, default: 2811]"
+            echo "  --site-port [Site Server Port, default: 2812]"
+            echo "  --httpd-port [HTTPD port, default: 8008]"
+            echo "  --tomcat-port [Tomcat Port, default: 8009]"
+            exit
+            ;;
+    esac
+    shift   # Check next set of parameters.
+done
+
+if [ "$HEADLESS" != "1" ]
+then
 # Install required packages 
 apt-get -y install dialog libexpat1 libssl1.0.0 odbcinst unixodbc libcurl3 libxslt1.1
+else
+# Install required packages 
+apt-get -y install libexpat1 libssl1.0.0 odbcinst unixodbc libcurl3 libxslt1.1
+fi
 
 DIALOG=${DIALOG=dialog}
 
 main()
 {
-    dialog_welcome
-    dialog_fdo_provider
-    dialog_server
-    dialog_webtier
-    #dialog_coordsys
-    #dump_configuration
+    if [ "$HEADLESS" != "1" ]
+    then
+        dialog_welcome
+        dialog_fdo_provider
+        dialog_server
+        dialog_webtier
+        #dialog_coordsys
+    else
+        dump_configuration
+    fi
     install_fdo
     install_mapguide_packages
     post_install
