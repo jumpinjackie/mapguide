@@ -1,5 +1,7 @@
 #!/bin/bash
-URL="http://download.osgeo.org/mapguide/releases/3.0.0/Release"
+URL_ROOT="http://download.osgeo.org/mapguide/releases/3.0.0/Beta1"
+URL_PART="centos"
+URL="$URL_ROOT/$URL_PART"
 #URL="http://192.168.0.4/downloads"
 FDOVER_MAJOR_MINOR=4.0
 FDOVER_POINT=0
