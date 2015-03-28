@@ -13,6 +13,7 @@ rem  2. The httpd and MapGuide Servers are verified to be running and operationa
 rem
 rem Requires the sed utility, which is part of GNU on Windows (https://github.com/bmatzelle/gow)
 
+IF "%DOWNLOAD_HOST%"=="" SET DOWNLOAD_HOST=192.168.0.6
 IF "%VERIFY_UBUNTU_32%"=="" SET VERIFY_UBUNTU_32=1
 IF "%VERIFY_UBUNTU_64%"=="" SET VERIFY_UBUNTU_64=1
 IF "%VERIFY_CENTOS_32%"=="" SET VERIFY_CENTOS_32=1
@@ -32,7 +33,7 @@ goto check_ubuntu_32
 pushd centos\test_x86
 SET COMPONENT=CentOS Build 32-bit
 echo [build]: MapGuide CentOS build 32-bit
-call vagrant up 2>&1 | tee up.log
+call vagrant up 2>&1 | tee smoke_test.log
 echo [build]: vagrant returned %errorlevel%
 if "%errorlevel%"=="1" goto error
 :destroy_centos_32
@@ -47,7 +48,7 @@ goto check_centos_64
 pushd ubuntu\test_x86
 SET COMPONENT=Ubuntu Build 32-bit
 echo [build]: MapGuide Ubuntu build 32-bit
-call vagrant up 2>&1 | tee up.log
+call vagrant up 2>&1 | tee smoke_test.log
 echo [build]: vagrant returned %errorlevel%
 if "%errorlevel%"=="1" goto error
 :destroy_ubuntu_32
@@ -62,7 +63,7 @@ goto check_ubuntu_64
 pushd centos\test_x64
 SET COMPONENT=CentOS Build 64-bit
 echo [build]: MapGuide CentOS build 64-bit
-call vagrant up 2>&1 | tee up.log
+call vagrant up 2>&1 | tee smoke_test.log
 echo [build]: vagrant returned %errorlevel%
 if "%errorlevel%"=="1" goto error
 :destroy_centos_64
@@ -77,7 +78,7 @@ goto quit
 pushd ubuntu\test_x64
 SET COMPONENT=Ubuntu Build 64-bit
 echo [build]: MapGuide Ubuntu build 64-bit
-call vagrant up 2>&1 | tee up.log
+call vagrant up 2>&1 | tee smoke_test.log
 echo [build]: vagrant returned %errorlevel%
 if "%errorlevel%"=="1" goto error
 :destroy_ubuntu_64
