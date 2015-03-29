@@ -147,16 +147,16 @@ echo [provision]: Checking directories
 HAVE_FDO=0
 HAVE_FDO_LIBS=0
 HAVE_MAPGUIDE=0
-MG_UNIT_TEST=1
-FDO_UNIT_TEST=1
+MG_UNIT_TEST=0
+FDO_UNIT_TEST=0
 MAKE_FDO_SDK=0
 SCRIPT_ROOT=~/scripts
-FDO_SRC_ROOT=~/fdo
+FDO_SRC_ROOT=~/fdo/branches
 FDO_VER_MM=4.0
 FDO_VER_FULL=${FDO_VER_MM}.0
 MG_VER_MM=3.0
 MG_VER_FULL=${MG_VER_MM}.0
-FDO_SRC_DIR=branches/4.0
+FDO_SRC_DIR=4.0
 FDO_SRC=$FDO_SRC_ROOT/$FDO_SRC_DIR
 FDO_LIB_SRC=~/fdo_rdbms_thirdparty
 MG_SRC_ROOT=~/mapguide/branches/3.0
@@ -331,6 +331,7 @@ sudo mv ~/unit_test_status.log /vagrant/build/unit_test_status.log
 sudo mv ~/fdo_*_unit_test.log /vagrant/build
 sudo mv ~/UnitTestResults_*.xml /vagrant/build
 echo [provision]: Copy install/uninstall scripts to output dir
+sudo sed -i 's/URL_PART="centos"/URL_PART="centos_x86"/g' /vagrant/build/mginstallcentos.sh
 sudo cp /vagrant/mginstallcentos.sh /vagrant/build/mginstallcentos.sh
 sudo cp /vagrant/mguninstallcentos.sh /vagrant/build/mguninstallcentos.sh
 sudo sed -i 's/FDOVER_REV=0/FDOVER_REV='"$FDO_REV"'/g' /vagrant/build/mginstallcentos.sh
