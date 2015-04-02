@@ -495,37 +495,41 @@ void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourc
                     MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
                     for (int j=0; j<pmappings->GetCount(); j++)
                     {
-                        STRING pTypeStr;
                         MdfModel::NameStringPair* m = pmappings->GetAt(j);
                         propNames->Add(m->GetName());
                         displayNameMap.insert(std::make_pair(m->GetName(), m->GetValue()));
-                        INT32 pidx = clsProps->IndexOf(m->GetName());
-                        if (pidx >= 0)
+                    }
+                    STRING pTypeStr;
+                    for (int k = 0; k < clsProps->GetCount(); k++)
+                    {
+                        Ptr<MgPropertyDefinition> propDef = clsProps->GetItem(k);
+                        STRING propName = propDef->GetName();
+                        DisplayNameMap::iterator it = displayNameMap.find(propName);
+                        //Skip properties without display mappings
+                        if (it == displayNameMap.end())
+                            continue;
+                        INT32 pdType = propDef->GetPropertyType();
+                        INT32 pType = MgPropertyType::Null;
+                        if (pdType == MgFeaturePropertyType::DataProperty)
                         {
-                            Ptr<MgPropertyDefinition> propDef = clsProps->GetItem(pidx);
-                            INT32 pdType = propDef->GetPropertyType();
-                            INT32 pType = MgPropertyType::Null;
-                            if (pdType == MgFeaturePropertyType::DataProperty)
-                            {
-                                pType = ((MgDataPropertyDefinition*)propDef.p)->GetDataType();
-                            }
-                            else if (pdType == MgFeaturePropertyType::GeometricProperty)
-                            {
-                                pType = MgPropertyType::Geometry;
-                            }
-                            MgUtil::Int32ToString(pType, pTypeStr);
-                            xmlOut.append(L"<Property>\n");
-                            xmlOut.append(L"<Name>");
-                            xmlOut.append(m->GetName());
-                            xmlOut.append(L"</Name>\n");
-                            xmlOut.append(L"<Type>");
-                            xmlOut.append(pTypeStr);
-                            xmlOut.append(L"</Type>\n");
-                            xmlOut.append(L"<DisplayName>");
-                            xmlOut.append(m->GetValue());
-                            xmlOut.append(L"</DisplayName>\n");
-                            xmlOut.append(L"</Property>\n");
+                            pType = ((MgDataPropertyDefinition*)propDef.p)->GetDataType();
                         }
+                        else if (pdType == MgFeaturePropertyType::GeometricProperty)
+                        {
+                            pType = MgPropertyType::Geometry;
+                        }
+                        MgUtil::Int32ToString(pType, pTypeStr);
+                        xmlOut.append(L"<Property>\n");
+                        xmlOut.append(L"<Name>");
+                        xmlOut.append(it->first);
+                        xmlOut.append(L"</Name>\n");
+                        xmlOut.append(L"<Type>");
+                        xmlOut.append(pTypeStr);
+                        xmlOut.append(L"</Type>\n");
+                        xmlOut.append(L"<DisplayName>");
+                        xmlOut.append(it->second);
+                        xmlOut.append(L"</DisplayName>\n");
+                        xmlOut.append(L"</Property>\n");
                     }
                 }
             }
