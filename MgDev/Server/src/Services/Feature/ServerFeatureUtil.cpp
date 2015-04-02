@@ -20,6 +20,7 @@
 #include "ServerDataReaderPool.h"
 #include "ServerFeatureReaderPool.h"
 #include "ByteSourceRasterStreamImpl.h"
+#include "Fdo/Raster/RasterDataModelType.h"
 
 static std::map<FdoPropertyType, INT32>                 s_FdoPropertyType;
 static std::map<FdoDataType, INT32>                     s_FeatureUtilFdoDataType;
@@ -485,8 +486,8 @@ MgRaster* MgServerFeatureUtil::GetMgRaster(FdoIRaster* raster, STRING propName)
             retVal->SetBitsPerPixel(dm->GetBitsPerPixel());
             retVal->SetDataModelType(dm->GetDataModelType());
 
-            //if image is color mapped, get the palette
-            if (dm->GetBitsPerPixel() == 8)
+            //if data model type is Palette and image is color mapped, get the palette
+            if (dm->GetDataModelType() == FdoRasterDataModelType_Palette && dm->GetBitsPerPixel() == 8)
             {
                 //try to get the palette -- if there isn't one,
                 //an exception will be thrown. It's simpler to catch
