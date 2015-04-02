@@ -1183,8 +1183,11 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
     MG_TRY()
 
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): ** START **\n")));
-    if (NULL == map || (NULL == geometry && featureFilter.empty()))
-        throw new MgNullArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderForSelection");
+
+    //No geometry or selection XML = nothing to do.
+    if (geometry == NULL && featureFilter.empty())
+        return;
 
     if (maxFeatures < 0)
     {

@@ -269,17 +269,26 @@ MgByteReader* MgHtmlController::QueryMapFeatures(
     // Call the C++ API, regardless of bitmask as any part of the mask will require information from this API
     featureInfo = service->QueryFeatures(map, layerNames, selectionGeometry, selectionVariant, featureFilter, maxFeatures, layerAttributeFilter);
 
+    Ptr<MgSelection> selection;
+    if (NULL != featureInfo.p)
+        selection = featureInfo->GetSelection();
+
+    bool bSetMap = true;
+    if (!selection)
+    {
+        selection = new MgSelection(map);
+        bSetMap = false;
+    }
+
     if (persist)
     {
         //save the selection set in the session repository
-        Ptr<MgSelection> selection;
-        if (NULL != featureInfo.p)
-            selection = featureInfo->GetSelection();
-        if(!selection)
-            selection = new MgSelection(map);
         selection->Save(resourceService, mapName);
-        newSelection = SAFE_ADDREF(selection.p);
+    }
+    newSelection = SAFE_ADDREF(selection.p);
 
+    if (bSetMap)
+    {   
         //Needed for GetLayers() to work below
         newSelection->SetMap(map);
     }
