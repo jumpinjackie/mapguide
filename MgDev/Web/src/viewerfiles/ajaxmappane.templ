@@ -3960,7 +3960,14 @@ function OnSliderImageLoaded(imgName)
     if (img.parentElement.href) imgStyle = "cursor:pointer;" + imgStyle
     if (img.useMap)
         strAddMap = "<img style=\"position:absolute; left: 0px; top: 0px; height:" + img.height + "px; width:" + img.width + ";\" " + "src=\"" + strGif + "\" usemap=\"" + img.useMap  + "\" border=\"" + img.border + "\">";
-    var strNewHTML = "<span " + imgID + imgClass + imgTitle + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";" + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'" + img.src + "\', sizingMethod='crop');\"></span>"
+    //The feature DirectX-based Filters has been removed from IE10’s Standards and Quirks modes.
+    if (msie10plus)
+    {
+        var strSrcImg = "<img src=\'" + img.src +"\'>";
+        var strNewHTML = "<span " + imgID + imgClass + imgTitle + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";\"" + ">" + strSrcImg + "</span>";
+    }
+    else	
+        var strNewHTML = "<span " + imgID + imgClass + imgTitle + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";" + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'" + img.src + "\', sizingMethod='crop');\"></span>";
     if (img.useMap) strNewHTML += strAddMap
     img.outerHTML = strNewHTML
 }
