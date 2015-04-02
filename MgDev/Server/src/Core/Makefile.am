@@ -435,6 +435,7 @@ install-data-hook:
 	@echo 'export MENTOR_DICTIONARY_PATH=$(mentor_dict_install_dir)' >> ${prefix}/bin/mgserver.sh
 	@echo 'export LD_LIBRARY_PATH=$(fdodir):"$$LD_LIBRARY_PATH"' >> ${prefix}/bin/mgserver.sh
 	@echo 'export NLSPATH=$(map_fdo_nls):"$$NLSPATH"' >> ${prefix}/bin/mgserver.sh
+	@echo 'mkdir -p /var/lock/mgserver' >> ${prefix}/bin/mgserver.sh
 	@echo 'pushd ${prefix}/bin' >> ${prefix}/bin/mgserver.sh
 	@cp -f ${prefix}/bin/mgserver.sh ${prefix}/bin/mgserverd.sh
 	@echo './mgserver run' >> ${prefix}/bin/mgserver.sh

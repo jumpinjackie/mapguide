@@ -39,6 +39,7 @@
             $schemaName = $_GET['schemaName'];
             $className = $_GET['className'];
             $viewer = $_GET['viewer'];
+            $firstClass = "";
 
             try
             {
@@ -58,6 +59,9 @@
                 $resId = new MgResourceIdentifier($resName);
 
                 $classCollection = $featureSrvc->GetClasses($resId, $schemaName);
+                $qualifiedName = $classCollection->GetItem(0);
+                $pos = strrpos($qualifiedName, ':');
+                $firstSchema = substr($qualifiedName, 0, $pos);
                 $firstClass =  substr(strrchr($classCollection->GetItem(0), ":"), 1);
                 $classNames = new MgStringCollection();
                 $classNames->Add($className);
@@ -162,10 +166,10 @@
 
         function ShowFirstClass()
         {
-            document.getElementById("Data_"+"<?php echo $firstClass?>").previousSibling.firstChild.src = "./images/collapse_pane.png";
-            document.getElementById("Data_"+"<?php echo $firstClass?>").style.display = 'block';
-            document.getElementById("Geom_"+"<?php echo $firstClass?>").previousSibling.firstChild.src = "./images/collapse_pane.png";
-            document.getElementById("Geom_"+"<?php echo $firstClass?>").style.display = 'block';
+            document.getElementById("Data_"+"<?php echo $firstSchema?>"+"_"+"<?php echo $firstClass?>").previousSibling.firstChild.src = "./images/collapse_pane.png";
+            document.getElementById("Data_"+"<?php echo $firstSchema?>"+"_"+"<?php echo $firstClass?>").style.display = 'block';
+            document.getElementById("Geom_"+"<?php echo $firstSchema?>"+"_"+"<?php echo $firstClass?>").previousSibling.firstChild.src = "./images/collapse_pane.png";
+            document.getElementById("Geom_"+"<?php echo $firstSchema?>"+"_"+"<?php echo $firstClass?>").style.display = 'block';
         }
     </script>
 
