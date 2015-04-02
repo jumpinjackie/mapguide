@@ -73,7 +73,7 @@ String inputSel = "";
             {
                 // Query all the features belonging the the layer list that intersects with the input geometries
                 //
-                MgFeatureInformation fi = renderingSrvc.QueryFeatures(map, layerNames, inputGeom, MgFeatureSpatialOperations.Intersects, -1);
+                MgFeatureInformation fi = renderingSrvc.QueryFeatures(map, layerNames, inputGeom, MgFeatureSpatialOperations.Intersects, "", -1, 2);
                 if(fi !=  null)
                 {
                     MgSelection resultSel = fi.GetSelection();

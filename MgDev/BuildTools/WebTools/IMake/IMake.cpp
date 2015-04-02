@@ -12,7 +12,7 @@ enum Language
     java
 };
 
-static char version[] = "1.2.3";
+static char version[] = "1.2.4";
 static char EXTERNAL_API_DOCUMENTATION[] = "(NOTE: This API is not officially supported and may be subject to removal in a future release without warning. Use with caution.)";
 
 static string module;
@@ -1076,20 +1076,32 @@ string doxygenToCsharpDoc(const string& commentStr, bool isPublished)
                     eelems.push_back(eitem);
             }
 
-            csharpDoc.append("///<exception cref=\"");
-            csharpDoc.append(nspace);
-            csharpDoc.append(".");
-            if (eelems.size() > 1) {
-                csharpDoc.append(eelems[0]);
-                csharpDoc.append("\">");
-                for (int j = 1; j < eelems.size(); j++) {
-                    csharpDoc.append(" ");
-                    csharpDoc.append(eelems[j]);
+            if (eelems.size() > 0)
+            {
+                //Skip anything that is not of the form:
+                //\exception MgExceptionType Description of cases when the exception is thrown
+                //
+                //So the first token must start with "Mg"
+                std::string t("Mg");
+                if (eelems[0].compare(0, t.length(), t) == 0)
+                {
+                    csharpDoc.append("///<exception cref=\"");
+                    csharpDoc.append(nspace);
+                    csharpDoc.append(".");
+                    if (eelems.size() > 1) {
+                        csharpDoc.append(eelems[0]);
+                        csharpDoc.append("\">");
+                        for (int j = 1; j < eelems.size(); j++) {
+                            csharpDoc.append(" ");
+                            csharpDoc.append(eelems[j]);
+                        }
+                        csharpDoc.append("</exception>\n");
+                    }
+                    else {
+                        csharpDoc.append(eelems[0]);
+                        csharpDoc.append("\"></exception>\n");
+                    }
                 }
-                csharpDoc.append("</exception>\n");
-            } else {
-                csharpDoc.append(eelems[0]);
-                csharpDoc.append("\"></exception>\n");
             }
         }
     }
