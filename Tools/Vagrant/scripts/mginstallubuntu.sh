@@ -1,6 +1,8 @@
 #!/bin/bash
 TEMPDIR=/tmp/build_mapguide
-URL="http://download.osgeo.org/mapguide/releases/3.0.0/Release/ubuntu12"
+URL_ROOT="http://download.osgeo.org/mapguide/releases/3.0.0/Beta2"
+URL_PART="ubuntu12"
+URL="$URL_ROOT/$URL_PART"
 #URL="http://192.168.0.5/downloads/ubuntu12"
 FDOVER_MAJOR_MINOR=4.0
 FDOVER_MAJOR_MINOR_REV=${FDOVER_MAJOR_MINOR}.0

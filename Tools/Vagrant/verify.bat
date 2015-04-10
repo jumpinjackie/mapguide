@@ -14,12 +14,15 @@ rem
 rem Requires the sed utility, which is part of GNU on Windows (https://github.com/bmatzelle/gow)
 
 IF "%DOWNLOAD_HOST%"=="" SET DOWNLOAD_HOST=192.168.0.6
+IF "%MG_DIST_DIR%"=="" SET MG_DIST_DIR=builds
 IF "%VERIFY_UBUNTU_32%"=="" SET VERIFY_UBUNTU_32=1
 IF "%VERIFY_UBUNTU_64%"=="" SET VERIFY_UBUNTU_64=1
 IF "%VERIFY_CENTOS_32%"=="" SET VERIFY_CENTOS_32=1
 IF "%VERIFY_CENTOS_64%"=="" SET VERIFY_CENTOS_64=1
 
 echo **************** Verify Summary *********************
+echo Download Host is: %DOWNLOAD_HOST%
+echo Dist directory name: %MG_DIST_DIR%
 echo Verifying Ubuntu (32-bit): %VERIFY_UBUNTU_32%
 echo Verifying Ubuntu (64-bit): %VERIFY_UBUNTU_64%
 echo Verifying CentOS (32-bit): %VERIFY_CENTOS_32%

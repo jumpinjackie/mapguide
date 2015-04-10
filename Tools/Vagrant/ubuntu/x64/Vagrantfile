@@ -140,8 +140,8 @@ echo [provision]: Checking directories
 HAVE_FDO=0
 HAVE_FDO_LIBS=0
 HAVE_MAPGUIDE=0
-MG_UNIT_TEST=1
-FDO_UNIT_TEST=1
+MG_UNIT_TEST=0
+FDO_UNIT_TEST=0
 SCRIPT_ROOT=~/scripts
 FDO_SRC_ROOT=~/fdo
 FDO_VER_MM=4.0
@@ -363,6 +363,7 @@ sudo cp bin/*.deb /vagrant/build
 sudo cp ~/UnitTestResults_*.xml /vagrant/build
 sudo cp /vagrant/mginstallubuntu.sh /vagrant/build/mginstallubuntu.sh
 sudo cp /vagrant/mguninstallubuntu.sh /vagrant/build/mguninstallubuntu.sh
+sudo sed -i 's/URL_PART="ubuntu12"/URL_PART="ubuntu12_x64"/g' /vagrant/build/mginstallubuntu.sh
 sudo sed -i 's/FDOBUILD=0/FDOBUILD='"$FDO_REV"'/g' /vagrant/build/mginstallubuntu.sh
 sudo sed -i 's/MGBUILD=0/MGBUILD='"$MG_REV"'/g' /vagrant/build/mginstallubuntu.sh
 sudo sed -i 's/FDOARCH=i386/FDOARCH=amd64/g' /vagrant/build/mginstallubuntu.sh

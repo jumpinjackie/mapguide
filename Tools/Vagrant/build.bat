@@ -82,7 +82,8 @@ move /Y build\*.xml %ROOT%\builds\centos_x86\logs
 echo [build]: Generate MD5 hashes
 pushd %ROOT%\builds\centos_x86
 if exist md5sums.txt del md5sums.txt
-md5sum *.* | tee md5sums.txt
+md5sum *.sh > md5sums.txt
+md5sum *.tar.xz >> md5sums.txt
 popd
 if %TEARDOWN_CENTOS_32% == 1 (
     echo [build]: Tearing down CentOS 32 VM
@@ -116,7 +117,8 @@ move /Y build\*.xml %ROOT%\builds\ubuntu_x86\logs
 echo [build]: Generate MD5 hashes
 pushd %ROOT%\builds\ubuntu_x86
 if exist md5sums.txt del md5sums.txt
-md5sum *.* | tee md5sums.txt
+md5sum *.sh > md5sums.txt
+md5sum *.deb >> md5sums.txt
 popd
 if %TEARDOWN_UBUNTU_32% == 1 (
     echo [build]: Tearing down Ubuntu 32 VM
@@ -150,7 +152,8 @@ move /Y build\*.xml %ROOT%\builds\centos_x64\logs
 echo [build]: Generate MD5 hashes
 pushd %ROOT%\builds\centos_x64
 if exist md5sums.txt del md5sums.txt
-md5sum *.* | tee md5sums.txt
+md5sum *.sh > md5sums.txt
+md5sum *.tar.xz >> md5sums.txt
 popd
 if %TEARDOWN_CENTOS_64% == 1 (
     echo [build]: Tearing down CentOS 64 VM
@@ -184,7 +187,8 @@ move /Y build\*.xml %ROOT%\builds\ubuntu_x64\logs
 echo [build]: Generate MD5 hashes
 pushd %ROOT%\builds\ubuntu_x64
 if exist md5sums.txt del md5sums.txt
-md5sum *.* | tee md5sums.txt
+md5sum *.sh > md5sums.txt
+md5sum *.deb >> md5sums.txt
 popd
 if %TEARDOWN_UBUNTU_64% == 1 (
     echo [build]: Tearing down Ubuntu 64 VM

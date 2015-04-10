@@ -140,12 +140,12 @@ FDO_VER_MM=4.0
 FDO_VER_FULL=${FDO_VER_MM}.0
 MG_VER_MM=3.0
 MG_VER_FULL=${MG_VER_MM}.0
-FDO_SRC_DIR=trunk
+FDO_SRC_DIR=4.0
 FDO_SRC=$FDO_SRC_ROOT/$FDO_SRC_DIR
-MG_SRC_ROOT=~/mapguide/trunk
+MG_SRC_ROOT=~/mapguide/branches/3.0
 MG_SRC=$MG_SRC_ROOT/MgDev
-FDO_TARBALL=fdo-checkout.tar.gz
-MG_TARBALL=mapguide-checkout.tar.gz
+FDO_TARBALL=fdo-checkout-4.0.tar.gz
+MG_TARBALL=mapguide-checkout-3.0.tar.gz
 FDO_INST_PATH=/usr/local/fdo-${FDO_VER_FULL}
 MG_INST_PATH=/usr/local/mapguideopensource-${MG_VER_FULL}
 if [ -d $FDO_SRC ];
