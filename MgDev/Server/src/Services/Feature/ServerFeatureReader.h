@@ -575,6 +575,7 @@ private:
     FdoIFeatureReader* m_fdoReader;
     bool m_removeFromPoolOnDestruction;
     Ptr<MgStringCollection> m_forceIdProps;
+    FdoBoolean m_readerDepleted;
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_FeatureReader;
