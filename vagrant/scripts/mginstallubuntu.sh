@@ -1,6 +1,6 @@
 #!/bin/bash
 TEMPDIR=/tmp/build_mapguide
-URL_ROOT="http://download.osgeo.org/mapguide/releases/3.0.0/Beta1"
+URL_ROOT="http://download.osgeo.org/mapguide/releases/3.0.0/Beta2"
 URL_PART="ubuntu12"
 URL="$URL_ROOT/$URL_PART"
 #URL="http://192.168.0.5/downloads/ubuntu12"
