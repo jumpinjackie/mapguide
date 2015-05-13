@@ -196,6 +196,18 @@ check_build
 end_time=`date +%s`
 
 echo "Preparing binaries for packaging"
+# Strip the heavy CS-Map dictionary data files. The geoid stuff is not used and the NSRS ones can be packaged separately
+pushd ${INSTALLROOT}/share/gis/coordsys
+rm -rf WW15MGH.GRD
+popd
+pushd ${INSTALLROOT}/share/gis/coordsys/Usa
+rm -rf Geoid03
+rm -rf Geoid96
+rm -rf Geoid99
+rm -rf NSRS2007
+rm -rf NSRS2011
+popd
+
 # Prepare binaries for packaging by removing unnecessary
 # .la and .a files and stripping unneeded symbols from the binaries
 pushd ${INSTALLROOT}
