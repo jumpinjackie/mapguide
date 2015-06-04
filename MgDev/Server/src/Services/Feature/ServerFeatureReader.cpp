@@ -38,7 +38,6 @@ MgServerFeatureReader::MgServerFeatureReader(MgServerFeatureConnection* connecti
     m_fdoReader = FDO_SAFE_ADDREF(fdoReader);
     m_forceIdProps = SAFE_ADDREF(forceIdProps); //This is only passed in for select queries that involve the FDO Join APIs
     m_removeFromPoolOnDestruction = false;
-    m_readerDepleted = false;
 
     // The reader takes ownership of the FDO connection
     m_connection->OwnReader();
@@ -58,7 +57,6 @@ MgServerFeatureReader::MgServerFeatureReader()
     m_connection = NULL;
     m_fdoReader = NULL;
     m_removeFromPoolOnDestruction = false;
-    m_readerDepleted = false;
 }
 
 //////////////////////////////////////////////////////////////////
@@ -98,9 +96,6 @@ bool MgServerFeatureReader::ReadNext()
 {
     CHECKNULL(m_fdoReader, L"MgServerFeatureReader.ReadNext");
 
-    if (m_readerDepleted)
-        return false;
-
     bool retVal = false;
 
     MG_FEATURE_SERVICE_TRY()
@@ -108,9 +103,6 @@ bool MgServerFeatureReader::ReadNext()
     retVal = m_fdoReader->ReadNext();
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.ReadNext")
-
-    if (!retVal)
-        m_readerDepleted = true;
 
     return retVal;
 }
@@ -1165,9 +1157,6 @@ void MgServerFeatureReader::AddFeatures(INT32 count)
     CHECKNULL((FdoIFeatureReader*)m_fdoReader, L"MgServerFeatureReader.AddFeatures");
     CHECKNULL((MgFeatureSet*)m_featureSet, L"MgServerFeatureReader.AddFeatures");
 
-    if (m_readerDepleted)
-        return;
-
     INT32 desiredFeatures = 0;
 
     // Access the class definition
@@ -1195,7 +1184,6 @@ void MgServerFeatureReader::AddFeatures(INT32 count)
                 if (++desiredFeatures == count)
                     break;
             }
-            m_readerDepleted = true;
         }
         //some providers will throw if ReadNext is called more than once
         catch (FdoException* e)
