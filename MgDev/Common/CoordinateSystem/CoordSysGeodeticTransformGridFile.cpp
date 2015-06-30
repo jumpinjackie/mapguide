@@ -96,6 +96,7 @@ bool CCoordinateSystemGeodeticTransformGridFile::IsValid()
     case cs_DTCFRMT_ATS77:
     case cs_DTCFRMT_OST97:
     case cs_DTCFRMT_OST02:
+    case cs_DTCFRMT_GEOCN:
         break;
 
     case cs_DTCFRMT_NONE:
