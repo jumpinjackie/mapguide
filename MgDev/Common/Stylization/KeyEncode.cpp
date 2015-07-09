@@ -143,7 +143,7 @@ const char* KeyEncode::EncodeKey(RS_FeatureReader* reader)
 
 void KeyEncode::WriteDouble(double d)
 {
-    FdoInt64 swap = *(FdoInt64*)&d;
+    FdoInt64 swap = *(FdoInt64 volatile*)&d;
     WriteInt64(swap);
 }
 
@@ -199,8 +199,12 @@ void KeyEncode::WriteChar(char c)
 void KeyEncode::WriteString(const wchar_t* src)
 {
     std::string sutf8;
+    #ifdef _WIN32
     const XMLCh* srcX = W2X(src);
     UnicodeString::UTF16toUTF8(srcX, sutf8);
+    #else
+    UnicodeString::UTF32toUTF8((const LCh*)src, sutf8);
+    #endif
     size_t nUsed = sutf8.length();
     WriteBytes((unsigned char*)sutf8.c_str(), nUsed+1);
 }
