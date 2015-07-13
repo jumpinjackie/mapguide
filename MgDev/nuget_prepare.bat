@@ -101,7 +101,7 @@ echo [install]: Copy cs-map dictionaries to nuget staging
 xcopy /S /Y "%DESKTOP_BASEDIR%\Dictionaries\*" "%NUGET_CONTENT_CSMAP%"
 echo [build]: Signing MapGuide API assemblies
 pushd "%NUGET_LIB_WEB%"
-SignMapGuideApi.exe
+SignMapGuideApi.exe /framework=4.0
 rd /S /Q Backup
 del maestroapi.key
 del SignMapGuideApi.exe
