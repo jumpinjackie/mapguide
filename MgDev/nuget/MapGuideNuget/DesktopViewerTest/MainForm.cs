@@ -31,7 +31,7 @@ namespace DesktopViewerTest
 
             MgdServiceFactory factory = new MgdServiceFactory();
             MgdResourceService resSvc = (MgdResourceService)factory.CreateService(MgServiceType.ResourceService);
-            MgResourceIdentifier mapDefId = new MgResourceIdentifier("Library://Samples/Sheboygan/MapsTiled/Sheboygan.MapDefinition");
+            MgResourceIdentifier mapDefId = new MgResourceIdentifier("Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition");
             //If this map definition doesn't exist, we ask the user to
             //load the Sheboygan package
             if (!resSvc.ResourceExists(mapDefId))
