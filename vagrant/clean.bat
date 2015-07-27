@@ -8,6 +8,9 @@ if exist fdosdk_filename del /F fdosdk_filename
 if exist fdosdk_rev del /F fdosdk_rev
 del /F fdosdk*.tar.gz
 popd
+pushd centos\src_update
+call vagrant destroy -f
+popd
 pushd ubuntu\x86
 SET COMPONENT=Ubuntu Build 32-bit
 echo [clean]: MapGuide Ubuntu build 32-bit

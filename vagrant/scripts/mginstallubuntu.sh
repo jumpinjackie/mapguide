@@ -1,6 +1,8 @@
 #!/bin/bash
 TEMPDIR=/tmp/build_mapguide
-URL="http://download.osgeo.org/mapguide/releases/2.6.0/Release/ubuntu12"
+URL_ROOT="http://download.osgeo.org/mapguide/releases/2.6.1/Final"
+URL_PART="ubuntu12"
+URL="$URL_ROOT/$URL_PART"
 #URL="http://192.168.0.5/downloads/ubuntu12"
 FDOVER_MAJOR_MINOR=3.9
 FDOVER_MAJOR_MINOR_REV=${FDOVER_MAJOR_MINOR}.0
@@ -8,7 +10,7 @@ FDOBUILD=0
 FDOARCH=i386
 FDOVER=${FDOVER_MAJOR_MINOR_REV}-${FDOBUILD}_${FDOARCH}
 MGVER_MAJOR_MINOR=2.6
-MGVER_MAJOR_MINOR_REV=${MGVER_MAJOR_MINOR}.0
+MGVER_MAJOR_MINOR_REV=${MGVER_MAJOR_MINOR}.1
 MGBUILD=0
 MGARCH=i386
 MGVER=${MGVER_MAJOR_MINOR_REV}-${MGBUILD}_${MGARCH}
@@ -35,25 +37,124 @@ site_port=2812
 httpd_port=8008
 tomcat_port=8009
 
+fdo_provider_choice=""
+
 # Must have root
 if [[ $EUID -ne 0 ]]; then
     echo "You must run this script with superuser privileges"
     exit 1
 fi
 
+while [ $# -gt 0 ]; do    # Until you run out of parameters...
+    case "$1" in
+        -headless|--headless)
+	    HEADLESS=1
+            #shift
+	    ;;
+        -with-sdf|--with-sdf)
+            fdo_provider_choice="$fdo_provider_choice sdf"
+            #shift
+            ;;
+        -with-shp|--with-shp)
+            fdo_provider_choice="$fdo_provider_choice shp"
+            #shift
+            ;;
+        -with-sqlite|--with-sqlite)
+            fdo_provider_choice="$fdo_provider_choice sqlite"
+            #shift
+            ;;
+        -with-gdal|--with-gdal)
+            fdo_provider_choice="$fdo_provider_choice gdal"
+            #shift
+            ;;
+        -with-ogr|--with-ogr)
+            fdo_provider_choice="$fdo_provider_choice ogr"
+            #shift
+            ;;
+        -with-kingoracle|--with-kingoracle)
+            fdo_provider_choice="$fdo_provider_choice kingoracle"
+            #shift
+            ;;
+        -with-wfs|--with-wfs)
+            fdo_provider_choice="$fdo_provider_choice wfs"
+            #shift
+            ;;
+        -with-wms|--with-wms)
+            fdo_provider_choice="$fdo_provider_choice wms"
+            #shift
+            ;;
+        -server-ip|--server-ip)
+            server_ip="$2"
+            webtier_server_ip="$2"
+            shift
+            ;;
+        -admin-port|--admin-port)
+            admin_port=$2
+            shift
+            ;;
+        -client-port|--client-port)
+            client_port=$2
+            shift
+            ;;
+        -site-port|--site-port)
+            site_port=$2
+            shift
+            ;;
+        -httpd-port|--httpd-port)
+            httpd_port=$2
+            shift
+            ;;
+        -tomcat-port|--tomcat-port)
+            tomcat_port=$2
+            shift
+            ;;
+        -help|--help)
+            echo "Usage: $0 (options)"
+            echo "Options:"
+            echo "  --headless [Install headlessly (skip UI)]"
+            echo "  --with-sdf [Include SDF Provider]"
+            echo "  --with-shp [Include SHP Provider]"
+            echo "  --with-sqlite [Include SQLite Provider]"
+            echo "  --with-gdal [Include GDAL Provider]"
+            echo "  --with-ogr [Include OGR Provider]"
+            echo "  --with-kingoracle [Include King Oracle Provider]"
+            echo "  --with-wfs [Include WFS Provider]"
+            echo "  --with-wms [Include WMS Provider]"
+            echo "  --server-ip [Server IP, default: 127.0.0.1]"
+            echo "  --admin-port [Admin Server Port, default: 2810]"
+            echo "  --client-port [Client Server Port, default: 2811]"
+            echo "  --site-port [Site Server Port, default: 2812]"
+            echo "  --httpd-port [HTTPD port, default: 8008]"
+            echo "  --tomcat-port [Tomcat Port, default: 8009]"
+            exit
+            ;;
+    esac
+    shift   # Check next set of parameters.
+done
+
+if [ "$HEADLESS" != "1" ]
+then
 # Install required packages 
 apt-get -y install dialog libexpat1 libssl1.0.0 odbcinst unixodbc libcurl3 libxslt1.1
+else
+# Install required packages 
+apt-get -y install libexpat1 libssl1.0.0 odbcinst unixodbc libcurl3 libxslt1.1
+fi
 
 DIALOG=${DIALOG=dialog}
 
 main()
 {
-    dialog_welcome
-    dialog_fdo_provider
-    dialog_server
-    dialog_webtier
-    #dialog_coordsys
-    #dump_configuration
+    if [ "$HEADLESS" != "1" ]
+    then
+        dialog_welcome
+        dialog_fdo_provider
+        dialog_server
+        dialog_webtier
+        #dialog_coordsys
+    else
+        dump_configuration
+    fi
     install_fdo
     install_mapguide_packages
     post_install
@@ -472,23 +573,20 @@ post_install()
     echo "[config]: Fixing permissions for certain folders"
     chmod 777 /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/www/TempDir
 
-    echo "Creating lock file directory for MapGuide Server"
-    # Create lock file directory for Server
-    if [ ! -d /var/lock/mgserver ]; then
-      mkdir /var/lock/mgserver
-    fi
-    echo "Starting httpd"
-    pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/bin
-    ./apachectl start
-    popd
-    echo "Starting tomcat"
+    echo "[config]: Registering Services"
+    ln -s /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin/mapguidectl /etc/init.d/mapguide
+    ln -s /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/apache2/bin/apachectl /etc/init.d/apache-mapguide
+    update-rc.d mapguide defaults 35 65
+    update-rc.d apache-mapguide defaults 30 70
+    
+    echo "[install]: Starting httpd"
+    /etc/init.d/apache-mapguide start
+    echo "[install]: Starting tomcat"
     pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/tomcat/bin
     sh ./startup.sh
     popd
-    echo "Starting mgserver"
-    pushd /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/server/bin
-    ./mgserverd.sh
-    popd
+    echo "[install]: Starting mgserver"
+    /etc/init.d/mapguide start
     echo "DONE!"
 }
 

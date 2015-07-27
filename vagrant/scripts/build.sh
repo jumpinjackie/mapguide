@@ -2,7 +2,7 @@
 
 # Global vars for this script. Modify as necessary
 APIVERSION=2.6
-BUILDNUM=${APIVERSION}.0
+BUILDNUM=${APIVERSION}.1
 BUILDROOT=`pwd`
 MGCPUPLATFORM=i386
 MGDEBUG=0
@@ -17,7 +17,7 @@ LOCALSVN=1
 SVNROOT=/home/vagrant
 #SVNROOT="svn://svn.bld.mgproto.net"
 #SVNROOT="http://svn.osgeo.org"
-SVNRELPATH=/mapguide/branches/2.6/MgDev
+SVNRELPATH=/mapguide/branches/3.0/MgDev
 MY_MAKE_OPTS="-j 2"
 UBUNTU=0
 PRESERVE_BUILD_ROOT=1
@@ -196,6 +196,18 @@ check_build
 end_time=`date +%s`
 
 echo "Preparing binaries for packaging"
+# Strip the heavy CS-Map dictionary data files. The geoid stuff is not used and the NSRS ones can be packaged separately
+pushd ${INSTALLROOT}/share/gis/coordsys
+rm -rf WW15MGH.GRD
+popd
+pushd ${INSTALLROOT}/share/gis/coordsys/Usa
+rm -rf Geoid03
+rm -rf Geoid96
+rm -rf Geoid99
+rm -rf NSRS2007
+rm -rf NSRS2011
+popd
+
 # Prepare binaries for packaging by removing unnecessary
 # .la and .a files and stripping unneeded symbols from the binaries
 pushd ${INSTALLROOT}
@@ -226,7 +238,7 @@ then
         mkdir -p bin
     fi
 
-    tar -zcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.${MGCPUPLATFORM}.tar.gz ${INSTALLROOT} ${LOCKFILEDIR}
+    tar -Jcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.${MGCPUPLATFORM}.tar.xz ${INSTALLROOT} ${LOCKFILEDIR}
 fi
 echo "Build complete!"
 echo Main build execution: `expr $end_time - $start_time` s

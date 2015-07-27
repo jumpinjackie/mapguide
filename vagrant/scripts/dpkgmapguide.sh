@@ -6,50 +6,50 @@
 #   changelog - generated changelog file
 #   substvars - subst params created by dpkg-shlibdeps
 #   mapguideplatformbase/ - packaging directory for common MapGuide components
-#     usr/local/mapguideopensource-2.6.0/ - copied tree for common components
+#     usr/local/mapguideopensource-3.0.0/ - copied tree for common components
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 #
 #   mapguidecommon/ - packaging directory for common MapGuide components
-#     usr/local/mapguideopensource-2.6.0/ - copied tree for common components
+#     usr/local/mapguideopensource-3.0.0/ - copied tree for common components
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 #
 #   mapguidecoordsys/ - packaging directory for CS-Map coordinate system dictionaries
-#     usr/local/mapguideopensource-2.6.0/ - copied tree for common components
+#     usr/local/mapguideopensource-3.0.0/ - copied tree for common components
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 #
 #   mapguidecoordsyslite/ - packaging directory for CS-Map coordinate system dictionaries
-#     usr/local/mapguideopensource-2.6.0/ - copied tree for common components
+#     usr/local/mapguideopensource-3.0.0/ - copied tree for common components
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 #
 #   mapguideserver/ - packaging directory for MapGuide Server
-#     usr/local/mapguideopensource-2.6.0/ - copied tree for Server
+#     usr/local/mapguideopensource-3.0.0/ - copied tree for Server
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 #
 #   mapguidewebextensions/ - packaging directory for Web Extensions
-#     usr/local/mapguideopensource-2.6.0/ - copied tree for Web Extensions
+#     usr/local/mapguideopensource-3.0.0/ - copied tree for Web Extensions
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 #
 #   mapguidehttpd/ - packaging directory for Apache Bundle
-#     usr/local/mapguideopensource-2.6.0/ - copied tree for Apache bundle
+#     usr/local/mapguideopensource-3.0.0/ - copied tree for Apache bundle
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 #
 
 BUILDROOT=`pwd`
-MGBUILD=2.6.0
+MGBUILD=2.6.1
 FDOBUILD=3.9.0
 MGINST=usr/local/mapguideopensource-${MGBUILD}
 CPROOT=${ROOT}/${MGINST}

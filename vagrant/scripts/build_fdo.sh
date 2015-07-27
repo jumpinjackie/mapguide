@@ -12,8 +12,8 @@ FDO_DEBUG=0
 FDO_BUILD_COMPONENT=
 
 # FDO version. Make sure this matches your FDO build source
-FDO_VER_MAJOR=3
-FDO_VER_MINOR=9
+FDO_VER_MAJOR=4
+FDO_VER_MINOR=0
 FDO_VER_REV=0
 
 # Extra flags to pass to FDO build scripts
@@ -104,7 +104,7 @@ PRESERVE_BUILD_ROOT=1
 CMAKE=0
 
 MY_HOME_DIR=/home/vagrant
-FDO_SRC=${MY_HOME_DIR}/fdo/branches/3.9
+FDO_SRC=${MY_HOME_DIR}/fdo/branches/4.0
 #FDO_SRC=http://svn.osgeo.org/fdo/trunk
 FDO_BUILD_AREA=${BUILDROOT}/fdo_build_area
 FDO_FILELIST=${FDO_BUILD_AREA}/install/filelist
@@ -140,7 +140,7 @@ shim_thirdparty_lib_paths()
             ln -s /usr/lib ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME
             echo "[info]: Symlinked PostgreSQL lib path (x86)"
         else
-            ln -s /usr/lib64 ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME
+            ln -s /usr/lib ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME
             echo "[info]: Symlinked PostgreSQL lib path (x64)"
         fi
     else
@@ -204,7 +204,12 @@ modify_sdk_paths()
         mkdir -p $FDO_BUILD_AREA/Thirdparty/libcurl/lib
         if [ ! -e $FDO_BUILD_AREA/Thirdparty/libcurl/lib/linux ];
         then
-            ln -s /usr/lib/i386-linux-gnu $FDO_BUILD_AREA/Thirdparty/libcurl/lib/linux
+            if [ ${FDO_PLATFORM} -eq 32 ]; 
+            then
+                ln -s /usr/lib/i386-linux-gnu $FDO_BUILD_AREA/Thirdparty/libcurl/lib/linux
+            else
+                ln -s /usr/lib/x86_64-linux-gnu $FDO_BUILD_AREA/Thirdparty/libcurl/lib/linux
+            fi
         fi
 
         # symlink openssl to system installed copy
@@ -219,7 +224,12 @@ modify_sdk_paths()
         mkdir -p $FDO_BUILD_AREA/Thirdparty/openssl/lib
         if [ ! -e $FDO_BUILD_AREA/Thirdparty/openssl/lib/linux ];
         then
-            ln -s /usr/lib/i386-linux-gnu $FDO_BUILD_AREA/Thirdparty/openssl/lib/linux
+            if [ ${FDO_PLATFORM} -eq 32 ]; 
+            then
+                ln -s /usr/lib/i386-linux-gnu $FDO_BUILD_AREA/Thirdparty/openssl/lib/linux
+            else
+                ln -s /usr/lib/x86_64-linux-gnu $FDO_BUILD_AREA/Thirdparty/openssl/lib/linux
+            fi
         fi
         echo "[info]: Replace internal openssl/libcurl with symlinks to Ubuntu-installed copies"
     fi
@@ -533,7 +543,7 @@ then
     FDO_BUILD_COMPONENT="Make tarball"
     # Create a binary tar ball for FDO
     cd ${FDO_INST}
-    tar -zcf ${BUILDROOT}/fdosdk-centos6-${FDO_BUILD_CPU}-${FDO_VER_FULL}_${REVISION}.tar.gz *
+    tar -Jcf ${BUILDROOT}/fdosdk-centos6-${FDO_BUILD_CPU}-${FDO_VER_FULL}_${REVISION}.tar.xz *
     check_build
 
     if [ ${UBUNTU} -eq 1 ];
