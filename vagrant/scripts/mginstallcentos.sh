@@ -1,5 +1,5 @@
 #!/bin/bash
-URL_ROOT="http://download.osgeo.org/mapguide/releases/3.0.0/RC1"
+URL_ROOT="http://download.osgeo.org/mapguide/releases/3.0.0/Final"
 URL_PART="centos"
 URL="$URL_ROOT/$URL_PART"
 #URL="http://192.168.0.4/downloads"
