@@ -50,7 +50,7 @@
 
 BUILDROOT=`pwd`
 MGBUILD=2.6.1
-FDOBUILD=3.9.0
+FDOBUILD=3.9.1
 MGINST=usr/local/mapguideopensource-${MGBUILD}
 CPROOT=${ROOT}/${MGINST}
 
