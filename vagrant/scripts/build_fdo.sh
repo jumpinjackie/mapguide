@@ -104,7 +104,7 @@ PRESERVE_BUILD_ROOT=1
 CMAKE=0
 
 MY_HOME_DIR=/home/vagrant
-FDO_SRC=${MY_HOME_DIR}/fdo/branches/4.0
+FDO_SRC=${MY_HOME_DIR}/fdo/branches/${FDO_VER_MAJOR}.${FDO_VER_MINOR}
 #FDO_SRC=http://svn.osgeo.org/fdo/trunk
 FDO_BUILD_AREA=${BUILDROOT}/fdo_build_area
 FDO_FILELIST=${FDO_BUILD_AREA}/install/filelist
