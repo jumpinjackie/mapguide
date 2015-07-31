@@ -154,13 +154,28 @@ MgGeometry* MgHttpWmsGetFeatureInfo::GetSelectionGeometry(MgMap* map)
     Ptr<MgCoordinate> mcsLowerLeft = mcsExtent->GetLowerLeftCoordinate();
     Ptr<MgCoordinate> mcsUpperRight = mcsExtent->GetUpperRightCoordinate();
 
+	//When GetFeatureInfo for point or line geometry, simply using click point to query cannot get any matching.
+	//Expand selection geometry a little to be a linearRing so that can query point and line.
+	double margin = 2;
     // Convert the pixel coords to MCS coords
-    double mcsX = mcsLowerLeft->GetX() + (double)m_iCoord * mcsExtent->GetWidth() / map->GetDisplayWidth();
-    double mcsY = mcsUpperRight->GetY() - (double)m_jCoord * mcsExtent->GetHeight() / map->GetDisplayHeight();
+    double mcsMinX = mcsLowerLeft->GetX() + ((double)m_iCoord - margin) * mcsExtent->GetWidth() / map->GetDisplayWidth();
+    double mcsMaxY = mcsUpperRight->GetY() -((double)m_jCoord - margin) * mcsExtent->GetHeight() / map->GetDisplayHeight();
+
+    double mcsMaxX = mcsLowerLeft->GetX() + ((double)m_iCoord + margin)* mcsExtent->GetWidth() / map->GetDisplayWidth();
+    double mcsMinY = mcsUpperRight->GetY() -((double)m_jCoord + margin) * mcsExtent->GetHeight() / map->GetDisplayHeight();
 
     // Create a new MgPoint representing these coordinates
-    Ptr<MgCoordinateXY> selectionCoord = new MgCoordinateXY(mcsX, mcsY);
-    selectionGeometry = new MgPoint(selectionCoord);
+    Ptr<MgGeometryFactory> geometryFact = new MgGeometryFactory();
+    Ptr<MgCoordinateCollection> linearRingCoords = new MgCoordinateCollection();
+
+    linearRingCoords->Add(new MgCoordinateXY(mcsMinX, mcsMinY));
+    linearRingCoords->Add(new MgCoordinateXY(mcsMinX, mcsMaxY));
+    linearRingCoords->Add(new MgCoordinateXY(mcsMaxX, mcsMaxY));
+    linearRingCoords->Add(new MgCoordinateXY(mcsMaxX, mcsMinY));
+    linearRingCoords->Add(new MgCoordinateXY(mcsMinX, mcsMinY));
+
+    Ptr<MgLinearRing> linearRing = geometryFact->CreateLinearRing(linearRingCoords);
+    selectionGeometry = geometryFact->CreatePolygon(linearRing, NULL);
 
     return selectionGeometry;
 }
