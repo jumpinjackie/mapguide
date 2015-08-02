@@ -12,7 +12,7 @@
 #       symbols - symbols file generated from dpkg-gensymbols
 # 
 BUILDROOT=`pwd`
-FDOBUILD=3.9.1
+FDOBUILD=3.9.0
 FDO=usr/local/fdo-${FDOBUILD}
 ROOT=${BUILDROOT}/debian/fdocore
 TREE=${BUILDROOT}/debian
