@@ -129,25 +129,5 @@ module.exports = {
                 //Snapshot and baseline compare
                 .saveScreenshot(helper.screenshotName(client, "Ajax - NAV004 - 002 - Pan result"))
             .end();
-    },
-    'NAV005 - Context Menu': function (client) {
-        client.url(settings.getAjaxViewerUrl())
-            .waitForElementPresent("#taskFrame", 5000, true)
-            //NOTE: For nested frames, you have to navigate down each frame individually. This is a selenium problem
-            .frame("taskFrame")
-                .waitForElementPresent("frame[name='taskPaneFrame']", 5000, true)
-                .frame("taskPaneFrame")
-                    .waitForElementVisible("table.RegText", 5000, true)
-                    .assert.containsText("table.RegText td.Title", "Overview")
-                .frame(null)
-            .frame(null)
-            .waitForElementPresent("#mapFrame", 5000, true)
-            .frame("mapFrame")
-                .moveToElement("#map", 250, 250)
-                .mouseButtonClick(2)
-                .waitForElementVisible("#CtxMenu", 1000, true)
-                //Snapshot and baseline compare
-                .saveScreenshot(helper.screenshotName(client, "Ajax - NAV005 - 001 - Context Menu"))
-            .end();
     }
 }
