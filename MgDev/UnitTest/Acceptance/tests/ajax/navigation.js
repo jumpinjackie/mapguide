@@ -25,7 +25,7 @@ module.exports = {
                     .moveToElement(wl.getToolbarCommand(wl.toolbar.ZOOM_IN), 10, 10)
                     .click(wl.getToolbarCommand(wl.toolbar.ZOOM_IN))
                     //Snapshot and baseline compare
-                    .saveScreenshot(helper.screenshotName(client, "NAV001 - 001 - Zoom In clicked"))
+                    .saveScreenshot(helper.screenshotName(client, "Ajax - NAV001 - 001 - Zoom In clicked"))
                 .useCss()
             .frame(null)
             .waitForElementPresent("#mapFrame", 5000, true)
@@ -33,7 +33,7 @@ module.exports = {
                 .moveToElement("#map", 250, 250)
                 .click("#map")
                 //Snapshot and baseline compare
-                .saveScreenshot(helper.screenshotName(client, "NAV001 - 002 - Zoom In result"))
+                .saveScreenshot(helper.screenshotName(client, "Ajax - NAV001 - 002 - Zoom In result"))
             .end();
     },
     'NAV002 - Zoom Out': function (client) {
@@ -54,7 +54,7 @@ module.exports = {
                     .moveToElement(wl.getToolbarCommand(wl.toolbar.ZOOM_OUT), 10, 10)
                     .click(wl.getToolbarCommand(wl.toolbar.ZOOM_OUT))
                     //Snapshot and baseline compare
-                    .saveScreenshot(helper.screenshotName(client, "NAV002 - 001 - Zoom Out clicked"))
+                    .saveScreenshot(helper.screenshotName(client, "Ajax - NAV002 - 001 - Zoom Out clicked"))
                 .useCss()
             .frame(null)
             .waitForElementPresent("#mapFrame", 5000, true)
@@ -62,7 +62,7 @@ module.exports = {
                 .moveToElement("#map", 250, 250)
                 .click("#map")
                 //Snapshot and baseline compare
-                .saveScreenshot(helper.screenshotName(client, "NAV002 - 002 - Zoom Out clicked"))
+                .saveScreenshot(helper.screenshotName(client, "Ajax - NAV002 - 002 - Zoom Out clicked"))
             .end();
     },
     'NAV003 - Zoom Rectangle': function (client) {
@@ -83,7 +83,7 @@ module.exports = {
                     .moveToElement(wl.getToolbarCommand(wl.toolbar.ZOOM_RECT), 10, 10)
                     .click(wl.getToolbarCommand(wl.toolbar.ZOOM_RECT))
                     //Snapshot and baseline compare
-                    .saveScreenshot(helper.screenshotName(client, "NAV003 - 001 - Zoom Rectangle clicked"))
+                    .saveScreenshot(helper.screenshotName(client, "Ajax - NAV003 - 001 - Zoom Rectangle clicked"))
                 .useCss()
             .frame(null)
             .waitForElementPresent("#mapFrame", 5000, true)
@@ -92,11 +92,11 @@ module.exports = {
                 .mouseButtonDown(0)
                 .moveToElement("#map", 350, 350)
                 //Snapshot and baseline compare
-                .saveScreenshot(helper.screenshotName(client, "NAV003 - 002 - Zoom Rectangle drag box"))
+                .saveScreenshot(helper.screenshotName(client, "Ajax - NAV003 - 002 - Zoom Rectangle drag box"))
                 .mouseButtonUp(0)
                 .pause(3000) //Breathe for rendering
                 //Snapshot and baseline compare
-                .saveScreenshot(helper.screenshotName(client, "NAV003 - 003 - Zoom Rectangle result"))
+                .saveScreenshot(helper.screenshotName(client, "Ajax - NAV003 - 003 - Zoom Rectangle result"))
             .end();
     },
     'NAV004 - Pan': function (client) {
@@ -117,7 +117,7 @@ module.exports = {
                     .moveToElement(wl.getToolbarCommand(wl.toolbar.PAN), 10, 10)
                     .click(wl.getToolbarCommand(wl.toolbar.PAN))
                     //Snapshot and baseline compare
-                    .saveScreenshot(helper.screenshotName(client, "NAV004 - 001 - Pan clicked"))
+                    .saveScreenshot(helper.screenshotName(client, "Ajax - NAV004 - 001 - Pan clicked"))
                 .useCss()
             .frame(null)
             .waitForElementPresent("#mapFrame", 5000, true)
@@ -127,7 +127,7 @@ module.exports = {
                 .moveToElement("#map", 250, 250)
                 .mouseButtonUp(0)
                 //Snapshot and baseline compare
-                .saveScreenshot(helper.screenshotName(client, "NAV004 - 002 - Pan result"))
+                .saveScreenshot(helper.screenshotName(client, "Ajax - NAV004 - 002 - Pan result"))
             .end();
     },
     'NAV005 - Context Menu': function (client) {
@@ -147,7 +147,7 @@ module.exports = {
                 .mouseButtonClick(2)
                 .waitForElementVisible("#CtxMenu", 1000, true)
                 //Snapshot and baseline compare
-                .saveScreenshot(helper.screenshotName(client, "NAV005 - 001 - Context Menu"))
+                .saveScreenshot(helper.screenshotName(client, "Ajax - NAV005 - 001 - Context Menu"))
             .end();
     }
 }
