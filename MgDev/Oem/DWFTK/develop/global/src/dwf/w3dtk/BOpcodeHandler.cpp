@@ -7591,7 +7591,7 @@ TK_Color::~TK_Color ()
 TK_Status TK_Color::Write (BStreamFileToolkit & tk) alter {
 #ifndef BSTREAM_READONLY
     TK_Status       status = TK_Normal;
-    int				length;
+    int				length1;
 
 #ifndef BSTREAM_DISABLE_ASCII
 	if (tk.GetAsciiMode()) 
@@ -7729,10 +7729,10 @@ TK_Status TK_Color::Write (BStreamFileToolkit & tk) alter {
                 unsigned char       byte = 0;   
 
 				if (m_specular.m_name != null) {
-					length = (int)strlen (m_specular.m_name);
-					if (length > 255)
+					length1 = (int)strlen (m_specular.m_name);
+					if (length1 > 255)
 						return tk.Error(">255 specular texture not yet supported");
-                    byte = (unsigned char) length;
+                    byte = (unsigned char) length1;
 				}
                 if ((status = PutData (tk, byte)) != TK_Normal)
                     return status;
@@ -7763,10 +7763,10 @@ TK_Status TK_Color::Write (BStreamFileToolkit & tk) alter {
                 unsigned char       byte = 0;   
 
 				if (m_mirror.m_name != null) {
-					length = (int) strlen (m_mirror.m_name);
-					if (length > 255)
+					length1 = (int) strlen (m_mirror.m_name);
+					if (length1 > 255)
 						return tk.Error(">255 mirror texture not yet supported");
-                    byte = (unsigned char) length;
+                    byte = (unsigned char) length1;
 				}
 
                 if ((status = PutData (tk, byte)) != TK_Normal)
@@ -7798,10 +7798,10 @@ TK_Status TK_Color::Write (BStreamFileToolkit & tk) alter {
                 unsigned char       byte = 0;   
 
 				if (m_transmission.m_name != null) {
-                    length = (int) strlen (m_transmission.m_name);
-					if (length > 255)
+                    length1 = (int) strlen (m_transmission.m_name);
+					if (length1 > 255)
 						return tk.Error(">255 transmission texture not yet supported");
-                    byte = (unsigned char) length;
+                    byte = (unsigned char) length1;
 				}
 
                 if ((status = PutData (tk, byte)) != TK_Normal)
@@ -7833,10 +7833,10 @@ TK_Status TK_Color::Write (BStreamFileToolkit & tk) alter {
                 unsigned char       byte = 0;   
 
 				if (m_emission.m_name != null) {
-                    length = (int) strlen (m_emission.m_name);
-					if (length > 255)
+                    length1 = (int) strlen (m_emission.m_name);
+					if (length1 > 255)
 						return tk.Error(">255 emission texture not yet supported");
-                    byte = (unsigned char) length;
+                    byte = (unsigned char) length1;
 				}
                 if ((status = PutData (tk, byte)) != TK_Normal)
                     return status;
@@ -7883,10 +7883,10 @@ TK_Status TK_Color::Write (BStreamFileToolkit & tk) alter {
 				unsigned char       byte = 0;
 
 				if (m_environment.m_name != null) {
-                    length = (int) strlen (m_environment.m_name);
-					if (length > 255)
+                    length1 = (int) strlen (m_environment.m_name);
+					if (length1 > 255)
 						return tk.Error(">255 environment texture not yet supported");
-                    byte = (unsigned char) length;
+                    byte = (unsigned char) length1;
 				}
                 if ((status = PutData (tk, byte)) != TK_Normal)
                     return status;
@@ -7907,10 +7907,10 @@ TK_Status TK_Color::Write (BStreamFileToolkit & tk) alter {
 				unsigned char       byte = 0;
 
 				if (m_bump.m_name != null) {
-                    length = (int) strlen (m_bump.m_name);
-					if (length > 255)
+                    length1 = (int) strlen (m_bump.m_name);
+					if (length1 > 255)
 						return tk.Error(">255 bump texture not yet supported");
-                    byte = (unsigned char) length;
+                    byte = (unsigned char) length1;
 				}
 
                 if ((status = PutData (tk, byte)) != TK_Normal)
@@ -14243,7 +14243,7 @@ TK_Status TK_Text_Font::Write (BStreamFileToolkit & tk) alter {
 
 TK_Status TK_Text_Font::Read (BStreamFileToolkit & tk) alter {
     TK_Status       status = TK_Normal;
-    unsigned char   byte;
+    unsigned char   byte1;
     unsigned short  word;
 #ifndef BSTREAM_DISABLE_ASCII
 	if (tk.GetAsciiMode()) 
@@ -14251,33 +14251,33 @@ TK_Status TK_Text_Font::Read (BStreamFileToolkit & tk) alter {
 #endif
     switch (m_stage) {
         case 0: {
-            if ((status = GetData (tk, byte)) != TK_Normal)
+            if ((status = GetData (tk, byte1)) != TK_Normal)
                 return status;
-            m_mask = byte;
+            m_mask = byte1;
             m_stage++;
         }   nobreak;
 
         case 1: {
-            if ((status = GetData (tk, byte)) != TK_Normal)
+            if ((status = GetData (tk, byte1)) != TK_Normal)
                 return status;
-            m_value = byte;
+            m_value = byte1;
             m_stage++;
         }   nobreak;
 
         case 2: {
             if ((m_mask & TKO_Font_Extended) != 0) {
-                if ((status = GetData (tk, byte)) != TK_Normal)
+                if ((status = GetData (tk, byte1)) != TK_Normal)
                     return status;
-                m_mask |= byte << 8;
+                m_mask |= byte1 << 8;
             }
             m_stage++;
         }   nobreak;
 
         case 3: {
             if ((m_mask & TKO_Font_Extended) != 0) {
-                if ((status = GetData (tk, byte)) != TK_Normal)
+                if ((status = GetData (tk, byte1)) != TK_Normal)
                     return status;
-                m_value |= byte << 8;
+                m_value |= byte1 << 8;
             }
             m_stage++;
         }   nobreak;
@@ -14302,9 +14302,9 @@ TK_Status TK_Text_Font::Read (BStreamFileToolkit & tk) alter {
 
         case 6: {
             if ((m_mask & m_value & TKO_Font_Names) != 0) {
-                if ((status = GetData (tk, byte)) != TK_Normal)
+                if ((status = GetData (tk, byte1)) != TK_Normal)
                     return status;
-                m_names_length = byte;
+                m_names_length = byte1;
                 
                 SetNames (m_names_length);
             }

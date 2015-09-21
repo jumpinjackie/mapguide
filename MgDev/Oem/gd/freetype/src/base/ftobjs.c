@@ -764,8 +764,8 @@
                 FT_Driver  driver )
   {
     /* finalize client-specific data */
-    if ( size->generic.finalizer )
-      size->generic.finalizer( size );
+    if ( size->genericFT.finalizer )
+      size->genericFT.finalizer( size );
 
     /* finalize format-specific stuff */
     if ( driver->clazz->done_size )
@@ -831,8 +831,8 @@
     face->size = 0;
 
     /* now discard client data */
-    if ( face->generic.finalizer )
-      face->generic.finalizer( face );
+    if ( face->genericFT.finalizer )
+      face->genericFT.finalizer( face );
 
     /* discard charmaps */
     destroy_charmaps( face, memory );

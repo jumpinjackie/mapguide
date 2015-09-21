@@ -9023,12 +9023,12 @@ TK_Status TK_Polyhedron::read_collection_ascii (BStreamFileToolkit & tk) alter {
 			}
 			temp_opcode[len] = 0;
 
-			int i;
-			for ( i=0; i<256; i++ ) {
-				if ( strni_equal( (const char *)& temp_opcode[4], (const char *)opcode_list[i],(word_count)) == true )
+			int j;
+			for ( j=0; j<256; j++ ) {
+				if ( strni_equal( (const char *)& temp_opcode[4], (const char *)opcode_list[j],(word_count)) == true )
 						break;	// found opcode
 				}
-			opcode = (unsigned char)i;
+			opcode = (unsigned char)j;
 			word_count = 0;
 
 // End of added code

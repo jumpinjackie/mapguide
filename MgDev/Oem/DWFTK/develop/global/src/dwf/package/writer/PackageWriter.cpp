@@ -450,10 +450,10 @@ throw( DWFException )
     //  or merge. So lets count the number of associated contents first before we proceed.
     //
     DWFSortedVector<DWFString> oContentIDs( false );
-    _tSectionToContentManager::iterator iMap = _oSectionToContentManager.begin();
-    for (; iMap != _oSectionToContentManager.end();  ++iMap)
+    _tSectionToContentManager::iterator iMap1 = _oSectionToContentManager.begin();
+    for (; iMap1 != _oSectionToContentManager.end();  ++iMap1)
     {
-        DWFSection* pSection = iMap->first;
+        DWFSection* pSection = iMap1->first;
 
         DWFSection::tStringMultiMap oResourceIDContentID;
         pSection->getAssociatedContentIDs( oResourceIDContentID );

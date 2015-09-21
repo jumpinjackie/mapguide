@@ -768,9 +768,9 @@ const FdoByte * CGwsMutableFeature::GetGeometry(
     if(pValue == NULL)
         throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
-    FdoPtr<FdoValueExpression> pVal = pValue->GetValue();
+    FdoPtr<FdoValueExpression> pVal1 = pValue->GetValue();
     if (desc.m_ptype == FdoPropertyType_GeometricProperty) {
-        FdoGeometryValue * pGeom = (FdoGeometryValue *) pVal.p;
+        FdoGeometryValue * pGeom = (FdoGeometryValue *) pVal1.p;
         FdoPtr<FdoByteArray> pVal = pGeom->GetGeometry ();
         *count = pVal->GetCount();
         return pVal->GetData();
@@ -888,13 +888,13 @@ void CGwsMutableFeature::SetNull(FdoString* propertyName)
 
     ValidatePropertyName(propertyName, & desc);
 
-    FdoPtr<FdoPropertyValue> pPropertyValue =
+    FdoPtr<FdoPropertyValue> pPropertyValue1 =
                                 m_pProperties->FindItem (propertyName);
-    if (pPropertyValue == NULL) { // not yet set
+    if (pPropertyValue1 == NULL) { // not yet set
         FdoPtr<FdoPropertyValue>  pPropertyValue = ConstructPropertyValue (* desc);
         m_pProperties->Add(pPropertyValue);
     } else {
-        FdoPtr<FdoValueExpression> pVal = pPropertyValue->GetValue ();
+        FdoPtr<FdoValueExpression> pVal = pPropertyValue1->GetValue ();
         if (desc->m_ptype == FdoPropertyType_DataProperty) {
             ((FdoDataValue *) pVal.p)->SetNull ();
         } else if (desc->m_ptype == FdoPropertyType_GeometricProperty) {
@@ -1152,7 +1152,7 @@ void CGwsMutableFeature::SetGeometry(FdoString * propertyName, FdoByteArray * ge
     FdoPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
 
-    FdoPtr<FdoGeometryValue> pGeometryValue;
+    FdoPtr<FdoGeometryValue> pGeometryValue1;
 
     if (pPropertyValue == NULL) {
         FdoPtr<FdoGeometryValue>   pGeometryValue = FdoGeometryValue::Create(geom);
@@ -1160,8 +1160,8 @@ void CGwsMutableFeature::SetGeometry(FdoString * propertyName, FdoByteArray * ge
         m_pProperties->Add(pPropertyValue);
 
     } else {
-        pGeometryValue = (FdoGeometryValue *) pPropertyValue->GetValue ();
-        pGeometryValue->SetGeometry (geom);
+        pGeometryValue1 = (FdoGeometryValue *) pPropertyValue->GetValue ();
+        pGeometryValue1->SetGeometry (geom);
     }
 }
 

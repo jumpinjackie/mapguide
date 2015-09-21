@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -27,22 +27,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -105,7 +105,7 @@
     <Link>
       <AdditionalDependencies>csmapd.lib;ACEd.lib;GEOSd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgGeometryd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib110\$(Configuration);..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\geos\VisualStudio\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib140\$(Configuration);..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\geos\VisualStudio\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -131,7 +131,7 @@
     <Link>
       <AdditionalDependencies>csmapd.lib;ACEd.lib;GEOSd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgGeometryd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib110\$(Configuration)64;..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\geos\VisualStudio\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib140\$(Configuration)64;..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\geos\VisualStudio\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>..\lib\$(Configuration)64\MgGeometryd.lib</ImportLibrary>
@@ -153,7 +153,7 @@
     <Link>
       <AdditionalDependencies>csmap.lib;ACE.lib;GEOS.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgGeometry.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib110\$(Configuration);..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\geos\VisualStudio\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib140\$(Configuration);..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\geos\VisualStudio\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -180,7 +180,7 @@
     <Link>
       <AdditionalDependencies>csmap.lib;ACE.lib;GEOS.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgGeometry.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib110\$(Configuration)64;..\..\Oem\ACE\ACE_Wrappers\lib64\$(Configuration);..\..\Oem\geos\VisualStudio\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib140\$(Configuration)64;..\..\Oem\ACE\ACE_Wrappers\lib64\$(Configuration);..\..\Oem\geos\VisualStudio\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

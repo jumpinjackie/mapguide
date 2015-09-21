@@ -7677,7 +7677,7 @@ TK_Status TK_Color::WriteAscii (BStreamFileToolkit & tk) alter {
 	
 	PutTab t0(&tk);
 
-    int				length;
+    int				length1;
     switch (m_stage) {
         case 0: {
             if ((status = PutAsciiOpcode (tk,1)) != TK_Normal)
@@ -7784,15 +7784,15 @@ TK_Status TK_Color::WriteAscii (BStreamFileToolkit & tk) alter {
         case 9: {
 			PutTab t(&tk);
             if ((m_channels & (1 << TKO_Channel_Specular)) != 0) {
-                length = 0;   // if no string, zero indicates by-value
+                length1 = 0;   // if no string, zero indicates by-value
 
 				if (m_specular.m_name != null) {
-					length = (int)strlen (m_specular.m_name);
-					if (length > 255)
+					length1 = (int)strlen (m_specular.m_name);
+					if (length1 > 255)
 						return tk.Error(">255 specular texture not yet supported");
 				}
 				
-                if ((status = PutAsciiData (tk,"Length", length)) != TK_Normal)
+                if ((status = PutAsciiData (tk,"Length", length1)) != TK_Normal)
                     return status;
             }
             m_stage++;
@@ -7818,15 +7818,15 @@ TK_Status TK_Color::WriteAscii (BStreamFileToolkit & tk) alter {
         case 11: {
 			PutTab t(&tk);
             if ((m_channels & (1 << TKO_Channel_Mirror)) != 0) {
-                length = 0;   // if no string, zero indicates by-value
+                length1 = 0;   // if no string, zero indicates by-value
 
 				if (m_mirror.m_name != null) {
-					length = (int) strlen (m_mirror.m_name);
-					if (length > 255)
+					length1 = (int) strlen (m_mirror.m_name);
+					if (length1 > 255)
 						return tk.Error(">255 mirror texture not yet supported");
 				}
 				
-                if ((status = PutAsciiData (tk,"Length", length)) != TK_Normal)
+                if ((status = PutAsciiData (tk,"Length", length1)) != TK_Normal)
                     return status;
             }
             m_stage++;
@@ -7852,14 +7852,14 @@ TK_Status TK_Color::WriteAscii (BStreamFileToolkit & tk) alter {
         case 13: {
 			PutTab t(&tk);
             if ((m_channels & (1 << TKO_Channel_Transmission)) != 0) {
-                length = 0;
+                length1 = 0;
 				if (m_transmission.m_name != null) {
-                    length = (int) strlen (m_transmission.m_name);
-					if (length > 255)
+                    length1 = (int) strlen (m_transmission.m_name);
+					if (length1 > 255)
 						return tk.Error(">255 transmission texture not yet supported");
 				}
 				
-                if ((status = PutAsciiData (tk,"Length", length)) != TK_Normal)
+                if ((status = PutAsciiData (tk,"Length", length1)) != TK_Normal)
                     return status;
             }
             m_stage++;
@@ -7885,15 +7885,15 @@ TK_Status TK_Color::WriteAscii (BStreamFileToolkit & tk) alter {
         case 15: {
 			PutTab t(&tk);
             if ((m_channels & (1 << TKO_Channel_Emission)) != 0) {
-                length = 0;   // if no string, zero indicates by-value
+                length1 = 0;   // if no string, zero indicates by-value
 
 				if (m_emission.m_name != null) {
-                    length = (int) strlen (m_emission.m_name);
-					if (length > 255)
+                    length1 = (int) strlen (m_emission.m_name);
+					if (length1 > 255)
 						return tk.Error(">255 emission texture not yet supported");
 				}
 				
-                if ((status = PutAsciiData (tk,"Length", length)) != TK_Normal)
+                if ((status = PutAsciiData (tk,"Length", length1)) != TK_Normal)
                     return status;
             }
             m_stage++;
@@ -7939,15 +7939,15 @@ TK_Status TK_Color::WriteAscii (BStreamFileToolkit & tk) alter {
         case 19: {
 			PutTab t(&tk);
             if ((m_channels & (1 << TKO_Channel_Environment)) != 0) {
-				length = 0;
+				length1 = 0;
 
 				if (m_environment.m_name != null) {
-                    length = (int) strlen (m_environment.m_name);
-					if (length > 255)
+                    length1 = (int) strlen (m_environment.m_name);
+					if (length1 > 255)
 						return tk.Error(">255 environment texture not yet supported");
 				}
 				
-                if ((status = PutAsciiData (tk,"Length", length)) != TK_Normal)
+                if ((status = PutAsciiData (tk,"Length", length1)) != TK_Normal)
                     return status;
             }
             m_stage++;
@@ -7966,15 +7966,15 @@ TK_Status TK_Color::WriteAscii (BStreamFileToolkit & tk) alter {
         case 21: {
 			PutTab t(&tk);
             if ((m_channels & (1 << TKO_Channel_Bump)) != 0) {
-				length = 0;
+				length1 = 0;
 
 				if (m_bump.m_name != null) {
-                    length = (int) strlen (m_bump.m_name);
-					if (length > 255)
+                    length1 = (int) strlen (m_bump.m_name);
+					if (length1 > 255)
 						return tk.Error(">255 bump texture not yet supported");
 				}
 				
-                if ((status = PutAsciiData (tk,"Length", length)) != TK_Normal)
+                if ((status = PutAsciiData (tk,"Length", length1)) != TK_Normal)
                     return status;
             }
             m_stage++;

@@ -26,14 +26,14 @@ using namespace SqliteDotNet;
 using namespace System::Runtime::InteropServices;
 
 
-wstring SToWs(System::String* str)
+wstring SToWs(System::String^ str)
 {
     System::IntPtr strPtr = Marshal::StringToCoTaskMemUni(str);
     wstring retStr = (wchar_t*) strPtr.ToPointer();
     return retStr;
 }
 
-System::String* WsToS(wstring str)
+System::String^ WsToS(wstring str)
 {
     System::IntPtr ptr((void*)str.c_str());
     return Marshal::PtrToStringUni(ptr);
@@ -74,9 +74,9 @@ int SqliteDb::Close()
 }
 
 ///Returns current error message
-System::String* SqliteDb::GetErrMsg()
+System::String^ SqliteDb::GetErrMsg()
 {
-    System::String* str = NULL;
+    System::String^ str = nullptr;
     if (database != NULL)
     {
         wstring msg = database->GetErrMsg();
@@ -86,9 +86,9 @@ System::String* SqliteDb::GetErrMsg()
 }
 
 ///Returns the database name
-System::String* SqliteDb::GetName()
+System::String^ SqliteDb::GetName()
 {
-    System::String* str = NULL;
+    System::String^ str = nullptr;
     if (database != NULL)
     {
         wstring msg = database->GetName();
@@ -108,7 +108,7 @@ bool SqliteDb::IsConnected()
 }
 
 ///Initializes a database object
-int SqliteDb::Open(System::String* newName)
+int SqliteDb::Open(System::String^ newName)
 {
     if (database != NULL)
     {
@@ -119,7 +119,7 @@ int SqliteDb::Open(System::String* newName)
 }
 
 ///Dumps binary SQLite database into a SQL text format.
-void SqliteDb::DumpDatabase(System::String* iniFileName)
+void SqliteDb::DumpDatabase(System::String^ iniFileName)
 {
     if (database != NULL)
     {
@@ -129,7 +129,7 @@ void SqliteDb::DumpDatabase(System::String* iniFileName)
 }
 
 ///Generates binary database from a SQL text file
-void SqliteDb::GenerateDatabase(System::String* dumpFileName, System::String* dbFileName)
+void SqliteDb::GenerateDatabase(System::String^ dumpFileName, System::String^ dbFileName)
 {
     if (database != NULL)
     {
@@ -145,7 +145,7 @@ SqliteDB* SqliteDb::Database()
 }
 
 ///Overloaded constructor that initializes the database connection
-SqliteVm::SqliteVm(SqliteDb* newDb, bool noThrow)
+SqliteVm::SqliteVm(SqliteDb^ newDb, bool noThrow)
 {
     vm = new SqliteVM(newDb->Database(), noThrow);
 }
@@ -161,9 +161,9 @@ SqliteVm::~SqliteVm()
 };
 
 ///Returns the name of the column specified
-System::String* SqliteVm::ColumnName(int colNum)
+System::String^ SqliteVm::ColumnName(int colNum)
 {
-    System::String* str = NULL;
+    System::String^ str = nullptr;
     if (vm != NULL)
     {
         wstring wstr = vm->ColumnName(colNum);
@@ -172,7 +172,7 @@ System::String* SqliteVm::ColumnName(int colNum)
     return str;
 }
 
-int SqliteVm::ColumnNumber(System::String* colName)
+int SqliteVm::ColumnNumber(System::String^ colName)
 {
     int num = -1;
     if (vm != NULL)
@@ -184,9 +184,9 @@ int SqliteVm::ColumnNumber(System::String* colName)
 }
 
 ///Returns the type of the column specified
-System::String* SqliteVm::ColumnType(System::String* colName)
+System::String^ SqliteVm::ColumnType(System::String^ colName)
 {
-    System::String* str = NULL;
+    System::String^ str = nullptr;
     if (vm != NULL)
     {
         wstring wstrIn = SToWs(colName);
@@ -197,7 +197,7 @@ System::String* SqliteVm::ColumnType(System::String* colName)
 }
 
 ///Executes a query. Creates a new virtual machine
-int SqliteVm::Execute(System::String* newQuery)
+int SqliteVm::Execute(System::String^ newQuery)
 {
     int sqlErr = SQLITE_ERROR;
     if (vm != NULL)
@@ -209,9 +209,9 @@ int SqliteVm::Execute(System::String* newQuery)
 }
 
 ///Returns the sql query being executed
-System::String* SqliteVm::GetSqlQuery()
+System::String^ SqliteVm::GetSqlQuery()
 {
-    System::String* str = NULL;
+    System::String^ str = nullptr;
     if (vm != NULL)
     {
         wstring wstr = vm->GetSqlQuery();
@@ -221,9 +221,9 @@ System::String* SqliteVm::GetSqlQuery()
 }
 
 ///Returns the tail of an SQL query
-System::String* SqliteVm::GetQueryTail()
+System::String^ SqliteVm::GetQueryTail()
 {
-    System::String* str = NULL;
+    System::String^ str = nullptr;
     if (vm != NULL)
     {
         wstring wstr = vm->GetQueryTail();
@@ -233,7 +233,7 @@ System::String* SqliteVm::GetQueryTail()
 }
 
 ///Returns an integer
-int SqliteVm::GetInt(System::String* colName)
+int SqliteVm::GetInt(System::String^ colName)
 {
     int ret = 0;
     if (vm != NULL)
@@ -245,9 +245,9 @@ int SqliteVm::GetInt(System::String* colName)
 }
 
 ///Returns a string
-System::String* SqliteVm::GetString(System::String* colName)
+System::String^ SqliteVm::GetString(System::String^ colName)
 {
-    System::String* ret = NULL;
+    System::String^ ret = nullptr;
     if (vm != NULL)
     {
         wstring wstrIn = SToWs(colName);
@@ -258,7 +258,7 @@ System::String* SqliteVm::GetString(System::String* colName)
 }
 
 ///Returns double
-double SqliteVm::GetDouble(System::String* colName)
+double SqliteVm::GetDouble(System::String^ colName)
 {
     double ret = 0;
     if (vm != NULL)
@@ -270,9 +270,9 @@ double SqliteVm::GetDouble(System::String* colName)
 }
 
 ///Returns BLOB
-SqliteGcBlob* SqliteVm::GetBlob(System::String* colName)
+SqliteGcBlob^ SqliteVm::GetBlob(System::String^ colName)
 {
-    SqliteGcBlob* blob = NULL;
+    SqliteGcBlob^ blob = nullptr;
 
     if (vm != NULL)
     {
@@ -281,7 +281,7 @@ SqliteGcBlob* SqliteVm::GetBlob(System::String* colName)
         SqliteBlob* tmpBlob = vm->GetBlob(wstrIn);
         if (tmpBlob != NULL)
         {
-            blob = new SqliteGcBlob(tmpBlob);
+            blob = gcnew SqliteGcBlob(tmpBlob);
         }
     }
     return blob;
@@ -299,9 +299,9 @@ int SqliteVm::NumCols()
 }
 
 ///Returns an error message
-System::String* SqliteVm::GetErrMsg()
+System::String^ SqliteVm::GetErrMsg()
 {
-    System::String* ret = NULL;
+    System::String^ ret = nullptr;
     if (vm != NULL)
     {
         wstring wstr = vm->GetErrMsg();
@@ -370,7 +370,7 @@ SqliteGcBlob::SqliteGcBlob(SqliteBlob* blob)
     this->blob = blob;
 }
 
-System::Byte SqliteGcBlob::Read()[]
+cli::array<System::Byte>^ SqliteGcBlob::Read()
 {
     int bufSize = 0;
     char* buf = NULL;
@@ -394,12 +394,12 @@ System::Byte SqliteGcBlob::Read()[]
 
         nBytes = blob->Read(tmpBuf, 8192);
     }
-
-    System::Byte bytes[] = NULL;
+		
+	cli::array<System::Byte>^ bytes = nullptr;
 
     if (bufSize > 0)
     {
-        bytes = new System::Byte[bufSize];
+        bytes = gcnew cli::array<System::Byte>(bufSize);
         System::IntPtr bufPtr(buf);
         Marshal::Copy(bufPtr, bytes, 0, bufSize);
         delete [] buf;

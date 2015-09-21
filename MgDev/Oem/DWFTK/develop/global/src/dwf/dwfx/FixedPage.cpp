@@ -327,7 +327,7 @@ throw( DWFException )
     bool bFound = false;
 
     int nZOrder = pResource->zOrder();
-    DWFString zRole( pResource->role() );
+    DWFString zRole1( pResource->role() );
 
     _tZOrderMap::iterator itOrder = _oZOrderMap.find( nZOrder );
     if (itOrder != _oZOrderMap.end())
@@ -335,7 +335,7 @@ throw( DWFException )
         _tRoleMapPair* pMapPair = itOrder->second;
         if (pMapPair)
         {
-            _tRolePartListMap::iterator itList = (pMapPair->_oParts).find( zRole );
+            _tRolePartListMap::iterator itList = (pMapPair->_oParts).find( zRole1 );
             if (itList != (pMapPair->_oParts).end())
             {
                 DWFXResourcePart::tList* pList = itList->second;

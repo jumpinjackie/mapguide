@@ -158,22 +158,22 @@ DWFInputStream*
 DWFSectionContentResource::getInputStream( bool /*bCache*/ )
 throw( DWFException )
 {
-	DWFInputStream * pInputStream = DWFResource::getInputStream();
+	DWFInputStream * pInputStream1 = DWFResource::getInputStream();
 
     if (_pContent == NULL )
     {
         _DWFCORE_THROW( DWFUnexpectedException, /*NOXLATE*/L"Content object is null" );
     }
 
-	if (!_pContent->isSectionContentResourceModified( objectID() ) || ( _bSerialized && pInputStream != NULL ))
+	if (!_pContent->isSectionContentResourceModified( objectID() ) || ( _bSerialized && pInputStream1 != NULL ))
     {
-        return pInputStream;
+        return pInputStream1;
     }
     else
     {
-		if (pInputStream != NULL )
+		if (pInputStream1 != NULL )
         {
-            DWFCORE_FREE_OBJECT(pInputStream);
+            DWFCORE_FREE_OBJECT(pInputStream1);
         }
         //
         // create a buffered stream for serialization

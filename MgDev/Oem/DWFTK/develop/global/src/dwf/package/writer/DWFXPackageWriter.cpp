@@ -599,19 +599,19 @@ void DWFXPackageWriter::addProxyPage( const DWFString& zProxyPageXPSPath )
 			pPlotSection->addResource( pGraphicResource, true );
 	
 			//DWFXFixedPageResourceExtractor
-			off_t iOffset = zFPageURI.findLast( /*NOXLATE*/L'/' );
+			off_t iOffset1 = zFPageURI.findLast( /*NOXLATE*/L'/' );
 
-			DWFString fileName;
+			DWFString fileName1;
 			DWFString fRelsURI;
-			if (iOffset != -1 &&
-				size_t(iOffset+1) != zFPageURI.chars())
+			if (iOffset1 != -1 &&
+				size_t(iOffset1+1) != zFPageURI.chars())
 			{
-				size_t iExtLen = zFPageURI.chars()-(iOffset+1);
-				fileName = zFPageURI.substring( iOffset+1, iExtLen);
+				size_t iExtLen = zFPageURI.chars()-(iOffset1+1);
+				fileName1 = zFPageURI.substring( iOffset1+1, iExtLen);
 			
-				fRelsURI = zFPageURI.substring(0, iOffset + 1);
+				fRelsURI = zFPageURI.substring(0, iOffset1 + 1);
 				fRelsURI.append(/*NOXLATE*/L"_rels/");
-				fRelsURI.append(fileName);
+				fRelsURI.append(fileName1);
 				fRelsURI.append(/*NOXLATE*/L".rels");
 			}
 

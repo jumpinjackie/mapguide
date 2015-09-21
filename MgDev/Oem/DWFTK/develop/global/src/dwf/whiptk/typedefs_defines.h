@@ -75,6 +75,8 @@ class WD_GUID
 /// \brief An alias for a GUID.
 typedef WD_GUID WD_UUID;
 
+#pragma warning (disable : 4456)  //suppress "warning C4456: declaration of some variable hides previous local declaration"
+
 #define WD_NO_COLOR_INDEX       -1
 #define WD_Null                 NULL
 #define WD_False                (static_cast<WT_Boolean>(0))

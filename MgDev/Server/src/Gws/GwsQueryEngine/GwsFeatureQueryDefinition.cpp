@@ -143,12 +143,12 @@ void GWSFeatureQueryDefinition::Write (FdoXmlWriter * writer)
 FdoXmlSaxHandler * GWSFeatureQueryDefinition::XmlStartElement(
     FdoXmlSaxContext    * ctx,
     FdoString           * uri,
-    FdoString           * name,
+    FdoString           * elementname,
     FdoString           * qname,
     FdoXmlAttributeCollection* attrs
 )
 {
-    if (! _wcsicmp (name, GwsQueryXml::xmlGwsQualifiedClassName)) {
+    if (! _wcsicmp (elementname, GwsQueryXml::xmlGwsQualifiedClassName)) {
         WSTR    fsname;
         WSTR    schema;
         WSTR    classname;
@@ -172,14 +172,14 @@ FdoXmlSaxHandler * GWSFeatureQueryDefinition::XmlStartElement(
         } else {
             throw FdoException::Create (L"Failed to parse xml");
         }
-    } else if (! _wcsicmp (name, GwsQueryXml::xmlGwsQuerySelectExpressionList)) {
+    } else if (! _wcsicmp (elementname, GwsQueryXml::xmlGwsQuerySelectExpressionList)) {
         // Handle the select property list.
         m_sellist = FdoIdentifierCollection::Create();
         CGwsComputedIdentifierCollectionSaxHandler::GetHandler ()->SetDestination (m_sellist);
         CGwsComputedIdentifierCollectionSaxHandler::GetHandler ()->SetXml (GwsQueryXml::xmlGwsQuerySelectExpression, GwsQueryXml::xmlGwsQuerySelectExpressionName);
         return CGwsComputedIdentifierCollectionSaxHandler::GetHandler ();
 
-    } else if (! _wcsicmp (name, GwsQueryXml::xmlGwsFilter)) {
+    } else if (! _wcsicmp (elementname, GwsQueryXml::xmlGwsFilter)) {
 
         for (int i = 0; i < attrs->GetCount (); i ++) {
             FdoPtr<FdoXmlAttribute> attr = attrs->GetItem (i);
@@ -193,5 +193,5 @@ FdoXmlSaxHandler * GWSFeatureQueryDefinition::XmlStartElement(
         }
     }
 
-    return CGwsObject::XmlStartElement (ctx, uri, name, qname, attrs);
+    return CGwsObject::XmlStartElement (ctx, uri, elementname, qname, attrs);
 }

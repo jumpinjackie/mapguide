@@ -69,6 +69,7 @@ DWFCore::IsWindows9x()
     OSVERSIONINFO tInfo;
     tInfo.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
     
+#pragma warning (disable : 4996)  //suppress "warning C4996: 'GetVersionExW': was declared deprecated"
     ::GetVersionEx( &tInfo );
 
     return (tInfo.dwPlatformId & VER_PLATFORM_WIN32_WINDOWS);

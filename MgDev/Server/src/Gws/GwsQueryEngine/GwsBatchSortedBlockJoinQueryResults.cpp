@@ -1592,7 +1592,7 @@ void CGwsBatchSortedBlockJoinQueryResults::ShowPrimaryCache()
                 val = primaryCacheEntry->primaryKey->ToString();
             }
 
-            printf("%d) Key=%S  Properties=%d\n", i+1, val, primaryCacheEntry->propertyCollection.size());
+            printf_s("%d) Key=%S  Properties=%d\n", (int)i+1, val, (int)primaryCacheEntry->propertyCollection.size());
             for(size_t j=0;j<primaryCacheEntry->propertyCollection.size();j++)
             {
                 PropertyCacheEntry* propertyCacheEntry = primaryCacheEntry->propertyCollection[j];

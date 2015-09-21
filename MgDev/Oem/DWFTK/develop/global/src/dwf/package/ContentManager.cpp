@@ -254,10 +254,10 @@ throw( DWFException )
 
     DWFContent* pContent = NULL;
 
-    DWFContent** ppContent = _oContent.find( zContentID );
-    if (ppContent)
+    DWFContent** ppContent1 = _oContent.find( zContentID );
+    if (ppContent1)
     {
-        pContent = *ppContent;
+        pContent = *ppContent1;
         if (pContent->owner() == this)
         {
             pContent->disown( *this, true );

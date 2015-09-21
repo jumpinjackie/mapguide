@@ -98,22 +98,22 @@ throw( DWFException )
     //
     // if we have not processed the input stream yet then just get the stream from the base class
     //
-	DWFInputStream * pInputStream = DWFResource::getInputStream();
+	DWFInputStream * pInputStream1 = DWFResource::getInputStream();
     DWFContentPresentation::tList::Iterator* piPresentations = getPresentations();
     if (piPresentations == NULL || !piPresentations->valid())
     {
         DWFCORE_FREE_OBJECT( piPresentations );
-        return pInputStream;
+        return pInputStream1;
     }
-	else if( _bSerialized && pInputStream != NULL )
+	else if( _bSerialized && pInputStream1 != NULL )
 	{
-		return pInputStream;
+		return pInputStream1;
 	}
     else
     {
-        if (pInputStream != NULL )
+        if (pInputStream1 != NULL )
         {
-            DWFCORE_FREE_OBJECT(pInputStream);
+            DWFCORE_FREE_OBJECT(pInputStream1);
         }
 
         DWFCORE_FREE_OBJECT( piPresentations );

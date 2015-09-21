@@ -1533,9 +1533,9 @@ throw( DWFException )
     _tSignatureRequestVector::iterator iRequest = _oSignatureRequests.begin();
     for (; iRequest != _oSignatureRequests.end(); ++iRequest)
     {
-        DWFSignatureRequest* pRequest = *iRequest;
+        DWFSignatureRequest* pRequest1 = *iRequest;
 
-        DWFSignature::tReferenceVector::Iterator* piRef = pRequest->references();
+        DWFSignature::tReferenceVector::Iterator* piRef = pRequest1->references();
         for ( ; piRef->valid(); piRef->next())
         {
             //

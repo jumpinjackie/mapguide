@@ -490,7 +490,7 @@ throw( DWFException )
         //
         // convert the instance pointer address as a string, and set to the instance id.
         //
-        long nId = (long)(this);
+        LONG_PTR nId = (LONG_PTR)(this);
         int nBufferSize = 32;
         DWFPointer<wchar_t> zBuffer( DWFCORE_ALLOC_MEMORY(wchar_t, nBufferSize), true );
         int nBytes = sizeof(wchar_t) * _DWFCORE_SWPRINTF( zBuffer, nBufferSize, L"%d", nId );

@@ -820,7 +820,7 @@ EGwsStatus CGwsFdoCommand::ProcessLockConflicts (
     GwsFailedStatus             & failed
 ) const
 {
-    EGwsStatus stat = eGwsOk;
+    EGwsStatus stat1 = eGwsOk;
 
     while (pReader != NULL && pReader->ReadNext()) {
         char                       * str = NULL;
@@ -864,9 +864,9 @@ EGwsStatus CGwsFdoCommand::ProcessLockConflicts (
             assert ("Fdo exception while getting lock conflicts");
             e->Release ();  // just silenly eat this
         }
-        stat = eGwsFdoLockConflict;
+        stat1 = eGwsFdoLockConflict;
         delete str;
         str = NULL;
     }
-    return stat;
+    return stat1;
 }

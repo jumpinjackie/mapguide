@@ -213,13 +213,13 @@ template<class T>
 FdoXmlSaxHandler*  GWSJoinQueryDefinition<T>::XmlStartElement (
     FdoXmlSaxContext* ctx,
     FdoString       * uri,
-    FdoString       * name,
+    FdoString       * elementname,
     FdoString       * qname,
     FdoXmlAttributeCollection* attrs
 )
 {
     CGwsObject * gwsobj = NULL;
-    if (! _wcsicmp (name, GwsQueryXml::xmlGwsQuery)) {
+    if (! _wcsicmp (elementname, GwsQueryXml::xmlGwsQuery)) {
         IGWSQueryDefinition * qrydef =
                         GwsQueryDefinitionXmlHelpers::ReadQueryDefinition (attrs);
         if (qrydef != NULL) {
@@ -236,7 +236,7 @@ FdoXmlSaxHandler*  GWSJoinQueryDefinition<T>::XmlStartElement (
 
         }
     // left and right attributes reading are the same. Big deal
-    } else if (! _wcsicmp (name, GwsQueryXml::xmlGwsLeftJoinAttributes)) {
+    } else if (! _wcsicmp (elementname, GwsQueryXml::xmlGwsLeftJoinAttributes)) {
         for (int i = 0; i < attrs->GetCount (); i ++) {
             FdoPtr<FdoXmlAttribute> attr = attrs->GetItem (i);
 
@@ -246,7 +246,7 @@ FdoXmlSaxHandler*  GWSJoinQueryDefinition<T>::XmlStartElement (
                 m_leftAttrs = FdoStringCollection::Create (value, L",");
             }
         }
-    } else if (! _wcsicmp (name,GwsQueryXml::xmlGwsRightJoinAttributes)) {
+    } else if (! _wcsicmp (elementname,GwsQueryXml::xmlGwsRightJoinAttributes)) {
          for (int i = 0; i < attrs->GetCount (); i ++) {
             FdoPtr<FdoXmlAttribute> attr = attrs->GetItem (i);
 
@@ -258,7 +258,7 @@ FdoXmlSaxHandler*  GWSJoinQueryDefinition<T>::XmlStartElement (
         }
     }
 
-    return CGwsObject::XmlStartElement (ctx, uri, name, qname, attrs);
+    return CGwsObject::XmlStartElement (ctx, uri, elementname, qname, attrs);
 }
 
 

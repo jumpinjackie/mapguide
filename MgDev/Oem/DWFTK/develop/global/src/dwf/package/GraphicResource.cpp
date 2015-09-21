@@ -358,14 +358,14 @@ DWFGraphicResource::serializeXML( DWFXMLSerializer& rSerializer, unsigned int nF
 throw( DWFException )
 {
     //DNT_Start
-    DWFString zNamespace;
+    DWFString zNamespace1;
 
         //
         // namespace dictated by document and section type
         //
     if (nFlags & DWFPackageWriter::eDescriptor)
     {
-        zNamespace.assign( namespaceXML(nFlags) );
+        zNamespace1.assign( namespaceXML(nFlags) );
     }
 
         //
@@ -378,7 +378,7 @@ throw( DWFException )
             //
         if ((nFlags & DWFXMLSerializer::eElementOpen) == 0)
         {
-            rSerializer.startElement( DWFXML::kzElement_GraphicResource, zNamespace );
+            rSerializer.startElement( DWFXML::kzElement_GraphicResource, zNamespace1 );
 
             //
             // let base class know not to start the element
@@ -515,14 +515,14 @@ throw( DWFException )
                 DWFResourceRelationship::tList::Iterator *pIter = _oRelationships.iterator();
                 if (pIter)
                 {
-                    rSerializer.startElement( DWFXML::kzElement_Relationships, zNamespace );
+                    rSerializer.startElement( DWFXML::kzElement_Relationships, zNamespace1 );
 
                     for (; pIter->valid(); pIter->next())
                     {
                         DWFResourceRelationship *pRelationship = pIter->get();
                         if(pRelationship != NULL)
                         {
-                            rSerializer.startElement( DWFXML::kzElement_Relationship, zNamespace );
+                            rSerializer.startElement( DWFXML::kzElement_Relationship, zNamespace1 );
                             rSerializer.addAttribute( DWFXML::kzAttribute_ObjectID, pRelationship->resourceID() );
                             rSerializer.addAttribute( DWFXML::kzAttribute_Type, pRelationship->type());
                             rSerializer.endElement();
@@ -745,10 +745,10 @@ throw( DWFException )
         //
     if (nFlags & DWFPackageWriter::eDescriptor)
     {
-        DWFString zNamespace( namespaceXML(nFlags) );
+        DWFString zNamespace1( namespaceXML(nFlags) );
 
 
-        rSerializer.startElement( DWFXML::kzElement_ImageResource, zNamespace );
+        rSerializer.startElement( DWFXML::kzElement_ImageResource, zNamespace1 );
 
         //
         // let base class know not to start the element
@@ -845,14 +845,14 @@ throw( DWFException )
             DWFResourceRelationship::tList::Iterator *pIter = _oRelationships.iterator();
             if (pIter)
             {
-                rSerializer.startElement( DWFXML::kzElement_Relationships, zNamespace );
+                rSerializer.startElement( DWFXML::kzElement_Relationships, zNamespace1 );
 
                 for (; pIter->valid(); pIter->next())
                 {
                     DWFResourceRelationship *pRelationship = pIter->get();
                     if(pRelationship != NULL)
                     {
-                        rSerializer.startElement( DWFXML::kzElement_Relationship, zNamespace );
+                        rSerializer.startElement( DWFXML::kzElement_Relationship, zNamespace1 );
                         rSerializer.addAttribute( DWFXML::kzAttribute_ObjectID, pRelationship->resourceID() );
                         rSerializer.addAttribute( DWFXML::kzAttribute_Type, pRelationship->type());
                         rSerializer.endElement();

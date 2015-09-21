@@ -433,18 +433,18 @@ throw( DWFException )
 _DWFTK_API
 void
 DWFSection::getContentDefinition( DWFContentResourceReader& rReader,
-                                  DWFResource* pResource )
+                                  DWFResource* pResource1 )
     throw( DWFException )
 {
-    if (pResource)
+    if (pResource1)
     {
-        rReader.setResourceObjectID( pResource->objectID() );
+        rReader.setResourceObjectID( pResource1->objectID() );
 
         //
         // acquire the data feed from the resource directly and don't cache since hopefully the document is 
         // read only once and any useful data is collected by the implementation of the reader
         //
-        DWFPointer<DWFInputStream> apObjectStream( pResource->getInputStream(), false );
+        DWFPointer<DWFInputStream> apObjectStream( pResource1->getInputStream(), false );
 
         //
         // parse the descriptor

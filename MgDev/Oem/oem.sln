@@ -1,5 +1,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ACE", "ACE\ACE_wrappers\ace\ACE.vcxproj", "{BD537C9A-FECA-1BAD-6757-8A6363336A1C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_dll", "dbxml\db-4.8.26\build_windows\db_dll.vcxproj", "{96C27024-6DEE-45ED-BCC3-A731949131FA}"
@@ -72,15 +74,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xqilla", "dbxml\xqilla\Win3
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "gd\lpng\projects\vs\zlib.vcxproj", "{3CECB989-0B34-449D-9161-8BEE074D7EC0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF Core Library", "DWFTK\develop\global\build\VC 11.0\DWFCore\DWFCore.vcxproj", "{8BECE007-1749-4300-87D8-267B613AAE6B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF Core Library", "DWFTK\develop\global\build\VC 14.0\DWFCore\DWFCore.vcxproj", "{8BECE007-1749-4300-87D8-267B613AAE6B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWFToolkit", "DWFTK\develop\global\build\VC 11.0\DWFToolkit\DWFToolkit.vcxproj", "{2D22C637-6219-4096-8399-EEA4BBD142AA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWFToolkit", "DWFTK\develop\global\build\VC 14.0\DWFToolkit\DWFToolkit.vcxproj", "{2D22C637-6219-4096-8399-EEA4BBD142AA}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF W2D (Whip) Toolkit", "DWFTK\develop\global\build\VC 11.0\WhipToolkit\WhipToolkit.vcxproj", "{681750CF-B191-4A41-B92C-0F94599B121D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF W2D (Whip) Toolkit", "DWFTK\develop\global\build\VC 14.0\WhipToolkit\WhipToolkit.vcxproj", "{681750CF-B191-4A41-B92C-0F94599B121D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF XAML (Whip) Toolkit", "DWFTK\develop\global\build\VC 11.0\XAML\XAML.vcxproj", "{337A987F-97AE-46FF-98AF-6C6B9B81E3B2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF XAML (Whip) Toolkit", "DWFTK\develop\global\build\VC 14.0\XAML\XAML.vcxproj", "{337A987F-97AE-46FF-98AF-6C6B9B81E3B2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF W3D Toolkit", "DWFTK\develop\global\build\VC 11.0\W3DToolkit\W3DToolkit.vcxproj", "{9415DE9A-E01E-47C1-A159-EB1E1D4E518C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF W3D Toolkit", "DWFTK\develop\global\build\VC 14.0\W3DToolkit\W3DToolkit.vcxproj", "{9415DE9A-E01E-47C1-A159-EB1E1D4E518C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

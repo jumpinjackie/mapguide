@@ -450,10 +450,10 @@ throw()
     //
     if (pMatchedSet == NULL)
     {
-        DWFPropertyContainer::tList::const_iterator iSet = _oReferences.begin();
-        for (; iSet != _oReferences.end(); ++iSet)
+        DWFPropertyContainer::tList::const_iterator iSet1 = _oReferences.begin();
+        for (; iSet1 != _oReferences.end(); ++iSet1)
         {
-            DWFPropertySet* pSet = dynamic_cast<DWFPropertySet*>(*iSet);
+            DWFPropertySet* pSet = dynamic_cast<DWFPropertySet*>(*iSet1);
             if ((eIDType == DWFPropertySet::eSchemaID) && (pSet->getSchemaID() == zID) ||
                 (eIDType == DWFPropertySet::eSetID) && (pSet->getSetID() == zID) ||
                 (eIDType == DWFPropertySet::eUUID) && (pSet->id() == zID))
@@ -522,15 +522,15 @@ throw()
         //
         DWFPropertySet::tList::iterator iBegin = oPropertySets.end();
 
-        DWFPropertyContainer::tList::iterator iContainer = _oContainers.begin();
-        for (; iContainer != _oContainers.end(); ++iContainer)
+        DWFPropertyContainer::tList::iterator iContainer1 = _oContainers.begin();
+        for (; iContainer1 != _oContainers.end(); ++iContainer1)
         {
-            oPropertySets.push_back( dynamic_cast<DWFPropertySet*>(*iContainer) );
+            oPropertySets.push_back( dynamic_cast<DWFPropertySet*>(*iContainer1) );
         }
-        iContainer = _oReferences.begin();
-        for (; iContainer != _oReferences.end(); ++iContainer)
+        iContainer1 = _oReferences.begin();
+        for (; iContainer1 != _oReferences.end(); ++iContainer1)
         {
-            oPropertySets.push_back( dynamic_cast<DWFPropertySet*>(*iContainer) );
+            oPropertySets.push_back( dynamic_cast<DWFPropertySet*>(*iContainer1) );
         }
 
         DWFPropertySet::tList::iterator iEnd = oPropertySets.end();

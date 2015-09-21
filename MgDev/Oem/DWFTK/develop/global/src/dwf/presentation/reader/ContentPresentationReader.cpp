@@ -1109,10 +1109,10 @@ throw()
             if ((_nProviderFlags & eProvideModelViewNodes)
                 && DWFCORE_COMPARE_ASCII_STRINGS(zName, DWFXML::kzElement_ModelViewNode) == 0)
             {
-                DWFContentPresentationModelViewNode *pModelViewNode = dynamic_cast<DWFContentPresentationModelViewNode *>(_pCurrentNode);
-                if(pModelViewNode != NULL)
+                DWFContentPresentationModelViewNode *pModelViewNode1 = dynamic_cast<DWFContentPresentationModelViewNode *>(_pCurrentNode);
+                if(pModelViewNode1 != NULL)
                 {
-                    pModelViewNode->close();
+                    pModelViewNode1->close();
                 }
 
                 //

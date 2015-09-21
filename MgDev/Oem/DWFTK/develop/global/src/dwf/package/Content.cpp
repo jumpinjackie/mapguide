@@ -621,11 +621,11 @@ _DWFTK_API
 DWFIterator<DWFString>* DWFContent::findResourceIDsByRenderable( DWFRenderable* pRenderable )
 throw()
 {
-    typedef DWFCachingIterator<DWFString> _tStringIterator;
+    typedef DWFCachingIterator<DWFString> _tStringIterator1;
 
     if (_oResourceRenderableToInstance.size() > 0)
     {
-        _tStringIterator* piResourceID = DWFCORE_ALLOC_OBJECT( _tStringIterator );
+        _tStringIterator1* piResourceID = DWFCORE_ALLOC_OBJECT( _tStringIterator1 );
 
         _tResourceRIMapConstIterator iResource = _oResourceRenderableToInstance.begin();
         for (; iResource != _oResourceRenderableToInstance.end(); ++iResource)
@@ -2847,24 +2847,24 @@ void
 DWFContent::_mergeRefsEntities( DWFContent* pContent )
 throw( DWFException )
 {
-    DWFEntity::tMap::Iterator* piEntity = pContent->_oEntities.iterator();
-    if (piEntity)
+    DWFEntity::tMap::Iterator* piEntity1 = pContent->_oEntities.iterator();
+    if (piEntity1)
     {
-        for (; piEntity->valid(); piEntity->next())
+        for (; piEntity1->valid(); piEntity1->next())
         {
-            DWFEntity* pEntity = piEntity->value();
-            DWFEntity* pLocalEntity =getEntity( pEntity->id() );
+            DWFEntity* pEntity1 = piEntity1->value();
+            DWFEntity* pLocalEntity =getEntity( pEntity1->id() );
             if (pLocalEntity)
             {
                 //
                 //  Copy over property set references.
                 //
-                _acquirePropertySetReferences( pEntity, pLocalEntity );
+                _acquirePropertySetReferences( pEntity1, pLocalEntity );
 
                 //
                 //  Copy over child entity references.
                 //
-                DWFEntity::tSortedList::ConstIterator* piEntity = pEntity->getChildren();
+                DWFEntity::tSortedList::ConstIterator* piEntity = pEntity1->getChildren();
                 if (piEntity)
                 {
                     for (; piEntity->valid(); piEntity->next())
@@ -2883,7 +2883,7 @@ throw( DWFException )
                 //
                 //  Copy over class references.
                 //
-                DWFClass::tIterator* piClass = pEntity->getClasses();
+                DWFClass::tIterator* piClass = pEntity1->getClasses();
                 if (piClass)
                 {
                     for (; piClass->valid(); piClass->next())
@@ -2902,7 +2902,7 @@ throw( DWFException )
                 //
                 //  Copy over feature references.
                 //
-                DWFFeature::tIterator* piFeature = pEntity->getFeatures();
+                DWFFeature::tIterator* piFeature = pEntity1->getFeatures();
                 if (piFeature)
                 {
                     for (; piFeature->valid(); piFeature->next())
@@ -2927,7 +2927,7 @@ throw( DWFException )
             }
         }
 
-        DWFCORE_FREE_OBJECT( piEntity );
+        DWFCORE_FREE_OBJECT( piEntity1 );
     }
 }
 

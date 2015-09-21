@@ -25,16 +25,16 @@ class SqliteBlob;
 
 namespace SqliteDotNet
 {
-    public __gc class SqliteGcBlob
+    public ref class SqliteGcBlob
     {
     public:
         SqliteGcBlob(SqliteBlob* blob);
-        System::Byte Read()[];
+		cli::array<System::Byte>^ Read();
     private:
         SqliteBlob* blob;
     };
 
-    public __gc class Sqlite
+    public ref class Sqlite
     {
     public:
         static const int Ok = 0;
@@ -43,7 +43,7 @@ namespace SqliteDotNet
         static const int Done = 101;
     };
 
-    public __gc class SqliteDb
+    public ref class SqliteDb
     {
     public:
         ///Default constructor
@@ -56,22 +56,22 @@ namespace SqliteDotNet
         int Close();
 
         ///Returns current error message
-        System::String* GetErrMsg();
+        System::String^ GetErrMsg();
 
         ///Returns the database name
-        System::String* GetName();
+        System::String^ GetName();
 
         ///Checks if there exist connection
         bool IsConnected();
 
         ///Initializes a database object
-        int Open(System::String* newName);
+        int Open(System::String^ newName);
 
         ///Dumps binary SQLite database into a SQL text format.
-        void DumpDatabase(System::String* iniFileName);
+        void DumpDatabase(System::String^ iniFileName);
 
         ///Generates binary database from a SQL text file
-        void GenerateDatabase(System::String* dumpFileName, System::String* dbFileName);
+        void GenerateDatabase(System::String^ dumpFileName, System::String^ dbFileName);
 
         SqliteDB* Database();
 
@@ -80,49 +80,49 @@ namespace SqliteDotNet
 
     };
 
-    public __gc class SqliteVm
+    public ref class SqliteVm
     {
     public:
         ///Overloaded constructor that initializes the database connection
-        SqliteVm(SqliteDb* newDb, bool noThrow);
+        SqliteVm(SqliteDb^ newDb, bool noThrow);
 
         //Destructor. Deletes the virtual machine
         ~SqliteVm();
 
         ///Returns the name of the column specified
-        System::String* ColumnName(int colNum);
+        System::String^ ColumnName(int colNum);
 
-        int ColumnNumber(System::String* colName);
+        int ColumnNumber(System::String^ colName);
 
         ///Returns the type of the column specified
-        System::String* ColumnType(System::String* colName);
+        System::String^ ColumnType(System::String^ colName);
 
         ///Executes a query. Creates a new virtual machine
-        int Execute(System::String* newQuery); // do compile and first step here
+        int Execute(System::String^ newQuery); // do compile and first step here
 
         ///Returns the sql query being executed
-        System::String* GetSqlQuery();
+        System::String^ GetSqlQuery();
 
         ///Returns the tail of an SQL query
-        System::String* GetQueryTail();
+        System::String^ GetQueryTail();
 
         ///Returns an integer
-        int GetInt(System::String* colName);
+        int GetInt(System::String^ colName);
 
         ///Returns a string
-        System::String* GetString(System::String* colName);
+        System::String^ GetString(System::String^ colName);
 
         ///Returns double
-        double GetDouble(System::String* colName);
+        double GetDouble(System::String^ colName);
 
         ///Returns BLOB
-        SqliteGcBlob* GetBlob(System::String* colName);
+        SqliteGcBlob^ GetBlob(System::String^ colName);
 
         ///Returns the number of columns in a  table
         int NumCols();
 
         ///Returns an error message
-        System::String* GetErrMsg();
+        System::String^ GetErrMsg();
 
         ///Checks if the database objects is still connected to a database
         bool IsConnected();

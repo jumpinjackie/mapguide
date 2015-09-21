@@ -206,7 +206,7 @@ NsXercesTranscoder::doCharacters(const xmlch_t *characters,
 	bool needsEscape = false;
 	if (!len)
 		len = NsUtil::nsStringLen(characters);
-	enum checkType ttype = (isCDATA || ignorable) ? ignore : isCharacters;
+	enum checkType ttype = (isCDATA || ignorable) ? checkType::ignore : isCharacters;
 	NsDonator chars(characters, len, ttype);
 	uint32_t textType;
 	if (isCDATA)

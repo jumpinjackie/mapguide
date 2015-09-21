@@ -385,10 +385,10 @@ throw( DWFException )
         //  segment.
         //
         DWFEntity* pEntity = NULL;
-        DWFPublishedObject::tReference* pRef = rPubElement.getNamedSegmentIncludeRef();
-        if (pRef)
+        DWFPublishedObject::tReference* pRef1 = rPubElement.getNamedSegmentIncludeRef();
+        if (pRef1)
         {
-            pEntity = _getReferencedEntity( pRef->pObj );
+            pEntity = _getReferencedEntity( pRef1->pObj );
         }
         else
         {
