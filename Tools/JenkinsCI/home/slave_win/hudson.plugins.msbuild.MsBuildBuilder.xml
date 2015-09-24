@@ -1,34 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<hudson.plugins.msbuild.MsBuildBuilder_-DescriptorImpl plugin="msbuild@1.17">
+<hudson.plugins.msbuild.MsBuildBuilder_-DescriptorImpl plugin="msbuild@1.24">
   <installations>
-    <hudson.plugins.msbuild.MsBuildInstallation>
-      <name>MSBUILD 2.0 x86</name>
-      <home>C:\Windows\Microsoft.NET\Framework\v2.0.50727\msbuild.exe</home>
-      <properties/>
-    </hudson.plugins.msbuild.MsBuildInstallation>
-    <hudson.plugins.msbuild.MsBuildInstallation>
-      <name>MSBUILD 3.5 x86</name>
-      <home>C:\Windows\Microsoft.NET\Framework\v3.5\msbuild.exe</home>
-      <properties/>
-    </hudson.plugins.msbuild.MsBuildInstallation>
     <hudson.plugins.msbuild.MsBuildInstallation>
       <name>MSBUILD 4.0 x86</name>
       <home>C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe</home>
       <properties/>
     </hudson.plugins.msbuild.MsBuildInstallation>
     <hudson.plugins.msbuild.MsBuildInstallation>
-      <name>MSBUILD 2.0 x64</name>
-      <home>C:\Windows\Microsoft.NET\Framework64\v2.0.50727\msbuild.exe</home>
-      <properties/>
-    </hudson.plugins.msbuild.MsBuildInstallation>
-    <hudson.plugins.msbuild.MsBuildInstallation>
-      <name>MSBUILD 3.5 x64</name>
-      <home>C:\Windows\Microsoft.NET\Framework64\v3.5\msbuild.exe</home>
-      <properties/>
-    </hudson.plugins.msbuild.MsBuildInstallation>
-    <hudson.plugins.msbuild.MsBuildInstallation>
       <name>MSBUILD 4.0 x64</name>
       <home>C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe</home>
+      <properties/>
+    </hudson.plugins.msbuild.MsBuildInstallation>
+    <hudson.plugins.msbuild.MsBuildInstallation>
+      <name>MSBuild 14.0</name>
+      <home>C:\Program Files (x86)\MSBuild\14.0\Bin\msbuild.exe</home>
       <properties/>
     </hudson.plugins.msbuild.MsBuildInstallation>
   </installations>

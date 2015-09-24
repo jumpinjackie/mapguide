@@ -15,12 +15,12 @@
         <hudson.model.StringParameterDefinition>
           <name>RELEASE_LABEL</name>
           <description></description>
-          <defaultValue>Beta1</defaultValue>
+          <defaultValue>Final</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>WITH_ARCSDE</name>
           <description></description>
-          <defaultValue>no</defaultValue>
+          <defaultValue>yes</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_MAJOR</name>
@@ -40,7 +40,7 @@
         <hudson.model.StringParameterDefinition>
           <name>MG_BUILD_SRC</name>
           <description></description>
-          <defaultValue>C:\working\sources\mg-trunk</defaultValue>
+          <defaultValue>C:\working\sources\mg-3.0</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>FDO_SRC</name>
@@ -60,7 +60,7 @@
         <hudson.model.StringParameterDefinition>
           <name>MG_STAMP_FILE_SOURCE</name>
           <description></description>
-          <defaultValue>C:\working\sources\mapguide_trunk_revision.txt</defaultValue>
+          <defaultValue>C:\working\sources\mapguide_30_revision.txt</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>

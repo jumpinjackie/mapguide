@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>1</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>FDO_BUILD_SRC64</name>
+          <description>FDO Source directory</description>
+          <defaultValue>C:\working\sources\fdo-4.0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>FDO_VERSION64</name>
+          <description>FDO Version Number (major.minor.rev)</description>
+          <defaultValue>4.0.0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>CLEAR_WORKING_AREA</name>
+          <description></description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>FDO_STAMP_FILE_SOURCE64</name>
+          <description></description>
+          <defaultValue>C:\working\sources\fdo_40_revision.txt</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>FDO_RUN_UNIT_TESTS64</name>
+          <description></description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Default)</jdk>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.BatchFile>
+      <command>@echo off&#xd;
+SET FDOMYSQL=%MG_LIB_ROOT%\fdo_rdbms_thirdparty\mysql_x64&#xd;
+SET FDOORACLE=%MG_LIB_ROOT%\fdo_rdbms_thirdparty\oracle_x64\instantclient\11.2\sdk&#xd;
+SET FDOPOSTGRESQL=%MG_LIB_ROOT%\fdo_rdbms_thirdparty\pgsql&#xd;
+SET FDO_BUILD_OUTPUT64=%MG_BUILD_ARTIFACT_PATH%\fdo\%FDO_VERSION64%\x64&#xd;
+SET FDO_BIN_EXTRAS64=%MG_LIB_ROOT%\fdo_extras\%FDO_VERSION64%\x64&#xd;
+SET REVNUM_FILE64=%MG_TOOL_PATH%\revnum.pl&#xd;
+SET FDO_STAMP_FILE64=%MG_BUILD_ARTIFACT_PATH%\last_fdo_%FDO_VERSION64%_revision_x64.txt&#xd;
+SET FDO_WORKING_AREA64=%MG_BUILD_AREA%\FDO\%FDO_VERSION64%\x64&#xd;
+&#xd;
+echo ============ Env Vars for FDO Build =====================&#xd;
+echo FDOMYSQL           = %FDOMYSQL%&#xd;
+echo FDOORACLE          = %FDOORACLE%&#xd;
+echo FDOPOSTGRESQL      = %FDOPOSTGRESQL%&#xd;
+echo FDO_BUILD_OUTPUT64 = %FDO_BUILD_OUTPUT64%&#xd;
+echo FDO_BIN_EXTRAS64   = %FDO_BIN_EXTRAS64%&#xd;
+echo REVNUM_FILE64      = %REVNUM_FILE64%&#xd;
+echo FDO_STAMP_FILE64   = %FDO_STAMP_FILE64%&#xd;
+echo FDO_WORKING_AREA64 = %FDO_WORKING_AREA64%&#xd;
+echo =========================================================&#xd;
+&#xd;
+REM Pre-build checks, nuke artifact dir and working area&#xd;
+echo [prepare]: Clean out build area and build artifacts&#xd;
+if exist %FDO_BUILD_OUTPUT64% rd /S /Q %FDO_BUILD_OUTPUT64%&#xd;
+if &quot;%CLEAR_WORKING_AREA%&quot;==&quot;false&quot; (&#xd;
+    echo [prepare]: Skip cleaning build area&#xd;
+    goto build_fdo&#xd;
+)&#xd;
+if exist %FDO_WORKING_AREA64% rd /S /Q %FDO_WORKING_AREA64%&#xd;
+if not exist %FDO_WORKING_AREA64% mkdir %FDO_WORKING_AREA64%&#xd;
+&#xd;
+REM Need to supply --force otherwise it won&apos;t export into the dir we made&#xd;
+echo [prepare]: Exporting SVN working copy to build area&#xd;
+SET BUILD_ACTION=Exporting SVN working copy to build area&#xd;
+svn export %FDO_BUILD_SRC64% %FDO_WORKING_AREA64% --force -q&#xd;
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error&#xd;
+&#xd;
+REM Copy non-UAC UpdateVersion&#xd;
+echo [prepare]: Copy non UAC-gimped UpdateVersion&#xd;
+SET BUILD_ACTION=Copy non UAC-gimped UpdateVersion&#xd;
+copy /Y %MG_TOOL_PATH%\UpdateVersion.exe %FDO_WORKING_AREA64%\Thirdparty\util\UpdateVersion\bin&#xd;
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error&#xd;
+&#xd;
+:build_fdo&#xd;
+echo [prepare]: Noting SVN revision&#xd;
+set /p REVISION= &lt; &quot;%FDO_STAMP_FILE_SOURCE64%&quot;&#xd;
+copy /Y &quot;%FDO_STAMP_FILE_SOURCE64%&quot; &quot;%FDO_STAMP_FILE64%&quot;&#xd;
+&#xd;
+REM Need to use x86_amd64 because the 64-bit compiler in VS 2012 express is a cross-compiler&#xd;
+pushd %FDO_WORKING_AREA64%&#xd;
+echo [build]: Set env vars&#xd;
+call setenvironment.bat x86_amd64&#xd;
+&#xd;
+echo [build]: build thirdparty&#xd;
+SET BUILD_ACTION=Build FDO Thirdparty&#xd;
+call build_thirdparty.bat -p=x64 -a=buildinstall -o=%FDO_BUILD_OUTPUT64%&#xd;
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error&#xd;
+&#xd;
+echo [build]: build core and providers&#xd;
+SET BUILD_ACTION=Build FDO core/providers&#xd;
+call build.bat -p=x64 -a=buildinstall -o=%FDO_BUILD_OUTPUT64%&#xd;
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error&#xd;
+&#xd;
+if not exist %FDO_BIN_EXTRAS64% goto pack&#xd;
+echo [build]: Overlaying FDO extras to build artifacts&#xd;
+pushd %FDO_BIN_EXTRAS64%&#xd;
+copy /Y *.* %FDO_BUILD_OUTPUT64%\Fdo\Bin&#xd;
+popd&#xd;
+:pack&#xd;
+echo [build]: Pack files&#xd;
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT64%\Fdo -o=%FDO_BUILD_OUTPUT64%\dist -w=fdo -b=%REVISION% -r=%FDO_VERSION_64%&#xd;
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT64%\Fdo -o=%FDO_BUILD_OUTPUT64%\dist -w=shp -b=%REVISION% -r=%FDO_VERSION_64%&#xd;
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT64%\Fdo -o=%FDO_BUILD_OUTPUT64%\dist -w=sdf -b=%REVISION% -r=%FDO_VERSION_64%&#xd;
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT64%\Fdo -o=%FDO_BUILD_OUTPUT64%\dist -w=wfs -b=%REVISION% -r=%FDO_VERSION_64%&#xd;
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT64%\Fdo -o=%FDO_BUILD_OUTPUT64%\dist -w=wms -b=%REVISION% -r=%FDO_VERSION_64%&#xd;
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT64%\Fdo -o=%FDO_BUILD_OUTPUT64%\dist -w=rdbms -b=%REVISION% -r=%FDO_VERSION_64%&#xd;
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT64%\Fdo -o=%FDO_BUILD_OUTPUT64%\dist -w=mysql -b=%REVISION% -r=%FDO_VERSION_64%&#xd;
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT64%\Fdo -o=%FDO_BUILD_OUTPUT64%\dist -w=odbc -b=%REVISION% -r=%FDO_VERSION_64%&#xd;
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT64%\Fdo -o=%FDO_BUILD_OUTPUT64%\dist -w=sqlspatial -b=%REVISION% -r=%FDO_VERSION_64%&#xd;
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT64%\Fdo -o=%FDO_BUILD_OUTPUT64%\dist -w=gdal -b=%REVISION% -r=%FDO_VERSION_64%&#xd;
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT64%\Fdo -o=%FDO_BUILD_OUTPUT64%\dist -w=kingoracle -b=%REVISION% -r=%FDO_VERSION_64%&#xd;
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT64%\Fdo -o=%FDO_BUILD_OUTPUT64%\dist -w=ogr -b=%REVISION% -r=%FDO_VERSION_64%&#xd;
+rem call createtarzipbinfiles.bat -i=%FDO_BUILD_OUTPUT64%\Fdo -o=%FDO_BUILD_OUTPUT64%\dist -w=sqlite -b=%REVISION% -r=%FDO_VERSION_64%&#xd;
+popd&#xd;
+&#xd;
+if &quot;%FDO_RUN_UNIT_TESTS64%&quot;==&quot;false&quot; goto end&#xd;
+:fdo_unit_tests&#xd;
+pushd %FDO_WORKING_AREA64%\Fdo\Unmanaged\Bin\Win64\Release&#xd;
+UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT64%\fdocore_unittest.log&#xd;
+popd&#xd;
+pushd %FDO_WORKING_AREA64%\Providers\SHP\Src\UnitTest&#xd;
+..\..\Bin\Win64\Release\UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT64%\shp_unittest.log&#xd;
+popd&#xd;
+pushd %FDO_WORKING_AREA64%\Providers\SDF\Src\UnitTest&#xd;
+..\..\Bin\Win64\Release\UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT64%\sdf_unittest.log&#xd;
+popd&#xd;
+pushd %FDO_WORKING_AREA64%\Providers\SQLite\Src\UnitTest&#xd;
+..\..\Bin\Win64\Release\UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT64%\sqlite_unittest.log&#xd;
+popd&#xd;
+pushd %FDO_WORKING_AREA64%\Providers\OGR\Src\UnitTest&#xd;
+..\..\Bin\Win64\Release\UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT64%\ogr_unittest.log&#xd;
+popd&#xd;
+pushd %FDO_WORKING_AREA64%\Providers\GDAL\Src\UnitTest&#xd;
+..\..\Bin\Win64\Release\UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT64%\gdal_unittest.log&#xd;
+popd&#xd;
+pushd %FDO_WORKING_AREA64%\Providers\WMS\Src\UnitTest&#xd;
+..\..\Bin\Win64\Release\UnitTest.exe -NoWAIT &gt; %FDO_BUILD_OUTPUT64%\wms_unittest.log&#xd;
+popd&#xd;
+goto end&#xd;
+&#xd;
+:error&#xd;
+echo An error occurred while building FDO: %BUILD_ACTION%&#xd;
+exit /b 1&#xd;
+:end&#xd;
+exit /b 0</command>
+    </hudson.tasks.BatchFile>
+  </builders>
+  <publishers>
+    <hudson.tasks.BuildTrigger>
+      <childProjects>MapGuide Open Source 3.0 x64</childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+        <completeBuild>true</completeBuild>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
+  </publishers>
+  <buildWrappers/>
+</project>

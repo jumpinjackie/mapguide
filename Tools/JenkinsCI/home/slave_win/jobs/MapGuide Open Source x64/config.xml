@@ -15,7 +15,7 @@
         <hudson.model.StringParameterDefinition>
           <name>RELEASE_LABEL64</name>
           <description></description>
-          <defaultValue>Preview2</defaultValue>
+          <defaultValue>Beta1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>WITH_ARCSDE</name>
