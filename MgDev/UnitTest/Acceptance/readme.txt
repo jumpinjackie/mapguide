@@ -20,6 +20,10 @@ First Time Setup
 Run "npm install" to install the required node dependencies
     - Nightwatch.js
     - Nightwatch.js HTML reporter
+    - Selenium
+        - Standalone Driver
+        - IE Driver
+        - Chrome Driver
 
 Ensure that MapGuide is running and the Sheboygan dataset has been loaded
 
@@ -36,6 +40,8 @@ Running the Tests
     - tag: A series of tagged test suites (specify a --tag for each tag), which can be:
         - ajax (all suites)
             - navigation
+            - ui
+            - tools
         - fusion (all suites)
 
 Parallel test execution

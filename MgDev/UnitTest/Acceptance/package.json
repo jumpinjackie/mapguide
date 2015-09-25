@@ -8,6 +8,7 @@
     "iedriver": "^2.47.0",
     "nightwatch": "^0.7.11",
     "nightwatch-html-reporter": "^1.0.2",
+    "node-resemble-js": "0.0.4",
     "selenium-server-standalone-jar": "^2.47.1"
   }
 }
