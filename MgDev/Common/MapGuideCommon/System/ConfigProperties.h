@@ -489,6 +489,18 @@ INTERNAL_API:
     static const STRING ResourceServicePropertySessionRepositoriesLimit;        /// value("SessionRepositoriesLimit")
     static const INT32 DefaultResourceServicePropertySessionRepositoriesLimit;  /// value(200)
 
+    // Sets the maximum number of internal resource service data objects to cache
+    static const STRING ResourceServicePropertyCacheSize;                       /// value("CacheSize")
+    static const INT32 DefaultResourceServicePropertyCacheSize;                 /// value(500)
+
+    /// Sets the maximum amount of time (in seconds) to cache the internal resource service data objects
+    static const STRING ResourceServicePropertyCacheTimeLimit;                  /// value("CacheTimeLimit")
+    static const INT32 DefaultResourceServicePropertyCacheTimeLimit;            /// value(86400)
+
+    /// Sets the time duration (in seconds) between internal resource service cache timelimit checks
+    static const STRING ResourceServicePropertyCacheTimerInterval;              /// value("CacheTimerInterval")
+    static const INT32 DefaultResourceServicePropertyCacheTimerInterval;        /// value(3600)
+
 EXTERNAL_API:
 
     /// Sets the root of the session repository

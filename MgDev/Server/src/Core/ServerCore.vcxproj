@@ -267,6 +267,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="ResourceServiceCacheTimeLimitEventHandler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="ServiceRegistrationEventHandler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -345,6 +351,7 @@
     <ClInclude Include="PerformanceLoggingEventHandler.h" />
     <ClInclude Include="RepositoryCheckpointEventHandler.h" />
     <ClInclude Include="ResourceChangeEventHandler.h" />
+    <ClInclude Include="ResourceServiceCacheTimeLimitEventHandler.h" />
     <ClInclude Include="ServiceRegistrationEventHandler.h" />
     <ClInclude Include="SessionTimeoutEventHandler.h" />
     <ClInclude Include="TimedEvent.h" />

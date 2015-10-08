@@ -24,3 +24,6 @@
 #include "FeatureServiceCacheEntry.cpp"
 #include "FeatureSourceCacheItem.cpp"
 #include "SpatialContextCacheItem.cpp"
+#include "ResourceServiceCache.cpp"
+#include "ResourceServiceCacheEntry.cpp"
+#include "ResourceLayerDefinitionCacheItem.cpp"

@@ -60,6 +60,7 @@ include_SOURCES = \
   PerformanceLoggingEventHandler.cpp \
   RepositoryCheckpointEventHandler.cpp \
   ResourceChangeEventHandler.cpp \
+  ResourceServiceCacheTimeLimitEventHandler.cpp \
   Server.cpp \
   ServerFactory.cpp \
   ServiceHandlerFactory.cpp \
@@ -81,6 +82,7 @@ noinst_HEADERS = $(include_SOURCES) \
   PerformanceLoggingEventHandler.h \
   RepositoryCheckpointEventHandler.h \
   ResourceChangeEventHandler.h \
+  ResourceServiceCacheTimeLimitEventHandler.h \
   Server.h \
   ServiceHandlerFactory.h \
   ServiceRegistrationEventHandler.h \

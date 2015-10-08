@@ -367,6 +367,12 @@ const STRING MgConfigProperties::ResourceServicePropertySessionRepositoriesConfi
 const STRING MgConfigProperties::DefaultResourceServicePropertySessionRepositoriesConfig        = L"FilePerSession";
 const STRING MgConfigProperties::ResourceServicePropertySessionRepositoriesLimit                = L"SessionRepositoriesLimit";
 const INT32  MgConfigProperties::DefaultResourceServicePropertySessionRepositoriesLimit         = 200;
+const STRING MgConfigProperties::ResourceServicePropertyCacheSize                               = L"CacheSize";
+const INT32  MgConfigProperties::DefaultResourceServicePropertyCacheSize                        = 500;
+const STRING MgConfigProperties::ResourceServicePropertyCacheTimeLimit                          = L"CacheTimeLimit";
+const INT32  MgConfigProperties::DefaultResourceServicePropertyCacheTimeLimit                   = 86400;
+const STRING MgConfigProperties::ResourceServicePropertyCacheTimerInterval                      = L"CacheTimerInterval";
+const INT32  MgConfigProperties::DefaultResourceServicePropertyCacheTimerInterval               = 3600;
 
 // ******************************************************************
 // Site Service Properties
@@ -701,6 +707,9 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviResourceServiceProperties
     { MgConfigProperties::ResourceServicePropertyRetryAttempts                      , MgPropertyType::Int32     , 0                                     , 1000                                  , L""                                       },
     { MgConfigProperties::ResourceServicePropertyRetryInterval                      , MgPropertyType::Int32     , 0                                     , 60000                                 , L""                                       },
     { MgConfigProperties::ResourceServicePropertySessionRepositoriesLimit           , MgPropertyType::Int32     , 0                                     , 60000                                 , L""                                       },
+    { MgConfigProperties::ResourceServicePropertyCacheSize                          , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
+    { MgConfigProperties::ResourceServicePropertyCacheTimeLimit                     , MgPropertyType::Int32     , 0                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
+    { MgConfigProperties::ResourceServicePropertyCacheTimerInterval                 , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 

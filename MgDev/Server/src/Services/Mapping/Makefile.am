@@ -11,6 +11,7 @@ INCLUDES = \
   -I../../Common \
   -I../../Common/Base \
   -I../../Common/Manager \
+  -I../../Common/Cache \
   -I../../../../Common/MdfModel \
   -I../../../../Common/MdfParser \
   -I$(map_fdo_include) \

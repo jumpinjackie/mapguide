@@ -53,6 +53,9 @@
     <ClCompile Include="ServerFactory.cpp" />
     <ClCompile Include="ServiceHandlerFactory.cpp" />
     <ClCompile Include="SignalHandler.cpp" />
+    <ClCompile Include="ResourceServiceCacheTimeLimitEventHandler.cpp">
+      <Filter>TimedEventHandlers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConnectionTimeoutEventHandler.h">
@@ -99,6 +102,9 @@
     <ClInclude Include="Server.h" />
     <ClInclude Include="ServiceHandlerFactory.h" />
     <ClInclude Include="SignalHandler.h" />
+    <ClInclude Include="ResourceServiceCacheTimeLimitEventHandler.h">
+      <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ServerCore.rc" />

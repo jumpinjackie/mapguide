@@ -735,7 +735,7 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING prov
                             {
                                 // We have a long transaction name match
                                 INT32 useLimit = providerInfo->GetUseLimit();
-                                if (useLimit == -1 || pFdoConnectionCacheEntry->nUseTotal <= useLimit)
+                                if (useLimit == -1 || pFdoConnectionCacheEntry->nUseCount <= useLimit)
                                 {
                                     // If the provider is a PerCommandThreaded/MultiThreaded provider, reuse existing 
                                     // connection only when reuseOnly is true (current connections count == pool size). 

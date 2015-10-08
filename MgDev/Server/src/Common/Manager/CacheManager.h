@@ -20,6 +20,7 @@
 
 #include "ServerManager.h"
 #include "FeatureServiceCache.h"
+#include "ResourceServiceCache.h"
 
 class MgServiceManager;
 class MgFdoConnectionManager;
@@ -62,6 +63,9 @@ public:
     MgFeatureSourceCacheItem* GetFeatureSourceCacheItem(MgResourceIdentifier* resource);
     MgSpatialContextCacheItem* GetSpatialContextCacheItem(MgResourceIdentifier* resource);
 
+    MgResourceServiceCache* GetResourceServiceCache();
+    MgResourceLayerDefinitionCacheItem* GetResourceLayerDefinitionCacheItem(MgResourceIdentifier* resource);
+
     bool IsResourceChangeNotificationNeeded(MgResourceIdentifier* resource);
 
 /// Data Members
@@ -74,6 +78,7 @@ private:
     MgFdoConnectionManager* m_fdoConnectionManager;
 
     MgFeatureServiceCache m_featureServiceCache;
+    MgResourceServiceCache m_resourceServiceCache;
 };
 
 /// Inline Methods
@@ -81,6 +86,11 @@ private:
 inline MgFeatureServiceCache* MgCacheManager::GetFeatureServiceCache()
 {
     return &m_featureServiceCache;
+}
+
+inline MgResourceServiceCache* MgCacheManager::GetResourceServiceCache()
+{
+    return &m_resourceServiceCache;
 }
 
 #endif

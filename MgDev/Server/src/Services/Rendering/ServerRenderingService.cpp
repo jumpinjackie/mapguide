@@ -28,6 +28,7 @@
 #include "MappingUtil.h"
 #include "LegendPlotUtil.h"
 #include "TransformCache.h"
+#include "CacheManager.h"
 #include "Box2D.h"
 #include <cmath>
 
@@ -1575,8 +1576,11 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
         //get the MDF layer definition
         Ptr<MgResourceIdentifier> layerResId = layer->GetLayerDefinition();
-        auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(m_svcResource, layerResId));
-        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+        MgCacheManager* cacheManager = MgCacheManager::GetInstance();
+        Ptr<MgResourceLayerDefinitionCacheItem> cacheItem = cacheManager->GetResourceLayerDefinitionCacheItem(layerResId);
+        MdfModel::LayerDefinition* layerDefinition = cacheItem->Get();
+
+        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(layerDefinition);
 
         //we can only do geometric query selection for vector layers
         if (vl)
@@ -2039,9 +2043,11 @@ inline void MgServerRenderingService::RenderWatermarks(MgMap* map,
             continue;
 
         Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
-        ldf.reset(MgLayerBase::GetLayerDefinition(m_svcResource, layerid));
+        MgCacheManager* cacheManager = MgCacheManager::GetInstance();
+        Ptr<MgResourceLayerDefinitionCacheItem> cacheItem = cacheManager->GetResourceLayerDefinitionCacheItem(layerid);
+        MdfModel::LayerDefinition* layerDefinition = cacheItem->Get();
 
-        WatermarkInstanceCollection* layerWatermarks = ldf->GetWatermarks();
+        WatermarkInstanceCollection* layerWatermarks = layerDefinition->GetWatermarks();
         for (int j=layerWatermarks->GetCount()-1; j>=0; j--)
             tempWatermarkInstances.Adopt(layerWatermarks->OrphanAt(j));
         for (int j=tempWatermarkInstances.GetCount()-1; j>=0; j--)

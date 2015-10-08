@@ -108,6 +108,21 @@ void MgCacheManager::Initialize()
         MgConfigProperties::DefaultFeatureServicePropertyCacheTimeLimit);
 
     m_featureServiceCache.Initialize(cacheSize, cacheTimeLimit);
+
+    // Initialize resource service cache
+    configuration->GetIntValue(
+        MgConfigProperties::ResourceServicePropertiesSection,
+        MgConfigProperties::ResourceServicePropertyCacheSize,
+        cacheSize,
+        MgConfigProperties::DefaultResourceServicePropertyCacheSize);
+
+    configuration->GetIntValue(
+        MgConfigProperties::ResourceServicePropertiesSection,
+        MgConfigProperties::ResourceServicePropertyCacheTimeLimit,
+        cacheTimeLimit,
+        MgConfigProperties::DefaultResourceServicePropertyCacheTimeLimit);
+
+    m_resourceServiceCache.Initialize(cacheSize, cacheTimeLimit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -124,6 +139,7 @@ void MgCacheManager::ClearCaches()
 
         m_fdoConnectionManager->ClearCache();
         m_featureServiceCache.Clear();
+        m_resourceServiceCache.Clear();
     }
 }
 
@@ -168,6 +184,11 @@ void MgCacheManager::NotifyResourceChanged(CREFSTRING resource)
             m_featureServiceCache.RemoveEntry(resource);
         }
     }
+    if (STRING::npos != resource.rfind(MgResourceType::LayerDefinition))
+    {
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_resourceServiceCache.m_mutex));
+        m_resourceServiceCache.RemoveEntry(resource);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -176,16 +197,24 @@ void MgCacheManager::NotifyResourceChanged(CREFSTRING resource)
 ///
 void MgCacheManager::NotifyResourceChanged(MgResourceIdentifier* resource)
 {
-    if (NULL != resource && resource->IsResourceTypeOf(MgResourceType::FeatureSource))
+    if (NULL != resource)
     {
-        // The mutex usage and the method call order here are important
-        // because they ensure all the caches are in sync.
-       ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_fdoConnectionManager->sm_mutex));
+        if (resource->IsResourceTypeOf(MgResourceType::FeatureSource))
         {
-            ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_featureServiceCache.m_mutex));
+            // The mutex usage and the method call order here are important
+            // because they ensure all the caches are in sync.
+            ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_fdoConnectionManager->sm_mutex));
+            {
+                ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_featureServiceCache.m_mutex));
 
-            m_fdoConnectionManager->RemoveCachedFdoConnection(resource);
-            m_featureServiceCache.RemoveEntry(resource);
+                m_fdoConnectionManager->RemoveCachedFdoConnection(resource);
+                m_featureServiceCache.RemoveEntry(resource);
+            }
+        }
+        else if (resource->IsResourceTypeOf(MgResourceType::LayerDefinition))
+        {
+            ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_resourceServiceCache.m_mutex));
+            m_resourceServiceCache.RemoveEntry(resource);
         }
     }
 }
@@ -367,3 +396,49 @@ bool MgCacheManager::IsResourceChangeNotificationNeeded(MgResourceIdentifier* re
 
     return notificationNeeded;
 }
+
+MgResourceLayerDefinitionCacheItem* MgCacheManager::GetResourceLayerDefinitionCacheItem(MgResourceIdentifier* resource)
+{
+    Ptr<MgResourceLayerDefinitionCacheItem> cacheItem;
+
+    MG_TRY()
+
+    cacheItem = m_resourceServiceCache.GetLayerDefinition(resource);
+
+    if (NULL == cacheItem.p)
+    {
+        // Get the Resource Service.
+        Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
+            m_serviceManager->RequestService(MgServiceType::ResourceService));
+        ACE_ASSERT(NULL != resourceService.p);
+
+        auto_ptr<MdfModel::LayerDefinition> layerDefinition;
+        layerDefinition.reset(MgLayerBase::GetLayerDefinition(resourceService, resource));
+
+        if (NULL == layerDefinition.get())
+        {
+            MgResources* resources = MgResources::GetInstance();
+            ACE_ASSERT(NULL != resources);
+            STRING message = resources->GetResourceMessage(MgResources::ResourceService,
+                L"MgInvalidLayerDefinition", NULL);
+            MgStringCollection arguments;
+            arguments.Add(message);
+
+            throw new MgInvalidFeatureSourceException(
+                L"MgCacheManager.GetResourceLayerDefinitionCacheItem",
+                __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+
+        cacheItem = new MgResourceLayerDefinitionCacheItem(layerDefinition.release());
+        m_resourceServiceCache.SetLayerDefinition(resource, cacheItem.p);
+    }
+    else
+    {
+        CheckPermission(resource, MgResourcePermission::ReadOnly);
+    }
+
+    MG_CATCH_AND_THROW(L"MgCacheManager.GetResourceLayerDefinitionCacheItem")
+
+    return cacheItem.Detach();
+}
+

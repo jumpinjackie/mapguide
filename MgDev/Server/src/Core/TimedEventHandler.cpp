@@ -90,6 +90,10 @@ MgTimedEventHandler* MgTimedEventHandler::Create(MgEventTimer::Type type,
             eventHandler.reset(new MgPerformanceLoggingEventHandler(timer));
             break;
 
+        case MgEventTimer::ResourceServiceCacheTimeLimit:
+            eventHandler.reset(new MgResourceServiceCacheTimeLimitEventHandler(timer));
+            break;
+
         default:
             throw new MgInvalidArgumentException(
                 L"MgTimedEventHandler.Create", __LINE__, __WFILE__, NULL, L"", NULL);

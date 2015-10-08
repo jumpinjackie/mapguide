@@ -39,6 +39,7 @@ public:
         FeatureServiceCacheTimeLimit        = 6,
         DataTransactionTimeout              = 7,
         PerformanceLogging                  = 8,
+        ResourceServiceCacheTimeLimit       = 9,
     };
 
 /// Constructors/Destructor

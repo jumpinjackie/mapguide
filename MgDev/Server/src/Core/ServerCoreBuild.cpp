@@ -27,6 +27,7 @@
 #include "PerformanceLoggingEventHandler.cpp"
 #include "RepositoryCheckpointEventHandler.cpp"
 #include "ResourceChangeEventHandler.cpp"
+#include "ResourceServiceCacheTimeLimitEventHandler.cpp"
 #include "Server.cpp"
 #include "ServiceHandlerFactory.cpp"
 #include "ServiceRegistrationEventHandler.cpp"

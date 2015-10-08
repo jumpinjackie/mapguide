@@ -31,6 +31,7 @@
 #include "SymbolVisitor.h"
 #include "SymbolDefinition.h"
 #include "TransformCache.h"
+#include "CacheManager.h"
 
 #include <algorithm>
 
@@ -383,7 +384,6 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
     // Get the layers' resource content in a single request by adding them to a collection
     for (int i = layers->GetCount()-1; i >= 0; i--)
     {
-        auto_ptr<MdfModel::LayerDefinition> ldf;
         RSMgFeatureReader* rsReader = NULL;
 
         Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
@@ -433,7 +433,9 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
             //get layer definition
             Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
-            ldf.reset(MgLayerBase::GetLayerDefinition(svcResource, layerid));
+            MgCacheManager* cacheManager = MgCacheManager::GetInstance();
+            Ptr<MgResourceLayerDefinitionCacheItem> cacheItem = cacheManager->GetResourceLayerDefinitionCacheItem(layerid);
+            MdfModel::LayerDefinition* layerDefinition = cacheItem->Get();
 
             Ptr<MgLayerGroup> group = mapLayer->GetGroup();
 
@@ -463,9 +465,9 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                                      -mapLayer->GetDisplayOrder(),
                                       uig);
 
-            MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
-            MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
-            MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
+            MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(layerDefinition);
+            MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(layerDefinition);
+            MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(layerDefinition);
 
             if (vl) //############################################################################ vector layer
             {

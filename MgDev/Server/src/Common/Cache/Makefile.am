@@ -27,7 +27,10 @@ include_SOURCES = \
   FeatureServiceCache.cpp \
   FeatureServiceCacheEntry.cpp \
   FeatureSourceCacheItem.cpp \
-  SpatialContextCacheItem.cpp
+  SpatialContextCacheItem.cpp \
+  ResourceLayerDefinitionCacheItem.cpp \
+  ResourceServiceCache.cpp \
+  ResourceServiceCacheEntry.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   ServerCache.h \
@@ -39,6 +42,9 @@ noinst_HEADERS = $(include_SOURCES) \
   FeatureServiceCache.h \
   FeatureServiceCacheEntry.h \
   FeatureSourceCacheItem.h \
-  SpatialContextCacheItem.h
+  SpatialContextCacheItem.h \
+  ResourceLayerDefinitionCacheItem.h \
+  ResourceServiceCache.h \
+  ResourceServiceCacheEntry.h
 
 libMgServerCache_la_LDFLAGS = -release $(PACKAGE_VERSION)

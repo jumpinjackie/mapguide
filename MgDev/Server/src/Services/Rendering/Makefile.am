@@ -15,6 +15,7 @@ INCLUDES = \
   -I../../../../Common/MapGuideCommon \
   -I../../Common \
   -I../../Common/Base \
+  -I../../Common/Cache \
   -I../../Common/Manager \
   -I../../../../Common/MdfModel \
   -I../../../../Common/Stylization \
