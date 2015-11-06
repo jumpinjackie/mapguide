@@ -168,10 +168,18 @@ LineSegment::orientationIndex(const LineSegment& seg) const
 	int orient1 = algorithm::CGAlgorithms::orientationIndex(p0, p1, seg.p1);
 	// this handles the case where the points are L or collinear
 	if (orient0 >= 0 && orient1 >= 0)
+		#ifdef _WIN32
 		return std::fmax(orient0, orient1);
+		#else
+		return max(orient0, orient1);
+		#endif
 	// this handles the case where the points are R or collinear
 	if (orient0 <= 0 && orient1 <= 0)
+		#ifdef _WIN32
 		return std::fmax(orient0, orient1);
+		#else
+		return max(orient0, orient1);
+		#endif
 	// points lie on opposite sides ==> indeterminate orientation
 	return 0;
 }

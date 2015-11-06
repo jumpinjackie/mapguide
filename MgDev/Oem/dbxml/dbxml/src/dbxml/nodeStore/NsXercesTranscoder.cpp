@@ -17,7 +17,6 @@
 
 #define nsSetFlag(node, flag) (node)->nd_header.nh_flags |= (flag)
 
-using namespace std;
 using namespace DbXml;
 XERCES_CPP_NAMESPACE_USE
 
@@ -206,7 +205,7 @@ NsXercesTranscoder::doCharacters(const xmlch_t *characters,
 	bool needsEscape = false;
 	if (!len)
 		len = NsUtil::nsStringLen(characters);
-	enum checkType ttype = (isCDATA || ignorable) ? checkType::ignore : isCharacters;
+	enum checkType ttype = (isCDATA || ignorable) ? ignore : isCharacters;
 	NsDonator chars(characters, len, ttype);
 	uint32_t textType;
 	if (isCDATA)

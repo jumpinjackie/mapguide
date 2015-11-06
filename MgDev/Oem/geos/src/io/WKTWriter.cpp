@@ -179,8 +179,13 @@ void
 WKTWriter::appendGeometryTaggedText(const Geometry *geometry, int level,
 		Writer *writer)
 {
+  #ifdef _WIN32
   outputDimension = std::fmin( defaultOutputDimension,
                          geometry->getCoordinateDimension() );
+  #else
+  outputDimension = min(defaultOutputDimension,
+                         geometry->getCoordinateDimension());
+  #endif
 
   indent(level, writer);
   if ( const Point* point = dynamic_cast<const Point*>(geometry) )

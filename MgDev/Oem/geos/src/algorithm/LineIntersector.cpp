@@ -125,7 +125,11 @@ LineIntersector::computeEdgeDistance(const Coordinate& p,const Coordinate& p0,co
 		// <FIX>
 		// hack to ensure that non-endpoints always have a non-zero distance
 		if (dist == 0.0 && !(p==p0)) {
+		#ifdef _WIN32
 			dist=std::fmax(pdx,pdy);
+		#else
+			dist=max(pdx, pdy);
+		#endif
 		}
 	}
 	assert(!(dist == 0.0 && !(p==p0))); // Bad distance calculation
