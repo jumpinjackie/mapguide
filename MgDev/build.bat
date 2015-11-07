@@ -188,7 +188,7 @@ echo [build]: Building Oem
 if "%errorlevel%"=="1" goto error
 rem CsMap is not in Oem.sln, so we need to build that separately
 echo [build]: Building Oem - CSMap
-%MSBUILD% %MG_OEM%\CsMap\VC110\OpenSource.sln
+%MSBUILD% %MG_OEM%\CsMap\VC140\OpenSource.sln
 if "%errorlevel%"=="1" goto error
 if "%TYPECOMPONENT%"=="oem" 	goto quit
 if "%TYPECOMPONENT%"=="server" 	goto quit
