@@ -707,6 +707,8 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
 
                     // point usage rotation - assume geometry angle is zero
                     double angleRad = ptStyle->angleRad;
+                    // also account for any viewport rotation
+                    angleRad += pSERenderer->GetWorldToScreenRotation();
                     xformStyle.rotate(angleRad);
 
                     // symbol instance offset - must scale this by [S_mm], and [S_a]
