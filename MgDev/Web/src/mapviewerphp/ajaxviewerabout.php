@@ -21,7 +21,7 @@ include 'common.php';
 include 'product.php';
 include 'constants.php';
 
-define('VIEWER_VERSION', "3.0.0.0" );
+define('VIEWER_VERSION', "3.1.0.0" );
 
 $titleBar = $product . " Viewer";
 $serverTitle = $product . " Server";
