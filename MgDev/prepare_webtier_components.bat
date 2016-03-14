@@ -1,7 +1,7 @@
 @echo off
 SET SEVENZ=%CD%\BuildTools\WebTools\7-zip\7z.exe
-SET HTTPD_VER=2.4.10
-SET PHP_VER=5.5.17
+SET HTTPD_VER=2.4.18
+SET PHP_VER=5.5.33
 pushd Oem\LinuxApt
 :check_httpd
 if not exist httpd-%HTTPD_VER% goto unpack_httpd
@@ -49,6 +49,7 @@ if not exist php-%PHP_VER%.tar "%SEVENZ%" x php-%PHP_VER%.tar.bz2
 echo Patching PHP headers
 copy /Y ..\php\main\*.h php-%PHP_VER%\main\
 copy /Y ..\php\TSRM\*.h php-%PHP_VER%\TSRM\
+copy /Y ..\php\Zend\*.h php-%PHP_VER%\Zend\
 :patch_httpd_headers
 echo Patching HTTPD headers
 copy /Y ..\httpd\include\*.h httpd-%HTTPD_VER%\include\

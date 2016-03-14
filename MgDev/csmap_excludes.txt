@@ -12,3 +12,9 @@ JGD2011V100.par
 .MRT
 compiler.
 cs-map.
+Usa\Geoid96
+Usa\Geoid99
+Usa\Geoid03
+Usa\NSRS2007
+Usa\NSRS2011
+WW15MGH.GRD

@@ -15,8 +15,12 @@ echo
 
 INSTALLDIR=/usr/local/mapguideopensource
 
-HTTPD_VER=2.4.10
-PHP_VER=5.5.17
+HTTPD_VER=2.4.18
+PHP_VER=5.5.33
+TOMCAT_VER=7.0.68
+CONNECTOR_VER=1.2.41
+APR_VER=1.5.2
+APR_UTIL_VER=1.5.4
 PORT=8008
 TOMCAT=0
 TOMCAT_PORT=8009
@@ -144,12 +148,12 @@ check_tomcat_install ()
 echo "Apache Httpd build started"
 tar -jxf httpd-$HTTPD_VER.tar.bz2
 if [ ! -d "httpd-$HTTPD_VER/srclib/apr" ]; then
-	tar -jxf apr-1.5.1.tar.bz2
-	mv apr-1.5.1 httpd-$HTTPD_VER/srclib/apr
+	tar -jxf apr-$APR_VER.tar.bz2
+	mv apr-$APR_VER httpd-$HTTPD_VER/srclib/apr
 fi
 if [ ! -d "httpd-$HTTPD_VER/srclib/aprutil" ]; then
-	tar -jxf apr-util-1.5.4.tar.bz2
-	mv apr-util-1.5.4 httpd-$HTTPD_VER/srclib/apr-util
+	tar -jxf apr-util-$APR_UTIL_VER.tar.bz2
+	mv apr-util-$APR_UTIL_VER httpd-$HTTPD_VER/srclib/apr-util
 fi
 pushd httpd-$HTTPD_VER
 ./configure --prefix=$INSTALLWEB/apache2 --enable-mods-shared=all \
@@ -255,8 +259,8 @@ echo "Php install completed"
 #**********************************************************
 if [ "$TOMCAT" = "1" ]; then
 echo "Tomcat connector build/install started"
-tar -zxf tomcat-connectors-1.2.40-src.tar.gz
-pushd tomcat-connectors-1.2.40-src/native
+tar -zxf tomcat-connectors-$CONNECTOR_VER-src.tar.gz
+pushd tomcat-connectors-$CONNECTOR_VER-src/native
 
 ./configure --with-apxs=$INSTALLWEB/apache2/bin/apxs
 check_tomcat_build
@@ -274,10 +278,10 @@ fi
 #**********************************************************
 if [ "$TOMCAT" = "1" ]; then
 echo "Tomcat install started"
-tar -zxf apache-tomcat-7.0.56.tar.gz -C $INSTALLWEB
+tar -zxf apache-tomcat-$TOMCAT_VER.tar.gz -C $INSTALLWEB
 check_tomcat_install
 pushd $INSTALLWEB
-mv apache-tomcat-7.0.56 tomcat
+mv apache-tomcat-$TOMCAT_VER tomcat
 check_tomcat_install
 popd
 echo "Tomcat install completed"
