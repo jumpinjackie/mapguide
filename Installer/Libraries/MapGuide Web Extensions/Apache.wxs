@@ -6,10 +6,10 @@
     -->
     <?if "$(var.MgPlatform)" = "x64" ?>
         <!-- apache_actions.dll path -->
-        <?define ACTION_DLL_PATH = "..\..\Custom\apache_actions\bin110_x64\apache_actions.dll" ?>
+        <?define ACTION_DLL_PATH = "..\..\Custom\apache_actions\bin140_x64\apache_actions.dll" ?>
     <?else ?>
         <!-- apache_actions.dll path -->
-        <?define ACTION_DLL_PATH = "..\..\Custom\apache_actions\bin110_Win32\apache_actions.dll" ?>
+        <?define ACTION_DLL_PATH = "..\..\Custom\apache_actions\bin140_Win32\apache_actions.dll" ?>
     <?endif ?>
     <Fragment>
         <Binary Id="ApacheActions" SourceFile="$(var.ACTION_DLL_PATH)" />

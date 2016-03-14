@@ -80,9 +80,9 @@ SET PATH=%PATH%;%PARAFFIN%;%NSIS%;%WIX%\bin\;%CD%\..\MgDev\BuildTools\WebTools\7
 rem ==================================================
 rem Web dependencies
 rem ==================================================
-SET HTTPD_VERSION=2.4.10
-SET PHP_VERSION=5.5.17
-SET TOMCAT_VERSION=7.0.56
+SET HTTPD_VERSION=2.4.18
+SET PHP_VERSION=5.5.33
+SET TOMCAT_VERSION=7.0.68
 SET HTTPD_PACKAGE=httpd-%HTTPD_VERSION%-%PLATFORM_CLR%-VC11.zip
 SET TOMCAT_PACKAGE_NAME=apache-tomcat-%TOMCAT_VERSION%
 SET TOMCAT_PACKAGE=%MG_OEM%\LinuxApt\%TOMCAT_PACKAGE_NAME%.tar.gz
@@ -321,6 +321,7 @@ if "%errorlevel%"=="1" goto error
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Copying vcredist
 copy /Y vcredist_2012_%PLATFORM_CLR%.exe "%INSTALLER_OUTPUT%\vcredist_2012_%PLATFORM_CLR%.exe"
+copy /Y vc_redist.%PLATFORM_CLR%.exe "%INSTALLER_OUTPUT%\vc_redist.%PLATFORM_CLR%.exe"
 popd
 if "%errorlevel%"=="1" goto error
 if "%MAX_COMPRESSION%"=="YES" goto build_max_compress
