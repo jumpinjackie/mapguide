@@ -30,7 +30,7 @@
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_MINOR</name>
           <description></description>
-          <defaultValue>0</defaultValue>
+          <defaultValue>1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_BUILD</name>
@@ -78,12 +78,12 @@
       <command>@echo off&#xd;
 &#xd;
 SET BUILD_ACTION=Setting Visual Studio env vars&#xd;
-SET VCBEXTENSION=_vs12&#xd;
-SET VC_COMPILER=vc110&#xd;
-SET ACTIVENAMECHECK=&quot;Microsoft Visual Studio 11&quot;&#xd;
-SET ACTIVEPATHCHECK=&quot;C:\Program Files\Microsoft Visual Studio 11.0\VC&quot;&#xd;
+SET VCBEXTENSION=_vs14&#xd;
+SET VC_COMPILER=vc140&#xd;
+SET ACTIVENAMECHECK=&quot;Microsoft Visual Studio 14&quot;&#xd;
+SET ACTIVEPATHCHECK=&quot;C:\Program Files\Microsoft Visual Studio 14.0\VC&quot;&#xd;
 if exist %ACTIVEPATHCHECK% goto VSExist&#xd;
-SET ACTIVEPATHCHECK=&quot;C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC&quot;&#xd;
+SET ACTIVEPATHCHECK=&quot;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC&quot;&#xd;
 if exist %ACTIVEPATHCHECK% goto VSExist&#xd;
 goto error&#xd;
 &#xd;
