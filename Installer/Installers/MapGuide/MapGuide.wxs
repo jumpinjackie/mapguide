@@ -48,8 +48,8 @@
         <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
         <Property Id="APACHE_VERSION" Secure="yes" Value="2.4.18" />
         <Property Id="PHP_VERSION" Secure="yes" Value="5.5.33" />
-        <Property Id="MG_VERSION_MAJOR_MINOR" Secure="yes" Value="3.0" />
-        <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuide30AppPool">
+        <Property Id="MG_VERSION_MAJOR_MINOR" Secure="yes" Value="3.1" />
+        <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuide31AppPool">
             <RegistrySearch
             Id="MgAppPoolNameRs"
             Type="raw"
@@ -68,8 +68,8 @@
         <!-- IIS vars -->
         <Property Id="ASPNETVERSION" Value="v4.0" />
         <!-- Don't try to use MG_VERSION_MAJOR_MINOR here. I tried. Just accept it and hardcode the number -->
-        <Property Id="PHP_FCGI_HANDLER_NAME" Value="MapGuide_3.0_PHP_via_FastCGI" />
-        <Property Id="MAPAGENT_ISAPI_NAME" Value="MapGuide 3.0 MapAgent ISAPI handler" />
+        <Property Id="PHP_FCGI_HANDLER_NAME" Value="MapGuide_3.1_PHP_via_FastCGI" />
+        <Property Id="MAPAGENT_ISAPI_NAME" Value="MapGuide 3.1 MapAgent ISAPI handler" />
 
         <!-- 
         These are currently static, though there is opportunity in the future for these
