@@ -116,83 +116,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
   #   chef.validation_client_name = "ORGNAME-validator"
   
-  $script = <<SCRIPT
-BUILD_COMPONENT=
-check_build()
-{
-	error=$?
-	if [ $error -ne 0 ]; then
-		echo "[error]: ${BUILD_COMPONENT} - Error build failed ($error)"
-		exit $error
-	fi
-}
-cd ~
-echo [provision]: Home directory is `pwd`
-echo [provision]: Checking directories
-HAVE_FDO=0
-HAVE_FDO_LIBS=0
-HAVE_MAPGUIDE=0
-MG_UNIT_TEST=1
-FDO_UNIT_TEST=1
-MAKE_FDO_SDK=0
-FDO_SRC_ROOT=~/fdo
-FDO_VER_MM=4.0
-FDO_VER_FULL=${FDO_VER_MM}.0
-MG_VER_MM=3.0
-MG_VER_FULL=${MG_VER_MM}.0
-FDO_SRC_DIR=trunk
-FDO_SRC=$FDO_SRC_ROOT/$FDO_SRC_DIR
-MG_SRC_ROOT=~/mapguide/trunk
-MG_SRC=$MG_SRC_ROOT/MgDev
-FDO_TARBALL=fdo-checkout.tar.gz
-MG_TARBALL=mapguide-checkout.tar.gz
-FDO_INST_PATH=/usr/local/fdo-${FDO_VER_FULL}
-MG_INST_PATH=/usr/local/mapguideopensource-${MG_VER_FULL}
-if [ -d $FDO_SRC ];
-then
-    HAVE_FDO=1
-fi
-if [ -d $MG_SRC ];
-then
-    HAVE_MAPGUIDE=1
-fi
-if [ $HAVE_FDO -eq 0 ];
-then
-    echo [provision]: Extracting FDO working copy
-    mkdir -p $FDO_SRC_ROOT
-    tar -zxf /mapguide_sources/$FDO_TARBALL -C $FDO_SRC_ROOT
-fi
-if [ $HAVE_MAPGUIDE -eq 0 ];
-then
-    echo [provision]: Extracting MapGuide working copy
-    mkdir -p $MG_SRC_ROOT
-    tar -zxf /mapguide_sources/$MG_TARBALL -C $MG_SRC_ROOT
-fi
-echo [provision]: svn update FDO
-BUILD_COMPONENT="svn update FDO"
-svn update $FDO_SRC
-check_build
-echo [provision]: svn update MapGuide
-BUILD_COMPONENT="svn update MapGuide"
-svn update $MG_SRC
-check_build
-if [ ! -d /mapguide_sources/updated ]; then
-    sudo mkdir -p /mapguide_sources/updated
-    cd $MG_SRC_ROOT
-    echo [provision]: Updating mapguide source tarball
-    tar -zcf $MG_TARBALL MgDev
-    sudo mv $MG_TARBALL /mapguide_sources/updated
-    cd $FDO_SRC_ROOT
-    echo [provision]: Updating fdo source tarball
-    tar -zcf $FDO_TARBALL $FDO_SRC_DIR
-    sudo mv $FDO_TARBALL /mapguide_sources/updated
-else
-    echo [provision]: Updated tarballs already exist. Doing nothing
-fi
-echo [provision]: Build complete
-SCRIPT
-  
   config.vm.provision "shell",
     privileged: false,
-    inline: $script
+    path: "svn_update.sh",
+    args: ["trunk", "trunk"]
 end
