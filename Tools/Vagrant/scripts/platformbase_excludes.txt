@@ -6,7 +6,7 @@ libdb_cxx.so
 libdbxml-2.5.so
 libdbxml.so
 liblib_json.so
-libMgMapGuideCommon-3.0.0.so
+libMgMapGuideCommon-3.1.0.so
 libMgMapGuideCommon.so
 libxqilla.so
 libxqilla.so.5

@@ -66,3 +66,14 @@ Troubleshooting
 
 If a given build does not produce the expected build artifacts, always check the build logs for any errors.
 
+Release Versioning
+==================
+
+When doing branched releases, the following files have to be modified and their respective MapGuide and FDO versions and branch names updated to match:
+
+ - centos\x64\Vagrantfile
+ - centos\x86\Vagrantfile
+ - ubuntu\x64\Vagrantfile
+ - ubuntu\x86\Vagrantfile
+ - scripts\mapguidecommon_excludes.txt
+ - scripts\platformbase_excludes.txt
