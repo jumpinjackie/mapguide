@@ -1,13 +1,21 @@
 #!/bin/bash
 
 # Global vars for this script. Modify as necessary
-APIVERSION=3.0
-BUILDNUM=${APIVERSION}.0
+MG_VER_MAJOR=${MG_VER_MAJOR:-3}
+MG_VER_MINOR=${MG_VER_MINOR:-1}
+MG_VER_REV=${MG_VER_REV:-0}
+
+APIVERSION=${MG_VER_MAJOR}.${MG_VER_MINOR}
+BUILDNUM=${APIVERSION}.${MG_VER_REV}
 BUILDROOT=`pwd`
-MGCPUPLATFORM=i386
+MGCPUPLATFORM=${MG_ARCH:-i386}
 MGDEBUG=0
-INSTALLROOT=/usr/local/mapguideopensource-${BUILDNUM}
-#INSTALLROOT=/usr/local/mapguideopensource-trunk
+INSTALLROOT=
+if [ -z "${MG_INST_PATH}" ]; then
+    INSTALLROOT=/usr/local/mapguideopensource-${BUILDNUM}
+else
+    INSTALLROOT=${MG_INST_PATH}
+fi
 LOCKFILEDIR=/var/lock/mgserver
 MGSOURCE=${BUILDROOT}/mgdev
 VERFILE=${MGSOURCE}/Common/ProductVersion.h
@@ -17,29 +25,33 @@ LOCALSVN=1
 SVNROOT=/home/vagrant
 #SVNROOT="svn://svn.bld.mgproto.net"
 #SVNROOT="http://svn.osgeo.org"
-SVNRELPATH=/mapguide/branches/3.0/MgDev
+SVNRELPATH=/mapguide/branches/${MG_VER_MAJOR}.${MG_VER_MINOR}/MgDev
+if [ "${MG_BRANCH}" = "trunk" ]; then
+    SVNRELPATH=/mapguide/trunk/MgDev
+fi
 MY_MAKE_OPTS="-j 2"
-UBUNTU=0
+UBUNTU=${UBUNTU:-0}
 PRESERVE_BUILD_ROOT=1
 
 echo "******************************************************************"
+echo " MapGuide Version is:           ${BUILDNUM}"
 echo " MapGuide will be installed to: ${INSTALLROOT}"
-echo " SVN Source is: ${SVNROOT}${SVNRELPATH}"
-echo " Make Options: ${MY_MAKE_OPTS}"
-echo " Is Ubuntu?: ${UBUNTU}"
-echo " Debug Build?: ${MGDEBUG}"
-echo " Preserving the build dir?: ${PRESERVE_BUILD_ROOT}"
-echo " JAVA_HOME: ${JAVA_HOME}"
+echo " SVN Source is:                 ${SVNROOT}${SVNRELPATH}"
+echo " Make Options:                  ${MY_MAKE_OPTS}"
+echo " Is Ubuntu?:                    ${UBUNTU}"
+echo " Debug Build?:                  ${MGDEBUG}"
+echo " Preserving the build dir?:     ${PRESERVE_BUILD_ROOT}"
+echo " JAVA_HOME:                     ${JAVA_HOME}"
 echo "******************************************************************"
 
 # Need JAVA_HOME for JavaApi
 if [ ! -d ${JAVA_HOME} ];
 then
-echo "ERROR: Environment variable JAVA_HOME not set. Please set this enviroment variable first"
-exit
+    echo "ERROR: Environment variable JAVA_HOME not set. Please set this enviroment variable first"
+    exit 1
 fi
 
-check_build()
+mg_check_build()
 {
     error=$?
     if [ $error -ne 0 ]; then
@@ -134,26 +146,29 @@ echo "Building LinuxApt"
 pushd ${MGSOURCE}/Oem/LinuxApt
 BUILD_COMPONENT="LinuxApt"
 ./build_apt.sh --prefix ${INSTALLROOT} --with-tomcat
-check_build
+mg_check_build
 popd
 
-echo "Building Oem"
 BUILD_COMPONENT="Oem"
-if [ $(uname -m) = "x86_64" ]; then
+if [ "${MG_ARCH}" = "amd64" ] || [ $(uname -m) = "x86_64" ]; then
     if [ ${MGDEBUG} -eq 1 ]; then
+        echo "Building Oem (64-bit, debug)"
         ./build_oem.sh --prefix ${INSTALLROOT} --build 64 --config debug
-        check_build
+        mg_check_build
     else
+        echo "Building Oem (64-bit, release)"
         ./build_oem.sh --prefix ${INSTALLROOT} --build 64
-        check_build
+        mg_check_build
     fi
 else
     if [ ${MGDEBUG} -eq 1 ]; then
+        echo "Building Oem (32-bit, debug)"
         ./build_oem.sh --prefix ${INSTALLROOT} --config debug
-        check_build
+        mg_check_build
     else
+        echo "Building Oem (32-bit, release)"
         ./build_oem.sh --prefix ${INSTALLROOT}
-        check_build
+        mg_check_build
     fi
 fi
 
@@ -163,7 +178,7 @@ pushd ${MGSOURCE}/Oem/fusion
 BUILD_COMPONENT="Fusion"
 ant prepare
 ant compress
-check_build
+mg_check_build
 popd
 
 echo "Building MapGuide"
@@ -172,7 +187,7 @@ aclocal
 libtoolize --force
 automake --add-missing --copy
 autoconf
-if [ $(uname -m) = "x86_64" ]; then
+if [ "${MG_ARCH}" = "amd64" ] || [ $(uname -m) = "x86_64" ]; then
     MGCPUPLATFORM=amd64
     if [ ${MGDEBUG} -eq 1 ]; then
         ./configure --disable-optimized --enable-silent-rules --enable-64bit --prefix=${INSTALLROOT}
@@ -188,15 +203,17 @@ else
     fi
 fi
 make $MY_MAKE_OPTS
-check_build
+mg_check_build
 BUILD_COMPONENT="MapGuide Install"
 make install
-check_build
+mg_check_build
 
 end_time=`date +%s`
 
 echo "Preparing binaries for packaging"
+
 # Strip the heavy CS-Map dictionary data files. The geoid stuff is not used and the NSRS ones can be packaged separately
+echo "Removing unused CS-Map dictionary files"
 pushd ${INSTALLROOT}/share/gis/coordsys
 rm -rf WW15MGH.GRD
 popd
@@ -241,4 +258,4 @@ then
     tar -Jcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.${MGCPUPLATFORM}.tar.xz ${INSTALLROOT} ${LOCKFILEDIR}
 fi
 echo "Build complete!"
-echo Main build execution: `expr $end_time - $start_time` s
+echo MapGuide main build execution: `expr $end_time - $start_time` s

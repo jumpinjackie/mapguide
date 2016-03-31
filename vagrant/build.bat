@@ -29,6 +29,7 @@ echo Building CentOS (64-bit): %BUILD_CENTOS_64% (teardown=%TEARDOWN_CENTOS_64%)
 echo ****************************************************
 :prepare
 echo [build]: Prepare scripts for provisioning
+copy /Y scripts\svn_update.sh %ROOT%\centos\src_update
 if %BUILD_CENTOS_32% == 1 xcopy /S /Y /I scripts\* %ROOT%\centos\x86
 if %BUILD_UBUNTU_32% == 1 xcopy /S /Y /I scripts\* %ROOT%\ubuntu\x86
 if %BUILD_CENTOS_64% == 1 xcopy /S /Y /I scripts\* %ROOT%\centos\x64

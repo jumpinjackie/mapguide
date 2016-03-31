@@ -12,29 +12,56 @@ FDO_DEBUG=0
 FDO_BUILD_COMPONENT=
 
 # FDO version. Make sure this matches your FDO build source
-FDO_VER_MAJOR=4
-FDO_VER_MINOR=0
-FDO_VER_REV=0
-
-# Extra flags to pass to FDO build scripts
-FDO_BUILD_FLAGS=
-if [ $FDO_DEBUG -eq 1 ]; then
-    FDO_BUILD_FLAGS="--config debug"
-else
-    FDO_BUILD_FLAGS="--config release"
-fi
-
-UBUNTU=0
-FDO_CPU=x86
-FDO_PLATFORM=32
-FDO_BUILD_CPU=i386
-LIB_DIRNAME=lib
+FDO_VER_MAJOR=${FDO_VER_MAJOR:-4}
+FDO_VER_MINOR=${FDO_VER_MINOR:-1}
+FDO_VER_REV=${FDO_VER_REV:-0}
 
 # FDO install directory
 FDO_VER_FULL=${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}
-FDO_INST=/usr/local/fdo-${FDO_VER_FULL}
 
-check_build()
+# Ubuntu distro switch
+UBUNTU=${UBUNTU:-0}
+
+if [ -z "${FDO_INST_PATH}" ]; then
+    FDO_INST=/usr/local/fdo-${FDO_VER_FULL}
+else
+    FDO_INST=${FDO_INST_PATH}
+fi
+
+# Extra flags to pass to FDO build scripts
+FDO_BUILD_CONF=
+if [ $FDO_DEBUG -eq 1 ]; then
+    FDO_BUILD_CONF=debug
+else
+    FDO_BUILD_CONF=release
+fi
+
+FDO_CPU=
+FDO_BUILD_CPU=
+FDO_LIB_DIRNAME=
+FDO_PLATFORM=
+if [ "${ARCH}" = "amd64" ] || [ $(uname -m) = "x86_64" ]; then
+    FDO_CPU=x64
+    FDO_BUILD_CPU=amd64
+    FDO_LIB_DIRNAME=lib64
+    FDO_PLATFORM=64
+else
+    FDO_CPU=x86
+    FDO_BUILD_CPU=i386
+    FDO_LIB_DIRNAME=lib
+    FDO_PLATFORM=32
+fi
+
+echo "******************************************************************"
+echo "FDO version:              ${FDO_VER_FULL}"
+echo "FDO Platform:             ${FDO_PLATFORM}"
+echo "CPU:                      ${FDO_CPU}"
+echo "Arch:                     ${FDO_BUILD_CPU}"
+echo "Lib Dir:                  ${FDO_LIB_DIRNAME}"
+echo "FDO will be installed to: ${FDO_INST}"
+echo "******************************************************************"
+
+check_fdo_build()
 {
     error=$?
     if [ $error -ne 0 ]; then
@@ -104,7 +131,10 @@ PRESERVE_BUILD_ROOT=1
 CMAKE=0
 
 MY_HOME_DIR=/home/vagrant
-FDO_SRC=${MY_HOME_DIR}/fdo/branches/4.0
+FDO_SRC=${MY_HOME_DIR}/fdo/branches/${FDO_VER_MAJOR}.${FDO_VER_MINOR}
+if [ "${FDO_BRANCH}" = "trunk" ]; then
+    FDO_SRC=${MY_HOME_DIR}/fdo/trunk
+fi
 #FDO_SRC=http://svn.osgeo.org/fdo/trunk
 FDO_BUILD_AREA=${BUILDROOT}/fdo_build_area
 FDO_FILELIST=${FDO_BUILD_AREA}/install/filelist
@@ -133,14 +163,14 @@ shim_thirdparty_lib_paths()
         echo "[info]: PostgreSQL include path already symlinked"
     fi
     # PostgreSQL lib path
-    if [ ! -d ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME ];
+    if [ ! -d ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$FDO_LIB_DIRNAME ];
     then
         if [ ${FDO_PLATFORM} -eq 32 ];
         then 
-            ln -s /usr/lib ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME
+            ln -s /usr/lib ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$FDO_LIB_DIRNAME
             echo "[info]: Symlinked PostgreSQL lib path (x86)"
         else
-            ln -s /usr/lib ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$LIB_DIRNAME
+            ln -s /usr/lib ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/pgsql/$FDO_CPU/$FDO_LIB_DIRNAME
             echo "[info]: Symlinked PostgreSQL lib path (x64)"
         fi
     else
@@ -156,14 +186,14 @@ shim_thirdparty_lib_paths()
         echo "[info]: MySQL include path already symlinked"
     fi
     # MySQL lib path
-    if [ ! -d ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$LIB_DIRNAME ];
+    if [ ! -d ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$FDO_LIB_DIRNAME ];
     then
         if [ ${FDO_PLATFORM} -eq 32 ]; 
         then
-            ln -s /usr/lib/i386-linux-gnu ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$LIB_DIRNAME
+            ln -s /usr/lib/i386-linux-gnu ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$FDO_LIB_DIRNAME
             echo "[info]: Symlinked MySQL lib path (x86)"
         else
-            ln -s /usr/lib/x86_64-linux-gnu ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$LIB_DIRNAME
+            ln -s /usr/lib/x86_64-linux-gnu ${MY_HOME_DIR}/fdo_rdbms_thirdparty_system/mysql/$FDO_CPU/$FDO_LIB_DIRNAME
             echo "[info]: Symlinked MySQL lib path (x64)"
         fi
     else
@@ -383,20 +413,20 @@ modify_sdk_paths()
     fi
 
     echo "******* Environment variable summary *********"
-    echo "FDO: $FDO"
-    echo "FDOUTILITIES: $FDOUTILITIES"
-    echo "FDOTHIRDPARTY: $FDOTHIRDPARTY"
-    echo "SDEHOME: $SDEHOME"
-    echo "FDOGDAL: $FDOGDAL"
-    echo "FDOODBC: $FDOODBC"
-    echo "PYTHON_LIB_PATH: $PYTHON_LIB_PATH"
+    echo "FDO:                 $FDO"
+    echo "FDOUTILITIES:        $FDOUTILITIES"
+    echo "FDOTHIRDPARTY:       $FDOTHIRDPARTY"
+    echo "SDEHOME:             $SDEHOME"
+    echo "FDOGDAL:             $FDOGDAL"
+    echo "FDOODBC:             $FDOODBC"
+    echo "PYTHON_LIB_PATH:     $PYTHON_LIB_PATH"
     echo "PYTHON_INCLUDE_PATH: $PYTHON_INCLUDE_PATH"
-    echo "XERCESCROOT: $XERCESCROOT"
-    echo "XALANCROOT: $XALANCROOT"
-    echo "NLSDIR: $NLSDIR"
-    echo "FDOORACLE: $FDOORACLE"
-    echo "FDOMYSQL: $FDOMYSQL"
-    echo "FDOPOSTGRESQL: $FDOPOSTGRESQL"
+    echo "XERCESCROOT:         $XERCESCROOT"
+    echo "XALANCROOT:          $XALANCROOT"
+    echo "NLSDIR:              $NLSDIR"
+    echo "FDOORACLE:           $FDOORACLE"
+    echo "FDOMYSQL:            $FDOMYSQL"
+    echo "FDOPOSTGRESQL:       $FDOPOSTGRESQL"
     echo "**********************************************"
     echo ""
 }
@@ -408,15 +438,16 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 echo "***********************************************************"
-echo " FDO Source: ${FDO_SRC}"
-echo " FDO Build Area: ${FDO_BUILD_AREA}"
-echo " FDO Install dir: ${FDO_INST}"
-echo " FDO CPU Target: ${FDO_BUILD_CPU}"
-echo " CMake build: ${CMAKE}"
-echo " Is Ubuntu?: ${UBUNTU}"
-echo " Debug build: ${FDO_DEBUG}"
+echo " FDO Source:                     ${FDO_SRC}"
+echo " FDO Build Area:                 ${FDO_BUILD_AREA}"
+echo " FDO Install dir:                ${FDO_INST}"
+echo " FDO CPU Target:                 ${FDO_BUILD_CPU}"
+echo " FDO build config:               ${FDO_BUILD_CONF}"
+echo " CMake build:                    ${CMAKE}"
+echo " Is Ubuntu?:                     ${UBUNTU}"
+echo " Debug build:                    ${FDO_DEBUG}"
 echo " Export from local SVN checkout: ${LOCALSVN}"
-echo " Re-use previous build area: ${PRESERVE_BUILD_ROOT}"
+echo " Re-use previous build area:     ${PRESERVE_BUILD_ROOT}"
 echo "***********************************************************"
 start_time=`date +%s`
 REVISION=`svn info ${FDO_SRC} | perl revnum.pl`
@@ -473,8 +504,8 @@ echo "[info]: Building FDO (${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}) re
 cd ${FDO_BUILD_AREA}
 
 FDO_BUILD_COMPONENT="FDO Thirdparty"
-./build_thirdparty.sh -b ${FDO_PLATFORM} ${FDO_BUILD_FLAGS}
-check_build
+./build_thirdparty.sh -b ${FDO_PLATFORM} --c ${FDO_BUILD_CONF}
+check_fdo_build
 
 if [ ${CMAKE} -eq 1 ];
 then
@@ -486,17 +517,17 @@ else
     for comp in fdocore fdo utilities
     do
         FDO_BUILD_COMPONENT="$comp (automake)"
-        ./build_linux.sh --w $comp --p ${FDO_INST} --b ${FDO_PLATFORM} ${FDO_BUILD_FLAGS}
+        ./build_linux.sh --w $comp --p ${FDO_INST} --b ${FDO_PLATFORM} --c ${FDO_BUILD_CONF}
         update_fdocore_file_list
-        check_build
+        check_fdo_build
     done
     for comp in shp sqlite gdal ogr wfs wms rdbms kingoracle sdf
     do
         save_current_file_list
         FDO_BUILD_COMPONENT="$comp (automake)"
-        ./build_linux.sh --w $comp --p ${FDO_INST} --b ${FDO_PLATFORM} ${FDO_BUILD_FLAGS}
+        ./build_linux.sh --w $comp --p ${FDO_INST} --b ${FDO_PLATFORM} --c ${FDO_BUILD_CONF}
         update_provider_file_list $comp
-        check_build
+        check_fdo_build
     done
 fi
 check_fdo_lib libFDO
@@ -528,7 +559,7 @@ then
     FDO_BUILD_COMPONENT="Remove .la files from ${FDO_INST}"
     # Remove .la files from lib directory
     rm -f ${FDO_INST}/lib/*.la
-    check_build
+    check_fdo_build
 
     FDO_BUILD_COMPONENT="Strip so symbols and remove execute flag"
     # Remove unneeded symbols from files in the lib directory
@@ -538,13 +569,13 @@ then
         strip --strip-unneeded ${file}
         chmod a-x ${file}
     done
-    check_build
+    check_fdo_build
 
     FDO_BUILD_COMPONENT="Make tarball"
     # Create a binary tar ball for FDO
     cd ${FDO_INST}
     tar -Jcf ${BUILDROOT}/fdosdk-centos6-${FDO_BUILD_CPU}-${FDO_VER_FULL}_${REVISION}.tar.xz *
-    check_build
+    check_fdo_build
 
     if [ ${UBUNTU} -eq 1 ];
     then
@@ -557,4 +588,4 @@ else
 fi
 
 echo "[info]: FDO build complete!"
-echo Main build execution time: `expr $end_time - $start_time` s
+echo FDO main build execution time: `expr $end_time - $start_time` s
