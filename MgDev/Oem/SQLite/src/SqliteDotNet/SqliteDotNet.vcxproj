@@ -22,7 +22,6 @@
     <ProjectGuid>{82BAB86A-BBDE-42F3-B0BD-E69CDF1E8119}</ProjectGuid>
     <RootNamespace>SqliteDotNet</RootNamespace>
     <Keyword>ManagedCProj</Keyword>
-    <TargetPlatformVersion>10.0.10069.0</TargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
