@@ -13,8 +13,10 @@ FDO_BUILD_COMPONENT=
 
 # FDO version. Make sure this matches your FDO build source
 FDO_VER_MAJOR=${FDO_VER_MAJOR:-4}
-FDO_VER_MINOR=${FDO_VER_MINOR:-1}
+FDO_VER_MINOR=${FDO_VER_MINOR:-0}
 FDO_VER_REV=${FDO_VER_REV:-0}
+
+FDO_DISTRO=${FDO_DISTRO:-centos6}
 
 # FDO install directory
 FDO_VER_FULL=${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}
@@ -319,7 +321,7 @@ modify_sdk_paths()
        echo "the GDAL SDK files to $FDOTHIRDPARTY/gdal. "
        echo "If this value remains unchanged, the FDO build process will"
        echo "build the version of GDAL located in Thirdparty/gdal and will "
-       echo "install the resulting libraries in /usr/local/fdo-3.9.0. The FDO build"
+       echo "install the resulting libraries in $FDO_INST. The FDO build"
        echo "process will then use that location when building the GDAL and"
        echo "WMS providers. If you wish to build the FDO GDAL or WMS Providers"
        echo "using a previously installed version of GDAL, modify the setenvironment.sh "
@@ -363,8 +365,8 @@ modify_sdk_paths()
     # parameter no installation directory is created, ie.:
     # $ source ./setenvironment.sh --noinstall
     if test ! $# -eq 1; then
-        mkdir -p "/usr/local/fdo-${FDO_VER_FULL}/lib"
-        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-${FDO_VER_FULL}/lib:$SDEHOME/lib
+        mkdir -p "$FDO_INST/lib"
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$FDO_INST/lib:$SDEHOME/lib
     fi
 
     export XERCESCROOT=$FDOTHIRDPARTY/apache/xerces
@@ -504,7 +506,7 @@ echo "[info]: Building FDO (${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}) re
 cd ${FDO_BUILD_AREA}
 
 FDO_BUILD_COMPONENT="FDO Thirdparty"
-./build_thirdparty.sh -b ${FDO_PLATFORM} --c ${FDO_BUILD_CONF}
+./build_thirdparty.sh -b ${FDO_PLATFORM} --c ${FDO_BUILD_CONF} --p ${FDO_INST}
 check_fdo_build
 
 if [ ${CMAKE} -eq 1 ];
@@ -574,7 +576,7 @@ then
     FDO_BUILD_COMPONENT="Make tarball"
     # Create a binary tar ball for FDO
     cd ${FDO_INST}
-    tar -Jcf ${BUILDROOT}/fdosdk-centos6-${FDO_BUILD_CPU}-${FDO_VER_FULL}_${REVISION}.tar.xz *
+    tar -Jcf ${BUILDROOT}/fdosdk-${FDO_DISTRO}-${FDO_BUILD_CPU}-${FDO_VER_FULL}_${REVISION}.tar.xz *
     check_fdo_build
 
     if [ ${UBUNTU} -eq 1 ];

@@ -13,7 +13,7 @@
 # 
 
 FDO_VER_MAJOR=${FDO_VER_MAJOR:-4}
-FDO_VER_MINOR=${FDO_VER_MINOR:-1}
+FDO_VER_MINOR=${FDO_VER_MINOR:-0}
 FDO_VER_REV=${FDO_VER_REV:-0}
 
 # Read and validate command line parameters
