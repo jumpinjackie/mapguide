@@ -11,13 +11,13 @@ rem Requires the tee utility, which is part of GNU on Windows (https://github.co
 
 IF "%MG_SVN_UPDATE_SOURCES%"=="" SET MG_SVN_UPDATE_SOURCES=1
 IF "%BUILD_UBUNTU_32%"=="" SET BUILD_UBUNTU_32=1
-IF "%BUILD_UBUNTU_64%"=="" SET BUILD_UBUNTU_64=0
+IF "%BUILD_UBUNTU_64%"=="" SET BUILD_UBUNTU_64=1
 IF "%BUILD_CENTOS_32%"=="" SET BUILD_CENTOS_32=1
-IF "%BUILD_CENTOS_64%"=="" SET BUILD_CENTOS_64=0
+IF "%BUILD_CENTOS_64%"=="" SET BUILD_CENTOS_64=1
 IF "%TEARDOWN_UBUNTU_32%"=="" SET TEARDOWN_UBUNTU_32=1
-IF "%TEARDOWN_UBUNTU_64%"=="" SET TEARDOWN_UBUNTU_64=0
+IF "%TEARDOWN_UBUNTU_64%"=="" SET TEARDOWN_UBUNTU_64=1
 IF "%TEARDOWN_CENTOS_32%"=="" SET TEARDOWN_CENTOS_32=1
-IF "%TEARDOWN_CENTOS_64%"=="" SET TEARDOWN_CENTOS_64=0
+IF "%TEARDOWN_CENTOS_64%"=="" SET TEARDOWN_CENTOS_64=1
 SET ROOT=%CD%
 SET COMPONENT=
 echo **************** Build Summary *********************
@@ -29,6 +29,7 @@ echo Building CentOS (64-bit): %BUILD_CENTOS_64% (teardown=%TEARDOWN_CENTOS_64%)
 echo ****************************************************
 :prepare
 echo [build]: Prepare scripts for provisioning
+copy /Y scripts\svn_update.sh %ROOT%\centos\src_update
 if %BUILD_CENTOS_32% == 1 xcopy /S /Y /I scripts\* %ROOT%\centos\x86
 if %BUILD_UBUNTU_32% == 1 xcopy /S /Y /I scripts\* %ROOT%\ubuntu\x86
 if %BUILD_CENTOS_64% == 1 xcopy /S /Y /I scripts\* %ROOT%\centos\x64

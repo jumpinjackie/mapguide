@@ -12,13 +12,16 @@
 #       symbols - symbols file generated from dpkg-gensymbols
 # 
 
+FDO_VER_MAJOR=${FDO_VER_MAJOR:-4}
+FDO_VER_MINOR=${FDO_VER_MINOR:-0}
+FDO_VER_REV=${FDO_VER_REV:-0}
 
 # Read and validate command line parameters
 #
-ARCH="$1"
+FDO_ARCH="$1"
 BUILDNUM="$2"
 PROVIDER="$3"
-if test -z ${ARCH}; then 
+if test -z ${FDO_ARCH}; then 
   echo Usage: dpkgfdoprovider.sh [i386/amd64] svnChangeNum provider
   exit -1
 fi
@@ -27,7 +30,7 @@ if test -z ${BUILDNUM}; then
   exit -1
 fi
 
-case $ARCH in 
+case $FDO_ARCH in 
 i386)
   echo Setting architecture to i386.
   ;;
@@ -62,7 +65,7 @@ esac
 
 
 BUILDROOT=`pwd`
-FDOBUILD=3.9.0
+FDOBUILD=${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}
 FDO=usr/local/fdo-${FDOBUILD}
 ROOT=${BUILDROOT}/debian/fdo${PROVIDER}
 CPROOT=${ROOT}/${FDO}
@@ -138,5 +141,5 @@ dpkg-gencontrol -p"fdo-${PROVIDER}" -P"debian/fdo${PROVIDER}"
 # And move resulting debian package and lintian results to build directory
 dpkg-deb -Zlzma --build ${ROOT}
 lintian -i debian/fdo${PROVIDER}.deb > tmp/fdo${PROVIDER}.lintian
-mv debian/fdo${PROVIDER}.deb bin/fdo-${PROVIDER}_${FDOBUILD}-${BUILDNUM}_${ARCH}.deb
+mv debian/fdo${PROVIDER}.deb bin/fdo-${PROVIDER}_${FDOBUILD}-${BUILDNUM}_${FDO_ARCH}.deb
 popd
