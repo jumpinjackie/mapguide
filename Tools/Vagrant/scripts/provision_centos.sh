@@ -6,6 +6,7 @@
 #
 # Expected environment (set up by vagrant)
 #
+#  - Calling vagrantfile is for a CentOS 6.x box
 #  - Vagrant folder (path of the Vagrantfile) mounted as: /vagrant
 #  - Source folder mounted as: /mapguide_sources
 #     - Contains tarballs for MapGuide/FDO
@@ -21,6 +22,10 @@
 #  $7 - FDO branch name (trunk|major.minor)
 #  $8 - MG branch name (trunk|major.minor)
 #  $9 - architecture (i386|amd64)
+#  $10 - release label (eg. Beta1, RC1, Final)
+#  $11 - distro label (eg. centos6, ubuntu12) - Optional
+
+PROVISION_START_TIME=`date +%s`
 
 echo "*****************************************************"
 echo " Arg check"
@@ -33,6 +38,8 @@ echo "  6 - ${6}"
 echo "  7 - ${7}"
 echo "  8 - ${8}"
 echo "  9 - ${9}"
+echo " 10 - ${10}"
+echo " 11 - ${11}"
 echo "*****************************************************"
 
 # FDO version
@@ -49,6 +56,10 @@ FDO_BRANCH=${7}
 MG_BRANCH=${8}
 
 MG_ARCH=${9}
+MG_RELEASE_LABEL=${10}
+DISTRO=${11:-centos6}
+FDO_DISTRO=${DISTRO}
+MG_DISTRO=${DISTRO}
 UBUNTU=0
 
 FDO_PLATFORM=
@@ -72,6 +83,8 @@ export FDO_BRANCH
 export MG_BRANCH
 export MG_ARCH
 export UBUNTU
+export FDO_DISTRO
+export MG_DISTRO
 
 BUILD_COMPONENT=
 check_build()
@@ -105,9 +118,13 @@ MG_UNIT_TEST=0
 FDO_UNIT_TEST=0
 MAKE_FDO_SDK=0
 SCRIPT_ROOT=~/scripts
-FDO_SRC_ROOT=~/fdo
+FDO_SRC_ROOT=~/fdo/branches
 FDO_SRC_DIR=${FDO_BRANCH}
 FDO_SRC=$FDO_SRC_ROOT/$FDO_SRC_DIR
+if [ "${FDO_BRANCH}" = "trunk" ]; then
+    FDO_SRC_ROOT=~/fdo
+    FDO_SRC=$FDO_SRC_ROOT/$FDO_SRC_DIR
+fi
 FDO_LIB_SRC=~/fdo_rdbms_thirdparty
 MG_SRC_ROOT=~/mapguide/branches/${MG_BRANCH}
 if [ "${MG_BRANCH}" = "trunk" ]; then
@@ -125,7 +142,9 @@ echo "FDO version:      ${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}"
 echo "FDO branch:       ${FDO_BRANCH}"
 echo "MG version:       ${MG_VER_MAJOR}.${MG_VER_MINOR}.${MG_VER_REV}"
 echo "MG branch:        ${MG_BRANCH}"
-echo "Build target:     centos - ${MG_ARCH}"
+echo "Build target:     ${MG_DISTRO} - ${MG_ARCH}"
+echo "Release Label:    ${MG_RELEASE_LABEL}"
+echo "FDO Distro label: ${FDO_DISTRO}"
 echo "Checking directories"
 echo "********************************************************************************"
 
@@ -269,30 +288,60 @@ echo [provision]: Copy log files to output dir
 sudo mv -f ~/*.log /vagrant/build
 echo [provision]: Copy tarballs to output dir
 sudo cp bin/*.tar.xz /vagrant/build
-sudo cp fdosdk-centos6-${MG_ARCH}-${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}_${FDO_REV}.tar.xz /vagrant/build
+sudo cp fdosdk-${FDO_DISTRO}-${MG_ARCH}-${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}_${FDO_REV}.tar.xz /vagrant/build
 if [ $MAKE_FDO_SDK -eq 1 ]; then
     echo [provision]: Copy FDO SDK for Ubuntu builds
     # Copy SDK also to sources, so Ubuntu can pick it up
     sudo rm -f /mapguide_sources/fdosdk*.tar.xz
-    sudo cp fdosdk-centos6-${MG_ARCH}-${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}_${FDO_REV}.tar.xz /mapguide_sources
+    sudo cp fdosdk-${FDO_DISTRO}-${MG_ARCH}-${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}_${FDO_REV}.tar.xz /mapguide_sources
     # Record file name so Ubuntu knows what tarball to extract from
-    sudo echo fdosdk-centos6-${MG_ARCH}-${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}_${FDO_REV}.tar.xz > /mapguide_sources/fdosdk_filename
+    sudo echo fdosdk-${FDO_DISTRO}-${MG_ARCH}-${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}_${FDO_REV}.tar.xz > /mapguide_sources/fdosdk_filename
     sudo echo ${FDO_REV} > /mapguide_sources/fdosdk_rev
     # Export filelist to Ubuntu can deb package this SDK if needed
     sudo cp -R $SCRIPT_ROOT/fdo_build_area/install/filelist /mapguide_sources
 fi
 echo [provision]: Copy unit test logs to output dir
-sudo mv ~/unit_test_status.log /vagrant/build/unit_test_status.log
-sudo mv ~/fdo_*_unit_test.log /vagrant/build
-sudo mv ~/UnitTestResults_*.xml /vagrant/build
-echo [provision]: Copy install/uninstall scripts to output dir
-DISTNAME=centos_x86
-if [ "${MG_ARCH}" -eq "amd64" ]; then
-    DISTNAME=centos_x64
+if [ -f "~/unit_test_status.log" ]; then
+    sudo mv ~/unit_test_status.log /vagrant/build/unit_test_status.log
 fi
-sudo sed -i 's/URL_PART="centos"/URL_PART='"$DISTNAME"'/g' /vagrant/build/mginstallcentos.sh
+if ls ~/fdo_*_unit_test.log 1> /dev/null 2>&1; then
+    sudo mv ~/fdo_*_unit_test.log /vagrant/build
+else
+    echo [provision]: No FDO unit test result files found. If FDO_UNIT_TEST is 0 [value is ${FDO_UNIT_TEST}], this can be safely ignored
+fi
+if ls ~/UnitTestResults_*.xml 1> /dev/null 2>&1; then
+    sudo mv ~/UnitTestResults_*.xml /vagrant/build
+else
+    echo [provision]: No MapGuide unit test result files found. If MG_UNIT_TEST is 0 [value is ${MG_UNIT_TEST}], this can be safely ignored
+fi
+echo [provision]: Copy install/uninstall scripts to output dir
+DISTNAME=${MG_DISTRO}_x86
+if [ "${MG_ARCH}" = "amd64" ]; then
+    DISTNAME=${MG_DISTRO}_x64
+fi
+
+echo [provision]: Stamping install script
 sudo cp /vagrant/mginstallcentos.sh /vagrant/build/mginstallcentos.sh
 sudo cp /vagrant/mguninstallcentos.sh /vagrant/build/mguninstallcentos.sh
+sudo sed -i 's/URL_PART="centos"/URL_PART='"$DISTNAME"'/g' /vagrant/build/mginstallcentos.sh
+sudo sed -i 's/MGRELEASELABEL="ReleaseLabel"/MGRELEASELABEL='"$MG_RELEASE_LABEL"'/g' /vagrant/build/mginstallcentos.sh
+sudo sed -i 's/FDO_ARCH=i386/FDO_ARCH='"$MG_ARCH"'/g' /vagrant/build/mginstallcentos.sh
+sudo sed -i 's/MG_ARCH=i386/MG_ARCH='"$MG_ARCH"'/g' /vagrant/build/mginstallcentos.sh
 sudo sed -i 's/FDOVER_REV=0/FDOVER_REV='"$FDO_REV"'/g' /vagrant/build/mginstallcentos.sh
 sudo sed -i 's/MGVER_REV=0/MGVER_REV='"$MG_REV"'/g' /vagrant/build/mginstallcentos.sh
+sudo sed -i 's/FDOVER_MAJOR=0/FDOVER_MAJOR='"$FDO_VER_MAJOR"'/g' /vagrant/build/mginstallcentos.sh
+sudo sed -i 's/FDOVER_MINOR=0/FDOVER_MINOR='"$FDO_VER_MINOR"'/g' /vagrant/build/mginstallcentos.sh
+sudo sed -i 's/FDOVER_POINT=0/FDOVER_POINT='"$FDO_VER_REV"'/g' /vagrant/build/mginstallcentos.sh
+sudo sed -i 's/MGVER_MAJOR=0/MGVER_MAJOR='"$MG_VER_MAJOR"'/g' /vagrant/build/mginstallcentos.sh
+sudo sed -i 's/MGVER_MINOR=0/MGVER_MINOR='"$MG_VER_MINOR"'/g' /vagrant/build/mginstallcentos.sh
+sudo sed -i 's/MGVER_POINT=0/MGVER_POINT='"$MG_VER_REV"'/g' /vagrant/build/mginstallcentos.sh
+echo [provision]: Stamping variables to uninstall script
+sudo sed -i 's/FDOVER_MAJOR=0/FDOVER_MAJOR='"$FDO_VER_MAJOR"'/g' /vagrant/build/mguninstallcentos.sh
+sudo sed -i 's/FDOVER_MINOR=0/FDOVER_MINOR='"$FDO_VER_MINOR"'/g' /vagrant/build/mguninstallcentos.sh
+sudo sed -i 's/FDOVER_POINT=0/FDOVER_POINT='"$FDO_VER_REV"'/g' /vagrant/build/mguninstallcentos.sh
+sudo sed -i 's/MGVER_MAJOR=0/MGVER_MAJOR='"$MG_VER_MAJOR"'/g' /vagrant/build/mguninstallcentos.sh
+sudo sed -i 's/MGVER_MINOR=0/MGVER_MINOR='"$MG_VER_MINOR"'/g' /vagrant/build/mguninstallcentos.sh
+sudo sed -i 's/MGVER_POINT=0/MGVER_POINT='"$MG_VER_REV"'/g' /vagrant/build/mguninstallcentos.sh
+PROVISION_END_TIME=`date +%s`
 echo [provision]: Build complete
+echo [provision]: Overall build duration: `expr $PROVISION_END_TIME - $PROVISION_START_TIME` s

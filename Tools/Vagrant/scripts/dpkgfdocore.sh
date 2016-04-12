@@ -11,8 +11,13 @@
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 # 
+
+FDO_VER_MAJOR=${FDO_VER_MAJOR:-4}
+FDO_VER_MINOR=${FDO_VER_MINOR:-0}
+FDO_VER_REV=${FDO_VER_REV:-0}
+
 BUILDROOT=`pwd`
-FDOBUILD=3.9.0
+FDOBUILD=${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}
 FDO=usr/local/fdo-${FDOBUILD}
 ROOT=${BUILDROOT}/debian/fdocore
 TREE=${BUILDROOT}/debian

@@ -2,9 +2,16 @@
 
 # Global vars for this script. Modify as necessary
 MG_VER_MAJOR=${MG_VER_MAJOR:-3}
-MG_VER_MINOR=${MG_VER_MINOR:-1}
-MG_VER_REV=${MG_VER_REV:-0}
+MG_VER_MINOR=${MG_VER_MINOR:-0}
+MG_VER_REV=${MG_VER_REV:-1}
 
+FDO_VER_MAJOR=${FDO_VER_MAJOR:-4}
+FDO_VER_MINOR=${FDO_VER_MINOR:-0}
+FDO_VER_REV=${FDO_VER_REV:-0}
+
+MG_DISTRO=${MG_DISTRO:-centos6}
+
+FDO_INST=/usr/local/fdo-${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}
 APIVERSION=${MG_VER_MAJOR}.${MG_VER_MINOR}
 BUILDNUM=${APIVERSION}.${MG_VER_REV}
 BUILDROOT=`pwd`
@@ -42,6 +49,8 @@ echo " Is Ubuntu?:                    ${UBUNTU}"
 echo " Debug Build?:                  ${MGDEBUG}"
 echo " Preserving the build dir?:     ${PRESERVE_BUILD_ROOT}"
 echo " JAVA_HOME:                     ${JAVA_HOME}"
+echo " Using FDO headers from:        ${FDO_INST}/include"
+echo " Using FDO libs from:           ${FDO_INST}/lib"
 echo "******************************************************************"
 
 # Need JAVA_HOME for JavaApi
@@ -190,16 +199,16 @@ autoconf
 if [ "${MG_ARCH}" = "amd64" ] || [ $(uname -m) = "x86_64" ]; then
     MGCPUPLATFORM=amd64
     if [ ${MGDEBUG} -eq 1 ]; then
-        ./configure --disable-optimized --enable-silent-rules --enable-64bit --prefix=${INSTALLROOT}
+        ./configure --disable-optimized --enable-silent-rules --enable-64bit --prefix=${INSTALLROOT} --with-fdo-include=${FDO_INST}/include --with-fdo-lib=${FDO_INST}/lib
     else
-        ./configure --enable-optimized --enable-silent-rules --enable-64bit --prefix=${INSTALLROOT}
+        ./configure --enable-optimized --enable-silent-rules --enable-64bit --prefix=${INSTALLROOT} --with-fdo-include=${FDO_INST}/include --with-fdo-lib=${FDO_INST}/lib
     fi
 else
     MGCPUPLATFORM=i386
     if [ ${MGDEBUG} -eq 1 ]; then
-        ./configure --disable-optimized --enable-silent-rules --prefix=${INSTALLROOT}
+        ./configure --disable-optimized --enable-silent-rules --prefix=${INSTALLROOT} --with-fdo-include=${FDO_INST}/include --with-fdo-lib=${FDO_INST}/lib
     else
-        ./configure --enable-optimized --enable-silent-rules --prefix=${INSTALLROOT}
+        ./configure --enable-optimized --enable-silent-rules --prefix=${INSTALLROOT} --with-fdo-include=${FDO_INST}/include --with-fdo-lib=${FDO_INST}/lib
     fi
 fi
 make $MY_MAKE_OPTS
@@ -255,7 +264,7 @@ then
         mkdir -p bin
     fi
 
-    tar -Jcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.${MGCPUPLATFORM}.tar.xz ${INSTALLROOT} ${LOCKFILEDIR}
+    tar -Jcf bin/mapguideopensource-${MG_DISTRO}-${BUILDNUM}.${REVISION}.${MGCPUPLATFORM}.tar.xz ${INSTALLROOT} ${LOCKFILEDIR}
 fi
 echo "Build complete!"
 echo MapGuide main build execution: `expr $end_time - $start_time` s
