@@ -106,9 +106,9 @@ rem Be sure to change the paths below as well if that's the case
 call prepare_webtier_components.bat
 
 rem Set the env vars that VS will reference
-SET PHP_SRC=%MG_OEM%\LinuxApt\php-5.5.17
+SET PHP_SRC=%MG_OEM%\LinuxApt\php-5.5.33
 SET PHP_LIB=%MG_OEM%\php\x64\Release_TS
-SET HTTPD_SRC=%MG_OEM%\LinuxApt\httpd-2.4.10
+SET HTTPD_SRC=%MG_OEM%\LinuxApt\httpd-2.4.18
 SET HTTPD_LIB=%MG_OEM%\httpd\lib64
 rem Sanity checks
 if not exist "%PHP_SRC%" echo Environment variable PHP_SRC does not point to a valid directory (%PHP_SRC%). Please edit setenvironment64.bat to ensure PHP_SRC points to a valid directory
