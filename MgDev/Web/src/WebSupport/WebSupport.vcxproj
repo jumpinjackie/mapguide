@@ -203,6 +203,7 @@
     <ClCompile Include="InitializeWebTier.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="WebSupport.h" />
   </ItemGroup>
   <ItemGroup>
@@ -218,6 +219,9 @@
       <Project>{f7334b1b-0efa-47e3-8e66-df158e61b7e4}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="WebSupport.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

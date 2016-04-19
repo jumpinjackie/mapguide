@@ -72,7 +72,7 @@ BEGIN
             VALUE "FileDescription", "MapGuide mapagent module for Apache"
             VALUE "FileVersion", "3, 1, 0, 0"
             VALUE "InternalName", "mod_mgmapagent.so"
-            VALUE "LegalCopyright", "Copyright (C) 2006-2011 by Autodesk, Inc."
+            VALUE "LegalCopyright", "Copyright (C) Autodesk, Inc. 2004 - 2016."
             VALUE "OriginalFilename", "mod_mgmapagent.so"
             VALUE "ProductName", "MapGuide Open Source"
             VALUE "ProductVersion", "3, 1, 0, 0"
