@@ -24,6 +24,8 @@
 #  $9 - architecture (i386|amd64)
 #  $10 - release label (eg. Beta1, RC1, Final)
 #  $11 - distro label (eg. centos6, ubuntu12) - Optional
+#  $12 - Run FDO tests (1|0)
+#  $13 - Run MapGuide tests (1|0)
 
 PROVISION_START_TIME=`date +%s`
 
@@ -40,6 +42,8 @@ echo "  8 - ${8}"
 echo "  9 - ${9}"
 echo " 10 - ${10}"
 echo " 11 - ${11}"
+echo " 12 - ${12}"
+echo " 13 - ${13}"
 echo "*****************************************************"
 
 # FDO version
@@ -61,6 +65,9 @@ DISTRO=${11:-centos6}
 FDO_DISTRO=${DISTRO}
 MG_DISTRO=${DISTRO}
 UBUNTU=0
+
+TEST_FDO_FLAG=${12}
+TEST_MG_FLAG=${13}
 
 FDO_PLATFORM=
 if [ "${MG_ARCH}" = "amd64" ]; then
@@ -116,6 +123,14 @@ HAVE_FDO_LIBS=0
 HAVE_MAPGUIDE=0
 MG_UNIT_TEST=0
 FDO_UNIT_TEST=0
+
+if [ "${TEST_FDO_FLAG}" = "1" ]; then
+    FDO_UNIT_TEST=1
+fi
+if [ "${TEST_MG_FLAG}" = "1" ]; then
+    MG_UNIT_TEST=1
+fi
+
 MAKE_FDO_SDK=0
 SCRIPT_ROOT=~/scripts
 FDO_SRC_ROOT=~/fdo/branches
@@ -145,6 +160,8 @@ echo "MG branch:        ${MG_BRANCH}"
 echo "Build target:     ${MG_DISTRO} - ${MG_ARCH}"
 echo "Release Label:    ${MG_RELEASE_LABEL}"
 echo "FDO Distro label: ${FDO_DISTRO}"
+echo "Running FDO Tests: ${FDO_UNIT_TEST}"
+echo "Running MapGuide Tests: ${MG_UNIT_TEST}"
 echo "Checking directories"
 echo "********************************************************************************"
 
@@ -244,16 +261,20 @@ then
     sudo rm providers.xml
     sudo -E NLSPATH=${FDO_INST_PATH}/nls/%N ./UnitTest 2>&1 | tee ~/fdo_gdal_unit_test.log
     check_test
-    BUILD_COMPONENT="Unit Test OGR Provider"
-    cd $SCRIPT_ROOT/fdo_build_area/Providers/OGR/Src/UnitTest
-    sudo rm providers.xml
-    sudo -E NLSPATH=${FDO_INST_PATH}/nls/%N ./UnitTest 2>&1 | tee ~/fdo_ogr_unit_test.log
-    check_test
-    BUILD_COMPONENT="Unit Test WMS Provider"
-    cd $SCRIPT_ROOT/fdo_build_area/Providers/WMS/Src/UnitTest
-    sudo rm providers.xml
-    sudo -E NLSPATH=${FDO_INST_PATH}/nls/%N ./UnitTest 2>&1 | tee ~/fdo_wms_unit_test.log
-    check_test
+    # Depending on what version we're building, OGR unit tests may not exist
+    if [ -d "$SCRIPT_ROOT/fdo_build_area/Providers/OGR/Src/UnitTest" ];
+    then
+        BUILD_COMPONENT="Unit Test OGR Provider"
+        cd $SCRIPT_ROOT/fdo_build_area/Providers/OGR/Src/UnitTest
+        sudo rm providers.xml
+        sudo -E NLSPATH=${FDO_INST_PATH}/nls/%N ./UnitTest 2>&1 | tee ~/fdo_ogr_unit_test.log
+        check_test
+    fi
+    # BUILD_COMPONENT="Unit Test WMS Provider"
+    # cd $SCRIPT_ROOT/fdo_build_area/Providers/WMS/Src/UnitTest
+    # sudo rm providers.xml
+    # sudo -E NLSPATH=${FDO_INST_PATH}/nls/%N ./UnitTest 2>&1 | tee ~/fdo_wms_unit_test.log
+    # check_test
 fi
 if [ $MG_UNIT_TEST -eq 1 ];
 then
