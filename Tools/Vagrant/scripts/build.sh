@@ -29,7 +29,11 @@ VERFILE=${MGSOURCE}/Common/ProductVersion.h
 # Use LOCALSVN=1 if you want to build from an existing copy instead of building
 # from an export (saves bandwidth and faster)
 LOCALSVN=1
-SVNROOT=/home/vagrant
+SVNROOT=$HOME
+if [ "$MG_HOME" != "" ]; then
+    SVNROOT=$MG_HOME
+fi
+
 #SVNROOT="svn://svn.bld.mgproto.net"
 #SVNROOT="http://svn.osgeo.org"
 SVNRELPATH=/mapguide/branches/${MG_VER_MAJOR}.${MG_VER_MINOR}/MgDev
