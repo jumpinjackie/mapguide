@@ -119,5 +119,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "shell",
     privileged: false,
     path: "provision_ubuntu.sh",
-    args: [3, 9, 0, 2, 6, 2, "3.9", "2.6", "amd64", "Final", "ubuntu12"]
+    args: [3, 9, 0, 2, 6, 2, "3.9", "2.6", "amd64", "Final", "ubuntu12", 1, 1]
 end
