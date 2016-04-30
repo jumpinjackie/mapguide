@@ -132,7 +132,11 @@ LOCALSVN=1
 PRESERVE_BUILD_ROOT=1
 CMAKE=0
 
-MY_HOME_DIR=/home/vagrant
+MY_HOME_DIR=$HOME
+if [ "$FDO_HOME" != "" ]; then
+    MY_HOME_DIR=$FDO_HOME
+fi
+
 FDO_SRC=${MY_HOME_DIR}/fdo/branches/${FDO_VER_MAJOR}.${FDO_VER_MINOR}
 if [ "${FDO_BRANCH}" = "trunk" ]; then
     FDO_SRC=${MY_HOME_DIR}/fdo/trunk
