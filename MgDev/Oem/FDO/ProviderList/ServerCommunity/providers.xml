@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<FeatureProviderRegistry>
+  <FeatureProvider>
+    <Name>OSGeo.SDF.3.7</Name>
+    <DisplayName>OSGeo FDO Provider for SDF</DisplayName>
+    <Description>Read/write access to Autodesk's spatial database format, a file-based personal geodatabase that supports multiple features/attributes, spatial indexing, and file-locking.</Description>
+    <IsManaged>False</IsManaged>
+    <Version>3.7.0.0</Version>
+    <FeatureDataObjectsVersion>3.7.0.0</FeatureDataObjectsVersion>
+    <LibraryPath>SDFProvider.dll</LibraryPath>
+  </FeatureProvider>
+  <FeatureProvider>
+    <Name>OSGeo.SHP.3.7</Name>
+    <DisplayName>OSGeo FDO Provider for SHP</DisplayName>
+    <Description>Read/write access to spatial and attribute data in an ESRI SHP file.</Description>
+    <IsManaged>False</IsManaged>
+    <Version>3.7.0.0</Version>
+    <FeatureDataObjectsVersion>3.7.0.0</FeatureDataObjectsVersion>
+    <LibraryPath>ShpProvider.dll</LibraryPath>
+  </FeatureProvider>
+  <FeatureProvider>
+    <Name>OSGeo.SQLite.3.7</Name>
+    <DisplayName>OSGeo FDO Provider for SQLite</DisplayName>
+    <Description>Read/write access to spatial and attribute data in an SQLite file.</Description>
+    <IsManaged>False</IsManaged>
+    <Version>3.7.0.0</Version>
+    <FeatureDataObjectsVersion>3.7.0.0</FeatureDataObjectsVersion>
+    <LibraryPath>SQLiteProvider.dll</LibraryPath>
+  </FeatureProvider>
+</FeatureProviderRegistry>

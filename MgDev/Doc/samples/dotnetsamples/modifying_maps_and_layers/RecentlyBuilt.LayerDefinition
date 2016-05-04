@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LayerDefinition xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LayerDefinition-1.3.0.xsd">
+	<VectorLayerDefinition>
+		<ResourceId>Library://Samples/Sheboygan/Data/Parcels.FeatureSource</ResourceId>
+		<FeatureName>SHP_Schema:Parcels</FeatureName>
+		<FeatureNameType>FeatureClass</FeatureNameType>
+		<PropertyMapping>
+			<Name>NAME</Name>
+			<Value>NAME</Value>
+		</PropertyMapping>
+		<PropertyMapping>
+			<Name>ID</Name>
+			<Value>ID</Value>
+		</PropertyMapping>
+		<PropertyMapping>
+			<Name>YRBUILT</Name>
+			<Value>YRBUILT</Value>
+		</PropertyMapping>
+		<Geometry>SHPGEOM</Geometry>
+		<VectorScaleRange>
+			<MaxScale>10000</MaxScale>
+			<AreaTypeStyle>
+				<AreaRule>
+					<LegendLabel>Built after 1950</LegendLabel>
+					<Filter>YRBUILT &gt; 1950</Filter>
+					<Label>
+						<Unit>Points</Unit>
+						<SizeContext>DeviceUnits</SizeContext>
+						<SizeX>0.3</SizeX>
+						<SizeY>10</SizeY>
+						<Text>YRBUILT</Text>
+						<FontName>Arial</FontName>
+						<ForegroundColor>FF000000</ForegroundColor>
+						<BackgroundColor>FFFFFFFF</BackgroundColor>
+						<BackgroundStyle>Transparent</BackgroundStyle>
+						<HorizontalAlignment>&apos;Center&apos;</HorizontalAlignment>
+						<VerticalAlignment>&apos;Baseline&apos;</VerticalAlignment>
+					</Label>
+					<AreaSymbolization2D>
+						<Fill>
+							<FillPattern>Solid</FillPattern>
+							<ForegroundColor>FFFFFF00</ForegroundColor>
+							<BackgroundColor>FF000000</BackgroundColor>
+						</Fill>
+						<Stroke>
+							<LineStyle>Solid</LineStyle>
+							<Thickness>0</Thickness>
+							<Color>FF000000</Color>
+							<Unit>Inches</Unit>
+							<SizeContext>DeviceUnits</SizeContext>
+						</Stroke>
+					</AreaSymbolization2D>
+				</AreaRule>
+			</AreaTypeStyle>
+		</VectorScaleRange>
+	</VectorLayerDefinition>
+</LayerDefinition>

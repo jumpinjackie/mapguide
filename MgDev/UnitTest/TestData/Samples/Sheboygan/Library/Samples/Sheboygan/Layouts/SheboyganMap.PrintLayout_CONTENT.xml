@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PrintLayout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PrintLayout-1.0.0.xsd">
+  <PageProperties>
+    <BackgroundColor>
+      <Red>255</Red>
+      <Blue>255</Blue>
+      <Green>255</Green>
+    </BackgroundColor>
+  </PageProperties>
+  <LayoutProperties>
+    <ShowTitle>true</ShowTitle>
+    <ShowLegend>true</ShowLegend>
+    <ShowScaleBar>true</ShowScaleBar>
+    <ShowNorthArrow>true</ShowNorthArrow>
+    <ShowURL>true</ShowURL>
+    <ShowDateTime>true</ShowDateTime>
+    <ShowCustomLogos>true</ShowCustomLogos>
+    <ShowCustomText>false</ShowCustomText>
+  </LayoutProperties>
+  <CustomLogos>
+    <Logo>
+      <Position>
+        <Left>8.2</Left> 
+        <Bottom>6.9</Bottom> 
+        <Units>inches</Units> 
+      </Position>
+      <ResourceId>Library://Samples/Sheboygan/Symbols/Logos.SymbolLibrary</ResourceId> 
+      <Name>CityLogo</Name> 
+      <Size>
+        <Width>1.0</Width> 
+        <Height>1.0</Height> 
+        <Units>inches</Units> 
+      </Size>
+      <Rotation>0</Rotation> 
+    </Logo>
+  </CustomLogos>
+  <CustomText>
+    <Text>
+    </Text>
+  </CustomText>
+</PrintLayout>

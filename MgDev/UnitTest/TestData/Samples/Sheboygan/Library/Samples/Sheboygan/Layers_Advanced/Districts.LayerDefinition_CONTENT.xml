@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LayerDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="2.4.0" xsi:noNamespaceSchemaLocation="LayerDefinition-2.4.0.xsd">
+  <VectorLayerDefinition>
+    <ResourceId>Library://Samples/Sheboygan/Data/VotingDistricts.FeatureSource</ResourceId>
+    <Watermarks/>
+    <FeatureName>Default:VotingDistricts</FeatureName>
+    <FeatureNameType>FeatureClass</FeatureNameType>
+    <Geometry>Geometry</Geometry>
+    <VectorScaleRange>
+      <MinScale>10000</MinScale>
+      <CompositeTypeStyle>
+        <CompositeRule>
+          <LegendLabel/>
+          <CompositeSymbolization>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Fill</Name>
+                <Description>Default Area Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 h 100.0 v 100.0 h -100.0 z</Geometry>
+                    <FillColor>%FILLCOLOR%</FillColor>
+                  </Path>
+                </Graphics>
+                <AreaUsage>
+                  <RepeatX>100.0</RepeatX>
+                  <RepeatY>100.0</RepeatY>
+                </AreaUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>FILLCOLOR</Identifier>
+                    <DefaultValue>0x00ffffff</DefaultValue>
+                    <DisplayName>&amp;amp;Fill Color</DisplayName>
+                    <Description>Fill Color</Description>
+                    <DataType>FillColor</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Fill</SymbolName>
+                  <ParameterIdentifier>FILLCOLOR</ParameterIdentifier>
+                  <ParameterValue>0x00ffffff</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Solid Line</Name>
+                <Description>Default Line Symbol</Description>
+                <Graphics>
+                  <Path>
+                    <Geometry>M 0.0,0.0 L 1.0,0.0</Geometry>
+                    <LineColor>%LINECOLOR%</LineColor>
+                    <LineWeight>%LINEWEIGHT%</LineWeight>
+                    <LineWeightScalable>false</LineWeightScalable>
+                  </Path>
+                </Graphics>
+                <LineUsage>
+                  <Repeat>1.0</Repeat>
+                </LineUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>LINECOLOR</Identifier>
+                    <DefaultValue>0xffa68b53</DefaultValue>
+                    <DisplayName>Line &amp;amp;Color</DisplayName>
+                    <Description>Line Color</Description>
+                    <DataType>LineColor</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>LINEWEIGHT</Identifier>
+                    <DefaultValue>0.0</DefaultValue>
+                    <DisplayName>Line &amp;amp; Thickness</DisplayName>
+                    <Description>Line Thickness</Description>
+                    <DataType>LineWeight</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINECOLOR</ParameterIdentifier>
+                  <ParameterValue>0xffa68b53</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>Solid Line</SymbolName>
+                  <ParameterIdentifier>LINEWEIGHT</ParameterIdentifier>
+                  <ParameterValue>0.0</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>MTEXT</Name>
+                <Description>Default MTEXT Symbol</Description>
+                <Graphics>
+                  <Text>
+                    <Content>%CONTENT%</Content>
+                    <FontName>%FONTNAME%</FontName>
+                    <Bold>%BOLD%</Bold>
+                    <Italic>%ITALIC%</Italic>
+                    <Underlined>%UNDERLINED%</Underlined>
+                    <Overlined>%OVERLINED%</Overlined>
+                    <Height>%FONTHEIGHT%</Height>
+                    <PositionX>%StyleEditorGenerated_TextPositionX_0%</PositionX>
+                    <PositionY>%StyleEditorGenerated_TextPositionY_0%</PositionY>
+                    <HorizontalAlignment>%HORIZONTALALIGNMENT%</HorizontalAlignment>
+                    <VerticalAlignment>%VERTICALALIGNMENT%</VerticalAlignment>
+                    <Justification>%JUSTIFICATION%</Justification>
+                    <LineSpacing>%LINESPACING%</LineSpacing>
+                    <TextColor>%TEXTCOLOR%</TextColor>
+                    <GhostColor>%GHOSTCOLOR%</GhostColor>
+                    <Frame>
+                      <LineColor>%FRAMELINECOLOR%</LineColor>
+                      <FillColor>%FRAMEFILLCOLOR%</FillColor>
+                      <OffsetX>0</OffsetX>
+                      <OffsetY>0</OffsetY>
+                    </Frame>
+                    <Markup>'MTEXT'</Markup>
+                  </Text>
+                </Graphics>
+                <AreaUsage>
+                  <Angle>%ROTATION%</Angle>
+                  <RepeatX>100.0</RepeatX>
+                  <RepeatY>100.0</RepeatY>
+                </AreaUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>CONTENT</Identifier>
+                    <DefaultValue>Concat('District ', FeatId)</DefaultValue>
+                    <DisplayName>T&amp;amp;ext</DisplayName>
+                    <Description>Text</Description>
+                    <DataType>Content</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>FONTNAME</Identifier>
+                    <DefaultValue>'Verdana'</DefaultValue>
+                    <DisplayName>&amp;amp;Font Name</DisplayName>
+                    <Description>Font Name</Description>
+                    <DataType>FontName</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>FONTHEIGHT</Identifier>
+                    <DefaultValue>3.5</DefaultValue>
+                    <DisplayName>Font &amp;amp;Size</DisplayName>
+                    <Description>Font Size</Description>
+                    <DataType>FontHeight</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>BOLD</Identifier>
+                    <DefaultValue>false</DefaultValue>
+                    <DisplayName>Bold</DisplayName>
+                    <Description>Bold</Description>
+                    <DataType>Bold</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>ITALIC</Identifier>
+                    <DefaultValue>false</DefaultValue>
+                    <DisplayName>Italic</DisplayName>
+                    <Description>Italic</Description>
+                    <DataType>Italic</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>UNDERLINED</Identifier>
+                    <DefaultValue>false</DefaultValue>
+                    <DisplayName>Underlined</DisplayName>
+                    <Description>Underlined</Description>
+                    <DataType>Underlined</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>OVERLINED</Identifier>
+                    <DefaultValue>false</DefaultValue>
+                    <DisplayName>Overlined</DisplayName>
+                    <Description>Overlined</Description>
+                    <DataType>Overlined</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>JUSTIFICATION</Identifier>
+                    <DefaultValue>'FromAlignment'</DefaultValue>
+                    <DisplayName>Justification</DisplayName>
+                    <Description>Justification</Description>
+                    <DataType>Justification</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>LINESPACING</Identifier>
+                    <DefaultValue>1.05</DefaultValue>
+                    <DisplayName>Line Spacing</DisplayName>
+                    <Description>Line Spacing</Description>
+                    <DataType>LineSpacing</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>GHOSTCOLOR</Identifier>
+                    <DefaultValue/>
+                    <DisplayName>Ghost Color</DisplayName>
+                    <Description>Ghost Color</Description>
+                    <DataType>GhostColor</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>FRAMELINECOLOR</Identifier>
+                    <DefaultValue/>
+                    <DisplayName>Frame Line Color</DisplayName>
+                    <Description>Frame Line Color</Description>
+                    <DataType>FrameLineColor</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>FRAMEFILLCOLOR</Identifier>
+                    <DefaultValue/>
+                    <DisplayName>Frame Fill Color</DisplayName>
+                    <Description>Frame Fill Color</Description>
+                    <DataType>FrameFillColor</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>TEXTCOLOR</Identifier>
+                    <DefaultValue>0xff625231</DefaultValue>
+                    <DisplayName>Text Color</DisplayName>
+                    <Description>Text Color</Description>
+                    <DataType>TextColor</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>VERTICALALIGNMENT</Identifier>
+                    <DefaultValue>'Halfline'</DefaultValue>
+                    <DisplayName>&amp;amp;Vertical Alignment</DisplayName>
+                    <Description>Vertical Alignment</Description>
+                    <DataType>VerticalAlignment</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>ROTATION</Identifier>
+                    <DefaultValue>0.0</DefaultValue>
+                    <DisplayName>&amp;amp;Rotation</DisplayName>
+                    <Description>Rotation</Description>
+                    <DataType>Angle</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>HORIZONTALALIGNMENT</Identifier>
+                    <DefaultValue>'Center'</DefaultValue>
+                    <DisplayName>Hori&amp;amp;zontal Alignment</DisplayName>
+                    <Description>Horizontal Alignment</Description>
+                    <DataType>HorizontalAlignment</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>StyleEditorGenerated_TextPositionX_0</Identifier>
+                    <DefaultValue>0.0</DefaultValue>
+                    <DisplayName>PositionX</DisplayName>
+                    <Description>PositionX</Description>
+                    <DataType>Real</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>StyleEditorGenerated_TextPositionY_0</Identifier>
+                    <DefaultValue>0.0</DefaultValue>
+                    <DisplayName>PositionY</DisplayName>
+                    <Description>PositionY</Description>
+                    <DataType>Real</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>MTEXT</SymbolName>
+                  <ParameterIdentifier>CONTENT</ParameterIdentifier>
+                  <ParameterValue>Concat('District ', ID)</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>MTEXT</SymbolName>
+                  <ParameterIdentifier>FONTNAME</ParameterIdentifier>
+                  <ParameterValue>'Verdana'</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>MTEXT</SymbolName>
+                  <ParameterIdentifier>FONTHEIGHT</ParameterIdentifier>
+                  <ParameterValue>3.5</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>MTEXT</SymbolName>
+                  <ParameterIdentifier>TEXTCOLOR</ParameterIdentifier>
+                  <ParameterValue>0xff625231</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <CheckExclusionRegion>true</CheckExclusionRegion>
+              <AddToExclusionRegion>true</AddToExclusionRegion>
+              <PositioningAlgorithm>'Default'</PositioningAlgorithm>
+              <GeometryContext>Polygon</GeometryContext>
+            </SymbolInstance>
+          </CompositeSymbolization>
+        </CompositeRule>
+      </CompositeTypeStyle>
+    </VectorScaleRange>
+  </VectorLayerDefinition>
+</LayerDefinition>

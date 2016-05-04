@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MapDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="2.4.0" xsi:noNamespaceSchemaLocation="MapDefinition-2.4.0.xsd">
+  <Name>Sheboygan Map</Name>
+  <CoordinateSystem>GEOGCS["WGS84 Lat/Long's, Degrees, -180 ==> +180",DATUM["D_WGS_1984",SPHEROID["World_Geodetic_System_of_1984",6378137,298.257222932867]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]]</CoordinateSystem>
+  <Extents>
+    <MinX>-87.764986990962839</MinX>
+    <MaxX>-87.695521510899724</MaxX>
+    <MinY>43.691398128787782</MinY>
+    <MaxY>43.797520000480347</MaxY>
+  </Extents>
+  <BackgroundColor>ffcdbd9c</BackgroundColor>
+  <MapLayer>
+    <Name>Trees</Name>
+    <ResourceId>Library://Samples/Sheboygan/Layers_Advanced/Trees.LayerDefinition</ResourceId>
+    <Selectable>false</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>Trees</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>true</Visible>
+    <Group>Municipal</Group>
+  </MapLayer>
+  <MapLayer>
+    <Name>Roads</Name>
+    <ResourceId>Library://Samples/Sheboygan/Layers_Advanced/Roads.LayerDefinition</ResourceId>
+    <Selectable>false</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>Roads</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>true</Visible>
+    <Group>Transportation</Group>
+  </MapLayer>
+  <MapLayer>
+    <Name>Rail Lines</Name>
+    <ResourceId>Library://Samples/Sheboygan/Layers_Advanced/Tracks.LayerDefinition</ResourceId>
+    <Selectable>false</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>Rail Lines</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>false</Visible>
+    <Group>Transportation</Group>
+  </MapLayer>
+  <MapLayer>
+    <Name>Districts</Name>
+    <ResourceId>Library://Samples/Sheboygan/Layers_Advanced/Districts.LayerDefinition</ResourceId>
+    <Selectable>false</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>Districts</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>true</Visible>
+    <Group>Municipal</Group>
+  </MapLayer>
+  <MapLayer>
+    <Name>Buildings</Name>
+    <ResourceId>Library://Samples/Sheboygan/Layers_Advanced/Buildings.LayerDefinition</ResourceId>
+    <Selectable>false</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>Buildings</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>true</Visible>
+    <Group>Municipal</Group>
+  </MapLayer>
+  <MapLayer>
+    <Name>Parcels</Name>
+    <ResourceId>Library://Samples/Sheboygan/Layers_Advanced/Parcels.LayerDefinition</ResourceId>
+    <Selectable>true</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>Parcels</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>true</Visible>
+    <Group>Municipal</Group>
+  </MapLayer>
+  <MapLayer>
+    <Name>Islands</Name>
+    <ResourceId>Library://Samples/Sheboygan/Layers_Advanced/Islands.LayerDefinition</ResourceId>
+    <Selectable>false</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>Islands</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>true</Visible>
+    <Group>Base Map</Group>
+  </MapLayer>
+  <MapLayer>
+    <Name>Hydrography</Name>
+    <ResourceId>Library://Samples/Sheboygan/Layers_Advanced/Hydrography.LayerDefinition</ResourceId>
+    <Selectable>false</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>Hydrography</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>true</Visible>
+    <Group>Base Map</Group>
+  </MapLayer>
+  <MapLayer>
+    <Name>Soils</Name>
+    <ResourceId>Library://Samples/Sheboygan/Layers_Advanced/Soils.LayerDefinition</ResourceId>
+    <Selectable>false</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>Soils</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>false</Visible>
+    <Group>Base Map</Group>
+  </MapLayer>
+  <MapLayer>
+    <Name>CityLimits</Name>
+    <ResourceId>Library://Samples/Sheboygan/Layers_Advanced/CityLimits.LayerDefinition</ResourceId>
+    <Selectable>false</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>CityLimits</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>true</Visible>
+    <Group>Base Map</Group>
+  </MapLayer>
+  <MapLayerGroup>
+    <Name>Base Map</Name>
+    <Visible>true</Visible>
+    <ShowInLegend>true</ShowInLegend>
+    <ExpandInLegend>true</ExpandInLegend>
+    <LegendLabel>Base Map</LegendLabel>
+    <Group/>
+  </MapLayerGroup>
+  <MapLayerGroup>
+    <Name>Municipal</Name>
+    <Visible>true</Visible>
+    <ShowInLegend>true</ShowInLegend>
+    <ExpandInLegend>true</ExpandInLegend>
+    <LegendLabel>Municipal</LegendLabel>
+    <Group/>
+  </MapLayerGroup>
+  <MapLayerGroup>
+    <Name>Transportation</Name>
+    <Visible>true</Visible>
+    <ShowInLegend>true</ShowInLegend>
+    <ExpandInLegend>true</ExpandInLegend>
+    <LegendLabel>Transportation</LegendLabel>
+    <Group/>
+  </MapLayerGroup>
+  <Watermarks>
+    <Watermark>
+      <Name>MapText</Name>
+      <ResourceId>Library://Samples/Sheboygan/Watermarks/MapText.WatermarkDefinition</ResourceId>
+    </Watermark>
+  </Watermarks>
+</MapDefinition>

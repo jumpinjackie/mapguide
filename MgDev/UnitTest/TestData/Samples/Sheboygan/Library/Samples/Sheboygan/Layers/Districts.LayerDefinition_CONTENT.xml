@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LayerDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0.0" xsi:noNamespaceSchemaLocation="LayerDefinition-1.0.0.xsd">
+  <VectorLayerDefinition>
+    <ResourceId>Library://Samples/Sheboygan/Data/VotingDistricts.FeatureSource</ResourceId>
+    <FeatureName>Default:VotingDistricts</FeatureName>
+    <FeatureNameType>FeatureClass</FeatureNameType>
+    <Geometry>Geometry</Geometry>
+    <VectorScaleRange>
+      <MinScale>10000</MinScale>
+      <AreaTypeStyle>
+        <AreaRule>
+          <LegendLabel/>
+          <Label>
+            <Unit>Points</Unit>
+            <SizeContext>DeviceUnits</SizeContext>
+            <SizeX>0</SizeX>
+            <SizeY>10</SizeY>
+            <Text>concat('District ', ID)</Text>
+            <FontName>Verdana</FontName>
+            <ForegroundColor>FF625231</ForegroundColor>
+            <BackgroundColor>FFFFFFFF</BackgroundColor>
+            <BackgroundStyle>Transparent</BackgroundStyle>
+          </Label>
+          <AreaSymbolization2D>
+            <Fill>
+              <FillPattern>None</FillPattern>
+              <ForegroundColor>00FFFFFF</ForegroundColor>
+              <BackgroundColor>FF000000</BackgroundColor>
+            </Fill>
+            <Stroke>
+              <LineStyle>Solid</LineStyle>
+              <Thickness>0</Thickness>
+              <Color>FFA68B53</Color>
+              <Unit>Inches</Unit>
+            </Stroke>
+          </AreaSymbolization2D>
+        </AreaRule>
+      </AreaTypeStyle>
+    </VectorScaleRange>
+  </VectorLayerDefinition>
+</LayerDefinition>

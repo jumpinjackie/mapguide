@@ -1,0 +1,45 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="setactiontarget.js" >
+</script>
+</head>
+<body>
+<form name="input" action="" method="get">
+<b>Operation:</b>
+<input type="text" name="OPERATION" value="ENUMERATEUNMANAGEDDATA" size="50">
+<p> Version:
+<input type="text" name="VERSION" value="1.0.0" size="10">
+<p> Locale:
+<input type="text" name="LOCALE" value="en" size="10">
+<p> Client Agent:
+<input type="text" name="CLIENTAGENT" value="MapGuide Developer" size="100">
+
+<p> Path:
+<input type="text" name="PATH" value="" size="30">
+
+<p> Recursive:
+<input type="text" name="RECURSIVE" value="0" size="1" ID="Text6">
+</select>
+
+<p> Type:
+<select name="TYPE">
+<option value="Folders">Folders</option>
+<option value="Files">Files</option>
+<option value="Both">Both</option>
+</select>
+
+<p> Filter:
+<input type="text" name="FILTER" value="" size="30">
+
+<p> Format:
+<select name="FORMAT">
+<option value="text/xml">text/xml</option>
+<option value="application/json">application/json</option>
+</select>
+
+<p>
+<input type="submit" value="Submit" onclick="SetActionTarget()"> <input type="reset">
+</form>
+</body>
+</html>

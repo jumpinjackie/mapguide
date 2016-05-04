@@ -1,0 +1,22 @@
+module.exports = {
+    PAN_MODE: 1,
+    PAN_UP: 2,
+    PAN_DOWN: 3,
+    PAN_RIGHT: 4,
+    PAN_LEFT: 5,
+    ZOOM_MODE: 6,
+    ZOOM_IN: 7,
+    ZOOM_OUT: 8,
+    ZOOM_RECT: 9,
+    ZOOM_SELECTION: 10,
+    ZOOM_EXTENTS: 11,
+    PREV_VIEW: 12,
+    NEXT_VIEW: 13,
+    INITIAL_VIEW: 14,
+    SELECTION_MODE: 15,
+    SELECT_RADIUS: 16,
+    SELECT_POLYGON: 17,
+    CLEAR_SELECTION: 18,
+    REFRESH_MAP: 19,
+    ABOUT: 22
+};

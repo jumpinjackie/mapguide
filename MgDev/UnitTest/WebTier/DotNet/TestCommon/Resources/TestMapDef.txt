@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MapDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="2.4.0" xsi:noNamespaceSchemaLocation="MapDefinition-2.4.0.xsd">
+  <Name>Test Map</Name>
+  <CoordinateSystem>{0}</CoordinateSystem>
+  <Extents>
+    <MinX>{1}</MinX>
+    <MaxX>{2}</MaxX>
+    <MinY>{3}</MinY>
+    <MaxY>{4}</MaxY>
+  </Extents>
+  <BackgroundColor>ffffffff</BackgroundColor>
+</MapDefinition>

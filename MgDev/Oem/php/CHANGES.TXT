@@ -1,0 +1,7 @@
+main/win95nt.h:
+
+    Add ACE define checks to prevent redefinition of uid_t, gid_t and pid_t
+
+TSRM/readdir.h:
+
+    Add ACE define check to prevent redefinition of struct dirent

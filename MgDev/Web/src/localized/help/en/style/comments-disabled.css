@@ -1,0 +1,11 @@
+/* 05/21/2007 Bill Crawford */
+
+/* Comments links at the foot of html topics are normally */
+/* displayed. To hide them, append a ref to this css file */
+/* to the set of css files referenced in the resource-def */
+/* file for the book in which you want them to be hidden. */
+
+/* hide comments links */
+div.footer-block {
+display: none;
+}

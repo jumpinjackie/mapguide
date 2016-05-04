@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9.00"
+	Name="DotNetApi"
+	ProjectGUID="{5FE54BF6-2939-46BB-A811-277D46C901C4}"
+	Keyword="MakeFileProj"
+	TargetFrameworkVersion="131072"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+		<Platform
+			Name="x64"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="..\..\bin\debug"
+			IntermediateDirectory="..\..\obj\debug\DotNetApi"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f Makefile debug"
+				ReBuildCommandLine="nmake -a -f Makefile debug"
+				CleanCommandLine="nmake -f Makefile cleandebug"
+				Output="..\..\bin\debug\MapGuideDotNetApid.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\bin\release"
+			IntermediateDirectory="..\..\obj\release\DotNetApi"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f Makefile release"
+				ReBuildCommandLine="nmake -a -f Makefile release"
+				CleanCommandLine="nmake -f Makefile cleanrelease"
+				Output="..\..\bin\release\MapGuideDotNetApi.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\bin\debug64"
+			IntermediateDirectory="..\..\obj\debug64\DotNetApi"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f Makefile debug64"
+				ReBuildCommandLine="nmake -a -f Makefile debug64"
+				CleanCommandLine="nmake -f Makefile cleandebug64"
+				Output="..\..\bin\debug64\MapGuideDotNetApid.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\bin\release64"
+			IntermediateDirectory="..\..\obj\release64\DotNetApi"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f Makefile release64"
+				ReBuildCommandLine="nmake -a -f Makefile release64"
+				CleanCommandLine="nmake -f Makefile cleanrelease64"
+				Output="..\..\bin\release64\MapGuideDotNetApi.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<File
+			RelativePath=".\Makefile"
+			>
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

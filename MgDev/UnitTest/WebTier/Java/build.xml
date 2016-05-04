@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="MgUnitTest" default="dist" basedir=".">
+  <description>MgUnitTest project file</description>
+  <!-- Must install ant-contrib 1.0b2 or higher -->
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+  <condition property="unix">
+    <os family="unix" />
+  </condition>
+  <condition property="windows">
+    <os family="windows" />
+  </condition>
+  <!-- set global properties for this build -->
+  <property name="src" location="src" />
+  <property name="build" location="build" />
+  <property name="dist"  location="../java_dist" />
+  <property name="classpath" location="lib" />
+  <property name="extlib" location="extlib" />
+  <property name="build.target" location="64" />
+  <property name="binsrc.web" location="../../../Web/bin/release64" />
+  <property name="jarsrc.web" location="../../../Web/src/WEB-INF/lib" />
+  <property name="mapguide.res.src" location="../../../Common/MapGuideCommon/Resources/mapguide_en.res" />
+  <property name="mapguide.config.src" location="../../../Web/src/webconfig.ini" />
+  <property name="mapguide.res" location="${dist}/Resources/mapguide_en.res" />
+  <property name="mapguide.config" location="${dist}/webconfig.ini" />
+  <property name="mapguide.dictpath" location="../../../Oem/CsMap/Dictionaries" />
+  <property name="unittest.logpath" location="${dist}/unittest.log" />
+  <!-- Linux-specific -->
+  <property name="mapguide.ldpath" location="/usr/local/mapguideopensource-3.0.0/lib:/usr/local/mapguideopensource-3.0.0/webserverextensions/lib" />
+  <path id="master-classpath">
+    <fileset dir="${classpath}">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+  <target name="initwin" if="windows">
+    <echo message="Init build environment for Windows" />
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+    <!-- Copy required jars and dlls -->
+    <copy todir="${classpath}">
+      <fileset dir="${jarsrc.web}">
+        <include name="**/MapGuideApiEx.jar" />
+      </fileset>
+    </copy>
+    <copy todir="${classpath}">
+      <fileset dir="${extlib}">
+        <include name="**/sqlite4java.jar" />
+      </fileset>
+    </copy>
+    <condition property="binsrc.web" value="../../../Web/bin/release">
+      <equals arg1="${build.target}" arg2="32" />
+    </condition>
+    <condition property="binsrc.web" value="../../../Web/bin/release64">
+      <equals arg1="${build.target}" arg2="64" />
+    </condition>
+    <echo message="Copying dlls from ${binsrc.web}" />
+    <copy todir="${classpath}">
+      <fileset dir="${binsrc.web}">
+        <include name="**/Mg*.dll" />
+        <include name="**/ACE.dll" />
+        <include name="**/GEOS.dll" />
+        <include name="**/lib_json.dll" />
+        <include name="**/MapGuideJavaApiEx.dll" />
+        <include name="**/xerces-c_3_1mg.dll" />
+      </fileset>
+    </copy>
+  </target>
+  <target name="initunix" if="unix">
+    <echo message="Init build environment for Unix" />
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+    <!-- Copy required jars and dlls -->
+    <copy todir="${classpath}">
+      <fileset dir="${jarsrc.web}">
+        <include name="**/MapGuideApiEx.jar" />
+      </fileset>
+    </copy>
+    <copy todir="${classpath}">
+      <fileset dir="${extlib}">
+        <include name="**/sqlite4java.jar" />
+      </fileset>
+    </copy>
+  </target>
+  <target name="compile" depends="initwin,initunix"
+        description="compile the source " >
+    <!-- Compile the java code from ${src} into ${build} referencing our MapGuide API jar -->
+    <javac srcdir="${src}" destdir="${build}" includeantruntime="false" debug="true" debuglevel="lines,vars,source">
+      <classpath>
+        <pathelement path="${classpath}" />
+        <fileset dir="${classpath}">
+          <include name="**/MapGuideApiEx.jar" />
+          <include name="**/sqlite4java.jar" />
+        </fileset>
+      </classpath>
+    </javac>
+  </target>
+  <target name="dist" depends="compile"
+        description="generate the distribution" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}"/>
+    <!-- Make the unit test jar ensuring the MapGuide API jar reference is intact -->
+    <jar jarfile="${dist}/MgUnitTest.jar">
+      <fileset dir="${build}" />
+      <manifest>
+        <attribute name="Main-Class" value="org.osgeo.mapguide.test.Program" />
+        <attribute name="Class-Path" value="MapGuideApiEx.jar sqlite4java.jar" />
+      </manifest>
+    </jar>
+    <copy todir="${dist}" verbose="true">
+      <fileset dir="${classpath}">
+        <include name="**/*" />
+      </fileset>
+    </copy>
+    <copy todir="${dist}" verbose="true">
+      <fileset dir="${extlib}">
+        <include name="**/*.dll" />
+        <include name="**/*.so" />
+      </fileset>
+    </copy>
+    <copy file="${mapguide.res.src}" tofile="${mapguide.res}" verbose="true" />
+    <copy file="${mapguide.config.src}" tofile="${mapguide.config}" verbose="true" overwrite="true" />
+  </target>
+  <target name="updatewebconfig">
+    <echo message="Updating ${mapguide.config} with default values" />
+    <!-- write webconfig.ini -->
+    <inifile dest="${mapguide.config}">
+      <set section="GeneralProperties" property="DefaultMessageLocale" value="en" />
+      <set section="GeneralProperties" property="LogsPath" value="${dist}/Logs" />
+      <set section="GeneralProperties" property="MentorDictionaryPath" value="${mapguide.dictpath}" />
+      <set section="GeneralProperties" property="ResourcesPath" value="${dist}/Resources" />
+      <set section="GeneralProperties" property="TcpIpMtu" value="1460" />
+      <set section="GeneralProperties" property="TempPath" value="${dist}/Temp" />
+      <set section="GeneralProperties" property="FailoverRetryTime" value="1" />
+      <set section="AdministrativeConnectionProperties" property="MaxConnections" value="2" />
+      <set section="AdministrativeConnectionProperties" property="Port" value="2810" />
+      <set section="ClientConnectionProperties" property="MaxConnections" value="12" />
+      <set section="ClientConnectionProperties" property="Port" value="2811" />
+      <set section="SiteConnectionProperties" property="IpAddress" value="127.0.0.1" />
+      <set section="SiteConnectionProperties" property="MaxConnections" value="6" />
+      <set section="SiteConnectionProperties" property="Port" value="2812" />
+      <set section="AgentProperties" property="DebugPause" value="0" />
+      <set section="AgentProperties" property="DisableAuthoring" value="0" />
+      <set section="AgentProperties" property="DisableWfs" value="0" />
+      <set section="AgentProperties" property="DisableWms" value="0" />
+      <set section="AgentProperties" property="ErrorLogEnabled" value="0" />
+      <set section="AgentProperties" property="ErrorLogFilename" value="Error.log" />
+      <set section="AgentProperties" property="RequestLogEnabled" value="0" />
+      <set section="AgentProperties" property="RequestLogFilename" value="Request.log" />
+      <set section="OgcProperties" property="WfsPassword" value="wfs" />
+      <set section="OgcProperties" property="WmsPassword" value="wms" />
+      <set section="OgcProperties" property="CITEWfsEnabled" value="0" />
+      <set section="OgcProperties" property="CITEWmsEnabled" value="0" />
+    </inifile>
+  </target>
+  <target name="checkwin_external" depends="dist">
+    <echo message="Run Java tests for Windows" />
+    <!-- Remove any log files and dumped binary files from previous run -->
+    <delete>
+      <fileset dir="${dist}" includes="**/*.bin"/>
+      <fileset dir="${dist}" includes="**/*.log"/>
+    </delete>
+    <!--
+    <exec executable="java" dir="${dist}">
+      <arg line="-jar MgUnitTest.jar ${mapguide.config} ${unittest.logpath}" />
+      <env key="MENTOR_DICTIONARY_PATH" value="${mapguide.dictpath}" />
+    </exec>
+    -->
+    <java jar="${dist}/MgUnitTest.jar" fork="true" dir="${dist}">
+      <arg value="${mapguide.config}" />
+      <arg value="${unittest.logpath}" />
+      <env key="MENTOR_DICTIONARY_PATH" value="${mapguide.dictpath}" />
+    </java>
+  </target>
+  <target name="checkwin" depends="dist,updatewebconfig">
+    <echo message="Run Java tests for Windows" />
+    <!-- Remove any log files and dumped binary files from previous run -->
+    <delete>
+      <fileset dir="${dist}" includes="**/*.bin"/>
+      <fileset dir="${dist}" includes="**/*.log"/>
+    </delete>
+    <!--
+    <exec executable="java" dir="${dist}">
+      <arg line="-jar MgUnitTest.jar ${mapguide.config} ${unittest.logpath}" />
+      <env key="MENTOR_DICTIONARY_PATH" value="${mapguide.dictpath}" />
+    </exec>
+    -->
+    <java jar="${dist}/MgUnitTest.jar" fork="true" dir="${dist}">
+      <arg value="${mapguide.config}" />
+      <arg value="${unittest.logpath}" />
+      <env key="MENTOR_DICTIONARY_PATH" value="${mapguide.dictpath}" />
+    </java>
+  </target>
+  <target name="checkunix" depends="dist,updatewebconfig">
+    <echo message="Run Java tests for Unix" />
+    <!-- Remove any log files and dumped binary files from previous run -->
+    <delete>
+      <fileset dir="${dist}" includes="**/*.bin"/>
+      <fileset dir="${dist}" includes="**/*.log"/>
+    </delete>
+    <java jar="${dist}/MgUnitTest.jar" fork="true" dir="${dist}">
+      <arg value="${mapguide.config}" />
+      <arg value="${unittest.logpath}" />
+      <env key="MENTOR_DICTIONARY_PATH" value="${mapguide.dictpath}" />
+      <sysproperty key="java.library.path" value="${mapguide.ldpath}" />
+    </java>
+    <!--
+    <exec executable="java" dir="${dist}">
+      <arg value="-Djava.library.path=${mapguide.ldpath}" />
+      <arg value="-jar MgUnitTest.jar" />   
+      <arg value="${mapguide.config}" />
+      <arg value="${unittest.logpath}" />
+      <env key="LD_LIBRARY_PATH" value="${mapguide.ldpath}" />
+      <env key="MENTOR_DICTIONARY_PATH" value="${mapguide.dictpath}" />
+    </exec>
+    -->
+  </target>
+  <target name="clean"
+        description="clean up" >
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+    <delete dir="${classpath}"/>
+  </target>
+</project>

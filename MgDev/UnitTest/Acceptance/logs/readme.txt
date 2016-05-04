@@ -1,0 +1,1 @@
+Selenium debug logs are saved here

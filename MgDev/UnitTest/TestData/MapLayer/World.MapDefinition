@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MapDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MapDefinition-1.0.0.xsd">
+  <Name>World</Name>
+  <CoordinateSystem>GEOGCS[&quot;LL84&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS 84&quot;,6378137,298.25722293287],TOWGS84[0,0,0,0,0,0,0]],PRIMEM[&quot;Greenwich&quot;,0],UNIT[&quot;Degrees&quot;,1]]</CoordinateSystem>
+  <Extents>
+    <MinX>-180</MinX>
+    <MaxX>180</MaxX>
+    <MinY>-90</MinY>
+    <MaxY>90</MaxY>
+  </Extents>
+  <BackgroundColor>FFFFFFFF</BackgroundColor>
+  <MapLayer>
+    <Name>Countries</Name>
+    <ResourceId>Library://maplayertest/World countries.LayerDefinition</ResourceId>
+    <Selectable>true</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>New Layer</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>true</Visible>
+    <Group>Countries Inner group</Group>
+  </MapLayer>
+  <MapLayerGroup>
+    <Name>Countries Top group</Name>
+    <Visible>true</Visible>
+    <ShowInLegend>true</ShowInLegend>
+    <ExpandInLegend>true</ExpandInLegend>
+    <LegendLabel>Layer Group</LegendLabel>
+    <Group></Group>
+  </MapLayerGroup>
+  <MapLayerGroup>
+    <Name>Countries Inner group</Name>
+    <Visible>true</Visible>
+    <ShowInLegend>true</ShowInLegend>
+    <ExpandInLegend>true</ExpandInLegend>
+    <LegendLabel>Layer Group</LegendLabel>
+    <Group>Countries Top group</Group>
+  </MapLayerGroup>
+</MapDefinition>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.1">
+<NetworkLinkControl><minRefreshPeriod>2</minRefreshPeriod></NetworkLinkControl>
+<Document>
+<visibility>1</visibility>
+<NetworkLink>
+<name><![CDATA[0.000000 - 13000.000000]]></name>
+<Region>
+<LatLonAltBox>
+<north>43.797516</north><south>43.691404</south><east>-87.695538</east><west>-87.764394</west>
+</LatLonAltBox>
+<Lod>
+<minLodPixels>2766</minLodPixels><maxLodPixels>-1</maxLodPixels>
+</Lod>
+</Region>
+<open>1</open>
+<Link>
+<href>
+http://myserver/mapguide/mapagent/mapagent.fcgi?OPERATION=GetFeaturesKml&amp;VERSION=1&amp;LAYERDEFINITION=Library://UnitTests/Layers/Parcels.LayerDefinition&amp;DPI=96.000000&amp;DRAWORDER=0&amp;FORMAT=KML&amp;SESSION=SessionIDRemoved
+</href>
+<viewRefreshMode>onStop</viewRefreshMode>
+<viewRefreshTime>1</viewRefreshTime>
+<viewFormat>BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&amp;WIDTH=[horizPixels]&amp;HEIGHT=[vertPixels]</viewFormat>
+</Link>
+</NetworkLink>
+</Document>
+</kml>

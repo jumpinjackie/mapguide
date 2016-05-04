@@ -1,0 +1,16 @@
+language: php
+php:
+  - 5.4
+  - 5.5
+  - hhvm
+
+before_script:
+  - which pecl && echo yes | pecl install pecl_http || true
+  - composer install
+  - npm install
+
+script: phpunit
+
+matrix:
+  allow_failures:
+    - php: hhvm
