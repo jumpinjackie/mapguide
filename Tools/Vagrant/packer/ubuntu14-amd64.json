@@ -1,0 +1,59 @@
+{
+  "builders": [{
+    "type": "virtualbox-iso",
+    "guest_os_type": "Ubuntu_64",
+    "iso_url": "http://mirror.internode.on.net.au/pub/ubuntu/releases/14.04/ubuntu-14.04.4-server-amd64.iso",
+    "iso_checksum": "2ac1f3e0de626e54d05065d6f549fa3a",
+    "iso_checksum_type": "md5",
+    "output_directory": "output-ubuntu-14.04.4-amd64",
+    "vm_name": "packer-ubuntu-14.04.4-amd64",
+    "disk_size": "{{user `disk_size`}}",
+    "headless": "{{user `headless`}}",
+    "http_directory": "http",
+    "boot_wait": "5s",
+    "boot_command": [
+      "<esc><wait>",
+      "<esc><wait>",
+      "<enter><wait>",
+      "/install/vmlinuz ",
+      "initrd=/install/initrd.gz ",
+      "biosdevname=0 ",
+      "auto-install/enable=true ",
+      "debconf/priority=critical ",
+      "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/ubuntu-14.04.4/preseed.cfg ",
+      "<enter>"
+    ],
+    "ssh_wait_timeout": "60m",
+    "ssh_username": "vagrant",
+    "ssh_password": "vagrant",
+    "shutdown_command": "sudo poweroff",
+    "vboxmanage": [
+      ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
+      ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
+    ]
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "scripts": [
+      "scripts/ubuntu/base.sh",
+      "scripts/ubuntu/virtualbox.sh",
+      "scripts/common/vagrant.sh",
+      "scripts/common/sshd.sh",
+      "scripts/mapguide/ubuntu64.sh",
+      "scripts/ubuntu/cleanup.sh",
+      "scripts/common/minimize.sh"
+    ]
+  }],
+  "post-processors": [{
+    "type": "vagrant",
+    "compression_level": "{{user `compression_level`}}",
+    "output": "ubuntu14-amd64.box"
+  }],
+  "variables": {
+    "compression_level": 1,
+    "cpus": "2",
+    "disk_size": 25000,
+    "headless": false,
+    "memory": "1024"
+  }
+}
