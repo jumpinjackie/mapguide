@@ -318,7 +318,7 @@ then
     for comp in CoordinateSystem
     do
         BUILD_COMPONENT="Unit Test MapGuide Server ($comp)"
-        sudo -E timeout 20m ./mgserver test $comp UnitTestResults_${comp}.xml 2>&1 | tee $MG_HOME/mapguide_${comp}_unit_test.log
+        sudo -E timeout 40m ./mgserver test $comp UnitTestResults_${comp}.xml 2>&1 | tee $MG_HOME/mapguide_${comp}_unit_test.log
         check_server_test
         if [ -f UnitTestResults_${comp}.xml ]; then
             sudo mv UnitTestResults_${comp}.xml $MG_HOME/UnitTestResults_${comp}.xml
