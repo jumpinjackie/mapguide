@@ -1,0 +1,13 @@
+libdb-4.8.so
+libdb-4.so
+libdb_cxx-4.8.so
+libdb_cxx-4.so
+libdb_cxx.so
+libdbxml-2.5.so
+libdbxml.so
+liblib_json.so
+libMgMapGuideCommon-3.1.0.so
+libMgMapGuideCommon.so
+libxqilla.so
+libxqilla.so.5
+libxqilla.so.5.0.4
