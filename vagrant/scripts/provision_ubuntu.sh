@@ -267,7 +267,7 @@ check_build
 FDO_REV=`svn info $FDO_SRC | perl revnum.pl`
 MG_REV=`svn info $MG_SRC | perl revnum.pl`
 BUILD_COMPONENT="MapGuide deb packages"
-./dpkgmapguide.sh $MG_ARCH $MG_REV 2>&1 | tee $MG_HOME/dpkg_mapguide.log
+sudo -E ./dpkgmapguide.sh $MG_ARCH $MG_REV 2>&1 | tee $MG_HOME/dpkg_mapguide.log
 check_build
 > $MG_HOME/unit_test_status.log
 if [ $FDO_UNIT_TEST -eq 1 ];
@@ -328,7 +328,7 @@ then
     for comp in CoordinateSystem
     do
         BUILD_COMPONENT="Unit Test MapGuide Server ($comp)"
-        sudo -E timeout 20m ./mgserver test $comp UnitTestResults_${comp}.xml 2>&1 | tee $MG_HOME/mapguide_${comp}_unit_test.log
+        sudo -E timeout 40m ./mgserver test $comp UnitTestResults_${comp}.xml 2>&1 | tee $MG_HOME/mapguide_${comp}_unit_test.log
         check_server_test
         if [ -f UnitTestResults_${comp}.xml ]; then
             sudo mv UnitTestResults_${comp}.xml $MG_HOME/UnitTestResults_${comp}.xml
@@ -355,7 +355,7 @@ sudo mkdir -p $MOUNT_DIR/build
 echo [provision]: Copy log files to output dir
 sudo mv -f $MG_HOME/*.log $MOUNT_DIR/build
 echo [provision]: Copy tarballs to output dir
-sudo cp bin/*.tar.xz $MOUNT_DIR/build
+# sudo cp bin/*.tar.xz $MOUNT_DIR/build
 sudo cp fdosdk-${FDO_DISTRO}-${MG_ARCH}-${FDO_VER_MAJOR}.${FDO_VER_MINOR}.${FDO_VER_REV}_${FDO_REV}.tar.xz $MOUNT_DIR/build
 if [ $MAKE_FDO_SDK -eq 1 ]; then
     echo [provision]: Copy FDO SDK for Ubuntu builds
