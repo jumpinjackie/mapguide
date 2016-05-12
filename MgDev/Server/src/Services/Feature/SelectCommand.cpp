@@ -50,7 +50,7 @@ MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource, MgFeatureQueryO
     // For SDF/SHP providers, they do not support ordering. But, they can support ordering through the FdoIExtendedSelect
     // command, provided that only a single property is being ordered on. So if it is the case that normal ordering is
     // not supported, we should try for extended select if the conditions are met.
-    bool bTryExtendedSelect = false;
+    m_bUseExtendedSelect = false;
     if (NULL != options)
     {
         Ptr<MgStringCollection> orderProps = options->GetOrderingProperties();
@@ -65,7 +65,7 @@ MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource, MgFeatureQueryO
                 {
                     if (FdoCommandType_ExtendedSelect == cmds[i] && orderProps->GetCount() == 1)
                     {
-                        bTryExtendedSelect = true;
+                        m_bUseExtendedSelect = true;
                         break;
                     }
                 }
@@ -74,7 +74,7 @@ MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource, MgFeatureQueryO
     }
 
     // Create FdoISelect command
-    if (bTryExtendedSelect)
+    if (m_bUseExtendedSelect)
         m_command = (FdoIExtendedSelect*)fdoConn->CreateCommand(FdoCommandType_ExtendedSelect);
     else
         m_command = (FdoISelect*)fdoConn->CreateCommand(FdoCommandType_Select);
@@ -219,7 +219,7 @@ MgReader* MgSelectCommand::Execute()
 
     CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.Execute");
     FdoIExtendedSelect* extSelect = dynamic_cast<FdoIExtendedSelect*>(m_command.p);
-    if (NULL != extSelect)
+    if (m_bUseExtendedSelect && NULL != extSelect)
     {
         FdoPtr<FdoIScrollableFeatureReader> scReader = extSelect->ExecuteScrollable();
         CHECKNULL((FdoIScrollableFeatureReader*)scReader, L"MgSelectCommand.Execute");

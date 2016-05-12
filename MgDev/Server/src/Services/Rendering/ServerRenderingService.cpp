@@ -1574,13 +1574,22 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         if (maxFeatures <= 0)
             break;
 
-        //get the MDF layer definition
+        MdfModel::VectorLayerDefinition* vl = NULL;
+        auto_ptr<MdfModel::LayerDefinition> ldf;
         Ptr<MgResourceIdentifier> layerResId = layer->GetLayerDefinition();
-        MgCacheManager* cacheManager = MgCacheManager::GetInstance();
-        Ptr<MgResourceLayerDefinitionCacheItem> cacheItem = cacheManager->GetResourceLayerDefinitionCacheItem(layerResId);
-        MdfModel::LayerDefinition* layerDefinition = cacheItem->Get();
-
-        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(layerDefinition);
+        if (bOnlyVisibleLayers)
+        {
+            //get the MDF layer definition
+            MgCacheManager* cacheManager = MgCacheManager::GetInstance();
+            Ptr<MgResourceLayerDefinitionCacheItem> cacheItem = cacheManager->GetResourceLayerDefinitionCacheItem(layerResId);
+            MdfModel::LayerDefinition* layerDefinition = cacheItem->Get();
+            vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(layerDefinition);
+        }
+        else
+        {
+            ldf.reset(MgLayerBase::GetLayerDefinition(m_svcResource, layerResId));
+            vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+        }
 
         //we can only do geometric query selection for vector layers
         if (vl)
@@ -2043,11 +2052,9 @@ inline void MgServerRenderingService::RenderWatermarks(MgMap* map,
             continue;
 
         Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
-        MgCacheManager* cacheManager = MgCacheManager::GetInstance();
-        Ptr<MgResourceLayerDefinitionCacheItem> cacheItem = cacheManager->GetResourceLayerDefinitionCacheItem(layerid);
-        MdfModel::LayerDefinition* layerDefinition = cacheItem->Get();
+        ldf.reset(MgLayerBase::GetLayerDefinition(m_svcResource, layerid));
+        WatermarkInstanceCollection* layerWatermarks = ldf->GetWatermarks();
 
-        WatermarkInstanceCollection* layerWatermarks = layerDefinition->GetWatermarks();
         for (int j=layerWatermarks->GetCount()-1; j>=0; j--)
             tempWatermarkInstances.Adopt(layerWatermarks->OrphanAt(j));
         for (int j=tempWatermarkInstances.GetCount()-1; j>=0; j--)

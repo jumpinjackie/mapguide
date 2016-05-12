@@ -80,6 +80,7 @@ private:
     FdoPtr<FdoFilter> m_filter;
 
     MgFdoFilterCollection* GetSubFilters();
+    bool m_bUseExtendedSelect;
 };
 
 #endif
