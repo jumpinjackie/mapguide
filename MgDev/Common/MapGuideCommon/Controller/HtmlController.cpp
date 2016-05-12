@@ -524,7 +524,8 @@ void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourc
                     }
                 }
             }
-            propNames->Add(selLayer->GetFeatureGeometryName()); //Don't forget geometry
+            if (!propNames->Contains(selLayer->GetFeatureGeometryName()))
+                propNames->Add(selLayer->GetFeatureGeometryName()); //Don't forget geometry
             xmlOut.append(L"</LayerMetadata>\n");
             Ptr<MgReader> reader = selectionSet->GetSelectedFeatures(selLayer, selLayer->GetFeatureClassName(), propNames);
             while(reader->ReadNext())
@@ -603,7 +604,7 @@ void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourc
                                 //ToXmlString() won't work with dates before Jan 1, 1970, so use yyyy-mm-dd hh:mm:ss
                                 STRING dateStr;
                                 STRING str;
-                                if (dt->IsDate())
+                                if (dt->GetYear() != -1)
                                 {
                                     MgUtil::Int32ToString(dt->GetYear(), str);
                                     dateStr += str;
@@ -616,9 +617,9 @@ void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourc
                                     MgUtil::PadLeft(str, 2, L'0');
                                     dateStr += str;
                                 }
-                                if (dt->IsTime())
+                                if (dt->GetHour() != -1)
                                 {
-                                    if (dt->IsDate())
+                                    if (dt->GetYear() != -1)
                                     {
                                         dateStr += L" ";
                                     }

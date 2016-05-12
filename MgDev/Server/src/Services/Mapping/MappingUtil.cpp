@@ -730,6 +730,10 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     double pixelsPerMapUnit = dr->GetMetersPerUnit() / METERS_PER_INCH * dr->GetDpi() / dr->GetMapScale();
                     int width = (int)(extent.width() * pixelsPerMapUnit + 0.5);
                     int height = (int)(extent.height() * pixelsPerMapUnit + 0.5);
+                    // if width or height is 0, raster provider will throw an exception. 
+                    // we set it to 1 to avoid the exception.
+                    if (0 == width) width = 1;
+                    if (0 == height) height = 1;
 
                     //perform the raster query
                     FdoPtr<FdoIFeatureReader> fdoReader;
