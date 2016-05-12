@@ -10,9 +10,12 @@ For a more detailed list of changes, the entire subversion revision of log of th
 +---------+-----------------+-----------------+--------------------------------------------------------------+
 | Version | Authors         | Date            | Summary of Changes                                           |
 +=========+=================+=================+==============================================================+
+| 2.0.2   | Jackie Ng       | May 2016        | Fix malformed revision history table and add section about   |
+|         |                 |                 | mapguide-rest in supplemental development options            |
++---------+-----------------+-----------------+--------------------------------------------------------------+
 | 2.0.1   | Jackie Ng       | Jul 2014        | Updated code sample in section "Working with Feature Data"   |
 |         |                 |                 | to reflect the updated Sheboygan sample data set             |
-+=========+=================+=================+==============================================================+
++---------+-----------------+-----------------+--------------------------------------------------------------+
 | 2.0     | Jackie Ng       |                 | First version of developer's guide in source form            |
 |         |                 |                 |                                                              |
 |         |                 |                 | Added .net and Java code samples to match PHP examples       |
