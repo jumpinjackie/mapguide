@@ -36,3 +36,20 @@ The Maestro API is a 100% fully managed .net class library that provides the fol
 This library is used by the MapGuide Maestro application, and can be used in your own applications.
 
 Visit `the Maestro project homepage <http://trac.osgeo.org/mapguide/wiki/maestro>`_ for more information
+
+.. _mapguiderest:
+
+mapguide-rest
+-------------
+
+mapguide-rest provides a REST API for MapGuide and includes a framework for easy publishing of spatial data.
+
+The REST API allows for any library capable of making HTTP request to work with MapGuide.
+
+mapguide-rest can be deployed on both Windows and Linux instances of MapGuide.
+
+Visit `the mapguide-rest homepage <https://github.com/jumpinjackie/mapguide-rest>`_ for more information
+
+.. note::
+
+    mapguide-rest requires a version of MapGuide that bundles PHP 5.3 or newer.
