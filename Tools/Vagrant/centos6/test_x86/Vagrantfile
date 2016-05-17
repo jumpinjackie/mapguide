@@ -118,6 +118,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   
   config.vm.provision "shell",
     privileged: false,
-    path: "provision.sh",
-    args: ["#{ENV['DOWNLOAD_HOST']}", "#{ENV['MG_DIST_DIR']}"]
+    path: "test_provision_centos.sh",
+    args: ["#{ENV['DOWNLOAD_HOST']}", "#{ENV['MG_DIST_DIR']}", "#{ENV['MG_TEST_TARGET']}"]
 end
