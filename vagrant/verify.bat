@@ -1,95 +1,132 @@
 @echo off
 
-rem build.bat
+rem ==================================================
+rem verify.bat
 rem
-rem Performs basic smoke tests of CentOS and Ubuntu builds. 
+rem Runs MapGuide/FDO verification in a specific 
+rem vagrant VM
 rem
-rem A basic web server is set up to serve files from the build artifact output directory
+rem Requires the tee and md5sum utilities, which is 
+rem part of GNU on Windows
+rem 
+rem https://github.com/bmatzelle/gow
 rem
-rem With that set up, the following smoke tests are performed
-rem
-rem  1. CentOS/Ubuntu install scripts with sed'd URLs will properly download and install the required packages
-rem  2. The httpd and MapGuide Servers are verified to be running and operational by the basic smoke test shell script
-rem
-rem Requires the sed utility, which is part of GNU on Windows (https://github.com/bmatzelle/gow)
+rem ==================================================
 
-IF "%DOWNLOAD_HOST%"=="" SET DOWNLOAD_HOST=192.168.0.6
-IF "%MG_DIST_DIR%"=="" SET MG_DIST_DIR=builds30
-IF "%VERIFY_UBUNTU_32%"=="" SET VERIFY_UBUNTU_32=1
-IF "%VERIFY_UBUNTU_64%"=="" SET VERIFY_UBUNTU_64=1
-IF "%VERIFY_CENTOS_32%"=="" SET VERIFY_CENTOS_32=1
-IF "%VERIFY_CENTOS_64%"=="" SET VERIFY_CENTOS_64=1
+rem ==================================================
+rem Parameter Handling
+rem ==================================================
 
-echo **************** Verify Summary *********************
-echo Download Host is: %DOWNLOAD_HOST%
-echo Dist directory name: %MG_DIST_DIR%
-echo Verifying Ubuntu (32-bit): %VERIFY_UBUNTU_32%
-echo Verifying Ubuntu (64-bit): %VERIFY_UBUNTU_64%
-echo Verifying CentOS (32-bit): %VERIFY_CENTOS_32%
-echo Verifying CentOS (64-bit): %VERIFY_CENTOS_64%
-echo ****************************************************
-:check_centos_32
-echo [build]: Checking if we're verifying CentOS 32-bit
-if %VERIFY_CENTOS_32% == 1 goto test_centos_32
-goto check_ubuntu_32
-:test_centos_32
-pushd centos\test_x86
-SET COMPONENT=CentOS Build 32-bit
-echo [build]: MapGuide CentOS build 32-bit
-call vagrant up 2>&1 | tee smoke_test.log
+:study_params
+if (%1)==() goto start_build
+
+if "%1"=="-h"            goto help_show
+if "%1"=="-distro"       goto get_distro
+if "%1"=="-target"       goto get_target
+if "%1"=="-teardown"     goto get_teardown
+if "%1"=="-downloadhost" goto get_downloadhost
+if "%1"=="-distdir"      goto get_distdir
+goto custom_error
+
+:next_param
+shift
+shift
+goto study_params
+
+:get_distro
+SET VM_DISTRO=%2
+goto next_param
+
+:get_downloadhost
+SET DOWNLOAD_HOST=%2
+goto next_param
+
+:get_distdir
+SET MG_DIST_DIR=%2
+goto next_param
+
+:get_target
+SET VM_TARGET=%2
+IF "%2"=="x86" goto next_param
+IF "%2"=="x64" goto next_param
+SET ERRORMSG=Unrecognised target: %2
+goto custom_error
+
+:get_teardown
+SET VM_TEARDOWN=%2
+IF "%2"=="1" goto next_param
+IF "%2"=="0" goto next_param
+SET ERRORMSG=Teardown flag must be 1 or 0. Got: %2
+goto custom_error
+
+:start_build
+IF "%VM_DISTRO%"=="" goto help_show
+IF "%VM_TARGET%"=="" goto help_show
+IF "%VM_TEARDOWN%"=="" goto help_show
+IF "%DOWNLOAD_HOST%"=="" goto help_show
+IF "%MG_DIST_DIR%"=="" goto help_show
+
+SET MG_TEST_TARGET=%VM_DISTRO%_%VM_TARGET%
+SET VAGRANTFILE_DIR=%VM_DISTRO%\test_%VM_TARGET%
+
+IF NOT EXIST %VAGRANTFILE_DIR% (
+    SET ERRORMSG=No vagrantfile exists at [%VAGRANTFILE_DIR%]
+    goto custom_error
+)
+
+echo ***************** VM Build Summary *********************
+echo Distro:                 %VM_DISTRO%
+echo Target:                 %VM_TARGET%
+echo Teardown?:              %VM_TEARDOWN%
+echo Testing Target:         %MG_TEST_TARGET%
+echo Using vagrantfile from: %VAGRANTFILE_DIR%
+echo Download host:          %DOWNLOAD_HOST%
+echo Dist part:              %MG_DIST_DIR%
+echo ********************************************************
+
+rem Copy build/provisioning scripts to vagrantfile dir
+xcopy /S /Y /I scripts\test_provision* %VAGRANTFILE_DIR%
+xcopy /S /Y /I scripts\smoke_test.sh %VAGRANTFILE_DIR%
+
+:spin_up_vm
+echo [build]: Spin up VM at [%VAGRANTFILE_DIR%]
+pushd %VAGRANTFILE_DIR%
+call vagrant up 2>&1 | tee up.log
 echo [build]: vagrant returned %errorlevel%
 if "%errorlevel%"=="1" goto error
-:destroy_centos_32
-call vagrant destroy -f
-:centos_32_done
 popd
-:check_ubuntu_32
-echo [build]: Checking if we're verifying Ubuntu 32-bit
-if %VERIFY_UBUNTU_32% == 1 goto test_ubuntu_32
-goto check_centos_64
-:test_ubuntu_32
-pushd ubuntu\test_x86
-SET COMPONENT=Ubuntu Build 32-bit
-echo [build]: MapGuide Ubuntu build 32-bit
-call vagrant up 2>&1 | tee smoke_test.log
-echo [build]: vagrant returned %errorlevel%
-if "%errorlevel%"=="1" goto error
-:destroy_ubuntu_32
-call vagrant destroy -f
-:ubuntu_32_done
-popd
-:check_centos_64
-echo [build]: Checking if we're verifying CentOS 64-bit
-if %VERIFY_CENTOS_64% == 1 goto test_centos_64
-goto check_ubuntu_64
-:test_centos_64
-pushd centos\test_x64
-SET COMPONENT=CentOS Build 64-bit
-echo [build]: MapGuide CentOS build 64-bit
-call vagrant up 2>&1 | tee smoke_test.log
-echo [build]: vagrant returned %errorlevel%
-if "%errorlevel%"=="1" goto error
-:destroy_centos_64
-call vagrant destroy -f
-:centos_64_done
-popd
-:check_ubuntu_64
-echo [build]: Checking if we're verifying Ubuntu 64-bit
-if %VERIFY_UBUNTU_64% == 1 goto test_ubuntu_64
+IF "%VM_TEARDOWN%"=="1" goto tear_down_vm
 goto quit
-:test_ubuntu_64
-pushd ubuntu\test_x64
-SET COMPONENT=Ubuntu Build 64-bit
-echo [build]: MapGuide Ubuntu build 64-bit
-call vagrant up 2>&1 | tee smoke_test.log
-echo [build]: vagrant returned %errorlevel%
-if "%errorlevel%"=="1" goto error
-:destroy_ubuntu_64
+
+:tear_down_vm
+echo [build]: Tear down VM at [%VAGRANTFILE_DIR%]
+pushd %VAGRANTFILE_DIR%
 call vagrant destroy -f
-:ubuntu_64_done
 popd
 goto quit
+
 :error
-echo [ERROR]: There was an error building the component %COMPONENT%
+echo [ERROR]: There was an error building the component
 exit /B 1
+:custom_error
+echo [ERROR]: %ERRORMSG%
+SET ERRORMSG=
+:help_show
+echo Usage:
+echo ************************************************************************
+echo build.bat [-h]
+echo           [-distro=Distro]
+echo           [-target=TargetName]
+echo           [-teardown=Teardown]
+echo           [-downloadhost=DownloadHost]
+echo           [-distdir=DistDir]
+echo Help:            -h
+echo Distro:          -distro=ubuntu12,
+echo                          ubuntu14
+echo                          centos6
+echo TargetName:      -target=x86,
+echo                          x64
+echo Teardown:        -teardown=1,
+echo                            0
+echo ************************************************************************
 :quit

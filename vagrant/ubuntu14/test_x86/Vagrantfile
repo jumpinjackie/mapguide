@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "ubuntu12-i386"
+  config.vm.box = "ubuntu14-i386"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
@@ -118,6 +118,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   
   config.vm.provision "shell",
     privileged: false,
-    path: "provision.sh",
-    args: ["#{ENV['DOWNLOAD_HOST']}", "#{ENV['MG_DIST_DIR']}"]
+    path: "test_provision_ubuntu.sh",
+    args: ["#{ENV['DOWNLOAD_HOST']}", "#{ENV['MG_DIST_DIR']}", "#{ENV['MG_TEST_TARGET']}"]
 end
