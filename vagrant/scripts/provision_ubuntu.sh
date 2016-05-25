@@ -395,7 +395,7 @@ fi
 echo [provision]: Stamping install script
 sudo cp $MOUNT_DIR/mginstallubuntu.sh $MOUNT_DIR/build/mginstallubuntu.sh
 sudo cp $MOUNT_DIR/mguninstallubuntu.sh $MOUNT_DIR/build/mguninstallubuntu.sh
-sudo sed -i 's/URL_PART="ubuntu12"/URL_PART='"$DISTNAME"'/g' $MOUNT_DIR/build/mginstallubuntu.sh
+sudo sed -i 's/URL_PART="ubuntu"/URL_PART='"$DISTNAME"'/g' $MOUNT_DIR/build/mginstallubuntu.sh
 sudo sed -i 's/MGRELEASELABEL="ReleaseLabel"/MGRELEASELABEL='"$MG_RELEASE_LABEL"'/g' $MOUNT_DIR/build/mginstallubuntu.sh
 sudo sed -i 's/FDOARCH=i386/FDOARCH='"$MG_ARCH"'/g' $MOUNT_DIR/build/mginstallubuntu.sh
 sudo sed -i 's/MGARCH=i386/MGARCH='"$MG_ARCH"'/g' $MOUNT_DIR/build/mginstallubuntu.sh
