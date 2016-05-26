@@ -144,10 +144,10 @@ done
 if [ "$HEADLESS" != "1" ]
 then
 # Install required packages 
-apt-get -y install openjdk-7-jre libc6 libxml2 dialog libexpat1 libssl1.0.0 odbcinst unixodbc libcurl3 libxslt1.1
+apt-get -y install openjdk-7-jre libxml2 dialog libexpat1 libssl1.0.0 odbcinst unixodbc libcurl3 libxslt1.1
 else
 # Install required packages 
-apt-get -y install openjdk-7-jre libc6 libxml2 libexpat1 libssl1.0.0 odbcinst unixodbc libcurl3 libxslt1.1
+apt-get -y install openjdk-7-jre libxml2 libexpat1 libssl1.0.0 odbcinst unixodbc libcurl3 libxslt1.1
 fi
 
 DIALOG=${DIALOG=dialog}
