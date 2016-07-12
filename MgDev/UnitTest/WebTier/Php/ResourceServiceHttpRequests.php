@@ -87,14 +87,14 @@ class ResourceServiceHttpRequests
             if ($this->unitTestParamVm->GetString("ParamValue") != "")
             {
                 $arrayParam['CONTENT']=$this->unitTestParamVm->GetString("ParamValue");
-                $arrayParam['CONTENT']="@".Utils::GetPath($arrayParam['CONTENT']);
+                $arrayParam['CONTENT']=new CURLFile(Utils::GetPath($arrayParam['CONTENT']));
             }
 
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"HEADER\"");
             if ($this->unitTestParamVm->GetString("ParamValue") != "")
             {
                 $arrayParam['HEADER']=$this->unitTestParamVm->GetString("ParamValue");
-                $arrayParam['HEADER']="@".Utils::GetPath($arrayParam['HEADER']);
+                $arrayParam['HEADER']=new CURLFile(Utils::GetPath($arrayParam['HEADER']));
 
             }
 
@@ -234,7 +234,7 @@ class ResourceServiceHttpRequests
             if (!Utils::IsWindows() && !is_file($path)) {
                 return new Result("", "text/plain");
             }
-            $arrayParam["DATA"]="@".$path;
+            $arrayParam["DATA"]=new CURLFile($path);
 
             return $this->httpRequest->SendRequest($this->URL, $arrayParam, "POST");
         }
@@ -322,7 +322,7 @@ class ResourceServiceHttpRequests
             if ($this->unitTestParamVm->GetString("ParamValue") != "")
             {
                 $arrayParam['PACKAGE']=$this->unitTestParamVm->GetString("ParamValue");
-                $arrayParam['PACKAGE']="@".Utils::GetPath($arrayParam['PACKAGE']);
+                $arrayParam['PACKAGE']=new CURLFile(Utils::GetPath($arrayParam['PACKAGE']));
             }
 
             return $this->httpRequest->SendRequest($this->URL, $arrayParam, "POST");
@@ -347,14 +347,14 @@ class ResourceServiceHttpRequests
             if ($this->unitTestParamVm->GetString("ParamValue") != "")
             {
                 $arrayParam['CONTENT']=$this->unitTestParamVm->GetString("ParamValue");
-                $arrayParam['CONTENT']="@".Utils::GetPath($arrayParam['CONTENT']);
+                $arrayParam['CONTENT']=new CURLFile(Utils::GetPath($arrayParam['CONTENT']));
             }
 
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"HEADER\"");
             if ($this->unitTestParamVm->GetString("ParamValue") != "")
             {
                 $arrayParam['HEADER']=$this->unitTestParamVm->GetString("ParamValue");
-                $arrayParam['HEADER']="@".Utils::GetPath($arrayParam['HEADER']);
+                $arrayParam['HEADER']=new CURLFile(Utils::GetPath($arrayParam['HEADER']));
             }
 
             return $this->httpRequest->SendRequest($this->URL, $arrayParam, "POST");
