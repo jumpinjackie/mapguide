@@ -936,7 +936,7 @@ INSERT INTO "ApiTestResults" VALUES('RenameResourceData with empty new data name
 INSERT INTO "ApiTestResults" VALUES('RenameResourceData when the old data name and new data name are the same. Expects InvalidArgument exception',15007,'text/plain',X'6D67696E76616C6964617267756D656E74657863657074696F6E');
 INSERT INTO "ApiTestResults" VALUES('RenameResourceData using folder resource. Expects InvalidResourceType exception',15008,'text/plain',X'6D67696E76616C69647265736F7572636574797065657863657074696F6E');
 INSERT INTO "ApiTestResults" VALUES('RenameResourceData using valid parameters',15009,'','');
-INSERT INTO "ApiTestResults" VALUES('SetRresource with empty content file',2005,'text/plain','mginvalidargumentexception');
+INSERT INTO "ApiTestResults" VALUES('SetResource with empty content file',2005,'text/plain','mginvalidargumentexception');
 INSERT INTO "ApiTestResults" VALUES('SetResource when the resource is folder and the content file is not empty',2006,'text/plain',X'6D67696E76616C6964617267756D656E74657863657074696F6E');
 INSERT INTO "ApiTestResults" VALUES('SetResource when the resouce is folder',2007,'','');
 INSERT INTO "ApiTestResults" VALUES('SetResource when the resource is a duplicate folder.(Should work)',2008,'text/plain','An existing resource was detected: Library://Test/ResourceTest/');
@@ -1235,7 +1235,7 @@ INSERT INTO "HttpTestResults" VALUES('RenameResourceData with empty new data nam
 INSERT INTO "HttpTestResults" VALUES('RenameResourceData when the old data name and new data name are the same. Expects InvalidArgument exception',15007,'text/plain',X'4D67496E76616C6964417267756D656E74457863657074696F6E0D0A');
 INSERT INTO "HttpTestResults" VALUES('RenameResourceData using folder resource. Expects InvalidResourceType exception',15008,'text/plain',X'4D67496E76616C69645265736F7572636554797065457863657074696F6E0D0A');
 INSERT INTO "HttpTestResults" VALUES('RenameResourceData using valid parameters',15009,'text/plain; charset=utf-8',X'');
-INSERT INTO "HttpTestResults" VALUES('AddRresource with empty content file',2005,'text/plain','MgInvalidArgumentException
+INSERT INTO "HttpTestResults" VALUES('AddResource with empty content file',2005,'text/plain','MgNullArgumentException
 ');
 INSERT INTO "HttpTestResults" VALUES('AddResource when the resource is folder and the content file is not empty',2006,'text/plain',X'4D67496E76616C6964417267756D656E74457863657074696F6E0D0A');
 INSERT INTO "HttpTestResults" VALUES('AddResource when the resouce is folder',2007,'text/plain; charset=utf-8',X'');

@@ -521,7 +521,7 @@ INSERT INTO "HttpTestResults" VALUES('GetSpatialContexts on a SDF resource when 
 ');
 INSERT INTO "HttpTestResults" VALUES('GetSpatialContexts on a SDF resource', 8010, 'text/xml; charset=utf-8', '
   <FdoSpatialContextList>
-    <ProviderName>OSGeo.SDF.3.9</ProviderName>
+    <ProviderName>OSGeo.SDF.4.1</ProviderName>
     <SpatialContext>
       <CoordinateSystemName>GEOGCS["LL84",DATUM["WGS 84",SPHEROID["WGS 84",6378137,0],TOWGS84[0,0,0,0,0,0,0]],PRIMEM["Greenwich",0],UNIT["Degrees",0.01745329252]]</CoordinateSystemName>
       <CoordinateSystemWkt>GEOGCS["LL84",DATUM["WGS 84",SPHEROID["WGS 84",6378137,0],TOWGS84[0,0,0,0,0,0,0]],PRIMEM["Greenwich",0],UNIT["Degrees",0.01745329252]]</CoordinateSystemWkt>
@@ -544,7 +544,7 @@ INSERT INTO "HttpTestResults" VALUES('GetSpatialContexts on a SDF resource', 801
   </FdoSpatialContextList>');
 INSERT INTO "HttpTestResults" VALUES('GetSpatialContexts on a SDF resource', 8011, 'text/xml; charset=utf-8', '
   <FdoSpatialContextList>
-    <ProviderName>OSGeo.SDF.3.9</ProviderName>
+    <ProviderName>OSGeo.SDF.4.1</ProviderName>
     <SpatialContext>
       <CoordinateSystemName>GEOGCS["LL84",DATUM["WGS 84",SPHEROID["WGS 84",6378137,0],TOWGS84[0,0,0,0,0,0,0]],PRIMEM["Greenwich",0],UNIT["Degrees",0.01745329252]]</CoordinateSystemName>
       <CoordinateSystemWkt>GEOGCS["LL84",DATUM["WGS 84",SPHEROID["WGS 84",6378137,0],TOWGS84[0,0,0,0,0,0,0]],PRIMEM["Greenwich",0],UNIT["Degrees",0.01745329252]]</CoordinateSystemWkt>
@@ -1851,7 +1851,7 @@ INSERT INTO "ApiTestResults" VALUES('GetSpatialContexts on Oracle resource when 
 INSERT INTO "ApiTestResults" VALUES('GetSpatialContexts on a SDF resource when resource data is not set yet', 8009, 'text/plain', 'mgapplicationexception');
 INSERT INTO "ApiTestResults" VALUES('GetSpatialContexts on a SDF resource', 8010, 'text/xml', '
   <FdoSpatialContextList>
-    <ProviderName>OSGeo.SDF.3.9</ProviderName>
+    <ProviderName>OSGeo.SDF.4.1</ProviderName>
     <SpatialContext>
       <CoordinateSystemName>GEOGCS["LL84",DATUM["WGS 84",SPHEROID["WGS 84",6378137,0],TOWGS84[0,0,0,0,0,0,0]],PRIMEM["Greenwich",0],UNIT["Degrees",0.01745329252]]</CoordinateSystemName>
       <CoordinateSystemWkt>GEOGCS["LL84",DATUM["WGS 84",SPHEROID["WGS 84",6378137,0],TOWGS84[0,0,0,0,0,0,0]],PRIMEM["Greenwich",0],UNIT["Degrees",0.01745329252]]</CoordinateSystemWkt>
@@ -1874,7 +1874,7 @@ INSERT INTO "ApiTestResults" VALUES('GetSpatialContexts on a SDF resource', 8010
   </FdoSpatialContextList>');
 INSERT INTO "ApiTestResults" VALUES('GetSpatialContexts on a SDF resource', 8011, 'text/xml', '
   <FdoSpatialContextList>
-    <ProviderName>OSGeo.SDF.3.9</ProviderName>
+    <ProviderName>OSGeo.SDF.4.1</ProviderName>
     <SpatialContext>
       <CoordinateSystemName>GEOGCS["LL84",DATUM["WGS 84",SPHEROID["WGS 84",6378137,0],TOWGS84[0,0,0,0,0,0,0]],PRIMEM["Greenwich",0],UNIT["Degrees",0.01745329252]]</CoordinateSystemName>
       <CoordinateSystemWkt>GEOGCS["LL84",DATUM["WGS 84",SPHEROID["WGS 84",6378137,0],TOWGS84[0,0,0,0,0,0,0]],PRIMEM["Greenwich",0],UNIT["Degrees",0.01745329252]]</CoordinateSystemWkt>
