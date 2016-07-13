@@ -169,7 +169,7 @@ void
 WKTWriter::writeFormatted(const Geometry *geometry, bool isFormatted,
                           Writer *writer)
 {
-        CLocalizer clocale;
+        //CLocalizer clocale;
 	this->isFormatted=isFormatted;
   decimalPlaces = roundingPrecision == -1 ? geometry->getPrecisionModel()->getMaximumSignificantDigits() : roundingPrecision;
 	appendGeometryTaggedText(geometry, 0, writer);

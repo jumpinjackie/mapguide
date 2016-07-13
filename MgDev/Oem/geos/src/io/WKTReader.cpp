@@ -61,7 +61,7 @@ Geometry *
 WKTReader::read(const string &wellKnownText)
 {
 	//auto_ptr<StringTokenizer> tokenizer(new StringTokenizer(wellKnownText));
-        CLocalizer clocale;
+        //CLocalizer clocale;
 	StringTokenizer tokenizer(wellKnownText);
 	Geometry *g=NULL;
 	g=readGeometryTaggedText(&tokenizer);

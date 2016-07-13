@@ -1575,13 +1575,14 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
             break;
 
         MdfModel::VectorLayerDefinition* vl = NULL;
+        Ptr<MgResourceLayerDefinitionCacheItem> cacheItem;
         auto_ptr<MdfModel::LayerDefinition> ldf;
         Ptr<MgResourceIdentifier> layerResId = layer->GetLayerDefinition();
         if (bOnlyVisibleLayers)
         {
             //get the MDF layer definition
             MgCacheManager* cacheManager = MgCacheManager::GetInstance();
-            Ptr<MgResourceLayerDefinitionCacheItem> cacheItem = cacheManager->GetResourceLayerDefinitionCacheItem(layerResId);
+            cacheItem = cacheManager->GetResourceLayerDefinitionCacheItem(layerResId);
             MdfModel::LayerDefinition* layerDefinition = cacheItem->Get();
             vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(layerDefinition);
         }
@@ -1589,28 +1590,24 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         {
             ldf.reset(MgLayerBase::GetLayerDefinition(m_svcResource, layerResId));
             vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+
+            // Modify the layer scale range only for layers that are passed in
+            MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
+            if (scaleRanges)
+            {
+                MdfModel::VectorScaleRange* scaleRange = scaleRanges->GetAt(0);
+                if (scaleRange)
+                {
+                    scaleRange->SetMinScale(0.0);
+                    scaleRange->SetMaxScale(MdfModel::VectorScaleRange::MAX_MAP_SCALE);
+                }
+            }
         }
 
         //we can only do geometric query selection for vector layers
         if (vl)
         {
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): Layer: %W  Vector Layer\n"), layer->GetName().c_str()));
-
-            //check to see if we want even layers that aren't visible at the current scale
-            if (!bOnlyVisibleLayers)
-            {
-                // Modify the layer scale range only for layers that are passed in
-                MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
-                if (scaleRanges)
-                {
-                    MdfModel::VectorScaleRange* scaleRange = scaleRanges->GetAt(0);
-                    if (scaleRange)
-                    {
-                        scaleRange->SetMinScale(0.0);
-                        scaleRange->SetMaxScale(MdfModel::VectorScaleRange::MAX_MAP_SCALE);
-                    }
-                }
-            }
 
             Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(layer->GetFeatureSourceId());
 
