@@ -103,7 +103,8 @@
 
                 try
                 {
-                    $featureReader = $featureSrvc->SelectFeatures($resId, $qualifiedClassName, null);
+                    $query = BuildFeatureQueryOptions($classDef);
+                    $featureReader = $featureSrvc->SelectFeatures($resId, $qualifiedClassName, $query);
 
                     // Find the correct index on featureReader
                     $count = $index;
