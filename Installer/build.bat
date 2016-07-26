@@ -81,7 +81,7 @@ rem ==================================================
 rem Web dependencies
 rem ==================================================
 SET HTTPD_VERSION=2.4.18
-SET PHP_VERSION=5.5.33
+SET PHP_VERSION=5.6.23
 SET TOMCAT_VERSION=7.0.68
 SET HTTPD_PACKAGE=httpd-%HTTPD_VERSION%-%PLATFORM_CLR%-VC11.zip
 SET TOMCAT_PACKAGE_NAME=apache-tomcat-%TOMCAT_VERSION%
