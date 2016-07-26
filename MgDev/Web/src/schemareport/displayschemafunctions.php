@@ -21,6 +21,65 @@
 
 <?php
 
+// Builds a MgFeatureQueryOptions with an explicit property list based
+// on the given class definition
+//
+// This is to ensure that a "select * from featureclass" query from relational
+// providers will have its column list bounded to what is recognized in the
+// class definition. Some providers are known to produce "select * from table"
+// queries that "leak" out column types that the provider does not know how to
+// process. Using an explicit property list from its class definition will
+// allow us to avoid such issues
+function BuildFeatureQueryOptions($classDef)
+{
+    $query = new MgFeatureQueryOptions();
+    $geomPropName = $classDef->GetDefaultGeometryPropertyName(); 
+    $propertyList = $classDef->GetProperties(); 
+
+    for ($i = 0; $i < $propertyList->GetCount(); $i++) 
+    {
+        $propertyDef = $propertyList->GetItem($i); 
+        $property = $propertyList->GetItem($i)->GetName(); 
+
+        if (($property != $geomPropName) && ($propertyDef->GetPropertyType() == MgFeaturePropertyType::DataProperty)) 
+        { 
+            $propertyType = $propertyList->GetItem($i)->GetDataType(); 
+            switch ($propertyType) { 
+                case MgPropertyType::Boolean: 
+                    $query->AddFeatureProperty($property); 
+                    break; 
+                case MgPropertyType::Byte: 
+                    $query->AddFeatureProperty($property); 
+                    break; 
+                case MgPropertyType::DateTime: 
+                    $query->AddFeatureProperty($property); 
+                    break; 
+                case MgPropertyType::Single: 
+                    $query->AddFeatureProperty($property); 
+                    break; 
+                case MgPropertyType::Double: 
+                    $query->AddFeatureProperty($property); 
+                    break; 
+                case MgPropertyType::Int16: 
+                    $query->AddFeatureProperty($property); 
+                    break; 
+                case MgPropertyType::Int32: 
+                    $query->AddFeatureProperty($property); 
+                    break; 
+                case MgPropertyType::Int64: 
+                    $query->AddFeatureProperty($property); 
+                    break; 
+                case MgPropertyType::String: 
+                    $query->AddFeatureProperty($property); 
+                    break; 
+            }
+        } else if ($property == $geomPropName){ 
+            $query->AddFeatureProperty($property); 
+        } 
+    }
+    return $query;
+}
+
 class MBR 
 {
     public $coordinateSystem;
