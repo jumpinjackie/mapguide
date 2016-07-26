@@ -1148,10 +1148,10 @@ catch ( Exception $e )
             var buttonPanelInnerHtml="<table>";
             buttonPanelInnerHtml+="<tr>";
             buttonPanelInnerHtml+="<td>";
-            buttonPanelInnerHtml+='<button type="button" id="mapViewerAutoFocusBtn" style="width: 57px; height: 22px; border-style:none;border: 1px solid #000000;" onclick="window.parent.parent.MapViewerBtnOKClicked()" tabindex="1">OK</button>';
+            buttonPanelInnerHtml+='<button type="button" id="mapViewerAutoFocusBtn" style="z-index: 50; width: 57px; height: 22px; border-style:none;border: 1px solid #000000;" onclick="window.parent.parent.MapViewerBtnOKClicked()" tabindex="1">OK</button>';
             buttonPanelInnerHtml+="</td>";
             buttonPanelInnerHtml+="<td>";
-            buttonPanelInnerHtml+='<button type="button" style="width: 57px; height: 22px; border-style:none;border: 1px solid #000000;margin-left:10px;" onclick="window.parent.parent.MapViewerBtnCloseClicked()"  tabindex="2">Cancel</button>';
+            buttonPanelInnerHtml+='<button type="button" style="z-index: 50; width: 57px; height: 22px; border-style:none;border: 1px solid #000000;margin-left:10px;" onclick="window.parent.parent.MapViewerBtnCloseClicked()"  tabindex="2">Cancel</button>';
             buttonPanelInnerHtml+="</td>";
             buttonPanelInnerHtml+="</tr>";
             buttonPanelInnerHtml+="</table>";
