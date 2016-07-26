@@ -99,7 +99,7 @@ rem Be sure to change the paths below as well if that's the case
 call prepare_webtier_components.bat
 
 rem Set the env vars that VS will reference
-SET PHP_SRC=%MG_OEM%\LinuxApt\php-5.5.33
+SET PHP_SRC=%MG_OEM%\LinuxApt\php-5.6.23
 SET PHP_LIB=%MG_OEM%\php\Release_TS
 SET HTTPD_SRC=%MG_OEM%\LinuxApt\httpd-2.4.18
 SET HTTPD_LIB=%MG_OEM%\httpd\lib

@@ -39,7 +39,7 @@ map_opt_oem_subdirs="CsMap"
 map_opt_oem_distsubdirs=""
 
 dnl *******************************************************
-dnl PHP 5.5.33 Configuration
+dnl PHP 5.6.23 Configuration
 dnl *******************************************************
 AC_ARG_WITH([php],
         MAP_HELP_STRING([--with-php],
@@ -48,8 +48,8 @@ AC_ARG_WITH([php],
         [with_php=no])
 
 if test $with_php = "no"; then
-    AC_MSG_NOTICE([Using php 5.5.33 from included Oem Directory])
-	php_src=`pwd`/Oem/LinuxApt/php-5.5.33
+    AC_MSG_NOTICE([Using php 5.6.23 from included Oem Directory])
+	php_src=`pwd`/Oem/LinuxApt/php-5.6.23
 else
     AC_MSG_NOTICE([Using custom PHP source directory])
 	php_src=$with_php
