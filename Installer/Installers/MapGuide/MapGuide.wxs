@@ -47,7 +47,7 @@
         <Property Id="MGSERVER_IP" Secure="yes" Value="127.0.0.1" />
         <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
         <Property Id="APACHE_VERSION" Secure="yes" Value="2.4.18" />
-        <Property Id="PHP_VERSION" Secure="yes" Value="5.5.33" />
+        <Property Id="PHP_VERSION" Secure="yes" Value="5.6.23" />
         <Property Id="MG_VERSION_MAJOR_MINOR" Secure="yes" Value="3.1" />
         <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuide31AppPool">
             <RegistrySearch
