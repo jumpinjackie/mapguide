@@ -236,12 +236,20 @@ build_geos()
     # For this version of GEOS, don't run the aclocal/libtoolize/automake/autoconf quartet as we normally do, as it
     # may produce an unusable configure script. Just run autoreconf to regenerate the configure script from configure.in
     autoreconf
+    
+    # Fix for error:
+    # virtual void geos::geom::GeometryComponentFilter::filter_ro(const geos::geom::Geometry*): Assertion `0' failed
+    #
+    # Based on this GEOS ticket: https://trac.osgeo.org/geos/ticket/469
+    # The fix to to set the appropriate CFLAGS/CPPFLAGS/CXXFLAGS/LDFLAGS/FFLAGS before calling the configure script
+    #
+    # If we upgrade our internal copy of GEOS in the future, this should be reviewed
+    chmod +x configure
     if [ $BUILD_CPU -eq 64 ]; then
-        sh ./configure --with-pic --enable-silent-rules --prefix="${INSTALLDIR}"
+        CFLAGS="-m64" CPPFLAGS="-m64" CXXFLAGS="-m64" LDFLAGS="-m64" FFLAGS="-m64" LDFLAGS="-L/usr/lib64" ./configure --with-pic --enable-silent-rules --prefix="${INSTALLDIR}"
     else
-        sh ./configure --enable-silent-rules --prefix="${INSTALLDIR}"
+        CFLAGS="-m32" CPPFLAGS="-m32" CXXFLAGS="-m32" LDFLAGS="-m32" FFLAGS="-m32" LDFLAGS="-L/usr/lib" ./configure --enable-silent-rules --prefix="${INSTALLDIR}"
     fi
-    make
     # The check build is disabled as the build will fail with automake version < 2.59
     check_build
     popd
@@ -673,7 +681,7 @@ clean_fusion()
 #**********************************************************
 
 pushd Oem
-for lib in linuxapt fusion ace dwfcore dwftk geos bdbxml cppunit imake zlib libpng jpeg freetype gd agg json csmap;
+for lib in linuxapt fusion ace dwfcore dwftk bdbxml cppunit imake zlib libpng jpeg freetype gd agg json csmap geos;
 do
     echo "$lib: Initialization..........................."
     init_"$lib"
