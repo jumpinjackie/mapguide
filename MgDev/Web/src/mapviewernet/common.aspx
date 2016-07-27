@@ -292,4 +292,54 @@ String ValidateColorString(String proposedColorString, int charCount)
     return validColorString;
 }
 
+MgFeatureQueryOptions BuildFeatureQueryOptions(MgClassDefinition classDef)
+{
+    MgFeatureQueryOptions query = new MgFeatureQueryOptions();
+    String geomPropName = classDef.GetDefaultGeometryPropertyName();
+    MgPropertyDefinitionCollection propertyList = classDef.GetProperties();
+    for (int i = 0; i < propertyList.GetCount(); i++)
+    {
+        MgPropertyDefinition propertyDef = propertyList.GetItem(i);
+        String property = propertyDef.GetName();
+
+        if ((property != geomPropName) && (propertyDef.GetPropertyType() == MgFeaturePropertyType.DataProperty)) 
+        {
+            MgDataPropertyDefinition dp = (MgDataPropertyDefinition)propertyDef;
+            int propertyType = dp.GetDataType();
+            switch (propertyType) {
+                case MgPropertyType.Boolean:
+                    query.AddFeatureProperty(property);
+                    break;
+                case MgPropertyType.Byte:
+                    query.AddFeatureProperty(property);
+                    break;
+                case MgPropertyType.DateTime:
+                    query.AddFeatureProperty(property);
+                    break;
+                case MgPropertyType.Single:
+                    query.AddFeatureProperty(property);
+                    break;
+                case MgPropertyType.Double:
+                    query.AddFeatureProperty(property);
+                    break;
+                case MgPropertyType.Int16:
+                    query.AddFeatureProperty(property);
+                    break;
+                case MgPropertyType.Int32:
+                    query.AddFeatureProperty(property);
+                    break;
+                case MgPropertyType.Int64:
+                    query.AddFeatureProperty(property);
+                    break;
+                case MgPropertyType.String:
+                    query.AddFeatureProperty(property);
+                    break;
+            }
+        } else if (property == geomPropName) { 
+            query.AddFeatureProperty(property);
+        } 
+    }
+    return query;
+}
+
 </script>
