@@ -274,7 +274,8 @@ String locale;
             if(filter == null || filter.length() == 0)
                 continue;
 
-            MgFeatureQueryOptions query = new MgFeatureQueryOptions();
+            MgClassDefinition clsDef = selLayer.GetClassDefinition();
+            MgFeatureQueryOptions query = BuildFeatureQueryOptions(clsDef);
             query.SetFilter(filter);
 
             MgResourceIdentifier featureSource = new MgResourceIdentifier(selLayer.GetFeatureSourceId());

@@ -104,7 +104,8 @@
         $displayAll = (count($resProps) == 0);
 
         //query the features
-        $opts = new MgFeatureQueryOptions();
+        $clsDef = $layer->GetClassDefinition();
+        $opts = BuildFeatureQueryOptions($clsDef);
         $opts->SetFilter($filter);
         $featureClassName = $layer->GetFeatureClassName();
         $srcId = new MgResourceIdentifier($layer->GetFeatureSourceId());

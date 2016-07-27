@@ -241,7 +241,8 @@
             if($filter == "")
                 continue;
 
-            $query = new MgFeatureQueryOptions();
+            $clsDef = $selLayer->GetClassDefinition();
+            $query = BuildFeatureQueryOptions($clsDef);
             $query->SetFilter($filter);
 
             $featureSource = new MgResourceIdentifier($selLayer->GetFeatureSourceId());

@@ -116,7 +116,8 @@ String searchError;
         boolean displayAll = (resProps.size() == 0);
 
         //query the features
-        MgFeatureQueryOptions opts = new MgFeatureQueryOptions();
+        MgClassDefinition clsDef = layer.GetClassDefinition();
+        MgFeatureQueryOptions opts = BuildFeatureQueryOptions(clsDef);
         opts.SetFilter(filter);
         String featureClassName = layer.GetFeatureClassName();
         MgResourceIdentifier srcId = new MgResourceIdentifier(layer.GetFeatureSourceId());

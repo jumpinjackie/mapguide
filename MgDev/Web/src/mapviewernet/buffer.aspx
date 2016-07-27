@@ -254,7 +254,8 @@ String dataSource = "";
             if (filter == null || filter.Length == 0)
                 continue;
 
-            MgFeatureQueryOptions query = new MgFeatureQueryOptions();
+            MgClassDefinition clsDef = selLayer.GetClassDefinition();
+            MgFeatureQueryOptions query = BuildFeatureQueryOptions(clsDef);
             query.SetFilter(filter);
 
             MgResourceIdentifier featureSource = new MgResourceIdentifier(selLayer.GetFeatureSourceId());
