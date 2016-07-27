@@ -103,7 +103,8 @@
         $displayAll = (count($resProps) == 0);
 
         //query the features
-        $opts = new MgFeatureQueryOptions();
+        $clsDef = $layer->GetClassDefinition();
+        $opts = BuildFeatureQueryOptions($clsDef);
         $opts->SetFilter($filter);
         $featureClassName = $layer->GetFeatureClassName();
         $features = $layer->SelectFeatures($opts);
