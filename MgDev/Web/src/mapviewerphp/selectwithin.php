@@ -99,7 +99,8 @@ function MultiGeometryFromSelection($featureSrvc, $map, $selText)
     {
         $layer = $selLayers->GetItem($i);
         $filter = $sel->GenerateFilter($layer, $layer->GetFeatureClassName());
-        $query = new MgFeatureQueryOptions();
+        $clsDef = $layer->GetClassDefinition();
+        $query = BuildFeatureQueryOptions($clsDef);
         $query->SetFilter($filter);
         $featureSource = new MgResourceIdentifier($layer->GetFeatureSourceId());
         $features = $featureSrvc->SelectFeatures($featureSource, $layer->GetFeatureClassName(), $query);
