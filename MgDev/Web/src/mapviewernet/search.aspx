@@ -103,7 +103,8 @@ String searchError;
             bool displayAll = (resProps.Count == 0);
 
             //query the features
-            MgFeatureQueryOptions opts = new MgFeatureQueryOptions();
+            MgClassDefinition clsDef = layer.GetClassDefinition();
+            MgFeatureQueryOptions opts = BuildFeatureQueryOptions(clsDef);
             opts.SetFilter(filter);
             String featureClassName = layer.GetFeatureClassName();
             features = layer.SelectFeatures(opts);
