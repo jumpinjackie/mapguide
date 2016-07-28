@@ -250,6 +250,7 @@ build_geos()
     else
         CFLAGS="-m32" CPPFLAGS="-m32" CXXFLAGS="-m32" LDFLAGS="-m32" FFLAGS="-m32" LDFLAGS="-L/usr/lib" ./configure --enable-silent-rules --prefix="${INSTALLDIR}"
     fi
+    make
     # The check build is disabled as the build will fail with automake version < 2.59
     check_build
     popd
