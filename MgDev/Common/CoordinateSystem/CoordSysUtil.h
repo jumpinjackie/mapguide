@@ -101,7 +101,20 @@ Convert_UTF8_To_Wide (const char *str)
   if (str == 0)
     return 0;
 
-  return MgUtil::MultiByteToWideChar(str);
+  // Check input, discard invalid charactors
+  size_t len = strlen(str);
+  char* tempstr = new char[len+1];
+  size_t pos = 0;
+  for (size_t i = 0; i < len; i++)
+  {
+      if (str[i] > 0)
+          tempstr[pos++] = str[i];
+  }
+  tempstr[pos] = '\0';
+
+  wchar_t* ret = MgUtil::MultiByteToWideChar(tempstr);
+  delete []tempstr;
+  return ret;
 }
 
 inline char *
