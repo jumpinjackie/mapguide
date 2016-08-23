@@ -1806,9 +1806,12 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
         // clear the affected region of the alpha mask
         agg::gray8 cc(0);
 
-        unsigned width = (int)imaxx - (int)iminx + 1;
-        for (int y=iminy; y<=imaxy; ++y)
-            c()->mask_pixf->copy_hline(iminx, y, width, cc);
+        if (imaxx >= iminx)
+        {        
+            unsigned width = (int)imaxx - (int)iminx + 1;
+            for (int y = iminy; y <= imaxy; ++y)
+                c()->mask_pixf->copy_hline(iminx, y, width, cc);
+        }
 
         // render the alpha mask polygon
         c()->mask_ren.color(agg::gray8(255));
