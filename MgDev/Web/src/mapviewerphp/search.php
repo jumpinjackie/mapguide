@@ -43,6 +43,7 @@
     $resNames = array();
     $resProps = array();
     $matchLimit = 0;
+    $features = NULL;
 
     GetRequestParameters();
     SetLocalizedFilesPath(GetLocalizationPath());
@@ -78,6 +79,8 @@
         {
             trigger_error(FormatMessage("SEARCHLAYERNOTFOUND", $locale, array($layerName)));
         }
+        
+        $userInput = str_replace("'", "''", $userInput);
 
         //unescape strings
         //

@@ -95,6 +95,9 @@ String searchError;
             {
                 throw new SearchError(String.Format(MgLocalizer.GetString("SEARCHLAYERNOTFOUND", locale), new Object[] { layerName }), searchError);
             }
+            
+            //escape single quote in userInput
+            userInput = userInput.Replace("'", "''");
 
             //substitute the input tag with the actual user input to make up the filter
             filter = filter.Replace("$USER_VARIABLE", userInput);

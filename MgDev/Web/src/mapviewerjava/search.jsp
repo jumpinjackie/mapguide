@@ -107,6 +107,8 @@ String searchError;
         if(layer == null)
             throw new SearchError(MessageFormat.format(MgLocalizer.GetString("SEARCHLAYERNOTFOUND", locale), new Object[] { layerName }), searchError);
 
+        userInput = userInput.replace("'", "''");
+
         //substitute the input tag with the actual user input to make up the filter
         int varIndex = filter.indexOf("$USER_VARIABLE");
         if(varIndex != -1)
