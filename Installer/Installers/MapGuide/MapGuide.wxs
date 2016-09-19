@@ -63,8 +63,8 @@
         <Property Id="MG_CLIENT_PORT" Secure="yes" Value="2811" />
         <Property Id="MG_SITE_PORT" Secure="yes" Value="2812" />
         <!-- Used by FdoRegUtil.exe -->
-        <Property Id="FDO_VERSION_SMALL" Secure="yes" Value="4.0" />
-        <Property Id="FDO_VERSION" Secure="yes" Value="4.0.0.0" />
+        <Property Id="FDO_VERSION_SMALL" Secure="yes" Value="4.1" />
+        <Property Id="FDO_VERSION" Secure="yes" Value="4.1.0.0" />
         <!-- IIS vars -->
         <Property Id="ASPNETVERSION" Value="v4.0" />
         <!-- Don't try to use MG_VERSION_MAJOR_MINOR here. I tried. Just accept it and hardcode the number -->
