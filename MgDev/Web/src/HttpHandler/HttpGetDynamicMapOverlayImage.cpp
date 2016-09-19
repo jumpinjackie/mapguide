@@ -41,6 +41,17 @@ MgHttpGetDynamicMapOverlayImage::MgHttpGetDynamicMapOverlayImage(MgHttpRequest *
 
     // Get the requested image format
     m_mapFormat = params->GetParameterValue(MgHttpResourceStrings::reqRenderingFormat);
+    
+    // Format is required. Throw if not given
+    if (m_mapFormat.empty())
+    {
+        MgStringCollection arguments;
+        arguments.Add(MgHttpResourceStrings::reqRenderingFormat);
+        arguments.Add(MgResources::BlankArgument);
+
+        throw new MgInvalidArgumentException(L"MgHttpGetDynamicMapOverlayImage.MgHttpGetDynamicMapOverlayImage",
+            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
+    }
 
     INT32 version = m_userInfo->GetApiVersion();
     if (version == MG_API_VERSION(1,0,0))
