@@ -3182,7 +3182,7 @@ function ProcessFeatureInfo(xmlIn, append, which)
             {
                 //Check if we have attributes inline
                 var props = xmlIn.getElementsByTagName("SelectedLayer");
-                var resp = ConvertToSelectedFeatureSet(props);
+                var resp = ConvertToSelectedFeatureSet(props, xmlIn, append);
                 ProcessSelectedFeatureSet(resp, append);
             }
             else
@@ -4197,20 +4197,42 @@ var active = "";
 var selFeatures = {};
 var selBounds = null;
 
-function ConvertToSelectedFeatureSet(layerEls)
+function GetSelectedLayerElement(selLayerEls, layerId)
+{
+    for (var i = 0; i < selLayerEls.length; i++) {
+        var selLayerEl = selLayerEls[i];
+        if (selLayerEl.getAttribute("id") == layerId) {
+            return selLayerEl;
+        }
+    }
+    return null;
+}
+
+function ConvertToSelectedFeatureSet(layerEls, xmlIn, append)
 {
     var featuresByLayer = {};
+    //Unfortunately, Selection does not model the selection set
+    //in a way that we can attach selection keys without breaking
+    //the API, so we have no choice but to re-parse the XML selection
+    //again
+    var selLayerEls = xmlIn.getElementsByTagName("Layer");
+    //assert: selLayerEls.length == layerEls.length
     for (var i = 0; i < layerEls.length; i++)
     {
         var layerEl = layerEls[i];
+        var layerId = layerEl.getAttribute("id");
+        var selLayerEl = GetSelectedLayerElement(selLayerEls, layerId);
+        var selFeatEls = selLayerEl.getElementsByTagName("ID");
         var layerName = layerEl.getAttribute("name");
         if (!featuresByLayer[layerName])
             featuresByLayer[layerName] = [];
             
         var featEls = layerEl.getElementsByTagName("Feature");
+        var selLayer = selection.layers.getItem(layerId);
+        //assert: selFeatEls.length == featEls.legnth
         for (var j = 0; j < featEls.length; j++)
         {
-            var feat = { values: [] };
+            var feat = { /* INTERNAL_API */ selKey: ((msie && !msie10plus) ? selFeatEls[j].text : selFeatEls[j].textContent), values: [] };
             var featEl = featEls[j];
             var bounds = featEl.getElementsByTagName("Bounds")[0];
             var bbox = ((msie && !msie10plus) ? bounds.text : bounds.textContent).split(" ");
@@ -4275,7 +4297,21 @@ function ProcessSelectedFeatureSet(resp, append)
                 selFeatures[layerName] = [];
             for (var i = 0; i < resp[layerName].length; i++) {
                 var feat = resp[layerName][i];
-                selFeatures[layerName].push(feat);
+                var selIndex = -1;
+                for (var j = 0; j < selFeatures[layerName].length; j++) {
+                    var selFeat = selFeatures[layerName][j];
+                    if (selFeat.selKey == feat.selKey) {
+                        selIndex = j;
+                        break;
+                    }
+                }
+                //In append mode, if we find an existing selected feature with
+                //the same selection key, remove it instead of adding on.
+                if (selIndex >= 0) {
+                    selFeatures[layerName].splice(selIndex, 1);
+                } else {
+                    selFeatures[layerName].push(feat);
+                }
             }
         } else {
             selFeatures[layerName] = resp[layerName];
