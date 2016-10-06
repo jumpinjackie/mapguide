@@ -4238,6 +4238,7 @@ function ConvertToSelectedFeatureSet(layerEls, xmlIn, append)
             var bbox = ((msie && !msie10plus) ? bounds.text : bounds.textContent).split(" ");
             feat.zoom = { minx: parseFloat(bbox[0]), miny: parseFloat(bbox[1]), maxx: parseFloat(bbox[2]), maxy: parseFloat(bbox[3]) };
             
+            var featVals = [];
             var propEls = featEl.getElementsByTagName("Property");
             for (var k = 0; k < propEls.length; k++)
             {
@@ -4248,8 +4249,29 @@ function ConvertToSelectedFeatureSet(layerEls, xmlIn, append)
                 var value = null;
                 if (valueEl.length == 1)
                     value = (msie && !msie10plus) ? valueEl[0].text : valueEl[0].textContent;
-                feat.values.push({ name: name, value: value });
+                featVals.push({ name: name, value: value });
             }
+            
+            var layerMeta = layerEl.getElementsByTagName("LayerMetadata")[0];
+            var layerPropDisplayNames = layerMeta.getElementsByTagName("DisplayName");
+            
+            var sortedFeatVals = [];
+            //Sort them according to property display order
+            for (var k = 0; k < layerPropDisplayNames.length; k++) {
+                var displayName = ((msie && !msie10plus) ? layerPropDisplayNames[k].text : layerPropDisplayNames[k].textContent);
+                for (var fp = 0; fp < featVals.length; fp++) {
+                    var featPropVal = featVals[fp];
+                    if (featPropVal.name == displayName) {
+                        sortedFeatVals.push(featPropVal);
+                        break;
+                    }
+                }
+            }
+            //Then load into feature
+            for (var k = 0; k < sortedFeatVals.length; k++) {
+                feat.values.push(sortedFeatVals[k]);
+            }
+            
             featuresByLayer[layerName].push(feat);
         }
     }
