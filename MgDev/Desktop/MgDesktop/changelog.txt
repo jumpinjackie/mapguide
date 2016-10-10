@@ -1,3 +1,11 @@
+Latest
+======
+
+API Changelog:
+
+ - MgCoordinateSystemGeodeticTransformGridFileFormat
+    - New GEOCON constant value added
+
 3.0.0.8701 (10 Jul 2015)
 ========================
 
