@@ -1,3 +1,5 @@
 .pdb
 .exp
 .lib
+.iobj
+.ipdb
