@@ -15,7 +15,7 @@
         <hudson.model.StringParameterDefinition>
           <name>VersionLabel</name>
           <description>The release version label</description>
-          <defaultValue>6.0m4</defaultValue>
+          <defaultValue>6.0m5</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BASE_VERSION</name>
@@ -25,7 +25,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <scm class="hudson.scm.SubversionSCM" plugin="subversion@2.5">
+  <scm class="hudson.scm.SubversionSCM" plugin="subversion@2.5.3">
     <locations>
       <hudson.scm.SubversionSCM_-ModuleLocation>
         <remote>http://svn.osgeo.org/mapguide/trunk/Tools/Maestro</remote>
@@ -51,7 +51,7 @@
   <jdk>(Default)</jdk>
   <triggers>
     <hudson.triggers.SCMTrigger>
-      <spec>15 * * * *</spec>
+      <spec>H/15 * * * *</spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
     </hudson.triggers.SCMTrigger>
   </triggers>
@@ -67,10 +67,13 @@ popd&#xd;
 pushd &quot;%WORKSPACE%\SDK&quot;&#xd;
 rd /S /Q bin&#xd;
 popd&#xd;
-if not exist &quot;%WORKSPACE%\TestResults&quot; mkdir &quot;%WORKSPACE%\TestResults&quot;</command>
+if not exist &quot;%WORKSPACE%\TestResults&quot; mkdir &quot;%WORKSPACE%\TestResults&quot;&#xd;
+pushd &quot;%WORKSPACE%\Maestro&quot;&#xd;
+.nuget\nuget.exe restore Maestro_All.sln&#xd;
+popd</command>
     </hudson.tasks.BatchFile>
     <hudson.plugins.msbuild.MsBuildBuilder plugin="msbuild@1.24">
-      <msBuildName>MSBUILD 4.0 x86</msBuildName>
+      <msBuildName>MSBuild 14.0</msBuildName>
       <msBuildFile>Maestro\Maestro_All.sln</msBuildFile>
       <cmdLineArgs>/p:Configuration=Release</cmdLineArgs>
       <buildVariablesAsProperties>true</buildVariablesAsProperties>

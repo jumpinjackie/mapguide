@@ -15,7 +15,7 @@
         <hudson.model.StringParameterDefinition>
           <name>FDO_BUILD_SRC</name>
           <description>FDO Source directory</description>
-          <defaultValue>C:\working\sources\fdo-trunk</defaultValue>
+          <defaultValue>C:\working\sources\fdo-4.1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>FDO_VERSION</name>
@@ -30,7 +30,7 @@
         <hudson.model.StringParameterDefinition>
           <name>FDO_STAMP_FILE_SOURCE</name>
           <description></description>
-          <defaultValue>C:\working\sources\fdo_trunk_revision.txt</defaultValue>
+          <defaultValue>C:\working\sources\fdo_41_revision.txt</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>FDO_RUN_UNIT_TESTS</name>
@@ -170,7 +170,7 @@ exit /b 0</command>
   </builders>
   <publishers>
     <hudson.tasks.BuildTrigger>
-      <childProjects>MapGuide Open Source x86</childProjects>
+      <childProjects>MapGuide Open Source 3.1 x86</childProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>

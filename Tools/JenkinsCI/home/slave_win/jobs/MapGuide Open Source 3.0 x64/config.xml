@@ -35,7 +35,7 @@
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_BUILD</name>
           <description></description>
-          <defaultValue>0</defaultValue>
+          <defaultValue>1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_BUILD_SRC64</name>
@@ -306,7 +306,7 @@ exit /b 0</command>
   </builders>
   <publishers>
     <hudson.tasks.BuildTrigger>
-      <childProjects>Test MapGuide x64</childProjects>
+      <childProjects></childProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>

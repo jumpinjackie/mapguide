@@ -15,7 +15,7 @@
         <hudson.model.StringParameterDefinition>
           <name>RELEASE_LABEL</name>
           <description></description>
-          <defaultValue>Beta1</defaultValue>
+          <defaultValue>Final</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>WITH_ARCSDE</name>
@@ -40,7 +40,7 @@
         <hudson.model.StringParameterDefinition>
           <name>MG_BUILD_SRC</name>
           <description></description>
-          <defaultValue>C:\working\sources\mg-trunk</defaultValue>
+          <defaultValue>C:\working\sources\mg-3.1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>FDO_SRC</name>
@@ -60,12 +60,7 @@
         <hudson.model.StringParameterDefinition>
           <name>MG_STAMP_FILE_SOURCE</name>
           <description></description>
-          <defaultValue>C:\working\sources\mapguide_trunk_revision.txt</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>MG_VS_SUFFIX</name>
-          <description>The VS suffix to use for naming mg-desktop zip packages</description>
-          <defaultValue>vc14</defaultValue>
+          <defaultValue>C:\working\sources\mapguide_31_revision.txt</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -227,7 +222,7 @@ popd&#xd;
 pushd %MG_BUILD_AREA%\MgDev\Release&#xd;
 echo [build]: Copy mg-desktop build artifacts (zip dist)&#xd;
 SET BUILD_ACTION=Copy mg-desktop build artifacts (zip dist)&#xd;
-7z a -mx9 %MG_BUILD_ARTIFACT_PATH%\mg-desktop\mg-desktop-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION%-net40-%MG_VS_SUFFIX%-x86.zip Desktop DesktopSamples&#xd;
+7z a -mx9 %MG_BUILD_ARTIFACT_PATH%\mg-desktop\mg-desktop-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION%-net40-vc11-x86.zip Desktop DesktopSamples&#xd;
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error&#xd;
 popd&#xd;
 &#xd;
@@ -311,7 +306,7 @@ exit /b 0</command>
   </builders>
   <publishers>
     <hudson.tasks.BuildTrigger>
-      <childProjects>Test MapGuide x86</childProjects>
+      <childProjects></childProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>
