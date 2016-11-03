@@ -1,5 +1,5 @@
 @echo off
-SET MG_SOURCES_DIR=C:\working\sources
+SET MG_SOURCES_DIR=%CD%\..\..\sources
 svn update "%MG_SOURCES_DIR%\fdo-3.9"
 svn update "%MG_SOURCES_DIR%\fdo-4.0"
 svn update "%MG_SOURCES_DIR%\fdo-4.1"

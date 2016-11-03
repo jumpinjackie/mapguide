@@ -2,69 +2,76 @@
 <project>
   <actions/>
   <description></description>
-  <logRotator class="hudson.tasks.LogRotator">
-    <daysToKeep>-1</daysToKeep>
-    <numToKeep>1</numToKeep>
-    <artifactDaysToKeep>-1</artifactDaysToKeep>
-    <artifactNumToKeep>-1</artifactNumToKeep>
-  </logRotator>
   <keepDependencies>false</keepDependencies>
   <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>1</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
           <name>RELEASE_LABEL</name>
-          <description></description>
+          <description>The release label for this build. The installer produced will be of the form MapGuideOpenSource-x.y.z-releaselabel-cpu.exe</description>
           <defaultValue>Final</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>WITH_ARCSDE</name>
-          <description></description>
+          <description>If &apos;yes&apos;, the installer will be built on the assumption the ArcSDE FDO provider is available</description>
           <defaultValue>yes</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_MAJOR</name>
-          <description></description>
+          <description>The major version of MapGuide</description>
           <defaultValue>2</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_MINOR</name>
-          <description></description>
+          <description>The minor version of MapGuide</description>
           <defaultValue>6</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_VER_BUILD</name>
-          <description></description>
+          <description>The point version of MapGuide</description>
           <defaultValue>2</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>MG_BUILD_SRC</name>
-          <description></description>
-          <defaultValue>C:\working\sources\mg-2.6</defaultValue>
+          <name>_MG_BUILD_SRC</name>
+          <description>MapGuide source directory, relative to the configured source root</description>
+          <defaultValue>mg-2.6</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>FDO_SRC</name>
-          <description></description>
-          <defaultValue>C:\builds\fdo\3.9.0\x86\Fdo</defaultValue>
+          <name>_FDO_SRC</name>
+          <description>The path to the FDO build output from the upstream FDO build job. Relative to the build artifact root.</description>
+          <defaultValue>fdo\3.9.0\x86\Fdo</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>INSTANT_SETUP_SRC</name>
-          <description></description>
-          <defaultValue>C:\working\sources\MgInstantSetup</defaultValue>
+          <name>_INSTANT_SETUP_SRC</name>
+          <description>The path to the MgInstantSetup utility. Relative to the source root</description>
+          <defaultValue>MgInstantSetup</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>CLEAR_WORKING_AREA</name>
-          <description></description>
+          <description>If ticked, will clear the working area first (which may exist from a previous build) before starting the build.</description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>MG_STAMP_FILE_SOURCE</name>
-          <description></description>
-          <defaultValue>C:\working\sources\mapguide_26_revision.txt</defaultValue>
+          <name>_MG_STAMP_FILE_SOURCE</name>
+          <description>The file name of the stamped revision file containing the MapGuide svn revision number. Relative to the global source root</description>
+          <defaultValue>mapguide_26_revision.txt</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>MG_RUN_UNIT_TESTS</name>
-          <description></description>
+          <description>Tick to also run any MapGuide unit tests specified</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>CLEAR_WORKING_AREA_AFTER</name>
+          <description>If ticked, will clear the build area after successful build</description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
@@ -102,11 +109,22 @@ SET MG_VER_MAJOR_MINOR=%MG_VER_MAJOR%.%MG_VER_MINOR%&#xd;
 SET MG_VER_MAJOR_MINOR_BUILD=%MG_VER_MAJOR_MINOR%.%MG_VER_BUILD%&#xd;
 SET MG_BUILD_OUTPUT_ROOT=%MG_BUILD_ARTIFACT_PATH%\mapguide&#xd;
 SET MG_BUILD_OUTPUT=%MG_BUILD_OUTPUT_ROOT%\%MG_VER_MAJOR_MINOR_BUILD%\x86\release&#xd;
-SET MG_BUILD_AREA=%MG_BUILD_AREA%\mapguide\%MG_VER_MAJOR_MINOR_BUILD%\x86&#xd;
+SET MG_BUILD_AREA=%MG_BUILD_AREA2%\mapguide\%MG_VER_MAJOR_MINOR_BUILD%\x86&#xd;
 SET REVNUM_FILE=%MG_TOOL_PATH%\revnum.pl&#xd;
 SET MG_STAMP_FILE=%MG_BUILD_ARTIFACT_PATH%\last_mapguide_%MG_VER_MAJOR_MINOR_BUILD%_revision_x86.txt&#xd;
 SET BUILD_ACTION=&#xd;
 &#xd;
+SET FDO_SRC=%MG_BUILD_ARTIFACT_PATH%\%_FDO_SRC%&#xd;
+SET MG_BUILD_SRC=%MG_SOURCES_ROOT%\%_MG_BUILD_SRC%&#xd;
+SET INSTANT_SETUP_SRC=%MG_SOURCES_ROOT%\%_INSTANT_SETUP_SRC%&#xd;
+SET MG_STAMP_FILE_SOURCE=%MG_SOURCES_ROOT%\%_MG_STAMP_FILE_SOURCE%&#xd;
+&#xd;
+echo ================== Build Vars for MapGuide ============================&#xd;
+echo FDO_SRC                  = %FDO_SRC%&#xd;
+echo MG_BUILD_SRC             = %MG_BUILD_SRC%&#xd;
+echo INSTANT_SETUP_SRC        = %INSTANT_SETUP_SRC%&#xd;
+echo MG_STAMP_FILE_SOURCE     = %MG_STAMP_FILE_SOURCE%&#xd;
+echo CLEAR_WORKING_AREA_AFTER = %CLEAR_WORKING_AREA_AFTER%&#xd;
 echo =================== Env Vars for MapGuide =============================&#xd;
 echo MG_VER_MAJOR_MINOR         = %MG_VER_MAJOR_MINOR%&#xd;
 echo MG_VER_MAJOR_MINOR_BUILD   = %MG_VER_MAJOR_MINOR_BUILD%&#xd;
@@ -151,18 +169,18 @@ svn export %MG_BUILD_SRC%\MgDev %MG_BUILD_AREA%\MgDev --force -q&#xd;
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error&#xd;
 &#xd;
 echo [prepare]: Setup FDO in Oem&#xd;
-cd %MG_BUILD_AREA%\MgDev\Oem\FDO&#xd;
+cd /d %MG_BUILD_AREA%\MgDev\Oem\FDO&#xd;
 xcopy /S /Y /I %FDO_SRC%\Inc Inc&#xd;
 xcopy /S /Y /I %FDO_SRC%\Lib Lib&#xd;
 xcopy /S /Y /I %FDO_SRC%\Bin Bin\Release&#xd;
 xcopy /S /Y /I %FDO_SRC%\Bin\com\*.* Bin\Release\com&#xd;
 REM For release we don&apos;t want pdbs and .net assemblies&#xd;
-cd %MG_BUILD_AREA%\MgDev\Oem\FDO\Bin\Release&#xd;
+cd /d %MG_BUILD_AREA%\MgDev\Oem\FDO\Bin\Release&#xd;
 del /Q OSGeo.FDO.*&#xd;
 del /Q *.pdb&#xd;
 &#xd;
 :build_mapguide&#xd;
-cd %MG_BUILD_AREA%\MgDev&#xd;
+cd /d %MG_BUILD_AREA%\MgDev&#xd;
 echo [build]: Stamp version numbers %MG_VER_MAJOR%.%MG_VER_MINOR%.%MG_VER_BUILD%.%MG_REVISION%&#xd;
 SET BUILD_ACTION=Stamp version numbers&#xd;
 cscript updateversion.vbs /major:%MG_VER_MAJOR% /minor:%MG_VER_MINOR% /point:%MG_VER_BUILD% /build:%MG_REVISION%&#xd;
@@ -171,12 +189,12 @@ if &quot;%errorlevel%&quot;==&quot;1&quot; goto error&#xd;
 &#xd;
 REM ========================================= MapGuide ====================================================&#xd;
 &#xd;
-cd %MG_BUILD_AREA%\MgDev&#xd;
+cd /d %MG_BUILD_AREA%\MgDev&#xd;
 echo [build]: Set env vars&#xd;
 call setenvironment.bat&#xd;
 &#xd;
 echo [build]: build oem/server/web&#xd;
-cd %MG_BUILD_AREA%\MgDev&#xd;
+cd /d %MG_BUILD_AREA%\MgDev&#xd;
 SET BUILD_ACTION=build oem/server/web&#xd;
 call build.bat&#xd;
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error&#xd;
@@ -307,6 +325,10 @@ goto end&#xd;
 echo An error occurred while building MapGuide: %BUILD_ACTION%&#xd;
 exit /b 1&#xd;
 :end&#xd;
+if &quot;%CLEAR_WORKING_AREA_AFTER%&quot;==&quot;true&quot; (&#xd;
+    echo [prepare]: Clearing build area (%MG_BUILD_AREA%)&#xd;
+    rd /S /Q %MG_BUILD_AREA%&#xd;
+)&#xd;
 exit /b 0</command>
     </hudson.tasks.BatchFile>
   </builders>

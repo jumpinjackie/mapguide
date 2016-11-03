@@ -2,20 +2,22 @@
 <project>
   <actions/>
   <description></description>
-  <logRotator class="hudson.tasks.LogRotator">
-    <daysToKeep>-1</daysToKeep>
-    <numToKeep>5</numToKeep>
-    <artifactDaysToKeep>-1</artifactDaysToKeep>
-    <artifactNumToKeep>-1</artifactNumToKeep>
-  </logRotator>
   <keepDependencies>false</keepDependencies>
   <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>5</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
           <name>VersionLabel</name>
           <description>The release version label</description>
-          <defaultValue>6.0m5</defaultValue>
+          <defaultValue>6.0m6</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BASE_VERSION</name>
@@ -25,7 +27,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <scm class="hudson.scm.SubversionSCM" plugin="subversion@2.5.3">
+  <scm class="hudson.scm.SubversionSCM" plugin="subversion@2.7.1">
     <locations>
       <hudson.scm.SubversionSCM_-ModuleLocation>
         <remote>http://svn.osgeo.org/mapguide/trunk/Tools/Maestro</remote>
@@ -48,7 +50,7 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <jdk>(Default)</jdk>
+  <jdk>(System)</jdk>
   <triggers>
     <hudson.triggers.SCMTrigger>
       <spec>H/15 * * * *</spec>
@@ -72,7 +74,7 @@ pushd &quot;%WORKSPACE%\Maestro&quot;&#xd;
 .nuget\nuget.exe restore Maestro_All.sln&#xd;
 popd</command>
     </hudson.tasks.BatchFile>
-    <hudson.plugins.msbuild.MsBuildBuilder plugin="msbuild@1.24">
+    <hudson.plugins.msbuild.MsBuildBuilder plugin="msbuild@1.26">
       <msBuildName>MSBuild 14.0</msBuildName>
       <msBuildFile>Maestro\Maestro_All.sln</msBuildFile>
       <cmdLineArgs>/p:Configuration=Release</cmdLineArgs>
@@ -114,7 +116,7 @@ if not exist &quot;%MG_BUILD_ARTIFACT_PATH%\maestro&quot; mkdir &quot;%MG_BUILD_
 7z a -tzip -mx9 &quot;%MG_BUILD_ARTIFACT_PATH%\maestro\MapGuideMaestro-%VersionLabel%-Release.zip&quot; .&#xd;
 popd</command>
     </hudson.tasks.BatchFile>
-    <hudson.plugins.msbuild.MsBuildBuilder plugin="msbuild@1.24">
+    <hudson.plugins.msbuild.MsBuildBuilder plugin="msbuild@1.26">
       <msBuildName>MSBUILD 4.0 x86</msBuildName>
       <msBuildFile>Doc\MaestroAPI.shfbproj</msBuildFile>
       <cmdLineArgs></cmdLineArgs>

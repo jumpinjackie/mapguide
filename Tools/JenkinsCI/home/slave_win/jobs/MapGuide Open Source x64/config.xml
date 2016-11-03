@@ -2,20 +2,22 @@
 <project>
   <actions/>
   <description></description>
-  <logRotator class="hudson.tasks.LogRotator">
-    <daysToKeep>-1</daysToKeep>
-    <numToKeep>1</numToKeep>
-    <artifactDaysToKeep>-1</artifactDaysToKeep>
-    <artifactNumToKeep>-1</artifactNumToKeep>
-  </logRotator>
   <keepDependencies>false</keepDependencies>
   <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>1</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
           <name>RELEASE_LABEL64</name>
           <description></description>
-          <defaultValue>Beta1</defaultValue>
+          <defaultValue>Trunk</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>WITH_ARCSDE</name>
@@ -38,19 +40,19 @@
           <defaultValue>0</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>MG_BUILD_SRC64</name>
+          <name>_MG_BUILD_SRC64</name>
           <description></description>
-          <defaultValue>C:\working\sources\mg-trunk</defaultValue>
+          <defaultValue>mg-trunk</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>FDO_SRC64</name>
+          <name>_FDO_SRC64</name>
           <description></description>
-          <defaultValue>C:\builds\fdo\4.1.0\x64\Fdo</defaultValue>
+          <defaultValue>fdo\4.1.0\x64\Fdo</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>INSTANT_SETUP_SRC</name>
+          <name>_INSTANT_SETUP_SRC</name>
           <description></description>
-          <defaultValue>C:\working\sources\MgInstantSetup</defaultValue>
+          <defaultValue>MgInstantSetup</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>CLEAR_WORKING_AREA</name>
@@ -58,15 +60,25 @@
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>MG_STAMP_FILE_SOURCE64</name>
+          <name>_MG_STAMP_FILE_SOURCE64</name>
           <description></description>
-          <defaultValue>C:\working\sources\mapguide_trunk_revision.txt</defaultValue>
+          <defaultValue>mapguide_trunk_revision.txt</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MG_VS_SUFFIX64</name>
           <description>The VS suffix used for naming the mg-desktop zip package</description>
           <defaultValue>vc14</defaultValue>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>MG_RUN_UNIT_TESTS64</name>
+          <description>Tick to also run any MapGuide unit tests specified</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>CLEAR_WORKING_AREA_AFTER</name>
+          <description>If ticked, will clear the build area after successful build</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
@@ -103,11 +115,22 @@ SET MG_VER_MAJOR_MINOR=%MG_VER_MAJOR%.%MG_VER_MINOR%&#xd;
 SET MG_VER_MAJOR_MINOR_BUILD=%MG_VER_MAJOR_MINOR%.%MG_VER_BUILD%&#xd;
 SET MG_BUILD_OUTPUT_ROOT64=%MG_BUILD_ARTIFACT_PATH%\mapguide&#xd;
 SET MG_BUILD_OUTPUT64=%MG_BUILD_OUTPUT_ROOT64%\%MG_VER_MAJOR_MINOR_BUILD%\x64\release&#xd;
-SET MG_BUILD_AREA64=%MG_BUILD_AREA%\mapguide\%MG_VER_MAJOR_MINOR_BUILD%\x64&#xd;
+SET MG_BUILD_AREA64=%MG_BUILD_AREA2%\mapguide\%MG_VER_MAJOR_MINOR_BUILD%\x64&#xd;
 SET REVNUM_FILE64=%MG_TOOL_PATH%\revnum.pl&#xd;
 SET MG_STAMP_FILE64=%MG_BUILD_ARTIFACT_PATH%\last_mapguide_%MG_VER_MAJOR_MINOR_BUILD%_revision_x64.txt&#xd;
 SET BUILD_ACTION=&#xd;
 &#xd;
+SET FDO_SRC64=%MG_BUILD_ARTIFACT_PATH%\%_FDO_SRC64%&#xd;
+SET MG_BUILD_SRC64=%MG_SOURCES_ROOT%\%_MG_BUILD_SRC64%&#xd;
+SET INSTANT_SETUP_SRC=%MG_SOURCES_ROOT%\%_INSTANT_SETUP_SRC%&#xd;
+SET MG_STAMP_FILE_SOURCE64=%MG_SOURCES_ROOT%\%_MG_STAMP_FILE_SOURCE64%&#xd;
+&#xd;
+echo ================== Build Vars for MapGuide ============================&#xd;
+echo FDO_SRC64                = %FDO_SRC64%&#xd;
+echo MG_BUILD_SRC64           = %MG_BUILD_SRC64%&#xd;
+echo INSTANT_SETUP_SRC        = %INSTANT_SETUP_SRC%&#xd;
+echo MG_STAMP_FILE_SOURCE64   = %MG_STAMP_FILE_SOURCE64%&#xd;
+echo CLEAR_WORKING_AREA_AFTER = %CLEAR_WORKING_AREA_AFTER%&#xd;
 echo =================== Env Vars for MapGuide =============================&#xd;
 echo MG_VER_MAJOR_MINOR         = %MG_VER_MAJOR_MINOR%&#xd;
 echo MG_VER_MAJOR_MINOR_BUILD   = %MG_VER_MAJOR_MINOR_BUILD%&#xd;
@@ -119,6 +142,7 @@ echo MG_STAMP_FILE64            = %MG_STAMP_FILE64%&#xd;
 echo INSTANT_SETUP_SRC          = %INSTANT_SETUP_SRC%&#xd;
 echo JAVA_HOME                  = %JAVA_HOME%&#xd;
 echo ANT_HOME                   = %ANT_HOME%&#xd;
+echo MG_RUN_UNIT_TESTS64        = %MG_RUN_UNIT_TESTS64%&#xd;
 echo =======================================================================&#xd;
 &#xd;
 echo [prepare]: Cleaning out build artifacts&#xd;
@@ -150,32 +174,32 @@ svn export %MG_BUILD_SRC64%\MgDev %MG_BUILD_AREA64%\MgDev --force -q&#xd;
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error&#xd;
 &#xd;
 echo [prepare]: Setup FDO in Oem&#xd;
-cd %MG_BUILD_AREA64%\MgDev\Oem\FDO&#xd;
+cd /d %MG_BUILD_AREA64%\MgDev\Oem\FDO&#xd;
 xcopy /S /Y /I %FDO_SRC64%\Inc Inc&#xd;
 xcopy /S /Y /I %FDO_SRC64%\Lib Lib64&#xd;
 xcopy /S /Y /I %FDO_SRC64%\Bin Bin\Release64&#xd;
 xcopy /S /Y /I %FDO_SRC64%\Bin\com\*.* Bin\Release64\com&#xd;
 REM For release we don&apos;t want pdbs and .net assemblies&#xd;
-cd %MG_BUILD_AREA64%\MgDev\Oem\FDO\Bin\Release64&#xd;
+cd /d %MG_BUILD_AREA64%\MgDev\Oem\FDO\Bin\Release64&#xd;
 del /Q OSGeo.FDO.*&#xd;
 del /Q *.pdb&#xd;
 &#xd;
 :build_mapguide&#xd;
-cd %MG_BUILD_AREA64%\MgDev&#xd;
+cd /d %MG_BUILD_AREA64%\MgDev&#xd;
 echo [build]: Stamp version numbers&#xd;
-SET BUILD_ACTION=Stamp version numbers&#xd;
+SET BUILD_ACTION=Stamp version numbers %MG_VER_MAJOR%.%MG_VER_MINOR%.%MG_VER_BUILD%.%MG_REVISION64%&#xd;
 cscript updateversion.vbs /major:%MG_VER_MAJOR% /minor:%MG_VER_MINOR% /point:%MG_VER_BUILD% /build:%MG_REVISION64%&#xd;
 call stampassemblies.bat %MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%&#xd;
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error&#xd;
 &#xd;
 REM ========================================= MapGuide ====================================================&#xd;
 &#xd;
-cd %MG_BUILD_AREA64%\MgDev&#xd;
+cd /d %MG_BUILD_AREA64%\MgDev&#xd;
 echo [build]: Set env vars&#xd;
 call setenvironment64.bat&#xd;
 &#xd;
 echo [build]: build oem/server/web&#xd;
-cd %MG_BUILD_AREA64%\MgDev&#xd;
+cd /d %MG_BUILD_AREA64%\MgDev&#xd;
 SET BUILD_ACTION=build oem/server/web&#xd;
 call build.bat&#xd;
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error&#xd;
@@ -227,7 +251,7 @@ popd&#xd;
 pushd %MG_BUILD_AREA64%\MgDev\Release64&#xd;
 echo [build]: Copy mg-desktop build artifacts (zip dist)&#xd;
 SET BUILD_ACTION=Copy mg-desktop build artifacts (zip dist)&#xd;
-7z a -mx9 %MG_BUILD_ARTIFACT_PATH%\mg-desktop\mg-desktop-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%-net40-%MG_VS_SUFFIX64%-x64.zip Desktop DesktopSamples&#xd;
+7z a -mx9 %MG_BUILD_ARTIFACT_PATH%\mg-desktop\mg-desktop-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%-net40-vc11-x64.zip Desktop DesktopSamples&#xd;
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error&#xd;
 popd&#xd;
 &#xd;
@@ -266,7 +290,7 @@ popd&#xd;
 :copy_instantsetup_build_artifacts&#xd;
 echo [build]: Copy MgInstantSetup build artifacts&#xd;
 if not exist %MG_BUILD_OUTPUT64%\Setup mkdir %MG_BUILD_OUTPUT64%\Setup&#xd;
-pushd %INSTANT_SETUP_SRC%\out\release&#xd;
+pushd %INSTANT_SETUP_SRC%\InstantSetup\out\release&#xd;
 copy /Y *.exe %MG_BUILD_OUTPUT64%\Setup&#xd;
 copy /Y *.pdb %MG_BUILD_OUTPUT64%\Setup&#xd;
 copy /Y *.dll %MG_BUILD_OUTPUT64%\Setup&#xd;
@@ -300,12 +324,21 @@ if &quot;%errorlevel%&quot;==&quot;1&quot; goto error&#xd;
 move /Y Output\en-US\MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%-%RELEASE_LABEL64%-x64.exe %MG_BUILD_OUTPUT_ROOT64%&#xd;
 popd&#xd;
 &#xd;
+if &quot;%MG_RUN_UNIT_TESTS64%&quot;==&quot;false&quot; goto end&#xd;
+:server_unit_test&#xd;
+pushd %MG_BUILD_AREA64%\MgDev\Server\bin\Release64&#xd;
+mgserver.exe test&#xd;
+popd&#xd;
 goto end&#xd;
 &#xd;
 :error&#xd;
 echo An error occurred while building MapGuide: %BUILD_ACTION%&#xd;
 exit /b 1&#xd;
 :end&#xd;
+if &quot;%CLEAR_WORKING_AREA_AFTER%&quot;==&quot;true&quot; (&#xd;
+    echo [prepare]: Clearing build area (%MG_BUILD_AREA64%)&#xd;
+    rd /S /Q %MG_BUILD_AREA64%&#xd;
+)&#xd;
 exit /b 0</command>
     </hudson.tasks.BatchFile>
   </builders>

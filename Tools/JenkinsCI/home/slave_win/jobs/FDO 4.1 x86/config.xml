@@ -2,20 +2,22 @@
 <project>
   <actions/>
   <description></description>
-  <logRotator class="hudson.tasks.LogRotator">
-    <daysToKeep>-1</daysToKeep>
-    <numToKeep>1</numToKeep>
-    <artifactDaysToKeep>-1</artifactDaysToKeep>
-    <artifactNumToKeep>-1</artifactNumToKeep>
-  </logRotator>
   <keepDependencies>false</keepDependencies>
   <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>1</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>FDO_BUILD_SRC</name>
+          <name>_FDO_BUILD_SRC</name>
           <description>FDO Source directory</description>
-          <defaultValue>C:\working\sources\fdo-4.1</defaultValue>
+          <defaultValue>fdo-4.1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>FDO_VERSION</name>
@@ -24,17 +26,22 @@
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>CLEAR_WORKING_AREA</name>
-          <description></description>
+          <description>If ticked, will clear the working area first (which may exist from a previous build) before starting the build.</description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>FDO_STAMP_FILE_SOURCE</name>
-          <description></description>
-          <defaultValue>C:\working\sources\fdo_41_revision.txt</defaultValue>
+          <name>_FDO_STAMP_FILE_SOURCE</name>
+          <description>The file name of the stamped revision file containing the FDO svn revision number. Relative to the global source root</description>
+          <defaultValue>fdo_41_revision.txt</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>FDO_RUN_UNIT_TESTS</name>
-          <description></description>
+          <description>Tick to also run any FDO unit tests specified</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>CLEAR_WORKING_AREA</name>
+          <description>If ticked, will clear the build area after successful build</description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
@@ -46,7 +53,7 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <jdk>(Default)</jdk>
+  <jdk>(System)</jdk>
   <triggers/>
   <concurrentBuild>false</concurrentBuild>
   <builders>
@@ -61,6 +68,14 @@ SET REVNUM_FILE=%MG_TOOL_PATH%\revnum.pl&#xd;
 SET FDO_STAMP_FILE=%MG_BUILD_ARTIFACT_PATH%\last_fdo_%FDO_VERSION%_revision_x86.txt&#xd;
 SET FDO_WORKING_AREA=%MG_BUILD_AREA%\FDO\%FDO_VERSION%\x86&#xd;
 &#xd;
+SET FDO_BUILD_SRC=%MG_SOURCES_ROOT%\%_FDO_BUILD_SRC%&#xd;
+SET FDO_STAMP_FILE_SOURCE=%MG_SOURCES_ROOT%\%_FDO_STAMP_FILE_SOURCE%&#xd;
+&#xd;
+echo ============ Build Vars for FDO =========================&#xd;
+echo FDO_BUILD_SRC            = %FDO_BUILD_SRC%&#xd;
+echo FDO_STAMP_FILE_SOURCE    = %FDO_STAMP_FILE_SOURCE%&#xd;
+echo FDO_WORKING_AREA         = %FDO_WORKING_AREA%&#xd;
+echo CLEAR_WORKING_AREA_AFTER = %CLEAR_WORKING_AREA_AFTER%&#xd;
 echo ============ Env Vars for FDO Build =====================&#xd;
 echo FDOMYSQL           = %FDOMYSQL%&#xd;
 echo FDOORACLE          = %FDOORACLE%&#xd;
@@ -165,6 +180,10 @@ goto end&#xd;
 echo An error occurred while building FDO: %BUILD_ACTION%&#xd;
 exit /b 1&#xd;
 :end&#xd;
+if &quot;%CLEAR_WORKING_AREA_AFTER%&quot;==&quot;true&quot; (&#xd;
+    echo [prepare]: Clearing build area (%FDO_WORKING_AREA%)&#xd;
+    rd /S /Q %FDO_WORKING_AREA%&#xd;
+)&#xd;
 exit /b 0</command>
     </hudson.tasks.BatchFile>
   </builders>

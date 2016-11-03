@@ -2,20 +2,22 @@
 <project>
   <actions/>
   <description></description>
-  <logRotator class="hudson.tasks.LogRotator">
-    <daysToKeep>-1</daysToKeep>
-    <numToKeep>1</numToKeep>
-    <artifactDaysToKeep>-1</artifactDaysToKeep>
-    <artifactNumToKeep>-1</artifactNumToKeep>
-  </logRotator>
   <keepDependencies>false</keepDependencies>
   <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>1</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>FDO_BUILD_SRC64</name>
+          <name>_FDO_BUILD_SRC64</name>
           <description>FDO Source directory</description>
-          <defaultValue>C:\working\sources\fdo-trunk</defaultValue>
+          <defaultValue>fdo-trunk</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>FDO_VERSION64</name>
@@ -28,9 +30,9 @@
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>FDO_STAMP_FILE_SOURCE64</name>
+          <name>_FDO_STAMP_FILE_SOURCE64</name>
           <description></description>
-          <defaultValue>C:\working\sources\fdo_trunk_revision.txt</defaultValue>
+          <defaultValue>fdo_trunk_revision.txt</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>FDO_RUN_UNIT_TESTS64</name>
@@ -45,7 +47,7 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <jdk>(Default)</jdk>
+  <jdk>(System)</jdk>
   <triggers/>
   <concurrentBuild>false</concurrentBuild>
   <builders>
@@ -60,6 +62,13 @@ SET REVNUM_FILE64=%MG_TOOL_PATH%\revnum.pl&#xd;
 SET FDO_STAMP_FILE64=%MG_BUILD_ARTIFACT_PATH%\last_fdo_%FDO_VERSION64%_revision_x64.txt&#xd;
 SET FDO_WORKING_AREA64=%MG_BUILD_AREA%\FDO\%FDO_VERSION64%\x64&#xd;
 &#xd;
+SET FDO_BUILD_SRC64=%MG_SOURCES_ROOT%\%_FDO_BUILD_SRC64%&#xd;
+SET FDO_STAMP_FILE_SOURCE64=%MG_SOURCES_ROOT%\%_FDO_STAMP_FILE_SOURCE64%&#xd;
+&#xd;
+echo ============ Build Vars for FDO =========================&#xd;
+echo FDO_BUILD_SRC64         = %FDO_BUILD_SRC64%&#xd;
+echo FDO_STAMP_FILE_SOURCE64 = %FDO_STAMP_FILE_SOURCE64%&#xd;
+echo FDO_WORKING_AREA64      = %FDO_WORKING_AREA64%&#xd;
 echo ============ Env Vars for FDO Build =====================&#xd;
 echo FDOMYSQL           = %FDOMYSQL%&#xd;
 echo FDOORACLE          = %FDOORACLE%&#xd;

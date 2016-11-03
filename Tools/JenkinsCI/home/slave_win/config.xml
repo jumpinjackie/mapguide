@@ -3,16 +3,19 @@
   <disabledAdministrativeMonitors>
     <string>hudson.diagnosis.ReverseProxySetupMonitor</string>
   </disabledAdministrativeMonitors>
-  <version>1.630</version>
-  <numExecutors>2</numExecutors>
+  <version>2.19.1</version>
+  <numExecutors>3</numExecutors>
   <mode>NORMAL</mode>
   <useSecurity>true</useSecurity>
-  <authorizationStrategy class="hudson.security.AuthorizationStrategy$Unsecured"/>
-  <securityRealm class="hudson.security.SecurityRealm$None"/>
+  <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
+    <denyAnonymousReadAccess>false</denyAnonymousReadAccess>
+  </authorizationStrategy>
+  <securityRealm class="hudson.security.LegacySecurityRealm"/>
   <disableRememberMe>false</disableRememberMe>
   <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
   <workspaceDir>${ITEM_ROOTDIR}/workspace</workspaceDir>
   <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
+  <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
   <jdks>
     <jdk>
       <name>JDK6 32-bit</name>
@@ -51,21 +54,54 @@
           <default>
             <comparator class="hudson.util.CaseInsensitiveComparator"/>
           </default>
-          <int>6</int>
+          <int>8</int>
           <string>ANT_HOME</string>
-          <string>C:\tools\apache-ant-1.9.4</string>
+          <string>C:\apache-ant-1.9.7</string>
           <string>MG_BUILD_AREA</string>
-          <string>C:\working\build_area</string>
+          <string>Y:\jenkins_build_area</string>
+          <string>MG_BUILD_AREA2</string>
+          <string>Z:\jenkins_build_area</string>
           <string>MG_BUILD_ARTIFACT_PATH</string>
-          <string>C:\builds</string>
+          <string>D:\builds</string>
           <string>MG_LIB_ROOT</string>
-          <string>C:\working\libs</string>
+          <string>D:\working\libs</string>
+          <string>MG_SOURCES_ROOT</string>
+          <string>D:\working\sources</string>
           <string>MG_TOOL_PATH</string>
-          <string>C:\working\JenkinsCI\tools</string>
+          <string>D:\working\JenkinsCI\tools</string>
           <string>WINDOWS_SDK_71_ROOT</string>
           <string>C:\Program Files\Microsoft SDKs\Windows\v7.1</string>
         </tree-map>
       </envVars>
     </hudson.slaves.EnvironmentVariablesNodeProperty>
+    <hudson.tools.ToolLocationNodeProperty>
+      <locations>
+        <hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+          <type>hudson.model.JDK$DescriptorImpl</type>
+          <name>JDK6 32-bit</name>
+          <home>C:\Program Files (x86)\Java\jdk1.6.0_45</home>
+        </hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+        <hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+          <type>hudson.model.JDK$DescriptorImpl</type>
+          <name>JDK6 64-bit</name>
+          <home>C:\Program Files\Java\jdk1.6.0_45</home>
+        </hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+        <hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+          <type>hudson.plugins.msbuild.MsBuildInstallation$DescriptorImpl</type>
+          <name>MSBUILD 4.0 x86</name>
+          <home>C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe</home>
+        </hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+        <hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+          <type>hudson.plugins.msbuild.MsBuildInstallation$DescriptorImpl</type>
+          <name>MSBUILD 4.0 x64</name>
+          <home>C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe</home>
+        </hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+        <hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+          <type>hudson.plugins.msbuild.MsBuildInstallation$DescriptorImpl</type>
+          <name>MSBuild 14.0</name>
+          <home>C:\Windows\Microsoft.NET\Framework64\v4.0.30319</home>
+        </hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+      </locations>
+    </hudson.tools.ToolLocationNodeProperty>
   </globalNodeProperties>
 </hudson>
