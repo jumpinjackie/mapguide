@@ -1637,6 +1637,8 @@ void MgServerMappingService::CreateLayerItem(INT32 requestedFeatures, INT32 icon
     if (NULL != ldf)
     {
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf);
+        MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf);
+        MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf);
         if (NULL != vl)
         {
             MdfModel::VectorScaleRangeCollection* vsrs = vl->GetScaleRanges();
@@ -1741,6 +1743,41 @@ void MgServerMappingService::CreateLayerItem(INT32 requestedFeatures, INT32 icon
 
                 xml.append("</ScaleRange>\n");
             }
+        }
+        else if (NULL != gl)
+        {
+            MdfModel::GridScaleRangeCollection* gsrs = gl->GetScaleRanges();
+            for (INT32 i = 0; i < gsrs->GetCount(); i++)
+            {
+                MdfModel::GridScaleRange* gsr = gsrs->GetAt(i);
+                xml.append("<ScaleRange>\n");
+                xml.append("<MinScale>");
+                std::string sMinScale;
+                MgUtil::DoubleToString(gsr->GetMinScale(), sMinScale);
+                xml.append(sMinScale);
+                xml.append("</MinScale>\n");
+                xml.append("<MaxScale>");
+                std::string sMaxScale;
+                MgUtil::DoubleToString(gsr->GetMaxScale(), sMaxScale);
+                xml.append(sMaxScale);
+                xml.append("</MaxScale>\n");
+                xml.append("</ScaleRange>\n");
+            }
+        }
+        else if (NULL != dl)
+        {
+            xml.append("<ScaleRange>\n");
+            xml.append("<MinScale>");
+            std::string sMinScale;
+            MgUtil::DoubleToString(dl->GetMinScale(), sMinScale);
+            xml.append(sMinScale);
+            xml.append("</MinScale>\n");
+            xml.append("<MaxScale>");
+            std::string sMaxScale;
+            MgUtil::DoubleToString(dl->GetMaxScale(), sMaxScale);
+            xml.append(sMaxScale);
+            xml.append("</MaxScale>\n");
+            xml.append("</ScaleRange>\n");
         }
         else
         {
