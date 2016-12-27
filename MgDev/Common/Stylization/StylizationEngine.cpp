@@ -1038,7 +1038,14 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
             // evaluate the style (all expressions inside it) and convert to a
             // constant screen space render style
-            style->evaluate(&evalCtx);
+            try
+            {
+                style->evaluate(&evalCtx);
+            }
+            catch (FdoException* e)
+            {
+                ProcessStylizerException(e, __LINE__, __WFILE__);
+            }
 
             // compute offset to apply to the clipping bounds
             if (bClip)
@@ -1210,7 +1217,14 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
                 else
                 {
                     // apply the style to the geometry using the renderer
-                    style->apply(&applyCtx);
+                    try
+                    {
+                        style->apply(&applyCtx);
+                    }
+                    catch (FdoException* e)
+                    {
+                        ProcessStylizerException(e, __LINE__, __WFILE__);
+                    }
                 }
             }
         }
