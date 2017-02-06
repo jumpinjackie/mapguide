@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2017 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -366,6 +366,29 @@ PUBLISHED_API:
     ///
     static const STRING Password;       ///\if INTERNAL value("%MG_PASSWORD%") \endif
 
+	////////////////////////////////////////////////////////////////
+	/// \brief
+	/// Replaced with the proxy server name.
+	///
+	static const STRING ProxyServer;       ///\if INTERNAL value("%MG_PROXY_SERVER%") \endif
+
+	////////////////////////////////////////////////////////////////
+	/// \brief
+	/// Replaced with the proxy server port.
+	///
+	static const STRING ProxyPort;       ///\if INTERNAL value("%MG_PROXY_PORT%") \endif
+
+	////////////////////////////////////////////////////////////////
+	/// \brief
+	/// Replaced with the proxy server user name.
+	///
+	static const STRING ProxyUsername;       ///\if INTERNAL value("%MG_PROXY_USERNAME%") \endif
+
+	////////////////////////////////////////////////////////////////
+	/// \brief
+	/// Replaced with the proxy server password.
+	///
+	static const STRING ProxyPassword;       ///\if INTERNAL value("%MG_PROXY_PASSWORD%") \endif
 
     ////////////////////////////////////////////////////////////////
     /// \brief
@@ -404,16 +427,49 @@ PUBLISHED_API:
 class MG_PLATFORMBASE_API MgResourceDataName
 {
 PUBLISHED_API:
+	/////////////////////////////////////////////////////////////////
+	/// \brief
+	/// Data name for adding default credentials to a resource.
+	///
+	/// \note1
+	///
+	/// \remarks
+	/// For an example, see \link MgResourceService::SetResourceData SetResourceData \endlink.
+	///
+	static const STRING UserCredentials;    ///\if INTERNAL value("MG_USER_CREDENTIALS") \endif
+
     /////////////////////////////////////////////////////////////////
     /// \brief
-    /// Data name for adding default credentials to a resource.
+    /// Data name for adding proxy server name to a resource.
     ///
     /// \note1
     ///
     /// \remarks
     /// For an example, see \link MgResourceService::SetResourceData SetResourceData \endlink.
     ///
-    static const STRING UserCredentials;    ///\if INTERNAL value("MG_USER_CREDENTIALS") \endif
+    static const STRING ProxyServerName;    ///\if INTERNAL value("MG_PROXY_SERVER") \endif
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Data name for adding proxy server port to a resource.
+    ///
+    /// \note1
+    ///
+    /// \remarks
+    /// For an example, see \link MgResourceService::SetResourceData SetResourceData \endlink.
+    ///
+	static const STRING ProxyServerPort;    ///\if INTERNAL value("MG_PROXY_PORT") \endif
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Data name for adding proxy credentials to a resource.
+    ///
+    /// \note1
+    ///
+    /// \remarks
+    /// For an example, see \link MgResourceService::SetResourceData SetResourceData \endlink.
+    ///
+	static const STRING ProxyCredentials;    ///\if INTERNAL value("MG_PROXY_CREDENTIALS") \endif
 };
 
 

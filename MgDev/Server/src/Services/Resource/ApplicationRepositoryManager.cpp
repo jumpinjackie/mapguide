@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2017 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -945,7 +945,7 @@ void MgApplicationRepositoryManager::SetResourceData(
     {
         dataValue = data->ToString();
 
-        if (MgResourceDataName::UserCredentials == dataName)
+        if (MgResourceDataName::UserCredentials == dataName || MgResourceDataName::ProxyCredentials == dataName)
         {
             MgCryptographyManager cryptoManager;
 
@@ -1221,7 +1221,7 @@ MgByteReader* MgApplicationRepositoryManager::GetResourceData(
     {
         string data;
 
-        if (MgResourceDataName::UserCredentials == dataName)
+        if (MgResourceDataName::UserCredentials == dataName || MgResourceDataName::ProxyCredentials == dataName)
         {
             // For security purpose, only the decrypted username
             // (no decrypted password) is returned.

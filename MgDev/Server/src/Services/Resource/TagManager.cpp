@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2017 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -175,9 +175,9 @@ void MgTagManager::ValidateTag(CREFSTRING name, CREFSTRING type)
     }
 
     if ((MgResourceDataType::String != type
-            && MgResourceDataName::UserCredentials == name)
+            && ((MgResourceDataName::UserCredentials == name) || (MgResourceDataName::ProxyServerName == name) || (MgResourceDataName::ProxyServerPort == name) || (MgResourceDataName::ProxyCredentials == name)))
         || (MgResourceDataType::String == type
-                && MgResourceDataName::UserCredentials != name))
+                && ((MgResourceDataName::UserCredentials != name) && (MgResourceDataName::ProxyServerName != name) && (MgResourceDataName::ProxyServerPort != name) && (MgResourceDataName::ProxyCredentials != name))))
     {
         throw new MgInvalidResourceDataTypeException(
             L"MgTagManager.ValidateTag", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -318,6 +318,46 @@ int MgTagManager::SubstituteTags(const MgDataBindingInfo& dataBindingInfo,
         count += MgUtil::ReplaceString(
             MgUtil::WideCharToMultiByte(MgResourceTag::Password),
             password,
+            doc, -1);
+
+        MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgTagManager.SubstituteTags")
+    }
+
+	if (GetTag(MgResourceDataName::ProxyServerName, tagInfo, false))
+	{
+		CREFSTRING proxyServer = tagInfo.GetAttribute(MgTagInfo::TokenValue);
+		count += MgUtil::ReplaceString(
+            MgUtil::WideCharToMultiByte(MgResourceTag::ProxyServer),
+			MgUtil::WideCharToMultiByte(proxyServer),
+            doc, -1);
+	}
+
+    if (GetTag(MgResourceDataName::ProxyServerPort, tagInfo, false))
+    {
+        CREFSTRING proxyPort = tagInfo.GetAttribute(MgTagInfo::TokenValue);
+        count += MgUtil::ReplaceString(
+            MgUtil::WideCharToMultiByte(MgResourceTag::ProxyPort),
+            MgUtil::WideCharToMultiByte(proxyPort),
+            doc, -1);
+    }
+
+    if (GetTag(MgResourceDataName::ProxyCredentials, tagInfo, false))
+    {
+        MG_CRYPTOGRAPHY_TRY()
+
+            MgCryptographyUtil cryptoUtil;
+        string proxyUsername, proxyPassword;
+
+        cryptoUtil.DecryptCredentials(MgUtil::WideCharToMultiByte(
+            tagInfo.GetAttribute(MgTagInfo::TokenValue)), proxyUsername, proxyPassword);
+
+        count += MgUtil::ReplaceString(
+            MgUtil::WideCharToMultiByte(MgResourceTag::ProxyUsername),
+            proxyUsername,
+            doc, -1);
+        count += MgUtil::ReplaceString(
+            MgUtil::WideCharToMultiByte(MgResourceTag::ProxyPassword),
+            proxyPassword,
             doc, -1);
 
         MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgTagManager.SubstituteTags")

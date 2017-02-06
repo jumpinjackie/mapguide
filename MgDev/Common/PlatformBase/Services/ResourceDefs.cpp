@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2017 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -69,6 +69,10 @@ const STRING MgResourceTag::LoginUsername           = L"%MG_LOGIN_USERNAME%";
 const STRING MgResourceTag::LoginPassword           = L"%MG_LOGIN_PASSWORD%";
 const STRING MgResourceTag::Username                = L"%MG_USERNAME%";
 const STRING MgResourceTag::Password                = L"%MG_PASSWORD%";
+const STRING MgResourceTag::ProxyServer             = L"%MG_PROXY_SERVER%";
+const STRING MgResourceTag::ProxyPort               = L"%MG_PROXY_PORT%";
+const STRING MgResourceTag::ProxyUsername           = L"%MG_PROXY_USERNAME%";
+const STRING MgResourceTag::ProxyPassword           = L"%MG_PROXY_PASSWORD%";
 const STRING MgResourceTag::DataFilePath            = L"%MG_DATA_FILE_PATH%";
 const STRING MgResourceTag::TileCachePath           = L"%MG_TILE_CACHE_PATH%";
 const STRING MgResourceTag::DataPathAliasBegin      = L"%MG_DATA_PATH_ALIAS[";
@@ -79,6 +83,9 @@ const STRING MgResourceTag::DataPathAliasEnd        = L"]%";
 /// Resource data names
 ///
 const STRING MgResourceDataName::UserCredentials    = L"MG_USER_CREDENTIALS";
+const STRING MgResourceDataName::ProxyServerName    = L"MG_PROXY_SERVER";
+const STRING MgResourceDataName::ProxyServerPort    = L"MG_PROXY_PORT";
+const STRING MgResourceDataName::ProxyCredentials   = L"MG_PROXY_CREDENTIALS";
 
 
 ///////////////////////////////////////////////////////////////////////////////
