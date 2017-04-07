@@ -132,6 +132,8 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../../Common/Geometry/PolygonCollection.h" />
     <Header path="../../../../Common/Geometry/Transform.h" />
     <Header path="../../../../Common/Geometry/WktReaderWriter.h" />
+  
+    <Header path="../../../../Common/Geometry/GeometrySimplifier.h" />
 
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystem.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionaryBase.h" />

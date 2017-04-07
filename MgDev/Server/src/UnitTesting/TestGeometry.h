@@ -64,6 +64,10 @@ class TestGeometry : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_GetInteriorPoint);
     CPPUNIT_TEST(TestCase_CoordinateIterator);
 
+    CPPUNIT_TEST(TestCase_Simplify_BadParams);
+    CPPUNIT_TEST(TestCase_Simplify_DP);
+    CPPUNIT_TEST(TestCase_Simplify_TP);
+
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
 
@@ -107,6 +111,10 @@ public:
     void TestCase_GetCentroid();
     void TestCase_GetInteriorPoint();
     void TestCase_CoordinateIterator();
+
+    void TestCase_Simplify_BadParams();
+    void TestCase_Simplify_DP();
+    void TestCase_Simplify_TP();
 
     MgPoint*             CreatePoint();
     MgLineString*        CreateLineString();

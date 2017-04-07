@@ -39,6 +39,7 @@
 #include "Geometry.cpp"
 #include "GeometryCollection.cpp"
 #include "GeometryFactory.cpp"
+#include "GeometrySimplifier.cpp"
 #include "GeometryUtil.cpp"
 #include "LinearRing.cpp"
 #include "LinearRingCollection.cpp"

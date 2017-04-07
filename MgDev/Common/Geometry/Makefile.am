@@ -83,6 +83,7 @@ include_SOURCES = \
   GeometryCollection.cpp \
   GeometryFactory.cpp \
   GeometryUtil.cpp \
+  GeometrySimplifier.cpp \
   GeosUtil.cpp \
   LinearRing.cpp \
   LinearRingCollection.cpp \
@@ -244,6 +245,8 @@ noinst_HEADERS = $(include_SOURCES) \
   GeometryExceptionDef.h \
   GeometryFactory.h \
   GeometryType.h \
+  GeometrySimplifier.h \
+  GeometrySimplificationAlgorithmType.h \
   GeometryUtil.h \
   GeosUtil.h \
   LinearRing.h \

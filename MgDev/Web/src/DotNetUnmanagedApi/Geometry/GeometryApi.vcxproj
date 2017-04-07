@@ -245,7 +245,9 @@ copy ..\dotnet.i .\language.i
     <None Include="..\catchall.code" />
     <None Include="..\dotnet.i" />
     <None Include="GeometryApiGen.xml" />
-    <None Include="GeometryConstants.xml" />
+    <None Include="GeometryConstants.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="..\getclassid.code" />
   </ItemGroup>
   <ItemGroup>

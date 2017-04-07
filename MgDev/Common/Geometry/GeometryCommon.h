@@ -105,6 +105,8 @@
 
 #include "GeometryFactory.h"
 #include "GeometryUtil.h"
+#include "GeometrySimplifier.h"
+#include "GeometrySimplificationAlgorithmType.h"
 
 #include "CoordinateSystem/CoordinateSystem.h"
 #include "CoordinateSystem/CoordinateSystemDatum.h"

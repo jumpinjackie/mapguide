@@ -2370,7 +2370,6 @@ void TestGeometry::TestCase_GetInteriorPoint()
     }
 }
 
-
 void TestGeometry::TestCase_CoordinateIterator()
 {
     try
@@ -2418,6 +2417,297 @@ void TestGeometry::TestCase_CoordinateIterator()
         Ptr<MgGeometricEntity> multiGeometry = CreateMultiGeometry();
         iterator = multiGeometry->GetCoordinates();
         CPPUNIT_ASSERT(iterator->GetCount() == 94);
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestGeometry::TestCase_Simplify_BadParams()
+{
+    try
+    {
+        Ptr<MgGeometrySimplifier> simp = new MgGeometrySimplifier();
+        Ptr<MgWktReaderWriter> wktRw = new MgWktReaderWriter();
+        Ptr<MgGeometry> geom = wktRw->Read(L"POINT (1 1)");
+
+        CPPUNIT_ASSERT_THROW_MG(simp->Simplify(NULL, 1.0, MgGeometrySimplificationAlgorithmType::DouglasPeucker), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(simp->Simplify(geom, 1.0, -1), MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(simp->Simplify(geom, 1.0, 2), MgInvalidArgumentException*);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestGeometry::TestCase_Simplify_DP()
+{
+    try
+    {
+        Ptr<MgGeometrySimplifier> simp = new MgGeometrySimplifier();
+        INT32 algo = MgGeometrySimplificationAlgorithmType::DouglasPeucker;
+        Ptr<MgWktReaderWriter> wktRw = new MgWktReaderWriter();
+
+        //1 - PolygonNoReduction
+        STRING wkt;
+        wkt = L"POLYGON((20 220, 40 220, 60 220, 80 220, 100 220, \
+                    120 220, 140 220, 140 180, 100 180, 60 180, 20 180, 20 220))";
+        Ptr<MgGeometry> gTest = wktRw->Read(wkt);
+
+        Ptr<MgGeometry> gInput = wktRw->Read(wkt);
+        Ptr<MgGeometry> gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // 2 - PolygonReductionWithSplit
+        gTest = wktRw->Read(L"MULTIPOLYGON (((40.0 240.0, 160.0 240.0, 40.0 140.0, 40.0 240.0)), \
+                    ((160.0 240.0, 280.0 240.0, 280.0 160.0, 160.0 240.0)))");
+        gInput = wktRw->Read(L"POLYGON ((40 240, 160 241, 280 240, 280 160, \
+                    160 240, 40 140, 40 240))");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+        
+        // 3 - PolygonReduction
+        gTest = wktRw->Read(L"POLYGON ((120 120, 140 199, 160 200, 180 199, 220 120, 120 120))");
+        gInput = wktRw->Read(L"POLYGON ((120 120, 121 121, 122 122, 220 120, \
+                    180 199, 160 200, 140 199, 120 120))");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // 4 - PolygonWithTouchingHole
+        gTest = wktRw->Read(L"POLYGON ((80 200, 160 200, 240 200, 240 60, 80 60, 80 200), \
+                    (160 200, 140 199, 120 120, 220 120, 180 199, 160 200)))");
+        gInput = wktRw->Read(L"POLYGON ((80 200, 240 200, 240 60, 80 60, 80 200), \
+                    (120 120, 220 120, 180 199, 160 200, 140 199, 120 120))");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // 5 - FlattishPolygon
+        gInput = wktRw->Read(L"POLYGON ((0 0, 50 0, 53 0, 55 0, 100 0, 70 1, 60 1, 50 1, 40 1, 0 0))");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        //Unlike GEOS, we don't support "POLYGON EMPTY", so we should be expecting NULL instead
+        CPPUNIT_ASSERT(NULL == gOutput.p);
+
+        // 6 - TinySquare
+        gInput = wktRw->Read(L"POLYGON ((0 5, 5 5, 5 0, 0 0, 0 1, 0 5))");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        //Unlike GEOS, we don't support "POLYGON EMPTY", so we should be expecting NULL instead
+        CPPUNIT_ASSERT(NULL == gOutput.p);
+
+        // 7 - TinyLineString
+        gTest = wktRw->Read(L"LINESTRING (0 5, 5 5)");
+        gInput = wktRw->Read(L"LINESTRING (0 5, 1 5, 2 5, 5 5)");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // 8 - MultiPoint
+        gTest = wktRw->Read(L"MULTIPOINT(80 200, 240 200, 240 60, 80 60, 80 200, 140 199, 120 120)");
+        gInput = wktRw->Read(L"MULTIPOINT(80 200, 240 200, 240 60, 80 60, 80 200, 140 199, 120 120)");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // 9 - MultiLineString
+        gTest = wktRw->Read(L"MULTILINESTRING( (0 0, 100 0), (0 0, 100 0) )");
+        gInput = wktRw->Read(L"MULTILINESTRING( (0 0, 50 0, 70 0, 80 0, 100 0), \
+                    (0 0, 50 1, 60 1, 100 0) )");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // 10 - GeometryCollection
+        gTest = wktRw->Read(L"MULTILINESTRING( (0 0, 100 0), (0 0, 100 0) )");
+        gInput = wktRw->Read(L"GEOMETRYCOLLECTION ( \
+                    MULTIPOINT (80 200, 240 200, 240 60, 80 60, 80 200, 140 199, 120 120), \
+                    POLYGON ((80 200, 240 200, 240 60, 80 60, 80 200)), \
+                    LINESTRING (80 200, 240 200, 240 60, 80 60, 80 200, 140 199, 120 120) )");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        //STRING sTest = gTest->ToAwkt(true);
+        //STRING sOutput = gOutput->ToAwkt(true);
+        //CPPUNIT_ASSERT(gTest->Equals(gOutput));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestGeometry::TestCase_Simplify_TP()
+{
+    try
+    {
+        Ptr<MgGeometrySimplifier> simp = new MgGeometrySimplifier();
+        INT32 algo = MgGeometrySimplificationAlgorithmType::TopologyPreserving;
+        Ptr<MgWktReaderWriter> wktRw = new MgWktReaderWriter();
+
+        //Point
+        Ptr<MgGeometry> gTest = wktRw->Read(L"POINT (10 10)");
+        Ptr<MgGeometry> gInput = wktRw->Read(L"POINT (10 10)");
+        Ptr<MgGeometry> gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // PolygonWithSpike
+        gTest = wktRw->Read(L"POLYGON (( \
+      3312459.605 6646878.353, \
+      3312460.524 6646875.969, \
+      3312459.427 6646878.421, \
+      3312460.014 6646886.391, \
+      3312465.889 6646887.398, \
+      3312470.827 6646884.839, \
+      3312477.289 6646871.694, \
+      3312472.748 6646869.547, \
+      3312459.605 6646878.353))");
+        gInput = wktRw->Read(L"POLYGON ((3312459.605 6646878.353, \
+      3312460.524 6646875.969, 3312459.427 6646878.421, \
+      3312460.014 6646886.391, 3312465.889 6646887.398, \
+      3312470.827 6646884.839, 3312475.4 6646878.027, \
+      3312477.289 6646871.694, 3312472.748 6646869.547, \
+      3312468.253 6646874.01, 3312463.52 6646875.779, \
+      3312459.605 6646878.353))");
+        gOutput = simp->Simplify(gInput, 2.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+
+        // PolygonNoReduction
+        gTest = wktRw->Read(L"POLYGON((20 220, 40 220, 60 220, 80 220, \
+                    100 220, 120 220, 140 220, 140 180, 100 180, \
+                    60 180, 20 180, 20 220))");
+        gInput = wktRw->Read(L"POLYGON((20 220, 40 220, 60 220, 80 220, \
+                    100 220, 120 220, 140 220, 140 180, 100 180, \
+                    60 180, 20 180, 20 220))");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // PolygonNoReductionWithConflicts
+        gTest = wktRw->Read(L"POLYGON ((40 240, 160 241, 280 240, 280 160, \
+                        160 240, 40 140, 40 240))");
+        gInput = wktRw->Read(L"POLYGON ((40 240, 160 241, 280 240, 280 160, \
+                        160 240, 40 140, 40 240))");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // PolygonWithTouchingHole
+        gTest = wktRw->Read(L"POLYGON ((80 200, 240 200, 240 60, 80 60, 80 200), \
+                    (120 120, 220 120, 180 199, 160 200, 140 199, 120 120))");
+        gInput = wktRw->Read(L"POLYGON ((80 200, 240 200, 240 60, 80 60, 80 200), \
+                    (120 120, 220 120, 180 199, 160 200, 140 199, 120 120))");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // FlattishPolygon
+        gTest = wktRw->Read(L"POLYGON ((0 0, 50 0, 53 0, 55 0, 100 0, \
+                    70 1, 60 1, 50 1, 40 1, 0 0))");
+        gInput = wktRw->Read(L"POLYGON ((0 0, 50 0, 53 0, 55 0, 100 0, \
+                    70 1, 60 1, 50 1, 40 1, 0 0))");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        //STRING sTest = gTest->ToAwkt(true);
+        //STRING sOutput = gOutput->ToAwkt(true);
+        //CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // PolygonWithFlattishHole
+        gTest = wktRw->Read(L"POLYGON ((0 0, 0 200, 200 200, 200 0, 0 0), \
+                    (140 40, 90 95, 40 160, 95 100, 140 40))");
+        gInput = wktRw->Read(L"POLYGON ((0 0, 0 200, 200 200, 200 0, 0 0), \
+                    (140 40, 90 95, 40 160, 95 100, 140 40))");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid()); 
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // Tiny square
+        gTest = wktRw->Read(L"POLYGON ((0 5, 5 5, 5 0, 0 0, 0 1, 0 5))");
+        gInput = wktRw->Read(L"POLYGON ((0 5, 5 5, 5 0, 0 0, 0 1, 0 5))");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+        
+        // TinyClosedLineString
+        gTest = wktRw->Read(L"LINESTRING (0 0, 5 0, 5 5, 0 0)");
+        gInput = wktRw->Read(L"LINESTRING (0 0, 5 0, 5 5, 0 0)");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // MultiPoint
+        gTest = wktRw->Read(L"MULTIPOINT(80 200, 240 200, 240 60, \
+                    80 60, 80 200, 140 199, 120 120)");
+        gInput = wktRw->Read(L"MULTIPOINT(80 200, 240 200, 240 60, \
+                    80 60, 80 200, 140 199, 120 120)");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // MultiLineString
+        gTest = wktRw->Read(L"MULTILINESTRING((0 0, 50 0, 70 0, 80 0, 100 0), \
+                    (0 0, 50 1, 60 1, 100 0))");
+        gInput = wktRw->Read(L"MULTILINESTRING((0 0, 50 0, 70 0, 80 0, 100 0), \
+                    (0 0, 50 1, 60 1, 100 0))");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        //STRING sTest = gTest->ToAwkt(true);
+        //STRING sOutput = gOutput->ToAwkt(true);
+        //CPPUNIT_ASSERT(gTest->Equals(gOutput));
+
+        // GeometryCollection
+        gTest = wktRw->Read(L"GEOMETRYCOLLECTION ( \
+                    MULTIPOINT (80 200, 240 200, 240 60, 80 60, 80 200, 140 199, 120 120), \
+                    POLYGON ((80 200, 240 200, 240 60, 80 60, 80 200)), \
+                    LINESTRING (80 200, 240 200, 240 60, 80 60, 80 200, 140 199, 120 120))");
+        gInput = wktRw->Read(L"GEOMETRYCOLLECTION ( \
+                    MULTIPOINT (80 200, 240 200, 240 60, 80 60, 80 200, 140 199, 120 120), \
+                    POLYGON ((80 200, 240 200, 240 60, 80 60, 80 200)), \
+                    LINESTRING (80 200, 240 200, 240 60, 80 60, 80 200, 140 199, 120 120))");
+        gOutput = simp->Simplify(gInput, 10.0, algo);
+        CPPUNIT_ASSERT(NULL != gOutput.p);
+        CPPUNIT_ASSERT(gOutput->IsValid());
+        CPPUNIT_ASSERT(gTest->Equals(gOutput));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {

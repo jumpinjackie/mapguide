@@ -76,6 +76,9 @@
 #define Geometry_CurveRingCollection                      GEOMETRY_ID+52
 #define Geometry_LinearRingCollection                     GEOMETRY_ID+53
 
+// Simplifier
+#define Geometry_GeometrySimplifier                       GEOMETRY_ID+54
+
 // CoordinateSystem API
 #define CoordinateSystem_CoordinateSystem                           GEOMETRY_COORDINATE_SYSTEM_ID+0
 #define CoordinateSystem_CoordinateSystemFactory                    GEOMETRY_COORDINATE_SYSTEM_ID+1

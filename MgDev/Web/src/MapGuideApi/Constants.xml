@@ -85,6 +85,7 @@
   <Class name="MgGeometricPathInstructionType" />
   <Class name="MgGeometryType" />
   <Class name="MgGeometryComponentType" />
+  <Class name="MgGeometrySimplificationAlgorithmType" />
   <Class name="MgLayerGroupType" />
   <Class name="MgLayerType" />
   <Class name="MgFeatureGeometricType" />
@@ -162,6 +163,7 @@
     <Header path="../../../Common/Geometry/GeometricPathInstructionType.h" />
     <Header path="../../../Common/Geometry/GeometryComponentType.h" />
     <Header path="../../../Common/Geometry/GeometryType.h" />
+    <Header path="../../../Common/Geometry/GeometrySimplificationAlgorithmType.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemCodeFormat.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemErrorCode.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformationMethod.h" />

@@ -450,6 +450,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeometrySimplifier.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Parse\ArrayHelper.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -892,6 +898,8 @@
     <ClInclude Include="Exception\InvalidCoordinateSystemException.h" />
     <ClInclude Include="Exception\InvalidCoordinateSystemTypeException.h" />
     <ClInclude Include="Exception\InvalidCoordinateSystemUnitsException.h" />
+    <ClInclude Include="GeometrySimplifier.h" />
+    <ClInclude Include="GeometrySimplificationAlgorithmType.h" />
     <ClInclude Include="Parse\Array.h" />
     <ClInclude Include="Parse\ArrayHelper.h" />
     <ClInclude Include="Parse\LexAwkt.h" />
