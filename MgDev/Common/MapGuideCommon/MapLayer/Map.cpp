@@ -129,6 +129,19 @@ void MgMap::Create(MgResourceIdentifier* mapDefinition, CREFSTRING mapName)
     Create(NULL, mapDefinition, mapName);
 }
 
+void MgMap::Create(MgResourceIdentifier* mapDefinition, CREFSTRING mapName, INT32 displayWidth, INT32 displayHeight, double x, double y, double scale, INT32 dpi)
+{
+    Create(NULL, mapDefinition, mapName);
+    m_displayWidth = displayWidth;
+    m_displayHeight = displayHeight;
+    MgGeometryFactory gf;
+    Ptr<MgCoordinate> coord = gf.CreateCoordinateXY(x, y);
+    Ptr<MgPoint> pt = gf.CreatePoint(coord);
+    SetViewCenter(pt);
+    m_scale = scale;
+    m_displayDpi = dpi;
+}
+
 void MgMap::CreateFromMapDefinition(MgResourceService* resourceService, MgResourceIdentifier* mapDefinition, CREFSTRING mapName)
 {
     MG_TRY()

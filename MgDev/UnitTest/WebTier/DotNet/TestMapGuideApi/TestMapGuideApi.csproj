@@ -99,6 +99,8 @@
     <Compile Include="ExternalTests\MapTests.cs" />
     <Compile Include="ExternalTests\RenderingServiceTests.cs" />
     <Compile Include="ExternalTests\ResourceServiceTests.cs" />
+    <Compile Include="ExternalTests\StatelessMapTests.cs" />
+    <Compile Include="ExternalTests\Utils.cs" />
     <Compile Include="MapGuideTests.cs" />
     <Compile Include="MappingService\MappingServiceOperationExecutor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -48,6 +48,7 @@ public:
     void TestCase_833();
     void TestCase_1304();
     void TestCase_MapLayerCollections();
+    void TestCase_CreateMapWithInitialDisplayParams();
 
 private:
     Ptr<MgSiteConnection> m_siteConnection;

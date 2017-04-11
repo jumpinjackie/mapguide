@@ -538,6 +538,12 @@ PUBLISHED_API:
     ///
     STRING GetResourceName(CREFSTRING sessionId, CREFSTRING mapName);
 
+EXTERNAL_API:
+    /////////////////////////////////////////
+    /// Set the map object. To be used ONLY for deserialization
+    //
+    void SetMap(MgMapBase* map);
+
 INTERNAL_API:
 
 
@@ -577,11 +583,6 @@ INTERNAL_API:
     /// false - can not set the name
     ///
     virtual bool CanSetName();
-
-    /////////////////////////////////////////
-    /// Set the map object. To be used ONLY for deserialization
-    //
-    void SetMap(MgMapBase* map);
 
     /////////////////////////////////////////
     /// Write selection as XML document

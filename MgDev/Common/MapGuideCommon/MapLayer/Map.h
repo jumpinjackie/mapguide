@@ -353,6 +353,63 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Initializes a new MgMap object given a map definition or tile set
+    /// definition and a name for the map with initial display parameters set. 
+    /// This method is used for MapGuide Viewers or for offline map production.
+    ///
+    /// \remarks
+    /// If creating a MgMap object from a tile set definition, only "Default" is the
+    /// acceptable tile provider. Any other provider will cause this method to
+    /// throw a MgUnsupportedTileProviderException
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void Create(MgResourceIdentifier mapDefinition, string mapName, int displayWidth, int displayHeight, double x, double y, double scale, int dpi);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void Create(MgResourceIdentifier mapDefinition, String mapName, int displayWidth, int displayHeight, double x, double y, double scale, int dpi);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void Create(MgResourceIdentifier mapDefinition, string mapName, int displayWidth, int displayHeight, double x, double y, double scale, int dpi);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource
+    /// An MgResourceIdentifier that specifies the
+    /// location of the map definition in a resource
+    /// repository.
+    /// \param mapName
+    /// A string that specifies the name of the map.
+    /// \param displayWidth
+    /// The display width to initially set for the map
+    /// \param displayHeight
+    /// The display height to initially set for the map
+    /// \param x
+    /// The view center X coordinate to initially set for the map
+    /// \param y
+    /// The view center Y coordinate to initially set for the map
+    /// \param scale
+    /// The view scale to initially set for the map
+    /// \param dpi
+    /// The display DPI to initially set for the map
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    /// <!-- Example (PHP) -->
+    /// \htmlinclude PHPExampleTop.html
+    /// \code
+    /// // Assuming the site connection has already been intialized
+    /// $resourceID = new  MgResourceIdentifier('Library://Calgary/Maps/Calgary.MapDefinition');
+    /// $map = new MgMap($site);
+    /// // Initializes the map to be centered on the Calgary CBD at 1:5000 scale with a DPI of 96
+    /// $map->Create($resourceID, 'Calgary', 640, 480, -114.054565, 51.068369, 5000.0, 96);
+    /// \endcode
+    /// \htmlinclude ExampleBottom.html
+    ///
+    virtual void Create(MgResourceIdentifier* resource, CREFSTRING mapName, INT32 displayWidth, INT32 displayheight, double x, double y, double scale, INT32 dpi);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Loads the map object from a session repository.
     ///
     /// \remarks

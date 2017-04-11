@@ -44,6 +44,13 @@ namespace MgTestRunner
                 return map;
             }
 
+            public MgMapBase CreateMap(MgResourceIdentifier mapDefinition, string mapName, int width, int height, double x, double y, double scale, int dpi)
+            {
+                var map = new MgMap(_siteConn);
+                map.Create(mapDefinition, mapName, width, height, x, y, scale, dpi);
+                return map;
+            }
+
             public MgLayerBase CreateLayer(MgResourceIdentifier resId)
             {
                 MgResourceService resSvc = (MgResourceService)_siteConn.CreateService(MgServiceType.ResourceService);

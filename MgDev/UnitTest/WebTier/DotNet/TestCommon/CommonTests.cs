@@ -19,6 +19,7 @@ namespace OSGeo.MapGuide.Test.Common
     {
         MgService CreateService(int serviceType);
         MgMapBase CreateMap(MgResourceIdentifier mapDefinition);
+        MgMapBase CreateMap(MgResourceIdentifier mapDefinition, string mapName, int width, int height, double x, double y, double scale, int dpi);
         MgMapBase CreateMap(string coordSys, MgEnvelope env, string name);
         MgLayerBase CreateLayer(MgResourceIdentifier resId);
     }

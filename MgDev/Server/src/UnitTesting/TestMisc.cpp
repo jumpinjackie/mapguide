@@ -564,6 +564,35 @@ void TestMisc::TestCase_1304()
     }
 }
 
+void TestMisc::TestCase_CreateMapWithInitialDisplayParams()
+{
+    try 
+    {
+        Ptr<MgResourceIdentifier> mapRes1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mapRes1, L"TestCase_CreateMapWithInitialDisplayParams", 800, 600, -87.45, 43.32, 8000.0, 256);
+
+        CPPUNIT_ASSERT_MESSAGE("Expected width of 800", map->GetDisplayWidth() == 800);
+        CPPUNIT_ASSERT_MESSAGE("Expected height of 600", map->GetDisplayHeight() == 600);
+        Ptr<MgPoint> pt = map->GetViewCenter();
+        Ptr<MgCoordinate> coord = pt->GetCoordinate();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(coord->GetX(), -87.45, 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(coord->GetY(), 43.32, 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(map->GetViewScale(), 8000.0, 0.0001);
+        CPPUNIT_ASSERT_MESSAGE("Expected DPI of 256", map->GetDisplayDpi(), 256);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
 void TestMisc::TestCase_MapLayerCollections()
 {
     try
