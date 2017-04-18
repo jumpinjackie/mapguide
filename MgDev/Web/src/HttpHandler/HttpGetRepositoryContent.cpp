@@ -67,6 +67,9 @@ void MgHttpGetRepositoryContent::Execute(MgHttpResponse& hResponse)
     // Run API command
     Ptr<MgByteReader> byteReaderResult = mgprService->GetRepositoryContent(&mgrIdentifier);
 
+    // Convert to requested response format, if necessary
+    ProcessFormatConversion(byteReaderResult);
+
     hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetRepositoryContent.Execute")

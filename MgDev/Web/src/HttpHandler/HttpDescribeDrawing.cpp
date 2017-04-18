@@ -61,6 +61,10 @@ void MgHttpDescribeDrawing::Execute(MgHttpResponse& hResponse)
 
     // call the C++ API
     Ptr<MgByteReader> byteReaderResult = service->DescribeDrawing(&resId);
+
+    // Convert to requested response format, if necessary
+    ProcessFormatConversion(byteReaderResult);
+
     hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpDescribeDrawing.Execute")

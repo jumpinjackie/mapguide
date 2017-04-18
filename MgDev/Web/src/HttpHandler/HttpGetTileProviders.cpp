@@ -59,6 +59,9 @@ void MgHttpGetTileProviders::Execute(MgHttpResponse& hResponse)
         // Call the C++ API
         Ptr<MgByteReader> providers = service->GetTileProviders();
 
+        // Convert to requested response format, if necessary
+        ProcessFormatConversion(providers);
+
         // Set the result
         hResult->SetResultObject(providers, providers->GetMimeType());
     }

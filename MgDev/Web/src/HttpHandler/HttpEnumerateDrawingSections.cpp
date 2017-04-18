@@ -60,8 +60,12 @@ void MgHttpEnumerateDrawingSections::Execute(MgHttpResponse& hResponse)
     Ptr<MgDrawingService> service = (MgDrawingService*)(CreateService(MgServiceType::DrawingService));
 
     // call the C++ API
-    Ptr<MgByteReader> sections = service->EnumerateSections(&resId);
-    hResult->SetResultObject(sections, MgMimeType::Xml);
+    Ptr<MgByteReader> byteReader = service->EnumerateSections(&resId);
+
+    // Convert to requested response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpEnumerateDrawingSections.Execute")
 }
