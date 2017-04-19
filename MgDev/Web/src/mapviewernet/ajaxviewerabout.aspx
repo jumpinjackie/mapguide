@@ -32,7 +32,7 @@ String locale = "";
 String titleBar = product + " Viewer";
 String serverTitle = product + " Server";
 String viewerTitle = product + " Viewer";
-String viewerVersion = "3.1.0.0";
+String viewerVersion = "3.3.0.0";
 String serverVersion = "##Unknown";
 </script>
 
