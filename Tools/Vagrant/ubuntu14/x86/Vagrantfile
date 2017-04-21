@@ -116,8 +116,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
   #   chef.validation_client_name = "ORGNAME-validator"
   
+  # UPDATE 21/04/2017: Vagrant (as of 1.9.1, could be earlier release) does something stupid now
+  # and demands the script path below exists, even if I want to just destroy the VM!!!
+  #
+  # The path has changed to a relative reference that will *always* be there
+
   config.vm.provision "shell",
     privileged: false,
-    path: "provision_ubuntu.sh",
+    path: "../../scripts/provision_ubuntu.sh",
     args: [4, 1, 0, 3, 1, 0, "trunk", "trunk", "i386", "Test", "ubuntu14", 1, 1]
 end
