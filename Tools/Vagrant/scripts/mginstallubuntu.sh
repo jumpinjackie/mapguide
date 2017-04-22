@@ -161,10 +161,10 @@ echo "[install]: Installing pre-requisite packages"
 if [ "$HEADLESS" != "1" ]
 then
 # Install required packages
-apt-get -y -q install dialog libexpat1 libssl1.0.0 odbcinst unixodbc libcurl3 libxslt1.1 libmysqlclient18 libpq5
+apt-get -y -q install openjdk-7-jre libxml2 dialog libexpat1 libssl1.0.0 odbcinst unixodbc libcurl3 libxslt1.1 libmysqlclient18 libpq5
 else
 # Install required packages 
-apt-get -y -q install libexpat1 libssl1.0.0 odbcinst unixodbc libcurl3 libxslt1.1 libmysqlclient18 libpq5
+apt-get -y -q install openjdk-7-jre libxml2 libexpat1 libssl1.0.0 odbcinst unixodbc libcurl3 libxslt1.1 libmysqlclient18 libpq5
 fi
 
 DIALOG=${DIALOG=dialog}
