@@ -579,7 +579,7 @@ void TestMisc::TestCase_CreateMapWithInitialDisplayParams()
         CPPUNIT_ASSERT_DOUBLES_EQUAL(coord->GetX(), -87.45, 0.001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(coord->GetY(), 43.32, 0.001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(map->GetViewScale(), 8000.0, 0.0001);
-        CPPUNIT_ASSERT_MESSAGE("Expected DPI of 256", map->GetDisplayDpi(), 256);
+        CPPUNIT_ASSERT_MESSAGE("Expected DPI of 256", map->GetDisplayDpi() == 256);
     }
     catch (MgException* e)
     {
