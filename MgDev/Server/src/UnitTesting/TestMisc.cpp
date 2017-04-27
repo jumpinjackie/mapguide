@@ -593,6 +593,26 @@ void TestMisc::TestCase_CreateMapWithInitialDisplayParams()
     }
 }
 
+void TestMisc::TestCase_ApiVersionCheck()
+{
+    try
+    {
+        //Just making sure this macro behaves as we expect
+        CPPUNIT_ASSERT_MESSAGE("Expected 3.4.0 >= 3.3.0", MG_API_VERSION(3, 4, 0) >= MG_API_VERSION(3, 3, 0));
+        CPPUNIT_ASSERT_MESSAGE("Expected 3.3.0 >= 3.3.0", MG_API_VERSION(3, 3, 0) >= MG_API_VERSION(3, 3, 0));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
 void TestMisc::TestCase_MapLayerCollections()
 {
     try

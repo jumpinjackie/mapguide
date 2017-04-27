@@ -45,6 +45,7 @@ public:
 
 private:
     STRING  m_resId;
+    bool m_bSimple;
 };
 
 #endif  // _FS_GET_CLASS_DEFINITION_H

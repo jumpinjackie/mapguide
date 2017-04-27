@@ -51,7 +51,7 @@ void MgHttpGetTileProviders::Execute(MgHttpResponse& hResponse)
     ValidateCommonParameters();
 
     INT32 version = m_userInfo->GetApiVersion();
-    if (version == MG_API_VERSION(3,0,0))
+    if (version >= MG_API_VERSION(3,0,0))
     {
         // Get Proxy Tile Service instance
         Ptr<MgTileService> service = (MgTileService*)(CreateService(MgServiceType::TileService));
@@ -80,7 +80,8 @@ void MgHttpGetTileProviders::ValidateOperationVersion()
 
     // There are multiple supported versions
     INT32 version = m_userInfo->GetApiVersion();
-    if (version != MG_API_VERSION(3,0,0))
+    if (version != MG_API_VERSION(3,0,0) &&
+        version != MG_API_VERSION(3,3,0))
     {
         throw new MgInvalidOperationVersionException(
         L"MgHttpGetTileProviders.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);

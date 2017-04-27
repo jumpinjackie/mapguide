@@ -110,7 +110,7 @@ void MgHttpSelectFeatures::Execute(MgHttpResponse& hResponse)
 
     Ptr<MgFeatureReader> featureReader = service->SelectFeatures(&resId, m_className, qryOptions);
     //MgByteSource owns this and will clean it up when done
-    ByteSourceImpl* bsImpl = new MgReaderByteSourceImpl(featureReader, m_responseFormat);
+    ByteSourceImpl* bsImpl = new MgReaderByteSourceImpl(featureReader, m_responseFormat, m_bCleanJson);
 
     Ptr<MgByteSource> byteSource = new MgByteSource(bsImpl);
     byteSource->SetMimeType(m_responseFormat);

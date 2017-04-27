@@ -86,6 +86,7 @@ public:
     static const STRING reqClientAgent;
     static const STRING reqClientIp;
     static const STRING reqResponseFormat;
+    static const STRING reqClean;
 
     // PREDEFINED RESOURCE REQUEST PARAMETERS
     static const STRING reqType;
@@ -127,6 +128,7 @@ public:
     static const STRING reqFeatActiveOnly;
     static const STRING reqFeatComputedProperties;
     static const STRING reqFeatComputedAliases;
+    static const STRING reqFeatSimple;
 
     // PREDEFINED DRAWING REQUEST PARAMETERS
     static const STRING reqDrawingResourceId;

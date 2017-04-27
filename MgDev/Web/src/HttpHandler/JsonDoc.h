@@ -77,12 +77,20 @@ public:
     void Add(const string &name, const string &value);
     void Add(const char *name, bool value);
     void Add(const string &name, bool value);
+    void Add(const char* name, double value);
+    void Add(const string &name, double value);
+    void Add(const char* name, INT32 value);
+    void Add(const string &name, INT32 value);
     void AddAttribute(const char *name, const char *value);
     void AddAttribute(const char *name, const string &value);
     void AddAttribute(const string &name, const char *value);
     void AddAttribute(const string &name, const string &value);
     void AddAttribute(const char *name, bool value);
     void AddAttribute(const string &name, bool value);
+    void AddAttribute(const char* name, double value);
+    void AddAttribute(const string &name, double value);
+    void AddAttribute(const char* name, INT32 value);
+    void AddAttribute(const string &name, INT32 value);
 
     void BeginArray(const char *name);
     void BeginArray(int size, const char *name);
@@ -90,6 +98,9 @@ public:
     void EndArray();
     void SetArrayValue(int index, const char *value);
     void SetArrayValue(int index, const string &value);
+    void SetArrayValue(int index, bool value);
+    void SetArrayValue(int index, double value);
+    void SetArrayValue(int index, INT32 value);
 
     void AppendArrayValue(const char *value);
     void AppendArrayValue(const string &value);

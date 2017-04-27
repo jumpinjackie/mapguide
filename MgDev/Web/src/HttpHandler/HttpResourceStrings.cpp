@@ -82,6 +82,7 @@ const STRING MgHttpResourceStrings::reqLocale = L"LOCALE";
 const STRING MgHttpResourceStrings::reqClientAgent = L"CLIENTAGENT";
 const STRING MgHttpResourceStrings::reqClientIp = L"CLIENTIP";
 const STRING MgHttpResourceStrings::reqResponseFormat = L"FORMAT";
+const STRING MgHttpResourceStrings::reqClean = L"CLEAN";
 
 // Predefined Resource Service Request Parameters
 const STRING MgHttpResourceStrings::reqType = L"TYPE";
@@ -152,6 +153,7 @@ const STRING MgHttpResourceStrings::reqFeatProperties = L"PROPERTIES";
 const STRING MgHttpResourceStrings::reqFeatActiveOnly = L"ACTIVEONLY";
 const STRING MgHttpResourceStrings::reqFeatComputedProperties = L"COMPUTED_PROPERTIES";
 const STRING MgHttpResourceStrings::reqFeatComputedAliases = L"COMPUTED_ALIASES";
+const STRING MgHttpResourceStrings::reqFeatSimple = L"SIMPLE";
 
 // Feature Service Operation Requests
 const STRING MgHttpResourceStrings::opGetFeatureProviders = L"GETFEATUREPROVIDERS";

@@ -41,6 +41,17 @@ MgHttpDescribeSchema::MgHttpDescribeSchema(MgHttpRequest *hRequest)
     m_schemaName = params->GetParameterValue(MgHttpResourceStrings::reqFeatSchema);
     m_classNames = MgStringCollection::ParseCollection(
         params->GetParameterValue(MgHttpResourceStrings::reqFeatClassNames), L".");
+
+    m_bSimple = false;
+    // Get simple flag (SIMPLE). Only recognize this flag for 3.3.0 and above
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(3, 3, 0))
+    {
+        STRING simple = params->GetParameterValue(MgHttpResourceStrings::reqFeatSimple);
+        if (simple.length() > 0)
+        {
+            m_bSimple = (simple == L"1");
+        }
+    }
 }
 
 /// <summary>
@@ -64,12 +75,23 @@ void MgHttpDescribeSchema::Execute(MgHttpResponse& hResponse)
     // Create Proxy Feature Service instance
     Ptr<MgFeatureService> service = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
 
-    // Call the C++ API.
-    STRING xmlSchema = service->DescribeSchemaAsXml(m_resource, m_schemaName, m_classNames);
-
-    // Convert to multibyte
     string mbXmlSchema;
-    MgUtil::WideCharToMultiByte(xmlSchema, mbXmlSchema);
+    if (m_bSimple) 
+    {
+        // Call the C++ API.
+        Ptr<MgFeatureSchemaCollection> schemas = service->DescribeSchema(m_resource, m_schemaName, m_classNames);
+
+        // Get the simple XML
+        schemas->ToSimpleXml(mbXmlSchema);
+    }
+    else
+    {
+        // Call the C++ API.
+        STRING xmlSchema = service->DescribeSchemaAsXml(m_resource, m_schemaName, m_classNames);
+
+        // Convert to multibyte
+        MgUtil::WideCharToMultiByte(xmlSchema, mbXmlSchema);
+    }
 
     // Create a byte reader.
     Ptr<MgByteReader> byteReader = MgUtil::GetByteReader(mbXmlSchema, (STRING*)&MgMimeType::Xml);

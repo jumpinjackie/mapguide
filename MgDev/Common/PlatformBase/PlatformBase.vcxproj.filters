@@ -349,6 +349,9 @@
       <Filter>MapLayer</Filter>
     </ClCompile>
     <ClCompile Include="PlatformBaseBuild.cpp" />
+    <ClCompile Include="Services\GeoJsonWriter.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Data\BlobProperty.h">
@@ -730,6 +733,9 @@
       <Filter>MapLayer</Filter>
     </ClInclude>
     <ClInclude Include="PlatformBase.h" />
+    <ClInclude Include="Services\GeoJsonWriter.h">
+      <Filter>Services</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="PlatformBase.rc" />

@@ -12,6 +12,13 @@ function Execute(value)
         <form name="input" action="" method="get" ID="Form1">
         <b>Category:</b>
         <input type="text" name="CATEGORY" value="Lat Longs" size="50" ID="Text1"><br>
+        <p> Format:
+        <select name="FORMAT">
+        <option value="text/xml">text/xml</option>
+        <option value="application/json">application/json</option>
+        </select>
+        <p>
+            Clean JSON: <input type="text" name="CLEAN" value="0" ID="TextClean">
         <p>
         <input type="button" value="Execute" onclick="Execute(CATEGORY.value)">
         </form>

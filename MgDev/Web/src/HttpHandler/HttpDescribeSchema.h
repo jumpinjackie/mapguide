@@ -47,6 +47,7 @@ private:
     Ptr<MgResourceIdentifier> m_resource;
     STRING m_schemaName;
     Ptr<MgStringCollection> m_classNames;
+    bool m_bSimple;
 };
 
 #endif // HTTPDESCRIBESCHEMA_H_

@@ -146,6 +146,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../../Common/PlatformBase/Services/FeatureSchema.h" />
     <Header path="../../../../Common/PlatformBase/Services/FeatureSchemaCollection.h" />
     <Header path="../../../../Common/PlatformBase/Services/FeatureService.h" />
+    <Header path="../../../../Common/PlatformBase/Services/GeoJsonWriter.h" />
     <Header path="../../../../Common/PlatformBase/Services/GeometricPropertyDefinition.h" />
     <Header path="../../../../Common/PlatformBase/Services/GeometryProperty.h" />
     <Header path="../../../../Common/PlatformBase/Services/GeometryTypeInfo.h" />

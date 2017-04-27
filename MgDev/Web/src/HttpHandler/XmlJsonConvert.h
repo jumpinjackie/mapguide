@@ -22,6 +22,11 @@
 #include "System/XmlUtil.h"
 #include "JsonDoc.h"
 
+#define XML_DATA_TYPE_NUM_INT 1
+#define XML_DATA_TYPE_NUM_DOUBLE 2
+#define XML_DATA_TYPE_BOOLEAN 3
+#define XML_DATA_TYPE_STRING 4
+
 /// \cond INTERNAL
 class MgXmlJsonConvert
 {
@@ -36,19 +41,30 @@ public:
 
     /// Methods
 public:
-    void ToJson(Ptr<MgByteReader> &byteReader);
-    void ToJson(const string &xmlString, string &jsonString);
+    void ToJson(Ptr<MgByteReader> &byteReader, bool bClean = false);
+    void ToJson(const string &xmlString, string &jsonString, bool bClean = false);
 
 private:
-    void XmlToJsonNode(DOMNode *node);
+    void XmlToJsonNode(DOMNode *node, bool bClean);
     bool ValidateTextContent(const string &textContent);
-    void ProcessObjectNode(DOMNode *node);
-    void ProcessArrayNode(int index, DOMNode *node);
+    void ProcessObjectNode(DOMNode *node, bool bClean);
+    void ProcessArrayNode(int index, DOMNode *node, bool bClean);
 
+    static bool GetAttributePath(DOMNode* attribute, DOMNode* parent, string& path, const XMLCh* suffix = NULL);
+    static bool GetAttributeType(DOMNode* attribute, DOMNode* parent, int& type, const XMLCh* suffix = NULL);
+
+    static bool GetElementPath(DOMNode* node, string& path, const XMLCh* suffix = NULL);
+    static bool GetElementType(DOMNode* node, int& type, const XMLCh* suffix = NULL);
+    static bool IsMultiple(DOMNode* node, bool& isMultiple, const XMLCh* suffix = NULL);
     /// Data Members
 private:
     MgXmlUtil m_xmlUtil;
     MgJsonDoc m_jsonDoc;
+
+private:
+    static bool Initialize();
+private:
+    static bool m_isInitialized;
 };
 /// \endcond
 

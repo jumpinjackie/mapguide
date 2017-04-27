@@ -114,6 +114,7 @@
 #include "Services/FeatureServiceCommon.h"
 #include "Services/FeatureSet.h"
 #include "Services/FeatureSpatialOperations.h"
+#include "Services/GeoJsonWriter.h"
 #include "Services/GeometricPropertyDefinition.h"
 #include "Services/GeometryProperty.h"
 #include "Services/GeometryTypeInfo.h"

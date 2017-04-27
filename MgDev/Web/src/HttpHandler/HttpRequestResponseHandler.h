@@ -125,6 +125,7 @@ protected:
     Ptr<MgHttpRequest> m_hRequest;
     STRING m_version;
     STRING m_responseFormat;
+    bool m_bCleanJson;
     Ptr<MgUserInformation> m_userInfo;
     Ptr<MgSiteConnection> m_siteConn;
 };

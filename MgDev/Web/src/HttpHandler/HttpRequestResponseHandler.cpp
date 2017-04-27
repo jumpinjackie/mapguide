@@ -35,6 +35,8 @@ void MgHttpRequestResponseHandler::InitializeCommonParameters(MgHttpRequest *hRe
 {
     MG_HTTP_HANDLER_TRY()
 
+    m_bCleanJson = false;
+
     // Check that this HTTP operation is enabled in webconfig.ini
     STRING disableProperty;
     switch (GetRequestClassification())
@@ -178,6 +180,16 @@ void MgHttpRequestResponseHandler::InitializeCommonParameters(MgHttpRequest *hRe
         m_userInfo->SetClientIp(clientIp);
     }
 
+    // Get clean json flag (CLEAN). Only recognize this flag for 3.3.0 and above
+    if (version >= MG_API_VERSION(3, 3, 0))
+    {
+        STRING cleanJson = hrParam->GetParameterValue(MgHttpResourceStrings::reqClean);
+        if (cleanJson.length() > 0)
+        {
+            m_bCleanJson = (cleanJson == L"1");
+        }
+    }
+
     // Short circuit the authentication check if no username or session is supplied.
     // This will ensure that load balancing works correctly if browsers send an
     // unauthenticated then an authenticated request.
@@ -231,7 +243,8 @@ void MgHttpRequestResponseHandler::ValidateOperationVersion()
     if (version != MG_API_VERSION(1,0,0) &&
         version != MG_API_VERSION(1,2,0) &&
         version != MG_API_VERSION(2,0,0) &&
-        version != MG_API_VERSION(2,2,0))
+        version != MG_API_VERSION(2,2,0) &&
+        version != MG_API_VERSION(3,3,0))
     {
         throw new MgInvalidOperationVersionException(
         L"MgHttpRequestResponseHandler.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -275,6 +288,6 @@ void MgHttpRequestResponseHandler::ProcessFormatConversion(Ptr<MgByteReader> &by
         m_responseFormat == MgMimeType::Json)
     {
         MgXmlJsonConvert convert;
-        convert.ToJson(byteReader);
+        convert.ToJson(byteReader, m_bCleanJson);
     }
 }

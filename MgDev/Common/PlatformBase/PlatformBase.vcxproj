@@ -556,6 +556,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Services\GeoJsonWriter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Services\GeometricPropertyDefinition.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -915,6 +921,7 @@
     <ClInclude Include="Services\FeatureSourceParams.h" />
     <ClInclude Include="Services\FeatureSpatialOperations.h" />
     <ClInclude Include="Services\FileFeatureSourceParams.h" />
+    <ClInclude Include="Services\GeoJsonWriter.h" />
     <ClInclude Include="Services\GeometricPropertyDefinition.h" />
     <ClInclude Include="Services\GeometryProperty.h" />
     <ClInclude Include="Services\GeometryTypeInfo.h" />

@@ -72,7 +72,7 @@ MgHttpQueryMapFeatures::MgHttpQueryMapFeatures(MgHttpRequest *hRequest)
     m_featureFilter = params->GetParameterValue(MgHttpResourceStrings::reqRenderingFeatureFilter);
 
     INT32 version = m_userInfo->GetApiVersion();
-    if (version == MG_API_VERSION(2,6,0))
+    if (version >= MG_API_VERSION(2,6,0))
     {
         m_requestData = 0;
         STRING strReqData = params->GetParameterValue(MgHttpResourceStrings::reqRenderingRequestData);
@@ -142,7 +142,7 @@ void MgHttpQueryMapFeatures::Execute(MgHttpResponse& hResponse)
     {
         featureDescriptionInfo = controller.QueryMapFeatures(m_mapName, layerNames, filterGeometry, selectionVariant, m_featureFilter, m_maxFeatures, m_persist, m_layerAttributeFilter);
     }
-    else if (version == MG_API_VERSION(2, 6, 0))
+    else if (version >= MG_API_VERSION(2, 6, 0))
     {
         featureDescriptionInfo = controller.QueryMapFeatures(m_mapName, layerNames, filterGeometry, selectionVariant, m_featureFilter, m_maxFeatures, m_persist, m_layerAttributeFilter, m_requestData, m_selectionColor, m_selectionFormat);
     }
@@ -167,7 +167,8 @@ void MgHttpQueryMapFeatures::ValidateOperationVersion()
     // There are multiple supported versions
     INT32 version = m_userInfo->GetApiVersion();
     if (version != MG_API_VERSION(1,0,0) &&
-        version != MG_API_VERSION(2,6,0))
+        version != MG_API_VERSION(2,6,0) &&
+        version != MG_API_VERSION(3,3,0))
     {
         throw new MgInvalidOperationVersionException(
         L"MgHttpQueryMapFeatures.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);

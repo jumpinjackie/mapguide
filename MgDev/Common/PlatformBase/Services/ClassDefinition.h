@@ -334,6 +334,7 @@ INTERNAL_API:
     bool CanSetName();
     INT32 GetClassId();
     void Dispose();
+    void ToSimpleXml(string &str, bool includeProlog);
     void ToXml(string &str);
     void SetSerializedXml(CREFSTRING strXml);
     bool HasRasterProperty();

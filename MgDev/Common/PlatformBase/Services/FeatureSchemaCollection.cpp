@@ -200,6 +200,51 @@ void MgFeatureSchemaCollection::Deserialize(MgStream* stream)
     }
 }
 
+void MgFeatureSchemaCollection::ToSimpleXml(std::string & str)
+{
+    str = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+    str.append("<FeatureSchemaCollection xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"FeatureSchemaCollection-3.3.0.xsd\">");
+
+    INT32 fcount = GetCount();
+    for (INT32 i = 0; i < fcount; i++)
+    {
+        Ptr<MgFeatureSchema> fs = GetItem(i);
+        str.append("<FeatureSchema>");
+        
+        str.append("<Name>");
+        std::string mbName;
+        MgUtil::WideCharToMultiByte(fs->GetName(), mbName);
+        str.append(mbName);
+        str.append("</Name>");
+
+        str.append("<Description>");
+        std::string mbDesc;
+        MgUtil::WideCharToMultiByte(fs->GetDescription(), mbDesc);
+        str.append(mbDesc);
+        str.append("</Description>");
+
+        str.append("<Classes>");
+
+        Ptr<MgClassDefinitionCollection> classes = fs->GetClasses();
+        INT32 ccount = classes->GetCount();
+
+        for (INT32 j = 0; j < ccount; j++) 
+        {
+            Ptr<MgClassDefinition> clsDef = classes->GetItem(j);
+            std::string mbCls;
+            clsDef->ToSimpleXml(mbCls, false);
+
+            str.append(mbCls);
+        }
+
+        str.append("</Classes>");
+
+        str.append("</FeatureSchema>");
+    }
+
+    str.append("</FeatureSchemaCollection>");
+}
+
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.

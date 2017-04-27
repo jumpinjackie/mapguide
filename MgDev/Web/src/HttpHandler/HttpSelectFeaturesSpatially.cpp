@@ -120,7 +120,7 @@ void MgHttpSelectFeaturesSpatially::Execute(MgHttpResponse& hResponse)
 
     Ptr<MgDataReader> dataReader = service->SelectAggregate(&resId, m_className, qryOptions);
     //MgByteSource owns this and will clean it up when done
-    ByteSourceImpl* bsImpl = new MgReaderByteSourceImpl(dataReader, m_responseFormat);
+    ByteSourceImpl* bsImpl = new MgReaderByteSourceImpl(dataReader, m_responseFormat, m_bCleanJson);
 
     Ptr<MgByteSource> byteSource = new MgByteSource(bsImpl);
     byteSource->SetMimeType(m_responseFormat);

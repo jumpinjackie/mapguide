@@ -17,7 +17,7 @@
 #include "ReaderByteSourceImpl.h"
 #include "PlatformBase.h"
 
-MgReaderByteSourceImpl::MgReaderByteSourceImpl(MgReader* reader, CREFSTRING format)
+MgReaderByteSourceImpl::MgReaderByteSourceImpl(MgReader* reader, CREFSTRING format, bool bCleanJson)
 {
     m_reader = SAFE_ADDREF(reader);
     m_format = format;
@@ -26,6 +26,7 @@ MgReaderByteSourceImpl::MgReaderByteSourceImpl(MgReader* reader, CREFSTRING form
     m_bReadHeader = false;
     m_bInternalReaderHasMore = true;
     m_bFirstRecord = true;
+    m_bCleanJson = bCleanJson;
 }
 
 MgReaderByteSourceImpl::~MgReaderByteSourceImpl()
@@ -62,51 +63,67 @@ INT32 MgReaderByteSourceImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
     {
         if (m_format == MgMimeType::Json)
         {
-            //How this looks:
-            //
-            // {                            //outer JSON start
-            //   "ResponseElementName":     //root element name
-            //     {                        //root JSON property start
-            //      <header JSON pair>,
-            //      "BodyElementName":[     //body JSON array start
-            //
-            jsonbuf = "{\"";
-            jsonbuf += m_reader->GetResponseElementName();
-            jsonbuf += "\":{";
-            m_reader->HeaderToStringUtf8(buf);
-            std::string jsonbuf2;
-            MgXmlJsonConvert convert;
-            convert.ToJson(buf, jsonbuf2);
-            //This will have redudant outer { }, so strip them
-            jsonbuf2.erase(0, 1);
-            jsonbuf2.erase(jsonbuf2.length() - 2, 1);
-            //HACK: To match the original output, we have to array-ify this object (crazy? yes!)
-            //
-            //We currently have something like this
-            //
-            // "HeaderElementName":{
-            //    <prop1>:<val1>,
-            //    <prop2>:<val2>
-            // }
-            //
-            //We have to change it to this
-            //
-            // "HeaderElementName":[{
-            //    <prop1>:<val1>,
-            //    <prop2>:<val2>
-            // }]
+            if (m_bCleanJson)
+            {
+                //How this looks:
+                //
+                // {
+                //   "type":"FeatureCollection",
+                //   "features": [
+                jsonbuf = "{";
+                jsonbuf += " \"type\": \"FeatureCollection\",";
+                jsonbuf += " \"features\": [";
 
-            //Find first instance of ": and insert [ after it. We use ": because a feature
-            //reader puts out xs:schema as the header element name
-            jsonbuf2.insert(jsonbuf2.find("\":") + 2, "[");
-            //Append ] to the end
-            jsonbuf2.append("]");
-            jsonbuf += jsonbuf2;
-            jsonbuf += ",\"";
-            jsonbuf += m_reader->GetBodyElementName();
-            jsonbuf += "\":[";
+                m_buf += jsonbuf;
+            }
+            else
+            {
+                //How this looks:
+                //
+                // {                            //outer JSON start
+                //   "ResponseElementName":     //root element name
+                //     {                        //root JSON property start
+                //      <header JSON pair>,
+                //      "BodyElementName":[     //body JSON array start
+                //
+                jsonbuf = "{\"";
+                jsonbuf += m_reader->GetResponseElementName();
+                jsonbuf += "\":{";
+                m_reader->HeaderToStringUtf8(buf);
+                std::string jsonbuf2;
+                MgXmlJsonConvert convert;
+                convert.ToJson(buf, jsonbuf2);
+                //This will have redudant outer { }, so strip them
+                jsonbuf2.erase(0, 1);
+                jsonbuf2.erase(jsonbuf2.length() - 2, 1);
+                //HACK: To match the original output, we have to array-ify this object (crazy? yes!)
+                //
+                //We currently have something like this
+                //
+                // "HeaderElementName":{
+                //    <prop1>:<val1>,
+                //    <prop2>:<val2>
+                // }
+                //
+                //We have to change it to this
+                //
+                // "HeaderElementName":[{
+                //    <prop1>:<val1>,
+                //    <prop2>:<val2>
+                // }]
 
-            m_buf += jsonbuf;
+                //Find first instance of ": and insert [ after it. We use ": because a feature
+                //reader puts out xs:schema as the header element name
+                jsonbuf2.insert(jsonbuf2.find("\":") + 2, "[");
+                //Append ] to the end
+                jsonbuf2.append("]");
+                jsonbuf += jsonbuf2;
+                jsonbuf += ",\"";
+                jsonbuf += m_reader->GetBodyElementName();
+                jsonbuf += "\":[";
+
+                m_buf += jsonbuf;
+            }
             m_bReadHeader = true;
         }
         else if (m_format == MgMimeType::Xml)
@@ -147,35 +164,62 @@ INT32 MgReaderByteSourceImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
         {
             if (m_format == MgMimeType::Json)
             {
-                m_reader->CurrentToStringUtf8(buf);
-                //The body is a valid full XML element, so no need for gymnastics like its
-                //surrounding elements
-                MgXmlJsonConvert convert;
-                convert.ToJson(buf, jsonbuf);
-
-                //Strip outer { }
-                jsonbuf.erase(0, 1);
-                jsonbuf.erase(jsonbuf.length() - 2, 1);
-                //HACK: Same as the header, this needs to be array-ified to match the old output
-                //
-                //Find first instance of ": and insert [ after it.
-                jsonbuf.insert(jsonbuf.find("\":") + 2, "[");
-                //Append ] to the end
-                jsonbuf.append("]");
-                //Put back in outer { }
-                jsonbuf = "{" + jsonbuf;
-                jsonbuf += "}";
-
-                if (!m_bFirstRecord)
+                if (m_bCleanJson)
                 {
-                    m_buf += ",";
+                    MgGeoJsonWriter geoJsonWriter;
+                    STRING sGeoJson;
+                    if (m_reader->GetReaderType() == MgReaderType::FeatureReader)
+                    {
+                        MgFeatureReader* fr = static_cast<MgFeatureReader*>(m_reader.p);
+                        sGeoJson = geoJsonWriter.FeatureToGeoJson(fr, NULL);
+                    }
+                    else 
+                    {
+                        sGeoJson = geoJsonWriter.FeatureToGeoJson(m_reader, NULL, L"", L"");
+                    }
+
+                    if (!m_bFirstRecord)
+                    {
+                        m_buf += ",";
+                    }
+                    else
+                    {
+                        m_bFirstRecord = false;
+                    }
+                    m_buf += MgUtil::WideCharToMultiByte(sGeoJson);
                 }
                 else
                 {
-                    m_bFirstRecord = false;
-                }
+                    m_reader->CurrentToStringUtf8(buf);
+                    //The body is a valid full XML element, so no need for gymnastics like its
+                    //surrounding elements
+                    MgXmlJsonConvert convert;
+                    convert.ToJson(buf, jsonbuf);
 
-                m_buf += jsonbuf;
+                    //Strip outer { }
+                    jsonbuf.erase(0, 1);
+                    jsonbuf.erase(jsonbuf.length() - 2, 1);
+                    //HACK: Same as the header, this needs to be array-ified to match the old output
+                    //
+                    //Find first instance of ": and insert [ after it.
+                    jsonbuf.insert(jsonbuf.find("\":") + 2, "[");
+                    //Append ] to the end
+                    jsonbuf.append("]");
+                    //Put back in outer { }
+                    jsonbuf = "{" + jsonbuf;
+                    jsonbuf += "}";
+
+                    if (!m_bFirstRecord)
+                    {
+                        m_buf += ",";
+                    }
+                    else
+                    {
+                        m_bFirstRecord = false;
+                    }
+
+                    m_buf += jsonbuf;
+                }
             }
             else if (m_format == MgMimeType::Xml)
             {
@@ -192,11 +236,21 @@ INT32 MgReaderByteSourceImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
         {
             if (m_format == MgMimeType::Json)
             {
-                // How this looks:
-                //      ]   //End of body JSON array
-                //    }     //End of root JSON property
-                // }        //End of outer JSON
-                m_buf += "]}}";
+                if (m_bCleanJson)
+                {
+                    // How this looks:
+                    //   ]  //End of root FeatureCollection
+                    // } //End of GeoJSON
+                    m_buf += "]}";
+                }
+                else
+                {
+                    // How this looks:
+                    //      ]   //End of body JSON array
+                    //    }     //End of root JSON property
+                    // }        //End of outer JSON
+                    m_buf += "]}}";
+                }
             }
             else if (m_format == MgMimeType::Xml)
             {

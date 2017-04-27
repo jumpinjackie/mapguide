@@ -36,6 +36,17 @@ MgHttpGetClassDefinition::MgHttpGetClassDefinition(MgHttpRequest *hRequest)
 
     Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
     m_resId = params->GetParameterValue(MgHttpResourceStrings::reqFeatResourceId);
+
+    m_bSimple = false;
+    // Get simple flag (SIMPLE). Only recognize this flag for 3.3.0 and above
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(3, 3, 0))
+    {
+        STRING simple = params->GetParameterValue(MgHttpResourceStrings::reqFeatSimple);
+        if (simple.length() > 0)
+        {
+            m_bSimple = (simple == L"1");
+        }
+    }
 }
 
 /// <summary>
@@ -66,7 +77,15 @@ void MgHttpGetClassDefinition::Execute(MgHttpResponse& hResponse)
     // call the C++ APIs
     Ptr<MgClassDefinition> classDef = service->GetClassDefinition(&resId, schema, className);
     string xml;
-    classDef->ToXml(xml);
+
+    if (m_bSimple)
+    {
+        classDef->ToSimpleXml(xml, true);
+    }
+    else
+    {
+        classDef->ToXml(xml);
+    }
 
     // Create a byte reader.
     Ptr<MgByteReader> byteReader = MgUtil::GetByteReader(xml, (STRING*)&MgMimeType::Xml);

@@ -160,6 +160,7 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
         case VERSION_SUPPORTED(2,0):
+        case VERSION_SUPPORTED(3,3): //This is 2.0 with optional clean JSON output
             handler.reset(new MgOpGetCapabilities());
             break;
         default:

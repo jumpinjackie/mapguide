@@ -112,6 +112,30 @@ void MgJsonDoc::Add(const string &name, bool value)
     node->Element[name] = value;
 }
 
+void MgJsonDoc::Add(const char * name, double value)
+{
+    MgJsonNode *node = m_tree.top();
+    node->Element[StaticString(name)] = value;
+}
+
+void MgJsonDoc::Add(const string & name, double value)
+{
+    MgJsonNode *node = m_tree.top();
+    node->Element[name] = value;
+}
+
+void MgJsonDoc::Add(const char * name, INT32 value)
+{
+    MgJsonNode *node = m_tree.top();
+    node->Element[StaticString(name)] = (Json::Value::Int)value;
+}
+
+void MgJsonDoc::Add(const string & name, INT32 value)
+{
+    MgJsonNode *node = m_tree.top();
+    node->Element[name] = (Json::Value::Int)value;
+}
+
 void MgJsonDoc::AddAttribute(const char *name, const char *value)
 {
     this->Add("@" + string(name), value);
@@ -138,6 +162,26 @@ void MgJsonDoc::AddAttribute(const char *name, bool value)
 }
 
 void MgJsonDoc::AddAttribute(const string &name, bool value)
+{
+    this->Add("@" + name, value);
+}
+
+void MgJsonDoc::AddAttribute(const char* name, double value)
+{
+    this->Add("@" + string(name), value);
+}
+
+void MgJsonDoc::AddAttribute(const string &name, double value)
+{
+    this->Add("@" + name, value);
+}
+
+void MgJsonDoc::AddAttribute(const char* name, INT32 value)
+{
+    this->Add("@" + string(name), value);
+}
+
+void MgJsonDoc::AddAttribute(const string &name, INT32 value)
 {
     this->Add("@" + name, value);
 }
@@ -191,6 +235,24 @@ void MgJsonDoc::SetArrayValue(int index, const string &value)
 {
     MgJsonNode *node = m_tree.top();
     node->Element[index] = value;
+}
+
+void MgJsonDoc::SetArrayValue(int index, bool value)
+{
+    MgJsonNode *node = m_tree.top();
+    node->Element[index] = Json::Value(value);
+}
+
+void MgJsonDoc::SetArrayValue(int index, double value)
+{
+    MgJsonNode *node = m_tree.top();
+    node->Element[index] = Json::Value(value);
+}
+
+void MgJsonDoc::SetArrayValue(int index, INT32 value)
+{
+    MgJsonNode *node = m_tree.top();
+    node->Element[index] = Json::Value(value);
 }
 
 void MgJsonDoc::AppendArrayValue(const char *value)

@@ -331,6 +331,8 @@ INTERNAL_API:
     ///
     void Deserialize(MgStream* stream);
 
+    void ToSimpleXml(std::string& str);
+
 protected:
 
     /////////////////////////////////////////////////////////////////
