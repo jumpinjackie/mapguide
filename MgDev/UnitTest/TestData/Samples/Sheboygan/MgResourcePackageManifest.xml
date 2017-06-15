@@ -2375,5 +2375,35 @@
                 </Parameter>
             </Parameters>
         </Operation>
+        <Operation>
+            <Name>DELETERESOURCE</Name>
+            <Version>1.0.0</Version>
+            <Parameters>
+                <Parameter>
+                    <Name>RESOURCEID</Name>
+                    <Value>Library://Samples/Sheboygan/TileSets/SheboyganUTFGrid.TileSetDefinition</Value>
+                </Parameter>
+            </Parameters>
+        </Operation>
+        <Operation>
+            <Name>SETRESOURCE</Name>
+            <Version>1.0.0</Version>
+            <Parameters>
+                <Parameter>
+                    <Name>CONTENT</Name>
+                    <Value>Library/Samples/Sheboygan/TileSets/SheboyganUTFGrid.TileSetDefinition_CONTENT.xml</Value>
+                    <ContentType>text/xml</ContentType>
+                </Parameter>
+                <Parameter>
+                    <Name>HEADER</Name>
+                    <Value>Library/Samples/Sheboygan/TileSets/SheboyganUTFGrid.TileSetDefinition_HEADER.xml</Value>
+                    <ContentType>text/xml</ContentType>
+                </Parameter>
+                <Parameter>
+                    <Name>RESOURCEID</Name>
+                    <Value>Library://Samples/Sheboygan/TileSets/SheboyganUTFGrid.TileSetDefinition</Value>
+                </Parameter>
+            </Parameters>
+        </Operation>
     </Operations>
 </ResourcePackageManifest>
