@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2004-2015 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -18,7 +18,10 @@
 #ifndef _MGGEOMETRYSIMPLIFICATIONALGORITHMTYPE_H_
 #define _MGGEOMETRYSIMPLIFICATIONALGORITHMTYPE_H_
 
-/// \cond INTERNAL
+/// \defgroup MgGeometrySimplificationAlgorithmType MgGeometrySimplificationAlgorithmType
+/// \ingroup Geometry_Module_classes
+/// \{
+
 ////////////////////////////////////////////////////////////
 /// \brief
 /// MgGeometrySimplificationAlgorithmType defines constants indicating
@@ -40,6 +43,6 @@ PUBLISHED_API:
     ///
     static const INT32 TopologyPreserving = 1;
 };
-/// \endcond
+/// \}
 
 #endif //_MGGEOMETRYSIMPLIFICATIONALGORITHMTYPE_H_

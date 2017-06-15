@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2004-2017 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -354,7 +354,7 @@ PUBLISHED_API:
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Initializes a new MgMap object given a map definition or tile set
-    /// definition and a name for the map with initial display parameters set. 
+    /// definition and a name for the map with initial display parameters set.
     /// This method is used for MapGuide Viewers or for offline map production.
     ///
     /// \remarks
@@ -391,6 +391,8 @@ PUBLISHED_API:
     /// The view scale to initially set for the map
     /// \param dpi
     /// The display DPI to initially set for the map
+    ///
+    /// \since 3.3
     ///
     /// \return
     /// Returns nothing.
@@ -481,9 +483,9 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Returns the resource id of the Tile Set Definition that created 
-    /// this map, or the Tile Set Definition linked from the Map Definition 
-    /// used to created this map. If it was created from a Map Definition and 
+    /// Returns the resource id of the Tile Set Definition that created
+    /// this map, or the Tile Set Definition linked from the Map Definition
+    /// used to created this map. If it was created from a Map Definition and
     /// that does not link to a Tile Set Definition, then NULL is returned.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->

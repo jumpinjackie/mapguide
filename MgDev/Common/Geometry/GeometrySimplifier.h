@@ -18,7 +18,7 @@
 #ifndef _MGGEOMETRYSIMPLIFIER_H_
 #define _MGGEOMETRYSIMPLIFIER_H_
 
-/// \defgroup MgAgfReaderWriter MgAgfReaderWriter
+/// \defgroup MgGeometrySimplifier MgGeometrySimplifier
 /// \ingroup Geometry_Module_classes
 /// \{
 
