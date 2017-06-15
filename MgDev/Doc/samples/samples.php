@@ -112,7 +112,7 @@ $hasNothing = !$hasDotNet && !$hasPhp && !$hasJava;
                 </ul>
                 <? } ?>
                 <? if ($hasOL2Samples) { ?>
-                <p class="sample-header">MapGuide with <a href="http://www.openlayers.org">OpenLayers</a></p>
+                <p class="sample-header">MapGuide with <a href="http://www.openlayers.org/two">OpenLayers 2</a></p>
                 <ul>
                     <li><a href="ol2samples/untiled/index.html">Basic Sheboygan un-tiled map example with basic legend</a></li>
                     <li><a href="ol2samples/tiled/index.html">Basic Sheboygan tiled map example</a></li>
@@ -120,6 +120,10 @@ $hasNothing = !$hasDotNet && !$hasPhp && !$hasJava;
                     <li><a href="ol2samples/mixed/index.html">Basic Sheboygan mixed map (tiled and untiled) example</a></li>
                     <li><a href="ol2samples/commercial/index.html">Sheboygan map with Google/OSM layers</a></li>
                     <li><a href="ol2samples/xyz/index.html">Sheboygan map as XYZ layer</a></li>
+                </ul>
+                <p class="sample-header">MapGuide with <a href="http://www.openlayers.org">OpenLayers</a></p>
+                <ul>
+                    <li><a href="ol2samples/utfgrid/index.html">Sheboygan map as XYZ layer with UTFGrid interaction tiles</a></li>
                 </ul>
                 <? } ?>
             <? } ?>
