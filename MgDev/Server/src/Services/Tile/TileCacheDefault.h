@@ -59,6 +59,7 @@ protected:
         delete this;
     }
 
+    virtual STRING GetTileFileExtension();
     virtual STRING GetBasePath();
     virtual STRING GetFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow);
     virtual STRING CreateFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow);

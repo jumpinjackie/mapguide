@@ -39,6 +39,9 @@
     <ClCompile Include="OpRenderTileXYZ.cpp">
       <Filter>Ops</Filter>
     </ClCompile>
+    <ClCompile Include="OpRenderTileUTFGrid.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpQueryFeatureProperties.h">
@@ -72,6 +75,9 @@
     <ClInclude Include="ServerRenderingService.h" />
     <ClInclude Include="..\..\Common\stdafx.h" />
     <ClInclude Include="OpRenderTileXYZ.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRenderTileUTFGrid.h">
       <Filter>Ops</Filter>
     </ClInclude>
   </ItemGroup>

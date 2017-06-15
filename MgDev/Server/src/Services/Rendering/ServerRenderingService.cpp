@@ -20,6 +20,7 @@
 #include "DefaultStylizer.h"
 #include "GDRenderer.h"
 #include "AGGRenderer.h"
+#include "UTFGridRenderer.h"
 #include "RSMgSymbolManager.h"
 #include "RSMgFeatureReader.h"
 #include "FeatureInfoRenderer.h"
@@ -259,6 +260,48 @@ MgByteReader* MgServerRenderingService::RenderTileXYZ(MgMap* map,
     return ret.Detach();
 }
 
+void MgServerRenderingService::ComputeXYZTileExtents(MgMap* map, INT32 x, INT32 y, INT32 z, RS_Bounds& extent)
+{
+    //XYZ to lat/lon math. From this we can convert to the bounds in the map's CS
+    //
+    //Source: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+    double nMin = M_PI - 2.0 * M_PI * y / pow(2.0, (int)z);
+    double nMax = M_PI - 2.0 * M_PI * (y + 1) / pow(2.0, (int)z);
+    double lonMin = x / pow(2.0, (int)z) * 360.0 - 180;
+    double latMin = 180.0 / M_PI * atan(0.5 * (exp(nMin) - exp(-nMin)));
+    double lonMax = (x + 1) / pow(2.0, (int)z) * 360.0 - 180;
+    double latMax = 180.0 / M_PI * atan(0.5 * (exp(nMax) - exp(-nMax)));
+
+    double mcsMinX = std::min(lonMin, lonMax);
+    double mcsMinY = std::min(latMin, latMax);
+    double mcsMaxX = std::max(lonMin, lonMax);
+    double mcsMaxY = std::max(latMin, latMax);
+
+    STRING mapCsWkt = map->GetMapSRS();
+    Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+    Ptr<MgCoordinateSystem> mapCs = csFactory->Create(mapCsWkt);
+    if (mapCs->GetCsCode() != L"LL84")
+    {
+        //Set up LL to map transform and transform the bounds into map space
+        Ptr<MgCoordinateSystem> llCs = csFactory->CreateFromCode(L"LL84");
+        Ptr<MgCoordinateSystemTransform> trans = csFactory->GetTransform(llCs, mapCs);
+
+        Ptr<MgCoordinate> ul = trans->Transform(lonMin, latMin);
+        Ptr<MgCoordinate> lr = trans->Transform(lonMax, latMax);
+
+        mcsMinX = std::min(lr->GetX(), ul->GetX());
+        mcsMinY = std::min(lr->GetY(), ul->GetY());
+        mcsMaxX = std::max(lr->GetX(), ul->GetX());
+        mcsMaxY = std::max(lr->GetY(), ul->GetY());
+    }
+
+    // get map extent that corresponds to tile extent
+    extent.minx = mcsMinX;
+    extent.miny = mcsMinY;
+    extent.maxx = mcsMaxX;
+    extent.maxy = mcsMaxY;
+}
+
 MgByteReader* MgServerRenderingService::RenderTileXYZ(MgMap* map,
                                                       CREFSTRING baseMapLayerGroupName,
                                                       INT32 x,
@@ -293,44 +336,10 @@ MgByteReader* MgServerRenderingService::RenderTileXYZ(MgMap* map,
     int width = XYZ_TILE_WIDTH;
     int height = XYZ_TILE_HEIGHT;
 
-    //XYZ to lat/lon math. From this we can convert to the bounds in the map's CS
-    //
-    //Source: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
-    double nMin = M_PI - 2.0 * M_PI * y / pow(2.0, (int)z);
-    double nMax = M_PI - 2.0 * M_PI * (y + 1) / pow(2.0, (int)z);
-    double lonMin = x / pow(2.0, (int)z) * 360.0 - 180;
-    double latMin = 180.0 / M_PI * atan(0.5 * (exp(nMin) - exp(-nMin)));
-    double lonMax = (x + 1) / pow(2.0, (int)z) * 360.0 - 180;
-    double latMax = 180.0 / M_PI * atan(0.5 * (exp(nMax) - exp(-nMax)));
-
-    double mcsMinX = std::min(lonMin, lonMax);
-    double mcsMinY = std::min(latMin, latMax);
-    double mcsMaxX = std::max(lonMin, lonMax);
-    double mcsMaxY = std::max(latMin, latMax);
-
-    STRING mapCsWkt = map->GetMapSRS();
-    Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
-    Ptr<MgCoordinateSystem> mapCs = csFactory->Create(mapCsWkt);
-    if (mapCs->GetCsCode() != L"LL84")
-    {
-        //Set up LL to map transform and transform the bounds into map space
-        Ptr<MgCoordinateSystem> llCs = csFactory->CreateFromCode(L"LL84");
-        Ptr<MgCoordinateSystemTransform> trans = csFactory->GetTransform(llCs, mapCs);
-
-        Ptr<MgCoordinate> ul = trans->Transform(lonMin, latMin);
-        Ptr<MgCoordinate> lr = trans->Transform(lonMax, latMax);
-
-        mcsMinX = std::min(lr->GetX(), ul->GetX());
-        mcsMinY = std::min(lr->GetY(), ul->GetY());
-        mcsMaxX = std::max(lr->GetX(), ul->GetX());
-        mcsMaxY = std::max(lr->GetY(), ul->GetY());
-    }
-
     // Inlining same logic from RenderTile() overload below as we want the same logic, but we want to pass scale
     // instead of scale index
-
-    // get map extent that corresponds to tile extent
-    RS_Bounds extent(mcsMinX, mcsMinY, mcsMaxX, mcsMaxY);
+    RS_Bounds extent;
+    ComputeXYZTileExtents(map, x, y, z, extent);
 
     // use the map's background color, but always make it fully transparent
     RS_Color bgColor;
@@ -421,6 +430,196 @@ MgByteReader* MgServerRenderingService::RenderTileXYZ(MgMap* map,
     baseGroup->SetVisible(groupVisible);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTileXYZ")
+
+    return ret.Detach();
+}
+
+MgByteReader* MgServerRenderingService::RenderTileUTFGrid(MgMap * map, 
+                                                          CREFSTRING baseMapLayerGroupName, 
+                                                          INT32 x,
+                                                          INT32 y, 
+                                                          INT32 z, 
+                                                          INT32 dpi)
+{
+    Ptr<MgByteReader> ret;
+
+    MG_TRY()
+
+    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderTileUTFGrid");
+    CHECKARGUMENTEMPTYSTRING(baseMapLayerGroupName, L"MgServerRenderingService.RenderTileUTFGrid");
+
+    // get the layer group associated with the name
+    Ptr<MgLayerGroupCollection> layerGroups = map->GetLayerGroups();
+    Ptr<MgLayerGroup> baseGroup = layerGroups->GetItem(baseMapLayerGroupName);
+    if (baseGroup == NULL)
+    {
+        MgStringCollection arguments;
+        arguments.Add(L"2");
+        arguments.Add(baseMapLayerGroupName);
+
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderTileUTFGrid",
+            __LINE__, __WFILE__, &arguments, L"MgMapLayerGroupNameNotFound", NULL);
+    }
+
+    //Set the dpi
+    map->SetDisplayDpi(dpi);
+
+    int width = XYZ_TILE_WIDTH;
+    int height = XYZ_TILE_HEIGHT;
+
+    // Inlining same logic from RenderTile() overload below as we want the same logic, but we want to pass scale
+    // instead of scale index
+
+    // get map extent that corresponds to tile extent
+    RS_Bounds extent;
+    ComputeXYZTileExtents(map, x, y, z, extent);
+
+    // use the map's background color, but always make it fully transparent
+    RS_Color bgColor;
+    StylizationUtil::ParseColor(map->GetBackgroundColor(), bgColor);
+    bgColor.alpha() = 0;
+
+    // the label renderer needs to know the tile extent offset parameter
+    double tileExtentOffset = 0.0;
+    MgConfiguration* pConf = MgConfiguration::GetInstance();
+    pConf->GetDoubleValue(MgConfigProperties::RenderingServicePropertiesSection,
+        MgConfigProperties::RenderingServicePropertyTileExtentOffset,
+        tileExtentOffset,
+        MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset);
+    if (tileExtentOffset < 0.0)
+        tileExtentOffset = MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
+
+    // Image scaling logic ripped verbatim from RenderMap() overload that takes MgEnvelope
+    //
+    // If we need to scale the image (because of request for non-square
+    // pixels) we will need to draw at one image size and then save at
+    // another scaled size.  Here we will compute the correct map scale
+    // and render size for a requested extent and image size.
+    double screenAR = (double)width / (double)height;
+    double mapAR = extent.width() / extent.height();
+
+    int drawWidth = width;
+    int drawHeight = height;
+    double scale = 0.0;
+
+    if (mapAR >= screenAR)
+    {
+        scale = extent.width() * map->GetMetersPerUnit() / METERS_PER_INCH * (double)dpi / (double)width;
+
+        // we based map scale on the image width, so adjust rendering
+        // height to match the map aspect ratio
+        drawHeight = (int)(width / mapAR);
+
+        // ignore small perturbations in order to avoid rescaling the
+        // end image in cases where the rescaling of width is less than
+        // a pixel or so
+        if (abs(drawHeight - height) <= 1)
+            drawHeight = height;
+    }
+    else
+    {
+        scale = extent.height() * map->GetMetersPerUnit() / METERS_PER_INCH * (double)dpi / (double)height;
+
+        // we based map scale on the image height, so adjust rendering
+        // height to match the map aspect ratio
+        drawWidth = (int)(height * mapAR);
+
+        // ignore small perturbations, in order to avoid rescaling the
+        // end image in cases where the rescaling of width is less than
+        // a pixel or so
+        if (abs(drawWidth - width) <= 1)
+            drawWidth = width;
+    }
+
+    //printf("XYZ(%d, %d, %d) -> [%f, %f] [%f, %f] at %f -- (w: %d, h: %d, mpu: %f)\n", x, y, z, mcsMinX, mcsMinY, mcsMaxX, mcsMaxY, scale, width, height, map->GetMetersPerUnit());
+
+    // sanity check - number of image pixels cannot exceed MAX_PIXELS
+    if (drawWidth * drawHeight > MAX_PIXELS)
+        throw new MgOutOfRangeException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
+
+    // create a temporary collection containing all the layers for the base group
+    Ptr<MgLayerCollection> layers = map->GetLayers();
+    Ptr<MgReadOnlyLayerCollection> roLayers = new MgReadOnlyLayerCollection();
+    for (int i = 0; i<layers->GetCount(); i++)
+    {
+        Ptr<MgLayerBase> layer = layers->GetItem(i);
+        Ptr<MgLayerGroup> parentGroup = layer->GetGroup();
+        if (parentGroup == baseGroup)
+            roLayers->Add(layer);
+    }
+
+    // of course the group has to also be visible
+    bool groupVisible = baseGroup->GetVisible();
+    baseGroup->SetVisible(true);
+
+    // We'd like to re-use RenderMapInternal, but its design is biased towards image-based SE_Renderers (that expect to
+    // save to some RS_ByteData that an MgByteReader is returned from.
+    //
+    // Our UTFGridRenderer is not such a renderer, so we have to inline the pertinent bits here
+    
+    // set the map scale to the requested scale
+    map->SetViewScale(scale);
+
+    // convert the map coordinate system from srs wkt to a mentor cs structure
+    STRING srs = map->GetMapSRS();
+    Ptr<MgCoordinateSystem> dstCs;
+    if (!srs.empty())
+    {
+        // let's not fail here if coord sys conversion fails for the map's
+        // coordinate system. Instead we will fail per layer at a later stage
+        try
+        {
+            dstCs = m_pCSFactory->Create(srs);
+        }
+        catch (MgInvalidCoordinateSystemException* e)
+        {
+            e->Release();
+        }
+    }
+
+    RS_String units = dstCs.p ? dstCs->GetUnits() : L"";
+
+    // get the session ID
+    STRING sessionId;
+    Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
+    if (userInfo != NULL)
+        sessionId = userInfo->GetMgSessionId();
+
+    UTFGridContent content;
+    std::auto_ptr<UTFGridRenderer> dr(new UTFGridRenderer(&content));
+
+    RSMgSymbolManager mgr(m_svcResource);
+    dr->SetSymbolManager(&mgr);
+
+    SEMgSymbolManager semgr(m_svcResource);
+    DefaultStylizer ds(&semgr);
+
+    RS_Color bgcolor(0, 0, 0, 255); //Not used by UTFGridRenderer
+
+    Ptr<MgPoint> ptCenter = map->GetViewCenter();
+    Ptr<MgCoordinate> coord = ptCenter->GetCoordinate();
+    RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, units, bgcolor, coord->GetX(), coord->GetY(), scale);
+
+    // begin map stylization
+    dr->StartMap(&mapInfo, extent, scale, map->GetDisplayDpi(), map->GetMetersPerUnit(), NULL);
+
+    // We can't use RenderMapInternal, but we can use RenderLayers, which is all we really need
+    RenderLayers(map, roLayers, &ds, dr.get(), dstCs, true, scale, L"UTFGRID", NULL);
+
+    dr->EndMap(); //This will trigger the UTFGrid tile encoding process
+
+    // restore the base group's visibility
+    baseGroup->SetVisible(groupVisible);
+
+    // Now extract the encoded utfgrid tile and pack it into a MgByteReader
+    std::string utfgrid = content.GetString();
+    Ptr<MgByteSource> bs = new MgByteSource((BYTE_ARRAY_IN)utfgrid.c_str(), (INT32)utfgrid.length());
+
+    bs->SetMimeType(MgMimeType::Json);
+
+    ret = bs->GetReader();
+
+    MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTileUTFGrid")
 
     return ret.Detach();
 }

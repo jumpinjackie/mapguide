@@ -37,6 +37,7 @@ include_SOURCES = \
   OpRenderMap.cpp \
   OpRenderTile.cpp \
   OpRenderTileXYZ.cpp \
+  OpRenderTileUTFGrid.cpp \
   OpQueryFeatures.cpp \
   OpQueryFeatureProperties.cpp \
   FeatureInfoRenderer.cpp \
@@ -53,6 +54,7 @@ noinst_HEADERS = $(include_SOURCES) \
   OpRenderMap.h \
   OpRenderTile.h \
   OpRenderTileXYZ.h \
+  OpRenderTileUTFGrid.h \
   OpQueryFeatures.h \
   OpQueryFeatureProperties.h \
   FeatureInfoRenderer.h \

@@ -50,6 +50,7 @@ protected:
     }
 
     virtual STRING GetBasePath();
+    virtual STRING GetTileFileExtension();
 
 private:
     Ptr<MgResourceIdentifier> m_tilesetId;

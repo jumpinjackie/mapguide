@@ -25,6 +25,7 @@
 #include "OpRenderMapLegend.cpp"
 #include "OpRenderTile.cpp"
 #include "OpRenderTileXYZ.cpp"
+#include "OpRenderTileUTFGrid.cpp"
 #include "OpQueryFeatures.cpp"
 #include "OpQueryFeatureProperties.cpp"
 #include "RenderingOperation.cpp"

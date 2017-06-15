@@ -1,0 +1,151 @@
+<html>
+
+<head>
+    <title>Sheboygan map as XYZ layer with UTFGrid</title>
+    <link rel="stylesheet" href="../assets/ol.css" />
+    <style type="text/css">
+        #error {
+            color: red;
+        }
+
+        #wrap {
+            width: 900;
+        }
+
+        #map {
+            width: 600;
+            height: 400;
+            float: left;
+            border: 1px solid black;
+        }
+
+        #main {
+            margin-top: 50px;
+            padding-top: 20px;
+        }
+
+        #feature-info {
+            font-family: Verdana, sans-serif;
+            border-radius: 3px;
+            padding: 4px;
+            font-size: 0.8em;
+            background-color: white;
+        }
+    </style>
+    <script type="text/javascript" src="../assets/ol-debug.js"></script>
+    <script type="text/javascript" src="../assets/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var gridSource = new ol.source.TileUTFGrid({
+                tileJSON: {
+                    scheme: "xyz",
+                    grids: [
+                        "../../mapagent/mapagent.fcgi?OPERATION=GETTILEIMAGE&VERSION=1.2.0&CLIENTAGENT=OpenLayers&USERNAME=Anonymous&MAPDEFINITION=Library://Samples/Sheboygan/TileSets/SheboyganUTFGrid.TileSetDefinition&BASEMAPLAYERGROUPNAME=Base+Layer+Group&TILECOL={y}&TILEROW={x}&SCALEINDEX={z}"
+                    ]
+                }
+            });
+            var gridLayer = new ol.layer.Tile({ source: gridSource });
+            var view = new ol.View({
+                center: ol.proj.transform([-87.7302542509315, 43.744459064634], 'EPSG:4326', 'EPSG:3857'),
+                zoom: 11
+            });
+
+            var mapElement = document.getElementById('map');
+            var map = new ol.Map({
+                target: mapElement,
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.XYZ({
+                            url: "../../mapagent/mapagent.fcgi?OPERATION=GETTILEIMAGE&VERSION=1.2.0&CLIENTAGENT=OpenLayers&USERNAME=Anonymous&MAPDEFINITION=Library://Samples/Sheboygan/TileSets/SheboyganXYZ.TileSetDefinition&BASEMAPLAYERGROUPNAME=Base+Layer+Group&TILECOL={y}&TILEROW={x}&SCALEINDEX={z}",
+                        })
+                    }),/*
+                    new ol.layer.Tile({
+                        source: new ol.source.TileDebug({
+                            projection: 'EPSG:3857',
+                            tileGrid: gridSource.getTileGrid()
+                        })
+                    }),*/
+                    gridLayer
+                ],
+                view: view
+            });
+
+            var infoElement = document.getElementById('feature-info');
+            var nameElement = document.getElementById('feature-name');
+
+            var infoOverlay = new ol.Overlay({
+                element: infoElement,
+                offset: [15, 15],
+                stopEvent: false
+            });
+            map.addOverlay(infoOverlay);
+
+            var displayFeatureInfo = function (coordinate) {
+                var viewResolution = /** @type {number} */ (view.getResolution());
+                gridSource.forDataAtCoordinateAndResolution(coordinate, viewResolution,
+                    function (data) {
+                        // If you want to use the template from the TileJSON,
+                        //  load the mustache.js library separately and call
+                        //
+                        mapElement.style.cursor = data ? 'pointer' : '';
+                        if (data) {
+                            /*
+                            var html = "<table>";
+                            for (var key in data) {
+                                html += "<tr><td>" + key + "</td><td>" + data[key] + "</td></tr>";
+                            }
+                            html += "</table>";
+                            */
+                            var html = "";
+                            if (data.MG_TOOLTIP)
+                                html += data.MG_TOOLTIP.replace(/(\\n)+/g, '<br />');
+                            if (data.MG_URL) {
+                                html += "<br/><br/>";
+                                html += "<strong>CTRL + Click for more information</strong>";
+                            }
+                            nameElement.innerHTML = html
+                        }
+                        infoOverlay.setPosition(data ? coordinate : undefined);
+                    });
+            };
+            map.on('pointermove', function (evt) {
+                if (evt.dragging) {
+                    return;
+                }
+                var coordinate = map.getEventCoordinate(evt.originalEvent);
+                displayFeatureInfo(coordinate);
+            });
+            map.on('click', function (evt) {
+                if (evt.originalEvent.ctrlKey == true) {
+                    var viewResolution = /** @type {number} */ (view.getResolution());
+                    gridSource.forDataAtCoordinateAndResolution(evt.coordinate, viewResolution,
+                        function (data) {
+                            if (data && data.MG_URL) {
+                                window.open(data.MG_URL);
+                            }
+                        });
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <p>This example demonstrates a Map Definition being consumed as an XYZ layer via the MapGuide Tile Set Definition.</p>
+    <p>Tooltip data is provided by UTFGrid tiles served by a different MapGuide Tile Set Definition</p>
+    <p>Sample not loading? <a href="../data/load.php">Check that the required resources have been loaded</a></p>
+    <div id="error">
+    </div>
+    <div id="wrap">
+        <div id="map">
+        </div>
+        <div style="display: none;">
+            <!-- Overlay with the feature info -->
+            <div id="feature-info">
+                <div id="feature-name">&nbsp;</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

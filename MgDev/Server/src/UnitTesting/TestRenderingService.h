@@ -55,6 +55,7 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_LayerWatermarkPNG);
     CPPUNIT_TEST(TestCase_RenderTilePNG);
     CPPUNIT_TEST(TestCase_RenderTileXYZ_PNG);
+    CPPUNIT_TEST(TestCase_RenderTileUTFGrid);
 
     CPPUNIT_TEST(TestCase_StylizationFunctionsPNG8);
 
@@ -219,6 +220,7 @@ public:
     void TestCase_LayerWatermarkPNG() { TestCase_LayerWatermark(L"PNG", L"png"); }
     void TestCase_RenderTilePNG() { TestCase_RenderTile(L"PNG", L"png"); }
     void TestCase_RenderTileXYZ_PNG() { TestCase_RenderTileXYZ(L"PNG", L"png"); }
+    void TestCase_RenderTileUTFGrid();
 
     //PNG8 output tests
     void TestCase_RenderDynamicOverlayPNG8() { TestCase_RenderDynamicOverlay(L"PNG8", L"png"); }
@@ -306,6 +308,7 @@ public:
 private:
     MgMap* CreateTestMap();
     MgMap* CreateTestTiledMap();
+    MgMap* CreateTestXYZMap();
     MgMap* CreateTestStylizationFunctionMap();
     MgMap* CreateTestMapWithWatermark();
     MgPolygon* CreateSelectionPolygon(MgMap* map, double width, double height);

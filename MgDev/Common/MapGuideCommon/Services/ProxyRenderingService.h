@@ -179,6 +179,45 @@ EXTERNAL_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
+    /// Returns the specified UTFGrid tile for the given map. Tile structure is
+    /// based on the XYZ tiling scheme used by Google Maps, OpenStreetMap, and
+    /// others
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param baseMapLayerGroupName
+    /// Input
+    /// Specifies the name of the baseMapLayerGroup for which to render the tile.
+    /// \param x
+    /// Input
+    /// Specifies the row index of the tile to return.
+    /// \param y
+    /// Input
+    /// Specifies the column index of the tile to return.
+    /// \param z
+    /// Input
+    /// Specifies the zoom level of the tile to return.
+    /// \param dpi
+    /// Input
+    /// Specifies the dpi of the tile to return.
+    /// \param tileImageFormat
+    /// Input
+    /// Specifies the image format of the tile to return.
+    ///
+    /// \return
+    /// A byte reader containing the rendered tile image.
+    ///
+    virtual MgByteReader* RenderTileUTFGrid(
+        MgMap* map,
+        CREFSTRING baseMapLayerGroupName,
+        INT32 x,
+        INT32 y,
+        INT32 z,
+        INT32 dpi);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
     /// Renders all dynamic layers in the specified MgMap to a dynamic overlay image
     /// with a transparent background. The center, scale, size, and layers to be
     /// rendered are defined by the specified map instance.  The format parameter

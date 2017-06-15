@@ -22,6 +22,9 @@
     <Filter Include="AGGRenderer">
       <UniqueIdentifier>{737455e1-014f-4212-b295-d535728637bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UTFGridRenderer">
+      <UniqueIdentifier>{139cab4d-e977-4ad2-8526-73e40cb9dde1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SymbolTrans.cpp">
@@ -114,6 +117,12 @@
     <ClCompile Include="CriticalSection.cpp" />
     <ClCompile Include="MapQuantization.cpp" />
     <ClCompile Include="RenderUtil.cpp" />
+    <ClCompile Include="UTFGridRenderer.cpp">
+      <Filter>UTFGridRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="UTFGridContent.cpp">
+      <Filter>UTFGridRenderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SymbolTrans.h">
@@ -205,6 +214,18 @@
     <ClInclude Include="Renderers.h" />
     <ClInclude Include="RenderUtil.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="UTFGridRenderer.h">
+      <Filter>UTFGridRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="UTFGridContent.h">
+      <Filter>UTFGridRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="agg_utfgrid_context.h">
+      <Filter>UTFGridRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapUTFGrid.h">
+      <Filter>UTFGridRenderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Renderers.rc" />

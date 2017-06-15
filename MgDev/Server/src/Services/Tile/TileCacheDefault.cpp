@@ -549,6 +549,23 @@ STRING MgTileCacheDefault::GetTileFormat()
     return MgTileParameters::tileFormat;
 }
 
+STRING MgTileCacheDefault::GetTileFileExtension()
+{
+    STRING fmt = GetTileFormat();
+    if (fmt == MgImageFormats::Jpeg)
+    {
+        return L"jpg";
+    }
+    else if (fmt == MgImageFormats::Gif)
+    {
+        return L"gif";
+    }
+    else
+    {
+        return L"png";
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // accessor method for resource service
 MgResourceService* MgTileCacheDefault::GetResourceServiceForMapDef(MgResourceIdentifier* mapDefinition,
@@ -668,20 +685,7 @@ void MgTileCacheDefault::GeneratePathNames(int scaleIndex,
     //     <lockPathname> = <fullPath>/<row>_<column>.lck
     tilePathname += fileName;
     lockPathname = tilePathname;
-    STRING fmt = GetTileFormat();
-    if (fmt == MgImageFormats::Jpeg)
-    {
-        tilePathname += L"jpg";
-    }
-    else if (fmt == MgImageFormats::Gif)
-    {
-        tilePathname += L"gif";
-    }
-    else
-    {
-        tilePathname += L"png";
-    }
-
+    tilePathname += GetTileFileExtension();
     lockPathname += L"lck";
 }
 

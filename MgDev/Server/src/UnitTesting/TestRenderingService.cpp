@@ -107,6 +107,12 @@ void TestRenderingService::TestStart()
         Ptr<MgByteReader> mdfrdr1 = mdfsrc1->GetReader();
         m_svcResource->SetResource(mapres1, mdfrdr1, NULL);
 
+        // publish tile set
+        Ptr<MgResourceIdentifier> tilesetres1 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ.TileSetDefinition");
+        Ptr<MgByteSource> tsdsrc1 = new MgByteSource(L"../UnitTestFiles/UT_XYZ.tsd", false);
+        Ptr<MgByteReader> tsdrdr1 = tsdsrc1->GetReader();
+        m_svcResource->SetResource(tilesetres1, tsdrdr1, NULL);
+
         // publish the layer definitions
         Ptr<MgResourceIdentifier> ldfres1 = new MgResourceIdentifier(L"Library://UnitTests/Layers/HydrographicPolygons.LayerDefinition");
         Ptr<MgByteSource> ldfsrc1 = new MgByteSource(L"../UnitTestFiles/UT_HydrographicPolygons.ldf", false);
@@ -445,6 +451,10 @@ void TestRenderingService::TestEnd()
         // delete the map definition
         Ptr<MgResourceIdentifier> mapres1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
         m_svcResource->DeleteResource(mapres1);
+
+        // delete tile set
+        Ptr<MgResourceIdentifier> tilesetres1 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ.TileSetDefinition");
+        m_svcResource->DeleteResource(tilesetres1);
 
         // delete the layer definitions
         Ptr<MgResourceIdentifier> ldfres1 = new MgResourceIdentifier(L"Library://UnitTests/Layers/HydrographicPolygons.LayerDefinition");
@@ -811,7 +821,7 @@ void TestRenderingService::TestCase_RenderMapWithWatermark(CREFSTRING imageForma
 
         map->SetViewScale(12000.0);
         Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMap(map, NULL, imageFormat);
-		rdr2->ToFile(GetPath(L"../UnitTestFiles/RenderMapWithWatermark12k", imageFormat, extension));
+        rdr2->ToFile(GetPath(L"../UnitTestFiles/RenderMapWithWatermark12k", imageFormat, extension));
     }
     catch (MgException* e)
     {
@@ -1349,6 +1359,29 @@ MgMap* TestRenderingService::CreateTestStylizationFunctionMap()
     return map;
 }
 
+MgMap* TestRenderingService::CreateTestXYZMap()
+{
+    Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/BaseMap.MapDefinition");
+    MgMap* map = new MgMap(m_siteConnection);
+    map->Create(mdfres, L"UnitTestSheboyganXYZ");
+
+    Ptr<MgLayerCollection> layers = map->GetLayers();
+    Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
+    Ptr<MgLayerBase> roads = layers->GetItem(L"RoadCenterLines");
+    Ptr<MgLayerGroup> baseGroup = groups->GetItem(L"BaseLayers");
+    roads->SetGroup(baseGroup);
+
+    Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-87.733253, 43.746199);
+    Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
+    map->SetViewCenter(ptNewCenter);
+    map->SetViewScale(75000.0);
+    map->SetDisplayDpi(96);
+    map->SetDisplayWidth(1024);
+    map->SetDisplayHeight(1024);
+
+    return map;
+}
+
 MgMap* TestRenderingService::CreateTestTiledMap()
 {
     Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/BaseMap.MapDefinition");
@@ -1761,15 +1794,51 @@ void TestRenderingService::TestCase_RenderTileXYZ(CREFSTRING imageFormat, CREFST
     }
 }
 
+void TestRenderingService::TestCase_RenderTileUTFGrid()
+{
+    try
+    {
+        Ptr<MgMap> map = CreateTestXYZMap();
+
+        //For ease of visual verfication, render the XYZ image tiles as baseline
+        Ptr<MgByteReader> imgTL = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16797, 23893, 16, 96, MgImageFormats::Png);
+        Ptr<MgByteReader> imgTR = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16798, 23893, 16, 96, MgImageFormats::Png);
+        Ptr<MgByteReader> imgBL = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16797, 23894, 16, 96, MgImageFormats::Png);
+        Ptr<MgByteReader> imgBR = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16798, 23894, 16, 96, MgImageFormats::Png);
+
+        imgTL->ToFile(L"../UnitTestFiles/RenderTileUTFGrid_TopLeft_ImageBaseline.png");
+        imgTR->ToFile(L"../UnitTestFiles/RenderTileUTFGrid_TopRight_ImageBaseline.png");
+        imgBL->ToFile(L"../UnitTestFiles/RenderTileUTFGrid_BottomLeft_ImageBaseline.png");
+        imgBR->ToFile(L"../UnitTestFiles/RenderTileUTFGrid_BottomRight_ImageBaseline.png");
+
+        //Now render the utf grids at the same place
+        Ptr<MgByteReader> utfTL = m_svcRendering->RenderTileUTFGrid(map, L"BaseLayers", 16797, 23893, 16, 96);
+        Ptr<MgByteReader> utfTR = m_svcRendering->RenderTileUTFGrid(map, L"BaseLayers", 16798, 23893, 16, 96);
+        Ptr<MgByteReader> utfBL = m_svcRendering->RenderTileUTFGrid(map, L"BaseLayers", 16797, 23894, 16, 96);
+        Ptr<MgByteReader> utfBR = m_svcRendering->RenderTileUTFGrid(map, L"BaseLayers", 16798, 23894, 16, 96);
+
+        utfTL->ToFile(L"../UnitTestFiles/RenderTileUTFGrid_TopLeft.utfgrid");
+        utfTR->ToFile(L"../UnitTestFiles/RenderTileUTFGrid_TopRight.utfgrid");
+        utfBL->ToFile(L"../UnitTestFiles/RenderTileUTFGrid_BottomLeft.utfgrid");
+        utfBR->ToFile(L"../UnitTestFiles/RenderTileUTFGrid_BottomRight.utfgrid");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
 STRING TestRenderingService::GetPath(CREFSTRING basePath, CREFSTRING imageFormat, CREFSTRING extension)
 {
-	STRING ret;
-	ret += basePath;
-	ret += L"_";
-	ret += imageFormat;
-	ret += L".";
-	ret += extension;
-	return ret;
+    STRING ret;
+    ret += basePath;
+    ret += L"_";
+    ret += imageFormat;
+    ret += L".";
+    ret += extension;
+    return ret;
 }
 
 //void TestRenderingService::TestCase_RendererPerformance()

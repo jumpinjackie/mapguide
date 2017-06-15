@@ -45,6 +45,7 @@ INTERNAL_API:
     static const int RenderTileXYZ2             = 0x1111E911;
     static const int RenderMap6                 = 0x1111E912;
     static const int RenderMap7                 = 0x1111E913;
+    static const int RenderTileUTFGrid          = 0x1111E914;
 };
 /// \endcond
 

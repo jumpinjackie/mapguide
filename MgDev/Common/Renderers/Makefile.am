@@ -41,6 +41,8 @@ libMgRenderers_la_SOURCES = \
   RenderUtil.cpp \
   RS_ByteData.cpp \
   SymbolTrans.cpp \
+  UTFGridRenderer.cpp \
+  UTFGridContent.cpp \
   W2DRewriter.cpp \
   complex_polygon_gd.cpp
 
@@ -48,6 +50,7 @@ noinst_HEADERS = \
   AGGRenderer.h \
   AGGImageIO.h \
   agg_context.h \
+  agg_utfgrid_context.h \
   agg_mg_overloads.h \
   AGGW2DRewriter.h \
   AGGFillPatterns.h \
@@ -66,6 +69,7 @@ noinst_HEADERS = \
   KmlIconStyle.h \
   KmlRenderer.h \
   MapQuantization.h \
+  MapUTFGrid.h \
   ObservationMesh.h \
   Renderers.h \
   RenderUtil.h \
@@ -74,6 +78,8 @@ noinst_HEADERS = \
   RSDWFOutputStream.h \
   stdafx.h \
   SymbolTrans.h \
+  UTFGridRenderer.h \
+  UTFGridContent.h \
   W2DRewriter.h \
   whip_fill_library.h \
   whip_hatch_library.h \

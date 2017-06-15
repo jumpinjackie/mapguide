@@ -108,6 +108,17 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
                 L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         break;
+    case MgRenderingServiceOpId::RenderTileUTFGrid:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3, 3):
+            handler.reset(new MgOpRenderTileUTFGrid());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
 
     case MgRenderingServiceOpId::RenderDynamicOverlay:
         switch (VERSION_NO_PHASE(operationVersion))

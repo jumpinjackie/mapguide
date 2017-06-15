@@ -61,9 +61,17 @@ MgByteReader* MgTileCacheXYZProvider::RenderAndCacheTile(CREFSTRING tilePathname
 
     if (svcRendering != NULL)
     {
-        // generate the tile
-        img = svcRendering->RenderTileXYZ(map, baseMapLayerGroupName, tileRow, tileColumn, scaleIndex, map->GetDisplayDpi(), m_format);
-
+        // Test for non-image formats first
+        if (m_format == L"UTFGRID")
+        {
+            // generate the tile
+            img = svcRendering->RenderTileUTFGrid(map, baseMapLayerGroupName, tileRow, tileColumn, scaleIndex, map->GetDisplayDpi());
+        }
+        else //Assume it must be image-based at this point
+        {
+            // generate the tile
+            img = svcRendering->RenderTileXYZ(map, baseMapLayerGroupName, tileRow, tileColumn, scaleIndex, map->GetDisplayDpi(), m_format);
+        }
         // cache the tile
         if (!m_renderOnly)
         {
@@ -98,6 +106,26 @@ STRING MgTileCacheXYZProvider::GetTileFormat()
 STRING MgTileCacheXYZProvider::GetBasePath()
 {
     return GetBasePathFromResourceId(m_tilesetId, m_path);
+}
+
+STRING MgTileCacheXYZProvider::GetTileFileExtension()
+{
+    if (m_format == MgImageFormats::Jpeg)
+    {
+        return L"jpg";
+    }
+    else if (m_format == MgImageFormats::Gif)
+    {
+        return L"gif";
+    }
+    else if (m_format == L"UTFGRID")
+    {
+        return L"utfgrid";
+    }
+    else
+    {
+        return L"png";
+    }
 }
 
 STRING MgTileCacheXYZProvider::CreateFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)

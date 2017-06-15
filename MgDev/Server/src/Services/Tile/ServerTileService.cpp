@@ -372,13 +372,13 @@ MgByteReader* MgServerTileService::GetTileProviders()
         MgUtil::WideCharToMultiByte(wLocTileFormat, mbLocTileFormat);
         xml.append(mbLocTileFormat);
         xml.append("</LocalizedName>\n");
-        //Image formats supported by our tile service
+        //Tile formats supported by our tile service
         xml.append("<DefaultValue>PNG</DefaultValue>\n");
         xml.append("<Value>PNG</Value>");
         xml.append("<Value>PNG8</Value>");
         xml.append("<Value>JPG</Value>");
         xml.append("<Value>GIF</Value>");
-
+        xml.append("<Value>UTFGRID</Value>");
         xml.append("</ConnectionProperty>\n");
 
         //Property: RenderOnly

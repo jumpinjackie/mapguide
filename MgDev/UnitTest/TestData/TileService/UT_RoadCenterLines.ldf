@@ -5,6 +5,7 @@
     <FeatureName>Default:RoadCenterLines</FeatureName>
     <FeatureNameType>FeatureClass</FeatureNameType>
     <Geometry>Geometry</Geometry>
+    <ToolTip>NAME</ToolTip>
     <VectorScaleRange>
       <LineTypeStyle>
         <LineRule>

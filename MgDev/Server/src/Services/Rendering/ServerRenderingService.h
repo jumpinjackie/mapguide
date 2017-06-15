@@ -70,6 +70,13 @@ public:
                                         INT32 dpi,
                                         CREFSTRING tileImageFormat);
 
+    virtual MgByteReader* RenderTileUTFGrid(MgMap* map,
+                                            CREFSTRING baseMapLayerGroupName,
+                                            INT32 x,
+                                            INT32 y,
+                                            INT32 z,
+                                            INT32 dpi);
+
     virtual MgByteReader* RenderDynamicOverlay(MgMap* map,
                                                MgSelection* selection,
                                                CREFSTRING format);
@@ -226,6 +233,7 @@ public:
                                         bool bIncludeFeatureBBOX);
 
 private:
+    static void ComputeXYZTileExtents(MgMap* map, INT32 x, INT32 y, INT32 z, RS_Bounds& extent);
     // used for tile generation
     MgByteReader* RenderTile(MgMap* map,
                              MgLayerGroup* baseGroup,

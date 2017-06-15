@@ -218,6 +218,8 @@
     <ClCompile Include="SymbolTrans.cpp" />
     <ClCompile Include="DWFRenderer.cpp" />
     <ClCompile Include="EPlotRenderer.cpp" />
+    <ClCompile Include="UTFGridContent.cpp" />
+    <ClCompile Include="UTFGridRenderer.cpp" />
     <ClCompile Include="W2DRewriter.cpp" />
     <ClCompile Include="complex_polygon_gd.cpp" />
     <ClCompile Include="GDFillPatterns.cpp" />
@@ -258,13 +260,17 @@
     <ClCompile Include="RenderUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="agg_utfgrid_context.h" />
     <ClInclude Include="MapQuantization.h" />
+    <ClInclude Include="MapUTFGrid.h" />
     <ClInclude Include="SymbolTrans.h" />
     <ClInclude Include="DWFRenderer.h" />
     <ClInclude Include="DWFRSInputStream.h" />
     <ClInclude Include="EPlotRenderer.h" />
     <ClInclude Include="RSDWFInputStream.h" />
     <ClInclude Include="RSDWFOutputStream.h" />
+    <ClInclude Include="UTFGridContent.h" />
+    <ClInclude Include="UTFGridRenderer.h" />
     <ClInclude Include="W2DRewriter.h" />
     <ClInclude Include="whip_fill_library.h" />
     <ClInclude Include="whip_hatch_library.h" />
