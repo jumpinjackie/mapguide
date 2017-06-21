@@ -216,6 +216,12 @@ INTERNAL_API:
     static const STRING ServerCmdTestDefaultTests;
     static const STRING ServerCmdTestListTests;
     static const STRING ServerCmdTestMode; // Backwards compatibility
+    static const STRING ServerCmdLoadPackage;
+    static const STRING ServerCmdLoadPackageInfo;
+    static const STRING ServerCmdLoadPackageDescription;
+    static const STRING ServerCmdSetPwd;
+    static const STRING ServerCmdSetPwdInfo;
+    static const STRING ServerCmdSetPwdDescription;
     static const STRING ServerCmdUninstall;
     static const STRING ServerCmdUninstallInfo;
     static const STRING ServerCmdUninstallDescription;

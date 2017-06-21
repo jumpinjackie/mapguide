@@ -125,6 +125,16 @@ const STRING MgResources::ServerCmdStopInfo             = L"Stopping the server 
 const STRING MgResources::ServerCmdStopDescription      = L"  stop\n"\
                                                           L"      Stops the server service. Note: The service must be installed.\n\n";
 
+const STRING MgResources::ServerCmdLoadPackage          = L"loadpackage"; // Do not translate
+const STRING MgResources::ServerCmdLoadPackageInfo      = L"Loading the specified package.\n\n";
+const STRING MgResources::ServerCmdLoadPackageDescription = L"  loadpackage <package file path>\n"\
+                                                            L"      Loads the package at the given path.\n\n";
+
+const STRING MgResources::ServerCmdSetPwd               = L"setpwd"; // Do not translate
+const STRING MgResources::ServerCmdSetPwdInfo           = L"Setting the password for the specified user\n\n";
+const STRING MgResources::ServerCmdSetPwdDescription    = L"  setpwd <mapguide_username> <password>\n"\
+                                                          L"      Sets the password for the specified username.\n\n";
+
 const STRING MgResources::ServerCmdUnrecognizedInfo     = L"Unrecognized option: \"%s\".\n";
 
 const STRING MgResources::ServerCmdInstallFailed        = L"Failed to install the server service: \"%s\".\nError: %s";

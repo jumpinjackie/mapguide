@@ -56,6 +56,7 @@ include_SOURCES = \
   EventTimerManager.cpp \
   FeatureServiceCacheTimeLimitEventHandler.cpp \
   main.cpp \
+  LoadPackageCommand.cpp \
   OperationThread.cpp \
   PerformanceLoggingEventHandler.cpp \
   RepositoryCheckpointEventHandler.cpp \
@@ -63,10 +64,14 @@ include_SOURCES = \
   ResourceServiceCacheTimeLimitEventHandler.cpp \
   Server.cpp \
   ServerFactory.cpp \
+  ServerInteractiveCommand.cpp \
   ServiceHandlerFactory.cpp \
   ServiceRegistrationEventHandler.cpp \
   SessionTimeoutEventHandler.cpp \
+  SetPwdCommand.cpp \
   SignalHandler.cpp \
+  TestCommand.cpp \
+  TestFdoCommand.cpp \
   TimedEvent.cpp \
   TimedEventHandler.cpp
 
@@ -78,6 +83,7 @@ noinst_HEADERS = $(include_SOURCES) \
   EventTimer.h \
   EventTimerManager.h \
   FeatureServiceCacheTimeLimitEventHandler.h \
+  LoadPackageCommand.h \
   OperationThread.h \
   PerformanceLoggingEventHandler.h \
   RepositoryCheckpointEventHandler.h \
@@ -85,9 +91,13 @@ noinst_HEADERS = $(include_SOURCES) \
   ResourceServiceCacheTimeLimitEventHandler.h \
   Server.h \
   ServiceHandlerFactory.h \
+  ServerInteractiveCommand.h \
   ServiceRegistrationEventHandler.h \
   SessionTimeoutEventHandler.h \
+  SetPwdCommand.h \
   SignalHandler.h \
+  TestCommand.h \
+  TestFdoCommand.h \
   TimedEvent.h \
   TimedEventHandler.h
 

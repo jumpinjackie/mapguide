@@ -36,3 +36,10 @@
 #include "TimedEvent.cpp"
 #include "TimedEventHandler.cpp"
 #include "ServerFactory.cpp"
+
+// Commands
+#include "ServerInteractiveCommand.cpp"
+#include "TestCommand.cpp"
+#include "TestFdoCommand.cpp"
+#include "LoadPackageCommand.cpp"
+#include "SetPwdCommand.cpp"

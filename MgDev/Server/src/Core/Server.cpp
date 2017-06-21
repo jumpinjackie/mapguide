@@ -31,10 +31,17 @@
 #include "ServerFeatureTransactionPool.h"
 #include "ServerResourceService.h"
 
+#include "ServerSiteService.h"
+
 #include "Stylizer.h"
 #include "Bounds.h"
 #include "Renderer.h"
 #include "MappingUtil.h"
+
+#include "LoadPackageCommand.h"
+#include "SetPwdCommand.h"
+#include "TestCommand.h"
+#include "TestFdoCommand.h"
 
 #ifdef _DEBUG
 void DebugOutput(const ACE_TCHAR* format, ...)
@@ -75,10 +82,11 @@ MgServer::MgServer()
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("ACE_WIN64 NOT DEFINED\n")));
 #endif
 
-    reactor(ACE_Reactor::instance());
-
-    m_bTestMode = false;
     m_bTestFdo = false;
+    m_bTestMode = false;
+
+    reactor(ACE_Reactor::instance());
+    m_command.reset(NULL);
 
 #ifdef _DEBUG
     m_nClientRequestLimit = -1;   // -1 = No limit. DEBUG ONLY
@@ -221,39 +229,76 @@ void MgServer::ParseArgs (INT32 argc, ACE_TCHAR *argv[])
         if((ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTest)) == 0) ||
            (ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestMode)) == 0))
         {
+            MgServerManager* pServerManager = MgServerManager::GetInstance();
+
             // Test mode
             m_bTestMode = true;
-            m_strTestFileName = L"";    // Default to no output filename
-            m_strTestName = MgResources::ServerCmdTestDefaultTests;     // Default to all of the tests
+            STRING outputFile = L"";    // Default to no output filename
+            STRING subSuite = MgResources::ServerCmdTestDefaultTests;     // Default to all of the tests
 
             // If there is a 2nd parameter it is the test to run
             if(argc > 2)
             {
-                m_strTestName = MG_TCHAR_TO_WCHAR(argv[2]);
+                subSuite = MG_TCHAR_TO_WCHAR(argv[2]);
             }
 
             // If there is a 3rd parameter it is the output filename
             if(argc > 3)
             {
-                m_strTestFileName = MG_TCHAR_TO_WCHAR(argv[3]);
+                outputFile = MG_TCHAR_TO_WCHAR(argv[3]);
             }
+
+            m_command.reset(new MgTestCommand(pServerManager->GetDefaultMessageLocale(), subSuite, outputFile));
         }
         else if(ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestFdo)) == 0)
         {
+            MgServerManager* pServerManager = MgServerManager::GetInstance();
+
             // Test FDO
             m_bTestFdo = true;
+            STRING outputFile = L"";
 
             // If there is a 2nd parameter it is the output filename
             if(argc > 2)
             {
-                m_strTestFileName = MG_TCHAR_TO_WCHAR(argv[2]);
+                outputFile = MG_TCHAR_TO_WCHAR(argv[2]);
             }
-            else
-            {
-                m_strTestFileName = L"";
-            }
-        }
 
+            m_command.reset(new MgTestFdoCommand(pServerManager->GetDefaultMessageLocale(), outputFile));
+        }
+        else if (ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdLoadPackage)) == 0)
+        {
+            MgServerManager* pServerManager = MgServerManager::GetInstance();
+
+            // Package loading mode
+            STRING packagePath = L"";
+
+            // If there is a 2nd parameter it is the package filename
+            if (argc > 2)
+            {
+                packagePath = MG_TCHAR_TO_WCHAR(argv[2]);
+            }
+
+            m_command.reset(new MgLoadPackageCommand(pServerManager->GetDefaultMessageLocale(), packagePath));
+        }
+        else if (ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdSetPwd)) == 0)
+        {
+            MgServerManager* pServerManager = MgServerManager::GetInstance();
+
+            // Password changing mode
+            STRING strUser = L"";
+            STRING strPassword = L"";
+            if (argc > 2)
+            {
+                strUser = MG_TCHAR_TO_WCHAR(argv[2]);
+            }
+            if (argc > 3)
+            {
+                strPassword = MG_TCHAR_TO_WCHAR(argv[3]);
+            }
+
+            m_command.reset(new MgSetPwdCommand(pServerManager->GetDefaultMessageLocale(), strUser, strPassword));
+        }
         delete[] parameter;
     }
 }
@@ -271,219 +316,9 @@ int MgServer::svc()
 
     MgServerManager* pServerManager = MgServerManager::GetInstance();
 
-    if(m_bTestMode)
+    if (m_command.get()) //An interactive command was set, run it
     {
-        // Run the test cases
-
-        typedef int (*EXECUTE)(CREFSTRING, CREFSTRING);
-
-        MG_LOG_TRACE_ENTRY(L"MgServer::svc() - Running the server unit tests.");
-        ACE_DEBUG((LM_INFO, ACE_TEXT("Preparing to run the unit tests...\n\n")));
-
-        try
-        {
-            // Let the site manager know that the check servers background thread needs to stop
-            MgSiteManager* siteManager = MgSiteManager::GetInstance();
-            siteManager->StopCheckServersThread();
-
-            // Change the log file names to use the unit test names because we don't want to replace the existing log files
-            MgLogManager* pLogManager = MgLogManager::GetInstance();
-            STRING filename;
-
-            filename = L"Test" + MgLogManager::DefaultAccessLogFileName;
-            pLogManager->SetAccessLogFileName(filename);
-
-            filename = L"Test" + MgLogManager::DefaultAdminLogFileName;
-            pLogManager->SetAdminLogFileName(filename);
-
-            filename = L"Test" + MgLogManager::DefaultAuthenticationLogFileName;
-            pLogManager->SetAuthenticationLogFileName(filename);
-
-            filename = L"Test" + MgLogManager::DefaultErrorLogFileName;
-            pLogManager->SetErrorLogFileName(filename);
-
-            filename = L"Test" + MgLogManager::DefaultSessionLogFileName;
-            pLogManager->SetSessionLogFileName(filename);
-
-            filename = L"Test" + MgLogManager::DefaultTraceLogFileName;
-            pLogManager->SetTraceLogFileName(filename);
-
-            EXECUTE execute = NULL;
-
-        #ifdef _WIN32
-            HMODULE hlib = NULL;
-            #ifdef _DEBUG // load debug dll
-            STRING library = L"MgUnitTestingd.dll";
-            hlib = LoadLibrary(library.c_str());
-            #else // Load Release dll
-            STRING library = L"MgUnitTesting.dll";
-            hlib = LoadLibrary(library.c_str());
-            #endif
-
-            if (hlib != NULL)
-            {
-                execute = (EXECUTE)GetProcAddress(hlib, "Execute");
-            }
-            else
-            {
-                ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot open library: %W\n"), library.c_str()));
-                throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
-            }
-        #else
-            string library = "libMgUnitTesting.so";
-            void* hlib = dlopen(library.c_str(), RTLD_NOW);
-
-            if (hlib != NULL)
-            {
-                execute = (EXECUTE)dlsym(hlib, "Execute");
-            }
-            else
-            {
-                ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot open library: %s\n"), library.c_str()));
-                throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
-            }
-        #endif // _WIN32
-            if (execute != NULL)
-            {
-                nResult = (*execute)(m_strTestFileName, m_strTestName);
-
-                // The build script does not work with negative return codes, which is what is returned on a failure from CPPUnit.
-                // Therefore, we change the -1 result to a positive 1 to indicate to the build script that an error occurred.
-                if(nResult < 0)
-                {
-                    nResult = -(nResult);
-                }
-            }
-            else
-            {
-                // Failed to retrieve function
-                ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot locate 'Execute' procedure address inside library.\n")));
-                throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
-            }
-
-            ACE_DEBUG((LM_INFO, ACE_TEXT("Finished running the unit tests.\n\n")));
-        }
-        catch (MgException* e)
-        {
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("Unable to run all the unit tests.\n")));
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("%W\n"), e->GetStackTrace(pServerManager->GetDefaultMessageLocale()).c_str()));
-            SAFE_RELEASE(e);
-
-            nResult = -1;
-        }
-        catch (...)
-        {
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("Unable to run all the unit tests.\n")));
-
-            nResult = -1;
-        }
-    }
-    else if(m_bTestFdo)
-    {
-        // Run the FDO test cases
-
-        typedef int (*EXECUTE)(CREFSTRING);
-
-        MG_LOG_TRACE_ENTRY(L"MgServer::svc() - Running the FDO unit tests.");
-        ACE_DEBUG((LM_INFO, ACE_TEXT("Preparing to run the FDO unit tests...\n\n")));
-
-        try
-        {
-            // Let the site manager know that the check servers background thread needs to stop
-            MgSiteManager* siteManager = MgSiteManager::GetInstance();
-            siteManager->StopCheckServersThread();
-
-            // Change the log file names to use the unit test names because we don't want to replace the existing log files
-            MgLogManager* pLogManager = MgLogManager::GetInstance();
-            STRING filename;
-
-            filename = L"Test" + MgLogManager::DefaultAccessLogFileName;
-            pLogManager->SetAccessLogFileName(filename);
-
-            filename = L"Test" + MgLogManager::DefaultAdminLogFileName;
-            pLogManager->SetAdminLogFileName(filename);
-
-            filename = L"Test" + MgLogManager::DefaultAuthenticationLogFileName;
-            pLogManager->SetAuthenticationLogFileName(filename);
-
-            filename = L"Test" + MgLogManager::DefaultErrorLogFileName;
-            pLogManager->SetErrorLogFileName(filename);
-
-            filename = L"Test" + MgLogManager::DefaultSessionLogFileName;
-            pLogManager->SetSessionLogFileName(filename);
-
-            filename = L"Test" + MgLogManager::DefaultTraceLogFileName;
-            pLogManager->SetTraceLogFileName(filename);
-
-            EXECUTE execute = NULL;
-
-        #ifdef _WIN32
-            HMODULE hlib = NULL;
-            #ifdef _DEBUG // load debug dll
-            STRING library = L"MgFdoUnitTestingd.dll";
-            hlib = LoadLibrary(library.c_str());
-            #else // Load Release dll
-            STRING library = L"MgFdoUnitTesting.dll";
-            hlib = LoadLibrary(library.c_str());
-            #endif
-
-            if (hlib != NULL)
-            {
-                execute = (EXECUTE)GetProcAddress(hlib, "Execute");
-            }
-            else
-            {
-                ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot open library: %W\n"), library.c_str()));
-                throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
-            }
-        #else
-            string library = "libMgFdoUnitTesting.so";
-            void* hlib = dlopen(library.c_str(), RTLD_NOW);
-
-            if (hlib != NULL)
-            {
-                execute = (EXECUTE)dlsym(hlib, "Execute");
-            }
-            else
-            {
-                ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot open library: %s\n"), library.c_str()));
-                throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
-            }
-        #endif // _WIN32
-            if (execute != NULL)
-            {
-                nResult = (*execute)(m_strTestFileName);
-
-                // The build script does not work with negative return codes, which is what is returned on a failure from CPPUnit.
-                // Therefore, we change the -1 result to a positive 1 to indicate to the build script that an error occurred.
-                if(nResult < 0)
-                {
-                    nResult = -(nResult);
-                }
-            }
-            else
-            {
-                // Failed to retrieve function
-                ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot locate 'Execute' procedure address inside library.\n")));
-                throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
-            }
-
-            ACE_DEBUG((LM_INFO, ACE_TEXT("Finished running the FDO unit tests.\n")));
-        }
-        catch (MgException* e)
-        {
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("Unable to run all the FDO unit tests.\n")));
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("%W\n"), e->GetStackTrace(pServerManager->GetDefaultMessageLocale()).c_str()));
-            SAFE_RELEASE(e);
-
-            nResult = -1;
-        }
-        catch (...)
-        {
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("Unable to run all the FDO unit tests.\n")));
-
-            nResult = -1;
-        }
+        nResult = m_command->Execute();
     }
     else
     {

@@ -20,6 +20,7 @@
 
 #include "MapGuideCommon.h"
 #include "EventTimerManager.h"
+#include "ServerInteractiveCommand.h"
 
 #ifdef _WIN32
 #include "ace/NT_Service.h"
@@ -121,10 +122,9 @@ private:
     ///////////////////////////////////////////////////////
     /// Member data
 private:
+    std::auto_ptr<MgServerInteractiveCommand> m_command;
     bool m_bTestMode;
     bool m_bTestFdo;
-    STRING m_strTestFileName;
-    STRING m_strTestName;
 
 #ifdef _DEBUG
     INT32 m_nClientRequestLimit;        // DEBUG ONLY

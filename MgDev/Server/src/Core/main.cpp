@@ -294,6 +294,36 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
                 bRunServerService = false;
             }
+            else if (ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdLoadPackage)) == 0)
+            {
+                // Run the package loading
+                ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdLoadPackageInfo));
+
+                // Run the server as a regular application
+                nResult = SERVER::instance()->init(argc, argv);
+                if (0 == nResult)
+                {
+                    nResult = SERVER::instance()->open();
+                    SERVER::instance()->fini();
+                }
+
+                bRunServerService = false;
+            }
+            else if (ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdSetPwd)) == 0)
+            {
+                // Run the password setting
+                ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdSetPwdInfo));
+
+                // Run the server as a regular application
+                nResult = SERVER::instance()->init(argc, argv);
+                if (0 == nResult)
+                {
+                    nResult = SERVER::instance()->open();
+                    SERVER::instance()->fini();
+                }
+
+                bRunServerService = false;
+            }
             else
             {
                 // Unrecognized command line option
@@ -419,6 +449,8 @@ void ShowCommandlineHelp()
     // Add the supported commands
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdTestFdoDescription));
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdTestDescription));
+    ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdLoadPackageDescription));
+    ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdSetPwdDescription));
 
 #ifdef _WIN32
     // Windows only commands

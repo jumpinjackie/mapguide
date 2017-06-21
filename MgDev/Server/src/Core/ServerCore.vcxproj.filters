@@ -4,6 +4,9 @@
     <Filter Include="TimedEventHandlers">
       <UniqueIdentifier>{73580568-ac7b-4016-8439-2059bd65dc97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Commands">
+      <UniqueIdentifier>{049d02ba-050a-40b1-a175-00a994d8cd91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConnectionTimeoutEventHandler.cpp">
@@ -56,6 +59,19 @@
     <ClCompile Include="ResourceServiceCacheTimeLimitEventHandler.cpp">
       <Filter>TimedEventHandlers</Filter>
     </ClCompile>
+    <ClCompile Include="ServerInteractiveCommand.cpp" />
+    <ClCompile Include="LoadPackageCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="SetPwdCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="TestFdoCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConnectionTimeoutEventHandler.h">
@@ -104,6 +120,19 @@
     <ClInclude Include="SignalHandler.h" />
     <ClInclude Include="ResourceServiceCacheTimeLimitEventHandler.h">
       <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerInteractiveCommand.h" />
+    <ClInclude Include="LoadPackageCommand.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="SetPwdCommand.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCommand.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="TestFdoCommand.h">
+      <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
