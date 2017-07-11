@@ -125,6 +125,7 @@ public:
     static const STRING reqFeatGeomProperty;
     static const STRING reqFeatSpatialOp;
     static const STRING reqFeatGeometry;
+    static const STRING reqFeatGeometryOther;
     static const STRING reqFeatActiveOnly;
     static const STRING reqFeatComputedProperties;
     static const STRING reqFeatComputedAliases;
@@ -367,6 +368,28 @@ public:
     static const STRING opEnumerateApplicationWidgets;
     static const STRING opEnumerateApplicationContainers;
 
+    // Geo-Processing Operations
+    static const STRING opGeoBoundary;
+    static const STRING opGeoBuffer;
+    static const STRING opGeoConvexHull;
+    static const STRING opGeoDistance;
+    static const STRING opGeometryInfo;
+    static const STRING opGeoSimplify;
+    static const STRING opGeoSpatialPredicate;
+    static const STRING opGeoTessellate;
+    static const STRING opGeoBinaryOperation;
+
+    static const STRING reqGeoA;
+    static const STRING reqGeoB;
+    static const STRING reqGeoBufferDistance;
+    static const STRING reqGeoBufferUnits;
+    static const STRING reqGeoOperator;
+    static const STRING reqGeoCoordinateSystem;
+    static const STRING reqGeoFormat;
+    static const STRING reqGeoTransformTo;
+    static const STRING reqGeoAlgorithm;
+    static const STRING reqGeoTolerance;
+    static const STRING reqGeoPrecision;
 
     // Coordinate System Request Parameters
     static const STRING reqCsWkt;

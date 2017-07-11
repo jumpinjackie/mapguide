@@ -124,6 +124,17 @@
 #include "HttpCsGetBaseLibrary.h"
 #include "HttpCsIsValid.h"
 
+// Geo-Processing
+#include "HttpGeoBoundary.h"
+#include "HttpGeoBuffer.h"
+#include "HttpGeoBinaryOperation.h"
+#include "HttpGeoConvexHull.h"
+#include "HttpGeoDistance.h"
+#include "HttpGeometryInfo.h"
+#include "HttpGeoSimplify.h"
+#include "HttpGeoSpatialPredicate.h"
+#include "HttpGeoTessellate.h"
+
 #include <algorithm>
 using namespace std;
 
@@ -431,6 +442,15 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opEnumerateApplicationContainers] = MgHttpEnumerateApplicationContainers::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetDefaultTileSizeX] = MgHttpGetDefaultTileSizeX::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetDefaultTileSizeY] = MgHttpGetDefaultTileSizeY::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGeoBoundary] = MgHttpGeoBoundary::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGeoBuffer] = MgHttpGeoBuffer::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGeoBinaryOperation] = MgHttpGeoBinaryOperation::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGeoConvexHull] = MgHttpGeoConvexHull::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGeoDistance] = MgHttpGeoDistance::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGeometryInfo] = MgHttpGeometryInfo::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGeoSimplify] = MgHttpGeoSimplify::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGeoSpatialPredicate] = MgHttpGeoSpatialPredicate::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGeoTessellate] = MgHttpGeoTessellate::CreateObject;
 
     httpPostHandlerCreators.push_back(MgHttpWfsGetCapabilities::ProcessPostRequest);
     httpPostHandlerCreators.push_back(MgHttpWfsDescribeFeatureType::ProcessPostRequest);

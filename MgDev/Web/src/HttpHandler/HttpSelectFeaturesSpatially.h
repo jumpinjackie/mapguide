@@ -49,6 +49,8 @@ private:
     STRING  m_geometry;
     STRING  m_geometryClass;
     INT32   m_operation;
+    INT32   m_precision;
+    bool    m_bEnablePrecision;
 };
 
 #endif  // _FS_SELECT_FEATURES_SPATIALLY_H

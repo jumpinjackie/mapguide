@@ -373,6 +373,7 @@
     <ClCompile Include="Ring.cpp" />
     <ClCompile Include="WktReaderWriter.cpp" />
     <ClCompile Include="GeometrySimplifier.cpp" />
+    <ClCompile Include="PreparedGeometry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer\BorderWalker.h">
@@ -973,6 +974,7 @@
     <ClInclude Include="WktReaderWriter.h" />
     <ClInclude Include="GeometrySimplifier.h" />
     <ClInclude Include="GeometrySimplificationAlgorithmType.h" />
+    <ClInclude Include="PreparedGeometry.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Geometry.rc" />

@@ -46,6 +46,8 @@ public:
 private:
     STRING  m_resId;
     STRING  m_className;
+    INT32   m_precision;
+    bool    m_bEnablePrecision;
 };
 
 #endif  // _FS_SELECT_FEATURES_H

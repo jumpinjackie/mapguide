@@ -1,0 +1,37 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="setactiontarget.js" >
+</script>
+</head>
+<body>
+<form name="input" action="" method="get">
+<b>Operation:</b>
+<input type="text" name="OPERATION" value="GEO.SPATIALPREDICATE" size="50">
+<p> Version:
+<input type="text" name="VERSION" value="3.3.0" size="10">
+<p> Locale:
+<input type="text" name="LOCALE" value="en" size="10">
+<p> Client Agent:
+<input type="text" name="CLIENTAGENT" value="MapGuide Developer" size="100">
+<p> Geometry A (WKT):
+<input type="text" name="GEOMETRYA" value="" size="100">
+<p> Geometry B (WKT):
+<input type="text" name="GEOMETRYB" value="" size="100">
+<p> Operator:
+<select name="OPERATOR">
+    <option value="CONTAINS">Contains</option>
+    <option value="CROSSES">Crosses</option>
+    <option value="DISJOINT">Disjoint</option>
+    <option value="EQUALS">Equals</option>
+    <option value="INTERSECTS">Intersects</option>
+    <option value="OVERLAPS">Overlaps</option>
+    <option value="TOUCHES">Touches</option>
+    <option value="WITHIN">Within</option>
+</select>
+<p>
+<input type="submit" value="Submit" onclick="SetActionTarget()"> <input type="reset">
+</form>
+</body>
+</html>
+<html>

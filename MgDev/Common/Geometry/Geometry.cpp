@@ -259,3 +259,13 @@ INT32 MgGeometry::GetEntityType()
 {
     return MgGeometryEntityType::Geometry;
 }
+
+MgPreparedGeometry* MgGeometry::Prepare()
+{
+    return MgPreparedGeometry::Create(this);
+}
+
+MgGeometry* MgGeometry::Tessellate()
+{
+    return MgSpatialUtility::TesselateCurve(this);
+}

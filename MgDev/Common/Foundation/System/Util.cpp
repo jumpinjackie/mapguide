@@ -1083,6 +1083,40 @@ void MgUtil::DoubleToString(double val, STRING& str)
     str = &buf[0];
 }
 
+void MgUtil::DoubleToString(double val, string& str, INT32 decimals)
+{
+    if (decimals <= 0) //Took a wrong turn?
+    {
+        DoubleToString(val, str);
+    }
+    else
+    {
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(decimals) << val;
+        str = ss.str();
+        // Slice off trailing 0s
+        size_t end = str.find_last_not_of('0') + 1;
+        str.erase(end);
+    }
+}
+
+void MgUtil::DoubleToString(double val, STRING& str, INT32 decimals)
+{
+    if (decimals <= 0) //Took a wrong turn?
+    {
+        DoubleToString(val, str);
+    }
+    else
+    {
+        std::wstringstream ws;
+        ws << std::fixed << std::setprecision(decimals) << val;
+        str = ws.str();
+        // Slice off trailing 0s
+        size_t end = str.find_last_not_of(L'0') + 1;
+        str.erase(end);
+    }
+}
+
 bool MgUtil::ValuesEqual(double value1, double value2, double tolerance, bool output)
 {
     bool valuesEqual = true;

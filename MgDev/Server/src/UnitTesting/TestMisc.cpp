@@ -644,3 +644,75 @@ void TestMisc::TestCase_MapLayerCollections()
         throw;
     }
 }
+
+void TestMisc::TestCase_DoubleToStringWithDecimals()
+{
+    try
+    {
+        double d = 1.23456789032748754;
+
+        std::string s;
+        STRING ws;
+
+        MgUtil::DoubleToString(d, ws, 4);
+        MgUtil::DoubleToString(d, s, 4);
+
+        CPPUNIT_ASSERT(L"1.2346" == ws);
+        CPPUNIT_ASSERT("1.2346" == s);
+
+        ws.clear();
+        s.clear();
+
+        MgUtil::DoubleToString(d, ws, 8);
+        MgUtil::DoubleToString(d, s, 8);
+
+        CPPUNIT_ASSERT(L"1.23456789" == ws);
+        CPPUNIT_ASSERT("1.23456789" == s);
+
+        ws.clear();
+        s.clear();
+
+        std::string s1;
+        STRING ws1;
+        //This should be the equivalent to not even passing in precision at all
+        MgUtil::DoubleToString(d, ws, -1);
+        MgUtil::DoubleToString(d, s, -1);
+        MgUtil::DoubleToString(d, ws1);
+        MgUtil::DoubleToString(d, s1);
+
+        CPPUNIT_ASSERT(ws1 == ws);
+        CPPUNIT_ASSERT(s1 == s);
+
+        double d1 = 1.1;
+
+        ws.clear();
+        s.clear();
+
+        MgUtil::DoubleToString(d1, ws, 4);
+        MgUtil::DoubleToString(d1, s, 4);
+
+        CPPUNIT_ASSERT(L"1.1" == ws);
+        CPPUNIT_ASSERT("1.1" == s);
+
+        double d2 = 123.3457483434945;
+
+        ws.clear();
+        s.clear();
+
+        MgUtil::DoubleToString(d2, ws, 8);
+        MgUtil::DoubleToString(d2, s, 8);
+
+        CPPUNIT_ASSERT(L"123.34574834" == ws);
+        CPPUNIT_ASSERT("123.34574834" == s);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}

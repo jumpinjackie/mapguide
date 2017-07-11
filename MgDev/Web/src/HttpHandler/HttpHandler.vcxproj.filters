@@ -40,6 +40,9 @@
     <Filter Include="Byte Source Adapters">
       <UniqueIdentifier>{0f2e34d9-18f7-49af-b11f-8d3c874192ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GeoProcessing">
+      <UniqueIdentifier>{d7514524-5f3c-40fd-8b93-45a3020d8614}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HttpApplyResourcePackage.cpp">
@@ -385,6 +388,33 @@
     </ClCompile>
     <ClCompile Include="HttpDescribeRuntimeMap.cpp">
       <Filter>Mapping Service</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGeoBuffer.cpp">
+      <Filter>GeoProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGeoBinaryOperation.cpp">
+      <Filter>GeoProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGeoSimplify.cpp">
+      <Filter>GeoProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGeoSpatialPredicate.cpp">
+      <Filter>GeoProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGeoDistance.cpp">
+      <Filter>GeoProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGeoConvexHull.cpp">
+      <Filter>GeoProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGeometryInfo.cpp">
+      <Filter>GeoProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGeoTessellate.cpp">
+      <Filter>GeoProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpGeoBoundary.cpp">
+      <Filter>GeoProcessing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -756,6 +786,33 @@
     </ClInclude>
     <ClInclude Include="HttpDescribeRuntimeMap.h">
       <Filter>Mapping Service</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGeoBuffer.h">
+      <Filter>GeoProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGeoSimplify.h">
+      <Filter>GeoProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGeoSpatialPredicate.h">
+      <Filter>GeoProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGeoBinaryOperation.h">
+      <Filter>GeoProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGeoDistance.h">
+      <Filter>GeoProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGeoConvexHull.h">
+      <Filter>GeoProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGeometryInfo.h">
+      <Filter>GeoProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGeoTessellate.h">
+      <Filter>GeoProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpGeoBoundary.h">
+      <Filter>GeoProcessing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -944,6 +944,22 @@ bool MgXmlJsonConvert::Initialize()
     s_elementPathTypeMap["/ClassDefinition/Properties/Property/HasMeasure"] = XML_DATA_TYPE_BOOLEAN;
     s_elementPathTypeMap["/ClassDefinition/Properties/Property/DefaultImageXSize"] = XML_DATA_TYPE_NUM_INT;
     s_elementPathTypeMap["/ClassDefinition/Properties/Property/DefaultImageYSize"] = XML_DATA_TYPE_NUM_INT;
+    //UnitOfMeasure-3.3.0.xsd
+    s_elementPathTypeMap["/UnitOfMeasure/Value"] = XML_DATA_TYPE_NUM_DOUBLE;
+    //GeometryInfo-3.3.0.xsd
+    s_elementPathTypeMap["/GeometryInfo/Area"] = XML_DATA_TYPE_NUM_DOUBLE;
+    s_elementPathTypeMap["/GeometryInfo/Dimension"] = XML_DATA_TYPE_NUM_INT;
+    s_elementPathTypeMap["/GeometryInfo/Length"] = XML_DATA_TYPE_NUM_DOUBLE;
+    s_elementPathTypeMap["/GeometryInfo/IsClosed"] = XML_DATA_TYPE_BOOLEAN;
+    s_elementPathTypeMap["/GeometryInfo/IsEmpty"] = XML_DATA_TYPE_BOOLEAN;
+    s_elementPathTypeMap["/GeometryInfo/IsSimple"] = XML_DATA_TYPE_BOOLEAN;
+    s_elementPathTypeMap["/GeometryInfo/IsValid"] = XML_DATA_TYPE_BOOLEAN;
+    s_elementPathTypeMap["/GeometryInfo/Envelope/LowerLeft/X"] = XML_DATA_TYPE_NUM_DOUBLE;
+    s_elementPathTypeMap["/GeometryInfo/Envelope/LowerLeft/Y"] = XML_DATA_TYPE_NUM_DOUBLE;
+    s_elementPathTypeMap["/GeometryInfo/Envelope/UpperRight/X"] = XML_DATA_TYPE_NUM_DOUBLE;
+    s_elementPathTypeMap["/GeometryInfo/Envelope/UpperRight/Y"] = XML_DATA_TYPE_NUM_DOUBLE;
+    s_elementPathTypeMap["/GeometryInfo/Centroid/X"] = XML_DATA_TYPE_NUM_DOUBLE;
+    s_elementPathTypeMap["/GeometryInfo/Centroid/Y"] = XML_DATA_TYPE_NUM_DOUBLE;
     //Miscellaneous MapGuide response types that don't have a formal schema
     s_elementPathTypeMap["/SessionTimeout/Value"] = XML_DATA_TYPE_NUM_INT;
     s_elementPathTypeMap["/FeatureInformation/SelectedFeatures/SelectedLayer/LayerMetadata/Property/Type"] = XML_DATA_TYPE_NUM_INT;

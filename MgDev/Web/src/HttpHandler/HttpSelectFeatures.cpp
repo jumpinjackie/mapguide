@@ -42,6 +42,19 @@ MgHttpSelectFeatures::MgHttpSelectFeatures(MgHttpRequest *hRequest)
     //Default to xml if not specified
     if (m_responseFormat.empty())
         m_responseFormat = MgMimeType::Xml;
+
+    m_precision = -1;
+    m_bEnablePrecision = false;
+    STRING sPrecision = params->GetParameterValue(MgHttpResourceStrings::reqGeoPrecision);
+    if (!sPrecision.empty())
+    {
+        INT32 precision = MgUtil::StringToInt32(sPrecision);
+        if (precision > 0)
+        {
+            m_precision = precision;
+            m_bEnablePrecision = true;
+        }
+    }
 }
 
 /// <summary>
@@ -110,7 +123,7 @@ void MgHttpSelectFeatures::Execute(MgHttpResponse& hResponse)
 
     Ptr<MgFeatureReader> featureReader = service->SelectFeatures(&resId, m_className, qryOptions);
     //MgByteSource owns this and will clean it up when done
-    ByteSourceImpl* bsImpl = new MgReaderByteSourceImpl(featureReader, m_responseFormat, m_bCleanJson);
+    ByteSourceImpl* bsImpl = new MgReaderByteSourceImpl(featureReader, m_responseFormat, m_bCleanJson, m_bEnablePrecision, m_precision);
 
     Ptr<MgByteSource> byteSource = new MgByteSource(bsImpl);
     byteSource->SetMimeType(m_responseFormat);

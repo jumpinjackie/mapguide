@@ -56,6 +56,7 @@
 #include "PointCollection.cpp"
 #include "Polygon.cpp"
 #include "PolygonCollection.cpp"
+#include "PreparedGeometry.cpp"
 #include "Region.cpp"
 #include "Ring.cpp"
 #include "WktReaderWriter.cpp"

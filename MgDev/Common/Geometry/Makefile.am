@@ -100,6 +100,7 @@ include_SOURCES = \
   PointCollection.cpp \
   Polygon.cpp \
   PolygonCollection.cpp \
+  PreparedGeometry.cpp \
   Region.cpp \
   Ring.cpp \
   WktReaderWriter.cpp\
@@ -267,6 +268,7 @@ noinst_HEADERS = $(include_SOURCES) \
   PointCollection.h \
   Polygon.h \
   PolygonCollection.h \
+  PreparedGeometry.h \
   QuadToInstruction.h \
   Region.h \
   Ring.h \

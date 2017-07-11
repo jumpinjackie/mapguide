@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="setactiontarget.js" >
+</script>
+</head>
+<body>
+<form name="input" action="" method="get">
+<b>Operation:</b>
+<input type="text" name="OPERATION" value="GEO.BOUNDARY" size="50">
+<p> Version:
+<input type="text" name="VERSION" value="3.3.0" size="10">
+<p> Locale:
+<input type="text" name="LOCALE" value="en" size="10">
+<p> Client Agent:
+<input type="text" name="CLIENTAGENT" value="MapGuide Developer" size="100">
+<p> Geometry (WKT):
+<input type="text" name="GEOMETRY" value="" size="100">
+<p> Output Format:
+<select name="FORMAT">
+    <option value="WKT">Geometry Well-Known Text</option>
+    <option value="GEOJSON">GeoJSON</option>
+</select>
+<p> Input Coordinate System (CS-Map Code):
+<input type="text" name="COORDINATESYSTEM" value="" size="10">
+<p> Output Coordinate System (CS-Map Code):
+<input type="text" name="TRANSFORMTO" value="" size="10">
+<p> Coordinate Precision (if requesting GeoJSON):
+<input type="text" name="PRECISION" value="7" size="10">
+<p>
+<input type="submit" value="Submit" onclick="SetActionTarget()"> <input type="reset">
+</form>
+</body>
+</html>
+<html>

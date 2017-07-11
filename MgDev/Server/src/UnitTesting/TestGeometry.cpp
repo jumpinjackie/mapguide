@@ -16,6 +16,7 @@
 //
 
 #include "MapGuideCommon.h"
+#include "ServiceManager.h"
 #include "TestGeometry.h"
 #include "CppUnitExtensions.h"
 #include "FoundationDefs.h"
@@ -41,11 +42,97 @@ void TestGeometry::tearDown()
 void TestGeometry::TestStart()
 {
     ACE_DEBUG((LM_INFO, ACE_TEXT("\nRunning Geometry tests. (Mentor)\n")));
+#ifdef TEST_PREPARED_GEOMETRY_PERF
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if (serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestGeometry::TestStart", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestGeometry::TestStart", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        //Set the user information for the current thread to be administrator
+        MgUserInformation::SetCurrentUserInfo(NULL);
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
+        if (userInfo != NULL)
+        {
+            userInfo->SetLocale(TEST_LOCALE);
+            MgUserInformation::SetCurrentUserInfo(userInfo);
+
+            MgResourceIdentifier resourceIdentifier1(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
+    #ifdef _WIN32
+            STRING resourceContentFileName1 = L"..\\UnitTestFiles\\Sheboygan_Parcels.FeatureSource";
+            STRING dataFileName1 = L"..\\UnitTestFiles\\Sheboygan_Parcels.sdf";
+    #else
+            STRING resourceContentFileName1 = L"../UnitTestFiles/Sheboygan_Parcels.FeatureSource";
+            STRING dataFileName1 = L"../UnitTestFiles/Sheboygan_Parcels.sdf";
+    #endif
+
+            //Add a new resource
+            Ptr<MgByteSource> contentSource1 = new MgByteSource(resourceContentFileName1);
+            Ptr<MgByteReader> contentReader1 = contentSource1->GetReader();
+            pService->SetResource(&resourceIdentifier1, contentReader1, NULL);
+
+            //Set the resource data
+            Ptr<MgByteSource> dataSource1 = new MgByteSource(dataFileName1);
+            Ptr<MgByteReader> dataReader1 = dataSource1->GetReader();
+            pService->SetResourceData(&resourceIdentifier1, L"Sheboygan_Parcels.sdf", L"File", dataReader1);
+        }
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+#endif
 }
 
 
 void TestGeometry::TestEnd()
 {
+#ifdef TEST_PREPARED_GEOMETRY_PERF
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if (serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestEnd",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestEnd",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        // set user info
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
+        userInfo->SetLocale(TEST_LOCALE);
+        MgUserInformation::SetCurrentUserInfo(userInfo);
+
+        Ptr<MgResourceIdentifier> fsres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
+        pService->DeleteResource(fsres1);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+#endif
     ACE_DEBUG((LM_INFO, ACE_TEXT("\nGeometry tests completed.\n\n")));
 }
 
@@ -1965,6 +2052,12 @@ void TestGeometry::TestCase_Touches()
         CPPUNIT_ASSERT(touches);
         touches = polygon->Touches(point);
         CPPUNIT_ASSERT(touches);
+        Ptr<MgPreparedGeometry> ppoint = point->Prepare();
+        Ptr<MgPreparedGeometry> ppolygon = polygon->Prepare();
+        touches = ppoint->Touches(polygon);
+        CPPUNIT_ASSERT(touches);
+        touches = ppolygon->Touches(point);
+        CPPUNIT_ASSERT(touches);
 
         //TEST 2
         MgGeometryFactory factory;
@@ -1974,6 +2067,12 @@ void TestGeometry::TestCase_Touches()
         CPPUNIT_ASSERT(!touches);
         touches = polygon->Touches(point);
         CPPUNIT_ASSERT(!touches);
+        ppoint = point->Prepare();
+        ppolygon = polygon->Prepare();
+        touches = ppoint->Touches(polygon);
+        CPPUNIT_ASSERT(!touches);
+        touches = ppolygon->Touches(point);
+        CPPUNIT_ASSERT(!touches);
 
         //TEST 3
         Ptr<MgMultiPolygon> multiPolygon = CreateMultiPolygon();
@@ -1981,6 +2080,12 @@ void TestGeometry::TestCase_Touches()
         touches = point->Touches(multiPolygon);
         CPPUNIT_ASSERT(!touches);
         touches = multiPolygon->Touches(point);
+        CPPUNIT_ASSERT(!touches);
+        ppoint = point->Prepare();
+        Ptr<MgPreparedGeometry> pmultiPolygon = multiPolygon->Prepare();
+        touches = ppoint->Touches(multiPolygon);
+        CPPUNIT_ASSERT(!touches);
+        touches = pmultiPolygon->Touches(point);
         CPPUNIT_ASSERT(!touches);
 
         //TEST 4
@@ -2015,6 +2120,9 @@ void TestGeometry::TestCase_Touches()
         point = factory.CreatePoint(coord);
         touches = polygon->Touches(point);
         CPPUNIT_ASSERT(!touches);
+        ppolygon = polygon->Prepare();
+        touches = ppolygon->Touches(point);
+        CPPUNIT_ASSERT(!touches);
 
         //TEST 5
         coord1 = factory.CreateCoordinateXY( 45.0,  45.0);
@@ -2046,6 +2154,9 @@ void TestGeometry::TestCase_Touches()
         coord = factory.CreateCoordinateXY(100.0, 100.0);
         point = factory.CreatePoint(coord);
         touches = point->Touches(polygon);
+        CPPUNIT_ASSERT(!touches);
+        ppoint = point->Prepare();
+        touches = ppoint->Touches(polygon);
         CPPUNIT_ASSERT(!touches);
 
         //TEST 6
@@ -2702,6 +2813,239 @@ void TestGeometry::TestCase_Simplify_TP()
         CPPUNIT_ASSERT(NULL != gOutput.p);
         CPPUNIT_ASSERT(gOutput->IsValid());
         CPPUNIT_ASSERT(gTest->Equals(gOutput));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestGeometry::TestCase_PreparedGeometryPerformance()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if (serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestGeometry::TestCase_PreparedGeometry", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestGeometry::TestCase_PreparedGeometry", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgAgfReaderWriter> agfRw = new MgAgfReaderWriter();
+        Ptr<MgWktReaderWriter> wktRw = new MgWktReaderWriter();
+
+        STRING wkt = L"POLYGON ((-87.70660400390625 43.761672246385025, -87.7045440673828 43.76576337413024, -87.7093505859375 43.77196151943297, -87.71999359130858 43.7755561494101, -87.73458480834961 43.770350063442635, -87.73355484008789 43.76315996157264, -87.73853302001953 43.758820688867885, -87.73595809936523 43.74642103270366, -87.72789001464842 43.735135112939105, -87.71844863891602 43.73191017368391, -87.71175384521484 43.73575527365514, -87.70797729492188 43.739228054975506, -87.7090072631836 43.74158447044938, -87.71278381347655 43.739848173302434, -87.71724700927734 43.737615717267765, -87.72720336914062 43.7374916894919, -87.72926330566406 43.74567697163676, -87.7313232421875 43.75125720420175, -87.73149490356445 43.75931662167704, -87.72222518920898 43.76092837491792, -87.72136688232422 43.76787081559809, -87.71467208862305 43.76712702120528, -87.71175384521484 43.76092837491792, -87.70660400390625 43.761672246385025))";
+        Ptr<MgGeometry> testGeom = wktRw->Read(wkt);
+
+        Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
+        STRING className = L"";
+        Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
+        CPPUNIT_ASSERT_THROW_MG(pService->SelectFeatures(resource, className, options), MgInvalidArgumentException*);
+
+        resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
+        className = L"Parcels";
+        Ptr<MgFeatureReader> reader = pService->SelectFeatures(resource, className, options);
+        Ptr<MgClassDefinition> clsDef = reader->GetClassDefinition();
+        STRING geomName = clsDef->GetDefaultGeometryPropertyName();
+
+        INT32 containsCount1 = 0;
+        INT32 crossesCount1 = 0;
+        INT32 disjointCount1 = 0;
+        INT32 intersectsCount1 = 0;
+        INT32 overlapsCount1 = 0;
+        INT32 touchesCount1 = 0;
+        INT32 withinCount1 = 0;
+
+        long lStart = GetTickCount();
+        while (reader->ReadNext())
+        {
+            try 
+            {
+                Ptr<MgByteReader> agf = ((MgReader*)reader)->GetGeometry(geomName);
+                Ptr<MgGeometry> geom = agfRw->Read(agf);
+
+                if (testGeom->Contains(geom))
+                    containsCount1++;
+                if (testGeom->Crosses(geom))
+                    crossesCount1++;
+                if (testGeom->Disjoint(geom))
+                    disjointCount1++;
+                if (testGeom->Intersects(geom))
+                    intersectsCount1++;
+                if (testGeom->Overlaps(geom))
+                    overlapsCount1++;
+                if (testGeom->Touches(geom))
+                    touchesCount1++;
+                if (testGeom->Within(geom))
+                    withinCount1++;
+            }
+            catch (MgException* ex)
+            {
+                SAFE_RELEASE(ex);
+            }
+        }
+        reader->Close();
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\n\n  Execution Time: = %6.4f (s)\n"), ((GetTickCount() - lStart) / 1000.0)));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Contains: %d, Crosses: %d, Disjoint: %d, Intersects: %d, Overlaps: %d, Touches: %d, Within: %d\n"), containsCount1, crossesCount1, disjointCount1, intersectsCount1, overlapsCount1, touchesCount1, withinCount1));
+
+        //Now, with prepared geometry
+        Ptr<MgPreparedGeometry> prep = testGeom->Prepare();
+
+        reader = pService->SelectFeatures(resource, className, options);
+        INT32 containsCount2 = 0;
+        INT32 crossesCount2 = 0;
+        INT32 disjointCount2 = 0;
+        INT32 intersectsCount2 = 0;
+        INT32 overlapsCount2 = 0;
+        INT32 touchesCount2 = 0;
+        INT32 withinCount2 = 0;
+
+        lStart = GetTickCount();
+        while (reader->ReadNext())
+        {
+            try
+            {
+                Ptr<MgByteReader> agf = ((MgReader*)reader)->GetGeometry(geomName);
+                Ptr<MgGeometry> geom = agfRw->Read(agf);
+
+                if (prep->Contains(geom))
+                    containsCount2++;
+                if (prep->Crosses(geom))
+                    crossesCount2++;
+                if (prep->Disjoint(geom))
+                    disjointCount2++;
+                if (prep->Intersects(geom))
+                    intersectsCount2++;
+                if (prep->Overlaps(geom))
+                    overlapsCount2++;
+                if (prep->Touches(geom))
+                    touchesCount2++;
+                if (prep->Within(geom))
+                    withinCount2++;
+            }
+            catch (MgException* ex)
+            {
+                SAFE_RELEASE(ex);
+            }
+        }
+        reader->Close();
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\n  Execution Time: = %6.4f (s)\n"), ((GetTickCount() - lStart) / 1000.0)));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Contains: %d, Crosses: %d, Disjoint: %d, Intersects: %d, Overlaps: %d, Touches: %d, Within: %d\n"), containsCount2, crossesCount2, disjointCount2, intersectsCount2, overlapsCount2, touchesCount2, withinCount2));
+
+        CPPUNIT_ASSERT(containsCount1 == containsCount2);
+        CPPUNIT_ASSERT(crossesCount2 == crossesCount2);
+        CPPUNIT_ASSERT(disjointCount2 == disjointCount2);
+        CPPUNIT_ASSERT(intersectsCount2 == intersectsCount2);
+        CPPUNIT_ASSERT(overlapsCount2 == overlapsCount2);
+        CPPUNIT_ASSERT(touchesCount2 == touchesCount2);
+        CPPUNIT_ASSERT(withinCount2 == withinCount2);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestGeometry::TestCase_CurvePolygon_AsGeoJSON()
+{
+    try
+    {
+        Ptr<MgWktReaderWriter> wktRw = new MgWktReaderWriter();
+        Ptr<MgGeometry> geom = wktRw->Read(L"CURVEPOLYGON ((0 0 (LINESTRINGSEGMENT (10 10, 10 20, 20 20), ARC (20 15, 10 10))), (0 0 (ARC (11 11, 12 12), LINESTRINGSEGMENT (10 10, 20 20, 40 40, 90 90))))");
+
+        Ptr<MgGeoJsonWriter> gw = new MgGeoJsonWriter();
+        STRING geoJson = gw->GeometryToGeoJson(geom);
+
+        CPPUNIT_ASSERT(geoJson.find(L"geometry\": null") == STRING::npos);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestGeometry::TestCase_CurveString_AsGeoJSON()
+{
+    try
+    {
+        Ptr<MgWktReaderWriter> wktRw = new MgWktReaderWriter();
+        Ptr<MgGeometry> geom = wktRw->Read(L"CURVESTRING (0 0 (CIRCULARARCSEGMENT (11 11, 12 12), LINESTRINGSEGMENT (10 10, 20 20, 30 40)))");
+
+        Ptr<MgGeoJsonWriter> gw = new MgGeoJsonWriter();
+        STRING geoJson = gw->GeometryToGeoJson(geom);
+
+        CPPUNIT_ASSERT(geoJson.find(L"geometry\": null") == STRING::npos);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestGeometry::TestCase_MultiCurvePolygon_AsGeoJSON()
+{
+    try
+    {
+        Ptr<MgWktReaderWriter> wktRw = new MgWktReaderWriter();
+        Ptr<MgGeometry> geom = wktRw->Read(L"MULTICURVEPOLYGON (((0 0 (LINESTRINGSEGMENT (10 10, 10 20, 20 20), ARC (20 15, 10 10))), (0 0 (ARC (11 11, 12 12), LINESTRINGSEGMENT (10 10, 20 20, 40 40, 90 90)))),((0 0 (LINESTRINGSEGMENT (10 10, 10 20, 20 20), ARC (20 15, 10 10))), (0 0 (ARC (11 11, 12 12), LINESTRINGSEGMENT (10 10, 20 20, 40 40, 90 90)))))");
+
+        Ptr<MgGeoJsonWriter> gw = new MgGeoJsonWriter();
+        STRING geoJson = gw->GeometryToGeoJson(geom);
+
+        CPPUNIT_ASSERT(geoJson.find(L"geometry\": null") == STRING::npos);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestGeometry::TestCase_MultiCurveString_AsGeoJSON()
+{
+    try
+    {
+        Ptr<MgWktReaderWriter> wktRw = new MgWktReaderWriter();
+        Ptr<MgGeometry> geom = wktRw->Read(L"MULTICURVESTRING ((0 0 (LINESTRINGSEGMENT (10 10, 20 20, 30 40))),(0 0 (ARC (11 11, 12 12), LINESTRINGSEGMENT (10 10, 20 20, 30 40))))");
+
+        Ptr<MgGeoJsonWriter> gw = new MgGeoJsonWriter();
+        STRING geoJson = gw->GeometryToGeoJson(geom);
+
+        CPPUNIT_ASSERT(geoJson.find(L"geometry\": null") == STRING::npos);
     }
     catch (MgException* e)
     {

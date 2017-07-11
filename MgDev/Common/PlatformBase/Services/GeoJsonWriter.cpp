@@ -6,7 +6,13 @@
 MgGeoJsonWriter::MgGeoJsonWriter()
 {
     m_agfRw = new MgAgfReaderWriter();
+    m_precisionEnabled = false;
+    m_precision = 7;
 }
+
+INT32 MgGeoJsonWriter::GetPrecision() { return m_precision; }
+
+void MgGeoJsonWriter::SetPrecision(INT32 precision) { m_precision = precision; }
 
 STRING MgGeoJsonWriter::FeatureToGeoJson(MgFeatureReader* featureReader, MgTransform* transform)
 {
@@ -36,7 +42,7 @@ STRING MgGeoJsonWriter::FeatureToGeoJson(MgReader* reader, MgTransform* transfor
 
     MG_TRY()
 
-        CHECKARGUMENTNULL(reader, L"MgGeoJsonWriter.FeatureToGeoJson");
+    CHECKARGUMENTNULL(reader, L"MgGeoJsonWriter.FeatureToGeoJson");
 
     if (!idPropertyName.empty())
         idIndex = reader->GetPropertyIndex(idPropertyName);
@@ -67,7 +73,9 @@ STRING MgGeoJsonWriter::FeatureToGeoJson(MgReader* reader, MgTransform* transfor
                 geom = m_agfRw->Read(agf, transform);
             else
                 geom = m_agfRw->Read(agf);
-            ToGeoJson(geom, geomVal);
+            
+            Ptr<MgGeometry> g = geom->Tessellate();
+            ToGeoJson(g, geomVal);
         }
         catch (MgException* ex)
         {
@@ -97,7 +105,9 @@ STRING MgGeoJsonWriter::FeatureToGeoJson(MgReader* reader, MgTransform* transfor
                             geom = m_agfRw->Read(agf, transform);
                         else
                             geom = m_agfRw->Read(agf);
-                        ToGeoJson(geom, geomVal);
+
+                        Ptr<MgGeometry> g = geom->Tessellate();
+                        ToGeoJson(g, geomVal);
                     }
                     catch (MgException* ex)
                     {
@@ -166,6 +176,25 @@ STRING MgGeoJsonWriter::FeatureToGeoJson(MgReader* reader, MgTransform* transfor
     return ret;
 }
 
+STRING MgGeoJsonWriter::GeometryToGeoJson(MgGeometry* geom)
+{
+    STRING ret;
+    MG_TRY()
+
+    ret = L"{ \"type\": \"Feature\", "; //START FEATURE
+    ret += L"\"properties\": {}, "; //PROPERTIES
+    
+    STRING geomVal;
+    Ptr<MgGeometry> g = geom->Tessellate();
+    ToGeoJson(g, geomVal);
+    ret += geomVal; //GEOMETRY
+
+    ret += L"}"; //END FEATURE
+
+    MG_CATCH_AND_THROW(L"MgGeoJsonWriter.GeometryToGeoJson")
+    return ret;
+}
+
 void MgGeoJsonWriter::ValueToString(MgReader* reader, INT32 index, REFSTRING str)
 {
     INT32 propType = reader->GetPropertyType(index);
@@ -193,6 +222,7 @@ void MgGeoJsonWriter::ValueToString(MgReader* reader, INT32 index, REFSTRING str
     case MgPropertyType::Double:
         {
             double val = reader->GetDouble(index);
+            //NOTE: Not applying precision here as that is for coordinate output
             MgUtil::DoubleToString(val, str);
         }
         break;
@@ -361,9 +391,17 @@ void MgGeoJsonWriter::CoordinateToGeoJson(MgCoordinate* coord, REFSTRING str)
 {
     str = L"[";
     STRING sx;
-    MgUtil::DoubleToString(coord->GetX(), sx);
     STRING sy;
-    MgUtil::DoubleToString(coord->GetY(), sy);
+    if (m_precisionEnabled)
+    {
+        MgUtil::DoubleToString(coord->GetX(), sx, m_precision);
+        MgUtil::DoubleToString(coord->GetY(), sy, m_precision);
+    }
+    else
+    {
+        MgUtil::DoubleToString(coord->GetX(), sx);
+        MgUtil::DoubleToString(coord->GetY(), sy);
+    }
     str += sx;
     str += L", ";
     str += sy;
@@ -383,9 +421,17 @@ void MgGeoJsonWriter::CoordinatesToGeoJson(MgCoordinateIterator* coords, REFSTRI
 
         str += L"[";
         STRING sx;
-        MgUtil::DoubleToString(coord->GetX(), sx);
         STRING sy;
-        MgUtil::DoubleToString(coord->GetY(), sy);
+        if (m_precisionEnabled)
+        {
+            MgUtil::DoubleToString(coord->GetX(), sx, m_precision);
+            MgUtil::DoubleToString(coord->GetY(), sy, m_precision);
+        }
+        else 
+        {
+            MgUtil::DoubleToString(coord->GetX(), sx);
+            MgUtil::DoubleToString(coord->GetY(), sy);
+        }
         str += sx;
         str += L", ";
         str += sy;
@@ -506,4 +552,14 @@ void MgGeoJsonWriter::MultiPolygonToGeoJson(MgMultiPolygon* multi, REFSTRING str
 void MgGeoJsonWriter::Dispose()
 {
     delete this;
+}
+
+void MgGeoJsonWriter::SetPrecisionEnabled(bool enabled)
+{
+    m_precisionEnabled = enabled;
+}
+
+bool MgGeoJsonWriter::IsPrecisionEnabled()
+{
+    return m_precisionEnabled;
 }

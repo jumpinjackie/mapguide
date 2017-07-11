@@ -149,6 +149,7 @@ const STRING MgHttpResourceStrings::reqFeatFilter = L"FILTER";
 const STRING MgHttpResourceStrings::reqFeatGeomProperty = L"GEOMPROPERTY";
 const STRING MgHttpResourceStrings::reqFeatSpatialOp = L"SPATIALOP";
 const STRING MgHttpResourceStrings::reqFeatGeometry = L"GEOMETRY";
+const STRING MgHttpResourceStrings::reqFeatGeometryOther = L"OTHERGEOMETRY";
 const STRING MgHttpResourceStrings::reqFeatProperties = L"PROPERTIES";
 const STRING MgHttpResourceStrings::reqFeatActiveOnly = L"ACTIVEONLY";
 const STRING MgHttpResourceStrings::reqFeatComputedProperties = L"COMPUTED_PROPERTIES";
@@ -362,6 +363,29 @@ const STRING MgHttpResourceStrings::opCsIsValid = L"CS.ISVALID";
 const STRING MgHttpResourceStrings::opEnumerateApplicationTemplates = L"ENUMERATEAPPLICATIONTEMPLATES";
 const STRING MgHttpResourceStrings::opEnumerateApplicationWidgets = L"ENUMERATEAPPLICATIONWIDGETS";
 const STRING MgHttpResourceStrings::opEnumerateApplicationContainers = L"ENUMERATEAPPLICATIONCONTAINERS";
+
+// Geo-Processing Operations
+const STRING MgHttpResourceStrings::opGeoBoundary = L"GEO.BOUNDARY";
+const STRING MgHttpResourceStrings::opGeoBuffer = L"GEO.BUFFER";
+const STRING MgHttpResourceStrings::opGeoConvexHull = L"GEO.CONVEXHULL";
+const STRING MgHttpResourceStrings::opGeoDistance = L"GEO.DISTANCE";
+const STRING MgHttpResourceStrings::opGeometryInfo = L"GEO.GEOMETRYINFO";
+const STRING MgHttpResourceStrings::opGeoSimplify = L"GEO.SIMPLIFY";
+const STRING MgHttpResourceStrings::opGeoSpatialPredicate = L"GEO.SPATIALPREDICATE";
+const STRING MgHttpResourceStrings::opGeoTessellate = L"GEO.TESSELLATE";
+const STRING MgHttpResourceStrings::opGeoBinaryOperation = L"GEO.BINARYOPERATION";
+
+const STRING MgHttpResourceStrings::reqGeoA = L"GEOMETRYA";
+const STRING MgHttpResourceStrings::reqGeoB = L"GEOMETRYB";
+const STRING MgHttpResourceStrings::reqGeoBufferDistance = L"DISTANCE";
+const STRING MgHttpResourceStrings::reqGeoBufferUnits = L"UNITS";
+const STRING MgHttpResourceStrings::reqGeoOperator = L"OPERATOR";
+const STRING MgHttpResourceStrings::reqGeoCoordinateSystem = L"COORDINATESYSTEM";
+const STRING MgHttpResourceStrings::reqGeoFormat = L"FORMAT";
+const STRING MgHttpResourceStrings::reqGeoTransformTo = L"TRANSFORMTO";
+const STRING MgHttpResourceStrings::reqGeoAlgorithm = L"ALGORITHM";
+const STRING MgHttpResourceStrings::reqGeoTolerance = L"TOLERANCE";
+const STRING MgHttpResourceStrings::reqGeoPrecision = L"PRECISION";
 
 // Coordinate System Request Parameters
 const STRING MgHttpResourceStrings::reqCsWkt = L"CSWKT";

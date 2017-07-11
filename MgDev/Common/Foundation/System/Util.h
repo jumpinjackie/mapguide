@@ -553,6 +553,8 @@ INTERNAL_API:
     static void SingleToString(float val, STRING& str);
     static void DoubleToString(double val, string& str);
     static void DoubleToString(double val, STRING& str);
+    static void DoubleToString(double val, string& str, INT32 decimals);
+    static void DoubleToString(double val, STRING& str, INT32 decimals);
 
     static bool ValuesEqual(double value1, double value2,
         double tolerance = MgUtil::DefaultCompareTolerance,

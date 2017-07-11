@@ -17,7 +17,7 @@
 #include "ReaderByteSourceImpl.h"
 #include "PlatformBase.h"
 
-MgReaderByteSourceImpl::MgReaderByteSourceImpl(MgReader* reader, CREFSTRING format, bool bCleanJson)
+MgReaderByteSourceImpl::MgReaderByteSourceImpl(MgReader* reader, CREFSTRING format, bool bCleanJson, bool bEnablePrecision, INT32 precision)
 {
     m_reader = SAFE_ADDREF(reader);
     m_format = format;
@@ -27,6 +27,8 @@ MgReaderByteSourceImpl::MgReaderByteSourceImpl(MgReader* reader, CREFSTRING form
     m_bInternalReaderHasMore = true;
     m_bFirstRecord = true;
     m_bCleanJson = bCleanJson;
+    m_bEnablePrecision = bEnablePrecision;
+    m_precision = precision;
 }
 
 MgReaderByteSourceImpl::~MgReaderByteSourceImpl()
@@ -167,6 +169,8 @@ INT32 MgReaderByteSourceImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
                 if (m_bCleanJson)
                 {
                     MgGeoJsonWriter geoJsonWriter;
+                    geoJsonWriter.SetPrecisionEnabled(m_bEnablePrecision);
+                    geoJsonWriter.SetPrecision(m_precision);
                     STRING sGeoJson;
                     if (m_reader->GetReaderType() == MgReaderType::FeatureReader)
                     {

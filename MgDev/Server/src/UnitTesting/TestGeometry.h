@@ -20,6 +20,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+//#define TEST_PREPARED_GEOMETRY_PERF
+
 #ifndef _WIN32
 //Linux: different naming for string functions
 #define stricmp strcasecmp
@@ -68,6 +70,15 @@ class TestGeometry : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_Simplify_DP);
     CPPUNIT_TEST(TestCase_Simplify_TP);
 
+    CPPUNIT_TEST(TestCase_CurveString_AsGeoJSON);
+    CPPUNIT_TEST(TestCase_CurvePolygon_AsGeoJSON);
+    CPPUNIT_TEST(TestCase_MultiCurvePolygon_AsGeoJSON);
+    CPPUNIT_TEST(TestCase_MultiCurveString_AsGeoJSON);
+
+#ifdef TEST_PREPARED_GEOMETRY_PERF
+    CPPUNIT_TEST(TestCase_PreparedGeometryPerformance);
+#endif
+
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
 
@@ -115,6 +126,13 @@ public:
     void TestCase_Simplify_BadParams();
     void TestCase_Simplify_DP();
     void TestCase_Simplify_TP();
+
+    void TestCase_CurveString_AsGeoJSON();
+    void TestCase_CurvePolygon_AsGeoJSON();
+    void TestCase_MultiCurvePolygon_AsGeoJSON();
+    void TestCase_MultiCurveString_AsGeoJSON();
+
+    void TestCase_PreparedGeometryPerformance();
 
     MgPoint*             CreatePoint();
     MgLineString*        CreateLineString();

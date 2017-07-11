@@ -18,6 +18,7 @@
 #ifndef _MGGEOMETRY_H_
 #define _MGGEOMETRY_H_
 
+class MgPreparedGeometry;
 class MgGeometry;
 template class MG_GEOMETRY_API Ptr<MgGeometry>;
 
@@ -732,6 +733,54 @@ PUBLISHED_API:
     /// An MgGeometry representing the union of the two geometries.
     ///
     virtual MgGeometry* Union(MgGeometry* other);
+
+    ///////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns a prepared version of this geometry that is optimized for
+    /// repeated evaluation of spatial predicate operations
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgGeometry Prepare();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgGeometry Prepare();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgGeometry Prepare();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \since 3.3
+    ///
+    /// \return
+    /// An MgPreparedGeometry representing the prepared version of this geometry
+    ///
+    MgPreparedGeometry* Prepare();
+
+    ///////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns a tessellated version of this geometry. A tessellated version of this
+    /// geometry will have all arc/curve geometry components approximated with line
+    /// strings. Thus, this method is only applicable for curve geometries and has
+    /// no effect on non-curve geometries.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgGeometry Prepare();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgGeometry Prepare();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgGeometry Prepare();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \since 3.3
+    ///
+    /// \return
+    /// A tesellated version of this geometry. If this geometry is not curve-based, the operation does nothing and this method returns itself.
+    ///
+    MgGeometry* Tessellate();
 
 INTERNAL_API:
 

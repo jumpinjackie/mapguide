@@ -79,6 +79,8 @@
 // Simplifier
 #define Geometry_GeometrySimplifier                       GEOMETRY_ID+54
 
+#define Geometry_PreparedGeometry                         GEOMETRY_ID+55
+
 // CoordinateSystem API
 #define CoordinateSystem_CoordinateSystem                           GEOMETRY_COORDINATE_SYSTEM_ID+0
 #define CoordinateSystem_CoordinateSystemFactory                    GEOMETRY_COORDINATE_SYSTEM_ID+1

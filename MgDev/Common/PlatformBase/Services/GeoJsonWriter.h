@@ -108,6 +108,94 @@ PUBLISHED_API:
     ///
     STRING FeatureToGeoJson(MgReader* reader, MgTransform* transform, CREFSTRING idPropertyName, CREFSTRING geomPropName);
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the decimal precision to use when writing out coordinates. If you do not call this method, the default precision used is 7 decimal places.
+    /// Precision must be enabled in order for this setting to have any effect
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void SetPrecision(int precision);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void SetPrecision(int precision);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void SetPrecision(int precision);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param precision (int)
+    /// The decimal precision to write out coordinates
+    ///
+    ///
+    void SetPrecision(INT32 precision);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the decimal precision to use when writing out coordinates
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// int GetPrecision();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// int GetPrecision();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// int GetPrecision();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns the current precision
+    ///
+    INT32 GetPrecision();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets whether to apply coordinate precision when writing out GeoJSON coordinates
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void SetPrecisionEnabled(bool enabled);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void SetPrecisionEnabled(boolean enabled);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void SetPrecisionEnabled(bool enabled);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param enabled (bool)
+    /// If true, enables coordinate precision. Otherwise disables it
+    ///
+    /// \return
+    /// Returns the GeoJSON output as a string.
+    ///
+    void SetPrecisionEnabled(bool enabled);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether coordinate precision is enabled
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// bool IsPrecisionEnabled();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// boolean IsPrecisionEnabled();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// bool IsPrecisionEnabled();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// True if coordinate precision is enabled. False otherwise
+    ///
+    bool IsPrecisionEnabled();
+
+INTERNAL_API:
+    STRING GeometryToGeoJson(MgGeometry* geom);
+
 protected:
     virtual void Dispose();
 
@@ -123,6 +211,8 @@ private:
     void MultiPolygonToGeoJson(MgMultiPolygon* multi, REFSTRING str);
 
     Ptr<MgAgfReaderWriter> m_agfRw;
+    INT32 m_precision;
+    bool m_precisionEnabled;
 };
 /// \}
 

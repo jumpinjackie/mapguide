@@ -54,6 +54,15 @@ include_SOURCES = \
   HttpEnumerateApplicationContainers.cpp \
   HttpEnumerateApplicationWidgets.cpp \
   HttpEnumerateApplicationTemplates.cpp \
+  HttpGeoBinaryOperation.cpp \
+  HttpGeoBoundary.cpp \
+  HttpGeoBuffer.cpp \
+  HttpGeoConvexHull.cpp \
+  HttpGeoDistance.cpp \
+  HttpGeometryInfo.cpp \
+  HttpGeoSimplify.cpp \
+  HttpGeoSpatialPredicate.cpp \
+  HttpGeoTessellate.cpp \
   HttpGetCapabilities.cpp \
   HttpGetClassDefinition.cpp \
   HttpGetClasses.cpp \
@@ -179,6 +188,15 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpEnumerateApplicationContainers.h \
   HttpEnumerateApplicationWidgets.h \
   HttpEnumerateApplicationTemplates.h \
+  HttpGeoBinaryOperation.h \
+  HttpGeoBoundary.h \
+  HttpGeoBuffer.h \
+  HttpGeoConvexHull.h \
+  HttpGeoDistance.h \
+  HttpGeometryInfo.h \
+  HttpGeoSimplify.h \
+  HttpGeoSpatialPredicate.h \
+  HttpGeoTessellate.h \
   HttpGetCapabilities.h \
   HttpGetClassDefinition.h \
   HttpGetClasses.h \

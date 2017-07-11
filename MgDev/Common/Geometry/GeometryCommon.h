@@ -100,6 +100,8 @@
 #include "MultiPoint.h"
 #include "MultiPolygon.h"
 
+#include "PreparedGeometry.h"
+
 #include "AgfReaderWriter.h"
 #include "WktReaderWriter.h"
 

@@ -33,7 +33,7 @@ MgGeometrySimplifier::MgGeometrySimplifier()
 MgGeometry* MgGeometrySimplifier::Simplify(MgGeometry* geom, double tolerance, INT32 algorithm)
 {
     Ptr<MgGeometry> simplified;
-    Geometry* gInput = NULL;
+    std::auto_ptr<Geometry> gInput;
     std::auto_ptr<Geometry> gOutput;
     MG_GEOMETRY_TRY()
 
@@ -50,15 +50,15 @@ MgGeometry* MgGeometrySimplifier::Simplify(MgGeometry* geom, double tolerance, I
     WKTReader r(&gf);
     WKTWriter w;
 
-    gInput = r.read(MgUtil::WideCharToMultiByte(inputWKt));
+    gInput.reset(r.read(MgUtil::WideCharToMultiByte(inputWKt)));
 
     switch (algorithm)
     {
     case MgGeometrySimplificationAlgorithmType::DouglasPeucker:
-        gOutput = geos::simplify::DouglasPeuckerSimplifier::simplify(gInput, tolerance);
+        gOutput = geos::simplify::DouglasPeuckerSimplifier::simplify(gInput.get(), tolerance);
         break;
     case MgGeometrySimplificationAlgorithmType::TopologyPreserving:
-        gOutput = geos::simplify::TopologyPreservingSimplifier::simplify(gInput, tolerance);
+        gOutput = geos::simplify::TopologyPreservingSimplifier::simplify(gInput.get(), tolerance);
         break;
     }
 
@@ -72,6 +72,7 @@ MgGeometry* MgGeometrySimplifier::Simplify(MgGeometry* geom, double tolerance, I
     }
     
     MG_GEOMETRY_CATCH_AND_THROW(L"MgGeometrySimplifier.Simplify")
+
     return simplified.Detach();
 }
 
