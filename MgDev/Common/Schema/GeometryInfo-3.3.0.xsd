@@ -20,7 +20,7 @@
   </xs:element>
   <xs:complexType name="Coordinate">
     <xs:annotation>
-      <xs:documentation>Represents a bounding box</xs:documentation>
+      <xs:documentation>Represents a coordinate</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="X" type="xs:double">
