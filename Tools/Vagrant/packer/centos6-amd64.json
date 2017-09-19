@@ -2,11 +2,11 @@
   "builders": [{
     "type": "virtualbox-iso",
     "guest_os_type": "RedHat_64",
-    "iso_url": "{{user `mirror`}}/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso",
-    "iso_checksum": "0d9dc37b5dd4befa1c440d2174e88a87",
+    "iso_url": "{{user `mirror`}}/6.9/isos/x86_64/CentOS-6.9-x86_64-minimal.iso",
+    "iso_checksum": "af4a1640c0c6f348c6c41f1ea9e192a2",
     "iso_checksum_type": "md5",
-    "output_directory": "output-centos-6.5-x86_64",
-    "vm_name": "packer-centos-6.5-x86_64",
+    "output_directory": "output-centos6-x86_64",
+    "vm_name": "packer-centos6-x86_64",
     "disk_size": "{{user `disk_size`}}",
     "headless": "{{user `headless`}}",
     "http_directory": "http",
@@ -14,7 +14,7 @@
     "boot_command": [
       "<esc>",
       "<wait>",
-      "linux ks=http://{{.HTTPIP}}:{{.HTTPPort}}/centos-6.5/anaconda-ks.cfg",
+      "linux ks=http://{{.HTTPIP}}:{{.HTTPPort}}/centos6/anaconda-ks.cfg",
       "<enter>"
     ],
     "ssh_wait_timeout": "60m",
@@ -29,12 +29,12 @@
   "provisioners": [{
     "type": "shell",
     "scripts": [
-      "scripts/centos-6.5/base.sh",
+      "scripts/centos6/base.sh",
       "scripts/centos/virtualbox.sh",
       "scripts/common/vagrant.sh",
       "scripts/common/sshd.sh",
       "scripts/mapguide/centos64.sh",
-      "scripts/centos-6.5/cleanup.sh",
+      "scripts/centos6/cleanup.sh",
       "scripts/common/minimize.sh"
     ]
   }],
