@@ -507,6 +507,23 @@ INTERNAL_API:
     ///
     static STRING ToUpper(CREFSTRING source);
 
+    //////////////////////////////////////////////
+    /// \brief
+    /// Attempt to parse the given string as a double.
+    ///
+    /// \param source
+    /// source string to convert
+    ///
+    /// \param result
+    /// The parsed value if successful
+    ///
+    /// \return
+    /// true if parsing is successful. false otherwise
+    ///
+    /// Be cautious using this function with localized strings.
+    ///
+    static bool TryParseDouble(CREFSTRING source, double& result);
+
 INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////

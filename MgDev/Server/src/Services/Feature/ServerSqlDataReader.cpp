@@ -1394,7 +1394,7 @@ void MgServerSqlDataReader::HeaderToStringUtf8(string& str)
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-void MgServerSqlDataReader::CurrentToStringUtf8(string& str)
+void MgServerSqlDataReader::CurrentToStringUtf8(string& str, MgTransform* xform)
 {
     throw new MgInvalidOperationException(L"MgServerSqlDataReader.CurrentToStringUtf8",
         __LINE__, __WFILE__, NULL, L"", NULL);

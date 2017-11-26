@@ -86,3 +86,48 @@ void MgHttpUtil::LogException(MgException* exception)
         }
     }
 }
+
+MgTransform* MgHttpUtil::GetTransform(MgFeatureService* featSvc, MgResourceIdentifier* resId, CREFSTRING schemaName, CREFSTRING className, CREFSTRING transformTo)
+{
+    Ptr<MgTransform> transform;
+
+    MG_HTTP_HANDLER_TRY()
+
+    Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
+    STRING targetWkt = factory->ConvertCoordinateSystemCodeToWkt(transformTo);
+    Ptr<MgClassDefinition> clsDef = featSvc->GetClassDefinition(resId, schemaName, className);
+    //Has a designated geometry property, use it's spatial context
+    if (!clsDef->GetDefaultGeometryPropertyName().empty())
+    {
+        Ptr<MgPropertyDefinitionCollection> props = clsDef->GetProperties();
+        INT32 idx = props->IndexOf(clsDef->GetDefaultGeometryPropertyName());
+        if (idx >= 0) 
+        {
+            Ptr<MgPropertyDefinition> pd = props->GetItem(idx);
+            if (pd->GetPropertyType() == MgFeaturePropertyType::GeometricProperty)
+            {
+                MgGeometricPropertyDefinition* geomProp = static_cast<MgGeometricPropertyDefinition*>(pd.p);
+                STRING scName = geomProp->GetSpatialContextAssociation();
+                Ptr<MgSpatialContextReader> scReader = featSvc->GetSpatialContexts(resId, false);
+                while (scReader->ReadNext()) 
+                {
+                    if (scReader->GetName() == scName) 
+                    {
+                        if (scReader->GetCoordinateSystemWkt() != targetWkt) 
+                        {
+                            Ptr<MgCoordinateSystem> targetCs = factory->CreateFromCode(transformTo);
+                            Ptr<MgCoordinateSystem> sourceCs = factory->Create(scReader->GetCoordinateSystemWkt());
+                            transform = factory->GetTransform(sourceCs, targetCs);
+                            break;
+                        }
+                    }
+                }
+                scReader->Close();
+            }
+        }
+    }
+
+    MG_HTTP_HANDLER_CATCH_AND_THROW(L"MgHttpUtil::GetTransform")
+
+    return transform.Detach();
+}

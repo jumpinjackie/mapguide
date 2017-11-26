@@ -682,6 +682,19 @@ double MgUtil::StringToDouble(CREFSTRING str)
     return ::wcstod(tmp.c_str(), NULL);
 }
 
+bool MgUtil::TryParseDouble(CREFSTRING source, double& result)
+{
+    STRING tmp = Trim(source, L" \t\r\n");
+
+    wchar_t* endptr = 0;
+    const wchar_t* str = tmp.c_str();
+    result = ::wcstod(str, &endptr);
+
+    if (*endptr != '\0' || endptr == str)
+        return false;
+    return true;
+}
+
 bool MgUtil::StringToBoolean(const string& str)
 {
     string tmp = Trim(str, " \t\r\n");

@@ -17,7 +17,7 @@
 #include "ReaderByteSourceImpl.h"
 #include "PlatformBase.h"
 
-MgReaderByteSourceImpl::MgReaderByteSourceImpl(MgReader* reader, CREFSTRING format, bool bCleanJson, bool bEnablePrecision, INT32 precision)
+MgReaderByteSourceImpl::MgReaderByteSourceImpl(MgReader* reader, CREFSTRING format, bool bCleanJson, bool bEnablePrecision, INT32 precision, MgTransform* xform)
 {
     m_reader = SAFE_ADDREF(reader);
     m_format = format;
@@ -29,6 +29,7 @@ MgReaderByteSourceImpl::MgReaderByteSourceImpl(MgReader* reader, CREFSTRING form
     m_bCleanJson = bCleanJson;
     m_bEnablePrecision = bEnablePrecision;
     m_precision = precision;
+    m_xform = SAFE_ADDREF(xform);
 }
 
 MgReaderByteSourceImpl::~MgReaderByteSourceImpl()
@@ -38,6 +39,7 @@ MgReaderByteSourceImpl::~MgReaderByteSourceImpl()
     m_reader->Close();
     MG_CATCH_AND_RELEASE()
     m_reader = NULL;
+    m_xform = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -175,11 +177,11 @@ INT32 MgReaderByteSourceImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
                     if (m_reader->GetReaderType() == MgReaderType::FeatureReader)
                     {
                         MgFeatureReader* fr = static_cast<MgFeatureReader*>(m_reader.p);
-                        sGeoJson = geoJsonWriter.FeatureToGeoJson(fr, NULL);
+                        sGeoJson = geoJsonWriter.FeatureToGeoJson(fr, m_xform);
                     }
                     else 
                     {
-                        sGeoJson = geoJsonWriter.FeatureToGeoJson(m_reader, NULL, L"", L"");
+                        sGeoJson = geoJsonWriter.FeatureToGeoJson(m_reader, m_xform, L"", L"");
                     }
 
                     if (!m_bFirstRecord)
@@ -194,7 +196,7 @@ INT32 MgReaderByteSourceImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
                 }
                 else
                 {
-                    m_reader->CurrentToStringUtf8(buf);
+                    m_reader->CurrentToStringUtf8(buf, m_xform);
                     //The body is a valid full XML element, so no need for gymnastics like its
                     //surrounding elements
                     MgXmlJsonConvert convert;
@@ -230,7 +232,7 @@ INT32 MgReaderByteSourceImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
 #ifdef _DEBUG
                 m_buf += "<!-- BEGIN RECORD -->\n";
 #endif
-                m_reader->CurrentToStringUtf8(m_buf);
+                m_reader->CurrentToStringUtf8(m_buf, m_xform);
 #ifdef _DEBUG
                 m_buf += "<!-- END RECORD -->\n";
 #endif

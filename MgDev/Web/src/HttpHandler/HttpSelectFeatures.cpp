@@ -55,6 +55,11 @@ MgHttpSelectFeatures::MgHttpSelectFeatures(MgHttpRequest *hRequest)
             m_bEnablePrecision = true;
         }
     }
+    // Get transform flag (TRANSFORMTO). Only recognize this flag for 3.3.0 and above
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(3, 3, 0))
+    {
+        m_transformTo = params->GetParameterValue(MgHttpResourceStrings::reqGeoTransformTo);
+    }
 }
 
 /// <summary>
@@ -123,7 +128,16 @@ void MgHttpSelectFeatures::Execute(MgHttpResponse& hResponse)
 
     Ptr<MgFeatureReader> featureReader = service->SelectFeatures(&resId, m_className, qryOptions);
     //MgByteSource owns this and will clean it up when done
-    ByteSourceImpl* bsImpl = new MgReaderByteSourceImpl(featureReader, m_responseFormat, m_bCleanJson, m_bEnablePrecision, m_precision);
+    Ptr<MgTransform> xform;
+    if (!m_transformTo.empty())
+    {
+        STRING schemaName;
+        STRING className;
+        MgUtil::ParseQualifiedClassName(m_className, schemaName, className);
+
+        xform = MgHttpUtil::GetTransform(service, &resId, schemaName, className, m_transformTo);
+    }
+    ByteSourceImpl* bsImpl = new MgReaderByteSourceImpl(featureReader, m_responseFormat, m_bCleanJson, m_bEnablePrecision, m_precision, xform);
 
     Ptr<MgByteSource> byteSource = new MgByteSource(bsImpl);
     byteSource->SetMimeType(m_responseFormat);

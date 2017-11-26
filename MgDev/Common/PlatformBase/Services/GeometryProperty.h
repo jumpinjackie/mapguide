@@ -170,6 +170,15 @@ INTERNAL_API:
     ///
     virtual void Deserialize(MgStream* stream);
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Attaches the given transform.
+    ///
+    /// \param xform
+    /// Transform
+    ///
+    void AttachTransform(MgTransform* xform);
+
 protected:
 
     /////////////////////////////////////////////////////////////////
@@ -200,6 +209,7 @@ protected:
 private:
 
     Ptr<MgByteReader>   m_value;
+    Ptr<MgTransform>    m_xform;
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_GeometryProperty;

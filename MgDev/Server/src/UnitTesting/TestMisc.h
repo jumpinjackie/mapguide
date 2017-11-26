@@ -32,6 +32,7 @@ class TestMisc : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_MapLayerCollections);
     CPPUNIT_TEST(TestCase_ApiVersionCheck);
     CPPUNIT_TEST(TestCase_DoubleToStringWithDecimals);
+    CPPUNIT_TEST(TestCase_TryParseDouble);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -53,6 +54,7 @@ public:
     void TestCase_CreateMapWithInitialDisplayParams();
     void TestCase_ApiVersionCheck();
     void TestCase_DoubleToStringWithDecimals();
+    void TestCase_TryParseDouble();
 
 private:
     Ptr<MgSiteConnection> m_siteConnection;

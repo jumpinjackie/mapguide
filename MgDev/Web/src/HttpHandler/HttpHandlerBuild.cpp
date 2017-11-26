@@ -36,6 +36,7 @@
 #include "HttpCsEnumerateCoordinateSystems.cpp"
 #include "HttpCsGetBaseLibrary.cpp"
 #include "HttpCsIsValid.cpp"
+#include "HttpCsTransformCoordinates.cpp"
 #include "HttpDeleteRepository.cpp"
 #include "HttpDeleteResource.cpp"
 #include "HttpDeleteResourceData.cpp"

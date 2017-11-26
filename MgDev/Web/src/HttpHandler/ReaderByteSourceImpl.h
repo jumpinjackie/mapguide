@@ -29,7 +29,7 @@ class MG_MAPAGENT_API MgReaderByteSourceImpl : public ByteSourceImpl
     DECLARE_CLASSNAME(MgReaderByteSourceImpl)
 
 public:
-    MgReaderByteSourceImpl(MgReader* reader, CREFSTRING format, bool bCleanJson, bool bEnablePrecision, INT32 precision);
+    MgReaderByteSourceImpl(MgReader* reader, CREFSTRING format, bool bCleanJson, bool bEnablePrecision, INT32 precision, MgTransform* xform);
     virtual ~MgReaderByteSourceImpl();
 
     ///////////////////////////////////////////////////////////////////////////
@@ -84,6 +84,7 @@ private:
     INT32 ReadInternalBuffer(BYTE_ARRAY_OUT buffer, INT32 fromIndex, INT32 length);
 
     Ptr<MgReader> m_reader;
+	Ptr<MgTransform> m_xform;
     STRING m_format;
     bool m_bCleanJson;
     bool m_bReadHeader;

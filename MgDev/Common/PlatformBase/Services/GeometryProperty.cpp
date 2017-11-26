@@ -47,6 +47,7 @@ MgGeometryProperty::MgGeometryProperty(CREFSTRING name, MgByteReader* value)
 MgGeometryProperty::MgGeometryProperty()
 {
     m_value = NULL;
+    m_xform = NULL;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -133,7 +134,7 @@ void MgGeometryProperty::ToXml(string &str, bool includeType, string rootElmName
             if (byteReader != NULL)
             {
                 MgAgfReaderWriter agfReader;
-                Ptr<MgGeometry> geom = agfReader.Read(byteReader);
+                Ptr<MgGeometry> geom = agfReader.Read(byteReader, m_xform);
 
                 // geom->ToXml(str); // TODO: we need this method
                 STRING awktStr = L"";
@@ -194,4 +195,9 @@ void MgGeometryProperty::Deserialize(MgStream* stream)
     SetName(str);
 
     m_value = stream->GetStream();
+}
+
+void MgGeometryProperty::AttachTransform(MgTransform* xform)
+{
+    m_xform = SAFE_ADDREF(xform);
 }

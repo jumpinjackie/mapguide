@@ -716,3 +716,40 @@ void TestMisc::TestCase_DoubleToStringWithDecimals()
         throw;
     }
 }
+
+void TestMisc::TestCase_TryParseDouble()
+{
+    try
+    {
+        double dBad = 0.0;
+        CPPUNIT_ASSERT(!MgUtil::TryParseDouble(L"", dBad));
+        CPPUNIT_ASSERT(!MgUtil::TryParseDouble(L"abc", dBad));
+        CPPUNIT_ASSERT(!MgUtil::TryParseDouble(L"abc123", dBad));
+        CPPUNIT_ASSERT(!MgUtil::TryParseDouble(L"123.asd", dBad));
+        double d1 = 0.0;
+        CPPUNIT_ASSERT(MgUtil::TryParseDouble(L"123", d1));
+        CPPUNIT_ASSERT(123 == d1);
+        double d2 = 0.0;
+        CPPUNIT_ASSERT(MgUtil::TryParseDouble(L"123.23", d2));
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(123.23, d2, 0.001);
+        double d3 = 0.0;
+        CPPUNIT_ASSERT(MgUtil::TryParseDouble(L"0.1237483", d3));
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1237483, d3, 0.00000001);
+        double d4 = 0.0;
+        CPPUNIT_ASSERT(MgUtil::TryParseDouble(L"123.", d4));
+        CPPUNIT_ASSERT(123 == d4);
+        double d5 = 0.0;
+        CPPUNIT_ASSERT(MgUtil::TryParseDouble(L".1235", d5));
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1235, d5, 0.00001);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}

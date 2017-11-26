@@ -685,7 +685,7 @@ void MgProxySqlDataReader::ToXml(string &str)
     BodyStartUtf8(str);
     while ( this->ReadNext() )
     {
-        CurrentToStringUtf8(str);
+        CurrentToStringUtf8(str, NULL);
     }
     BodyEndUtf8(str);
     ResponseEndUtf8(str);
@@ -738,7 +738,7 @@ void MgProxySqlDataReader::HeaderToStringUtf8(string& str)
     }
 }
 
-void MgProxySqlDataReader::CurrentToStringUtf8(string& str)
+void MgProxySqlDataReader::CurrentToStringUtf8(string& str, MgTransform* xform)
 {
     if (NULL != (MgBatchPropertyCollection*)m_set)
     {
@@ -746,6 +746,19 @@ void MgProxySqlDataReader::CurrentToStringUtf8(string& str)
         INT32 cnt = propCol->GetCount();
         if (propCol != NULL && cnt > 0)
         {
+            //If xform given, attach it to any geometry properties
+            if (NULL != xform)
+            {
+                for (INT32 i = 0; i < cnt; i++)
+                {
+                    Ptr<MgProperty> prop = propCol->GetItem(i);
+                    if (prop->GetPropertyType() == MgPropertyType::Geometry)
+                    {
+                        MgGeometryProperty* geomProp = static_cast<MgGeometryProperty*>(prop.p);
+                        geomProp->AttachTransform(xform);
+                    }
+                }
+            }
             propCol->ToRow(str);
         }
     }

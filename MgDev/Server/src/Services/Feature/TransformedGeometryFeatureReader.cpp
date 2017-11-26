@@ -378,9 +378,9 @@ void MgTransformedGeometryFeatureReader::BodyEndUtf8(string& str)
     m_innerReader->BodyEndUtf8(str);
 }
 
-void MgTransformedGeometryFeatureReader::CurrentToStringUtf8(string& str)
+void MgTransformedGeometryFeatureReader::CurrentToStringUtf8(string& str, MgTransform* xform)
 {
-    m_innerReader->CurrentToStringUtf8(str);
+    m_innerReader->CurrentToStringUtf8(str, xform);
 }
 
 void MgTransformedGeometryFeatureReader::HeaderToStringUtf8(string& str)

@@ -73,6 +73,8 @@ public:
     ~MgHttpUtil();
 
     static void LogException(MgException* exception);
+
+    static MgTransform* GetTransform(MgFeatureService* featSvc, MgResourceIdentifier* resId, CREFSTRING schemaName, CREFSTRING className, CREFSTRING transformTo);
 };
 
 #endif

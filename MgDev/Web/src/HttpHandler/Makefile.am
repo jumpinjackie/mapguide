@@ -34,6 +34,7 @@ include_SOURCES = \
   HttpCsEnumerateCoordinateSystems.cpp \
   HttpCsGetBaseLibrary.cpp \
   HttpCsIsValid.cpp \
+  HttpCsTransformCoordinates.cpp \
   HttpDeleteRepository.cpp \
   HttpDeleteResource.cpp \
   HttpDeleteResourceData.cpp \
@@ -168,6 +169,7 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpCsEnumerateCoordinateSystems.h \
   HttpCsGetBaseLibrary.h \
   HttpCsIsValid.h \
+  HttpCsTransformCoordinates.h \
   HttpDeleteRepository.h \
   HttpDeleteResource.h \
   HttpDeleteResourceData.h \

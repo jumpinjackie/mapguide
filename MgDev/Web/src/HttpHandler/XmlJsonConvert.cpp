@@ -960,6 +960,10 @@ bool MgXmlJsonConvert::Initialize()
     s_elementPathTypeMap["/GeometryInfo/Envelope/UpperRight/Y"] = XML_DATA_TYPE_NUM_DOUBLE;
     s_elementPathTypeMap["/GeometryInfo/Centroid/X"] = XML_DATA_TYPE_NUM_DOUBLE;
     s_elementPathTypeMap["/GeometryInfo/Centroid/Y"] = XML_DATA_TYPE_NUM_DOUBLE;
+    //TransformedCoordinateCollection-3.3.0.xsd
+    s_elementPathTypeMap["/TransformedCoordinateCollection/CoordinateSystem/EpsgCode"] = XML_DATA_TYPE_NUM_INT;
+    s_elementPathTypeMap["/TransformedCoordinateCollection/TransformedCoordinate/X"] = XML_DATA_TYPE_NUM_DOUBLE;
+    s_elementPathTypeMap["/TransformedCoordinateCollection/TransformedCoordinate/Y"] = XML_DATA_TYPE_NUM_DOUBLE;
     //Miscellaneous MapGuide response types that don't have a formal schema
     s_elementPathTypeMap["/SessionTimeout/Value"] = XML_DATA_TYPE_NUM_INT;
     s_elementPathTypeMap["/FeatureInformation/SelectedFeatures/SelectedLayer/LayerMetadata/Property/Type"] = XML_DATA_TYPE_NUM_INT;
@@ -1146,6 +1150,8 @@ bool MgXmlJsonConvert::Initialize()
     //UserList-1.0.0.xsd
     s_multiElementPaths.insert("/UserList/User");
     s_multiElementPaths.insert("/UserList/Group");
+    //TransformedCoordinateCollection-3.3.0.xsd
+    s_multiElementPaths.insert("/TransformedCoordinateCollection/TransformedCoordinate");
     //Miscellaneous MapGuide response types that don't have a formal schema
     s_multiElementPaths.insert("/FeatureInformation/FeatureSet/Layer");
     s_multiElementPaths.insert("/FeatureInformation/FeatureSet/Layer/Class/ID");

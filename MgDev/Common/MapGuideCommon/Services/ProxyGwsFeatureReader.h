@@ -540,7 +540,7 @@ INTERNAL_API:
     /// \param str
     /// Destination string.
     ///
-    void CurrentToStringUtf8(string& str);
+    void CurrentToStringUtf8(string& str, MgTransform* xform);
 
     //////////////////////////////////////////////////////////////////
     /// \brief

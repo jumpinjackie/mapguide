@@ -1216,7 +1216,7 @@ INTERNAL_API:
     /// \param str
     /// Destination string.
     ///
-    virtual void CurrentToStringUtf8(string& str) = 0;
+    virtual void CurrentToStringUtf8(string& str, MgTransform* xform) = 0;
 
     //////////////////////////////////////////////////////////////////
     /// \brief

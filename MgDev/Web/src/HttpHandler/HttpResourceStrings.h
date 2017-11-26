@@ -362,6 +362,7 @@ public:
     static const STRING opCsEnumerateCoordinateSystems;
     static const STRING opCsGetBaseLibrary;
     static const STRING opCsIsValid;
+    static const STRING opCsTransformCoordinates;
 
     // Web Applications Operations
     static const STRING opEnumerateApplicationTemplates;
@@ -395,6 +396,9 @@ public:
     static const STRING reqCsWkt;
     static const STRING reqCsCode;
     static const STRING reqCsCategory;
+    static const STRING reqCsSource;
+    static const STRING reqCsTarget;
+    static const STRING reqCsCoordinates;
 
     // PREDEFINED SITE REQUEST PARAMETERS
     static const STRING reqGroup;

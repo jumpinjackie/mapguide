@@ -416,6 +416,9 @@
     <ClCompile Include="HttpGeoBoundary.cpp">
       <Filter>GeoProcessing</Filter>
     </ClCompile>
+    <ClCompile Include="HttpCsTransformCoordinates.cpp">
+      <Filter>Coordinate System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HttpApplyResourcePackage.h">
@@ -813,6 +816,9 @@
     </ClInclude>
     <ClInclude Include="HttpGeoBoundary.h">
       <Filter>GeoProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpCsTransformCoordinates.h">
+      <Filter>Coordinate System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

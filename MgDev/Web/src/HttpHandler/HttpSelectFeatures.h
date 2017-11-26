@@ -48,6 +48,7 @@ private:
     STRING  m_className;
     INT32   m_precision;
     bool    m_bEnablePrecision;
+    STRING  m_transformTo;
 };
 
 #endif  // _FS_SELECT_FEATURES_H

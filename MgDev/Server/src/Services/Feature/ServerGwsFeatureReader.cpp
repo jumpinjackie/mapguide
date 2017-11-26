@@ -1276,7 +1276,7 @@ void MgServerGwsFeatureReader::HeaderToStringUtf8(string& str)
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-void MgServerGwsFeatureReader::CurrentToStringUtf8(string& str)
+void MgServerGwsFeatureReader::CurrentToStringUtf8(string& str, MgTransform* xform)
 {
     throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.CurrentToStringUtf8",
         __LINE__, __WFILE__, NULL, L"", NULL);

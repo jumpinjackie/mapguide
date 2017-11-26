@@ -358,6 +358,7 @@ const STRING MgHttpResourceStrings::opCsEnumerateCategories = L"CS.ENUMERATECATE
 const STRING MgHttpResourceStrings::opCsEnumerateCoordinateSystems = L"CS.ENUMERATECOORDINATESYSTEMS";
 const STRING MgHttpResourceStrings::opCsGetBaseLibrary = L"CS.GETBASELIBRARY";
 const STRING MgHttpResourceStrings::opCsIsValid = L"CS.ISVALID";
+const STRING MgHttpResourceStrings::opCsTransformCoordinates = L"CS.TRANSFORMCOORDINATES";
 
 // Web Application Operations
 const STRING MgHttpResourceStrings::opEnumerateApplicationTemplates = L"ENUMERATEAPPLICATIONTEMPLATES";
@@ -391,6 +392,9 @@ const STRING MgHttpResourceStrings::reqGeoPrecision = L"PRECISION";
 const STRING MgHttpResourceStrings::reqCsWkt = L"CSWKT";
 const STRING MgHttpResourceStrings::reqCsCode = L"CSCODE";
 const STRING MgHttpResourceStrings::reqCsCategory = L"CSCATEGORY";
+const STRING MgHttpResourceStrings::reqCsSource = L"SOURCE";
+const STRING MgHttpResourceStrings::reqCsTarget = L"TARGET";
+const STRING MgHttpResourceStrings::reqCsCoordinates = L"COORDINATES";
 
 // Predefined Site Service Request Parameters
 const STRING MgHttpResourceStrings::reqGroup = L"GROUP";

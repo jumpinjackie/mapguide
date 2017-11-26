@@ -123,6 +123,7 @@
 #include "HttpCsEnumerateCoordinateSystems.h"
 #include "HttpCsGetBaseLibrary.h"
 #include "HttpCsIsValid.h"
+#include "HttpCsTransformCoordinates.h"
 
 // Geo-Processing
 #include "HttpGeoBoundary.h"
@@ -435,6 +436,7 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opCsEnumerateCoordinateSystems] = MgHttpCsEnumerateCoordinateSystems::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opCsGetBaseLibrary] = MgHttpCsGetBaseLibrary::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opCsIsValid] = MgHttpCsIsValid::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opCsTransformCoordinates] = MgHttpCsTransformCoordinates::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opEnumerateUnmanagedData] = MgHttpEnumerateUnmanagedData::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetFdoCacheInfo] = MgHttpGetFdoCacheInfo::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opEnumerateApplicationTemplates] = MgHttpEnumerateApplicationTemplates::CreateObject;
