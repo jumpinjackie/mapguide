@@ -144,6 +144,7 @@ include_SOURCES = \
   ReaderByteSourceImpl.cpp \
   WfsFeatureDefinitions.cpp \
   WfsGetFeatureParams.cpp \
+  WmsFeatureGeometry.cpp \
   WmsFeatureInfo.cpp \
   WmsFeatureProperties.cpp \
   WmsLayerDefinitions.cpp \
@@ -290,6 +291,7 @@ noinst_HEADERS = $(include_SOURCES) \
   StringStream.h \
   WfsFeatureDefinitions.h \
   WfsGetFeatureParams.h \
+  WmsFeatureGeometry.h \
   WmsFeatureInfo.h \
   WmsFeatureProperties.h \
   WmsLayerDefinitions.h \

@@ -23,8 +23,12 @@
 
 #include <set>
 
+class MgWfsQueryAdapter;
+
 class MG_SERVER_FEATURE_API MgServerFeatureService : public MgFeatureService
 {
+    friend class MgWfsQueryAdapter;
+
     DECLARE_CLASSNAME(MgServerFeatureService)
 
 public:
@@ -940,6 +944,13 @@ public:
                                 CREFSTRING srs,
                                 CREFSTRING filter,
                                 INT32 maxFeatures);
+
+    MgFeatureReader* GetWfsReader(MgResourceIdentifier* featureSourceId,
+                                  CREFSTRING featureClass,
+                                  MgStringCollection* requiredProperties,
+                                  CREFSTRING srs,
+                                  CREFSTRING filter,
+                                  CREFSTRING sortCriteria);
 
     ////////////////////////////////////////////////////////////////////////////////
     /// <summary>

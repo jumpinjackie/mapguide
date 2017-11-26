@@ -549,7 +549,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     //string the viewer should be displaying as the name of each
                     //feature property
                     // TODO: check to see if name is FeatureClass or Extension name
-                    RS_FeatureClassInfo fcinfo(vl->GetFeatureName(), vl->GetResourceID());
+                    RS_FeatureClassInfo fcinfo(vl->GetFeatureName(), vl->GetResourceID(), vl->GetGeometry());
 
                     MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
                     for (int j=0; j<pmappings->GetCount(); j++)
@@ -661,7 +661,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     //string the viewer should be displaying as the name of each
                     //feature property
                     // TODO: check to see if name is FeatureClass or Extension name
-                    RS_FeatureClassInfo fcinfo(gl->GetFeatureName(), gl->GetResourceID());
+                    RS_FeatureClassInfo fcinfo(gl->GetFeatureName(), gl->GetResourceID(), gl->GetGeometry());
 
                     //check for overridden feature query filter and remember it.
                     //we will use this when making feature queries

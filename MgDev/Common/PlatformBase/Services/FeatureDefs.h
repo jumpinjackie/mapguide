@@ -83,6 +83,8 @@ INTERNAL_API:
     static const int UpdateMatchingFeatures = 0x1111ED33;
     static const int DeleteFeatures         = 0x1111ED34;
     static const int SelectFeaturesWithTransform = 0x1111ED35;
+
+    static const int GetWfsReader_Id = 0x1111ED36;
 };
 /// \endcond
 

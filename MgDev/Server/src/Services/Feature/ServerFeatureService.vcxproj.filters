@@ -201,6 +201,10 @@
       <Filter>Ops</Filter>
     </ClCompile>
     <ClCompile Include="TransformedGeometryFeatureReader.cpp" />
+    <ClCompile Include="OpGetWfsReader.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="WfsQueryAdapter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FeatureOperation.h">
@@ -411,6 +415,10 @@
       <Filter>Ops</Filter>
     </ClInclude>
     <ClInclude Include="TransformedGeometryFeatureReader.h" />
+    <ClInclude Include="OpGetWfsReader.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="WfsQueryAdapter.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ServerFeatureService.rc" />

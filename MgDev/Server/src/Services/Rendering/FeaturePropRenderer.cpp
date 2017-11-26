@@ -24,9 +24,11 @@
 
 #define SPECIAL_PROP_LAYER_NAME     L"_MgLayerName"
 #define SPECIAL_PROP_BOUNDING_BOX   L"_MgFeatureBoundingBox"
+#define SPECIAL_PROP_GEOMETRY       L"_MgGeometry"
 
 FeaturePropRenderer::FeaturePropRenderer(MgSelection* selection, int maxFeatures, double mapScale, bool bIncludeFeatureBBOX)
-: FeatureInfoRenderer(selection, maxFeatures, mapScale)
+: FeatureInfoRenderer(selection, maxFeatures, mapScale),
+  m_bCaptureGeometry(false)
 {
     m_featprops = new MgBatchPropertyCollection();
     m_currentFeature = NULL;
@@ -91,6 +93,47 @@ void FeaturePropRenderer::StartFeature(RS_FeatureReader* feature,
     {
         Ptr<MgStringProperty> boundingBoxProperty = new MgStringProperty(SPECIAL_PROP_BOUNDING_BOX, L"");
         featureProps->Add(boundingBoxProperty);
+    }
+
+    //Add geometry if we're instructed to capture it
+    if (m_bCaptureGeometry)
+    {
+        FdoPtr<FdoIFeatureReader> fr = feature->GetInternalReader();
+        const FdoString* geomName = m_fcInfo->geometry().c_str();
+        Ptr<MgGeometryProperty> geomProp = new MgGeometryProperty();
+        //Not using geometry prop name here as we want to specially denote the designated geometry value
+        geomProp->SetName(SPECIAL_PROP_GEOMETRY);
+        try
+        {
+            if (!fr->IsNull(geomName))
+            {
+                FdoInt32 len = 0;
+                const FdoByte* data = fr->GetGeometry(geomName, &len);
+
+                if (data != NULL)
+                {
+                    Ptr<MgByte> mgBytes = new MgByte((BYTE_ARRAY_IN)data, len);
+                    Ptr<MgByteSource> bSource = new MgByteSource(mgBytes);
+                    bSource->SetMimeType(MgMimeType::Agf);
+                    Ptr<MgByteReader> agf = bSource->GetReader();
+                    geomProp->SetValue(agf);
+                }
+                else
+                {
+                    geomProp->SetNull(true);
+                }
+            }
+            else
+            {
+                geomProp->SetNull(true);
+            }
+        }
+        catch (FdoException* ex)
+        {
+            FDO_SAFE_RELEASE(ex);
+        }
+
+        featureProps->Add(geomProp);
     }
 
     //for each property in the property mapping, add to the
@@ -173,6 +216,11 @@ void FeaturePropRenderer::SetBBOXProperty(const RS_Bounds& bounds, MgStringPrope
     val += L" ";
     val += buf;
     bbox->SetValue(val);
+}
+
+void FeaturePropRenderer::SetGeometryCapture(bool bCaptureGeometry) 
+{
+    m_bCaptureGeometry = bCaptureGeometry;
 }
 
 void FeaturePropRenderer::ProcessPolygon(LineBuffer*   lb,

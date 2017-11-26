@@ -260,6 +260,17 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
                 L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         break;
+    case MgRenderingServiceOpId::QueryFeatureProperties3:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3, 3):
+            handler.reset(new MgOpQueryFeatureProperties());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
     case MgRenderingServiceOpId::RenderMapLegend:
         switch (VERSION_NO_PHASE(operationVersion))
         {

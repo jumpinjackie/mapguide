@@ -180,6 +180,7 @@ table {
    <item>text/xml</item>
    <item>text/html</item>
    <item>text/plain</item>
+   <item>application/json</item>
  </Define>
 
  <!-- These are the supported Exception formats

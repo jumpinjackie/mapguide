@@ -1473,6 +1473,37 @@ MgByteReader* MgProxyFeatureService::GetWfsFeature(MgResourceIdentifier* feature
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+MgFeatureReader* MgProxyFeatureService::GetWfsReader(MgResourceIdentifier* featureSourceId,
+                                                     CREFSTRING featureClass,
+                                                     MgStringCollection* requiredProperties,
+                                                     CREFSTRING srs,
+                                                     CREFSTRING filter,
+                                                     CREFSTRING sortCriteria)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knObject,                         // Return type expected
+                       MgFeatureServiceOpId::GetWfsReader_Id,       // Command Code
+                       6,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(3,3,0),                        // Operation version
+                       MgCommand::knObject, featureSourceId,        // Argument#1
+                       MgCommand::knString, &featureClass,          // Argument#2
+                       MgCommand::knObject, requiredProperties,     // Argument#3
+                       MgCommand::knString, &srs,                   // Argument#4
+                       MgCommand::knString, &filter,                // Argument#5
+                       MgCommand::knString, &sortCriteria,          // Argument#6
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    Ptr<MgProxyFeatureReader> featReader = (MgProxyFeatureReader*)cmd.GetReturnValue().val.m_obj;
+
+    if (featReader != NULL)
+        featReader->SetService(this); // Feature reader on proxy side would store proxy service to call GetFeatures()
+
+    return SAFE_ADDREF((MgProxyFeatureReader*)featReader);
+}
 
 //////////////////////////////////////////////////////////////////
 MgBatchPropertyCollection* MgProxyFeatureService::GetFeatures(CREFSTRING featureReader)

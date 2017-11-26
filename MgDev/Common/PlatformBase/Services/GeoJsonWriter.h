@@ -195,6 +195,7 @@ PUBLISHED_API:
 
 INTERNAL_API:
     STRING GeometryToGeoJson(MgGeometry* geom);
+    void ToGeoJson(MgGeometry* geom, REFSTRING str, bool bIncludePrefix = true);
 
 protected:
     virtual void Dispose();
@@ -202,7 +203,6 @@ protected:
 private:
     static STRING EscapeJsonString(CREFSTRING str);
     void ValueToString(MgReader* reader, INT32 index, REFSTRING str);
-    void ToGeoJson(MgGeometry* geom, REFSTRING str, bool bIncludePrefix = true);
     void CoordinateToGeoJson(MgCoordinate* coord, REFSTRING str);
     void CoordinatesToGeoJson(MgCoordinateIterator* coords, REFSTRING str);
     void PolygonToGeoJson(MgPolygon* poly, REFSTRING str);

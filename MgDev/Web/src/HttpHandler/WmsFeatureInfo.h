@@ -32,6 +32,8 @@ public:
     MgWmsFeatureInfo(){};
     virtual ~MgWmsFeatureInfo();
 
+    void SetFormat(CREFSTRING format);
+
     bool Next();
     void GenerateDefinitions(MgUtilDictionary& Dictionary);
     MgWmsFeatureProperties* GetCurrentProperties();
@@ -45,6 +47,7 @@ protected:
 private:
    Ptr<MgBatchPropertyCollection> m_propertyCollection;
    int m_index;
+   STRING m_format;
 };
 
 #endif//_MgWmsFeatureInfo_h

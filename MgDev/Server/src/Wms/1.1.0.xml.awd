@@ -77,6 +77,7 @@
   <FeatureInfo>
   <?Endif?>
   <?EnumFeatureProperties using="&FeatureProperty.xml;" ?>
+  <?EnumFeatureGeometries using="&FeatureGeometry.xml;" ?>
   </FeatureInfo>
  </Define>
 
@@ -85,6 +86,7 @@
    <td>
     <table>
      <?EnumFeatureProperties using="&FeatureProperty.html;" ?>
+     <?EnumFeatureGeometries using="&FeatureGeometry.html;" ?>
     </table>
    </td>
   </tr>
@@ -93,8 +95,15 @@
  <Define item="FeatureInfo.text">
   FeatureInfo:
   <?EnumFeatureProperties using="&FeatureProperty.text;" ?>
+  <?EnumFeatureGeometries using="&FeatureGeometry.text;" ?>
 
  </Define>
+
+ <Define item="FeatureInfo.json">{
+    "type": "Feature",
+    "properties": {<?EnumFeatureProperties using="&FeatureProperty.json;" ?>}
+    <?EnumFeatureGeometries using="&FeatureGeometry.json;" ?>
+}<?If l="&FeatureInfo.IsLast" op="eq" r="0"?>,<?Endif?></Define>
 
  <Define item="FeatureProperty.xml">
   <Property name="&FeatureProperty.Name;" value="&FeatureProperty.Value;"></Property>
@@ -121,6 +130,25 @@
  <Define item="Layer.Name">Layer_Name</Define>
  <Define item="Layer.RS">
   <item>EPSG:4326</item>
+ </Define>
+
+ <!-- Output all non-geometry properties -->
+ <Define item="FeatureProperty.json">"&FeatureProperty.Name;": "&FeatureProperty.Value;"<?If l="&FeatureProperty.IsLast" op="eq" r="0"?>,<?Endif?></Define>
+
+ <!-- Only output if property name is the designated geometry -->
+ <Define item="FeatureGeometry.json">,"geometry": &FeatureGeometry.Value;</Define>
+
+ <!-- Only output if property name is the designated geometry -->
+ <Define item="FeatureGeometry.text">Geometry=&FeatureGeometry.Value;</Define>
+
+ <!-- Only output if property name is the designated geometry -->
+ <Define item="FeatureGeometry.html">
+  <tr><td class="name">Geometry</td><td>&FeatureGeometry.Value;</td></tr>
+ </Define>
+
+ <!-- Only output if property name is the designated geometry -->
+ <Define item="FeatureGeometry.xml">
+  <Property name="Geometry" value="&FeatureGeometry.Value;"></Property>
  </Define>
 
  <!-- We're currently not supporting child layers... -->
@@ -398,6 +426,15 @@
  <?EnumFeatureInfo using="&FeatureInfo.text;" ?>
 </Response>
 
+<!-- 
+
+  WMS GetFeatureInfo - (Geo)JSON
+
+-->
+<Response request="GetFeatureInfo" content-type="application/json">{
+  "type": "FeatureCollection",
+  "features": [<?EnumFeatureInfo using="&FeatureInfo.json;" ?>]
+}</Response>
 
 
 <!--

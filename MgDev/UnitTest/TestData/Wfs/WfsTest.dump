@@ -239,6 +239,7 @@ INSERT INTO "HttpTestResults" VALUES('', 1, 'text/xml; charset=utf-8', '
         <ows:Parameter>
           <ows:Value>GML2</ows:Value>
           <ows:Value>GML3</ows:Value>
+          <ows:Value>application/json</ows:Value>
           <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
           <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
         </ows:Parameter>
@@ -330,6 +331,7 @@ INSERT INTO "HttpTestResults" VALUES('', 1, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -350,6 +352,7 @@ INSERT INTO "HttpTestResults" VALUES('', 1, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -370,6 +373,7 @@ INSERT INTO "HttpTestResults" VALUES('', 1, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -388,6 +392,7 @@ INSERT INTO "HttpTestResults" VALUES('', 1, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -406,6 +411,7 @@ INSERT INTO "HttpTestResults" VALUES('', 1, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -424,6 +430,7 @@ INSERT INTO "HttpTestResults" VALUES('', 1, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -440,6 +447,7 @@ INSERT INTO "HttpTestResults" VALUES('', 1, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -456,6 +464,7 @@ INSERT INTO "HttpTestResults" VALUES('', 1, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -522,6 +531,7 @@ INSERT INTO "HttpTestResults" VALUES('', 2, 'text/xml; charset=utf-8', '
         <ows:Parameter>
           <ows:Value>GML2</ows:Value>
           <ows:Value>GML3</ows:Value>
+          <ows:Value>application/json</ows:Value>
           <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
           <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
         </ows:Parameter>
@@ -613,6 +623,7 @@ INSERT INTO "HttpTestResults" VALUES('', 2, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -633,6 +644,7 @@ INSERT INTO "HttpTestResults" VALUES('', 2, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -653,6 +665,7 @@ INSERT INTO "HttpTestResults" VALUES('', 2, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -671,6 +684,7 @@ INSERT INTO "HttpTestResults" VALUES('', 2, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -689,6 +703,7 @@ INSERT INTO "HttpTestResults" VALUES('', 2, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -707,6 +722,7 @@ INSERT INTO "HttpTestResults" VALUES('', 2, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -723,6 +739,7 @@ INSERT INTO "HttpTestResults" VALUES('', 2, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -739,6 +756,7 @@ INSERT INTO "HttpTestResults" VALUES('', 2, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -805,6 +823,7 @@ INSERT INTO "HttpTestResults" VALUES('', 3, 'text/xml; charset=utf-8', '
         <ows:Parameter>
           <ows:Value>GML2</ows:Value>
           <ows:Value>GML3</ows:Value>
+          <ows:Value>application/json</ows:Value>
           <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
           <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
         </ows:Parameter>
@@ -896,6 +915,7 @@ INSERT INTO "HttpTestResults" VALUES('', 3, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -916,6 +936,7 @@ INSERT INTO "HttpTestResults" VALUES('', 3, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -936,6 +957,7 @@ INSERT INTO "HttpTestResults" VALUES('', 3, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -954,6 +976,7 @@ INSERT INTO "HttpTestResults" VALUES('', 3, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -972,6 +995,7 @@ INSERT INTO "HttpTestResults" VALUES('', 3, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -990,6 +1014,7 @@ INSERT INTO "HttpTestResults" VALUES('', 3, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1006,6 +1031,7 @@ INSERT INTO "HttpTestResults" VALUES('', 3, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1022,6 +1048,7 @@ INSERT INTO "HttpTestResults" VALUES('', 3, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1088,6 +1115,7 @@ INSERT INTO "HttpTestResults" VALUES('', 4, 'text/xml; charset=utf-8', '
         <ows:Parameter>
           <ows:Value>GML2</ows:Value>
           <ows:Value>GML3</ows:Value>
+          <ows:Value>application/json</ows:Value>
           <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
           <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
         </ows:Parameter>
@@ -1179,6 +1207,7 @@ INSERT INTO "HttpTestResults" VALUES('', 4, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1199,6 +1228,7 @@ INSERT INTO "HttpTestResults" VALUES('', 4, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1219,6 +1249,7 @@ INSERT INTO "HttpTestResults" VALUES('', 4, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1237,6 +1268,7 @@ INSERT INTO "HttpTestResults" VALUES('', 4, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1255,6 +1287,7 @@ INSERT INTO "HttpTestResults" VALUES('', 4, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1273,6 +1306,7 @@ INSERT INTO "HttpTestResults" VALUES('', 4, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1289,6 +1323,7 @@ INSERT INTO "HttpTestResults" VALUES('', 4, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1305,6 +1340,7 @@ INSERT INTO "HttpTestResults" VALUES('', 4, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1371,6 +1407,7 @@ INSERT INTO "HttpTestResults" VALUES('', 5, 'text/xml; charset=utf-8', '
         <ows:Parameter>
           <ows:Value>GML2</ows:Value>
           <ows:Value>GML3</ows:Value>
+          <ows:Value>application/json</ows:Value>
           <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
           <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
         </ows:Parameter>
@@ -1462,6 +1499,7 @@ INSERT INTO "HttpTestResults" VALUES('', 5, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1482,6 +1520,7 @@ INSERT INTO "HttpTestResults" VALUES('', 5, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1502,6 +1541,7 @@ INSERT INTO "HttpTestResults" VALUES('', 5, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1520,6 +1560,7 @@ INSERT INTO "HttpTestResults" VALUES('', 5, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1538,6 +1579,7 @@ INSERT INTO "HttpTestResults" VALUES('', 5, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1556,6 +1598,7 @@ INSERT INTO "HttpTestResults" VALUES('', 5, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1572,6 +1615,7 @@ INSERT INTO "HttpTestResults" VALUES('', 5, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>
@@ -1588,6 +1632,7 @@ INSERT INTO "HttpTestResults" VALUES('', 5, 'text/xml; charset=utf-8', '
         <wfs:OutputFormats>
           <Format>GML2</Format>
           <Format>GML3</Format>
+          <Format>application/json</Format>
           <Format>text/xml; subtype=gml/2.1.2</Format>
           <Format>text/xml; subtype=gml/3.1.1</Format>
         </wfs:OutputFormats>

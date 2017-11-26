@@ -80,7 +80,10 @@ public:
     ///
     virtual void Rewind();
 
+    void SetMaxFeatures(INT32 maxFeatures);
+
 private:
+    bool ReadNextInternal();
     INT32 ReadInternalBuffer(BYTE_ARRAY_OUT buffer, INT32 fromIndex, INT32 length);
 
     Ptr<MgReader> m_reader;
@@ -91,6 +94,8 @@ private:
     bool m_bInternalReaderHasMore;
     bool m_bFirstRecord;
     bool m_bEnablePrecision;
+    INT32 m_maxFeatures;
+    INT32 m_featureIndex;
 
     std::string m_buf;
     INT32 m_bufOffset;

@@ -60,7 +60,7 @@ void MgOpQueryFeatureProperties::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (7 == m_packet.m_NumArguments || 8 == m_packet.m_NumArguments)
+    if (7 == m_packet.m_NumArguments || 8 == m_packet.m_NumArguments || 9 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         Ptr<MgResourceIdentifier> resource = map->GetResourceId();
@@ -82,9 +82,14 @@ void MgOpQueryFeatureProperties::Execute()
         m_stream->GetInt32(layerAttributeFilter);
 
         bool bIncludeFeatureBBOX = false;
-        if (8 == m_packet.m_NumArguments)
+        if (8 <= m_packet.m_NumArguments)
         {
             m_stream->GetBoolean(bIncludeFeatureBBOX);
+        }
+        bool bIncludeGeometry = false;
+        if (9 == m_packet.m_NumArguments)
+        {
+            m_stream->GetBoolean(bIncludeGeometry);
         }
         BeginExecution();
 
@@ -102,17 +107,27 @@ void MgOpQueryFeatureProperties::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(maxFeatures);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(layerAttributeFilter);
-        if (8 == m_packet.m_NumArguments)
+        if (8 <= m_packet.m_NumArguments)
         {
             MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
             MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bIncludeFeatureBBOX);
+        }
+        if (9 == m_packet.m_NumArguments)
+        {
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bIncludeGeometry);
         }
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         Ptr<MgBatchPropertyCollection> info;
-        if (8 == m_packet.m_NumArguments)
+        if (9 == m_packet.m_NumArguments)
+        {
+            info = m_service->QueryFeatureProperties(map, layerNames, geom, selectionVariant,
+                featureFilter, maxFeatures, layerAttributeFilter, bIncludeFeatureBBOX, bIncludeGeometry);
+        }
+        else if (8 == m_packet.m_NumArguments)
         {
             info = m_service->QueryFeatureProperties(map, layerNames, geom, selectionVariant,
                 featureFilter, maxFeatures, layerAttributeFilter, bIncludeFeatureBBOX);

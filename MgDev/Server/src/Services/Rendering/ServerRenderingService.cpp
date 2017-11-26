@@ -1328,6 +1328,20 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties(MgMa
                                                                             INT32 layerAttributeFilter,
                                                                             bool bIncludeFeatureBBOX)
 {
+    return QueryFeatureProperties(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, layerAttributeFilter, bIncludeFeatureBBOX, false);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties(MgMap* map,
+                                                                            MgStringCollection* layerNames,
+                                                                            MgGeometry* filterGeometry,
+                                                                            INT32 selectionVariant, // Within, Touching, Topmost
+                                                                            CREFSTRING featureFilter,
+                                                                            INT32 maxFeatures,
+                                                                            INT32 layerAttributeFilter,
+                                                                            bool bIncludeFeatureBBOX,
+                                                                            bool bIncludeGeometry)
+{
     Ptr<MgBatchPropertyCollection> ret;
 
     MG_TRY()
@@ -1338,6 +1352,8 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties(MgMa
 
     Ptr<MgSelection> sel;   //TODO: do we need this for this API? new MgSelection(map);
     FeaturePropRenderer fpr(sel, maxFeatures, map->GetViewScale(), bIncludeFeatureBBOX);
+
+    fpr.SetGeometryCapture(bIncludeGeometry);
 
     RenderForSelection(map, layerNames, filterGeometry, selectionVariant, featureFilter, maxFeatures, layerAttributeFilter, &fpr);
 
@@ -1901,7 +1917,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                     //string the viewer should be displaying as the name of each
                     //feature property
                     // TODO: can FeatureName be an extension name rather than a FeatureClass?
-                    RS_FeatureClassInfo fcinfo(vl->GetFeatureName(), vl->GetResourceID());
+                    RS_FeatureClassInfo fcinfo(vl->GetFeatureName(), vl->GetResourceID(), vl->GetGeometry());
 
                     MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
                     for (int i=0; i<pmappings->GetCount(); i++)

@@ -18,6 +18,8 @@
 #include "PlatformBase.h"
 
 MgReaderByteSourceImpl::MgReaderByteSourceImpl(MgReader* reader, CREFSTRING format, bool bCleanJson, bool bEnablePrecision, INT32 precision, MgTransform* xform)
+    : m_maxFeatures(-1),
+      m_featureIndex(-1)
 {
     m_reader = SAFE_ADDREF(reader);
     m_format = format;
@@ -40,6 +42,24 @@ MgReaderByteSourceImpl::~MgReaderByteSourceImpl()
     MG_CATCH_AND_RELEASE()
     m_reader = NULL;
     m_xform = NULL;
+}
+
+void MgReaderByteSourceImpl::SetMaxFeatures(INT32 maxFeatures)
+{
+    m_maxFeatures = maxFeatures;
+}
+
+bool MgReaderByteSourceImpl::ReadNextInternal()
+{
+    if (m_maxFeatures < 0 || m_featureIndex < m_maxFeatures)
+    {
+        m_featureIndex++;
+        return m_reader->ReadNext();
+    }
+    else
+    {
+        return false;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -163,7 +183,7 @@ INT32 MgReaderByteSourceImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
 
     if (m_bInternalReaderHasMore && bAdvanceReader)
     {
-        m_bInternalReaderHasMore = m_reader->ReadNext();
+        m_bInternalReaderHasMore = ReadNextInternal();
         if (m_bInternalReaderHasMore)
         {
             if (m_format == MgMimeType::Json)

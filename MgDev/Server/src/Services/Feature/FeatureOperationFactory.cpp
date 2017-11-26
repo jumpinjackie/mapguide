@@ -58,6 +58,7 @@
 #include "OpGetIdentityProperties.h"
 #include "OpDescribeWfsFeatureType.h"
 #include "OpGetWfsFeature.h"
+#include "OpGetWfsReader.h"
 #include "OpEnumerateDataStores.h"
 #include "OpGetSchemaMapping.h"
 #include "OpGetFdoCacheInfo.h"
@@ -579,6 +580,18 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         }
         break;
 
+    case MgFeatureServiceOpId::GetWfsReader_Id:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3, 3):
+            handler.reset(new MgOpGetWfsReader());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
     case MgFeatureServiceOpId::EnumerateDataStores_Id:
         switch (VERSION_NO_PHASE(operationVersion))
         {
@@ -677,11 +690,11 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         }
         break;
 
-	case MgFeatureServiceOpId::AddSavePoint_Id:
-		switch (VERSION_NO_PHASE(operationVersion))
+    case MgFeatureServiceOpId::AddSavePoint_Id:
+        switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(1,0):
-			handler.reset(new MgOpAddSavePoint());
+            handler.reset(new MgOpAddSavePoint());
             break;
         default:
             throw new MgInvalidOperationVersionException(
@@ -693,7 +706,7 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(1,0):
-	        handler.reset(new MgOpRollbackSavePoint());
+            handler.reset(new MgOpRollbackSavePoint());
             break;
         default:
             throw new MgInvalidOperationVersionException(
@@ -702,7 +715,7 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::ReleaseSavePoint_Id:
-		switch (VERSION_NO_PHASE(operationVersion))
+        switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpReleaseSavePoint());

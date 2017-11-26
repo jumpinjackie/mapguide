@@ -1065,6 +1065,74 @@ MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
     return (MgBatchPropertyCollection*)cmd.GetReturnValue().val.m_obj;
 }
 
+/////////////////////////////////////////////////////////////////
+/// \brief
+/// The QueryFeatureProperties operation identifies those features that
+/// meet the specified spatial selection criteria. This operation
+/// is used to implement WMS feature info and returns property values
+/// for all features which match the spatial query
+///
+/// \param map
+/// Input
+/// map object containing current state of map.
+/// \param layerNames
+/// Input
+/// Active layer names for which to query features
+/// \param filterGeometry
+/// Input
+/// geometry object specifying the selection area
+/// \param selectionVariant
+/// Input
+/// selection criterion - integer value corresponding to one of
+/// the MgFeatureSpatialOperations values
+/// \param featureFilter
+/// Input
+/// an XML selection string containing the required feature IDs
+/// \param maxFeatures
+/// Input
+/// the maximum number of features to return
+/// \param layerAttributeFilter
+/// Input
+/// bitmask values - 1=Visible, 2=Selectable, 4=HasTooltips
+///
+/// \return
+/// An MgSelection instance identifying the features that meet the
+/// selection criteria. Returns null if no features are identified.
+///
+MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
+    MgMap* map,
+    MgStringCollection* layerNames,
+    MgGeometry* filterGeometry,
+    INT32 selectionVariant,
+    CREFSTRING featureFilter,
+    INT32 maxFeatures,
+    INT32 layerAttributeFilter,
+    bool bIncludeFeatureBBOX,
+    bool bIncludeGeometry)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+        MgCommand::knObject,                            // Return type expected
+        MgRenderingServiceOpId::QueryFeatureProperties3,// Command Code
+        9,                                              // No of arguments
+        Rendering_Service,                              // Service Id
+        BUILD_VERSION(3, 3, 0),                         // Operation version
+        MgCommand::knObject, map,                       // Argument#1
+        MgCommand::knObject, layerNames,                // Argument#2
+        MgCommand::knObject, filterGeometry,            // Argument#3
+        MgCommand::knInt32, selectionVariant,           // Argument#4
+        MgCommand::knString, &featureFilter,            // Argument#5
+        MgCommand::knInt32, maxFeatures,                // Argument#6
+        MgCommand::knInt32, layerAttributeFilter,       // Argument#7
+        MgCommand::knInt8, (INT8)bIncludeFeatureBBOX,   // Argument#8
+        MgCommand::knInt8, (INT8)bIncludeGeometry,      // Argument#9
+        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgBatchPropertyCollection*)cmd.GetReturnValue().val.m_obj;
+}
+
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// Sets the connection properties for the Proxy Service.  This

@@ -232,6 +232,17 @@ public:
                                         INT32 layerAttributeFilter,
                                         bool bIncludeFeatureBBOX);
 
+    virtual MgBatchPropertyCollection* QueryFeatureProperties(
+                                        MgMap* map,
+                                        MgStringCollection* layerNames,
+                                        MgGeometry* filterGeometry,
+                                        INT32 selectionVariant,
+                                        CREFSTRING featureFilter,
+                                        INT32 maxFeatures,
+                                        INT32 layerAttributeFilter,
+                                        bool bIncludeFeatureBBOX,
+                                        bool bIncludeGeometry);
+
 private:
     static void ComputeXYZTileExtents(MgMap* map, INT32 x, INT32 y, INT32 z, RS_Bounds& extent);
     // used for tile generation

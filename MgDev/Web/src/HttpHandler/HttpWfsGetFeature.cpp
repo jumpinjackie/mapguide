@@ -291,20 +291,37 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                                 sSortCriteria  = sSortCriteria.substr(pos+1);
                             }
 
-                            // Call the C++ API
-                            // NOTE: I updated the maxFeatures value from numFeaturesToRetrieve to numFeaturesToRetrieve-1
-                            // Because the MgServerFdoFeatureReader in MapGuide server uses -1 to mark empty, while MgWfsFeatures
-                            // in MapGuide web tier uses 0
-                            resultReader = featureService->GetWfsFeature(featureSourceId, ((sSchemaHash.size()==0) ? sClass : sSchemaHash + _(":") + sClass),
-                                requiredProperties, m_getFeatureParams->GetSrs(), filter, numFeaturesToRetrieve-1, sVersion, sOutputFormat, sSortCriteria, sPrefix, oFeatureTypes.GetNamespaceUrl());
+                            //For GeoJSON, use the new GetWfsReader API
+                            if (sOutputFormat == MgMimeType::Json)
+                            {
+                                // NOTE: This API doesn't accept WFS version, format and XML namepaces because these are GML-isms baked into the GetWfsFeature API itself, making
+                                // it unsuitable for non-GML output, hence the need for this new GetWfsReader API
+                                Ptr<MgFeatureReader> fr = featureService->GetWfsReader(featureSourceId, ((sSchemaHash.size() == 0) ? sClass : sSchemaHash + _(":") + sClass),
+                                    requiredProperties, m_getFeatureParams->GetSrs(), filter, sSortCriteria);
+                                
+                                //MgByteSource owns this and will clean it up when done
+                                MgReaderByteSourceImpl* bsImpl = new MgReaderByteSourceImpl(fr, MgMimeType::Json, true, false, -1);
+                                bsImpl->SetMaxFeatures(numFeaturesToRetrieve - 1);
+                                Ptr<MgByteSource> bs = new MgByteSource(bsImpl);
+                                resultReader = bs->GetReader();
+                            }
+                            else 
+                            {
+                                // Call the C++ API
+                                // NOTE: I updated the maxFeatures value from numFeaturesToRetrieve to numFeaturesToRetrieve-1
+                                // Because the MgServerFdoFeatureReader in MapGuide server uses -1 to mark empty, while MgWfsFeatures
+                                // in MapGuide web tier uses 0
+                                resultReader = featureService->GetWfsFeature(featureSourceId, ((sSchemaHash.size() == 0) ? sClass : sSchemaHash + _(":") + sClass),
+                                    requiredProperties, m_getFeatureParams->GetSrs(), filter, numFeaturesToRetrieve - 1, sVersion, sOutputFormat, sSortCriteria, sPrefix, oFeatureTypes.GetNamespaceUrl());
 
-                            // Store the MgByteReader directly for retrieval
-                            //
-                            // DO NOT PASS THROUGH OGC XML TEMPLATE PROCESSING CODE!
-                            // DO NOT PASS GO!
-                            // DO NOT COLLECT MEMORY SPIKES NEEDLESSLY BUFFERING XML TEMPLATE CONTENT AS A RESULT!
-                            //
-                            // This *is* already the WFS GetFeature response. There is nothing to post-process through the XML templates!
+                                // Store the MgByteReader directly for retrieval
+                                //
+                                // DO NOT PASS THROUGH OGC XML TEMPLATE PROCESSING CODE!
+                                // DO NOT PASS GO!
+                                // DO NOT COLLECT MEMORY SPIKES NEEDLESSLY BUFFERING XML TEMPLATE CONTENT AS A RESULT!
+                                //
+                                // This *is* already the WFS GetFeature response. There is nothing to post-process through the XML templates!
+                            }
                         }
                         else //Cannot resolve feature source from feature type name
                         {

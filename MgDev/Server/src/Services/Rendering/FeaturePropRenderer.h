@@ -74,6 +74,8 @@ public:
     void GetGeometryBounds(const LineBuffer* lb, RS_Bounds& bounds);
     void SetBBOXProperty(const RS_Bounds& bounds, MgStringProperty* bbox);
 
+    void SetGeometryCapture(bool bCaptureGeometry);
+
     MgBatchPropertyCollection* GetProperties()
     {
         return SAFE_ADDREF(m_featprops);
@@ -83,6 +85,7 @@ private:
     MgBatchPropertyCollection* m_featprops;
     MgPropertyCollection* m_currentFeature;
     bool m_bIncludeFeatureBBOX;
+    bool m_bCaptureGeometry;
 };
 
 #endif

@@ -105,7 +105,9 @@ include_SOURCES = \
   ByteSourceRasterStreamImpl.cpp \
   OpDescribeWfsFeatureType.cpp \
   OpGetWfsFeature.cpp \
+  OpGetWfsReader.cpp \
   FilterUtil.cpp \
+  WfsQueryAdapter.cpp \
   OpEnumerateDataStores.cpp \
   OpGetSchemaMapping.cpp \
   ServerEnumerateDataStores.cpp \
@@ -216,7 +218,9 @@ noinst_HEADERS = $(include_SOURCES) \
   DateTimeDataReaderCreator.h \
   OpDescribeWfsFeatureType.h \
   OpGetWfsFeature.h \
+  OpGetWfsReader.h \
   FilterUtil.h \
+  WfsQueryAdapter.h \
   OpEnumerateDataStores.h \
   OpGetSchemaMapping.h \
   ServerEnumerateDataStores.h \

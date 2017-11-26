@@ -152,6 +152,7 @@
 #include "WmsLayerDefinitions.cpp"
 #include "WmsFeatureInfo.cpp"
 #include "WmsFeatureProperties.cpp"
+#include "WmsFeatureGeometry.cpp"
 #include "WfsFeatureDefinitions.cpp"
 #include "XmlParser.cpp"
 #include "Dictionary.cpp"

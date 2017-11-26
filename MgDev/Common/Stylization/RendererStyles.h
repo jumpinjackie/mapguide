@@ -728,12 +728,12 @@ class RS_FeatureClassInfo
 {
 public:
     RS_FeatureClassInfo() :
-        m_name(L""), m_source(L"")
+        m_name(L""), m_source(L""), m_geometry(L"")
     {
     }
 
-    RS_FeatureClassInfo(const RS_String& name, const RS_String& source) :
-        m_name(name), m_source(source)
+    RS_FeatureClassInfo(const RS_String& name, const RS_String& source, const RS_String& geometry) :
+        m_name(name), m_source(source), m_geometry(geometry)
     {
     }
 
@@ -751,10 +751,12 @@ public:
     inline RS_String&              name()     { return m_name; }
     inline std::vector<RS_String>& mappings() { return m_propMappings; }
     inline RS_String&              source()   { return m_source; }
+    inline RS_String&              geometry() { return m_geometry; }
 
 private:
     RS_String m_source;
     RS_String m_name;
+    RS_String m_geometry;
     std::vector<RS_String> m_propMappings;
 };
 

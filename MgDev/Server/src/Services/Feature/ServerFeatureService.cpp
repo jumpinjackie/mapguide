@@ -48,6 +48,7 @@
 #include "ServerSqlDataReader.h"
 #include "ServerFeatureTransaction.h"
 #include "TransformedGeometryFeatureReader.h"
+#include "WfsQueryAdapter.h"
 
 #include <Fdo/Xml/FeatureSerializer.h>
 #include <Fdo/Xml/FeatureWriter.h>
@@ -2043,6 +2044,28 @@ MgClassDefinitionCollection* MgServerFeatureService::GetIdentityProperties(MgRes
     return msds.GetIdentityProperties(resource, schemaName, classNames);
 }
 
+MgFeatureReader* MgServerFeatureService::GetWfsReader(MgResourceIdentifier* fs,
+                                                      CREFSTRING featureClass,
+                                                      MgStringCollection* propNames,
+                                                      CREFSTRING srs,
+                                                      CREFSTRING wfsFilter,
+                                                      CREFSTRING sortCriteria)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetWfsReader()");
+
+    Ptr<MgFeatureReader> mgfReader;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    MgWfsQueryAdapter wfsQuery(this);
+    wfsQuery.SetOptions(fs, featureClass, propNames, srs, wfsFilter, sortCriteria);
+    mgfReader = wfsQuery.GetWfsReader();
+
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(fs, L"MgServerFeatureService.GetWfsReader")
+
+    return mgfReader.Detach();
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -2110,162 +2133,18 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetWfsFeature()");
 
     Ptr<MgByteReader> byteReader;
-    TransformCacheMap transformCache;
 
     MG_FEATURE_SERVICE_TRY()
 
-    STRING lfeatureName = featureClass;
-    STRING schemaName, className;
-    MgUtil::ParseQualifiedClassName(lfeatureName, schemaName, className);
+    MgWfsQueryAdapter wfsQuery(this);
+    wfsQuery.SetOptions(fs, featureClass, propNames, srs, wfsFilter, sortCriteria);
 
-    bool hashed = (0 == schemaName.find_first_of(
-        MG_SCHEMA_NAME_HASH_PREFIX.c_str(), 0, MG_SCHEMA_NAME_HASH_PREFIX.length()));
-    Ptr<MgStringCollection> classNames = new MgStringCollection();
+    Ptr<MgFeatureReader> mgfReader = wfsQuery.GetWfsReader();
+    Ptr<MgCoordinateSystemTransform> trans = wfsQuery.GetTransform();
+    Ptr<MgCoordinateSystem> mapCs = wfsQuery.GetMapCs();
+    Ptr<MgClassDefinition> fc = wfsQuery.GetClassDefinition();
 
-    if (!className.empty())
-    {
-        classNames->Add(className);
-    }
-
-    // Find the needed class definition.
-    Ptr<MgFeatureSchemaCollection> fsc = DescribeSchema(
-        fs, hashed ? L"" : schemaName, classNames);
-    Ptr<MgFeatureSchema> schema;
-    Ptr<MgClassDefinition> fc;
-    STRING schemaHash;
-
-    FindClassDefinition(fsc, schemaName, className, schemaHash, schema, fc);
-
-    if (hashed && NULL != schema.p)
-    {
-        MgUtil::FormatQualifiedClassName(schema->GetName(), className, lfeatureName);
-    }
-
-    MgCoordinateSystemFactory fact;
-    std::wstring wkt = srs;
-    if (wkt.empty())
-    {
-        //If there is no coordinate system pass in, get the default one in resource header.
-        MgServiceManager* serviceMan = MgServiceManager::GetInstance();
-        assert(NULL != serviceMan);
-        Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(serviceMan->RequestService(MgServiceType::ResourceService));
-        assert(resourceService != NULL);
-        Ptr<MgByteReader> byteReaderHeader = resourceService->GetResourceHeader(fs);
-        Ptr<MgByteSink> byteSinkHeader = new MgByteSink(byteReaderHeader);
-        std::string resourceHeader;
-        byteSinkHeader->ToStringUtf8(resourceHeader);
-        //parse for default SRS of this WFS, the format is:
-        //<Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
-        //  <Name>_PrimarySRS</Name>
-        //  <Value>EPSG:4326</Value>
-        //</Property>
-        std::string primary("<Name>_PrimarySRS</Name>");
-        std::size_t primaryPos = resourceHeader.find(primary);
-        if (primaryPos != std::string::npos)
-        {
-            std::string begin("<Value>EPSG:");
-            std::size_t beginPos = resourceHeader.find(begin, primaryPos);
-            if (beginPos != std::string::npos)
-            {
-                std::size_t endPos = resourceHeader.find("</Value>", beginPos);
-                if (endPos != std::string::npos)
-                {
-                    std::string primarySRS = resourceHeader.substr(beginPos+begin.length(), endPos-beginPos-begin.length());
-                    int epsgCode = atoi(primarySRS.c_str());
-                    wkt = fact.ConvertEpsgCodeToWkt(epsgCode);
-                }
-            }
-        }
-    }
-
-    Ptr<MgCoordinateSystem> mapCs = NULL;
-    if (!wkt.empty())
-    {
-        MG_TRY();
-            mapCs = fact.Create(wkt);
-        MG_CATCH_AND_RELEASE();
-    }
-
-    //get a transform from feature space to mapping space
-    TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, lfeatureName, fs, mapCs, &fact, this, false);
-    Ptr<MgCoordinateSystemTransform> trans = item? item->GetMgTransform() : NULL;
     FdoPtr<MgGMLCsTransform> transform = new MgGMLCsTransform(trans);
-
-    assert(fc != NULL);
-    if (fc == NULL)
-        return NULL;
-
-    //execute the spatial query
-    Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
-
-    //add the properties we need from FDO
-    if (propNames)
-    {
-        for (int i=0; i<propNames->GetCount(); i++)
-            options->AddFeatureProperty(propNames->GetItem(i));
-    }
-
-    //convert the WFS filter to an FDO filter
-    //and set it to the FDO feature query
-    if (!wfsFilter.empty())
-    {
-        STRING GEOM_PROP_TAG = L"%MG_GEOM_PROP%"; //NOXLATE
-        STRING fdoFilterString = L""; //NOXLATE
-
-        Ptr<MgPropertyDefinitionCollection> properties = fc->GetProperties();
-        MgOgcFilterUtil u;
-        
-        for(int i = 0; i<properties->GetCount(); i++)
-        {
-            Ptr<MgPropertyDefinition> prop = properties->GetItem(i);
-            if(prop->GetPropertyType() == MgFeaturePropertyType::GeometricProperty)
-            {
-                STRING ogcFilter = wfsFilter;
-
-                if(wfsFilter.find(GEOM_PROP_TAG, 0) != STRING::npos)
-                {
-                    ogcFilter = MgUtil::ReplaceString(wfsFilter,GEOM_PROP_TAG.c_str(),prop->GetName().c_str());
-                }
-                if(!fdoFilterString.empty())
-                {
-                    fdoFilterString += L" OR "; //NOXLATE
-                }
-                TransformCache* itemFilter = TransformCache::GetLayerToMapTransform(transformCache, lfeatureName, fs, mapCs, &fact, this, true);
-                Ptr<MgCoordinateSystemTransform> transFilter = itemFilter? itemFilter->GetMgTransform() : NULL;
-                fdoFilterString += u.Ogc2FdoFilter(ogcFilter, transFilter, prop->GetName(), properties);
-            }
-        }
-
-        options->SetFilter(fdoFilterString);
-    }
-
-    if(!sortCriteria.empty())
-    {
-        Ptr<MgStringCollection> orderByProperties = new MgStringCollection();
-        int orderOption = MgOrderingOption::Ascending;
-
-        STRING sSortCriteria = sortCriteria;
-        STRING::size_type pos = sSortCriteria.find_last_of(L" ");
-        if(pos != STRING::npos)
-        {
-            STRING sSortByProperty = sSortCriteria.substr(0, pos);
-            orderByProperties->Add(sSortByProperty);
-
-            STRING sSortOption  = MgUtil::ToUpper(sSortCriteria.substr(pos+1));
-            if(sSortOption == L"D")
-            {
-                orderOption = MgOrderingOption::Descending;
-            }
-        }
-        else
-        {
-            orderByProperties->Add(sortCriteria);
-        }
-
-        options->SetOrderingFilter(orderByProperties,orderOption);
-    }
-    // TODO: can FeatureName be an extension name rather than a FeatureClass?
-    Ptr<MgFeatureReader> mgfReader = SelectFeatures(fs, lfeatureName, options);
 
     //get underlying FDO feature reader
     FdoPtr<FdoIFeatureReader> fdoReader = (NULL == mgfReader.p) ? NULL : ((MgServerFeatureReader*)(mgfReader.p))->GetInternalReader();
@@ -2394,11 +2273,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     src->SetMimeType(MgMimeType::Xml);
     byteReader = src->GetReader();
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH(fs, L"MgServerFeatureService.GetWfsFeature")
-
-    TransformCache::Clear(transformCache);
-
-    MG_FEATURE_SERVICE_THROW()
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(fs, L"MgServerFeatureService.GetWfsFeature")
 
     return byteReader.Detach();
 }

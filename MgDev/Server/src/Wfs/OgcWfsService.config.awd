@@ -158,6 +158,7 @@ table {
    <item>text/xml; subtype=gml/2.1.2</item>
    <item>GML3</item>
    <item>text/xml; subtype=gml/3.1.1</item>
+   <item>application/json</item>
  </Define>
 
  <Define item="Formats.GetFeature.default.1.0.0">text/xml; subtype=gml/2.1.2</Define>

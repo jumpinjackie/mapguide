@@ -19,6 +19,7 @@
 #include "WmsFeatureInfo.h"
 #include "WmsFeatureProperties.h"
 
+CPSZ kpszIsLast = _("FeatureInfo.IsLast");
 CPSZ kpszDefinitionFeatureInfoLayerName = _("FeatureInfo.LayerName");
 CPSZ kpszLayerNameProperty = _("_MgLayerName");
 
@@ -59,7 +60,13 @@ void MgWmsFeatureInfo::GenerateDefinitions(MgUtilDictionary& dictionary)
                 dictionary.AddDefinition(kpszDefinitionFeatureInfoLayerName, value);
             }
         }
+        dictionary.AddDefinition(kpszIsLast, (m_index < m_propertyCollection->GetCount() - 1) ? L"0" : L"1");
     }
+}
+
+void MgWmsFeatureInfo::SetFormat(CREFSTRING format)
+{
+    m_format = format;
 }
 
 MgWmsFeatureProperties* MgWmsFeatureInfo::GetCurrentProperties()
@@ -71,6 +78,7 @@ MgWmsFeatureProperties* MgWmsFeatureInfo::GetCurrentProperties()
         if(props != NULL)
         {
             wmsProps = new MgWmsFeatureProperties(props);
+            wmsProps->SetFormat(m_format);
         }
     }
     return wmsProps;

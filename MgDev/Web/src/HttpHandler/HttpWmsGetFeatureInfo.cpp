@@ -154,9 +154,9 @@ MgGeometry* MgHttpWmsGetFeatureInfo::GetSelectionGeometry(MgMap* map)
     Ptr<MgCoordinate> mcsLowerLeft = mcsExtent->GetLowerLeftCoordinate();
     Ptr<MgCoordinate> mcsUpperRight = mcsExtent->GetUpperRightCoordinate();
 
-	//When GetFeatureInfo for point or line geometry, simply using click point to query cannot get any matching.
-	//Expand selection geometry a little to be a linearRing so that can query point and line.
-	double margin = 2;
+    //When GetFeatureInfo for point or line geometry, simply using click point to query cannot get any matching.
+    //Expand selection geometry a little to be a linearRing so that can query point and line.
+    double margin = 2;
     // Convert the pixel coords to MCS coords
     double mcsMinX = mcsLowerLeft->GetX() + ((double)m_iCoord - margin) * mcsExtent->GetWidth() / map->GetDisplayWidth();
     double mcsMaxY = mcsUpperRight->GetY() -((double)m_jCoord - margin) * mcsExtent->GetHeight() / map->GetDisplayHeight();
@@ -229,12 +229,16 @@ void MgHttpWmsGetFeatureInfo::AcquireResponseData(MgOgcServer* ogcServer)
         // Get the selection geometry
         Ptr<MgGeometry> selectionGeometry = GetSelectionGeometry(map);
 
+        bool bCaptureGeometry = true;
+
         // Call the C++ API
         Ptr<MgBatchPropertyCollection> propertyCollection = service->QueryFeatureProperties(map, queryLayers, selectionGeometry,
-            MgFeatureSpatialOperations::Intersects, L"", m_featureCount, 1 /*Any visible features*/);
+            MgFeatureSpatialOperations::Intersects, L"", m_featureCount, 1 /*Any visible features*/, false /* no bbox */, bCaptureGeometry);
 
         // Create the object to store the feature info
         Ptr<MgWmsFeatureInfo> wmsFeatureInfo = new MgWmsFeatureInfo(propertyCollection);
+
+        wmsFeatureInfo->SetFormat(m_infoFormat);
 
         // The WMS Server takes ownership of the feature info
         wmsServer->SetFeatureInfo(wmsFeatureInfo);

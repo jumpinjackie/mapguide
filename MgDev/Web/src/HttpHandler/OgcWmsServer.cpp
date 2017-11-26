@@ -93,6 +93,7 @@ CPSZ kpszExceptionMessageMissingVersion       = _("The request must contain a VE
 
 CPSZ kpszPiEnumLayers                      = _("EnumLayers");
 CPSZ kpszPiEnumFeatureProperties           = _("EnumFeatureProperties");
+CPSZ kpszPiEnumFeatureGeometries           = _("EnumFeatureGeometries");
 CPSZ kpszPiEnumFeatureInfo                 = _("EnumFeatureInfo");
 extern CPSZ kpszPiAttributeUsing;  // for consistency, borrow the "using" attribute from base class.
 CPSZ kpszPiEnumLayersDefaultFormat         = _("&Layer.Name;\n");
@@ -784,6 +785,10 @@ bool MgOgcWmsServer::ProcessOtherInstruction(CREFSTRING sProc,MgXmlProcessingIns
     {
         ProcedureEnumFeatureInfo(PI);
     }
+    else if (sProc == kpszPiEnumFeatureGeometries)
+    {
+        ProcedureEnumFeatureGeometries(PI);
+    }
     else
     {
         return false;
@@ -858,6 +863,67 @@ void MgOgcWmsServer::ProcedureEnumFeatureProperties(MgXmlProcessingInstruction& 
             {
                 pProps->GenerateDefinitions(*m_pTopOfDefinitions);
                 ProcessExpandableText(sFormat);
+            }
+        }
+    }
+}
+
+// Interpret a <?EnumFeatureGeometries using= ?> processing instruction
+// This will enumerate all feature geometries (only one)
+void MgOgcWmsServer::ProcedureEnumFeatureGeometries(MgXmlProcessingInstruction& PIEnum)
+{
+    STRING sFormat;
+    if (!PIEnum.GetAttribute(kpszPiAttributeUsing, sFormat))
+        sFormat = kpszPiEnumFeaturePropertiesDefaultFormat;
+
+    bool bIsGeometryEnabled = false;
+    if (m_pFeatureInfo != NULL && m_pLayers != NULL)
+    {
+        STRING layerName;
+        Ptr<MgWmsFeatureProperties> pProps = m_pFeatureInfo->GetCurrentProperties();
+        if (pProps != NULL)
+        {
+            layerName = pProps->GetLayerName();
+        }
+
+        //This will have been iterated previously, so rewind
+        m_pLayers->Reset();
+
+        while (m_pLayers->Next()) 
+        {
+            MgUtilDictionary currentDef(NULL);
+            m_pLayers->GenerateDefinitions(currentDef);
+
+            //We're at the layer of interest
+            CPSZ pszCurrentLayerName = currentDef[L"Layer.Name"];
+            if (SZ_EQ(pszCurrentLayerName, layerName.c_str()))
+            {
+                //Geometry data is only emitted if permitted by Layer.EnableGeometry
+                CPSZ pszEnableGeometry = currentDef[L"Layer.EnableGeometry"];
+                if (pszEnableGeometry != NULL && SZ_EQ(pszEnableGeometry, _("1")))
+                {
+                    bIsGeometryEnabled = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    CDictionaryStackFrame forFeatureGeometries(this);
+
+    if (m_pFeatureInfo != NULL)
+    {
+        Ptr<MgWmsFeatureProperties> pProps = m_pFeatureInfo->GetCurrentProperties();
+        if (pProps != NULL)
+        {
+            if (bIsGeometryEnabled)
+            {
+                Ptr<MgWmsFeatureGeometry> geom = pProps->GetGeometry();
+                while (geom->Next())
+                {
+                    geom->GenerateDefinitions(*m_pTopOfDefinitions);
+                    ProcessExpandableText(sFormat);
+                }
             }
         }
     }

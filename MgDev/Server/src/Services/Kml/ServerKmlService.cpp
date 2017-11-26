@@ -480,7 +480,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
 
         if (NULL != fdoReader.p)
         {
-            RS_FeatureClassInfo fcInfo(vl->GetFeatureName(), vl->GetResourceID());
+            RS_FeatureClassInfo fcInfo(vl->GetFeatureName(), vl->GetResourceID(), vl->GetGeometry());
             MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
             for (int j=0; j<pmappings->GetCount(); j++)
             {

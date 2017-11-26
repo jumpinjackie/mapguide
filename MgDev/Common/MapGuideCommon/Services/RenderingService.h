@@ -948,6 +948,9 @@ INTERNAL_API:
     /// \param layerAttributeFilter
     /// Input
     /// bitmask values - 1=Visible, 2=Selectable, 4=HasTooltips
+    /// \param bIncludeFeatureBBOX
+    /// Input
+    /// Indicates whether a bounding box should be included. If true, bounding box is recorded as a special property named _MgFeatureBoundingBox
     ///
     /// \return
     /// An MgSelection instance identifying the features that meet the
@@ -961,7 +964,58 @@ INTERNAL_API:
         CREFSTRING featureFilter,
         INT32 maxFeatures,
         INT32 layerAttributeFilter,
-        bool bIncludeFeatureBBOX);
+        bool bIncludeFeatureBBOX) = 0;
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// The QueryFeatureProperties operation identifies those features that
+    /// meet the specified spatial selection criteria. This operation
+    /// is used to implement WMS feature info and returns property values
+    /// for all features which match the spatial query
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param layerNames
+    /// Input
+    /// Active layer names for which to query features
+    /// \param filterGeometry
+    /// Input
+    /// geometry object specifying the selection area
+    /// \param selectionVariant
+    /// Input
+    /// selection criterion - integer value corresponding to one of
+    /// the MgFeatureSpatialOperations values
+    /// \param featureFilter
+    /// Input
+    /// an XML selection string containing the required feature IDs
+    /// \param maxFeatures
+    /// Input
+    /// the maximum number of features to return
+    /// \param layerAttributeFilter
+    /// Input
+    /// bitmask values - 1=Visible, 2=Selectable, 4=HasTooltips
+    /// \param bIncludeFeatureBBOX
+    /// Input
+    /// Indicates whether a bounding box should be included. If true, bounding box is recorded as a special property named _MgFeatureBoundingBox
+    /// \param bIncludeGeometry
+    /// Input
+    /// Indicates whether a bounding box should be included. If true, bounding box is recorded as a special property named _MgFeatureBoundingBox
+    ///
+    /// \return
+    /// An MgSelection instance identifying the features that meet the
+    /// selection criteria. Returns null if no features are identified.
+    ///
+    virtual MgBatchPropertyCollection* QueryFeatureProperties(
+        MgMap* map,
+        MgStringCollection* layerNames,
+        MgGeometry* filterGeometry,
+        INT32 selectionVariant,
+        CREFSTRING featureFilter,
+        INT32 maxFeatures,
+        INT32 layerAttributeFilter,
+        bool bIncludeFeatureBBOX,
+        bool bIncludeGeometry) = 0;
 
 protected:
 

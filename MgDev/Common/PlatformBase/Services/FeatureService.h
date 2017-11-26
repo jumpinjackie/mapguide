@@ -2038,6 +2038,60 @@ PUBLISHED_API:
                                         CREFSTRING namespacePrefix,
                                         CREFSTRING namespaceUrl) = 0;
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Retrieves feature information based on the supplied criteria.
+    ///
+    /// \note1
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgFeatureReader GetWfsReader(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat, string sortCriteria);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgFeatureReader GetWfsReader(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat, string sortCriteria);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgFeatureReader GetWfsReader(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat, string sortCriteria);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param featureSourceId (MgResourceIdentifier)
+    /// The resource identifier defining the
+    /// location of the feature source in
+    /// the repository.
+    /// \param featureClass (String/string)
+    /// The feature class containing the features to retrieve.
+    /// \param requiredProperties (MgStringCollection)
+    /// The collection of properties to retrieve for each feature. If the
+    /// collection is null or empty, all properties will be retrieved.
+    /// \param srs (String/string)
+    /// The spatial reference system in which to return feature geometries
+    /// \param filter (String/string)
+    /// An XML string containing the definition for an OGC filter
+    /// \param sortCriteria (String/string)
+    /// A string identifying the sort criteria
+    ///
+    /// \remarks
+    /// The purpose of this method, as opposed to GetWfsFeature is to return the base reader using the same input parameters
+    /// allowing for the caller to determine the desired output format and the desired content transformations required from 
+    /// the reader.
+    ///
+    /// The main use case for this method is for providing the base feature reader for outputting WFS GetFeature responses in 
+    /// formats other than GML
+    ///
+    /// \return
+    /// Returns an MgByteReader containing the requested feature information.
+    ///
+    /// \exception MgInvalidArgumentException
+    ///
+    /// \since 3.3
+    virtual MgFeatureReader* GetWfsReader(MgResourceIdentifier* featureSourceId,
+                                          CREFSTRING featureClass,
+                                          MgStringCollection* requiredProperties,
+                                          CREFSTRING srs,
+                                          CREFSTRING filter,
+                                          CREFSTRING sortCriteria) = 0;
+
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// This method enumerates all the providers and if they are FDO enabled for

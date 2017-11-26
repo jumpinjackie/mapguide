@@ -21,6 +21,8 @@
 #include "XmlParser.h"
 #include "Dictionary.h"
 
+class MgWmsFeatureGeometry;
+
 class MgWmsFeatureProperties: public IOgcResourceEnumerator, public MgDisposable
 {
 public:
@@ -30,8 +32,12 @@ public:
     MgWmsFeatureProperties(){};
     virtual ~MgWmsFeatureProperties();
 
+    void SetFormat(CREFSTRING format);
+
     bool Next();
     void GenerateDefinitions(MgUtilDictionary& Dictionary);
+    MgWmsFeatureGeometry* GetGeometry();
+    STRING GetLayerName();
 
 protected:
     virtual void Dispose()
@@ -40,8 +46,10 @@ protected:
     }
 
 private:
-   Ptr<MgPropertyCollection> m_propertyCollection;
-   int m_index;
+    static bool IsSpecialProperty(MgProperty* prop);
+    Ptr<MgPropertyCollection> m_propertyCollection;
+    int m_index;
+    STRING m_format;
 };
 
 #endif//_MgWmsFeatureProperties_h
