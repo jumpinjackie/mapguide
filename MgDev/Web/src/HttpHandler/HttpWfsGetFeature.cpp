@@ -300,7 +300,7 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                                     requiredProperties, m_getFeatureParams->GetSrs(), filter, sSortCriteria);
                                 
                                 //MgByteSource owns this and will clean it up when done
-                                MgReaderByteSourceImpl* bsImpl = new MgReaderByteSourceImpl(fr, MgMimeType::Json, true, false, -1);
+                                MgReaderByteSourceImpl* bsImpl = new MgReaderByteSourceImpl(fr, MgMimeType::Json, true, false, -1, NULL);
                                 bsImpl->SetMaxFeatures(numFeaturesToRetrieve - 1);
                                 Ptr<MgByteSource> bs = new MgByteSource(bsImpl);
                                 resultReader = bs->GetReader();
