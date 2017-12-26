@@ -200,9 +200,9 @@ STRING MgdFdoConnectionUtil::ParseNonQualifiedProviderName(CREFSTRING providerNa
     FdoPtr<FdoStringElement> company = tokenParts->GetItem(0);
     FdoPtr<FdoStringElement> provider = tokenParts->GetItem(1);
 
-    STRING name = company->GetString();
+    STRING name = (FdoString*)company->GetString();
     name += L".";
-    name += provider->GetString();
+    name += (FdoString*)provider->GetString();
 
     return name;
 }

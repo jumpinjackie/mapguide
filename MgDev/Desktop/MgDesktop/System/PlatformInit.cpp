@@ -127,7 +127,8 @@ void MgdPlatform::Initialize(CREFSTRING configFile)
     {
         if (MgFileUtil::IsDirectory(mentorDictPath))
         {
-            setenv("MENTOR_DICTIONARY_PATH", mentorDictPath.c_str(), 1);
+            std::string mbMentorDictPath = MgUtil::WideCharToMultiByte(mentorDictPath);
+            setenv("MENTOR_DICTIONARY_PATH", mbMentorDictPath.c_str(), 1);
         }
     }
     #endif

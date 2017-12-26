@@ -342,7 +342,7 @@ void MgdResourceService::SetResource(MgResourceIdentifier* resource, MgByteReade
             STRING resType = resource->GetResourceType();
             DOMElement* docEl = doc->getDocumentElement();
             CHECKNULL(docEl, L"MgdResourceService::SetResource");
-            STRING docElName = docEl->getNodeName();
+            STRING docElName = X2W(docEl->getNodeName());
 
             //Now make sure it's the right type of XML document
 
@@ -368,7 +368,7 @@ void MgdResourceService::SetResource(MgResourceIdentifier* resource, MgByteReade
         }
         catch (const SAXParseException& e)
         {
-            STRING msg = e.getMessage();
+            STRING msg = X2W(e.getMessage());
             XMLFileLoc lineNum = e.getLineNumber();
             XMLFileLoc colNum = e.getColumnNumber();
 
@@ -377,10 +377,10 @@ void MgdResourceService::SetResource(MgResourceIdentifier* resource, MgByteReade
 
             STRING pubIdStr;
             if (NULL != pubId)
-                pubIdStr = pubId;
+                pubIdStr = X2W(pubId);
             STRING sysIdStr;
             if (NULL != sysId)
-                sysIdStr = sysId;
+                sysIdStr = X2W(sysId);
 
             STRING lineNumStr;
             STRING colNumStr;

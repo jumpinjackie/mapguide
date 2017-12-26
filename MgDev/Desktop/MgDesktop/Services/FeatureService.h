@@ -196,7 +196,7 @@ PUBLISHED_API:
 
     void UnregisterProvider(CREFSTRING providerName);
 
-    MgFeatureReader *MgFeatureService::GetWfsReader(MgResourceIdentifier *, CREFSTRING, MgStringCollection *, CREFSTRING, CREFSTRING, CREFSTRING);
+    MgFeatureReader *GetWfsReader(MgResourceIdentifier *, CREFSTRING, MgStringCollection *, CREFSTRING, CREFSTRING, CREFSTRING);
 
 EXTERNAL_API:
     void PurgeCache(MgResourceIdentifier* resource);
