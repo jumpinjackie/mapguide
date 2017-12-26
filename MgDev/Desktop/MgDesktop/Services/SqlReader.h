@@ -174,6 +174,8 @@ INTERNAL_API:
     ///
     virtual void CurrentToStringUtf8(string& str);
 
+    virtual void CurrentToStringUtf8(string& str, MgTransform* xform);
+
     MgByteReader* GetLOB(CREFSTRING propertyName);
 
     virtual const wchar_t* GetString(CREFSTRING propertyName, INT32& length);

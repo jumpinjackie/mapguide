@@ -335,15 +335,17 @@ string MgdProjectedFeatureReader::GetResponseElementName() { NOT_IMPLEMENTED(L"M
 
 string MgdProjectedFeatureReader::GetBodyElementName() { NOT_IMPLEMENTED(L"MgdProjectedFeatureReader::GetResponseElementName"); }
 
-void MgdProjectedFeatureReader::ResponseStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdProjectedFeatureReader::GetResponseElementName"); }
+void MgdProjectedFeatureReader::ResponseStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdProjectedFeatureReader::ResponseStartUtf8"); }
 
-void MgdProjectedFeatureReader::ResponseEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdProjectedFeatureReader::GetResponseElementName"); }
+void MgdProjectedFeatureReader::ResponseEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdProjectedFeatureReader::ResponseEndUtf8"); }
 
-void MgdProjectedFeatureReader::BodyStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdProjectedFeatureReader::GetResponseElementName"); }
+void MgdProjectedFeatureReader::BodyStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdProjectedFeatureReader::BodyStartUtf8"); }
 
-void MgdProjectedFeatureReader::BodyEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdProjectedFeatureReader::GetResponseElementName"); }
+void MgdProjectedFeatureReader::BodyEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdProjectedFeatureReader::BodyEndUtf8"); }
 
 void MgdProjectedFeatureReader::CurrentToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdProjectedFeatureReader::CurrentToStringUtf8"); }
+
+void MgdProjectedFeatureReader::CurrentToStringUtf8(string& str, MgTransform* xform) { NOT_IMPLEMENTED(L"MgdProjectedFeatureReader::CurrentToStringUtf8"); }
 
 void MgdProjectedFeatureReader::HeaderToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdProjectedFeatureReader::HeaderToStringUtf8"); }
 

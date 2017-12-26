@@ -150,6 +150,7 @@ PUBLISHED_API:
 
     virtual INT32 UpdateMatchingFeatures(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans);
     
+    virtual MgFeatureReader* GetWfsReader(MgResourceIdentifier *, CREFSTRING, MgStringCollection *, CREFSTRING, CREFSTRING, CREFSTRING);
 INTERNAL_API:
 
     MgdRasterHelper(MgdFeatureReader* reader);

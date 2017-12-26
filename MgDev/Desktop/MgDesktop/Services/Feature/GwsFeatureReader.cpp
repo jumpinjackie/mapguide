@@ -1266,15 +1266,17 @@ string MgdGwsFeatureReader::GetResponseElementName() { NOT_IMPLEMENTED(L"MgdGwsF
 
 string MgdGwsFeatureReader::GetBodyElementName() { NOT_IMPLEMENTED(L"MgdGwsFeatureReader::GetResponseElementName"); }
 
-void MgdGwsFeatureReader::ResponseStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdGwsFeatureReader::GetResponseElementName"); }
+void MgdGwsFeatureReader::ResponseStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdGwsFeatureReader::ResponseStartUtf8"); }
 
-void MgdGwsFeatureReader::ResponseEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdGwsFeatureReader::GetResponseElementName"); }
+void MgdGwsFeatureReader::ResponseEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdGwsFeatureReader::ResponseEndUtf8"); }
 
-void MgdGwsFeatureReader::BodyStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdGwsFeatureReader::GetResponseElementName"); }
+void MgdGwsFeatureReader::BodyStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdGwsFeatureReader::BodyStartUtf8"); }
 
-void MgdGwsFeatureReader::BodyEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdGwsFeatureReader::GetResponseElementName"); }
+void MgdGwsFeatureReader::BodyEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdGwsFeatureReader::BodyEndUtf8"); }
 
 void MgdGwsFeatureReader::CurrentToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdGwsFeatureReader::CurrentToStringUtf8"); }
+
+void MgdGwsFeatureReader::CurrentToStringUtf8(string& str, MgTransform* xform) { NOT_IMPLEMENTED(L"MgdGwsFeatureReader::CurrentToStringUtf8"); }
 
 void MgdGwsFeatureReader::HeaderToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdGwsFeatureReader::HeaderToStringUtf8"); }
 

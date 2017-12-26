@@ -791,6 +791,11 @@ void MgdFeatureSetReader::HeaderToStringUtf8(string& str)
 
 void MgdFeatureSetReader::CurrentToStringUtf8(string& str)
 {
+    CurrentToStringUtf8(str, NULL);
+}
+
+void MgdFeatureSetReader::CurrentToStringUtf8(string& str, MgTransform* xform)
+{
     if (NULL != (MgFeatureSet*)m_set)
     {
         Ptr<MgPropertyCollection> propCol = m_set->GetFeatureAt(m_currRecord-1);

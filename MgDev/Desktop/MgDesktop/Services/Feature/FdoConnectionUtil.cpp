@@ -169,10 +169,10 @@ FdoIConnection* MgdFdoConnectionUtil::CreateConnection(MgResourceIdentifier* res
 
 void MgdFdoConnectionUtil::PerformTagSubstitution(MgdResourceService* resSvc, REFSTRING str, MgResourceIdentifier* resource, CREFSTRING username, CREFSTRING password)
 {
-    const int dataTokenPos = str.find(MgResourceTag::DataFilePath);
-    const int dataAliasPos = str.find(MgResourceTag::DataPathAliasBegin);
-    const int usernamePos = str.find(MgResourceTag::Username);
-    const int passwordPos = str.find(MgResourceTag::Password);
+    const STRING::size_type dataTokenPos = str.find(MgResourceTag::DataFilePath);
+    const STRING::size_type dataAliasPos = str.find(MgResourceTag::DataPathAliasBegin);
+    const STRING::size_type usernamePos = str.find(MgResourceTag::Username);
+    const STRING::size_type passwordPos = str.find(MgResourceTag::Password);
     if (dataTokenPos != STRING::npos)
     {
         STRING dataPath = resSvc->ResolveDataPath(resource);

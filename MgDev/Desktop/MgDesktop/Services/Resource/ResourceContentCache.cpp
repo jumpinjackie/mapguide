@@ -43,7 +43,7 @@ STRING MgdResourceContentCache::GetContentEntry(MgResourceIdentifier* resource)
 INT32 MgdResourceContentCache::GetCacheSize()
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, 0));
-    return m_resourceContentCacheEntries.size();
+    return (INT32)m_resourceContentCacheEntries.size();
 }
 
 void MgdResourceContentCache::Clear()

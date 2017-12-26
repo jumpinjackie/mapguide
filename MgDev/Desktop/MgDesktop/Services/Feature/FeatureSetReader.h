@@ -161,6 +161,8 @@ INTERNAL_API:
     ///
     virtual void CurrentToStringUtf8(string& str);
 
+    virtual void CurrentToStringUtf8(string& str, MgTransform* xform);
+
     virtual const wchar_t* GetString(CREFSTRING propertyName, INT32& length);
 
     virtual const wchar_t* GetString(INT32 index, INT32& length);

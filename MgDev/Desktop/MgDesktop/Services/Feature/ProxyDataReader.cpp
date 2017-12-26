@@ -750,6 +750,11 @@ void MgdProxyDataReader::HeaderToStringUtf8(string& str)
 
 void MgdProxyDataReader::CurrentToStringUtf8(string& str)
 {
+    CurrentToStringUtf8(str, NULL);
+}
+
+void MgdProxyDataReader::CurrentToStringUtf8(string& str, MgTransform* xform)
+{
     if (NULL != (MgBatchPropertyCollection*)m_set)
     {
         Ptr<MgPropertyCollection> propCol = m_set->GetItem(m_currRecord-1);

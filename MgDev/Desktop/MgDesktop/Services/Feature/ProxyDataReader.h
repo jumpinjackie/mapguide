@@ -596,6 +596,8 @@ INTERNAL_API:
     ///
     virtual void CurrentToStringUtf8(string& str);
 
+    virtual void CurrentToStringUtf8(string& str, MgTransform* xform);
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the string value of the specified property. No conversion is

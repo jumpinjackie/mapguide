@@ -652,17 +652,19 @@ string MgdFeatureReader::GetResponseElementName() { NOT_IMPLEMENTED(L"MgdFeature
 
 string MgdFeatureReader::GetBodyElementName() { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
 
-void MgdFeatureReader::ResponseStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
+void MgdFeatureReader::ResponseStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::ResponseStartUtf8"); }
 
-void MgdFeatureReader::ResponseEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
+void MgdFeatureReader::ResponseEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::ResponseEndUtf8"); }
 
-void MgdFeatureReader::BodyStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
+void MgdFeatureReader::BodyStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::BodyStartUtf8"); }
 
-void MgdFeatureReader::BodyEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
+void MgdFeatureReader::BodyEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::BodyEndUtf8"); }
 
-void MgdFeatureReader::HeaderToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
+void MgdFeatureReader::HeaderToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::HeaderToStringUtf8"); }
 
-void MgdFeatureReader::CurrentToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
+void MgdFeatureReader::CurrentToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::CurrentToStringUtf8"); }
+
+void MgdFeatureReader::CurrentToStringUtf8(string& str, MgTransform* xform) { NOT_IMPLEMENTED(L"MgdFeatureReader::CurrentToStringUtf8"); }
 
 const wchar_t* MgdFeatureReader::GetString(CREFSTRING propertyName, INT32& length) 
 { 

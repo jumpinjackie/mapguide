@@ -2267,7 +2267,7 @@ void MgdRenderingService::RenderForSelection(MgdMap* map,
                     //string the viewer should be displaying as the name of each
                     //feature property
                     // TODO: can FeatureName be an extension name rather than a FeatureClass?
-                    RS_FeatureClassInfo fcinfo(vl->GetFeatureName(), vl->GetResourceID());
+                    RS_FeatureClassInfo fcinfo(vl->GetFeatureName(), vl->GetResourceID(), vl->GetGeometry());
 
                     MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
                     for (int i=0; i<pmappings->GetCount(); i++)

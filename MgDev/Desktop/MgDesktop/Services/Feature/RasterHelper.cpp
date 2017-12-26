@@ -247,3 +247,8 @@ bool MgdRasterHelper::RollbackSavePoint(CREFSTRING transactionId, CREFSTRING sav
 
 //Release a save point
 bool MgdRasterHelper::ReleaseSavePoint(CREFSTRING transactionId, CREFSTRING savePointName) { NOT_IMPLEMENTED(L"MgdRasterHelper::ReleaseSavePoint"); }
+
+MgFeatureReader *MgdRasterHelper::GetWfsReader(MgResourceIdentifier *, CREFSTRING, MgStringCollection *, CREFSTRING, CREFSTRING, CREFSTRING)
+{
+    NOT_IMPLEMENTED(L"MgdRasterHelper::DeleteFeatures");
+}

@@ -490,6 +490,8 @@ INTERNAL_API:
     ///
     virtual void CurrentToStringUtf8(string& str);
 
+    virtual void CurrentToStringUtf8(string& str, MgTransform* xform);
+
     //////////////////////////////////////////////////////////////////
     /// <summary>
     /// Gets the definition of the object currently being read. If the user

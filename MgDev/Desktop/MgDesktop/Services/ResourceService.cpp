@@ -1546,14 +1546,14 @@ MgByteReader* MgdResourceService::GetResourceContent(MgResourceIdentifier* resou
         //Stash it for future calls
         cache->PutContentEntry(resource, resContent);
 
-        Ptr<MgByteSource> source2 = new MgByteSource((BYTE_ARRAY_IN)mbXml.c_str(), mbXml.length());
+        Ptr<MgByteSource> source2 = new MgByteSource((BYTE_ARRAY_IN)mbXml.c_str(), (INT32)mbXml.length());
         source2->SetMimeType(MgMimeType::Xml);
         content = source2->GetReader();
     }
     else
     {
         std::string mbXml = MgUtil::WideCharToMultiByte(resContent);
-        Ptr<MgByteSource> source = new MgByteSource((BYTE_ARRAY_IN)mbXml.c_str(), mbXml.length());
+        Ptr<MgByteSource> source = new MgByteSource((BYTE_ARRAY_IN)mbXml.c_str(), (INT32)mbXml.length());
         source->SetMimeType(MgMimeType::Xml);
         content = source->GetReader();
     }
@@ -1619,7 +1619,7 @@ MgByteReader* MgdResourceService::GetResourceData(MgResourceIdentifier* resource
 
         source = NULL;
         reader = NULL;
-        source = new MgByteSource((BYTE_ARRAY_IN)mbUsername.c_str(), mbUsername.length());
+        source = new MgByteSource((BYTE_ARRAY_IN)mbUsername.c_str(), (INT32)mbUsername.length());
         reader = source->GetReader();
     }
     else
@@ -1637,7 +1637,7 @@ MgByteReader* MgdResourceService::GetResourceData(MgResourceIdentifier* resource
 
             std::string mbXml = MgUtil::WideCharToMultiByte(resContent);
             
-            Ptr<MgByteSource> source2 = new MgByteSource((BYTE_ARRAY_IN)mbXml.c_str(), mbXml.length());
+            Ptr<MgByteSource> source2 = new MgByteSource((BYTE_ARRAY_IN)mbXml.c_str(), (INT32)mbXml.length());
             source2->SetMimeType(MgMimeType::Xml);
 
             reader = NULL; //Un-ref the old one
@@ -1793,7 +1793,7 @@ void MgdResourceService::SetResourceCredentials(MgResourceIdentifier* resource, 
     MgCryptographyUtil crypto;
     crypto.EncryptCredentials(mgUsername, mgPassword, data);
 
-    Ptr<MgByteSource> bs = new MgByteSource((BYTE_ARRAY_IN)data.c_str(), data.length());
+    Ptr<MgByteSource> bs = new MgByteSource((BYTE_ARRAY_IN)data.c_str(), (INT32)data.length());
     Ptr<MgByteReader> br = bs->GetReader();
 
     //Invalidate any cached connections as they may use old credentials

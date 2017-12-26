@@ -2418,3 +2418,8 @@ bool MgdFeatureService::RollbackSavePoint(CREFSTRING transactionId, CREFSTRING s
 
 //Release a save point
 bool MgdFeatureService::ReleaseSavePoint(CREFSTRING transactionId, CREFSTRING savePointName) { NOT_IMPLEMENTED(L"MgdFeatureService::ReleaseSavePoint"); }
+
+MgFeatureReader *MgdFeatureService::GetWfsReader(MgResourceIdentifier *, CREFSTRING, MgStringCollection *, CREFSTRING, CREFSTRING, CREFSTRING)
+{
+    NOT_IMPLEMENTED(L"MgdFeatureService::GetWfsReader");
+}

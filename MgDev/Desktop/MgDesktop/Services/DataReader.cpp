@@ -685,6 +685,8 @@ void MgdDataReader::BodyEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdDataReader::
 
 void MgdDataReader::CurrentToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdDataReader::CurrentToStringUtf8"); }
 
+void MgdDataReader::CurrentToStringUtf8(string& str, MgTransform* xform) { NOT_IMPLEMENTED(L"MgdDataReader::CurrentToStringUtf8"); }
+
 void MgdDataReader::HeaderToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdDataReader::HeaderToStringUtf8"); }
 
 const wchar_t* MgdDataReader::GetString(CREFSTRING propertyName, INT32& length) 
