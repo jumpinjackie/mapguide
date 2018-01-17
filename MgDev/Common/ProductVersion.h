@@ -19,6 +19,6 @@
 #define PRODUCTVERSION_H_
 
 const STRING ProductVersion = L"3.1.0.0";
-const STRING ApiVersion     = L"2.6";  // Major.Minor only
+const STRING ApiVersion     = L"3.1";  // Major.Minor only
 
 #endif // PRODUCTVERSION_H_
