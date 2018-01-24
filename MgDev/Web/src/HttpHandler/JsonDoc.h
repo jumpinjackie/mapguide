@@ -23,25 +23,29 @@ using namespace Json;
 
 struct MgJsonNode
 {
-    MgJsonNode() {}
+    MgJsonNode() : Name(StaticString(NULL)) {}
     MgJsonNode(const StaticString &name, Json::Value element)
+        : Name(name)
     {
         this->Name = name;
         this->Element = element;
         this->isUsingStaticString = true;
     }
     MgJsonNode(const string &name, Json::Value element)
+        : Name(StaticString(NULL))
     {
         this->strName = name;
         this->Element = element;
         this->isUsingStaticString = false;
     }
     MgJsonNode(Json::Value element, int index)
+        : Name(StaticString(NULL))
     {
         this->Element = element;
         this->Index = index;
     }
     MgJsonNode(Json::Value element)
+        : Name(StaticString(NULL))
     {
         this->Element = element;
     }

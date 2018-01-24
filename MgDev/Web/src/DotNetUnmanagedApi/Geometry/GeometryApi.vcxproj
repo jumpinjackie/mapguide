@@ -94,9 +94,9 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
       <Command>del /Q GeometryCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\GeometryConstants.xml C# ./GeometryConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\GeometryConstants.xml -l C# -o ./GeometryConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\GeometryApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\GeometryApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -dllname GeometryUnmanagedApid -namespace OSGeo.MapGuide -proxydir .\GeometryCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module GeometryApi -o MgGeometryApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib GeometryApi.i
 </Command>
     </PreBuildEvent>
@@ -131,9 +131,9 @@ copy ..\dotnet.i .\language.i
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
       <Command>del /Q GeometryCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\GeometryConstants.xml C# ./GeometryConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\GeometryConstants.xml -l C# -o ./GeometryConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\GeometryApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\GeometryApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -dllname GeometryUnmanagedApid -namespace OSGeo.MapGuide -proxydir .\GeometryCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module GeometryApi -o MgGeometryApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib GeometryApi.i
 </Command>
     </PreBuildEvent>
@@ -168,9 +168,9 @@ copy ..\dotnet.i .\language.i
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
       <Command>del /Q GeometryCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\GeometryConstants.xml C# ./GeometryConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\GeometryConstants.xml -l C# -o ./GeometryConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\GeometryApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\GeometryApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -namespace OSGeo.MapGuide -dllname GeometryUnmanagedApi -proxydir .\GeometryCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module GeometryApi -o MgGeometryApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib GeometryApi.i
 </Command>
     </PreBuildEvent>
@@ -206,9 +206,9 @@ copy ..\dotnet.i .\language.i
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PreBuildEvent>
       <Command>del /Q GeometryCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\GeometryConstants.xml C# ./GeometryConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\GeometryConstants.xml -l C# -o ./GeometryConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\GeometryApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\GeometryApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -namespace OSGeo.MapGuide -dllname GeometryUnmanagedApi -proxydir .\GeometryCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module GeometryApi -o MgGeometryApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib GeometryApi.i
 </Command>
     </PreBuildEvent>

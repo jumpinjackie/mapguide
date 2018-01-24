@@ -1,0 +1,10 @@
+add_subdirectory(Common)
+add_subdirectory(Core)
+add_subdirectory(Gws)
+add_subdirectory(Services)
+add_subdirectory(UnitTesting)
+#add_subdirectory(Wfs)
+#add_subdirectory(Wms)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Wfs DESTINATION ${MG_INSTALL_SERVER_PREFIX} COMPONENT ${MG_COMPONENT})
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Wms DESTINATION ${MG_INSTALL_SERVER_PREFIX} COMPONENT ${MG_COMPONENT})

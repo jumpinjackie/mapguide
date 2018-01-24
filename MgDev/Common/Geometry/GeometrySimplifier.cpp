@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "geos.h"
+#include "GeosInclude.h"
 #include "geos/simplify/DouglasPeuckerSimplifier.h"
 #include "geos/simplify/TopologyPreservingSimplifier.h"
 

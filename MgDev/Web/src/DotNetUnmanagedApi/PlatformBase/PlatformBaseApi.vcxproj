@@ -94,9 +94,9 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
       <Command>del /Q PlatformBaseCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\PlatformBaseConstants.xml C# ./PlatformBaseConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\PlatformBaseConstants.xml -l C# -o ./PlatformBaseConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\PlatformBaseApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\PlatformBaseApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -dllname PlatformBaseUnmanagedApid -namespace OSGeo.MapGuide -proxydir .\PlatformBaseCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module PlatformBaseApi -o MgPlatformBaseApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib PlatformBaseApi.i
 </Command>
     </PreBuildEvent>
@@ -131,9 +131,9 @@ copy ..\dotnet.i .\language.i
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
       <Command>del /Q PlatformBaseCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\PlatformBaseConstants.xml C# ./PlatformBaseConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\PlatformBaseConstants.xml -l C# -o ./PlatformBaseConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\PlatformBaseApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\PlatformBaseApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -dllname PlatformBaseUnmanagedApid -namespace OSGeo.MapGuide -proxydir .\PlatformBaseCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module PlatformBaseApi -o MgPlatformBaseApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib PlatformBaseApi.i
 </Command>
     </PreBuildEvent>
@@ -168,9 +168,9 @@ copy ..\dotnet.i .\language.i
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
       <Command>del /Q PlatformBaseCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\PlatformBaseConstants.xml C# ./PlatformBaseConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\PlatformBaseConstants.xml -l C# -o ./PlatformBaseConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\PlatformBaseApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\PlatformBaseApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -namespace OSGeo.MapGuide -dllname PlatformBaseUnmanagedApi -proxydir .\PlatformBaseCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module PlatformBaseApi -o MgPlatformBaseApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib PlatformBaseApi.i
 </Command>
     </PreBuildEvent>
@@ -206,9 +206,9 @@ copy ..\dotnet.i .\language.i
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PreBuildEvent>
       <Command>del /Q PlatformBaseCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\PlatformBaseConstants.xml C# ./PlatformBaseConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\PlatformBaseConstants.xml -l C# -o ./PlatformBaseConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\PlatformBaseApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\PlatformBaseApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -namespace OSGeo.MapGuide -dllname PlatformBaseUnmanagedApi -proxydir .\PlatformBaseCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module PlatformBaseApi -o MgPlatformBaseApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib PlatformBaseApi.i
 </Command>
     </PreBuildEvent>

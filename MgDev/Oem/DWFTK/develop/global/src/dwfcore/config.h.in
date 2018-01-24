@@ -1,0 +1,12 @@
+#ifndef DWFCORE_CONFIG_H
+#define DWFCORE_CONFIG_H
+
+// This is a config.h template used by CMake
+
+#cmakedefine _DWFCORE_USE_ASM_ATOMIC_H @_DWFCORE_USE_ASM_ATOMIC_H@
+#cmakedefine _DWFCORE_USE_ALSA_IATOMIC_H @_DWFCORE_USE_ALSA_IATOMIC_H@
+#cmakedefine HAVE_MEMMOVE @HAVE_MEMMOVE@
+#cmakedefine HAVE_NETINET_ETHER_H @HAVE_NETINET_ETHER_H@
+#cmakedefine HAVE_LIBUUID @HAVE_LIBUUID@
+
+#endif

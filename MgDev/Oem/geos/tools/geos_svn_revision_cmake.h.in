@@ -1,0 +1,1 @@
+#cmakedefine GEOS_SVN_REVISION @GEOS_SVN_REVISION@

@@ -1,0 +1,110 @@
+project(stylization)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}
+    ${FDO_INCLUDE_DIR}
+    ${FDO_INCLUDE_DIR}/ExpressionEngine
+    ${CMAKE_CURRENT_SOURCE_DIR}/../MdfModel
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Foundation
+)
+
+set (MgStylization_SRCS
+    atom_element_abandonment.cpp
+    atom_element_environment.cpp
+    atom_element_location.cpp
+    atom_element_structure.cpp
+    atom_element_style.cpp
+    atom_element_textrun.cpp
+    atom_element_transform.cpp
+    atom_element_universe.cpp
+    atom_impl.cpp
+    Band.cpp
+    BandData.cpp
+    BIDIConverter.cpp
+    Color.cpp
+    DefaultStylizer.cpp
+    ExpressionFunctionArgb.cpp
+    ExpressionFunctionDecap.cpp
+    ExpressionFunctionFeatureClass.cpp
+    ExpressionFunctionFeatureId.cpp
+    ExpressionFunctionFeatureSource.cpp
+    ExpressionFunctionHtmlColor.cpp
+    ExpressionFunctionIf.cpp
+    ExpressionFunctionLayerDefinition.cpp
+    ExpressionFunctionLayerId.cpp
+    ExpressionFunctionLookup.cpp
+    ExpressionFunctionMapCenterX.cpp
+    ExpressionFunctionMapCenterY.cpp
+    ExpressionFunctionMapName.cpp
+    ExpressionFunctionMapScale.cpp
+    ExpressionFunctionRange.cpp
+    ExpressionFunctionSession.cpp
+    ExpressionFunctionUrlEncode.cpp
+    ExpressionHelper.cpp
+    GeometryAdapter.cpp
+    GeometryAlgorithms.cpp
+    GridApplyStatusReporter.cpp
+    GridChannelBand.cpp
+    GridColorBandHandler.cpp
+    GridColorBandsHandler.cpp
+    GridColorHandler.cpp
+    GridColorNullHandler.cpp
+    GridColorThemeHandler.cpp
+    GridData.cpp
+    GridStyleColorHandler.cpp
+    GridStyleSurfaceColorHandler.cpp
+    GridStyleSurfaceHandler.cpp
+    GridStylizer.cpp
+    GridStylizerReactor.cpp
+    GridTheme.cpp
+    GridThemeParser.cpp
+    KeyEncode.cpp
+    LabelRenderer.cpp
+    LabelRendererBase.cpp
+    LabelRendererLocal.cpp
+    LineBuffer.cpp
+    LineStyleDef.cpp
+    Matrix3D.cpp
+    mtext_parser.cpp
+    Point2D.cpp
+    Point3D.cpp
+    PointAdapter.cpp
+    PolygonAdapter.cpp
+    PolygonUtils.cpp
+    PolylineAdapter.cpp
+    RasterAdapter.cpp
+    RichTextEngine.cpp
+    RS_FontEngine.cpp
+    RS_TextMetrics.cpp
+    SE_AreaPositioning.cpp
+    SE_Bounds.cpp
+    SE_BufferPool.cpp
+    SE_ExpressionBase.cpp
+    SE_LineBuffer.cpp
+    SE_LineRenderer.cpp
+    SE_Matrix.cpp
+    SE_PositioningAlgorithms.cpp
+    SE_Renderer.cpp
+    SE_StyleVisitor.cpp
+    SE_SymbolDefProxies.cpp
+    SE_SymbolManager.cpp
+    SimpleOverpost.cpp
+    StylizationEngine.cpp
+    StylizationUtil.cpp
+    Stylizer.cpp
+    ThemeParameters.cpp
+    Vector2D.cpp
+    Vector3D.cpp
+    TransformMesh.cpp
+)
+
+add_library(MgStylization${MG_VERSION_SUFFIX} SHARED ${MgStylization_SRCS})
+
+target_link_libraries(MgStylization${MG_VERSION_SUFFIX}
+    ${FDO_EXPRESSIONENGINE_LIBRARY}
+    ${FDO_LIBRARY}
+    MgFoundation${MG_VERSION_SUFFIX}
+    MgMdfModel${MG_VERSION_SUFFIX}
+)
+
+install( TARGETS MgStylization${MG_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${MG_COMPONENT} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libMgStylization${MG_VERSION_SUFFIX}.so libMgStylization.so ${MG_COMPONENT} )

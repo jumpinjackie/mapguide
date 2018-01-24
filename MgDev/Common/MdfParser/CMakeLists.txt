@@ -1,0 +1,129 @@
+project(mdfparser)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../MdfModel)
+
+set (MgMdfParser_SRCS
+    Common/IOColor.cpp
+    Common/IOExtent3D.cpp
+    Common/IOPoint3D.cpp
+    Common/IOSize2D.cpp
+    Common/IOStringObjectCollection.cpp
+    Common/IOVector3D.cpp
+    PrintLayout/IODataConfiguration.cpp
+    PrintLayout/IOMapView.cpp
+    PrintLayout/IOMapViewportDefinition.cpp
+    PrintLayout/IOPrintLayoutDefinition.cpp
+    PrintLayout/IOPrintLayoutElementCollection.cpp
+    PrintLayout/IOPrintLayoutElementDefinition.cpp
+    PrintLayout/IOPrintLayoutElementStyle.cpp
+    PrintLayout/IOPropertyMappingCollection.cpp
+    PrintLayout/IOStylizationConfiguration.cpp
+    PrintLayout/IOThickness.cpp
+    FSDSAX2Parser.cpp
+    IOAreaRule.cpp
+    IOAreaSymbolization2D.cpp
+    IOAreaTypeStyle.cpp
+    IOAreaUsage.cpp
+    IOAttributeRelate.cpp
+    IOBaseMapDefinition.cpp
+    IOBaseMapLayer.cpp
+    IOBaseMapLayerGroup.cpp
+    IOBlockSymbol.cpp
+    IOCalculatedProperty.cpp
+    IOChannelBand.cpp
+    IOCompositeRule.cpp
+    IOCompositeSymbolization.cpp
+    IOCompositeTypeStyle.cpp
+    IOCompoundSymbolDefinition.cpp
+    IODrawingLayerDefinition.cpp
+    IOElevationSettings.cpp
+    IOExtension.cpp
+    IOExtra.cpp
+    IOFeatureSource.cpp
+    IOFill.cpp
+    IOFontSymbol.cpp
+    IOGraphicElement.cpp
+    IOGraphicElementCollection.cpp
+    IOGridColor.cpp
+    IOGridColorBands.cpp
+    IOGridColorRule.cpp
+    IOGridColorStyle.cpp
+    IOGridLayerDefinition.cpp
+    IOGridScaleRange.cpp
+    IOGridSurfaceStyle.cpp
+    IOHillShade.cpp
+    IOImage.cpp
+    IOImageSymbol.cpp
+    IOLabel.cpp
+    IOLineRule.cpp
+    IOLineSymbolization2D.cpp
+    IOLineTypeStyle.cpp
+    IOLineUsage.cpp
+    IOMapDefinition.cpp
+    IOMapLayer.cpp
+    IOMapLayerCommon.cpp
+    IOMapLayerGroup.cpp
+    IOMapLayerGroupCommon.cpp
+    IOMarkSymbol.cpp
+    IONameStringPair.cpp
+    IOOverride.cpp
+    IOOverrideCollection.cpp
+    IOParameter.cpp
+    IOParameterCollection.cpp
+    IOPath.cpp
+    IOPointRule.cpp
+    IOPointSymbolization2D.cpp
+    IOPointTypeStyle.cpp
+    IOPointUsage.cpp
+    IOProfileRenderLabelsResult.cpp
+    IOProfileRenderLayerResult.cpp
+    IOProfileRenderLayersResult.cpp
+    IOProfileRenderMapResult.cpp
+    IOProfileRenderSelectionResult.cpp
+    IOProfileRenderWatermarkResult.cpp
+    IOProfileRenderWatermarksResult.cpp
+    IOProfileResult.cpp
+    IORelateProperty.cpp
+    IOResizeBox.cpp
+    IOResourceRef.cpp
+    IOScaleRange.cpp
+    IOSimpleSymbol.cpp
+    IOSimpleSymbolDefinition.cpp
+    IOStroke.cpp
+    IOSupplementalSpatialContextInfo.cpp
+    IOSymbol.cpp
+    IOSymbolInstance.cpp
+    IOText.cpp
+    IOTextFrame.cpp
+    IOThemeLabel.cpp
+    IOTileSetDefinition.cpp
+    IOTileSetSource.cpp
+    IOTileStoreParameters.cpp
+    IOTileWatermarkPosition.cpp
+    IOUnknown.cpp
+    IOURLData.cpp
+    IOUtil.cpp
+    IOVectorLayerDefinition.cpp
+    IOVectorScaleRange.cpp
+    IOW2DSymbol.cpp
+    IOWatermarkAppearance.cpp
+    IOWatermarkDefinition.cpp
+    IOWatermarkInstance.cpp
+    IOWatermarkOffsetUnit.cpp
+    IOWatermarkXOffset.cpp
+    IOWatermarkYOffset.cpp
+    IOXYWatermarkPosition.cpp
+    MdfParser.cpp
+    SAX2ElementHandler.cpp
+    SAX2Parser.cpp
+)
+
+add_library(MgMdfParser${MG_VERSION_SUFFIX} SHARED ${MgMdfParser_SRCS})
+
+target_link_libraries(MgMdfParser${MG_VERSION_SUFFIX}
+    ${XERCESC_LIBRARIES}
+    MgMdfModel${MG_VERSION_SUFFIX}
+)
+
+install( TARGETS MgMdfParser${MG_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${MG_COMPONENT} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libMgMdfParser${MG_VERSION_SUFFIX}.so libMgMdfParser.so ${MG_COMPONENT} )

@@ -180,7 +180,7 @@ const char* _tcsenistr( const char* psz, const char* str, int len, int escape )
 
 const char* _tcseistr( const char* psz, const char* str, int escape )
 {
-    int len = strlen( str );
+    size_t len = strlen( str );
     return _tcsenistr( psz, str, len, escape );
 }
 

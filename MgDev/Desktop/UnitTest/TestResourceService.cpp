@@ -16,10 +16,11 @@
 //
 
 #include "MgDesktop.h"
-#include "Services\Resource\ResourceContentCache.h"
+#include "Services/Resource/ResourceContentCache.h"
 #include "Fdo.h"
 #include "TestResourceService.h"
 #include "CppUnitExtensions.h"
+#include <ctime>
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestResourceService, "TestResourceService");
 
@@ -1122,78 +1123,82 @@ void TestResourceService::TestCase_EnumerateUnmanagedData()
 
 void TestResourceService::TestCase_BenchmarkGetResourceContents()
 {
-	try
-	{
-		Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
+    try
+    {
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
             throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_BenchmarkGetResourceContents", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-		Ptr<MgStringCollection> resources = new MgStringCollection();
+        Ptr<MgStringCollection> resources = new MgStringCollection();
 
-		Ptr<MgByteSource> source = new MgByteSource(resourceContentFileName2);
-		Ptr<MgByteReader> reader = source->GetReader();
-		// Prepare the resources
-		for (INT32 i = 0; i < 150; i++)
-		{
-			STRING numStr;
-			MgUtil::Int32ToString(i, numStr);
-			STRING resIdStr = L"Library://BatchTests/Layer";
-			resIdStr += numStr;
-			resIdStr += L".LayerDefinition";
+        Ptr<MgByteSource> source = new MgByteSource(resourceContentFileName2);
+        Ptr<MgByteReader> reader = source->GetReader();
+        // Prepare the resources
+        for (INT32 i = 0; i < 150; i++)
+        {
+            STRING numStr;
+            MgUtil::Int32ToString(i, numStr);
+            STRING resIdStr = L"Library://BatchTests/Layer";
+            resIdStr += numStr;
+            resIdStr += L".LayerDefinition";
 
-			Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resIdStr);
-			pService->SetResource(resId, reader, NULL);
-			resources->Add(resId->ToString());
-			reader->Rewind();
-		}
+            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resIdStr);
+            pService->SetResource(resId, reader, NULL);
+            resources->Add(resId->ToString());
+            reader->Rewind();
+        }
 
-		//Evict all cached copies to avoid distortion of results due to caching
-		MgdResourceContentCache* cache = MgdResourceContentCache::GetInstance();
-		cache->Clear();
+        //Evict all cached copies to avoid distortion of results due to caching
+        MgdResourceContentCache* cache = MgdResourceContentCache::GetInstance();
+        cache->Clear();
 
-		long lStart = GetTickCount();
-		ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestResourceService::TestCase_BenchmarkGetResourceContents() - Individual GetResourceContent calls (cold) \n")));
-		for (INT32 i = 0; i < resources->GetCount(); i++)
-		{
-			Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resources->GetItem(i));
-			Ptr<MgByteReader> content = pService->GetResourceContent(resId);
-		}
-		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((GetTickCount()-lStart)/1000.0) ));
-		ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
+        clock_t clock_start = clock();
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestResourceService::TestCase_BenchmarkGetResourceContents() - Individual GetResourceContent calls (cold) \n")));
+        for (INT32 i = 0; i < resources->GetCount(); i++)
+        {
+            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resources->GetItem(i));
+            Ptr<MgByteReader> content = pService->GetResourceContent(resId);
+        }
+        clock_t clock_end = clock();
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((double)(clock_end - clock_start) / CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
 
-		lStart = GetTickCount();
-		ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestResourceService::TestCase_BenchmarkGetResourceContents() - Individual GetResourceContent calls (cached contents) \n")));
-		for (INT32 i = 0; i < resources->GetCount(); i++)
-		{
-			Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resources->GetItem(i));
-			Ptr<MgByteReader> content = pService->GetResourceContent(resId);
-		}
-		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((GetTickCount()-lStart)/1000.0) ));
-		ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
+        clock_start = clock();
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestResourceService::TestCase_BenchmarkGetResourceContents() - Individual GetResourceContent calls (cached contents) \n")));
+        for (INT32 i = 0; i < resources->GetCount(); i++)
+        {
+            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resources->GetItem(i));
+            Ptr<MgByteReader> content = pService->GetResourceContent(resId);
+        }
+        clock_end = clock();
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((double)(clock_end - clock_start) / CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
 
         //Evict all cached copies to avoid distortion of results due to caching
         cache->Clear();
 
-		lStart = GetTickCount();
-		Ptr<MgStringCollection> contents;
-		ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestResourceService::TestCase_BenchmarkGetResourceContents() - Multi-threaded GetResourceContents call (cold) \n")));
-		contents = pService->GetResourceContents(resources, NULL);
-		CPPUNIT_ASSERT(NULL != contents.p);
-		CPPUNIT_ASSERT(contents->GetCount() == resources->GetCount());
-		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((GetTickCount()-lStart)/1000.0) ));
-		ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
+        clock_start = clock();
+        Ptr<MgStringCollection> contents;
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestResourceService::TestCase_BenchmarkGetResourceContents() - Multi-threaded GetResourceContents call (cold) \n")));
+        contents = pService->GetResourceContents(resources, NULL);
+        CPPUNIT_ASSERT(NULL != contents.p);
+        CPPUNIT_ASSERT(contents->GetCount() == resources->GetCount());
+        clock_end = clock();
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((double)(clock_end - clock_start) / CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
 
-		lStart = GetTickCount();
-		ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestResourceService::TestCase_BenchmarkGetResourceContents() - Multi-threaded GetResourceContents call (cached contents) \n")));
-		contents = pService->GetResourceContents(resources, NULL);
-		CPPUNIT_ASSERT(NULL != contents.p);
-		CPPUNIT_ASSERT(contents->GetCount() == resources->GetCount());
-		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((GetTickCount()-lStart)/1000.0) ));
-		ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
-	}
+        clock_start = clock();
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestResourceService::TestCase_BenchmarkGetResourceContents() - Multi-threaded GetResourceContents call (cached contents) \n")));
+        contents = pService->GetResourceContents(resources, NULL);
+        CPPUNIT_ASSERT(NULL != contents.p);
+        CPPUNIT_ASSERT(contents->GetCount() == resources->GetCount());
+        clock_end = clock();
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((double)(clock_end - clock_start) / CLOCKS_PER_SEC) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
+    }
     catch(MgException* e)
     {
         STRING message = e->GetDetails(TEST_LOCALE);

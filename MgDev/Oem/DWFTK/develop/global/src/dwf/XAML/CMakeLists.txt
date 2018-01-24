@@ -1,0 +1,84 @@
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../..
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../dwf)
+
+set (dwfXAML_SRCS
+    pch.cpp
+    XamlArcSegment.cpp
+    XamlAttribute_Url.cpp
+    XamlBrushes.cpp
+    XamlCanvas.cpp
+    XamlClassFactory.cpp
+    XamlCode_Page.cpp
+    XamlColor.cpp
+    XamlColorMap.cpp
+    XamlContour_Set.cpp
+    XamlContrastColor.cpp
+    XamlDashPattern.cpp
+    XamlDelineate.cpp
+    XamlDrawable.cpp
+    XamlDrawableAttributes.cpp
+    XamlDwfHeader.cpp
+    XamlEllipse.cpp
+    XamlEmbed.cpp
+    XamlEmbeddedFont.cpp
+    XamlFile.cpp
+    XamlFill.cpp
+    XamlFillPattern.cpp
+    XamlFont.cpp
+    XamlFontExtension.cpp
+    XamlGlyphs.cpp
+    XamlGouraud_Polyline.cpp
+    XamlGouraud_Polytriangle.cpp
+    XamlGraphicsObject.cpp
+    XamlImage.cpp
+    XamlLayer.cpp
+    XamlLinePattern.cpp
+    XamlLineStyle.cpp
+    XamlLineWeight.cpp
+    XamlMacro_Definition.cpp
+    XamlMacro_Draw.cpp
+    XamlMacro_Index.cpp
+    XamlMacro_Scale.cpp
+    XamlMerge_Control.cpp
+    XamlNamed_View.cpp
+    XamlNamed_View_List.cpp
+    XamlObject.cpp
+    XamlObjectFactory.cpp
+    XamlObjectNode.cpp
+    XamlOverpost.cpp
+    XamlParser.cpp
+    XamlPath.cpp
+    XamlPathGeometry.cpp
+    XamlPenPattern.cpp
+    XamlPNGGroup4Image.cpp
+    XamlPointset.cpp
+    XamlPolygon.cpp
+    XamlPolyline.cpp
+    XamlPolyLineSegment.cpp
+    XamlPolymarker.cpp
+    XamlPolytriangle.cpp
+    XamlProjection.cpp
+    XamlRendition.cpp
+    XamlRenditionPath.cpp
+    XamlResource.cpp
+    XamlResourceDictionaryParser.cpp
+    XamlText.cpp
+    XamlText_Background.cpp
+    XamlText_HAlign.cpp
+    XamlText_VAlign.cpp
+    XamlUnits.cpp
+    XamlUnknown.cpp
+    XamlURL.cpp
+    XamlUserData.cpp
+    XamlUserFillPattern.cpp
+    XamlUserHatchPattern.cpp
+    XamlView.cpp
+    XamlViewport.cpp
+    XamlVisible.cpp
+    XamlW2XParser.cpp
+    XamlXML.cpp
+)
+
+add_definitions(-DWHIP_USE_WCHAR_STRINGS)
+
+add_library(dwfXAML STATIC ${dwfXAML_SRCS})

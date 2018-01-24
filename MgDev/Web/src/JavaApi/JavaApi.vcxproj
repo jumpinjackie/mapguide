@@ -93,9 +93,9 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
-      <Command>..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml Java .
+      <Command>..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p ..\MapGuideApi\Constants.xml -l Java -o . -t
 copy .\java.i .\language.i
-..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml Java
+..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p ..\MapGuideApi\MapGuideApiGen.xml -l Java
 ..\..\..\Oem\SwigEx\Win32\swig -c++ -java -DJAVA -DWIN32 -dllname MapGuideJavaApid -package org.osgeo.mapguide -root Object -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i
 move /Y *.java org\osgeo\mapguide
 del org\osgeo\mapguide\*.class
@@ -133,9 +133,9 @@ echo Building -sources JAR file
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
-      <Command>..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml Java .
+      <Command>..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p ..\MapGuideApi\Constants.xml -l Java -o . -t
 copy .\java.i .\language.i
-..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml Java
+..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p ..\MapGuideApi\MapGuideApiGen.xml -l Java
 ..\..\..\Oem\SwigEx\Win32\swig -c++ -java -DJAVA -DWIN32 -dllname MapGuideJavaApid -package org.osgeo.mapguide -root Object -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i
 move /Y *.java org\osgeo\mapguide
 del org\osgeo\mapguide\*.class
@@ -173,9 +173,9 @@ echo Building -sources JAR file
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
-      <Command>..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml Java .
+      <Command>..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p ..\MapGuideApi\Constants.xml -l Java -o . -t
 copy .\java.i .\language.i
-..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml Java
+..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p ..\MapGuideApi\MapGuideApiGen.xml -l Java
 ..\..\..\Oem\SwigEx\Win32\swig -c++ -java -DJAVA -DWIN32 -dllname MapGuideJavaApi -package org.osgeo.mapguide -root Object -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i
 move /Y *.java org\osgeo\mapguide
 del org\osgeo\mapguide\*.class
@@ -214,9 +214,9 @@ echo Building -sources JAR file
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PreBuildEvent>
-      <Command>..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml Java .
+      <Command>..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p ..\MapGuideApi\Constants.xml -l Java -o . -t
 copy .\java.i .\language.i
-..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml Java
+..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p ..\MapGuideApi\MapGuideApiGen.xml -l Java
 ..\..\..\Oem\SwigEx\Win32\swig -c++ -java -DJAVA -DWIN32 -dllname MapGuideJavaApi -package org.osgeo.mapguide -root Object -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i
 move /Y *.java org\osgeo\mapguide
 del org\osgeo\mapguide\*.class

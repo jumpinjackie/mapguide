@@ -1,0 +1,44 @@
+# Environment variables for MapGuide
+SetEnv LD_LIBRARY_PATH "@MG_INSTALL_WEB_PREFIX@/lib:@MG_INSTALL_WEB_PREFIX@/php/lib:@MG_INSTALL_PREFIX@/lib"
+SetEnv MENTOR_DICTIONARY_PATH "@MG_INSTALL_COORDSYS_PREFIX@"
+
+LoadModule mgmapagent_module modules/mod_mgmapagent.so
+
+RewriteEngine On
+
+#START NormalCGI PHP configuration
+#ScriptAlias /php/ "@@MG_INSTALL_WEB_PREFIX@@/php/bin/"
+#Action application/x-httpd-php "/php/php"
+#AddType application/x-httpd-php .php
+#END NormalCGI PHP configuration
+
+# CGI agent alias
+#ScriptAlias /mapguide/mapagent/mapagent.fcgi "@MG_WWWROOT@/mapagent/mapagent"
+
+# mapviewerajax to mapviewerphp rewrite rules
+# comment out for java api/viewer
+RewriteRule ^/mapguide/mapviewerajax/([^\?])(.*)$ /mapguide/mapviewerphp/$1$2 [PT]
+RewriteRule ^/mapguide/mapviewerajax/(.*)$ /mapguide/mapviewerphp/ajaxviewer.php$1 [PT]
+RewriteRule ^/mapguide/mapviewerdwf/([^\?])(.*)$ /mapguide/mapviewerphp/$1$2 [PT]
+RewriteRule ^/mapguide/mapviewerdwf/(.*)$ /mapguide/mapviewerphp/dwfviewer.php$1 [PT]
+
+# mapviewerajax to mapviewerjava aliases
+# uncomment for java api/viewer
+#RewriteRule ^/mapguide/mapviewerajax/([^\?])(.*)$ /mapguide/mapviewerjava/$1$2 [PT]
+#RewriteRule ^/mapguide/mapviewerajax/(.*)$ /mapguide/mapviewerjava/ajaxviewer.jsp$1 [PT]
+#RewriteRule ^/mapguide/mapviewerdwf/([^\?])(.*)$ /mapguide/mapviewerjava/$1$2 [PT]
+#RewriteRule ^/mapguide/mapviewerdwf/(.*)$ /mapguide/mapviewerjava/dwfviewer.jsp$1 [PT]
+
+Alias /mapguide "@MG_WWWROOT@"
+
+<Directory "@MG_WWWROOT@">
+  AllowOverride All
+  Options All
+  Require all granted
+
+  AddHandler php5-script .php
+  AddHandler mgmapagent_handler fcgi
+
+  RewriteEngine on
+  RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization},L]
+</Directory>

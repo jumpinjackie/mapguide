@@ -18,7 +18,7 @@
 // disable C4244 of io.h about int64 assigned to unsigned long
 #pragma warning(push)
 #pragma warning(disable: 4244)
-#include "geos.h"
+#include "GeosInclude.h"
 #pragma warning(pop)
 
 #include "GeometryCommon.h"

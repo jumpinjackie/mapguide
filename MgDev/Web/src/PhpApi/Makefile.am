@@ -455,9 +455,9 @@ MgApi_wrap.cpp : \
     ../HttpHandler/HttpRequestParam.h \
     ../HttpHandler/HttpResponse.h \
     ../HttpHandler/HttpResult.h
-	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/Constants.xml PHP ./constants.php
+	../../../BuildTools/WebTools/IMake/Linux/IMake -p ../MapGuideApi/Constants.xml -l PHP -o ./constants.php -t
 	cp -f php.i language.i
-	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/MapGuideApiGen.xml PHP
+	../../../BuildTools/WebTools/IMake/Linux/IMake -p ../MapGuideApi/MapGuideApiGen.xml -l PHP
 	../../../Oem/SWIGEx/Linux/swig -c++ -php -DPHPSWIG -baseexception MgException \
           -clsidcode getclassid.code \
           -clsiddata m_cls_id \

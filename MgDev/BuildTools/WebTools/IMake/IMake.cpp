@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "SimpleXmlParser.h"
+#include <tclap/CmdLine.h>
 
 enum Language
 {
@@ -12,7 +13,7 @@ enum Language
     java
 };
 
-static char version[] = "1.2.4";
+static char version[] = "1.3.0";
 static char EXTERNAL_API_DOCUMENTATION[] = "(NOTE: This API is not officially supported and may be subject to removal in a future release without warning. Use with caution.)";
 
 static string module;
@@ -34,6 +35,7 @@ static FILE* docOutFile;
 static char charbuf[2];
 static bool translateMode;
 static Language language;
+static bool verbose;
 
 #ifdef _WIN32
 #define FILESEP '\\'
@@ -43,13 +45,13 @@ static Language language;
 
 void error(string msg)
 {
-    fprintf(stderr, "\nError: %s", msg.c_str());
+    fprintf(stderr, "Error: %s\n", msg.c_str());
     exit(1);
 }
 
 void warning(string msg)
 {
-    fprintf(stderr, "\nWarning: %s", msg.c_str());
+    fprintf(stderr, "Warning: %s\n", msg.c_str());
 }
 
 string parseModule(XNode* elt)
@@ -185,7 +187,19 @@ string parsePackage(XNode* elt)
     return text;
 }
 
-void parseParameterFile(char* xmlDef)
+void findAndReplaceInString(string& subject, 
+                            const string& search,
+                            const string& replace)
+{
+    size_t pos = 0;
+    while((pos = subject.find(search, pos)) != string::npos)
+    {
+         subject.replace(pos, search.length(), replace);
+         pos += replace.length();
+    }
+}
+
+void parseParameterFile(char* xmlDef, const string& relRoot)
 {
     XNode xml;
     if(xml.Load(xmlDef) == NULL)
@@ -232,6 +246,18 @@ void parseParameterFile(char* xmlDef)
         else if(node->name == "SwigInline" || (node->name == "Inline" && translateMode))
         {
             swigInline = parseSwigInline(node);
+
+            if (!relRoot.empty())
+            {
+                //Rewrite any relative %include statements in the inline section so they're relative to the
+                //custom root
+                string replace = "%include \"";
+                replace += relRoot;
+                replace += "/../";
+                findAndReplaceInString(swigInline, 
+                                       "%include \"../",
+                                       replace);
+            }
         }
         else if(node->name == "Typedefs")
         {
@@ -601,7 +627,7 @@ string linkifyCSharpDocFragment(const string& str)
         }
         //If it contains "Mg", assume it's a MapGuide class name and link-ify it
         //TODO: Resolve :: to member links. Right now it just linkifies the Mg class name
-        int idx = elems[i].find("Mg");
+        size_t idx = elems[i].find("Mg");
         if (idx != std::string::npos) {
             std::string prefix;
             std::string mgClassName;
@@ -662,7 +688,7 @@ string linkifyJavaDocFragment(const string& str)
         }
         //If it contains "Mg", assume it's a MapGuide class name and link-ify it
         //TODO: Resolve :: to member links. Right now it just linkifies the Mg class name
-        int idx = elems[i].find("Mg");
+        size_t idx = elems[i].find("Mg");
         if (idx != std::string::npos) {
             std::string prefix;
             std::string mgClassName;
@@ -1325,17 +1351,17 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
             {
                 // if there is a doc comment as part of this line, check if it
                 // contains the macro V(...) which indicates a string value to be assigned before the ;
-                int posComment = token.find_first_of("///");
-                if(posComment != string::npos)
+                size_t posComment = token.find_first_of("///");
+                if (posComment != string::npos)
                 {
-                    if(strstr(token.c_str(), "value("))
+                    if (strstr(token.c_str(), "value("))
                     {
                         string comment = token.substr(posComment+3);
-                        int posBeginValue = comment.find("value(");
-                        int posEndValue = comment.find(")", posBeginValue + 1);
-                        if(posEndValue != string::npos)
+                        size_t posBeginValue = comment.find("value(");
+                        size_t posEndValue = comment.find(")", posBeginValue + 1);
+                        if (posEndValue != string::npos)
                         {
-                            int strLen = posEndValue - posBeginValue - 6;
+                            size_t strLen = posEndValue - posBeginValue - 6;
                             string expr = comment.substr(posBeginValue + 6, strLen);
                             comment = comment.substr(0, posBeginValue) + comment.substr(posEndValue + 1);
 
@@ -1478,16 +1504,27 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
     }
 }
 
-void processHeaderFile(string header)
+void processHeaderFile(string header, const string& relRoot)
 {
     vector<string> tokens;
 
-    tokenize(header, tokens);
+    string theHeader;
+    if (relRoot.empty())
+    {
+        theHeader = header;
+    }
+    else
+    {
+        theHeader = relRoot;
+        theHeader += "/";
+        theHeader += header;
+    }
+    tokenize(theHeader, tokens);
 
     if(!translateMode)
     {
         //short banner about this file
-        fprintf(outfile, "\n// Definitions from file %s\n//\n", header.c_str());
+        fprintf(outfile, "\n// Definitions from file %s\n//\n", theHeader.c_str());
     }
 
     //ignore every token outside of a class definition
@@ -1522,7 +1559,10 @@ void processHeaderFile(string header)
 
         //in translation mode, filters out clases which don't belong to the class list
         bool ignore = translateMode && classes.find(className) == classes.end();
-        //printf("Processing header: %s\n", className.c_str());
+        if (verbose)
+        {
+            printf("Processing header: %s\n", className.c_str());
+        }
         if(!ignore)
         {
             if(translateMode)
@@ -1647,7 +1687,7 @@ void processHeaderFile(string header)
     }
 }
 
-void createSWGInterfaceFile()
+void createSWGInterfaceFile(const string& outDir, const string& relRoot)
 {
     printf("\n\nGenerating interface file %s...\n", target.c_str());
 
@@ -1665,10 +1705,22 @@ void createSWGInterfaceFile()
 
     if(!translateMode || language != java)
     {
-        outfile = fopen(target.c_str(), "w");
+        string swigTarget = target;
+        string swigDocTarget = docTarget;
+        if (!outDir.empty())
+        {
+            swigTarget = outDir;
+            swigTarget += "/";
+            swigTarget += target;
+            
+            swigDocTarget = outDir;
+            swigDocTarget += "/";
+            swigDocTarget += docTarget;
+        }
+        outfile = fopen(swigTarget.c_str(), "w");
         if(outfile == NULL)
             error(string("Cannot create target file ") + target);
-        docOutFile = fopen(docTarget.c_str(), "w");
+        docOutFile = fopen(swigDocTarget.c_str(), "w");
         if(docOutFile == NULL)
             error(string("Cannot create doctarget file ") + docTarget);
     }
@@ -1707,7 +1759,7 @@ void createSWGInterfaceFile()
 
     //process the headers
     for(vector<string>::const_iterator it = headers.begin(); it != headers.end(); it++)
-        processHeaderFile(*it);
+        processHeaderFile(*it, relRoot);
 
     if(!translateMode || language != java)
     {
@@ -1718,7 +1770,7 @@ void createSWGInterfaceFile()
     }
 }
 
-void createNativeFile()
+void createNativeFile(const string& outDir, const string& relRoot)
 {
     if(target.length() == 0)
         error("Target section is missing");
@@ -1760,7 +1812,7 @@ void createNativeFile()
 
     //process the headers
     for(vector<string>::const_iterator it = headers.begin(); it != headers.end(); it++)
-        processHeaderFile(*it);
+        processHeaderFile(*it, relRoot);
 
     if(language == php)
         fprintf(outfile, "?>");
@@ -1779,7 +1831,7 @@ void createNativeFile()
         fclose(docOutFile);
 }
 
-void createInterfaceFile(char* paramFile)
+void createInterfaceFile(const char* paramFile, const string& outDir, const string& relRoot)
 {
     FILE* file = fopen(paramFile, "r");
     if(file == NULL)
@@ -1796,64 +1848,162 @@ void createInterfaceFile(char* paramFile)
     char* end = strchr(data, 255);
     *end = '\0';
 
-    parseParameterFile(data);
+    parseParameterFile(data, relRoot);
 
     if(!translateMode)
-        createSWGInterfaceFile();
+        createSWGInterfaceFile(outDir, relRoot);
     else
-        createNativeFile();
+        createNativeFile(outDir, relRoot);
 
 }
 
-void usage()
+void usage(TCLAP::CmdLineInterface& cmd)
 {
-    printf("\nUsage:");
-    printf("\nIMake parameterFile lang [generation_path_or_folder]");
-    printf("\n      parameterFile: XML description of generation parameters\n");
-    printf("\n      lang: Target language (PHP, C# or Java).\n");
-    printf("\n      generation_path_or_folder: Do not generate SWIG.  Generate constant definitions.");
-    printf("\n                                 For PHP and C#, pathname of the constant file.");
-    printf("\n                                 For Java, folder where the constant files are created");
+    TCLAP::CmdLineOutput* cmdOutput = cmd.getOutput();
+    cmdOutput->usage(cmd);
     exit(1);
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char** argv)
 {
     printf("\nIMake - SWIG Interface generator");
-    printf("\nVersion %s", version);
+    printf("\nVersion %s\n\n", version);
 
-    if(argc < 3)
-        usage();
-
-    if (argc > 4)
-        usage();
-
-    translateMode = false;
-    language = unknown;
-
-    if(!strcmp(argv[2], "PHP"))
-        language = php;
-    else if(!strcmp(argv[2], "C#"))
+    try 
     {
-        language = csharp;
-        rootObjectMethods["Equals"] = 1;
-        rootObjectMethods["GetHashCode"] = 1;
-        rootObjectMethods["GetType"] = 1;
-        rootObjectMethods["ReferenceEquals"] = 1;
-        rootObjectMethods["ToString"] = 1;
-    }
-    else if(!strcmp(argv[2], "Java"))
-        language = java;
-    else
-        usage();
+        string msg = "IMake - SWIG Interface generator";
+        TCLAP::CmdLine cmd(msg, ' ', version);
 
-    if(argc == 4)
+        TCLAP::ValueArg<std::string> argInputFile("p", "param-file", "The path to the input parameter file", true, "Constants.xml", "string");
+        TCLAP::ValueArg<std::string> argLanguage("l", "language", "The language to generate for", true, "PHP|C#|Java", "string");
+        TCLAP::ValueArg<std::string> argOutput("o", "output", "The file or directory where generated files are output to", false, ".", "string");
+        TCLAP::ValueArg<std::string> argRelRoot("r", "rel-root", "Defines where headers will be resolved relative to", false, ".", "string");
+
+        cmd.add(argInputFile);
+        cmd.add(argLanguage);
+        cmd.add(argOutput);
+        cmd.add(argRelRoot);
+
+        TCLAP::SwitchArg argTranslateMode("t", "translate-mode", "Enable translate (generate constants) mode", cmd, false);
+
+        cmd.parse(argc, argv);
+
+        string pFile;
+        string relRoot;
+        string outDir;
+        translateMode = false;
+        verbose = true;
+        language = unknown;
+
+        if (argTranslateMode.getValue())
+        {
+            translateMode = true;
+        }
+        pFile = argInputFile.getValue();
+        string sLang = argLanguage.getValue();
+        if (sLang == "PHP")
+        {
+            language = php;
+        }
+        else if (sLang == "C#")
+        {
+            language = csharp;
+            rootObjectMethods["Equals"] = 1;
+            rootObjectMethods["GetHashCode"] = 1;
+            rootObjectMethods["GetType"] = 1;
+            rootObjectMethods["ReferenceEquals"] = 1;
+            rootObjectMethods["ToString"] = 1;
+        }
+        else if (sLang == "Java")
+        {
+            language = java;
+        }
+        outDir = argOutput.getValue();
+        relRoot = argRelRoot.getValue();
+
+        //Basic validation
+        if (language == unknown)
+        {
+            printf("ERROR: Invalid language or no language specified\n");
+            usage(cmd);
+        }
+        else
+        {
+            switch (language)
+            {
+                case csharp:
+                    printf("INFO: Language mode: C#\n");
+                    break;
+                case php:
+                    printf("INFO: Language mode: PHP\n");
+                    break;
+                case java:
+                    printf("INFO: Language mode: Java\n");
+                    break;
+            }
+        }
+
+        if (verbose)
+        {
+            printf("INFO: Verbose mode is ON\n");
+        }
+        else
+        {
+            printf("INFO: Verbose mode is OFF\n");
+        }
+
+        if (pFile.empty())
+        {
+            printf("ERROR: No parameter file specified\n");
+            usage(cmd);
+        }
+        else
+        {
+            printf("INFO: Parameter file: %s\n", pFile.c_str());
+        }
+
+        if (translateMode)
+        {
+            printf("INFO: Translate (generate constants) mode is ON\n");
+        }
+        else
+        {
+            printf("INFO: Translate (generate constants) mode is OFF. IMake will be generating the SWIG input file\n");
+        }
+
+        if (!outDir.empty())
+        {
+            printf("INFO: Auto-generated files will be output to: %s\n", outDir.c_str());
+        }
+        else
+        {
+            printf("INFO: Auto-generated files will be output to this directory\n");
+        }
+
+        if (!relRoot.empty())
+        {
+            printf("INFO: Headers will be resolved relative to: %s\n", relRoot.c_str());
+        }
+        else
+        {
+            printf("INFO: Headers will be resolved relative to this directory\n");
+        }
+
+        if (translateMode)
+        {
+            if (!outDir.empty())
+                target += outDir;
+            else
+                target += ".";
+            if (verbose)
+                printf("INFO: Target is set to: %s\n", target.c_str());
+        }
+
+        createInterfaceFile(pFile.c_str(), outDir, relRoot);
+    }
+    catch (TCLAP::ArgException &e)  // catch any exceptions
     {
-        translateMode = true;
-        target = argv[3];
+        std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;
     }
-
-    createInterfaceFile(argv[1]);
-
     return 0;
 }

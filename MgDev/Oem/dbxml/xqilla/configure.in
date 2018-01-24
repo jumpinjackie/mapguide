@@ -120,13 +120,20 @@ if test `ls $with_xerces/lib/libxerces-c.* 2>/dev/null | wc -l` -gt 0 ; then
 elif test `ls $with_xerces/src/libxerces-c.* 2>/dev/null | wc -l` -gt 0 ; then
    xerces_lib="$with_xerces/src"
 else
-   if test "$xerces_source_tree" = "yes" -a "$xerces_version_major" -ge "3"; then
-      xerces_lib="$with_xerces/src"
+   # For distros like Ubuntu there are extra places to check for non-source-tree xerces assuming --with-xerces=/usr was given
+   # NOTE: Surely one would've have both 32 and 64 bit versions of this library installed ... right?
+   if test "$xerces_source_tree" = "no" -a `ls $with_xerces/lib/i386-linux-gnu/libxerces-c.* 2>/dev/null | wc -l` -gt 0 ; then
+      xerces_lib="$with_xerces/lib/i386-linux-gnu"
+   elif test "$xerces_source_tree" = "no" -a `ls $with_xerces/lib/x86_64-linux-gnu/libxerces-c.* 2>/dev/null | wc -l` -gt 0 ; then
+      xerces_lib="$with_xerces/lib/x86_64-linux-gnu"
    else
-      xerces_lib="$with_xerces/lib"
+      if test "$xerces_source_tree" = "yes" -a "$xerces_version_major" -ge "3"; then
+         xerces_lib="$with_xerces/src"
+      else
+         xerces_lib="$with_xerces/lib"
+      fi
+      AC_MSG_WARN([Unable to find the Xerces-C library. Guessed path is $xerces_lib.])
    fi
-
-   AC_MSG_WARN([Unable to find the Xerces-C library. Guessed path is $xerces_lib.])
 fi
 
 AC_SUBST(xerces_include)

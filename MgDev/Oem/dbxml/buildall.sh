@@ -97,6 +97,9 @@ Usage: $0 [options]
   --build-one=<library>                  build only the specified library,
                                          which is one of berkeleydb, xerces,
                                          xqilla, dbxml, or perl
+  --have-system-xerces                   Specifies that you intend to use a system-installed
+                                         copy of xerces-c, thus xerces is not built when
+                                         --build-one is not specified
 EOF
 }
 
@@ -145,6 +148,7 @@ BUILD_ONE="no"
 BUILD_PERL="no"
 PERL_INSTALLDIR=""
 PERL="perl"
+HAVE_SYSTEM_XERCES="no"
 
 # Parse arguments
 for option
@@ -210,6 +214,9 @@ do
 		DBXML_CONF_ARGS="$DBXML_CONF_ARGS $option"
 		JAVA_ENABLED="yes"
 		;;
+    --have-system-xerces)
+        HAVE_SYSTEM_XERCES="yes"
+        ;;
 	--with-tcl=*)
 		DB_CONF_ARGS="$DB_CONF_ARGS $option"
 		DBXML_CONF_ARGS="$DBXML_CONF_ARGS $option"
@@ -383,41 +390,45 @@ export XERCESCROOT
 
 # Xerces
 # change args, depending on platform
-if [ $BUILD_ONE = "no" -o $BUILD_ONE = "xerces" ]; then
-    echo Start Xerces build: `date`
-    cd $XERCES_DIR
-    if [ $DO_CONFIGURE = "yes" ]; then
-	echo Configuring Xerces
-        chmod +x ./configure
- 	eval $CONF_ENV ./configure --prefix=$XERCES_INSTALL_DIR \
-	$XERCES_CONF_ARGS $XERCES_CONF_XARGS || exit $?
-    fi
+if [ $HAVE_SYSTEM_XERCES = "no" ]; then
+    if [ $BUILD_ONE = "no" -o $BUILD_ONE = "xerces" ]; then
+        echo Start Xerces build: `date`
+        cd $XERCES_DIR
+        if [ $DO_CONFIGURE = "yes" ]; then
+        echo Configuring Xerces
+            chmod +x ./configure
+        eval $CONF_ENV ./configure --prefix=$XERCES_INSTALL_DIR \
+        $XERCES_CONF_ARGS $XERCES_CONF_XARGS || exit $?
+        fi
 
-    echo Building Xerces
-    # only build source/library tree
-    cd src
-    $MAKE || exit $?
-    cd ..
+        echo Building Xerces
+        # only build source/library tree
+        cd src
+        $MAKE || exit $?
+        cd ..
 
-    if [ $DO_INSTALL = "yes" ]; then
-	echo Installing Xerces
-    # remove symlinks that cause make install to fail if re-run
-	for i in $XERCES_TO_REMOVE
-	do
-	    rm -f $XERCES_INSTALL_DIR/lib/$i
-	done
-    # only install source tree, not samples
-	cd src
-	$MAKE install || exit $?
-	cd ..
-    # remove unused xerces library.  Cannot suppress build, but can remove it.
-	for i in $XERCES_DEPDOM
-	  do
-	  rm -f $XERCES_INSTALL_DIR/lib/$i
-	done
+        if [ $DO_INSTALL = "yes" ]; then
+        echo Installing Xerces
+        # remove symlinks that cause make install to fail if re-run
+        for i in $XERCES_TO_REMOVE
+        do
+            rm -f $XERCES_INSTALL_DIR/lib/$i
+        done
+        # only install source tree, not samples
+        cd src
+        $MAKE install || exit $?
+        cd ..
+        # remove unused xerces library.  Cannot suppress build, but can remove it.
+        for i in $XERCES_DEPDOM
+        do
+        rm -f $XERCES_INSTALL_DIR/lib/$i
+        done
+        fi
+        cd $TOP
+        echo End Xerces build: `date`
     fi
-    cd $TOP
-    echo End Xerces build: `date`
+else
+    echo Skipping Xerces build as HAVE_SYSTEM_XERCES is $HAVE_SYSTEM_XERCES
 fi
 
 echo "********************************"
@@ -458,6 +469,10 @@ echo "********************************"
 if [ $BUILD_ONE = "no" -o $BUILD_ONE = "dbxml" ]; then
     echo Start DB XML build: `date`
     cd $DBXML_BUILD_DIR
+    XERCES_INST=$XERCES_DIR
+    if [ ! -d $XERCES_INST ]; then
+        XERCES_INST=$XERCES_INSTALL_DIR
+    fi
     if [ $DO_CONFIGURE = "yes" ]; then
         echo Configuring DB XML
          # Note: passing ../../$DB_DIR for --with-dbbuild will not work
@@ -466,7 +481,7 @@ if [ $BUILD_ONE = "no" -o $BUILD_ONE = "dbxml" ]; then
          chmod +x ../configure
          eval $CONF_ENV ../configure --prefix=$DBXML_INSTALL_DIR \
              --with-xqilla=$XQILLA_INSTALL_DIR \
-             --with-xerces=$XERCES_INSTALL_DIR \
+             --with-xerces=$XERCES_INST \
              --with-berkeleydb=$DB_INSTALL_DIR \
              --with-dbbuild=../../$DB_DIR $DBXML_CONF_ARGS \
              $DBXML_CONF_XARGS || exit $?

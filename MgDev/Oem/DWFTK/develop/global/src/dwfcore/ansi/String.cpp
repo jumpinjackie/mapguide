@@ -81,7 +81,7 @@ throw( DWFException )
 		pNext = pNext->_next;
 		if(pLast->_buffer != NULL)
 		{
-			DWFCORE_FREE_OBJECT( pLast->_buffer );
+			DWFCORE_FREE_MEMORY( pLast->_buffer );
 		}
 		DWFCORE_FREE_OBJECT( pLast );
 	}

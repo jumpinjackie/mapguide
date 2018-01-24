@@ -975,6 +975,7 @@
     <ClInclude Include="GeometrySimplifier.h" />
     <ClInclude Include="GeometrySimplificationAlgorithmType.h" />
     <ClInclude Include="PreparedGeometry.h" />
+    <ClInclude Include="GeosInclude.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Geometry.rc" />

@@ -906,6 +906,7 @@
     <ClInclude Include="Exception\InvalidCoordinateSystemUnitsException.h" />
     <ClInclude Include="GeometrySimplifier.h" />
     <ClInclude Include="GeometrySimplificationAlgorithmType.h" />
+    <ClInclude Include="GeosInclude.h" />
     <ClInclude Include="Parse\Array.h" />
     <ClInclude Include="Parse\ArrayHelper.h" />
     <ClInclude Include="Parse\LexAwkt.h" />

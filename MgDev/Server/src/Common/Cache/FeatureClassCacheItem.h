@@ -19,7 +19,6 @@
 #define MG_FEATURE_CLASS_CACHE_ITEM_H_
 
 #include "ServerCacheItem.h"
-#include "Fdo.h"
 
 class MG_SERVER_CACHE_API MgFeatureClassCacheItem : public MgServerCacheItem
 {

@@ -19,8 +19,6 @@ HTTPD_VER=2.4.18
 PHP_VER=5.6.23
 TOMCAT_VER=7.0.68
 CONNECTOR_VER=1.2.41
-APR_VER=1.5.2
-APR_UTIL_VER=1.5.4
 PORT=8008
 TOMCAT=0
 TOMCAT_PORT=8009
@@ -147,14 +145,7 @@ check_tomcat_install ()
 #**********************************************************
 echo "Apache Httpd build started"
 tar -jxf httpd-$HTTPD_VER.tar.bz2
-if [ ! -d "httpd-$HTTPD_VER/srclib/apr" ]; then
-	tar -jxf apr-$APR_VER.tar.bz2
-	mv apr-$APR_VER httpd-$HTTPD_VER/srclib/apr
-fi
-if [ ! -d "httpd-$HTTPD_VER/srclib/aprutil" ]; then
-	tar -jxf apr-util-$APR_UTIL_VER.tar.bz2
-	mv apr-util-$APR_UTIL_VER httpd-$HTTPD_VER/srclib/apr-util
-fi
+tar -jxf httpd-$HTTPD_VER-deps.tar.bz2
 pushd httpd-$HTTPD_VER
 ./configure --prefix=$INSTALLWEB/apache2 --enable-mods-shared=all \
 --with-included-apr --with-port=$PORT

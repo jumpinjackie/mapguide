@@ -1145,7 +1145,7 @@ local HT_Boolean triangulate_hardily (
                  * making no progress - uh oh
                  * you know what that means
                  */
-#ifdef DEBUG
+#ifdef JEFFS_DEBUG
                 HI_Warning (HEC_POLYGON, HES_SELF_INTERSECTING_FACE,
                     "Encountered a badly self-intersecting or disjoint face");
 #endif
@@ -1156,7 +1156,7 @@ local HT_Boolean triangulate_hardily (
                 /*
                  * rats.
                  */
-#ifdef DEBUG
+#ifdef JEFFS_DEBUG
                 HI_Warning (HEC_POLYGON, HES_SELF_INTERSECTING_FACE,
                     "Encountered a badly self-intersecting or disjoint face");
 #endif
@@ -1238,7 +1238,7 @@ local HT_Boolean triangulate_hardily (
 
             /* sanity check - shouldn't be null for behaved figures */
             if (current_edge == null) {
-#ifdef DEBUG
+#ifdef JEFFS_DEBUG
                 HI_Warning (HEC_POLYGON, HES_SELF_INTERSECTING_FACE,
                     "Encountered a badly self-intersecting or disjoint face");
 #endif

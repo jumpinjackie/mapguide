@@ -94,9 +94,9 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
       <Command>del /Q WebCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\WebConstants.xml C# ./WebConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\WebConstants.xml -l C# -o ./WebConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\WebApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\WebApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -dllname WebUnmanagedApid -namespace OSGeo.MapGuide -proxydir .\WebCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideApi -o MgWebApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib MapGuideApi.i
 </Command>
     </PreBuildEvent>
@@ -131,9 +131,9 @@ copy ..\dotnet.i .\language.i
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
       <Command>del /Q WebCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\WebConstants.xml C# ./WebConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\WebConstants.xml -l C# -o ./WebConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\WebApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\WebApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -dllname WebUnmanagedApid -namespace OSGeo.MapGuide -proxydir .\WebCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideApi -o MgWebApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib MapGuideApi.i
 </Command>
     </PreBuildEvent>
@@ -168,9 +168,9 @@ copy ..\dotnet.i .\language.i
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
       <Command>del /Q WebCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\WebConstants.xml C# ./WebConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\WebConstants.xml -l C# -o ./WebConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\WebApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\WebApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -namespace OSGeo.MapGuide -dllname WebUnmanagedApi -proxydir .\WebCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideApi -o MgWebApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib MapGuideApi.i
 </Command>
     </PreBuildEvent>
@@ -206,9 +206,9 @@ copy ..\dotnet.i .\language.i
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PreBuildEvent>
       <Command>del /Q WebCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\WebConstants.xml C# ./WebConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\WebConstants.xml -l C# -o ./WebConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\WebApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\WebApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -namespace OSGeo.MapGuide -dllname WebUnmanagedApi -proxydir .\WebCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideApi -o MgWebApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib MapGuideApi.i
 </Command>
     </PreBuildEvent>

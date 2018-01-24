@@ -94,9 +94,9 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
       <Command>del /Q MapGuideCommonCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideCommonConstants.xml C# ./MapGuideCommonConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\MapGuideCommonConstants.xml -l C# -o ./MapGuideCommonConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideCommonApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\MapGuideCommonApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -dllname MapGuideCommonUnmanagedApid -namespace OSGeo.MapGuide -proxydir .\MapGuideCommonCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideCommonApi -o MgMapGuideCommonApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib MapGuideCommonApi.i
 </Command>
     </PreBuildEvent>
@@ -131,9 +131,9 @@ copy ..\dotnet.i .\language.i
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
       <Command>del /Q MapGuideCommonCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideCommonConstants.xml C# ./MapGuideCommonConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\MapGuideCommonConstants.xml -l C# -o ./MapGuideCommonConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideCommonApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\MapGuideCommonApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -dllname MapGuideCommonUnmanagedApid -namespace OSGeo.MapGuide -proxydir .\MapGuideCommonCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideCommonApi -o MgMapGuideCommonApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib MapGuideCommonApi.i
 </Command>
     </PreBuildEvent>
@@ -168,9 +168,9 @@ copy ..\dotnet.i .\language.i
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
       <Command>del /Q MapGuideCommonCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideCommonConstants.xml C# ./MapGuideCommonConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\MapGuideCommonConstants.xml -l C# -o ./MapGuideCommonConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideCommonApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\MapGuideCommonApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -namespace OSGeo.MapGuide -dllname MapGuideCommonUnmanagedApi -proxydir .\MapGuideCommonCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideCommonApi -o MgMapGuideCommonApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib MapGuideCommonApi.i
 </Command>
     </PreBuildEvent>
@@ -206,9 +206,9 @@ copy ..\dotnet.i .\language.i
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PreBuildEvent>
       <Command>del /Q MapGuideCommonCustom\*prop
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideCommonConstants.xml C# ./MapGuideCommonConstants.cs
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\MapGuideCommonConstants.xml -l C# -o ./MapGuideCommonConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideCommonApiGen.xml C#
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\MapGuideCommonApiGen.xml -l C#
 ..\..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -namespace OSGeo.MapGuide -dllname MapGuideCommonUnmanagedApi -proxydir .\MapGuideCommonCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideCommonApi -o MgMapGuideCommonApi_wrap.cpp -lib ..\..\..\..\Oem\SWIGEx\Lib MapGuideCommonApi.i
 </Command>
     </PreBuildEvent>

@@ -16,7 +16,7 @@ CFLAGS   = -pipe -UZTS -Wall -W -O2 -g -pipe -fno-use-cxa-atexit -fexceptions  -
 CXXFLAGS = -pipe -UZTS -Wall -W -O2 -g -pipe -fno-use-cxa-atexit -fexceptions  -DNDEBUG
 LEXFLAGS = 
 YACCFLAGS= -d
-INCPATH  = -I$(QTDIR)/mkspecs/default -I.
+INCPATH  = -I$(QTDIR)/mkspecs/default -I. -I../../../Oem/tclap-1.2.2/include
 LINK     = g++
 LFLAGS   = 
 LIBS     = $(SUBLIBS)  
@@ -116,10 +116,12 @@ FORCE:
 
 Linux/obj/debug/IMake.o: IMake.cpp stdafx.h \
 		SimpleXmlParser.h
+	test -d Linux/obj/debug || mkdir -p Linux/obj/debug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Linux/obj/debug/IMake.o IMake.cpp
 
 Linux/obj/debug/SimpleXmlParser.o: SimpleXmlParser.cpp stdafx.h \
 		SimpleXmlParser.h
+	test -d Linux/obj/debug || mkdir -p Linux/obj/debug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Linux/obj/debug/SimpleXmlParser.o SimpleXmlParser.cpp
 
 ####### Install

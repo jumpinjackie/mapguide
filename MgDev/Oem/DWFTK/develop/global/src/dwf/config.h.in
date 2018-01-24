@@ -1,0 +1,12 @@
+#ifndef DWF_CONFIG_H
+#define DWF_CONFIG_H
+
+// This is a config.h template used by CMake
+
+#cmakedefine DISABLE_STREAM_JPEG @DISABLE_STREAM_JPEG@
+#cmakedefine DWFTK_EXPORT_API @DWFTK_EXPORT_API@
+#cmakedefine WHIP_USE_WCHAR_STRINGS @WHIP_USE_WCHAR_STRINGS@
+#cmakedefine WHIPTOOL_CLIENT @WHIPTOOL_CLIENT@
+#cmakedefine DWFTK_USE_DWFCORE_ZLIB @DWFTK_USE_DWFCORE_ZLIB@
+
+#endif
