@@ -36,7 +36,7 @@ Usage
 
 2. Build the internal thirdparty components specifying the directory where thirdparty components will be built in
 
-    sudo ./cmake_bootstrap.sh --oem_working_dir ~/mapguide_oem_build
+    sudo ./cmake_bootstrap.sh --oem-working_dir ~/mapguide_oem_build
 
    This will copy the DBXML, httpd, PHP and the Tomcat connector sources to your specified directory and build it from there.
    Once completed, an env_vars.sh script will be written to this directory that the following step will use.
@@ -46,10 +46,10 @@ Usage
 
 3. Start the main CMake build
 
-    ./cmake_build.sh --oem_working_dir ~/mapguide_oem_build --cmake_build_dir ~/mapguide_build_area
+    ./cmake_build.sh --oem-working-dir ~/mapguide_oem_build --cmake-build-dir ~/mapguide_build_area
 
    This will set up the CMake build using the generated env_vars.sh script and set up a CMake build tree in the directory specified
-   by --cmake_build_dir
+   by --cmake-build-dir
 
 4. Install the MapGuide binaries. This will generally require elevation (with sudo) as well.
 

@@ -14,7 +14,7 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
             MG_INST_PREFIX="$2"
             shift
             ;;
-        --oem_working_dir)
+        --oem-working-dir)
             OEM_WORK_DIR="$2"
             shift
             ;;
@@ -33,7 +33,7 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
             echo "Usage: $0 (options)"
             echo "Options:"
             echo "  --prefix [install prefix]"
-            echo "  --oem_working_dir [installation directory]"
+            echo "  --oem-working-dir [installation directory]"
             echo "  --build [32(default)|64]"
             echo "  --config [Release(default)|Debug]"
             echo "  --have-system-xerces [Use system-installed xerces]"

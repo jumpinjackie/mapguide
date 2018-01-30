@@ -11,11 +11,11 @@ USE_NINJA=0
 USE_ASAN=OFF
 while [ $# -gt 0 ]; do    # Until you run out of parameters...
     case "$1" in
-        --cmake_build_dir)
+        --cmake-build-dir)
             CMAKE_BUILD_DIR="$2"
             shift
             ;;
-        --oem_working_dir)
+        --oem-working-dir)
             OEM_WORK_DIR="$2"
             shift
             ;;
@@ -28,8 +28,8 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
         --help)
             echo "Usage: $0 (options)"
             echo "Options:"
-            echo "  --cmake_build_dir [CMake build directory]"
-            echo "  --oem_working_dir [installation directory]"
+            echo "  --cmake-build-dir [CMake build directory]"
+            echo "  --oem-working-dir [installation directory]"
             echo "  --with-asan [build with ASAN]"
             echo "  --ninja [Use ninja build system]"
             echo "  --help [Display usage]"
