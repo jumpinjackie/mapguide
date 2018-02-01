@@ -9,6 +9,7 @@ BUILD_LINUXAPT=0
 #HAVE_SYSTEM_XERCES=0
 USE_NINJA=0
 USE_ASAN=OFF
+USE_LD_GOLD=OFF
 while [ $# -gt 0 ]; do    # Until you run out of parameters...
     case "$1" in
         --cmake-build-dir)
@@ -25,12 +26,16 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
         --with-asan)
             USE_ASAN=ON
             ;;
+        --with-gold)
+            USE_LD_GOLD=ON
+            ;;
         --help)
             echo "Usage: $0 (options)"
             echo "Options:"
             echo "  --cmake-build-dir [CMake build directory]"
             echo "  --oem-working-dir [installation directory]"
-            echo "  --with-asan [build with ASAN]"
+            echo "  --with-asan [build with ASAN (if available)]"
+            echo "  --with-gold [link with gold instead of ld (if available)]"
             echo "  --ninja [Use ninja build system]"
             echo "  --help [Display usage]"
             exit
