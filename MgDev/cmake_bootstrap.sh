@@ -239,4 +239,4 @@ echo "export HAVE_SYSTEM_XERCES=$HAVE_SYSTEM_XERCES" >> $OEM_WORK_DIR/env_vars.s
 chmod +x $OEM_WORK_DIR/env_vars.sh
 
 echo "$OEM_WORK_DIR/env_vars.sh written"
-echo "Make sure to run cmake_build.sh with --oem_working_dir set to: $OEM_WORK_DIR"
+echo "Make sure to run cmake_build.sh with --oem-working-dir set to: $OEM_WORK_DIR"
