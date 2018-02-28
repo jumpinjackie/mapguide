@@ -231,18 +231,10 @@
               Directory="WebResourcesLocation"
               Name="!(loc.Shortcut_Trac)"
               Target="http://trac.osgeo.org/mapguide" />
-            <util:InternetShortcut Id="MapGuideBestPractices"
-              Directory="WebResourcesLocation"
-              Name="!(loc.Shortcut_BestPractices)"
-              Target="http://sandbox.mapguide.com" />
             <util:InternetShortcut Id="AutodeskWikiHelp"
               Directory="WebResourcesLocation"
               Name="!(loc.Shortcut_WikiHelp)"
-              Target="http://wikihelp.autodesk.com/Infr._Map_Server/enu/2013" />
-            <util:InternetShortcut Id="MapGuideCentral"
-              Directory="WebResourcesLocation"
-              Name="!(loc.Shortcut_MapGuideCentral)"
-              Target="http://ennoble.dreamhosters.com/mapguide-central" />
+              Target="http://help.autodesk.com/view/AIMS/2017/ENU/" />
             <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ProgramMenuShortcut">
               <RegistryValue
                 Value="Installed"
