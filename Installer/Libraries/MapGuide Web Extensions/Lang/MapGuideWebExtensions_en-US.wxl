@@ -62,6 +62,4 @@
     <String Id="Shortcut_GetMaestro">Get MapGuide Maestro</String>
     <String Id="Shortcut_MapGuide">MapGuide Project Home</String>
     <String Id="Shortcut_Trac">MapGuide Trac</String>
-    <String Id="Shortcut_BestPractices">MapGuide Best Practices</String>
-    <String Id="Shortcut_MapGuideCentral">MapGuide Central</String>
 </WixLocalization>
