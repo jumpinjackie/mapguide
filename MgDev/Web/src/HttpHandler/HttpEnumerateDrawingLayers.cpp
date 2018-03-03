@@ -63,7 +63,13 @@ void MgHttpEnumerateDrawingLayers::Execute(MgHttpResponse& hResponse)
 
     // call the C++ API
     Ptr<MgStringCollection> layers = service->EnumerateLayers(&resId, m_sectionName);
-    hResult->SetResultObject(layers, MgMimeType::Xml);
+
+    Ptr<MgByteReader> byteReader = layers->ToXml();
+
+    // Convert to requested response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpEnumerateDrawingLayers.Execute")
 }

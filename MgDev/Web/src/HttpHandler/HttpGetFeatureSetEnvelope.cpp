@@ -66,7 +66,10 @@ void MgHttpGetFeatureSetEnvelope::Execute(MgHttpResponse& hResponse)
     Ptr<MgEnvelope> envelope = selection->GetExtents(featureService);
     Ptr<MgByteReader> byteReader = envelope->ToXml();
 
-    hResult->SetResultObject(byteReader, MgMimeType::Xml);
+    // Convert to requested response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetFeatureSetEnvelope.Execute")
 }

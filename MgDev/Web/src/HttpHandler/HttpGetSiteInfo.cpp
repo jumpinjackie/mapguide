@@ -125,11 +125,17 @@ void MgHttpGetSiteInfo::Execute(MgHttpResponse& hResponse)
     }
     xml += EndXml();
 
-    Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(xml);
-    if(!value)
-        throw new MgOutOfMemoryException(L"", __LINE__, __WFILE__, NULL, L"", NULL);
+    std::string mbXml;
+    MgUtil::WideCharToMultiByte(xml, mbXml);
 
-    hResult->SetResultObject(value, MgMimeType::Xml);
+    Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)mbXml.c_str(), (INT32)mbXml.length());
+    byteSource->SetMimeType(MgMimeType::Xml);
+    Ptr<MgByteReader> byteReader = byteSource->GetReader();
+
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetSiteInfo.Execute")
 }

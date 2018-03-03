@@ -249,12 +249,15 @@ void IsapiResponseHandler::WriteHeader(const char* szBuffer, const char* szStatu
 
 void IsapiResponseHandler::WriteContext(const char *pszFormat, ...)
 {
-    char szBuffer[4096];
+    char* szBuffer;
+    int len;
     va_list arg_ptr;
     va_start(arg_ptr, pszFormat);
-    vsprintf(szBuffer, pszFormat, arg_ptr);
+    len = _vscprintf(pszFormat, arg_ptr) + 1;
+    szBuffer = (char*)malloc(len * sizeof(char));
+    vsprintf_s(szBuffer, len, pszFormat, arg_ptr);
     va_end(arg_ptr);
-
     DWORD dwSize = (DWORD)strlen(szBuffer);
     m_pECB->WriteClient(m_pECB->ConnID, szBuffer, &dwSize, 0);
+    free(szBuffer);
 }
