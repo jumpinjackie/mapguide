@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2017 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -283,8 +283,9 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
 
                 FdoStringP qname = fc->GetQualifiedName();
                 FdoStringP name = fc->GetName();
+                FdoBoolean isAbstract = fc->GetIsAbstract();
 
-                if (name != NULL && qname != NULL)
+                if (name != NULL && qname != NULL && !isAbstract)
                 {
                     Ptr<MgClassDefinition> classDefinition = MgServerFeatureUtil::GetMgClassDefinition(fc, serialize);
                     classCol->Add(classDefinition);
@@ -563,6 +564,9 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                 classCol->Add(extClassDefinition);
 
             }  // Repeat for all extensions
+
+            if (classCol->GetCount() == 0)
+                continue;
 
             // Add the schema to the MgFeatureSchemaCollection
             fsCollection->Add(schema);
