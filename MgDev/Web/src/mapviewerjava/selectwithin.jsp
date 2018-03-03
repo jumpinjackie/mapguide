@@ -52,6 +52,7 @@ String inputSel = "";
         site.Open(cred);
         MgFeatureService featureSrvc = (MgFeatureService)site.CreateService(MgServiceType.FeatureService);
         MgRenderingService renderingSrvc = (MgRenderingService)site.CreateService(MgServiceType.RenderingService);
+        MgResourceService resourceSrvc = (MgResourceService)site.CreateService(MgServiceType.ResourceService);
 
         //load the map runtime state
         //
@@ -81,8 +82,16 @@ String inputSel = "";
                     if(resultSel != null)
                     {
                         // Return XML
-                        response.addHeader("Content-type", "text/xml");
-                        outStream.write(resultSel.ToXml());
+                        resultSel.Save(resourceSrvc, mapName);
+                        //this needs to be re-opened for some reason
+                        resultSel = new MgSelection(map);
+                        resultSel.Open(resourceSrvc, mapName);
+                        MgReadOnlyLayerCollection resLayers = resultSel.GetLayers();
+                        if (resLayers != null && resLayers.GetCount() >= 0)
+                        {
+                            response.addHeader("Content-type", "text/xml");
+                            outStream.write(resultSel.ToXml());
+                        }
                     }
                 }
             }

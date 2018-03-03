@@ -42,6 +42,7 @@
         $site->Open($cred);
         $featureSrvc = $site->CreateService(MgServiceType::FeatureService);
         $renderingSrvc = $site->CreateService(MgServiceType::RenderingService);
+        $resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
 
         //load the map runtime state
         //
@@ -69,9 +70,17 @@
                     $resultSel = $fi->GetSelection();
                     if($resultSel)
                     {
-                        //return XML
-                        header("Content-type: text/xml");
-                        echo $resultSel->ToXml();
+                        // Return XML
+                        $resultSel->Save($resourceSrvc, $mapName);
+                        //this needs to be re-opened for some reason
+                        $resultSel = new MgSelection($map);
+                        $resultSel->Open($resourceSrvc, $mapName);
+                        $resLayers = $resultSel->GetLayers();
+                        if ($resLayers != null && $resLayers->GetCount() >= 0)
+                        {
+                            header("Content-type: text/xml");
+                            echo $resultSel->ToXml();
+                        }
                     }
                 }
             }

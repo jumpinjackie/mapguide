@@ -90,6 +90,8 @@ function ExecuteCommand()
         reqHandler.send(reqParams);
         if(reqHandler.responseXML)
             GetParent().SetSelectionXML(reqHandler.responseText);
+        else
+            GetParent().GetMapFrame().ClearSelection();
     }
     catch(e) {}
     GetParent().GotoHomePage();

@@ -1,5 +1,5 @@
 <%--
-Copyright (C) 2004-2011 by Autodesk, Inc.
+Copyright (C) 2017 by Autodesk, Inc.
 This library is free software; you can redistribute it and/or
 modify it under the terms of version 2.1 of the GNU Lesser
 General Public License as published by the Free Software Foundation.
@@ -50,6 +50,7 @@ String inputSel = "";
         site.Open(cred);
         MgFeatureService featureSrvc = site.CreateService(MgServiceType.FeatureService) as MgFeatureService;
         MgRenderingService renderingSrvc = site.CreateService(MgServiceType.RenderingService) as MgRenderingService;
+        MgResourceService resourceSrvc = site.CreateService(MgServiceType.ResourceService) as MgResourceService;
 
         //load the map runtime state
         //
@@ -79,8 +80,16 @@ String inputSel = "";
                     if(resultSel != null)
                     {
                         // Return XML
-                        Response.AddHeader("Content-type", "text/xml");
-                        Response.Write(resultSel.ToXml());
+                        resultSel.Save(resourceSrvc, mapName);
+                        //this needs to be re-opened for some reason
+                        resultSel = new MgSelection(map);
+                        resultSel.Open(resourceSrvc, mapName);
+                        MgReadOnlyLayerCollection resLayers = resultSel.GetLayers();
+                        if (resLayers != null && resLayers.GetCount() >= 0)
+                        {
+                            Response.AddHeader("Content-type", "text/xml");
+                            Response.Write(resultSel.ToXml());
+                        }
                     }
                 }
             }
