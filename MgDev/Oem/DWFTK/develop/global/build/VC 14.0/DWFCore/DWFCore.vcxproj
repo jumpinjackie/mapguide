@@ -398,8 +398,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -430,8 +430,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -461,8 +461,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <UndefinePreprocessorDefinitions>DWFCORE_EXPORT_API;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
@@ -494,8 +494,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <UndefinePreprocessorDefinitions>DWFCORE_EXPORT_API;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -521,8 +521,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -567,8 +567,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -610,8 +610,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -658,8 +658,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <UndefinePreprocessorDefinitions>DWFCORE_STATIC;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
@@ -696,8 +696,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -728,8 +728,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -759,8 +759,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <UndefinePreprocessorDefinitions>DWFCORE_EXPORT_API;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
@@ -792,8 +792,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <UndefinePreprocessorDefinitions>DWFCORE_EXPORT_API;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -819,8 +819,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -851,8 +851,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -882,8 +882,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <UndefinePreprocessorDefinitions>DWFCORE_EXPORT_API;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
@@ -915,8 +915,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <UndefinePreprocessorDefinitions>DWFCORE_EXPORT_API;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -942,8 +942,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -988,8 +988,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -1031,8 +1031,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -1079,8 +1079,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <UndefinePreprocessorDefinitions>DWFCORE_STATIC;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
@@ -1120,8 +1120,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -1168,8 +1168,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <UndefinePreprocessorDefinitions>DWFCORE_STATIC;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
@@ -1563,13 +1563,14 @@
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|Win32'">4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release (Read-Write WChar LIB)|x64'">4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\dwfcore\zlib\gzio.c" />
-    <ClCompile Include="..\..\..\src\dwfcore\zlib\infblock.c" />
-    <ClCompile Include="..\..\..\src\dwfcore\zlib\infcodes.c" />
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\gzclose.c" />
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\gzlib.c" />
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\gzread.c" />
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\gzwrite.c" />
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\infback.c" />
     <ClCompile Include="..\..\..\src\dwfcore\zlib\inffast.c" />
     <ClCompile Include="..\..\..\src\dwfcore\zlib\inflate.c" />
     <ClCompile Include="..\..\..\src\dwfcore\zlib\inftrees.c" />
-    <ClCompile Include="..\..\..\src\dwfcore\zlib\infutil.c" />
     <ClCompile Include="..\..\..\src\dwfcore\zlib\trees.c">
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write DLL)|Win32'">4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug (Read-Write DLL)|x64'">4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -1893,13 +1894,13 @@
     <ClInclude Include="..\..\..\src\dwfcore\ansi\Thread.h" />
     <ClInclude Include="..\..\..\src\dwfcore\ansi\Types.h" />
     <ClInclude Include="..\..\..\src\dwfcore\ansi\UUID.h" />
+    <ClInclude Include="..\..\..\src\dwfcore\zlib\crc32.h" />
     <ClInclude Include="..\..\..\src\dwfcore\zlib\deflate.h" />
-    <ClInclude Include="..\..\..\src\dwfcore\zlib\infblock.h" />
-    <ClInclude Include="..\..\..\src\dwfcore\zlib\infcodes.h" />
+    <ClInclude Include="..\..\..\src\dwfcore\zlib\gzguts.h" />
     <ClInclude Include="..\..\..\src\dwfcore\zlib\inffast.h" />
     <ClInclude Include="..\..\..\src\dwfcore\zlib\inffixed.h" />
+    <ClInclude Include="..\..\..\src\dwfcore\zlib\inflate.h" />
     <ClInclude Include="..\..\..\src\dwfcore\zlib\inftrees.h" />
-    <ClInclude Include="..\..\..\src\dwfcore\zlib\infutil.h" />
     <ClInclude Include="..\..\..\src\dwfcore\zlib\trees.h" />
     <ClInclude Include="..\..\..\src\dwfcore\zlib\zconf.h" />
     <ClInclude Include="..\..\..\src\dwfcore\zlib\zlib.h" />
