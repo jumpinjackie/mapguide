@@ -3176,19 +3176,16 @@ function ProcessFeatureInfo(xmlIn, append, which)
     }
     if(which & 2)
     {
-        if (IsPropertyCtrlVisible())
+        if (selection.count > 0)
         {
-            if (selection.count > 0)
-            {
-                //Check if we have attributes inline
-                var props = xmlIn.getElementsByTagName("SelectedLayer");
-                var resp = ConvertToSelectedFeatureSet(props, xmlIn, append);
-                ProcessSelectedFeatureSet(resp, append);
-            }
-            else
-            {
-                ResetPropertyPane();
-            }
+            //Check if we have attributes inline
+            var props = xmlIn.getElementsByTagName("SelectedLayer");
+            var resp = ConvertToSelectedFeatureSet(props, xmlIn, append);
+            ProcessSelectedFeatureSet(resp, append);
+        }
+        else
+        {
+            ResetPropertyPane();
         }
     }
     if(which & 4)
