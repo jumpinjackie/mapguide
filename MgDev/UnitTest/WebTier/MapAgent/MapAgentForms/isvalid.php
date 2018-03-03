@@ -36,7 +36,8 @@
     }
 
     echo "<b>OGC WKT:</b><br>";
-    echo "$wkt<br><br>";
+    echo htmlentities(strip_tags($wkt), ENT_NOQUOTES);
+    echo "<br><br>";
     echo "<b>Status:</b><br>";
     echo "$status<br><br>";
 

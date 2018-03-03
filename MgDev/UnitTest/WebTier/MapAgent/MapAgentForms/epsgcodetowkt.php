@@ -32,7 +32,8 @@
     }
 
     echo "<b>EPSG Code:</b><br>";
-    echo "$code<br><br>";
+    echo htmlentities(strip_tags($code), ENT_NOQUOTES);
+    echo "<br><br>";
     echo "<b>OGC WKT:</b><br>";
     echo "$wkt<br><br>";
     echo "<b>Status:</b><br>";
