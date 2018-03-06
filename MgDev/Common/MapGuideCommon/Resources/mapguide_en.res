@@ -160,6 +160,7 @@ MgXmlParserException                                  = An exception occurred in
 [ErrorDescription]
 MgArgumentsMismatch                                   = The arguments needed do not match the arguments provided.
 MgArgumentOutOfRange                                  = Argument out of range [%1, %2]: %3
+MgBadResourceIdentifer                                = Bad Resource Identifier: %1
 MgClassWOIdentity                                     = A class definition has no identity property.
 MgCannotResolveFeatureSourceFromWfsTypeName           = Could not resolve the Feature Source from the given WFS Type Name: %1
 MgCollectionEmpty                                     = The collection cannot be empty.
