@@ -78,9 +78,9 @@
     <PreBuildEvent>
       <Command>del /Q DesktopCustom\*prop
 IF NOT EXIST DesktopCustom mkdir DesktopCustom
-..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideDesktopConstants.xml C# ./MapGuideDesktopConstants.cs
+..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\MapGuideDesktopConstants.xml -l C# -o ./MapGuideDesktopConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideDesktopApiGen.xml C#
+..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\MapGuideDesktopApiGen.xml -l C#
 ..\..\..\Oem\SWIGEx\Win32\swig -c++ -csharp -dllname MapGuideDesktopUnmanagedApi -namespace OSGeo.MapGuide -proxydir .\DesktopCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideDesktopApi -o MgDesktopApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideDesktopApi.i
 </Command>
     </PreBuildEvent>
@@ -107,9 +107,9 @@ copy ..\dotnet.i .\language.i
     <PreBuildEvent>
       <Command>del /Q DesktopCustom\*prop
 IF NOT EXIST DesktopCustom mkdir DesktopCustom
-..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideDesktopConstants.xml C# ./MapGuideDesktopConstants.cs
+..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\MapGuideDesktopConstants.xml -l C# -o ./MapGuideDesktopConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideDesktopApiGen.xml C#
+..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\MapGuideDesktopApiGen.xml -l C#
 ..\..\..\Oem\SWIGEx\Win32\swig -c++ -csharp -dllname MapGuideDesktopUnmanagedApi -namespace OSGeo.MapGuide -proxydir .\DesktopCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideDesktopApi -o MgDesktopApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideDesktopApi.i
 </Command>
     </PreBuildEvent>
@@ -143,9 +143,9 @@ copy ..\dotnet.i .\language.i
     <PreBuildEvent>
       <Command>del /Q DesktopCustom\*prop
 IF NOT EXIST DesktopCustom mkdir DesktopCustom
-..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideDesktopConstants.xml C# ./MapGuideDesktopConstants.cs
+..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\MapGuideDesktopConstants.xml -l C# -o ./MapGuideDesktopConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideDesktopApiGen.xml C#
+..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\MapGuideDesktopApiGen.xml -l C#
 ..\..\..\Oem\SWIGEx\Win32\swig -c++ -csharp -dllname MapGuideDesktopUnmanagedApi -namespace OSGeo.MapGuide -proxydir .\DesktopCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideDesktopApi -o MgDesktopApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideDesktopApi.i
 </Command>
     </PreBuildEvent>
@@ -175,9 +175,9 @@ copy ..\dotnet.i .\language.i
     <PreBuildEvent>
       <Command>del /Q DesktopCustom\*prop
 IF NOT EXIST DesktopCustom mkdir DesktopCustom
-..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideDesktopConstants.xml C# ./MapGuideDesktopConstants.cs
+..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\MapGuideDesktopConstants.xml -l C# -o ./MapGuideDesktopConstants.cs -t
 copy ..\dotnet.i .\language.i
-..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\MapGuideDesktopApiGen.xml C#
+..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\MapGuideDesktopApiGen.xml -l C#
 ..\..\..\Oem\SWIGEx\Win32\swig -c++ -csharp -dllname MapGuideDesktopUnmanagedApi -namespace OSGeo.MapGuide -proxydir .\DesktopCustom -baseexception MgException -clsidcode ..\getclassid.code -clsiddata m_cls_id -catchallcode ..\catchall.code -dispose "((MgDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -noconstants -module MapGuideDesktopApi -o MgDesktopApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideDesktopApi.i
 </Command>
     </PreBuildEvent>
