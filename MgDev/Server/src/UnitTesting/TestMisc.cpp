@@ -595,3 +595,22 @@ void TestMisc::TestCase_MapLayerCollections()
         throw;
     }
 }
+
+void TestMisc::TestCase_BadResourceIdentifier()
+{
+    try
+    {
+        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"I'm a baaaaad id");
+        CPPUNIT_FAIL("This should've thrown");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_ASSERT(message.find(L"I'm a baaaaad id") != STRING::npos);
+    }
+    catch (...)
+    {
+        throw;
+    }
+}

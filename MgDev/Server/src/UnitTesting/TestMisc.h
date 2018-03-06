@@ -30,6 +30,7 @@ class TestMisc : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_833);
     CPPUNIT_TEST(TestCase_1304);
     CPPUNIT_TEST(TestCase_MapLayerCollections);
+    CPPUNIT_TEST(TestCase_BadResourceIdentifier);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -48,6 +49,7 @@ public:
     void TestCase_833();
     void TestCase_1304();
     void TestCase_MapLayerCollections();
+    void TestCase_BadResourceIdentifier();
 
 private:
     Ptr<MgSiteConnection> m_siteConnection;
