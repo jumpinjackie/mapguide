@@ -95,7 +95,7 @@
               <File Id="XalanLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\Xalan-C_1_11.dll" />
               <File Id="XalanMessagesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\XalanMessages_1_11.dll" />
               <File Id="XercesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\xerces-c_3_1.dll" />
-              <File Id="GdalLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\gdal110.dll" />
+              <File Id="GdalLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\gdal202.dll" />
               <File Id="FdoExpressionEngine" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ExpressionEngine.dll" />
               <File Id="FdoCore" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDO.dll" />
               <File Id="FdoCommon" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDOCommon.dll" />
