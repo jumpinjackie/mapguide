@@ -94,7 +94,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
       <Command>copy .\php.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\SQLiteApiGen.xml PHP
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\SQLiteApiGen.xml -l PHP
 ..\..\..\SwigEx\Win32\swig -c++ -php -baseexception SqliteException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose "((SqliteDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -o SQLitePhpApi_wrap.cpp SQLitePhpApi.i
 </Command>
     </PreBuildEvent>
@@ -128,7 +128,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
       <Command>copy .\php.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\SQLiteApiGen.xml PHP
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\SQLiteApiGen.xml -l PHP
 ..\..\..\SwigEx\Win32\swig -c++ -php -baseexception SqliteException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose "((SqliteDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -o SQLitePhpApi_wrap.cpp SQLitePhpApi.i
 </Command>
     </PreBuildEvent>
@@ -165,7 +165,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
       <Command>copy .\php.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\SQLiteApiGen.xml PHP
+..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe -p .\SQLiteApiGen.xml -l PHP
 ..\..\..\SwigEx\Win32\swig -c++ -php -baseexception SqliteException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose "((SqliteDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -o SQLitePhpApi_wrap.cpp SQLitePhpApi.i
 </Command>
     </PreBuildEvent>
@@ -200,7 +200,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PreBuildEvent>
       <Command>copy .\php.i .\language.i
-..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\SQLiteApiGen.xml PHP
+..\..\..\..\BuildTools\WebTools\IMake\Win64\IMake.exe -p .\SQLiteApiGen.xml -l PHP
 ..\..\..\SwigEx\Win32\swig -c++ -php -baseexception SqliteException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose "((SqliteDisposable*)arg1)-&gt;Release()" -rethrow "e-&gt;Raise()%3b" -nodefault -o SQLitePhpApi_wrap.cpp SQLitePhpApi.i
 </Command>
     </PreBuildEvent>
