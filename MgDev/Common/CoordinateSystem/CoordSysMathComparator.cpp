@@ -484,8 +484,13 @@ bool CCoordinateSystemMathComparator::SameCoordinateSystem(MgCoordinateSystem *p
     // Map scale is rarely (if ever) used and us usally set to unity.
     if (!FloatEqual(def1.map_scl, def2.map_scl, kdEpsilonScale)) return false;
 
+    //Disabling assertion below (per: https://trac.osgeo.org/mapguide/ticket/1827):
+    //
+    // CSMAP generates the unit_scl value from the ellipsoid / datum when an ellipsoid / datum is set via [CoordSys::SetEllipsoid / SetDatum] methods.
+    // When then comparing the resulting coordinate system objects, the ellipsoids are considered the same (by the math comparator) but the unit scales are not; at least not by the assert
+    //
     //If the units match, the unit scale matches.
-    assert(FloatEqual(def1.unit_scl, def2.unit_scl, kdEpsilonScale));
+    //assert(FloatEqual(def1.unit_scl, def2.unit_scl, kdEpsilonScale));
 
     //Note:  We deliberately do not make any assertion
     //about def1.scale being equal to def2.scale.  They

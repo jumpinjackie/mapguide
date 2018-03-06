@@ -144,13 +144,16 @@ if "%TYPECOMPONENT%"=="doc" goto clean_doc
 :clean_oem
 echo [clean]: Clean Oem
 %MSBUILD_CLEAN% %MG_OEM%\Oem.sln
+if not "%errorlevel%"=="0" goto error
 echo [clean]: Clean Oem - CS-Map
 %MSBUILD_CLEAN% %MG_OEM%\CSMap\VC110\OpenSource.sln
+if not "%errorlevel%"=="0" goto error
 if not "%TYPECOMPONENT%"=="all" goto quit
 
 :clean_server
 echo [clean]: Clean Server
 %MSBUILD_CLEAN% %MG_SERVER%\Server.sln
+if not "%errorlevel%"=="0" goto error
 if not "%TYPECOMPONENT%"=="all" goto quit
 
 :clean_web
@@ -185,11 +188,11 @@ goto custom_error
 :build_oem
 echo [build]: Building Oem
 %MSBUILD% %MG_OEM%\Oem.sln
-if "%errorlevel%"=="1" goto error
+if not "%errorlevel%"=="0" goto error
 rem CsMap is not in Oem.sln, so we need to build that separately
 echo [build]: Building Oem - CSMap
 %MSBUILD% %MG_OEM%\CsMap\VC140\OpenSource.sln
-if "%errorlevel%"=="1" goto error
+if not "%errorlevel%"=="0" goto error
 if "%TYPECOMPONENT%"=="oem" 	goto quit
 if "%TYPECOMPONENT%"=="server" 	goto quit
 if "%TYPECOMPONENT%"=="web" 	goto quit
@@ -198,7 +201,7 @@ if "%TYPECOMPONENT%"=="doc" 	goto quit
 :build_server
 echo [build]: Building Server
 %MSBUILD% %MG_SERVER%\Server.sln
-if "%errorlevel%"=="1" goto error
+if not "%errorlevel%"=="0" goto error
 if "%TYPECOMPONENT%"=="oem" 	goto quit
 if "%TYPECOMPONENT%"=="server" 	goto quit
 if "%TYPECOMPONENT%"=="web" 	goto quit
@@ -207,7 +210,7 @@ if "%TYPECOMPONENT%"=="doc" 	goto quit
 :build_web
 echo [build]: Building Web Tier
 %MSBUILD% %MG_WEB_SRC%\WebTier.sln
-if "%errorlevel%"=="1" goto error
+if not "%errorlevel%"=="0" goto error
 if "%TYPECOMPONENT%"=="oem" 	 goto quit
 if "%TYPECOMPONENT%"=="server" 	 goto quit
 if "%TYPECOMPONENT%"=="web" 	 goto quit
@@ -318,12 +321,16 @@ REM Required for Web Tier unit tests
 copy /Y "%MG_BUILD_SQLITE_PHP_API%" "%MG_OUTPUT_WEB%\Php\ext"
 echo [build]: Web Tier - Clean fusion
 call %ANT% clean -f "%MG_OEM%\fusion\build.xml"
+if not "%errorlevel%"=="0" goto error
 echo [build]: Web Tier - Build Fusion API docs
 call %ANT% docs -f "%MG_OEM%\fusion\build.xml"
+if not "%errorlevel%"=="0" goto error
 echo [install]: Web Tier - fusion
 call %ANT% deploy -Ddeploy.home="%MG_OUTPUT_WEB%\www\fusion" -f "%MG_OEM%\fusion\build.xml"
+if not "%errorlevel%"=="0" goto error
 echo [install]: Fusion - build pack
 call %ANT% selfbuild -Dselfbuild.home="%MG_OUTPUT%\fusion-selfbuild" -f "%MG_OEM%\fusion\build.xml"
+if not "%errorlevel%"=="0" goto error
 echo [install]: Web Tier - fusion templates
 %XCOPY% "%MG_OEM%\fusionMG" "%MG_OUTPUT_WEB%\www\fusion" /EXCLUDE:svn_excludes.txt+%CONFIGURATION%_excludes.txt
 echo [install]: Web Tier - Apache module
@@ -362,6 +369,7 @@ if not exist "%MG_DEV%\UnitTest\TestData\Samples\Sheboygan\Sheboygan.mgp" (
     echo [build]: Sheboygan Sample data set
     pushd %MG_DEV%\UnitTest\TestData\Samples\Sheboygan
     call build.bat
+    if not "%errorlevel%"=="0" goto error
     popd
 )
 copy /Y "%MG_DEV%\UnitTest\TestData\Samples\Sheboygan\Sheboygan.mgp" "%MG_OUTPUT%"
