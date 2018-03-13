@@ -31,6 +31,7 @@ class TestMappingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_GetPlotUsingOverriddenCenterAndScale);
     CPPUNIT_TEST(TestCase_GetPlotUsingExtents);
     CPPUNIT_TEST(TestCase_GetPlotUsingExtentsAndExpandToFit);
+    CPPUNIT_TEST(TestCase_PlotMultiPolygonWithHoles);
     CPPUNIT_TEST(TestCase_GetLegendPlot);
     CPPUNIT_TEST(TestCase_GetLegendImage);
     CPPUNIT_TEST(TestCase_GetLegendImagePointStyleWithConstRotations);
@@ -66,6 +67,7 @@ public:
     void TestCase_GetPlotUsingOverriddenCenterAndScale();
     void TestCase_GetPlotUsingExtents();
     void TestCase_GetPlotUsingExtentsAndExpandToFit();
+    void TestCase_PlotMultiPolygonWithHoles();
     void TestCase_GetLegendPlot();
     void TestCase_GetLegendImage();
     void TestCase_GetLegendImagePointStyleWithConstRotations();

@@ -206,6 +206,10 @@ void TestMappingService::TestStart()
         Ptr<MgByteSource> tsdsrc1 = new MgByteSource(L"../UnitTestFiles/UT_BaseMap.tsd", false);
         Ptr<MgByteReader> tsdrdr1 = tsdsrc1->GetReader();
         m_svcResource->SetResource(tilesetres1, tsdrdr1, NULL);
+
+        Ptr<MgByteSource> bsPackage = new MgByteSource(L"../UnitTestFiles/PlotHole.mgp", false);
+        Ptr<MgByteReader> pkgReader = bsPackage->GetReader();
+        m_svcResource->ApplyResourcePackage(pkgReader);
     }
     catch (MgException* e)
     {
@@ -284,6 +288,9 @@ void TestMappingService::TestEnd()
 
         Ptr<MgResourceIdentifier> tilesetres1 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition");
         m_svcResource->DeleteResource(tilesetres1);
+
+        Ptr<MgResourceIdentifier> plotHoleFolder = new MgResourceIdentifier(L"Library://UnitTests/PlotHole/");
+        m_svcResource->DeleteResource(plotHoleFolder);
 
         #ifdef _DEBUG
         MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
@@ -1468,6 +1475,52 @@ void TestMappingService::TestCase_QueryFeaturesImageMap()
         // delete result from QueryFeatures test
         Ptr<MgResourceIdentifier> qfres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/Parcels.FeatureSource");
         m_svcResource->DeleteResource(qfres1);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestMappingService::TestCase_PlotMultiPolygonWithHoles()
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgResourceIdentifier> mapRes1 = new MgResourceIdentifier(L"Library://UnitTests/PlotHole/Maps/Test.MapDefinition");
+        Ptr<MgMap> map1 = new MgMap(m_siteConnection);
+        map1->Create(mapRes1, L"UnitTestSheboygan1");
+        map1->SetViewScale(400e+6);
+
+        Ptr<MgDwfVersion> version = new MgDwfVersion();
+
+        Ptr<MgResourceIdentifier> allElementsLayout = new MgResourceIdentifier(L"Library://UnitTests/PlotHole/Layouts/Test.PrintLayout");
+
+        Ptr<MgPlotSpecification> plotSpec = new MgPlotSpecification(8.5f, 11.f, L"inches", .5, .5, .5, .5);
+        Ptr<MgCoordinate> center = new MgCoordinateXY(-120, 40);
+        double scale = 20e+6;
+        Ptr<MgCoordinate> ll = new MgCoordinateXY(-180, 0);
+        Ptr<MgCoordinate> ur = new MgCoordinateXY(0, 90);
+        MgEnvelope extents(ll, ur);
+        Ptr<MgLayout> layout = new MgLayout(allElementsLayout, L"TestTitle", MgUnitType::USEnglish);
+
+        // call the API
+        Ptr<MgByteReader> eplot = m_svcMapping->GeneratePlot(map1, plotSpec, NULL, version);
+        //Ptr<MgByteReader> eplot = m_svcMapping->GeneratePlot(map1, plotSpec, layout, version);
+
+        INT64 len = eplot->GetLength();
+
+        // CPPUNIT_ASSERT(len == 7000); // TODO: determine correct length
+
+        // Have to manually verify this file atm. There should be no fill in the hole
+        Ptr<MgByteSink> byteSink = new MgByteSink(eplot);
+        byteSink->ToFile(L"../UnitTestFiles/UT_PlotHole.dwf");
     }
     catch (MgException* e)
     {

@@ -179,6 +179,7 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
         ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
         ..\..\bin\UnitTestFiles\UT_AllElements.pl \
+        ..\..\bin\UnitTestFiles\PlotHole.mgp \
         ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
         ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
         ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
@@ -455,6 +456,7 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
         ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
         ..\..\bin\UnitTestFiles\UT_AllElements.pl \
+        ..\..\bin\UnitTestFiles\PlotHole.mgp \
         ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
         ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
         ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
@@ -731,6 +733,7 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
           ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
           ..\..\bin\UnitTestFiles\UT_AllElements.pl \
+          ..\..\bin\UnitTestFiles\PlotHole.mgp \
           ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
           ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
           ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
@@ -1007,6 +1010,7 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
           ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
           ..\..\bin\UnitTestFiles\UT_AllElements.pl \
+          ..\..\bin\UnitTestFiles\PlotHole.mgp \
           ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
           ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
           ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
@@ -1156,6 +1160,7 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
+    if EXIST ..\..\bin\UnitTestFiles\PlotHole.mgp                   del /F ..\..\bin\UnitTestFiles\PlotHole.mgp
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
     if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
@@ -1300,6 +1305,7 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
+    if EXIST ..\..\bin\UnitTestFiles\PlotHole.mgp                   del /F ..\..\bin\UnitTestFiles\PlotHole.mgp
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
     if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
@@ -1444,6 +1450,7 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
+    if EXIST ..\..\bin\UnitTestFiles\PlotHole.mgp                   del /F ..\..\bin\UnitTestFiles\PlotHole.mgp
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
     if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
@@ -1586,6 +1593,7 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
+    if EXIST ..\..\bin\UnitTestFiles\PlotHole.mgp                   del /F ..\..\bin\UnitTestFiles\PlotHole.mgp
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
     if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
@@ -1855,6 +1863,7 @@ debug(v100) : ..\..\bin\debug(v100)\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
         ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
         ..\..\bin\UnitTestFiles\UT_AllElements.pl \
+        ..\..\bin\UnitTestFiles\PlotHole.mgp \
         ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
         ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
         ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
@@ -2124,6 +2133,7 @@ debug(v100)64 : ..\..\bin\debug(v100)64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
         ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
         ..\..\bin\UnitTestFiles\UT_AllElements.pl \
+        ..\..\bin\UnitTestFiles\PlotHole.mgp \
         ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
         ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
         ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
@@ -2393,6 +2403,7 @@ release(v100) : ..\..\bin\release(v100)\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
           ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
           ..\..\bin\UnitTestFiles\UT_AllElements.pl \
+          ..\..\bin\UnitTestFiles\PlotHole.mgp \
           ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
           ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
           ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
@@ -2662,6 +2673,7 @@ release(v100)64 : ..\..\bin\release(v100)64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
           ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
           ..\..\bin\UnitTestFiles\UT_AllElements.pl \
+          ..\..\bin\UnitTestFiles\PlotHole.mgp \
           ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
           ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
           ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
@@ -2804,6 +2816,7 @@ cleandebug(v100):
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
+    if EXIST ..\..\bin\UnitTestFiles\PlotHole.mgp                   del /F ..\..\bin\UnitTestFiles\PlotHole.mgp
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
     if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
@@ -2941,6 +2954,7 @@ cleandebug(v100)64:
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
+    if EXIST ..\..\bin\UnitTestFiles\PlotHole.mgp                   del /F ..\..\bin\UnitTestFiles\PlotHole.mgp
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
     if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
@@ -3078,6 +3092,7 @@ cleanrelease(v100):
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
+    if EXIST ..\..\bin\UnitTestFiles\PlotHole.mgp                   del /F ..\..\bin\UnitTestFiles\PlotHole.mgp
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
     if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
@@ -3213,6 +3228,7 @@ cleanrelease(v100)64:
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
+    if EXIST ..\..\bin\UnitTestFiles\PlotHole.mgp                   del /F ..\..\bin\UnitTestFiles\PlotHole.mgp
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
     if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
@@ -3321,6 +3337,7 @@ cleanrelease(v100)64:
 "..\..\..\UnitTest\TestData\FeatureService\SHP\Redding_Parcels.dbf" :
 "..\..\..\UnitTest\TestData\FeatureService\SHP\Redding_Parcels.shx" :
 "..\..\..\UnitTest\TestData\MappingService\UT_AllElements.pl" :
+"..\..\..\UnitTest\TestData\MappingService\PlotHole.mgp" :
 "..\..\..\UnitTest\TestData\MappingService\UT_NoLegend.pl" :
 "..\..\..\UnitTest\TestData\MappingService\UT_SymbolMart.sl" :
 "..\..\..\UnitTest\TestData\MappingService\UT_Symbols.dwf" :
@@ -3509,6 +3526,10 @@ cleanrelease(v100)64:
 ..\..\bin\UnitTestFiles\UT_AllElements.pl : "..\..\..\UnitTest\TestData\MappingService\UT_AllElements.pl"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_AllElements.pl" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_AllElements.pl" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\PlotHole.mgp : "..\..\..\UnitTest\TestData\MappingService\PlotHole.mgp"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MappingService\PlotHole.mgp" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\PlotHole.mgp" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\UT_NoLegend.pl : "..\..\..\UnitTest\TestData\MappingService\UT_NoLegend.pl"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
