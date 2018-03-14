@@ -225,7 +225,7 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/FeatureService/SHP/Redding_Parcels.dbf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/FeatureService/SHP/Redding_Parcels.shx ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_AllElements.pl ../UnitTestFiles
-  @cp -f ../../../UnitTest/TestData/MappingService/PlotHole.mgp ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MappingService/PlotHole.mgp ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_MultiCTS.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_MultiCTSWithTheme.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_MultiFTS.ldf ../UnitTestFiles
