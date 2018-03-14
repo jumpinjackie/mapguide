@@ -69,6 +69,7 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_JoinFdoFeatures);
     CPPUNIT_TEST(TestCase_BenchmarkSqliteJoin);
     CPPUNIT_TEST(TestCase_BenchmarkSqliteAggregateJoin);
+    CPPUNIT_TEST(TestCase_FeatureReader_GetPropertyIndex_BadProp);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -124,6 +125,7 @@ public:
     void TestCase_JoinFdoFeatures();
     void TestCase_BenchmarkSqliteJoin();
     void TestCase_BenchmarkSqliteAggregateJoin();
+    void TestCase_FeatureReader_GetPropertyIndex_BadProp();
 
 private:
     STRING CreateTestDataStore(MgFeatureService* svcFeature, CREFSTRING provider, MgResourceIdentifier* fsId);

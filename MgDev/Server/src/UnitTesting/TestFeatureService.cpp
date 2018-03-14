@@ -3732,3 +3732,53 @@ STRING TestFeatureService::CreateTestDataStore(MgFeatureService* svcFeature, CRE
     qClassName += theClass->GetName();
     return qClassName;
 }
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises getting indices of invalid property names from
+/// the feature reader
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_FeatureReader_GetPropertyIndex_BadProp()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if (serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_FeatureReader_GetPropertyIndex_BadProp", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_FeatureReader_GetPropertyIndex_BadProp", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
+        STRING className = L"";
+        Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
+        CPPUNIT_ASSERT_THROW_MG(pService->SelectFeatures(resource, className, options), MgInvalidArgumentException*);
+
+        resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
+        className = L"Parcels";
+        Ptr<MgFeatureReader> reader = pService->SelectFeatures(resource, className, options);
+        CPPUNIT_ASSERT(reader->GetPropertyIndex(L"IDontExist") < 0);
+        reader->Close();
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occurred");
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
