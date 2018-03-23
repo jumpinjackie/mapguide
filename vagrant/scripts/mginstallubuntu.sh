@@ -4,6 +4,10 @@
 set -euf
 
 HEADLESS=0
+NO_SERVICE_INSTALL=0
+NO_MGSERVER_START=0
+NO_TOMCAT_START=0
+NO_HTTPD_START=0
 TEMPDIR=/tmp/install_mapguide
 URL_HOST="http://download.osgeo.org"
 URL_RELPATH="/mapguide/releases"
