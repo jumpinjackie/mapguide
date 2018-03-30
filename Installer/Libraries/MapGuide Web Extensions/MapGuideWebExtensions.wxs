@@ -82,6 +82,19 @@
                     </Component>
                 </Directory>
                 <Directory Id="WEBROOTLOCATION" Name="www">
+                  <Directory Id="FUSIONLOCATION" Name="fusion">
+                    <Directory Id="FUSIONLIBLOCATION" Name="lib">
+                      <Directory Id="FUSIONLIBTCPDFLOCATION" Name="tcpdf">
+                        <Directory Id="FUSIONLIBTCPDFCACHELOCATION" Name="cache">
+                          <Component Id="TcPdfCachePermissionsComponent" Win64="$(var.Win64)" Guid="D0F212A9-E7A1-49B1-82DB-A2965465BF78" Feature="WebExtensionsFeature">
+                            <CreateFolder>
+                              <util:PermissionEx User="Everyone" GenericAll="yes" />
+                            </CreateFolder>
+                          </Component>
+                        </Directory>
+                      </Directory>
+                    </Directory>
+                  </Directory>
                   <Directory Id="MAPADMINLOCATION" Name="mapadmin">
                     <Directory Id="PROFILINGMAPXMLLOCATION" Name="profilingmapxml">
                       <Component Id="ProfilingPermissionsComponent" Win64="$(var.Win64)" Guid="60660D36-B135-4956-A8ED-10EAF78D76AE" Feature="WebMapAdminFeature">
