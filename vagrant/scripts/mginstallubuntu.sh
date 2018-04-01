@@ -603,6 +603,8 @@ post_install()
 
     echo "[config]: Fixing permissions for certain folders"
     chmod 777 /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/www/TempDir
+    # daemon is the default user/group the bundled httpd will use
+    chown daemon:daemon /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/www/fusion/lib/tcpdf/cache
 
     if [ "$HEADLESS" = "1" ] && [ "$NO_SERVICE_INSTALL" = "1" ];
     then

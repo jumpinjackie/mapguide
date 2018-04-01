@@ -88,6 +88,8 @@ popd > /dev/null
 
 echo "[config]: Fixing permissions for certain folders"
 chmod 777 /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/www/TempDir
+# daemon is the default user/group the bundled httpd will use
+chown daemon:daemon /usr/local/mapguideopensource-${MGVER_MAJOR_MINOR_REV}/webserverextensions/www/fusion/lib/tcpdf/cache
 
 echo "[install]: Registering services"
 # The service control scripts as-is won't register as services as they lack chkconfig information
