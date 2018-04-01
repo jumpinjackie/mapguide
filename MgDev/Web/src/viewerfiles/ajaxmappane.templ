@@ -893,6 +893,17 @@ function OnDblClick(e)
 
 function OnMouseDown(e)
 {
+    //Check if this event originated from the tooltip (or child within)
+    var tgt = msie ? e.srcElement: e.target;
+    while(tgt && tgt.tagName != "BODY")
+    {
+        if(tgt.id == "hlTip") 
+        {
+            return true;
+        }
+        tgt = tgt.parentNode;
+    }
+
     if(!PopupMouseDown(e))
     {
         hidePopup(tbMenu);
