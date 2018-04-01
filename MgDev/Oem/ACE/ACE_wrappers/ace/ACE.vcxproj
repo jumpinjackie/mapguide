@@ -2234,7 +2234,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ACE.inl" />
-    <None Include="ace_wchar.inl" />
     <None Include="Activation_Queue.inl" />
     <None Include="Active_Map_Manager.inl" />
     <None Include="Active_Map_Manager_T.inl" />
@@ -2519,13 +2518,6 @@
     <None Include="XTI_ATM_Mcast.inl" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="..\VERSION">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </CustomBuild>
     <CustomBuild Include="README">
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
