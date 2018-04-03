@@ -1,5 +1,12 @@
-Latest
-======
+3.1.1.9378 (3 Apr 2018)
+=======================
+
+API Changelog:
+ - MgFeatureReader::GetPropertyIndex() now returns -1 instead of throwing on bad property names
+ - Include bad identifier in exception message if "new MgResourceIdentifier()" throws
+
+3.1.0.9064 (11 Oct 2016)
+========================
 
 API Changelog:
 
