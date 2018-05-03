@@ -700,7 +700,7 @@ PUBLISHED_API:
     /// Gets the projection parameter count of this coordinate system at the specified index
     ///
     /// \param nIndex (int)
-    /// The index at which to retrieve the projection parameter
+    /// The index at which to retrieve the projection parameter. NOTE: The index is 1-based, not 0-based (ie. The first index will start at 1, not 0)
     ///
     /// \return
     /// The projection parameter at the given index
@@ -712,7 +712,7 @@ PUBLISHED_API:
     /// Sets the projection parameter of this coordinate system at the specified index
     ///
     /// \param nIndex (int)
-    /// The index at which to set the projection parameter
+    /// The index at which to set the projection parameter. NOTE: The index is 1-based, not 0-based (ie. The first index will start at 1, not 0)
     /// \param dValue (double)
     /// The projection parameter value
     ///
