@@ -76,6 +76,9 @@ void MgInitializeWebTierInternal(CREFSTRING configFile)
     STRING mentorDictPath;
     config->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyMentorDictionaryPath, mentorDictPath, MgConfigProperties::DefaultGeneralPropertyMentorDictionaryPath);
 
+    STRING mentorUserDictPath;
+    config->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyMentorUserDictionaryPath, mentorUserDictPath, MgConfigProperties::DefaultGeneralPropertyMentorUserDictionaryPath);
+
     //Check catalog
     if (NULL == csCatalog.p)
     {
@@ -87,6 +90,12 @@ void MgInitializeWebTierInternal(CREFSTRING configFile)
     {
         MgFileUtil::AppendSlashToEndOfPath(mentorDictPath);
         csCatalog->SetDictionaryDir(mentorDictPath);
+    }
+
+    if (!mentorUserDictPath.empty())
+    {
+        MgFileUtil::AppendSlashToEndOfPath(mentorUserDictPath);
+        csCatalog->SetUserDictionaryDir(mentorUserDictPath);
     }
     
     //Check lib status
