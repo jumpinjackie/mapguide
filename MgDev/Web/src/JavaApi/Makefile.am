@@ -21,8 +21,7 @@ INCLUDES = -I../../../Common/MdfModel \
            -I../../../Oem/ACE/ACE_wrappers \
            -I../HttpHandler \
            -I../WebSupport \
-           -I../WebApp \
-           -I../../../Oem/dbxml/xerces-c-src/src
+           -I../WebApp
 
 BUILT_SOURCES = MgApi_wrap.cpp
 
@@ -30,7 +29,7 @@ lib_LTLIBRARIES = libMapGuideJavaApi.la
 
 nodist_libMapGuideJavaApi_la_SOURCES = MgApi_wrap.cpp
 
-AM_CXXFLAGS = @CXXFLAGS@ -fno-strict-aliasing -fno-var-tracking-assignments -DJAVA
+AM_CXXFLAGS = @CXXFLAGS@ -fno-strict-aliasing -fno-var-tracking-assignments -DJAVA -DSWIG_PUBLIC_API
 
 libMapGuideJavaApi_la_LIBADD = \
     -lACE \
@@ -41,7 +40,6 @@ libMapGuideJavaApi_la_LIBADD = \
     -lMgHttpHandler \
     -lMgMdfModel \
     -lMgMdfParser \
-    -lxerces-c \
     -lMgWebApp
 
 libMapGuideJavaApi_la_LDFLAGS = -release $(PACKAGE_VERSION) \
