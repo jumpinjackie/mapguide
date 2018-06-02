@@ -17,6 +17,15 @@
 <CppInline>
 #ifdef _WIN32
 #pragma warning(disable: 4251)
+
+//These will be set as a result of pulling windows headers somewhere in the dependency chain.
+//
+//These have to be unset as we have class methods of the same name which the windows headers
+//will erroneously try to rewrite to CreateServiceW/GetClassNameW/GetUserNameW on our class methods.
+#undef CreateService
+#undef GetClassName
+#undef GetUserName
+
 #endif
 
 #include &lt;string&gt;

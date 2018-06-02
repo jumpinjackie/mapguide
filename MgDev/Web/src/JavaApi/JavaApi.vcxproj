@@ -109,7 +109,7 @@ echo Building -sources JAR file
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;JAVA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;JAVA;SWIG_PUBLIC_API;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -149,7 +149,7 @@ echo Building -sources JAR file
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;JAVA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;JAVA;SWIG_PUBLIC_API;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -189,7 +189,7 @@ echo Building -sources JAR file
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <AdditionalIncludeDirectories>..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;JAVA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;JAVA;SWIG_PUBLIC_API;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -230,7 +230,7 @@ echo Building -sources JAR file
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <AdditionalIncludeDirectories>..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;JAVA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;JAVA;SWIG_PUBLIC_API;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>

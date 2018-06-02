@@ -18,6 +18,8 @@
 #ifndef _MG_LAYER_BASE_H_
 #define _MG_LAYER_BASE_H_
 
+#include <list>
+
 BEGIN_NAMESPACE_MDFMODEL
 class LayerDefinition;
 END_NAMESPACE_MDFMODEL

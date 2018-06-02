@@ -53,10 +53,13 @@ extern long GetTickCount();
 #include "System/MapGuideCommonClassId.h"
 #include "System/ConfigProperties.h"
 #include "System/UserInformation.h"
+
+#ifndef SWIG_PUBLIC_API
 #include "System/MapGuideStream.h"
 #include "System/CryptographyManager.h"
 #include "Util/IpUtil.h"
 #include "Util/TimerUtil.h"
+#endif
 
 #include "MapLayer/Layer.h"
 #include "MapLayer/Map.h"
@@ -121,8 +124,10 @@ extern long GetTickCount();
 #include "Exception/UnsupportedProviderThreadModelException.h"
 #include "Exception/UriFormatException.h"
 
+#ifndef SWIG_PUBLIC_API
 #include "Net/IOperationHandler.h"
 #include "Services/Command.h"
+#endif
 #include "Services/Site.h"
 #include "Services/SiteInfo.h"
 #include "Services/SiteManager.h"
@@ -169,9 +174,11 @@ extern long GetTickCount();
 #include "Services/ServerAdmin.h"
 #include "Services/ServerAdminDefs.h"
 #include "Services/ServerConnection.h"
+#ifndef SWIG_PUBLIC_API
 #include "Services/ServerConnectionImp.h"
 #include "Services/ServerConnectionPool.h"
 #include "Services/ServerConnectionStack.h"
+#endif
 #include "Services/ServerInformation.h"
 #include "Services/UnitType.h"
 

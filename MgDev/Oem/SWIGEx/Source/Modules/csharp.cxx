@@ -717,7 +717,7 @@ class CSHARP : public Language {
       Printf(f, "\t\tstrcat(exName, multibyteExName);\n");
 
       Printf(f, "\t\tbool bFound = false;\n");
-      Printf(f, "\t\tfor(list<char*>::const_iterator iter = exNames.begin(); iter != exNames.end(); iter++) {\n");
+      Printf(f, "\t\tfor(std::list<char*>::const_iterator iter = exNames.begin(); iter != exNames.end(); iter++) {\n");
       Printf(f, "\t\t\tif (strcmp(*iter, exName) == 0) {\n");
       Printf(f, "\t\t\t\tdelete[] exName;\n");
       Printf(f, "\t\t\t\texName = *iter;\n");
@@ -742,7 +742,7 @@ class CSHARP : public Language {
 		Printf(f, "#endif\n\n");
 
 		Printf(f, "void ThrowDotNetExceptionWrapper(%s* e)\n{\n", baseException);
-		Printf(f, "\tstatic list<char*> exNames;\n");
+		Printf(f, "\tstatic std::list<char*> exNames;\n");
 		Printf(f, "\tchar* exName = NULL;\n");
         if(rethrowCode)
         {

@@ -21,6 +21,7 @@
 // Forward declare MgConfiguration to avoid ACE header dependency
 class MgConfiguration;
 class MG_MAPGUIDE_API MgSiteConnection;
+class MG_MAPGUIDE_API MgServerConnection;
 class MG_MAPGUIDE_API MgServerConnectionStack;
 
 #ifdef _WIN32

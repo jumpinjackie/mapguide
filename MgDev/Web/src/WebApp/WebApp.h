@@ -20,9 +20,10 @@
 
 
 #include "MapGuideCommon.h"
+#ifndef SWIG_PUBLIC_API
 #include "System/XmlDefs.h"
 #include "System/XmlUtil.h"
-
+#endif
 #include "WebAppExport.h"
 
 #include "WebAppClassId.h"
