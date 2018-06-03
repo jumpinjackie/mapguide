@@ -21,13 +21,14 @@ INCLUDES = -I../../../Common/MdfModel \
            -I../../../Oem/ACE/ACE_wrappers \
            -I../HttpHandler \
            -I../WebSupport \
-           -I../WebApp
+           -I../WebApp \
+           -I../../../Oem/dbxml/xerces-c-src/src
 
 lib_LTLIBRARIES = libphp_MapGuideApi.la
 
 nodist_libphp_MapGuideApi_la_SOURCES = MgApi_wrap.cpp
 
-AM_CXXFLAGS = @CXXFLAGS@ -fno-var-tracking-assignments -DPHP -DPHPPROXYAPI_EXPORTS -DSWIG_PUBLIC_API
+AM_CXXFLAGS = @CXXFLAGS@ -fno-var-tracking-assignments -DPHP -DPHPPROXYAPI_EXPORTS
 
 libphp_MapGuideApi_la_LIBADD = \
     -lACE \
@@ -38,6 +39,7 @@ libphp_MapGuideApi_la_LIBADD = \
     -lMgHttpHandler \
     -lMgMdfModel \
     -lMgMdfParser \
+    -lxerces-c \
     -lMgWebApp
 
 libphp_MapGuideApi_la_LDFLAGS = -release $(PACKAGE_VERSION) \
