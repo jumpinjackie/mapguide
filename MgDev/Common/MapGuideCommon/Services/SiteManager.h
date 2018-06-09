@@ -20,6 +20,7 @@
 
 class MgSiteInfo;
 typedef std::vector<MgSiteInfo*> MgSiteVector;
+class ACE_Recursive_Thread_Mutex;
 
 /// \cond INTERNAL
 // Data structure which is passed to thread

@@ -26,6 +26,7 @@
 
 #include &lt;string&gt;
 #include &lt;map&gt;
+#include &lt;list&gt;
 
 #include "MapGuideCommon.h"
 #include "WebApp.h"

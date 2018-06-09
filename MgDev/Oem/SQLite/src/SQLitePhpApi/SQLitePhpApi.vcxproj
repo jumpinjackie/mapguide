@@ -101,7 +101,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\..\ACE\ACE_wrappers;$(PHP_SRC);$(PHP_SRC)\main;$(PHP_SRC)\Zend;$(PHP_SRC)\TSRM;$(PHP_SRC)\ext\w32api;..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SWIG_PUBLIC_API;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -138,7 +138,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\..\ACE\ACE_wrappers;$(PHP_SRC);$(PHP_SRC)\main;$(PHP_SRC)\Zend;$(PHP_SRC)\TSRM;$(PHP_SRC)\ext\w32api;..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SWIG_PUBLIC_API;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -172,7 +172,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <AdditionalIncludeDirectories>..\..\..\ACE\ACE_wrappers;$(PHP_SRC);$(PHP_SRC)\main;$(PHP_SRC)\Zend;$(PHP_SRC)\TSRM;$(PHP_SRC)\ext\w32api;..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SWIG_PUBLIC_API;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
@@ -210,7 +210,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <AdditionalIncludeDirectories>..\..\..\ACE\ACE_wrappers;$(PHP_SRC);$(PHP_SRC)\main;$(PHP_SRC)\Zend;$(PHP_SRC)\TSRM;$(PHP_SRC)\ext\w32api;..\..\..\..\Common\MdfModel;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SWIG_PUBLIC_API;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>

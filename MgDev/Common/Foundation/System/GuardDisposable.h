@@ -18,7 +18,7 @@
 #ifndef _MGGUARDDISPOSABLE_H_
 #define _MGGUARDDISPOSABLE_H_
 
-#include "ace/Process_Manager.h"
+class ACE_Recursive_Thread_Mutex;
 
 /// \cond INTERNAL
 /////////////////////////////////////////////////////////////////

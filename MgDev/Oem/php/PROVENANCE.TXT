@@ -12,9 +12,3 @@ main\win95nt.h
 	Extracted from official PHP 5.5.3 source tarball (http://www.php.net/downloads.php)
 
 	Patched for compatibility with ACE
-
-TSRM\readdir.h
-
-	Extracted from official PHP 5.5.3 source tarball (http://www.php.net/downloads.php)
-
-	Patched for compatibility with ACE

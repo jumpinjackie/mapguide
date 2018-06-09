@@ -25,6 +25,11 @@
 typedef map<MgWebCommandWidget*, STRING>    CMD_WIDGET_MAP;
 
 class MgResourceIdentifier;
+namespace XERCES_CPP_NAMESPACE
+{
+    class DOMNode;
+    class DOMElement;
+}
 
 class MG_WEBAPP_API MgWebLayout : public MgGuardDisposable
 {
@@ -293,37 +298,37 @@ protected:
     ///////////////////////////////////////////////////////////////////////////
     // parse basic command specific elements
     //
-    void ParseBuiltInCommand(DOMNode* node, MgWebCommand* cmd);
+    void ParseBuiltInCommand(XERCES_CPP_NAMESPACE::DOMNode* node, MgWebCommand* cmd);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse invoke url representing an action command
     //
-    void ParseInvokeUrlCommand(DOMNode* node, MgWebInvokeUrlCommand* cmd);
+    void ParseInvokeUrlCommand(XERCES_CPP_NAMESPACE::DOMNode* node, MgWebInvokeUrlCommand* cmd);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse search specific elements
     //
-    void ParseSearchCommand(DOMNode* node, MgWebSearchCommand* cmd);
+    void ParseSearchCommand(XERCES_CPP_NAMESPACE::DOMNode* node, MgWebSearchCommand* cmd);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse invoke script specific elements
     //
-    void ParseInvokeScriptCommand(DOMNode* node, MgWebInvokeScriptCommand* cmd);
+    void ParseInvokeScriptCommand(XERCES_CPP_NAMESPACE::DOMNode* node, MgWebInvokeScriptCommand* cmd);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse print specific elements
     //
-    void ParsePrintCommand(DOMNode* node, MgWebPrintCommand* cmd);
+    void ParsePrintCommand(XERCES_CPP_NAMESPACE::DOMNode* node, MgWebPrintCommand* cmd);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse help specific elements
     //
-    void ParseHelpCommand(DOMNode* node, MgWebHelpCommand* cmd);
+    void ParseHelpCommand(XERCES_CPP_NAMESPACE::DOMNode* node, MgWebHelpCommand* cmd);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse ui target specific elements
     //
-    void ParseUiTargetCommand(DOMNode*, MgWebUiTargetCommand* cmd);
+    void ParseUiTargetCommand(XERCES_CPP_NAMESPACE::DOMNode*, MgWebUiTargetCommand* cmd);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse a UIItem element and returns an MgWebWidget object
@@ -333,12 +338,12 @@ protected:
     ///////////////////////////////////////////////////////////////////////////
     // parse a command widget
     //
-    void ParseCommandWidget(DOMNode* node, MgWebCommandWidget* widget);
+    void ParseCommandWidget(XERCES_CPP_NAMESPACE::DOMNode* node, MgWebCommandWidget* widget);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse a flyout widget
     //
-    void ParseFlyoutWidget(DOMNode* node, MgWebFlyoutWidget* widget);
+    void ParseFlyoutWidget(XERCES_CPP_NAMESPACE::DOMNode* node, MgWebFlyoutWidget* widget);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse the Map element

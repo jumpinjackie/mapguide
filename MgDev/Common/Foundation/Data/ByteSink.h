@@ -18,6 +18,8 @@
 #ifndef MG_BYTE_SINK_H
 #define MG_BYTE_SINK_H
 
+class ACE_SOCK_Stream;
+
 /// \defgroup MgByteSink MgByteSink
 /// \ingroup Common_Module
 /// \{

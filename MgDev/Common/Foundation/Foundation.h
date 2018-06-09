@@ -45,6 +45,16 @@
 // ignore warnings about using deprecated methods
 #pragma warning(disable: 4996)
 
+// Unfortunately, we must leak this header out in a SWIG generation context as ACE_Recursive_Thread_Mutex 
+// is a private and public member of several classes thare are exported out to the public MapGuide API 
+// surface area (MgGuardDisposable/MgSiteManager)
+//
+// Every other ACE type/header however are internal implementation details that can be safely walled-off 
+// with SWIG_PUBLIC_API or forward-declared away to reduce the ACE header surface area to this one single 
+// header below
+#include "ace/Recursive_Thread_Mutex.h"
+
+#ifndef SWIG_PUBLIC_API
 #include "ace/Init_ACE.h"
 
 #include "ace/INET_Addr.h"
@@ -71,7 +81,7 @@
 #include "ace/Configuration_Import_Export.h"
 #include "ace/Process_Manager.h"
 #include "ace/Date_Time.h"
-
+#endif
 #undef GetObject
 #include "FoundationDefs.h"
 #include "System/FoundationClassId.h"
@@ -90,6 +100,7 @@
 #include "Data/ByteSource.h"
 #include "Data/ByteSink.h"
 
+#ifndef SWIG_PUBLIC_API
 #include "System/PacketStructure.h"
 #include "System/StreamData.h"
 #include "System/PacketParser.h"
@@ -101,6 +112,7 @@
 #include "System/StreamWriter.h"
 #include "System/Stream.h"
 #include "System/StreamParser.h"
+#endif
 
 #include "../MdfModel/UnicodeString.h"
 #include "Data/Collection.h"
@@ -118,12 +130,13 @@
 #include "System/FoundationConfigProperties.h"
 #include "System/FileUtil.h"
 #include "System/Util.h"
-
+#ifndef SWIG_PUBLIC_API
 #include "System/ConfigurationSection.h"
 #include "System/ConfigurationSectionCollection.h"
 #include "System/ConfigurationHeap.h"
 #include "System/Configuration.h"
 #include "System/Resources.h"
+#endif
 
 // Base exception classes and defines
 #include "Exception/ExceptionDefs.h"
@@ -181,6 +194,7 @@
 #include "Exception/XmlParserException.h"
 
 
+#ifndef SWIG_PUBLIC_API
 #include "System/ByteSourceFileImpl.h"
 #include "System/ByteSourceMemoryImpl.h"
 
@@ -226,5 +240,7 @@ typedef ACE_LOCK_SOCK_Acceptor<ACE_SYNCH_MUTEX> SOCK_Acceptor;
 #else
     static const int MG_MSG_NOSIGNAL = MSG_NOSIGNAL;
 #endif
+
+#endif /* SWIG_PUBLIC_API */
 
 #endif
