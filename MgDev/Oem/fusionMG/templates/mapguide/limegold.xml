@@ -1,6 +1,6 @@
 <TemplateInfo>
 <Name>LimeGold</Name>
-<LocationUrl>fusion/templates/mapguide/limegold/index.html</LocationUrl>
+<LocationUrl>fusion/templates/mapguide/index.php?template=limegold</LocationUrl>
 <Description>Lime-Gold template</Description>
 <PreviewImageUrl>fusion/templates/mapguide/limegold/preview.png</PreviewImageUrl>
 
