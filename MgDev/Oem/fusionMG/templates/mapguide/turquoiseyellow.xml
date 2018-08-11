@@ -1,6 +1,6 @@
 <TemplateInfo>
 <Name>TurquoiseYellow</Name>
-<LocationUrl>fusion/templates/mapguide/turquoiseyellow/index.html</LocationUrl>
+<LocationUrl>fusion/templates/mapguide/index.php?template=turquoiseyellow</LocationUrl>
 <Description>Turquoise-Yellow template</Description>
 <PreviewImageUrl>fusion/templates/mapguide/turquoiseyellow/preview.png</PreviewImageUrl>
 

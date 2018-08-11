@@ -1,6 +1,6 @@
 <TemplateInfo>
 <Name>Slate</Name>
-<LocationUrl>fusion/templates/mapguide/slate/index.html</LocationUrl>
+<LocationUrl>fusion/templates/mapguide/index.php?template=slate</LocationUrl>
 <Description>Slate template</Description>
 <PreviewImageUrl>fusion/templates/mapguide/slate/preview.png</PreviewImageUrl>
 

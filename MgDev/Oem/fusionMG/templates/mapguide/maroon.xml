@@ -1,6 +1,6 @@
 <TemplateInfo>
 <Name>Maroon</Name>
-<LocationUrl>fusion/templates/mapguide/maroon/index.html</LocationUrl>
+<LocationUrl>fusion/templates/mapguide/index.php?template=maroon</LocationUrl>
 <Description>Maroon template</Description>
 <PreviewImageUrl>fusion/templates/mapguide/maroon/preview.png</PreviewImageUrl>
 

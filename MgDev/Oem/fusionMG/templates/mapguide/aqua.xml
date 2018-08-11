@@ -1,6 +1,6 @@
 <TemplateInfo>
 <Name>Aqua</Name>
-<LocationUrl>fusion/templates/mapguide/aqua/index.html</LocationUrl>
+<LocationUrl>fusion/templates/mapguide/index.php?template=aqua</LocationUrl>
 <Description>Aqua template</Description>
 <PreviewImageUrl>fusion/templates/mapguide/aqua/preview.png</PreviewImageUrl>
 
