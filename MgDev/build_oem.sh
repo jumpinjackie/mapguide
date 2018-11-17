@@ -618,7 +618,7 @@ init_csmap()
 
 build_csmap()
 {
-    pushd CsMap
+    pushd CsMap/CsMapDev
     mkdir -p .libs
     pushd Source
     if [ $BUILD_CPU -eq 64 ]; then
@@ -642,7 +642,7 @@ build_csmap()
 
 clean_csmap()
 {
-    pushd CsMap/Source
+    pushd CsMap/CsMapDev/Source
     if [ $BUILD_CPU -eq 64 ]; then
         make clean -fLibrary.mak PROCESSOR=x64
     else

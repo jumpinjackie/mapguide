@@ -452,18 +452,18 @@ INCLUDES = \
   -I../../Oem/ACE/ACE_wrappers \
   -I../../Oem/geos/include \
   -I../../Oem/dbxml/xerces-c-src/src \
-  -I../../Oem/CsMap/Include \
+  -I../../Oem/CsMap/CsMapDev/Include \
   -I../../Common/CoordinateSystem
 
 libMgGeometry_la_LIBADD = \
   -lACE \
   -lMgFoundation \
-  ../../Oem/CsMap/.libs/libCsmap.a \
+  ../../Oem/CsMap/CsMapDev/.libs/libCsmap.a \
   ../../Oem/geos/src/.libs/libgeos.a
 
 libMgGeometry_la_LDFLAGS = -release $(PACKAGE_VERSION) \
   -L../../Oem/ACE/ACE_wrappers/ace \
   -L../Foundation \
-  -L../../Oem/CsMap \
+  -L../../Oem/CsMap/CsMapDev \
   -L../../Common/CoordinateSystem
 

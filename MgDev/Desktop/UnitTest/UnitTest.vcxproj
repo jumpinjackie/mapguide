@@ -111,10 +111,10 @@ xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)..\UnitTestFiles\
 copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels_Writeable.sdf
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)Dictionaries\
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.gdc $(OutDir)Dictionaries\
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.mrt $(OutDir)Dictionaries\
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.csd $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.gdc $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.mrt $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.csv $(OutDir)Dictionaries\
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -159,10 +159,10 @@ xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)..\UnitTestFiles\
 copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels_Writeable.sdf
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)Dictionaries\
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.gdc $(OutDir)Dictionaries\
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.mrt $(OutDir)Dictionaries\
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.csd $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.gdc $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.mrt $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.csv $(OutDir)Dictionaries\
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -207,11 +207,11 @@ xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)..\UnitTestFiles\
 copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels_Writeable.sdf
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)Dictionaries\
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.gdc $(OutDir)Dictionaries\
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.mrt $(OutDir)Dictionaries\
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
-xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.csd $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.gdc $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.mrt $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.csv $(OutDir)Dictionaries\
+xcopy /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.txt $(OutDir)Dictionaries\
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -259,11 +259,11 @@ xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)..\UnitTestFiles\
 copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels_Writeable.sdf
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)Dictionaries\
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.gdc $(OutDir)Dictionaries\
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.mrt $(OutDir)Dictionaries\
-xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
-xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.csd $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.gdc $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.mrt $(OutDir)Dictionaries\
+xcopy /S /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.csv $(OutDir)Dictionaries\
+xcopy /Y /I ..\..\Oem\CsMap\CsMapDev\Dictionaries\*.txt $(OutDir)Dictionaries\
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

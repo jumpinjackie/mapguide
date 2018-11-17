@@ -146,7 +146,7 @@ echo [clean]: Clean Oem
 %MSBUILD_CLEAN% %MG_OEM%\Oem.sln
 if not "%errorlevel%"=="0" goto error
 echo [clean]: Clean Oem - CS-Map
-%MSBUILD_CLEAN% %MG_OEM%\CSMap\VC110\OpenSource.sln
+%MSBUILD_CLEAN% %MG_OEM%\CSMap\CsMapDev\VC140\OpenSource.sln
 if not "%errorlevel%"=="0" goto error
 if not "%TYPECOMPONENT%"=="all" goto quit
 
@@ -191,7 +191,7 @@ echo [build]: Building Oem
 if not "%errorlevel%"=="0" goto error
 rem CsMap is not in Oem.sln, so we need to build that separately
 echo [build]: Building Oem - CSMap
-%MSBUILD% %MG_OEM%\CsMap\VC140\OpenSource.sln
+%MSBUILD% %MG_OEM%\CSMap\CsMapDev\VC140\OpenSource.sln
 if not "%errorlevel%"=="0" goto error
 if "%TYPECOMPONENT%"=="oem" 	goto quit
 if "%TYPECOMPONENT%"=="server" 	goto quit
@@ -276,7 +276,7 @@ copy /Y "%MG_BUILD_DBXML_EXE_PATH%\*.exe" "%MG_OUTPUT_SERVER%\bin"
 echo [install]: Server - RepositoryAdmin
 %XCOPY% "%MG_SERVER%\RepositoryAdmin" "%MG_OUTPUT_SERVER%\RepositoryAdmin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: CsMap Dictionaries
-%XCOPY% "%MG_OEM%\CsMap\Dictionaries" "%MG_OUTPUT_CSMAP%\Dictionaries" /EXCLUDE:svn_excludes.txt+csmap_excludes.txt+%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_OEM%\CSMap\CsMapDev\Dictionaries" "%MG_OUTPUT_CSMAP%\Dictionaries" /EXCLUDE:svn_excludes.txt+csmap_excludes.txt+%TYPEBUILD%_excludes.txt
 if "%TYPECOMPONENT%"=="server" goto quit
 if "%TYPECOMPONENT%"=="web" goto quit
 
