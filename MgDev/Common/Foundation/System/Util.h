@@ -592,6 +592,9 @@ INTERNAL_API:
     static const STRING sm_classNameQualifier;
     static const STRING sm_classPropertyQualifier;
 
+    //Wraps XMLString::copyString in xerces
+    static void copyString(XMLCh* const target, const XMLCh* const src);
+
 private:
 
     static bool StaticInitialize();
