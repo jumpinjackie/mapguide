@@ -1,9 +1,15 @@
 project(mapguide)
 
 # CMake base requires and policy tweaks
-cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
-# CMP0005: keep escaping behaviour for definitions added via add_definitions()
-cmake_policy( SET CMP0005 OLD )
+cmake_minimum_required( VERSION 2.8 FATAL_ERROR )
+if (POLICY CMP0005)
+    # CMP0005: keep escaping behaviour for definitions added via add_definitions()
+    cmake_policy( SET CMP0005 OLD )
+endif (POLICY CMP0005)
+if (POLICY CMP0026)
+    # CMP0026: Disallow use of the LOCATION target property
+    cmake_policy( SET CMP0026 OLD )
+endif (POLICY CMP0026)
 
 # Look first in internal modules
 set(CMAKE_MODULE_PATH 
@@ -16,6 +22,13 @@ if (NOT CMAKE_BUILD_TYPE)
 endif (NOT CMAKE_BUILD_TYPE)
 
 message(STATUS "CMake Build Type is: ${CMAKE_BUILD_TYPE}")
+
+# Use ccache if available
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+    message(STATUS "ccache was found and will be used to cache compilations")
+endif()
 
 # Determine bitness
 if ((NOT MG_CPU EQUAL 32) AND (NOT MG_CPU EQUAL 64))
