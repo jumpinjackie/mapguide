@@ -7,7 +7,7 @@ dnl Configure.in for MapGuide Open Source
 AC_INIT(mapguide,3.3.0,http://mapguide.osgeo.org)
 AC_CONFIG_SRCDIR(configure.in)
 AM_INIT_AUTOMAKE
-AM_INIT_AUTOMAKE([1.9 tar-pax])
+AM_INIT_AUTOMAKE([1.9 tar-pax subdir-objects])
 
 # Enable silent rules if supported. Allows for less verbose output while still displaying any compiler/linker warnings/errors
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
