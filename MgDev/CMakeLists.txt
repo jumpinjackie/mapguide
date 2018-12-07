@@ -143,7 +143,7 @@ if (CMAKE_COMPILER_IS_GNUCXX)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g3")
         message(STATUS "Adding standard compiler flags for debug")
-    endif (CMAKE_BUILD_TYPE MATCHES DEBUG)
+    endif (CMAKE_BUILD_TYPE MATCHES Debug)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 if (USE_LD_GOLD)

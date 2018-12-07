@@ -2,11 +2,6 @@
 
 CMAKE_BUILD_DIR=~/mapguide_build_area
 OEM_WORK_DIR=~/mapguide_oem_build
-#BUILD_CPU=32
-#BUILD_CONFIG=Release
-BUILD_DBXML=0
-BUILD_LINUXAPT=0
-#HAVE_SYSTEM_XERCES=0
 USE_NINJA=0
 USE_ASAN=OFF
 USE_LD_GOLD=OFF
@@ -44,7 +39,7 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
     shift   # Check next set of parameters.
 done
 
-SOURCE_DIR=`pwd`
+SOURCE_DIR=$(pwd)
 
 check_build()
 {
@@ -52,18 +47,18 @@ check_build()
     if [ $error -ne 0 ]; then
         echo "$LIB_NAME: Error build failed ($error)................."
         # Return back to this dir before bailing
-        cd $SOURCE_DIR
+        cd "$SOURCE_DIR" || exit
         exit $error
     fi
 }
 
-if [ ! -f $OEM_WORK_DIR/env_vars.sh ]; then
+if [ ! -f "$OEM_WORK_DIR/env_vars.sh" ]; then
     echo "ERROR: Could not find env_vars.sh in $OEM_WORK_DIR"
     echo "       This file should exist if you ran cmake_bootstrap.sh with (--oem_working_dir $OEM_WORK_DIR)"
     exit 1;
 fi
 
-source $OEM_WORK_DIR/env_vars.sh
+. "$OEM_WORK_DIR/env_vars.sh"
 
 # Validate
 if test "$BUILD_CPU" != "32" -a "$BUILD_CPU" != "64"; then
@@ -80,11 +75,12 @@ echo "Current source dir is: $SOURCE_DIR"
 echo "Building for: $BUILD_CPU-bit"
 echo "Building in: $BUILD_CONFIG"
 echo "Using Ninja build: $USE_NINJA"
+echo "Using ld.gold: $USE_LD_GOLD"
 echo "CMake build directory is: $CMAKE_BUILD_DIR" 
 echo "OEM Working Directory is: $OEM_WORK_DIR"
 
 echo "Creating CMake build directory"
-mkdir -p $CMAKE_BUILD_DIR
+mkdir -p "$CMAKE_BUILD_DIR"
 
 INTERNAL_XERCES=TRUE
 if test $HAVE_SYSTEM_XERCES -eq 1; then
@@ -93,14 +89,14 @@ fi
 
 # Now for the main event
 echo "Setting up CMake in: $CMAKE_BUILD_DIR"
-cd $CMAKE_BUILD_DIR
+cd "$CMAKE_BUILD_DIR" || exit
 if test $USE_NINJA -eq 1; then
-    cmake -G Ninja $SOURCE_DIR -DMG_CPU=$BUILD_CPU -DWITH_JAVA=TRUE -DINTERNAL_XERCES=$INTERNAL_XERCES -DSANITIZE_ADDRESS=$USE_ASAN -DPHP_VER=${PHP_VER} -DHTTPD_VER=${HTTPD_VER} -DCMAKE_BUILD_TYPE=$BUILD_CONFIG -DMG_OEM_WORK_DIR=$OEM_WORK_DIR
+    cmake -G Ninja "$SOURCE_DIR" -DMG_CPU="$BUILD_CPU" -DWITH_JAVA=TRUE -DUSE_LD_GOLD="$USE_LD_GOLD" -DINTERNAL_XERCES=$INTERNAL_XERCES -DSANITIZE_ADDRESS=$USE_ASAN -DPHP_VER="$PHP_VER" -DHTTPD_VER="$HTTPD_VER" -DCMAKE_BUILD_TYPE="$BUILD_CONFIG" -DMG_OEM_WORK_DIR="$OEM_WORK_DIR"
     check_build
     ninja
     check_build
 else
-    cmake $SOURCE_DIR -DMG_CPU=$BUILD_CPU -DWITH_JAVA=TRUE -DINTERNAL_XERCES=$INTERNAL_XERCES -DSANITIZE_ADDRESS=$USE_ASAN -DPHP_VER=${PHP_VER} -DHTTPD_VER=${HTTPD_VER} -DCMAKE_BUILD_TYPE=$BUILD_CONFIG -DMG_OEM_WORK_DIR=$OEM_WORK_DIR
+    cmake "$SOURCE_DIR" -DMG_CPU="$BUILD_CPU" -DWITH_JAVA=TRUE -DUSE_LD_GOLD="$USE_LD_GOLD" -DINTERNAL_XERCES=$INTERNAL_XERCES -DSANITIZE_ADDRESS=$USE_ASAN -DPHP_VER="$PHP_VER" -DHTTPD_VER="$HTTPD_VER" -DCMAKE_BUILD_TYPE="$BUILD_CONFIG" -DMG_OEM_WORK_DIR="$OEM_WORK_DIR"
     check_build
     make
     check_build

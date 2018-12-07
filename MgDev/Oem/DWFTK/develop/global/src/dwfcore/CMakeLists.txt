@@ -92,13 +92,14 @@ set (dwfcore_SRCS
     zlib/compress.c
     zlib/crc32.c
     zlib/deflate.c
-    zlib/infblock.c
-    zlib/infcodes.c
+    zlib/gzclose.c
+    zlib/gzlib.c
+    zlib/gzread.c
+    zlib/gzwrite.c
+    zlib/infback.c
     zlib/inffast.c
     zlib/inflate.c
     zlib/inftrees.c
-    zlib/infutil.c
-    zlib/maketree.c
     zlib/trees.c
     zlib/uncompr.c
     zlib/zutil.c

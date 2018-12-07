@@ -12,7 +12,7 @@ if (WITH_JAVA)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tomcat.conf DESTINATION ${MG_INSTALL_WEB_PREFIX}/apache2/conf/mapguide COMPONENT ${MG_COMPONENT})
 
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tomcat)
-    execute_process(COMMAND tar -zxf ${CMAKE_CURRENT_SOURCE_DIR}/apache-tomcat-7.0.68.tar.gz -C ${CMAKE_CURRENT_BINARY_DIR}/tomcat --strip-components=1)
+    execute_process(COMMAND tar -zxf ${CMAKE_CURRENT_SOURCE_DIR}/apache-tomcat-7.0.82.tar.gz -C ${CMAKE_CURRENT_BINARY_DIR}/tomcat --strip-components=1)
 
     configure_file(${CMAKE_MODULE_PATH}/../configs/mapguide.xml.in ${CMAKE_CURRENT_BINARY_DIR}/tomcat/conf/Catalina/localhost/mapguide.xml)
     # Don't overwrite startup.sh in the CMAKE_CURRENT_BINARY_DIR as the subseqent install will do the same thing

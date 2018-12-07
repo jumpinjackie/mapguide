@@ -66,7 +66,7 @@ throw()
 				#elif   defined( HAVE_ALSA_IATOMIC_H )
 				#include <alsa/iatomic.h>
 				#else
-				#error  Missing header file - cannot continue
+				#error  Missing atomic header file containing definition of atomic_t - cannot continue
 				#endif
 
 
