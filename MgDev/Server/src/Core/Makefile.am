@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 EXTRA_DIST = serverconfig.ini ServerCore.vcproj ServerCore.rc
 mentor_dict_install_dir=@prefix@/share/gis/coordsys
-mentor_dict_source_dir=$(map_srcdir)/Oem/CsMap/Dictionaries
+mentor_dict_source_dir=$(map_srcdir)/Oem/CsMap/CsMapDev/Dictionaries
 root_prefix=@prefix@
 
 prefix=@prefix@/server
