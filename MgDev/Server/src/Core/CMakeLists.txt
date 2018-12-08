@@ -123,4 +123,8 @@ install(PROGRAMS ${MG_OEM_WORK_DIR}/dbxml/install/bin/db_recover DESTINATION ${M
 install(PROGRAMS ${MG_OEM_WORK_DIR}/dbxml/install/bin/db_upgrade DESTINATION ${MG_SERVER_BIN_DIR})
 install(PROGRAMS ${MG_OEM_WORK_DIR}/dbxml/install/bin/db_verify DESTINATION ${MG_SERVER_BIN_DIR})
 # When installed into $PREFIX/server/bin, it will auto find libraries under $PREFIX/lib and $PREFIX/server/lib
-set_target_properties(mgserver PROPERTIES INSTALL_RPATH "$ORIGIN/../lib:$ORIGIN/../../lib")
+if(MG_CPU EQUAL 64)
+    set_target_properties(mgserver PROPERTIES INSTALL_RPATH "$ORIGIN/../lib64:$ORIGIN/../../lib64")
+else(MG_CPU EQUAL 64)
+    set_target_properties(mgserver PROPERTIES INSTALL_RPATH "$ORIGIN/../lib:$ORIGIN/../../lib")
+endif(MG_CPU EQUAL 64)
