@@ -4,6 +4,8 @@ file(COPY "fusionMG" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 set(FUSION_WORK_DIR ${CMAKE_CURRENT_BINARY_DIR}/fusion)
 install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E chdir ${FUSION_WORK_DIR} ant deploy -Ddeploy.home=${MG_WWWROOT}/fusion)")
 if (UNIX)
+    # Make the tcpdf cache dir
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${MG_WWWROOT}/fusion/lib/tcpdf/cache)")
     # httpd's default config is to use user/group daemon/daemon, so make it own the tcpdf cache directory in order for QuickPlot to work
     install(CODE "execute_process(COMMAND chown daemon:daemon ${MG_WWWROOT}/fusion/lib/tcpdf/cache)")
 endif (UNIX)
