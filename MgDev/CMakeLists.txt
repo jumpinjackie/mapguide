@@ -207,26 +207,146 @@ if (USE_LD_GOLD)
 endif ()
 
 find_package(Sanitizers)
-find_package(GEOS REQUIRED)
-find_package(ACE REQUIRED)
-if (NOT INTERNAL_XERCES)
-    find_package(XercesC REQUIRED)
-else (NOT INTERNAL_XERCES)
-    message(STATUS "Using internal xerces-c")
-endif (NOT INTERNAL_XERCES)
-find_package(GD REQUIRED)
-find_package(Freetype REQUIRED)
-find_package(JPEG REQUIRED)
-find_package(PNG REQUIRED)
-find_package(FDO REQUIRED)
-find_package(CppUnit REQUIRED)
-find_package(TCLAP REQUIRED)
-find_package(LinuxApt REQUIRED)
-find_package(DbXmlInternal REQUIRED)
-if (INTERNAL_XERCES)
-    # This will be the same
-    set(XERCESC_INCLUDE_DIR "${DBXML_INCLUDE_DIR}")
-endif (INTERNAL_XERCES)
+
+######################## Begin Thirdparty Section ###############################
+
+set(INTERNAL_ACE true)
+set(INTERNAL_JSONCPP true)
+set(INTERNAL_GD true)
+
+# ACE
+if (NOT INTERNAL_ACE)
+    message(STATUS "Finding ACE (system)")
+    find_package(ACE REQUIRED)
+else (NOT INTERNAL_ACE)
+    message(STATUS "Setting up ACE (internal)")
+    set(ACE_BUILD_BITS 32)
+    set(ACE_DEBUG 0)
+    set(ACE_OPTIMIZE 1)
+    if (CMAKE_BUILD_TYPE MATCHES Debug)
+        set(ACE_DEBUG 1)
+        set(ACE_OPTIMIZE 0)
+    endif (CMAKE_BUILD_TYPE MATCHES Debug)
+    if (MG_CPU EQUAL 64)
+        set(ACE_BUILD_BITS 64)
+    endif (MG_CPU EQUAL 64)
+    set(ACE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Oem/ACE)
+    set(ACE_WORKING_DIR ${CMAKE_CURRENT_BINARY_DIR}/Oem/ACE)
+    ExternalProject_Add(ACE
+        SOURCE_DIR ${ACE_SOURCE_DIR}
+        BINARY_DIR ${ACE_WORKING_DIR}
+        BUILD_IN_SOURCE 0
+        BUILD_COMMAND env ACE_ROOT=${ACE_WORKING_DIR}/ACE_wrappers make buildbits=${ACE_BUILD_BITS} debug=${ACE_DEBUG} optimize=${ACE_OPTIMIZE}
+    )
+endif (NOT INTERNAL_ACE)
+
+# DbXml
+
+# HTTPD
+
+# PHP
+
+# Tomcat Connector
+
+# CppUnit
+
+# ZLib
+if (NOT INTERNAL_ZLIB)
+    message(STATUS "Finding zlib (system)")
+    find_package(GD REQUIRED)
+else (NOT INTERNAL_ZLIB)
+    message(STATUS "Setting up zlib (internal)")
+    set(ZLIB_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Oem/gd/zlib)
+    set(ZLIB_WORKING_DIR ${CMAKE_CURRENT_BINARY_DIR}/Oem/gd/zlib)
+    ExternalProject_Add(zlib
+        SOURCE_DIR ${FREETYPE_SOURCE_DIR}
+        BINARY_DIR ${FREETYPE_WORKING_DIR}
+        BUILD_IN_SOURCE 0
+        CONFIGURE_COMMAND ./configure
+        BUILD_COMMAND make
+    )
+endif (NOT INTERNAL_ZLIB)
+
+# LibPNG
+
+# Jpeg
+
+# freetype
+if (NOT INTERNAL_FREETYPE)
+    message(STATUS "Finding freetype (system)")
+    find_package(GD REQUIRED)
+else (NOT INTERNAL_FREETYPE)
+    message(STATUS "Setting up freetype (internal)")
+    set(FREETYPE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Oem/gd/gd)
+    set(FREETYPE_WORKING_DIR ${CMAKE_CURRENT_BINARY_DIR}/Oem/gd/gd)
+    ExternalProject_Add(freetype
+        SOURCE_DIR ${FREETYPE_SOURCE_DIR}
+        BINARY_DIR ${FREETYPE_WORKING_DIR}
+        BUILD_IN_SOURCE 0
+        CONFIGURE_COMMAND ./configure --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-pic 
+        BUILD_COMMAND make
+    )
+endif (NOT INTERNAL_FREETYPE)
+
+# gd
+if (NOT INTERNAL_GD)
+    message(STATUS "Finding GD (system)")
+    find_package(GD REQUIRED)
+else (NOT INTERNAL_GD)
+    message(STATUS "Setting up GD (internal)")
+    set(GD_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Oem/gd/gd)
+    set(GD_WORKING_DIR ${CMAKE_CURRENT_BINARY_DIR}/Oem/gd/gd)
+    ExternalProject_Add(GD
+        SOURCE_DIR ${GD_SOURCE_DIR}
+        BINARY_DIR ${GD_WORKING_DIR}
+        BUILD_IN_SOURCE 0
+        CONFIGURE_COMMAND ./configure --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-pic 
+        BUILD_COMMAND make
+    )
+endif (NOT INTERNAL_GD)
+
+# jsoncpp
+
+if (NOT INTERNAL_JSONCPP)
+    message(STATUS "Finding JsonCpp (system)")
+    find_package (JsonCpp REQUIRED)
+else (NOT INTERNAL_JSONCPP)
+    message(STATUS "Setting up JsonCpp (internal)")
+    set(JSONCPP_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Oem/jsoncpp)
+    set(JSONCPP_WORKING_DIR ${CMAKE_CURRENT_BINARY_DIR}/Oem/jsoncpp)
+    ExternalProject_Add(JsonCpp
+        SOURCE_DIR ${JSONCPP_SOURCE_DIR}
+        BINARY_DIR ${JSONCPP_WORKING_DIR}
+        BUILD_IN_SOURCE 0
+        BUILD_COMMAND scons platform=linux-gcc
+    )
+    set(JsonCpp_INCLUDE_DIR ${JSONCPP_WORKING_DIR}/include)
+    set(JsonCpp_LIBRARY lib_json)
+endif (NOT INTERNAL_JSONCPP)
+
+#find_package(GEOS REQUIRED)
+#find_package(ACE REQUIRED)
+#if (NOT INTERNAL_XERCES)
+#    find_package(XercesC REQUIRED)
+#else (NOT INTERNAL_XERCES)
+#    message(STATUS "Using internal xerces-c")
+#endif (NOT INTERNAL_XERCES)
+#find_package(GD REQUIRED)
+#find_package(Freetype REQUIRED)
+#find_package(JPEG REQUIRED)
+#find_package(PNG REQUIRED)
+#find_package(FDO REQUIRED)
+#find_package(CppUnit REQUIRED)
+#find_package(TCLAP REQUIRED)
+#find_package(LinuxApt REQUIRED)
+#find_package(DbXmlInternal REQUIRED)
+#if (INTERNAL_XERCES)
+#    # This will be the same
+#    set(XERCESC_INCLUDE_DIR "${DBXML_INCLUDE_DIR}")
+#endif (INTERNAL_XERCES)
+
+######################## End Thirdparty Section ###############################
+
 find_package(Ant REQUIRED)
 
 # Set internal tool paths
