@@ -1,3 +1,5 @@
+find_package (JsonCpp REQUIRED)
+
 include_directories(${JsonCpp_INCLUDE_DIR}
     ${MG_COMMON_DIR}/MdfModel
     ${MG_COMMON_DIR}/Foundation
