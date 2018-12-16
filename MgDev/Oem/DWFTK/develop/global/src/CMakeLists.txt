@@ -4,21 +4,23 @@ add_definitions(-DDWFCORE_BUILD_ZLIB -DDWFCORE_BUILD_EXPAT)
 
 find_library(pthread REQUIRED)
 find_library(uuid REQUIRED)
-if (NOT uuid-NOTFOUND)
-    #add_definitions(-DHAVE_LIBUUID)
+check_cxx_source_compiles(
+    "#include <uuid/uuid.h>
+    int main() {
+        uuid_t      _tUUID;
+    }" 
+    HAS_UUID)
+if (HAS_UUID AND NOT uuid-NOTFOUND)
     set (HAVE_LIBUUID 1)
-else (NOT uuid-NOTFOUND)
-    message(STATUS "Could not find libuuid")
-endif (NOT uuid-NOTFOUND)
+    message(STATUS "libuuid found")
+else (HAS_UUID AND NOT uuid-NOTFOUND)
+    message(WARNING "Could not find libuuid and/or its uuid.h header")
+endif (HAS_UUID AND NOT uuid-NOTFOUND)
 
 check_include_file(bits/stl_algobase.h HAVE_ALGOBASE_H)
 check_include_file(asm/atomic.h HAVE_ATOMIC_H)
 check_include_file(alsa/iatomic.h HAVE_IATOMIC_H)
 check_include_file(netinet/ether.h HAVE_NETINET_ETHER_H)
-
-#if (HAVE_NETINET_ETHER_H)
-#    add_definitions(-DHAVE_NETINET_ETHER_H)
-#endif (HAVE_NETINET_ETHER_H)
 
 if (HAVE_ATOMIC_H)
     check_cxx_source_compiles(
@@ -53,7 +55,6 @@ check_cxx_source_compiles(
     }" 
     CAN_COMPILE_WITH_IATOMIC_H)
     if (CAN_COMPILE_WITH_IATOMIC_H)
-        #add_definitions(-D_DWFCORE_USE_ALSA_IATOMIC_H)
         set (_DWFCORE_USE_ALSA_IATOMIC_H 1)
     else (CAN_COMPILE_WITH_IATOMIC_H)
     message(WARNING "Found alsa/atomic.h but could not compile with it")
@@ -63,12 +64,6 @@ endif (HAVE_IATOMIC_H)
 check_function_exists(max HAVE_MAX)
 check_function_exists(min HAVE_MIN)
 check_function_exists(memmove HAVE_MEMMOVE)
-
-#if (HAVE_MEMMOVE)
-#   add_definitions(-DHAVE_MEMMOVE)
-#else (HAVE_MEMMOVE)
-#   message(ERROR "Could not find required function memmove")
-#endif (HAVE_MEMMOVE)
 
 if (NOT HAVE_MEMMOVE)
     message(ERROR "Could not find required function memmove")

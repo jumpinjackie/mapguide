@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# TODO: The MapGuie build system is not aware of FDO (beyond the built FDO binaries), so there is nothing here 
+# that knows that FDO's build system has an internally built copy of openssl/curl that can be passed on to PHP 
+# here.
+
 MG_INST_PREFIX=/usr/local/mapguideopensource-3.3.0
 OEM_WORK_DIR=~/mapguide_oem_build
 INTERNAL_ACE=0
@@ -256,14 +260,33 @@ if [ "$INTERNAL_FREETYPE" = "1" ]; then
     make && make install
     check_build
 fi
+
+# Before we build GD, set some vars for PHP that we can reuse here too
+PHP_JPEG_DIR=/usr/lib
+PHP_PNG_DIR=/usr/lib
+PHP_FREETYPE_DIR=/usr/lib
+PHP_ZLIB_DIR=/usr/lib
+if [ "$INTERNAL_JPEG" = "1" ]; then
+    PHP_JPEG_DIR="$OEM_WORK_DIR/install/libjpeg"
+fi
+if [ "$INTERNAL_LIBPNG" = "1" ]; then
+    PHP_PNG_DIR="$OEM_WORK_DIR/install/libpng/usr/local"
+fi    
+if [ "$INTERNAL_FREETYPE" = "1" ]; then
+    PHP_FREETYPE_DIR="$OEM_WORK_DIR/install/freetype"
+fi
+if [ "$INTERNAL_ZLIB" = "1" ]; then
+    PHP_ZLIB_DIR="$OEM_WORK_DIR/install/zlib"
+fi
+
 if [ "$INTERNAL_GD" = "1" ]; then
     echo "Building GD (internal)"
     cp -Rf "${SOURCE_DIR}/Oem/gd/gd" "${OEM_WORK_DIR}/gd/gd"
     cd "${OEM_WORK_DIR}/gd/gd" || exit
     if [ $BUILD_CPU -eq 64 ]; then
-        sh ./configure --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-pic --prefix="${OEM_INSTALL_STAGE}/gd"
+        sh ./configure --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-jpeg="${PHP_JPEG_DIR}" --with-png="${PHP_PNG_DIR}" --with-freetype="${PHP_FREETYPE_DIR}" --with-pic --prefix="${OEM_INSTALL_STAGE}/gd"
     else
-        sh ./configure --enable-static --disable-shared --without-fontconfig --enable-silent-rules --prefix="${OEM_INSTALL_STAGE}/gd"
+        sh ./configure --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-jpeg="${PHP_JPEG_DIR}" --with-png="${PHP_PNG_DIR}" --with-freetype="${PHP_FREETYPE_DIR}" --prefix="${OEM_INSTALL_STAGE}/gd"
     fi
     make && make install
     check_build
@@ -274,6 +297,35 @@ if [ "$INTERNAL_JSON" = "1" ]; then
     cd "${OEM_WORK_DIR}/jsoncpp" || exit
     # Use system scons
     scons platform=linux-gcc
+    check_build
+fi
+if [ "$INTERNAL_GEOS" = "1" ]; then
+    echo "Building GEOS (internal)"
+    cp -Rf "${SOURCE_DIR}/Oem/geos" "${OEM_WORK_DIR}/geos"
+    cd "${OEM_WORK_DIR}/geos" || exit
+    # NOTE: We could build with CMake, but it isn't the "blessed" build system for the version we
+    # have internally (3.4.2), so we're sticking with autotools
+    #cmake "${SOURCE_DIR}/Oem/geos" .
+
+    # For this version of GEOS, don't run the aclocal/libtoolize/automake/autoconf quartet as we normally do, as it
+    # may produce an unusable configure script. Just run autoreconf to regenerate the configure script from configure.in
+    autoreconf
+    
+    # Fix for error:
+    # virtual void geos::geom::GeometryComponentFilter::filter_ro(const geos::geom::Geometry*): Assertion `0' failed
+    #
+    # Based on this GEOS ticket: https://trac.osgeo.org/geos/ticket/469
+    # The fix to to set the appropriate CFLAGS/CPPFLAGS/CXXFLAGS/LDFLAGS/FFLAGS before calling the configure script
+    #
+    # If we upgrade our internal copy of GEOS in the future, this should be reviewed
+    chmod +x configure
+    if [ $BUILD_CPU -eq 64 ]; then
+        CFLAGS="-m64" CPPFLAGS="-m64" CXXFLAGS="-m64" LDFLAGS="-m64" FFLAGS="-m64" LDFLAGS="-L/usr/lib64" ./configure --with-pic --enable-silent-rules --prefix="${INSTALLDIR}"
+    else
+        CFLAGS="-m32" CPPFLAGS="-m32" CXXFLAGS="-m32" LDFLAGS="-m32" FFLAGS="-m32" LDFLAGS="-L/usr/lib" ./configure --enable-silent-rules --prefix="${INSTALLDIR}"
+    fi
+    make
+    # The check build is disabled as the build will fail with automake version < 2.59
     check_build
 fi
 
@@ -394,22 +446,6 @@ if test $HAS_PHP -eq 0; then
     tar -jxf php-${PHP_VER}.tar.bz2 -C "${LA_WORKDIR}"
 
     echo "Configuring PHP"
-    PHP_JPEG_DIR=/usr/lib
-    PHP_PNG_DIR=/usr/lib
-    PHP_FREETYPE_DIR=/usr/lib
-    PHP_ZLIB_DIR=/usr/lib
-    if [ "$INTERNAL_JPEG" = "1" ]; then
-        PHP_JPEG_DIR="$OEM_WORK_DIR/install/libjpeg"
-    fi
-    if [ "$INTERNAL_LIBPNG" = "1" ]; then
-        PHP_PNG_DIR="$OEM_WORK_DIR/install/libpng/usr/local"
-    fi    
-    if [ "$INTERNAL_FREETYPE" = "1" ]; then
-        PHP_FREETYPE_DIR="$OEM_WORK_DIR/install/freetype"
-    fi
-    if [ "$INTERNAL_ZLIB" = "1" ]; then
-        PHP_ZLIB_DIR="$OEM_WORK_DIR/install/zlib"
-    fi
     cd "${PHP_WORKDIR}" || exit
     # TODO: Patch out the use of meta_ccld so ccache can work: https://bugs.php.net/bug.php?id=75940
     # if/when we finally move to PHP 7, this patch is already applied
@@ -442,6 +478,43 @@ cd "${TC_WORKDIR}/native" || exit
 make install 2>&1 | tee "$OEM_WORK_DIR/make_install_tc.log"
 check_build
 
+OUT_INTERNAL_ACE=FALSE
+if [ "$INTERNAL_ACE" = "1" ]; then
+    OUT_INTERNAL_ACE=TRUE
+fi
+OUT_INTERNAL_CPPUNIT=FALSE
+if [ "$INTERNAL_CPPUNIT" = "1" ]; then
+    OUT_INTERNAL_CPPUNIT=TRUE
+fi
+OUT_INTERNAL_ZLIB=FALSE
+if [ "$INTERNAL_ZLIB" = "1" ]; then
+    OUT_INTERNAL_ZLIB=TRUE
+fi
+OUT_INTERNAL_LIBPNG=FALSE
+if [ "$INTERNAL_LIBPNG" = "1" ]; then
+    OUT_INTERNAL_LIBPNG=TRUE
+fi
+OUT_INTERNAL_JPEG=FALSE
+if [ "$INTERNAL_JPEG" = "1" ]; then
+    OUT_INTERNAL_JPEG=TRUE
+fi
+OUT_INTERNAL_FREETYPE=FALSE
+if [ "$INTERNAL_FREETYPE" = "1" ]; then
+    OUT_INTERNAL_FREETYPE=TRUE
+fi
+OUT_INTERNAL_GD=FALSE
+if [ "$INTERNAL_GD" = "1" ]; then
+    OUT_INTERNAL_GD=TRUE
+fi
+OUT_INTERNAL_JSON=FALSE
+if [ "$INTERNAL_JSON" = "1" ]; then
+    OUT_INTERNAL_JSON=TRUE
+fi
+OUT_INTERNAL_GEOS=FALSE
+if [ "$INTERNAL_GEOS" = "1" ]; then
+    OUT_INTERNAL_GEOS=TRUE
+fi
+
 # dump vars to setup script
 {
     echo "#!/bin/sh"
@@ -454,15 +527,15 @@ check_build
     echo "export HTTPD_PORT=$HTTPD_PORT"
     echo "export TOMCAT_PORT=$TOMCAT_PORT"
     echo "export HAVE_SYSTEM_XERCES=$HAVE_SYSTEM_XERCES"
-    echo "export INTERNAL_ACE=$INTERNAL_ACE"
-    echo "export INTERNAL_CPPUNIT=$INTERNAL_CPPUNIT"
-    echo "export INTERNAL_ZLIB=$INTERNAL_ZLIB"
-    echo "export INTERNAL_LIBPNG=$INTERNAL_LIBPNG"
-    echo "export INTERNAL_JPEG=$INTERNAL_JPEG"
-    echo "export INTERNAL_FREETYPE=$INTERNAL_FREETYPE"
-    echo "export INTERNAL_GD=$INTERNAL_GD"
-    echo "export INTERNAL_JSON=$INTERNAL_JSON"
-    echo "export INTERNAL_GEOS=$INTERNAL_GEOS"
+    echo "export INTERNAL_ACE=$OUT_INTERNAL_ACE"
+    echo "export INTERNAL_CPPUNIT=$OUT_INTERNAL_CPPUNIT"
+    echo "export INTERNAL_ZLIB=$OUT_INTERNAL_ZLIB"
+    echo "export INTERNAL_LIBPNG=$OUT_INTERNAL_LIBPNG"
+    echo "export INTERNAL_JPEG=$OUT_INTERNAL_JPEG"
+    echo "export INTERNAL_FREETYPE=$OUT_INTERNAL_FREETYPE"
+    echo "export INTERNAL_GD=$OUT_INTERNAL_GD"
+    echo "export INTERNAL_JSON=$OUT_INTERNAL_JSON"
+    echo "export INTERNAL_GEOS=$OUT_INTERNAL_GEOS"
 } > "$OEM_WORK_DIR/env_vars.sh"
 chmod +x "$OEM_WORK_DIR/env_vars.sh"
 

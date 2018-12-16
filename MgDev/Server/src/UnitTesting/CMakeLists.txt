@@ -1,5 +1,6 @@
 include_directories(${ACE_INCLUDE_DIR}
     ${CPPUNIT_INCLUDE_DIR}
+    ${XERCESC_INCLUDE_DIR}
     ${MG_COMMON_DIR}/Foundation
     ${MG_COMMON_DIR}/Geometry
     ${MG_COMMON_DIR}/PlatformBase

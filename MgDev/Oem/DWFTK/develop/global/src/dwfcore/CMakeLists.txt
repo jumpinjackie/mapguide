@@ -107,19 +107,19 @@ set (dwfcore_SRCS
 
 add_library(dwfcore-${DWFCORE_VERSION} SHARED ${dwfcore_SRCS})
 
-if (NOT uuid-NOTFOUND)
+if (HAS_UUID AND NOT uuid-NOTFOUND)
     target_link_libraries(dwfcore-${DWFCORE_VERSION}
         -Wl,-Bsymbolic
         dl
         pthread
         uuid
     )
-else (NOT uuid-NOTFOUND)
+else (HAS_UUID AND NOT uuid-NOTFOUND)
     target_link_libraries(dwfcore-${DWFCORE_VERSION}
         -Wl,-Bsymbolic
         dl
         pthread
     )
-endif (NOT uuid-NOTFOUND)
+endif (HAS_UUID AND NOT uuid-NOTFOUND)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)

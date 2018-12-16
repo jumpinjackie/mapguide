@@ -1,6 +1,8 @@
 project(mdfparser)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../MdfModel)
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../MdfModel
+    ${XERCESC_INCLUDE_DIR})
 
 set (MgMdfParser_SRCS
     Common/IOColor.cpp

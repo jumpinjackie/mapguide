@@ -1,4 +1,7 @@
-add_definitions( -DACE_HAS_THREAD_SAFE_ACCEPT )
+# On ubuntu at least, the system installed ACE does not define this (required by us)
+if (NOT INTERNAL_ACE)
+    add_definitions( -DACE_HAS_THREAD_SAFE_ACCEPT )
+endif (NOT INTERNAL_ACE)
 
 set(MG_COMPONENT ${MG_COMPONENT_SERVER})
 set_install_subdir("server/")

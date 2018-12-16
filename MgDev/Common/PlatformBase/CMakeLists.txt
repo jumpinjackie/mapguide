@@ -1,6 +1,7 @@
 project(platformbase)
 
 include_directories(${ACE_INCLUDE_DIR}
+    ${XERCESC_INCLUDE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../CoordinateSystem
     ${CMAKE_CURRENT_SOURCE_DIR}/../Security

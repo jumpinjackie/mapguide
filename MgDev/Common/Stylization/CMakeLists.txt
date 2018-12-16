@@ -1,6 +1,7 @@
 project(stylization)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
+    ${ACE_INCLUDE_DIR}
     ${FDO_INCLUDE_DIR}
     ${FDO_INCLUDE_DIR}/ExpressionEngine
     ${CMAKE_CURRENT_SOURCE_DIR}/../MdfModel

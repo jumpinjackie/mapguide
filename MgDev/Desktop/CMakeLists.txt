@@ -1,4 +1,7 @@
-add_definitions( -DACE_HAS_THREAD_SAFE_ACCEPT )
+# On ubuntu at least, the system installed ACE does not define this (required by us)
+if (NOT INTERNAL_ACE)
+    add_definitions( -DACE_HAS_THREAD_SAFE_ACCEPT )
+endif (NOT INTERNAL_ACE)
 
 # NOTE: Not applied for server tier projects except for mgserver main executable
 if( CMAKE_COMPILER_IS_GNUCXX )

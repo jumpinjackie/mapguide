@@ -1,6 +1,7 @@
 project(foundation)
 
 include_directories(${ACE_INCLUDE_DIR}
+    ${XERCESC_INCLUDE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/Data
     ${CMAKE_CURRENT_SOURCE_DIR}/Exception
