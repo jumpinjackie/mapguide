@@ -18,6 +18,7 @@
 #include "Foundation.h"
 #include "UnicodeString.h"
 #include "SetLocale.h"
+#include "XmlDefs.h"
 #include <math.h>
 
 #include <algorithm>
@@ -1249,4 +1250,9 @@ void MgUtil::PadLeft(REFSTRING str, const size_t numChars, wchar_t ch)
 {
     if (numChars > str.size())
         str.insert(0, numChars - str.size(), ch);
+}
+
+void MgUtil::copyString(XMLCh* const target, const XMLCh* const src)
+{
+    XMLString::copyString(target, src);
 }
