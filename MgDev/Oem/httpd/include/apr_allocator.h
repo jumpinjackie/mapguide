@@ -103,6 +103,16 @@ APR_DECLARE(apr_memnode_t *) apr_allocator_alloc(apr_allocator_t *allocator,
 APR_DECLARE(void) apr_allocator_free(apr_allocator_t *allocator,
                                      apr_memnode_t *memnode)
                   __attribute__((nonnull(1,2)));
+ 
+/**
+ * Get the true size that would be allocated for the given size (including
+ * the header and alignment).
+ * @param allocator The allocator from which to the memory would be allocated
+ * @param size The size to align
+ * @return The aligned size (or zero on apr_size_t overflow)
+ */
+APR_DECLARE(apr_size_t) apr_allocator_align(apr_allocator_t *allocator,
+                                            apr_size_t size);
 
 #include "apr_pools.h"
 
@@ -131,7 +141,7 @@ APR_DECLARE(apr_pool_t *) apr_allocator_owner_get(apr_allocator_t *allocator)
 /**
  * Set the current threshold at which the allocator should start
  * giving blocks back to the system.
- * @param allocator The allocator the set the threshold on
+ * @param allocator The allocator to set the threshold on
  * @param size The threshold.  0 == unlimited.
  */
 APR_DECLARE(void) apr_allocator_max_free_set(apr_allocator_t *allocator,
