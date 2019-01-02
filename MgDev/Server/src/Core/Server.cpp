@@ -752,6 +752,7 @@ int MgServer::open(void *args)
                 if (NULL != mgException)
                 {
                     ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) MgServer::open() - The MentorDictionaryPath setting is invalid. The coordinate system engine could not be initialized.\n")));
+                    ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) The thrown error was: %W"), mgException->GetExceptionMessage().c_str()));
                 }
             }
             else
