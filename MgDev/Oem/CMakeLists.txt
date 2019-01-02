@@ -1,4 +1,8 @@
 ###### Fusion #####
+# TODO: Actual fusion build should be offloaded to bootstrapping with the "install"
+# step just copying the build output to its final destination because right now an
+# elevated install will "taint" the CMake build dir with root-owned files produced
+# from the below build task
 file(COPY "fusion" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY "fusionMG" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 set(FUSION_WORK_DIR ${CMAKE_CURRENT_BINARY_DIR}/fusion)

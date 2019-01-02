@@ -68,47 +68,6 @@ endif (NOT MG_VERSION_REV)
 set(MG_VERSION "${MG_VERSION_MAJOR}.${MG_VERSION_MINOR}.${MG_VERSION_RELEASE}")
 set(MG_VERSION_FULL "${MG_VERSION}.${MG_VERSION_REV}")
 
-# Set CPack vars
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "MapGuide Open Source")
-set(CPACK_PACKAGE_VENDOR "OSGeo")
-set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/CMake_README.txt")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
-set(CPACK_PACKAGE_VERSION_MAJOR "${MG_VERSION_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${MG_VERSION_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH "${MG_VERSION_RELEASE}")
-set(CPACK_PACKAGE_VERSION "${MG_VERSION_FULL}")
-set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
-
-# Collect distro name for so we know how to name these packages
-# NOTE: This uses lsb_release to detect the name, so this tool must already be installed first
-execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/tools/getdistro.sh OUTPUT_VARIABLE DISTRO)
-message(STATUS "Detected Distro: ${DISTRO}")
-if(MG_CPU EQUAL 64)
-    set(CPACK_SYSTEM_NAME "${DISTRO}-amd64")
-else(MG_CPU EQUAL 64)
-    set(CPACK_SYSTEM_NAME "${DISTRO}-i386")
-endif(MG_CPU EQUAL 64)
-message(STATUS "CPack system name: ${CPACK_SYSTEM_NAME}")
-
-# Default to plain tarballs for packaging
-if (NOT CPACK_GENERATOR)
-    set(CPACK_GENERATOR "TGZ")
-endif (NOT CPACK_GENERATOR)
-message(STATUS "Using CPack generator: ${CPACK_GENERATOR}")
-
-# If making tarballs, force monolithic packaging
-if (CPACK_GENERATOR MATCHES "TGZ")
-    set(CPACK_MONOLITHIC_INSTALL 1)
-else (CPACK_GENERATOR MATCHES "TGZ")
-    set(CPACK_MONOLITHIC_INSTALL 0)
-endif (CPACK_GENERATOR MATCHES "TGZ")
-message(STATUS "CPack monolithic install: ${CPACK_MONOLITHIC_INSTALL}")
-
-# For monolithic packages, 
-if (CPACK_MONOLITHIC_INSTALL)
-    set (CPACK_PACKAGE_FILE_NAME "mapguideopensource-${MG_VERSION_FULL}-${CPACK_SYSTEM_NAME}")
-endif (CPACK_MONOLITHIC_INSTALL)
-
 set(MG_HTTPD_PORT 8008)
 set(MG_TOMCAT_PORT 8009)
 
@@ -141,22 +100,21 @@ set(MG_COMPONENT_WEB "web")
 if (NOT MG_INSTALL_PREFIX)
     set(MG_INSTALL_PREFIX "/usr/local/mapguideopensource-${MG_VERSION}")
 endif (NOT MG_INSTALL_PREFIX)
-#set(MG_INSTALL_WEB_PREFIX "${MG_INSTALL_PREFIX}/webserverextensions")
-#set(MG_WWWROOT "${MG_INSTALL_WEB_PREFIX}/www")
-#set(MG_INSTALL_SERVER_PREFIX "${MG_INSTALL_PREFIX}/server")
-#set(MG_SERVER_BIN_DIR "${MG_INSTALL_SERVER_PREFIX}/bin")
-#set(MG_INSTALL_COORDSYS_PREFIX "${MG_INSTALL_PREFIX}/share/gis/coordsys")
+# Have our sub-prefixes be relative for ease of packaging
 set(MG_INSTALL_WEB_PREFIX "webserverextensions")
 set(MG_WWWROOT "${MG_INSTALL_WEB_PREFIX}/www")
 set(MG_INSTALL_SERVER_PREFIX "server")
 set(MG_SERVER_BIN_DIR "${MG_INSTALL_SERVER_PREFIX}/bin")
 set(MG_INSTALL_COORDSYS_PREFIX "share/gis/coordsys")
+# Absolute versions however are for stamping various template configuration files
+# (which sadly do require absolute paths most of the time)
+set(MG_INSTALL_SERVER_PREFIX_ABS "${MG_INSTALL_PREFIX}/server")
+set(MG_INSTALL_WEB_PREFIX_ABS "${MG_INSTALL_PREFIX}/webserverextensions")
+set(MG_WWWROOT_ABS "${MG_INSTALL_WEB_PREFIX_ABS}/www")
+set(MG_INSTALL_COORDSYS_PREFIX_ABS "${MG_INSTALL_PREFIX}/share/gis/coordsys")
 set(CMAKE_INSTALL_PREFIX "${MG_INSTALL_PREFIX}")
 
 set(MG_VERSION_SUFFIX "-${MG_VERSION}")
-
-# Make CPack available to easy generate binary packages
-include(CPack)
 
 macro(set_install_subdir relbase)
     # Global definitions ( used by all sources )

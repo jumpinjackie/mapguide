@@ -512,7 +512,7 @@ doc_root =
 user_dir =
 
 ; Directory in which the loadable extensions (modules) reside.
-extension_dir = "@MG_INSTALL_WEB_PREFIX@/lib@LIB_SUFFIX@"
+extension_dir = "@MG_INSTALL_WEB_PREFIX_ABS@/lib@LIB_SUFFIX@"
 
 ; Whether or not to enable the dl() function.  The dl() function does NOT work
 ; properly in multithreaded servers, such as IIS or Zeus, and is automatically

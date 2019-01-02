@@ -6,10 +6,10 @@ LoadModule    jk_module  modules/mod_jk.so
 # AddModule     mod_jk.c
 # Where to find workers.properties
 # Update this path to match your conf directory location (put workers.properties next to httpd.conf)
-JkWorkersFile "@MG_INSTALL_WEB_PREFIX@/apache2/conf/mapguide/workers.properties"
+JkWorkersFile "@MG_INSTALL_WEB_PREFIX_ABS@/apache2/conf/mapguide/workers.properties"
 # Where to put jk logs
 # Update this path to match your logs directory location (put mod_jk.log next to access_log)
-JkLogFile     "@MG_INSTALL_WEB_PREFIX@/apache2/logs/mod_jk.log"
+JkLogFile     "@MG_INSTALL_WEB_PREFIX_ABS@/apache2/logs/mod_jk.log"
 # Set the jk log level [debug/error/info]
 JkLogLevel    info
 # Select the log format

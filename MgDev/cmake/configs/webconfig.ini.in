@@ -57,11 +57,11 @@
 #
 # *****************************************************************************
 DefaultMessageLocale               = en
-LogsPath                           = @MG_WWWROOT@/Logs/
-MentorDictionaryPath               = @MG_INSTALL_COORDSYS_PREFIX@
-ResourcesPath                      = @MG_WWWROOT@/Resources/
+LogsPath                           = @MG_WWWROOT_ABS@/Logs/
+MentorDictionaryPath               = @MG_INSTALL_COORDSYS_PREFIX_ABS@
+ResourcesPath                      = @MG_WWWROOT_ABS@/Resources/
 TcpIpMtu                           = 1460
-TempPath                           = @MG_WWWROOT@/Temp/
+TempPath                           = @MG_WWWROOT_ABS@/Temp/
 FailoverRetryTime                  = 1
 
 [AdministrativeConnectionProperties]
@@ -193,6 +193,6 @@ CITEWmsEnabled                     = 0
 # WidgetInfoFolder                 The folder containing widget info files
 # ContainerInfoFolder              The folder containing container info files
 # *****************************************************************************
-TemplateRootFolder                 = @MG_WWWROOT@/fusion/templates/mapguide
-WidgetInfoFolder                   = @MG_WWWROOT@/fusion/widgets/widgetinfo
-ContainerInfoFolder                = @MG_WWWROOT@/fusion/containerinfo
+TemplateRootFolder                 = @MG_WWWROOT_ABS@/fusion/templates/mapguide
+WidgetInfoFolder                   = @MG_WWWROOT_ABS@/fusion/widgets/widgetinfo
+ContainerInfoFolder                = @MG_WWWROOT_ABS@/fusion/containerinfo

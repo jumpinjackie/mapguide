@@ -96,20 +96,20 @@ LinuxFontDirectories               = /usr/share/fonts/truetype/msttcorefonts:/us
 Locale                             =
 LogsDelimiter                      = \t
 LogsDetail                         =
-LogsPath                           = @MG_INSTALL_SERVER_PREFIX@/Logs/
+LogsPath                           = @MG_INSTALL_SERVER_PREFIX_ABS@/Logs/
 MachineIp                          = 127.0.0.1
 MaxLogFileSize                     = 1024
 MaxLogFileSizeEnabled              = 0
-MentorDictionaryPath               = @MG_INSTALL_COORDSYS_PREFIX@
+MentorDictionaryPath               = @MG_INSTALL_COORDSYS_PREFIX_ABS@
 MentorUserDictionaryPath           =
 PreCacheMaps                       =
 Renderer                           = AGG
-ResourcesPath                      = @MG_INSTALL_SERVER_PREFIX@/Resources/
+ResourcesPath                      = @MG_INSTALL_SERVER_PREFIX_ABS@/Resources/
 SerialNumber                       =
 TcpIpMtu                           = 1460
-TempPath                           = @MG_INSTALL_SERVER_PREFIX@/Temp/
-WfsDocumentPath                    = @MG_INSTALL_SERVER_PREFIX@/Wfs/
-WmsDocumentPath                    = @MG_INSTALL_SERVER_PREFIX@/Wms/
+TempPath                           = @MG_INSTALL_SERVER_PREFIX_ABS@/Temp/
+WfsDocumentPath                    = @MG_INSTALL_SERVER_PREFIX_ABS@/Wfs/
+WmsDocumentPath                    = @MG_INSTALL_SERVER_PREFIX_ABS@/Wms/
 
 [AdministrativeConnectionProperties]
 # *****************************************************************************
@@ -407,19 +407,19 @@ MaxRasterImageHeight               = 2048
 #                                  are stored
 # SiteRepositoryPath               Path where the Site repository is stored
 # *****************************************************************************
-LibraryRepositoryPath              = @MG_INSTALL_SERVER_PREFIX@/Repositories/Library/
-LibraryResourceDataFilePath        = @MG_INSTALL_SERVER_PREFIX@/Repositories/Library/DataFiles/
-PackagesPath                       = @MG_INSTALL_SERVER_PREFIX@/Packages/
+LibraryRepositoryPath              = @MG_INSTALL_SERVER_PREFIX_ABS@/Repositories/Library/
+LibraryResourceDataFilePath        = @MG_INSTALL_SERVER_PREFIX_ABS@/Repositories/Library/DataFiles/
+PackagesPath                       = @MG_INSTALL_SERVER_PREFIX_ABS@/Packages/
 RepositoryCheckpointsTimerInterval = 600
 ResourceChangeTimerInterval        = 5
-ResourceDataFileTrashFolderName    = @MG_INSTALL_SERVER_PREFIX@/Trash/
+ResourceDataFileTrashFolderName    = @MG_INSTALL_SERVER_PREFIX_ABS@/Trash/
 ResourcePermissionCacheSize        = 1000
-ResourceSchemaFilePath             = @MG_INSTALL_SERVER_PREFIX@/Schema/
+ResourceSchemaFilePath             = @MG_INSTALL_SERVER_PREFIX_ABS@/Schema/
 SessionRepositoriesConfig          = FilePerSession
 SessionRepositoriesLimit           = 200
-SessionRepositoryPath              = @MG_INSTALL_SERVER_PREFIX@/Repositories/Session/
-SessionResourceDataFilePath        = @MG_INSTALL_SERVER_PREFIX@/Repositories/Session/DataFiles/
-SiteRepositoryPath                 = @MG_INSTALL_SERVER_PREFIX@/Repositories/Site/
+SessionRepositoryPath              = @MG_INSTALL_SERVER_PREFIX_ABS@/Repositories/Session/
+SessionResourceDataFilePath        = @MG_INSTALL_SERVER_PREFIX_ABS@/Repositories/Session/DataFiles/
+SiteRepositoryPath                 = @MG_INSTALL_SERVER_PREFIX_ABS@/Repositories/Site/
 
 [SiteServiceProperties]
 # *****************************************************************************
@@ -458,7 +458,7 @@ SessionTimerInterval               = 400
 #                                       PNG, PNG8, GIF or JPG
 # *****************************************************************************
 RenderOnly                         = 0
-TileCachePath                      = @MG_INSTALL_SERVER_PREFIX@/Repositories/TileCache/
+TileCachePath                      = @MG_INSTALL_SERVER_PREFIX_ABS@/Repositories/TileCache/
 TileColumnsPerFolder               = 30
 TileRowsPerFolder                  = 30
 DefaultTileSizeX                   = 300

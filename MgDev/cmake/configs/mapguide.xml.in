@@ -7,7 +7,7 @@
 -->
 
 
-<Context docBase="@MG_WWWROOT@"
+<Context docBase="@MG_WWWROOT_ABS@"
          privileged="true" antiResourceLocking="false" antiJARLocking="false">
 
   <!-- Link to the user database we will get roles from -->

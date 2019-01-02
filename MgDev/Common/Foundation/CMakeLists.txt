@@ -24,3 +24,8 @@ target_link_libraries(MgFoundation${MG_VERSION_SUFFIX}
 
 install( TARGETS MgFoundation${MG_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${MG_COMPONENT} )
 install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libMgFoundation${MG_VERSION_SUFFIX}.so libMgFoundation.so ${MG_COMPONENT} )
+
+if (INTERNAL_ACE)
+    install(FILES ${MG_OEM_WORK_DIR}/ACE/ACE_wrappers/ace/libACE.so DESTINATION ${LIB_INSTALL_DIR})
+    install(FILES ${MG_OEM_WORK_DIR}/ACE/ACE_wrappers/ace/libACE.so.6.2.6 DESTINATION ${LIB_INSTALL_DIR})
+endif (INTERNAL_ACE)

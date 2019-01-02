@@ -89,9 +89,12 @@ file(COPY ${CMAKE_CURRENT_BINARY_DIR}/../UnitTestFiles/Shuttle.zip DESTINATION $
 # The actual symlink installation is done in the UnitTesting CMakeLists.txt
 execute_process(COMMAND ln -sf ${CMAKE_CURRENT_BINARY_DIR}/../UnitTesting/libMgUnitTesting.so ${CMAKE_CURRENT_BINARY_DIR}/libMgUnitTesting.so)
 set(ORIG_MG_INSTALL_SERVER_PREFIX "${MG_INSTALL_SERVER_PREFIX}")
+set(ORIG_MG_INSTALL_COORDSYS_PREFIX "${MG_INSTALL_COORDSYS_PREFIX}")
 set(MG_INSTALL_SERVER_PREFIX "${CMAKE_CURRENT_BINARY_DIR}")
+set(MG_INSTALL_COORDSYS_PREFIX "${MG_OEM_ROOT_BUILD_DIR}/CsMapLibrary/CsMap_Install/Dictionaries")
 configure_file(${CMAKE_MODULE_PATH}/../configs/serverconfig.ini.in ${CMAKE_CURRENT_BINARY_DIR}/serverconfig.ini)
 set(MG_INSTALL_SERVER_PREFIX "${ORIG_MG_INSTALL_SERVER_PREFIX}")
+set(MG_INSTALL_COORDSYS_PREFIX "${ORIG_MG_INSTALL_COORDSYS_PREFIX}")
 file(COPY ${MG_COMMON_DIR}/MapGuideCommon/Resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${MG_COMMON_DIR}/Schema DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -103,7 +106,9 @@ if (UNIX)
     execute_process(COMMAND sed -i "s#/usr/local/mapguideopensource/server#${MG_INSTALL_SERVER_PREFIX}#g" ${CMAKE_CURRENT_BINARY_DIR}/mapguidectl)
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/mapguidectl DESTINATION ${MG_SERVER_BIN_DIR} COMPONENT ${MG_COMPONENT})
 endif (UNIX)
+
 configure_file(${CMAKE_MODULE_PATH}/../configs/serverconfig.ini.in ${CMAKE_CURRENT_BINARY_DIR}/staging/serverconfig.ini)
+
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/staging/serverconfig.ini DESTINATION ${MG_SERVER_BIN_DIR} COMPONENT ${MG_COMPONENT})
 configure_file(${CMAKE_MODULE_PATH}/../configs/mgserver.sh.in ${CMAKE_CURRENT_BINARY_DIR}/mgserver.sh)
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/mgserver.sh DESTINATION ${MG_SERVER_BIN_DIR} COMPONENT ${MG_COMPONENT})
@@ -111,6 +116,9 @@ configure_file(${CMAKE_MODULE_PATH}/../configs/mgserverd.sh.in ${CMAKE_CURRENT_B
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/mgserverd.sh DESTINATION ${MG_SERVER_BIN_DIR} COMPONENT ${MG_COMPONENT})
 file(GLOB DBXML_LIBS "${MG_OEM_WORK_DIR}/dbxml/install/lib/libdb*.so")
 install(FILES ${DBXML_LIBS} DESTINATION ${LIB_INSTALL_DIR})
+install(FILES ${MG_OEM_WORK_DIR}/dbxml/xqilla/build/.libs/libxqilla.so DESTINATION ${LIB_INSTALL_DIR})
+install(FILES ${MG_OEM_WORK_DIR}/dbxml/xqilla/build/.libs/libxqilla.so.5 DESTINATION ${LIB_INSTALL_DIR})
+install(FILES ${MG_OEM_WORK_DIR}/dbxml/xqilla/build/.libs/libxqilla.so.5.0.4 DESTINATION ${LIB_INSTALL_DIR})
 install(PROGRAMS ${MG_OEM_WORK_DIR}/dbxml/install/bin/dbxml DESTINATION ${MG_SERVER_BIN_DIR})
 install(PROGRAMS ${MG_OEM_WORK_DIR}/dbxml/install/bin/dbxml_dump DESTINATION ${MG_SERVER_BIN_DIR})
 install(PROGRAMS ${MG_OEM_WORK_DIR}/dbxml/install/bin/dbxml_load DESTINATION ${MG_SERVER_BIN_DIR})

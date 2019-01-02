@@ -16,9 +16,9 @@
 # limitations under the License.
 
 # Required for MapGuide integration
-export LD_LIBRARY_PATH=@MG_INSTALL_WEB_PREFIX@/lib@LIB_SUFFIX@:@MG_INSTALL_PREFIX@/lib@LIB_SUFFIX@
+export LD_LIBRARY_PATH=@MG_INSTALL_WEB_PREFIX_ABS@/lib@LIB_SUFFIX@:@MG_INSTALL_PREFIX@/lib@LIB_SUFFIX@
 export MENTOR_DICTIONARY_PATH=@MG_INSTALL_COORDSYS_PREFIX@
-export JAVA_OPTS="-Djava.library.path=@MG_INSTALL_WEB_PREFIX@/lib@LIB_SUFFIX@:@MG_INSTALL_PREFIX@/lib@LIB_SUFFIX@"
+export JAVA_OPTS="-Djava.library.path=@MG_INSTALL_WEB_PREFIX_ABS@/lib@LIB_SUFFIX@:@MG_INSTALL_PREFIX@/lib@LIB_SUFFIX@"
 
 # -----------------------------------------------------------------------------
 # Start Script for the CATALINA Server

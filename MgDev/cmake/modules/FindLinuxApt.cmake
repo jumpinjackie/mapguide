@@ -8,16 +8,16 @@
 # PHP_INCLUDE_DIR - The PHP headers
 # HTTPD_INCLUDE_DIR - The HTTPD headers
 
-message(STATUS "Checking for PHP in ${MG_OEM_WORK_DIR}/LinuxApt/php-${PHP_VER}")
-message(STATUS "Checking for HTTPD in ${MG_OEM_WORK_DIR}/LinuxApt/httpd-${HTTPD_VER}")
+message(STATUS "Checking for PHP in ${MG_LINUXAPT_WORK_DIR}/LinuxApt/php-${PHP_VER}")
+message(STATUS "Checking for HTTPD in ${MG_LINUXAPT_WORK_DIR}/LinuxApt/httpd-${HTTPD_VER}")
 
 find_path(PHP_INCLUDE_DIR
     NAMES "Zend/zend_API.h" 
-    PATHS ${MG_OEM_WORK_DIR}/LinuxApt/php-${PHP_VER})
+    PATHS ${MG_LINUXAPT_WORK_DIR}/LinuxApt/php-${PHP_VER})
 
 find_path(HTTPD_INCLUDE_DIR
     NAMES "include/ap_config.h" 
-    PATHS ${MG_OEM_WORK_DIR}/LinuxApt/httpd-${HTTPD_VER})
+    PATHS ${MG_LINUXAPT_WORK_DIR}/LinuxApt/httpd-${HTTPD_VER})
 
 include(FindPackageHandleStandardArgs)
 # handle the QUIETLY and REQUIRED arguments and set LinuxApt_FOUND to TRUE if 

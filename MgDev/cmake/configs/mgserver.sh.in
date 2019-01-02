@@ -1,7 +1,6 @@
 #!/bin/bash
 
 export PATH=@MG_INSTALL_PREFIX@/server/bin:$PATH
-export MENTOR_DICTIONARY_PATH=@MG_INSTALL_COORDSYS_PREFIX@
 export LD_LIBRARY_PATH=@FDO_LIBRARY_DIR@:"$LD_LIBRARY_PATH"
 export NLSPATH=@FDO_NLS_DIR@/%N:"$NLSPATH"
 mkdir -p /var/lock/mgserver
