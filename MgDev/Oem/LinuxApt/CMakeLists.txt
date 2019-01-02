@@ -1,3 +1,10 @@
+set(LIB_SUFFIX "" CACHE STRING "Define suffix of directory name (32/64)")
+if (UNIX)
+    if (MG_CPU EQUAL 64)
+        set (LIB_SUFFIX "64")
+    endif (MG_CPU EQUAL 64)
+endif (UNIX)
+
 configure_file(${CMAKE_MODULE_PATH}/../configs/php.ini.in ${CMAKE_CURRENT_BINARY_DIR}/php.ini)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/php.ini DESTINATION ${MG_INSTALL_WEB_PREFIX}/php/lib COMPONENT ${MG_COMPONENT})
 

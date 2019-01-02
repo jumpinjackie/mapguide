@@ -27,3 +27,7 @@ target_link_libraries(MgHttpHandler${MG_VERSION_SUFFIX}
     MgMdfModel${MG_VERSION_SUFFIX}
     MgMdfParser${MG_VERSION_SUFFIX}
 )
+
+if (INTERNAL_JSON)
+    install(FILES ${MG_OEM_WORK_DIR}/jsoncpp/lib/liblib_json.so DESTINATION ${LIB_INSTALL_DIR})
+endif (INTERNAL_JSON)
