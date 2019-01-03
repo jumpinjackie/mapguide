@@ -38,7 +38,7 @@ Usage
 
 2. Build the httpd/php/tomcat-connector triplet
 
-    [sudo] ./cmake_linuxapt.sh [--oem-working_dir ~/mapguide_oem_build --prefix /usr/local/mapguideopensource]
+    [sudo] ./cmake_linuxapt.sh [--oem-working_dir ~/mapguide_oem_build --working-dir ~/mapguide_linuxapt_build --prefix /usr/local/mapguideopensource]
 
     This will build httpd, php and tomcat-connector and install them to the specified prefix.
 
