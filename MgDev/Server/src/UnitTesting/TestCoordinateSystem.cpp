@@ -5321,6 +5321,9 @@ void TestCoordinateSystem::TestCase_Geographic_To_Projected_Transform_EnvelopeXY
         Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
+        //#2787: We get datum shift warnings if Z coordinates are involved
+        transform->IgnoreDatumShiftWarning(true);
+
         Ptr<MgCoordinate> coord1 = new MgCoordinateXYZ(-83.0, 34.0, 1.0);
         Ptr<MgCoordinate> coord2 = new MgCoordinateXYZ(-84.0, 33.0, 2.0);
         Ptr<MgEnvelope> envelopeSource = new MgEnvelope(coord1, coord2);
