@@ -38,7 +38,7 @@ const STRING ArbitraryWkt            = L"LOCAL_CS[\"Non-Earth (Mile)\",LOCAL_DAT
 const STRING ArbitraryWkt_Alternate1 = L"LOCALCS [ \"Nonearth Mile\", LOCAL_DATUM [\"Local Datum\", 0], UNIT [\"Mile\", 1609.344], AXIS [\"X\", EAST], AXIS[\"Y\", NORTH]]";
 const STRING ArbitraryWkt_Alternate2 = L"LOCALCS [ \"Nonearth\", LOCAL_DATUM [\"Local Datum\", 0], UNIT [\"Mile\", 1609.344], AXIS [\"X\", EAST], AXIS[\"Y\", NORTH]]";
 
-const STRING GeographicWkt      = L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722293]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]";
+const STRING GeographicWkt      = L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722356]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]";
 const STRING ProjectedWkt       = L"PROJCS[\"GA-W\",GEOGCS[\"LL27\",DATUM[\"NAD27\",SPHEROID[\"CLRK66\",6378206.400,294.97869821]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"false_easting\",500000.000],PARAMETER[\"false_northing\",0.000],PARAMETER[\"scale_factor\",0.999900000000],PARAMETER[\"central_meridian\",-84.16666666666670],PARAMETER[\"latitude_of_origin\",30.00000000000000],UNIT[\"Foot_US\",0.30480060960122]]";
 
 const STRING InvalidWkt         = L"GEOGCS[\"Invalid Coordinate System\",DATUM[\"Invalid\",SPHEROID[\"Invalid\",0.0,0.0],PRIMEM[\"Invalid\",0],UNIT[\"Invalid\",1]]";
@@ -46,7 +46,7 @@ const STRING InvalidWkt         = L"GEOGCS[\"Invalid Coordinate System\",DATUM[\
 const STRING ArbitraryWkt_Feet  = L"LOCAL_CS [ \"Non-Earth (U.S. Foot)\", LOCAL_DATUM [\"Local Datum\", 0], UNIT [\"U.S. Foot\", 3.048006096012e-01], AXIS [\"X\", EAST], AXIS[\"Y\", NORTH]]";
 const STRING ArbitraryWkt_Meter = L"LOCAL_CS [ \"Non-Earth (Meter)\", LOCAL_DATUM [\"Local Datum\", 0], UNIT [\"Meter\", 1.0], AXIS [\"X\", EAST], AXIS[\"Y\", NORTH]]";
 
-const STRING GeographicWkt_LL84 = L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722293]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]]";
+const STRING GeographicWkt_LL84 = L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722356]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]";
 const STRING ProjectedWkt_GAW   = L"PROJCS[\"GA-W\",GEOGCS[\"LL27\",DATUM[\"NAD27\",SPHEROID[\"CLRK66\",6378206.400,294.97869821]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"false_easting\",500000.000],PARAMETER[\"false_northing\",0.000],PARAMETER[\"scale_factor\",0.999900000000],PARAMETER[\"central_meridian\",-84.16666666666670],PARAMETER[\"latitude_of_origin\",30.00000000000000],UNIT[\"Foot_US\",0.30480060960122]]";
 
 const STRING Projected_UTM18_NAD83 = L"PROJCS[\"UTM83-18F\",GEOGCS[\"LL83\",DATUM[\"NAD83\",SPHEROID[\"GRS1980\",6378137.000,298.25722210]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"false_easting\",1640416.667],PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",-75.00000000000000],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"latitude_of_origin\",0.000],UNIT[\"Meter\",1.000000000000]]";
@@ -1959,7 +1959,12 @@ void TestCoordinateSystem::TestCase_ValidateCoordinateSystemGeographic()
         CPPUNIT_ASSERT(pCoordinateSystem);
 
         CPPUNIT_ASSERT(pCoordinateSystem->GetType() == MgCoordinateSystemType::Geographic);
-        CPPUNIT_ASSERT(pCoordinateSystem->ToString() == ogcWkt);
+        STRING actualWkt = pCoordinateSystem->ToString();
+        std::string msg = "Comparison Failure.\n>> Expect: ";
+        msg += MgUtil::WideCharToMultiByte(ogcWkt);
+        msg += "\n>> Actual: ";
+        msg += MgUtil::WideCharToMultiByte(actualWkt);
+        CPPUNIT_ASSERT_MESSAGE(msg, actualWkt == ogcWkt);
     }
     catch(MgException* e)
     {
