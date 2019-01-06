@@ -638,6 +638,7 @@ void TestCoordinateSystem::TestCase_CheckCoordinateSystems()
         int nCoordinateSystemsPassed = 0;
 
         long lStart = GetTickCount();
+        long lInvTotal = 0L;
 
         // Open the test file and read the OGC WKT.
         // If the test file cannot be opened return an error.
@@ -667,6 +668,7 @@ void TestCoordinateSystem::TestCase_CheckCoordinateSystems()
 
                     // Try and create a coordinate system object from the OGC WKT
                     nCoordinateSystemsTested++;
+                    long lInvStart = GetTickCount();
                     try
                     {
                         ogcWkt = MgUtil::MultiByteToWideChar(text);
@@ -695,6 +697,13 @@ void TestCoordinateSystem::TestCase_CheckCoordinateSystems()
                     catch(...)
                     {
                         throw;
+                    }
+                    long lInvIter = GetTickCount() - lInvStart;
+                    lInvTotal += lInvIter;
+
+                    if ((nCoordinateSystemsTested % 50) == 0)
+                    {
+                        ACE_DEBUG((LM_INFO, ACE_TEXT("[%d/%d] coordinate systems passed [%6.4f (s) elapsed, %6.4f (s) avg invocation]\n"), nCoordinateSystemsPassed, nCoordinateSystemsTested, ((GetTickCount() - lStart) / 1000.0), (lInvTotal / 1000.0 / (double)nCoordinateSystemsTested)));
                     }
                 }
             }
