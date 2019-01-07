@@ -48,6 +48,9 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
         --with-internal-zlib)
             INTERNAL_ZLIB=1
             ;;
+        --with-internal-libpng)
+            INTERNAL_LIBPNG=1
+            ;;
         --with-internal-jpeg)
             INTERNAL_JPEG=1
             ;;
@@ -81,6 +84,7 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
             echo "  --with-internal-cppunit [Build/Use internal CppUnit]"
             echo "  --with-internal-zlib [Build/Use internal zlib]"
             echo "  --with-internal-jpeg [Build/Use internal jpeg]"
+            echo "  --with-internal-libpng [Build/Use internal libpng]"
             echo "  --with-internal-freetype [Build/Use internal freetype]"
             echo "  --with-internal-gd [Build/Use internal GD]"
             echo "  --with-internal-json [Build/Use internal JsonCpp]"
