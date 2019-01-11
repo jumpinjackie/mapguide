@@ -49,3 +49,10 @@ target_link_libraries(mod_mgmapagent${MG_VERSION_SUFFIX}
 
 # Make sure this doesn't have the "lib" prefix
 set_target_properties(mod_mgmapagent${MG_VERSION_SUFFIX} PROPERTIES PREFIX "")
+
+# Set RPATH to avoid needing to use LD_LIBRARY_PATH in various configs
+if(MG_CPU EQUAL 64)
+    set_target_properties(mod_mgmapagent${MG_VERSION_SUFFIX} PROPERTIES INSTALL_RPATH "$ORIGIN:$ORIGIN/../../lib64")
+else(MG_CPU EQUAL 64)
+    set_target_properties(mod_mgmapagent${MG_VERSION_SUFFIX} PROPERTIES INSTALL_RPATH "$ORIGIN:$ORIGIN/../../lib")
+endif(MG_CPU EQUAL 64)

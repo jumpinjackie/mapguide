@@ -226,6 +226,9 @@ cd "${SOURCE_DIR}/Oem/fusion" || exit
 ant deploy -Ddeploy.home=${MG_INSTALL_WEB_PREFIX}/www/fusion
 chown daemon:daemon "${MG_INSTALL_WEB_PREFIX}/www/fusion/lib/tcpdf/cache"
 cp -R "${SOURCE_DIR}/Oem/fusionMG/templates" "${MG_INSTALL_WEB_PREFIX}/www/fusion"
+# Since we're here, set up the temp dir and chown that as well
+mkdir -p "${MG_INSTALL_WEB_PREFIX}/Temp"
+chown daemon:daemon "${MG_INSTALL_WEB_PREFIX}/Temp"
 
 cp -f "$OEM_WORK_DIR/env_vars.stage1.sh" "$OEM_WORK_DIR/env_vars.sh"
 # append vars to setup script

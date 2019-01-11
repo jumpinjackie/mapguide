@@ -83,18 +83,20 @@ target_link_libraries(mgserver
 ########### BEGIN Development/Testing environment setup #############
 file(GLOB_RECURSE UNIT_TEST_FILES "${MG_UNIT_TEST_DATA_DIR}/*.*")
 file(COPY ${UNIT_TEST_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/../UnitTestFiles)
-file(COPY ${CMAKE_CURRENT_BINARY_DIR}/../UnitTestFiles/Shuttle.zip DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/../UnitTestFiles/World.mgp)
+# Awkward, can't copy a file to a target file name
+file(COPY ${CMAKE_CURRENT_BINARY_DIR}/../UnitTestFiles/Shuttle.zip DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/../UnitTestFilesTemp)
+file(RENAME ${CMAKE_CURRENT_BINARY_DIR}/../UnitTestFilesTemp/Shuttle.zip ${CMAKE_CURRENT_BINARY_DIR}/../UnitTestFiles/World.mgp)
 
 # Symlink the built copy to facilitate inner loop testing/debugging
 # The actual symlink installation is done in the UnitTesting CMakeLists.txt
 execute_process(COMMAND ln -sf ${CMAKE_CURRENT_BINARY_DIR}/../UnitTesting/libMgUnitTesting.so ${CMAKE_CURRENT_BINARY_DIR}/libMgUnitTesting.so)
-set(ORIG_MG_INSTALL_SERVER_PREFIX "${MG_INSTALL_SERVER_PREFIX}")
-set(ORIG_MG_INSTALL_COORDSYS_PREFIX "${MG_INSTALL_COORDSYS_PREFIX}")
-set(MG_INSTALL_SERVER_PREFIX "${CMAKE_CURRENT_BINARY_DIR}")
-set(MG_INSTALL_COORDSYS_PREFIX "${MG_OEM_ROOT_BUILD_DIR}/CsMapLibrary/CsMap_Install/Dictionaries")
+set(ORIG_MG_INSTALL_SERVER_PREFIX_ABS "${MG_INSTALL_SERVER_PREFIX_ABS}")
+set(ORIG_MG_INSTALL_COORDSYS_PREFIX_ABS "${MG_INSTALL_COORDSYS_PREFIX_ABS}")
+set(MG_INSTALL_SERVER_PREFIX_ABS "${CMAKE_CURRENT_BINARY_DIR}")
+set(MG_INSTALL_COORDSYS_PREFIX_ABS "${MG_OEM_ROOT_BUILD_DIR}/CsMapLibrary/CsMap_Install/Dictionaries")
 configure_file(${CMAKE_MODULE_PATH}/../configs/serverconfig.ini.in ${CMAKE_CURRENT_BINARY_DIR}/serverconfig.ini)
-set(MG_INSTALL_SERVER_PREFIX "${ORIG_MG_INSTALL_SERVER_PREFIX}")
-set(MG_INSTALL_COORDSYS_PREFIX "${ORIG_MG_INSTALL_COORDSYS_PREFIX}")
+set(MG_INSTALL_SERVER_PREFIX_ABS "${ORIG_MG_INSTALL_SERVER_PREFIX_ABS}")
+set(MG_INSTALL_COORDSYS_PREFIX_ABS "${ORIG_MG_INSTALL_COORDSYS_PREFIX_ABS}")
 file(COPY ${MG_COMMON_DIR}/MapGuideCommon/Resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${MG_COMMON_DIR}/Schema DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 

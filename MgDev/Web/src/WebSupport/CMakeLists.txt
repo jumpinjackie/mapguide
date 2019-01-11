@@ -19,3 +19,10 @@ target_link_libraries(MgWebSupport${MG_VERSION_SUFFIX}
     MgPlatformBase${MG_VERSION_SUFFIX}
     MgMapGuideCommon${MG_VERSION_SUFFIX}
 )
+
+# Set RPATH to avoid needing to use LD_LIBRARY_PATH in various configs
+if(MG_CPU EQUAL 64)
+    set_target_properties(MgWebSupport${MG_VERSION_SUFFIX} PROPERTIES INSTALL_RPATH "$ORIGIN:$ORIGIN/../../lib64")
+else(MG_CPU EQUAL 64)
+    set_target_properties(MgWebSupport${MG_VERSION_SUFFIX} PROPERTIES INSTALL_RPATH "$ORIGIN:$ORIGIN/../../lib")
+endif(MG_CPU EQUAL 64)

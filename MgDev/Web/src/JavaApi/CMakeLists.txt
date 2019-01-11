@@ -87,3 +87,10 @@ file(COPY "java.i" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY "getclassid.code" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY "catchall.code" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY "org" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+# Set RPATH to avoid needing to use LD_LIBRARY_PATH in various configs
+if(MG_CPU EQUAL 64)
+    set_target_properties(MapGuideJavaApi${MG_VERSION_SUFFIX} PROPERTIES INSTALL_RPATH "$ORIGIN:$ORIGIN/../../lib64")
+else(MG_CPU EQUAL 64)
+    set_target_properties(MapGuideJavaApi${MG_VERSION_SUFFIX} PROPERTIES INSTALL_RPATH "$ORIGIN:$ORIGIN/../../lib")
+endif(MG_CPU EQUAL 64)

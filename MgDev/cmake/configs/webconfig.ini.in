@@ -61,7 +61,7 @@ LogsPath                           = @MG_WWWROOT_ABS@/Logs/
 MentorDictionaryPath               = @MG_INSTALL_COORDSYS_PREFIX_ABS@
 ResourcesPath                      = @MG_WWWROOT_ABS@/Resources/
 TcpIpMtu                           = 1460
-TempPath                           = @MG_WWWROOT_ABS@/Temp/
+TempPath                           = @MG_INSTALL_WEB_PREFIX_ABS@/Temp/
 FailoverRetryTime                  = 1
 
 [AdministrativeConnectionProperties]
