@@ -16,7 +16,7 @@ echo
 INSTALLDIR=/usr/local/mapguideopensource
 
 HTTPD_VER=2.4.37
-PHP_VER=5.6.39
+PHP_VER=5.6.40
 TOMCAT_VER=7.0.92
 CONNECTOR_VER=1.2.46
 APR_VER=1.6.5
