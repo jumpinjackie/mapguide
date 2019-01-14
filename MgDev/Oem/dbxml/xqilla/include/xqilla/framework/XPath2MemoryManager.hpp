@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2001-2008
+ * Copyright (c) 2001, 2008,
  *     DecisionSoft Limited. All rights reserved.
- * Copyright (c) 2004-2008
- *     Oracle. All rights reserved.
+ * Copyright (c) 2004, 2015 Oracle and/or its affiliates. All rights reserved.
+ *     
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id$
  */
 
 #ifndef __XPATH2MEMORYMANAGER_HPP
@@ -121,28 +119,10 @@ public:
   {
     _memMgr = o._memMgr;
   }
-
-  bool operator !=(const XQillaAllocator<_Tp>& o)
-  {
-      if (_memMgr != o._memMgr)
-          return true;
-      else
-          return false;
-  }
-#endif
-#if _MSC_VER >= 1700
-  // Needed for Vistual Studio 2012
-  bool operator ==(const XQillaAllocator<_Tp>& o) const
-  {
-      if (_memMgr == o._memMgr)
-          return true;
-      else
-          return false;
-  }
 #endif
   pointer allocate(size_t _n, const void* = 0)
   {
-#if _MSC_VER < 1600 || NDEBUG //for VS2010 Release or VS2008
+#ifndef _MSC_VER
     if(_n==1)
       return (pointer)_singleton;
 #endif
@@ -156,23 +136,14 @@ public:
   void deallocate(void* _p, size_t _n)
   {
     //std::cout << "XQillaAllocator::deallocate(" << _n << ")" << std::endl;
-    #if _MSC_VER < 1600 || NDEBUG //for VS2010 Release or VS2008
-        if(_p) {
-          if(_p!=_singleton) {
-            if(_memMgr)
-              _memMgr->deallocate(_p);
-            else
-              free(_p);
-          }
-        }
-    #else //for VS2010 Debug
-        if(_p) {
-            if(_memMgr)
-                _memMgr->deallocate(_p);
-            else
-                free(_p);
-        }
-    #endif
+    if(_p) {
+      if(_p!=_singleton) {
+        if(_memMgr)
+          _memMgr->deallocate(_p);
+        else
+          free(_p);
+      }
+  }
   }
 
   void construct(pointer _p, const_reference _v)
@@ -195,10 +166,22 @@ public:
     return 0xFFFFFFFF;
   }
 
-  #if _MSC_VER < 1600 || NDEBUG //for VS2010 Release or VS2008
-  char _singleton[sizeof(_Tp)];
-  #endif
+  bool operator==(const XQillaAllocator<_Tp>& o) const
+  {
+    return &o == this;
+  }
 
+  bool operator!=(const XQillaAllocator<_Tp>& o) const
+  {
+    return &o != this;
+  }
+
+  bool operator!=(XQillaAllocator<_Tp>& o)
+  {
+    return _memMgr != o._memMgr;
+  }
+
+  char _singleton[sizeof(_Tp)];
   XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* _memMgr;
 };
 
