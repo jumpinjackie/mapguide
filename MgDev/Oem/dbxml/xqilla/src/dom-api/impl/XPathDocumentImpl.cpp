@@ -64,7 +64,11 @@ DOMNode *XPathDocumentImpl::insertBefore(DOMNode *newChild, DOMNode *refChild)
     if (thisNodeImpl->isReadOnly())
         throw DOMException(DOMException::NO_MODIFICATION_ALLOWED_ERR, 0, getMemoryManager());
 
+#if _XERCES_VERSION >= 30200
+    DOMNode* thisNode = fParent.fContainingNode;
+#else
     DOMNode* thisNode = castToNode(&fParent);
+#endif
     if (newChild->getOwnerDocument() != thisNode)
         throw DOMException(DOMException::WRONG_DOCUMENT_ERR, 0, getMemoryManager());
 
