@@ -32,6 +32,12 @@
 #include "MapQuantization.h"
 #include <assert.h>
 
+//Polyfill some libpng typedefs if libpng >= 1.4.0
+#if (PNG_LIBPNG_VER >= 10400)
+#define png_infopp_NULL NULL
+#define int_p_NULL NULL
+#endif
+
 #ifdef _DEBUG_PNG8
 #define myassert(COND,L,F) if (!(COND)){ printf("(%d) failed assertion in %d %s", GetCurrentThreadId(), L,F); throw new exception(); }
 #else
@@ -470,7 +476,13 @@ int read_png(png_write_context* cxt, int& retwidth, int& retheight, unsigned cha
 
    /* Expand grayscale images to the full 8 bits from 1, 2, or 4 bits/pixel */
    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
-      png_set_gray_1_2_4_to_8(png_ptr);
+   {
+#if (PNG_LIBPNG_VER >= 10400)
+       png_set_expand_gray_1_2_4_to_8(png_ptr);
+#else
+       png_set_gray_1_2_4_to_8(png_ptr);
+#endif
+   }
 
    /* Expand paletted or RGB images with transparency to full alpha channels
     * so the data will be available as RGBA quartets.
