@@ -55,7 +55,7 @@ struct png_write_context
 
 void png_write_cb(png_structp png, png_bytep data, png_size_t sz)
 {
-    png_write_context* cxt = (png_write_context*)png->io_ptr;
+    png_write_context* cxt = (png_write_context*)png_get_io_ptr(png);
 
     if (cxt->used + sz > cxt->len)
     {
@@ -75,7 +75,7 @@ void png_write_cb(png_structp png, png_bytep data, png_size_t sz)
 
 void png_read_cb(png_structp png, png_bytep data, png_size_t sz)
 {
-    png_write_context* cxt = (png_write_context*)png->io_ptr;
+    png_write_context* cxt = (png_write_context*)png_get_io_ptr(png);
     memcpy(data, cxt->buf + cxt->used, sz);
     cxt->used += sz;
 }
