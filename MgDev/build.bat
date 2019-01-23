@@ -277,6 +277,8 @@ echo [install]: Server - RepositoryAdmin
 %XCOPY% "%MG_SERVER%\RepositoryAdmin" "%MG_OUTPUT_SERVER%\RepositoryAdmin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: CsMap Dictionaries
 %XCOPY% "%MG_OEM%\CsMap\Dictionaries" "%MG_OUTPUT_CSMAP%\Dictionaries" /EXCLUDE:svn_excludes.txt+csmap_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: CsMap Dictionary Compiler
+copy /Y "%MG_OEM%\CsMap\bin140\%TYPEBUILD%\CS_Comp.exe" "%MG_OUTPUT_CSMAP%\Dictionaries"
 if "%TYPECOMPONENT%"=="server" goto quit
 if "%TYPECOMPONENT%"=="web" goto quit
 
