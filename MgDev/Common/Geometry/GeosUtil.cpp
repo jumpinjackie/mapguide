@@ -88,6 +88,8 @@ private:
 // GEOS 3.6.0 onwards changes the C++ API around GeometryFactory
 #if (GEOS_VERSION_MAJOR == 3) && (GEOS_VERSION_MINOR >= 6)
     GeometryFactory::unique_ptr m_gf;
+#else
+    GeometryFactory* m_gf;
 #endif
 };
 
