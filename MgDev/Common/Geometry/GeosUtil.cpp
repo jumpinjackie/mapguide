@@ -46,20 +46,39 @@ public:
 
 static CInitGeos s_InitGeos;
 
+class GeosWktReader
+{
+public:
+    GeosWktReader() : m_pm(NULL), m_reader(NULL), m_gf(NULL)
+    {
+        m_pm = new PrecisionModel();
+        m_gf = new GeometryFactory(m_pm, 10);
+        m_reader = new WKTReader(m_gf);
+    }
+    ~GeosWktReader()
+    {
+        delete m_reader;
+        delete m_gf;
+        delete m_pm;
+    }
+    Geometry* Read(CREFSTRING wkt)
+    {
+        return m_reader->read(MgUtil::WideCharToMultiByte(wkt));
+    }
+
+private:
+    PrecisionModel* m_pm;
+    WKTReader* m_reader;
+    GeometryFactory* m_gf;
+};
 
 bool MgGeosUtil::Contains(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool contains = false;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     Ptr<MgGeometry> tGeom2 = MgSpatialUtility::TesselateCurve(geom2);
@@ -67,19 +86,12 @@ bool MgGeosUtil::Contains(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = r.read(MgUtil::WideCharToMultiByte(wktGeom2));
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
 
-    contains = g1->contains(g2);
+    contains = g1->contains(g2.get());
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Contains")
-
-    delete g1;
-    delete g2;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Contains")
 
     return contains;
 }
@@ -87,16 +99,10 @@ bool MgGeosUtil::Contains(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::Intersects(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool intersects = false;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     Ptr<MgGeometry> tGeom2 = MgSpatialUtility::TesselateCurve(geom2);
@@ -104,19 +110,12 @@ bool MgGeosUtil::Intersects(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = r.read(MgUtil::WideCharToMultiByte(wktGeom2));
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
 
-    intersects = g1->intersects(g2);
+    intersects = g1->intersects(g2.get());
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Intersects")
-
-    delete g1;
-    delete g2;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Intersects")
 
     return intersects;
 }
@@ -124,16 +123,10 @@ bool MgGeosUtil::Intersects(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::Crosses(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool crosses = false;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     Ptr<MgGeometry> tGeom2 = MgSpatialUtility::TesselateCurve(geom2);
@@ -141,19 +134,12 @@ bool MgGeosUtil::Crosses(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = r.read(MgUtil::WideCharToMultiByte(wktGeom2));
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
 
-    crosses = g1->crosses(g2);
+    crosses = g1->crosses(g2.get());
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Crosses")
-
-    delete g1;
-    delete g2;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Crosses")
 
     return crosses;
 }
@@ -161,16 +147,10 @@ bool MgGeosUtil::Crosses(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::Disjoint(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool disjoint = false;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     Ptr<MgGeometry> tGeom2 = MgSpatialUtility::TesselateCurve(geom2);
@@ -178,19 +158,12 @@ bool MgGeosUtil::Disjoint(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = r.read(MgUtil::WideCharToMultiByte(wktGeom2));
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
 
-    disjoint = g1->disjoint(g2);
+    disjoint = g1->disjoint(g2.get());
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Disjoint")
-
-    delete g1;
-    delete g2;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Disjoint")
 
     return disjoint;
 }
@@ -198,16 +171,10 @@ bool MgGeosUtil::Disjoint(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::Equals(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool equals = false;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     Ptr<MgGeometry> tGeom2 = MgSpatialUtility::TesselateCurve(geom2);
@@ -215,19 +182,12 @@ bool MgGeosUtil::Equals(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = r.read(MgUtil::WideCharToMultiByte(wktGeom2));
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
 
-    equals = g1->equals(g2);
+    equals = g1->equals(g2.get());
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Equals")
-
-    delete g1;
-    delete g2;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Equals")
 
     return equals;
 }
@@ -235,16 +195,10 @@ bool MgGeosUtil::Equals(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::Overlaps(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool overlaps = false;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     Ptr<MgGeometry> tGeom2 = MgSpatialUtility::TesselateCurve(geom2);
@@ -252,19 +206,12 @@ bool MgGeosUtil::Overlaps(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = r.read(MgUtil::WideCharToMultiByte(wktGeom2));
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
 
-    overlaps = g1->overlaps(g2);
+    overlaps = g1->overlaps(g2.get());
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Overlaps")
-
-    delete g1;
-    delete g2;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Overlaps")
 
     return overlaps;
 }
@@ -272,16 +219,10 @@ bool MgGeosUtil::Overlaps(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::Touches(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool touches = false;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     Ptr<MgGeometry> tGeom2 = MgSpatialUtility::TesselateCurve(geom2);
@@ -289,19 +230,12 @@ bool MgGeosUtil::Touches(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = r.read(MgUtil::WideCharToMultiByte(wktGeom2));
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
 
-    touches = g1->touches(g2);
+    touches = g1->touches(g2.get());
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Touches")
-
-    delete g1;
-    delete g2;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Touches")
 
     return touches;
 }
@@ -309,16 +243,10 @@ bool MgGeosUtil::Touches(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::Within(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool within = false;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     Ptr<MgGeometry> tGeom2 = MgSpatialUtility::TesselateCurve(geom2);
@@ -326,19 +254,12 @@ bool MgGeosUtil::Within(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = r.read(MgUtil::WideCharToMultiByte(wktGeom2));
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
 
-    within = g1->within(g2);
+    within = g1->within(g2.get());
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Within")
-
-    delete g1;
-    delete g2;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Within")
 
     return within;
 }
@@ -346,25 +267,19 @@ bool MgGeosUtil::Within(MgGeometry* geom1, MgGeometry* geom2)
 MgGeometry* MgGeosUtil::Boundary(MgGeometry* geom1)
 {
     Ptr<MgGeometry> bndGeom;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g3 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     STRING wktGeom1 = tGeom1->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g3 = g1->getBoundary();
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g3(g1->getBoundary());
 
     WKTWriter writer;
-    string bndWkt = writer.write(g3);
+    string bndWkt = writer.write(g3.get());
 
     if (bndWkt.find("EMPTY", 0) == string::npos)
     {
@@ -372,14 +287,7 @@ MgGeometry* MgGeosUtil::Boundary(MgGeometry* geom1)
         bndGeom = rdrWrt.Read(MgUtil::MultiByteToWideChar(bndWkt));
     }
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Boundary")
-
-    delete g1;
-    delete g3;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Boundary")
 
     return SAFE_ADDREF((MgGeometry*)bndGeom);
 }
@@ -387,25 +295,19 @@ MgGeometry* MgGeosUtil::Boundary(MgGeometry* geom1)
 MgGeometry* MgGeosUtil::ConvexHull(MgGeometry* geom1)
 {
     Ptr<MgGeometry> convexHull;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g3 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     STRING wktGeom1 = tGeom1->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g3 = g1->convexHull();
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g3(g1->convexHull());
 
     WKTWriter writer;
-    string convexHullWkt = writer.write(g3);
+    string convexHullWkt = writer.write(g3.get());
 
     if (convexHullWkt.find("EMPTY", 0) == string::npos)
     {
@@ -413,14 +315,7 @@ MgGeometry* MgGeosUtil::ConvexHull(MgGeometry* geom1)
         convexHull = rdrWrt.Read(MgUtil::MultiByteToWideChar(convexHullWkt));
     }
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.ConvexHull")
-
-    delete g1;
-    delete g3;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.ConvexHull")
 
     return SAFE_ADDREF((MgGeometry*)convexHull);
 }
@@ -428,17 +323,10 @@ MgGeometry* MgGeosUtil::ConvexHull(MgGeometry* geom1)
 MgGeometry* MgGeosUtil::Difference(MgGeometry* geom1, MgGeometry* geom2)
 {
     Ptr<MgGeometry> difference;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g2 = NULL;
-    Geometry* g3 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     Ptr<MgGeometry> tGeom2 = MgSpatialUtility::TesselateCurve(geom2);
@@ -446,12 +334,12 @@ MgGeometry* MgGeosUtil::Difference(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = r.read(MgUtil::WideCharToMultiByte(wktGeom2));
-    g3 = g1->difference(g2);
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::auto_ptr<Geometry> g3(g1->difference(g2.get()));
 
     WKTWriter writer;
-    string differenceWkt = writer.write(g3);
+    string differenceWkt = writer.write(g3.get());
 
     if (differenceWkt.find("EMPTY", 0) == string::npos)
     {
@@ -459,15 +347,7 @@ MgGeometry* MgGeosUtil::Difference(MgGeometry* geom1, MgGeometry* geom2)
         difference = rdrWrt.Read(MgUtil::MultiByteToWideChar(differenceWkt));
     }
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Difference")
-
-    delete g1;
-    delete g2;
-    delete g3;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Difference")
 
     return SAFE_ADDREF((MgGeometry*)difference);
 }
@@ -476,16 +356,10 @@ MgGeometry* MgGeosUtil::Difference(MgGeometry* geom1, MgGeometry* geom2)
 double MgGeosUtil::Distance(MgGeometry* geom1, MgGeometry* geom2)
 {
     double distance = 0.0;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     Ptr<MgGeometry> tGeom2 = MgSpatialUtility::TesselateCurve(geom2);
@@ -493,19 +367,12 @@ double MgGeosUtil::Distance(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = r.read(MgUtil::WideCharToMultiByte(wktGeom2));
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
 
-    distance = g1->distance(g2);
+    distance = g1->distance(g2.get());
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Distance")
-
-    delete g1;
-    delete g2;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Distance")
 
     return distance;
 }
@@ -513,17 +380,10 @@ double MgGeosUtil::Distance(MgGeometry* geom1, MgGeometry* geom2)
 MgGeometry* MgGeosUtil::Intersection(MgGeometry* geom1, MgGeometry* geom2)
 {
     Ptr<MgGeometry> intersection;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g2 = NULL;
-    Geometry* g3 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     Ptr<MgGeometry> tGeom2 = MgSpatialUtility::TesselateCurve(geom2);
@@ -531,12 +391,12 @@ MgGeometry* MgGeosUtil::Intersection(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = r.read(MgUtil::WideCharToMultiByte(wktGeom2));
-    g3 = g1->intersection(g2);
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::auto_ptr<Geometry> g3(g1->intersection(g2.get()));
 
     WKTWriter writer;
-    string intersectionWkt = writer.write(g3);
+    string intersectionWkt = writer.write(g3.get());
 
     if (intersectionWkt.find("EMPTY", 0) == string::npos)
     {
@@ -544,15 +404,7 @@ MgGeometry* MgGeosUtil::Intersection(MgGeometry* geom1, MgGeometry* geom2)
         intersection = rdrWrt.Read(MgUtil::MultiByteToWideChar(intersectionWkt));
     }
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Intersection")
-
-    delete g1;
-    delete g2;
-    delete g3;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Intersection")
 
     return SAFE_ADDREF((MgGeometry*)intersection);
 }
@@ -560,17 +412,10 @@ MgGeometry* MgGeosUtil::Intersection(MgGeometry* geom1, MgGeometry* geom2)
 MgGeometry* MgGeosUtil::SymetricDifference(MgGeometry* geom1, MgGeometry* geom2)
 {
     Ptr<MgGeometry> symetricDifference;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g2 = NULL;
-    Geometry* g3 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     Ptr<MgGeometry> tGeom2 = MgSpatialUtility::TesselateCurve(geom2);
@@ -578,12 +423,12 @@ MgGeometry* MgGeosUtil::SymetricDifference(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = r.read(MgUtil::WideCharToMultiByte(wktGeom2));
-    g3 = g1->symDifference(g2);
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::auto_ptr<Geometry> g3(g1->symDifference(g2.get()));
 
     WKTWriter writer;
-    string symetricDifferenceWkt = writer.write(g3);
+    string symetricDifferenceWkt = writer.write(g3.get());
 
     if (symetricDifferenceWkt.find("EMPTY", 0) == string::npos)
     {
@@ -591,15 +436,7 @@ MgGeometry* MgGeosUtil::SymetricDifference(MgGeometry* geom1, MgGeometry* geom2)
         symetricDifference = rdrWrt.Read(MgUtil::MultiByteToWideChar(symetricDifferenceWkt));
     }
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.SymetricDifference")
-
-    delete g1;
-    delete g2;
-    delete g3;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.SymetricDifference")
 
     return SAFE_ADDREF((MgGeometry*)symetricDifference);
 }
@@ -607,17 +444,10 @@ MgGeometry* MgGeosUtil::SymetricDifference(MgGeometry* geom1, MgGeometry* geom2)
 MgGeometry* MgGeosUtil::Union(MgGeometry* geom1, MgGeometry* geom2)
 {
     Ptr<MgGeometry> unionGeom;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Geometry* g2 = NULL;
-    Geometry* g3 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     Ptr<MgGeometry> tGeom2 = MgSpatialUtility::TesselateCurve(geom2);
@@ -625,12 +455,12 @@ MgGeometry* MgGeosUtil::Union(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = r.read(MgUtil::WideCharToMultiByte(wktGeom2));
-    g3 = g1->Union(g2);
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::auto_ptr<Geometry> g3(g1->Union(g2.get()));
 
     WKTWriter writer;
-    string unionGeomWkt = writer.write(g3);
+    string unionGeomWkt = writer.write(g3.get());
 
     if (unionGeomWkt.find("EMPTY", 0) == string::npos)
     {
@@ -638,15 +468,7 @@ MgGeometry* MgGeosUtil::Union(MgGeometry* geom1, MgGeometry* geom2)
         unionGeom = rdrWrt.Read(MgUtil::MultiByteToWideChar(unionGeomWkt));
     }
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Union")
-
-    delete g1;
-    delete g2;
-    delete g3;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Union")
 
     return SAFE_ADDREF((MgGeometry*)unionGeom);
 }
@@ -654,28 +476,17 @@ MgGeometry* MgGeosUtil::Union(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::IsValid(MgGeometricEntity* geom1)
 {
     bool isValid = false;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
     isValid = g1->isValid();
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.IsValid")
-
-    delete g1;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.IsValid")
 
     return isValid;
 }
@@ -683,28 +494,17 @@ bool MgGeosUtil::IsValid(MgGeometricEntity* geom1)
 bool MgGeosUtil::IsSimple(MgGeometricEntity* geom1)
 {
     bool isSimple = false;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
     isSimple = g1->isSimple();
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.IsSimple")
-
-    delete g1;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.IsSimple")
 
     return isSimple;
 }
@@ -712,28 +512,17 @@ bool MgGeosUtil::IsSimple(MgGeometricEntity* geom1)
 bool MgGeosUtil::IsEmpty(MgGeometricEntity* geom1)
 {
     bool isEmpty = false;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
     isEmpty = g1->isEmpty();
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.IsEmpty")
-
-    delete g1;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.IsEmpty")
 
     return isEmpty;
 }
@@ -741,28 +530,17 @@ bool MgGeosUtil::IsEmpty(MgGeometricEntity* geom1)
 bool MgGeosUtil::IsClosed(MgGeometricEntity* geom1)
 {
     bool isClosed = false;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    // isClosed = g1->isClosed();
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    //isClosed = g1->isClosed();
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.IsClosed")
-
-    delete g1;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.IsClosed")
 
     return isClosed;
 }
@@ -770,28 +548,17 @@ bool MgGeosUtil::IsClosed(MgGeometricEntity* geom1)
 double MgGeosUtil::Area(MgGeometricEntity* geom1)
 {
     double area = 0.0;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
     area = g1->getArea();
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Area")
-
-    delete g1;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Area")
 
     return area;
 }
@@ -799,28 +566,17 @@ double MgGeosUtil::Area(MgGeometricEntity* geom1)
 double MgGeosUtil::Length(MgGeometricEntity* geom1)
 {
     double length = 0.0;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
     length = g1->getLength();
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Length")
-
-    delete g1;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Length")
 
     return length;
 }
@@ -828,21 +584,15 @@ double MgGeosUtil::Length(MgGeometricEntity* geom1)
 MgPoint* MgGeosUtil::Centroid(MgGeometricEntity* geom1)
 {
     Ptr<MgPoint> point;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Point* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = g1->getCentroid();
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Point> g2(g1->getCentroid());
 
     double x = g2->getX();
     double y = g2->getY();
@@ -851,14 +601,7 @@ MgPoint* MgGeosUtil::Centroid(MgGeometricEntity* geom1)
     Ptr<MgCoordinate> coord = geomFactory.CreateCoordinateXY(x,y);
     point = geomFactory.CreatePoint(coord);
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.Centroid")
-
-    delete g1;
-    delete g2;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Centroid")
 
     return SAFE_ADDREF((MgPoint*)point);
 }
@@ -866,37 +609,24 @@ MgPoint* MgGeosUtil::Centroid(MgGeometricEntity* geom1)
 MgPoint*  MgGeosUtil::GetPointInRegion(MgGeometry* geom1)
 {
     Ptr<MgPoint> point;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Point* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = g1->getInteriorPoint();
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Point> g2(g1->getInteriorPoint());
 
     double x = g2->getX();
     double y = g2->getY();
 
     MgGeometryFactory geomFactory;
-    Ptr<MgCoordinate> coord = geomFactory.CreateCoordinateXY(x,y);
+    Ptr<MgCoordinate> coord = geomFactory.CreateCoordinateXY(x, y);
     point = geomFactory.CreatePoint(coord);
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.GetInteriorPoint")
-
-    delete g1;
-    delete g2;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.GetInteriorPoint")
 
     return SAFE_ADDREF((MgPoint*)point);
 }
@@ -904,21 +634,15 @@ MgPoint*  MgGeosUtil::GetPointInRegion(MgGeometry* geom1)
 MgPoint*  MgGeosUtil::GetPointInRing(MgGeometryComponent* geom1)
 {
     Ptr<MgPoint> point;
-    PrecisionModel* pm = NULL;
-    GeometryFactory* gf = NULL;
-    Geometry* g1 = NULL;
-    Point* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
-    pm = new PrecisionModel();
-    gf = new GeometryFactory(pm, 10);
-    WKTReader r(gf);
+    GeosWktReader r;
 
-    STRING wktGeom1 = geom1->ToAwkt(true);
+    STRING wktGeom1 = ToAwkt(geom1);
 
-    g1 = r.read(MgUtil::WideCharToMultiByte(wktGeom1));
-    g2 = g1->getInteriorPoint();
+    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::auto_ptr<Point> g2(g1->getInteriorPoint());
 
     double x = g2->getX();
     double y = g2->getY();
@@ -927,14 +651,7 @@ MgPoint*  MgGeosUtil::GetPointInRing(MgGeometryComponent* geom1)
     Ptr<MgCoordinate> coord = geomFactory.CreateCoordinateXY(x,y);
     point = geomFactory.CreatePoint(coord);
 
-    MG_GEOMETRY_CATCH(L"MgGeosUtil.GetInteriorPoint")
-
-    delete g1;
-    delete g2;
-    delete gf;
-    delete pm;
-
-    MG_GEOMETRY_THROW()
+    MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.GetInteriorPoint")
 
     return SAFE_ADDREF((MgPoint*)point);
 }
