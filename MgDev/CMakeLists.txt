@@ -201,6 +201,22 @@ macro(install_symlink target linkname component)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${linkname} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${component})
 endmacro(install_symlink)
 
+# See if Xerces typedefs XMLCh to char16_t
+# This would be the case on Ubuntu 18.04 for its version of xerces-c (3.2.0)
+check_cxx_source_compiles(
+    "#include <xercesc/util/Xerces_autoconf_config.hpp>
+    #include <type_traits>
+    int main() {
+        static_assert(std::is_same<XMLCh, char16_t>::value, \"Xerces XMLCh is not char16_t\");
+    }" 
+XERCES_USES_CHAR16_T)
+if (XERCES_USES_CHAR16_T)
+    add_definitions(-D_XERCES_USES_CHAR16_T_)
+    message(STATUS "Xerces typedefs XMLCh to char16_t")
+else (XERCES_USES_CHAR16_T)
+    message(STATUS "Xerces does not appear to typedef XMLCh to char16_t")
+endif (XERCES_USES_CHAR16_T)
+
 add_subdirectory(BuildTools)
 add_subdirectory(Oem)
 add_subdirectory(Common)

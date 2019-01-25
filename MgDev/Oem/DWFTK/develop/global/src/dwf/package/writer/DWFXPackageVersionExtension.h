@@ -20,6 +20,18 @@
 #ifndef _DWFTK_DWFX_PACKAGE_VERSION_EXTENSION_H
 #define _DWFTK_DWFX_PACKAGE_VERSION_EXTENSION_H
 
+// These are new warnings raised by g++ on Ubuntu 18.04, it thinks major and minor
+// are symbols defined through including sys/types.h, this is not the case for us
+// so #undef them
+#ifndef _WIN32
+#ifdef major
+#undef major
+#endif
+#ifdef minor
+#undef minor
+#endif
+#endif
+
 ///
 ///\file        dwf/package/writer/DWFXPackageVersionExtension.h
 ///\brief       This file contains the DWFXPackageVersionExtension interface declaration.

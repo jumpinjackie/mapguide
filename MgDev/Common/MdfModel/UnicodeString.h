@@ -26,10 +26,14 @@
 using namespace std;
 
 // Define character type for UTF-16.  This is used by Xerces C++.
-#ifdef _NATIVE_WCHAR_T_DEFINED
-    typedef wchar_t  XMLCh;
+#ifdef _XERCES_USES_CHAR16_T_
+    typedef char16_t XMLCh;
 #else
-    typedef unsigned short  XMLCh;
+    #ifdef _NATIVE_WCHAR_T_DEFINED
+        typedef wchar_t  XMLCh;
+    #else
+        typedef unsigned short  XMLCh;
+    #endif
 #endif
 
 // Define character type for UTF-32.  This is the same as the wchar_t type
