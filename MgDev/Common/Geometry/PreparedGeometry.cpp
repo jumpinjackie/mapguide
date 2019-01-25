@@ -16,6 +16,7 @@
 //
 
 #include "GeometryCommon.h"
+#include "GeosInclude.h"
 #include <geos/geom/prep/PreparedGeometry.h>
 #include <geos/geom/prep/PreparedGeometryFactory.h>
 
@@ -24,6 +25,16 @@ using namespace geos::geom::prep;
 class MgPreparedGeometry::PreparedGeometryImpl 
 {
 public:
+// GEOS 3.6.0 onwards changes the C++ API around GeometryFactory
+#if (GEOS_VERSION_MAJOR == 3) && (GEOS_VERSION_MINOR >= 6)
+    PreparedGeometryImpl() 
+      : m_pg(NULL), 
+        m_pm(new PrecisionModel()), 
+        m_geom(NULL)
+    {
+        m_gf = GeometryFactory::create(m_pm.get(), 10);
+    }
+#else
     PreparedGeometryImpl() 
       : m_pg(NULL), 
         m_pm(new PrecisionModel()), 
@@ -32,6 +43,7 @@ public:
     {
         m_gf.reset(new GeometryFactory(m_pm.get(), 10));
     }
+#endif
     ~PreparedGeometryImpl() 
     {
         PreparedGeometryFactory::destroy(m_pg);
@@ -59,7 +71,12 @@ public:
 private:
     std::auto_ptr<Geometry> m_geom;
     std::auto_ptr<PrecisionModel> m_pm;
+// GEOS 3.6.0 onwards changes the C++ API around GeometryFactory
+#if (GEOS_VERSION_MAJOR == 3) && (GEOS_VERSION_MINOR >= 6)
+    GeometryFactory::unique_ptr m_gf;
+#else
     std::auto_ptr<GeometryFactory> m_gf;
+#endif
 };
 
 MgPreparedGeometry* MgPreparedGeometry::Create(MgGeometry* geom)

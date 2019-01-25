@@ -29,6 +29,7 @@
 #include "GeometricEntityType.h"
 
 using namespace geos;
+using namespace geos::io;
 
 // Dummy class used to automate initialization/uninitialization of GEOS.
 class CInitGeos
@@ -49,6 +50,20 @@ static CInitGeos s_InitGeos;
 class GeosWktReader
 {
 public:
+// GEOS 3.6.0 onwards changes the C++ API around GeometryFactory
+#if (GEOS_VERSION_MAJOR == 3) && (GEOS_VERSION_MINOR >= 6)
+    GeosWktReader() : m_pm(NULL), m_reader(NULL)
+    {
+        m_pm = new PrecisionModel();
+        m_gf = GeometryFactory::create(m_pm, 10);
+        m_reader = new WKTReader(m_gf.get());
+    }
+    ~GeosWktReader()
+    {
+        delete m_reader;
+        delete m_pm;
+    }
+#else
     GeosWktReader() : m_pm(NULL), m_reader(NULL), m_gf(NULL)
     {
         m_pm = new PrecisionModel();
@@ -61,6 +76,7 @@ public:
         delete m_gf;
         delete m_pm;
     }
+#endif
     Geometry* Read(CREFSTRING wkt)
     {
         return m_reader->read(MgUtil::WideCharToMultiByte(wkt));
@@ -69,7 +85,10 @@ public:
 private:
     PrecisionModel* m_pm;
     WKTReader* m_reader;
-    GeometryFactory* m_gf;
+// GEOS 3.6.0 onwards changes the C++ API around GeometryFactory
+#if (GEOS_VERSION_MAJOR == 3) && (GEOS_VERSION_MINOR >= 6)
+    GeometryFactory::unique_ptr m_gf;
+#endif
 };
 
 bool MgGeosUtil::Contains(MgGeometry* geom1, MgGeometry* geom2)

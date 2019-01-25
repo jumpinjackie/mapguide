@@ -46,8 +46,14 @@ MgGeometry* MgGeometrySimplifier::Simplify(MgGeometry* geom, double tolerance, I
 
     STRING inputWKt = geom->ToAwkt(true);
     PrecisionModel pm;
+// GEOS 3.6.0 onwards changes the C++ API around GeometryFactory
+#if (GEOS_VERSION_MAJOR == 3) && (GEOS_VERSION_MINOR >= 6)
+    GeometryFactory::unique_ptr gf = GeometryFactory::create(&pm, 10);
+    WKTReader r(gf.get());
+#else
     GeometryFactory gf(&pm, 10);
     WKTReader r(&gf);
+#endif
     WKTWriter w;
 
     gInput.reset(r.read(MgUtil::WideCharToMultiByte(inputWKt)));
