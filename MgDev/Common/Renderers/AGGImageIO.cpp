@@ -272,7 +272,7 @@ int write_png(png_write_context* cxt, unsigned int* pix, int width, int height, 
     */
    png_bytep* row_pointers = (png_bytep*)alloca(height * sizeof(png_bytep));
 
-   if (height > PNG_UINT_32_MAX/png_sizeof(png_bytep))
+   if (height > PNG_UINT_32_MAX/sizeof(png_bytep))
      png_error (png_ptr, "Image is too tall to process in memory");
 
    for (int k = 0; k < height; k++)
