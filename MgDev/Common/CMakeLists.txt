@@ -1,6 +1,10 @@
 # NOTE: Not applied for server tier projects except for mgserver main executable
 if( CMAKE_COMPILER_IS_GNUCXX )
-    set ( CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined -lc ${CMAKE_SHARED_LINKER_FLAGS}")
+    if (NEED_LIBRT)
+        set ( CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed -Wl,--no-undefined -lc -lrt ${CMAKE_SHARED_LINKER_FLAGS}")
+    else (NEED_LIBRT)
+        set ( CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined -lc ${CMAKE_SHARED_LINKER_FLAGS}")
+    endif (NEED_LIBRT)
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
 # On ubuntu at least, the system installed ACE does not define this (required by us)

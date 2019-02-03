@@ -2,6 +2,7 @@ project(renderers)
 
 include_directories(${GD_INCLUDE_DIR}
     ${FREETYPE_INCLUDE_DIRS}
+    ${FREETYPE_INCLUDE_DIRS}/freetype2
     ${PNG_INCLUDE_DIRS}
     ${FDO_INCLUDE_DIR}
     ${FDO_INCLUDE_DIR}/ExpressionEngine

@@ -148,9 +148,6 @@ if [ ! -d "$OEM_WORK_DIR" ]; then
     echo "Created OEM working dir at: $OEM_WORK_DIR"
 fi
 
-OEM_INSTALL_STAGE="${OEM_WORK_DIR}/install"
-mkdir -p "$OEM_INSTALL_STAGE"
-
 if [ "$INTERNAL_ACE" = "1" ]; then
     echo "Building ACE (internal)"
     cp -Rf "${SOURCE_DIR}/Oem/ACE" "${OEM_WORK_DIR}/ACE"
@@ -181,7 +178,7 @@ if [ "$INTERNAL_CPPUNIT" = "1" ]; then
     autoconf
     automake --add-missing --copy --force-missing
     # -ldl is to prevent undefined reference to dlsym/dlopen/dlclose
-    sh ./configure --enable-silent-rules --prefix="${OEM_INSTALL_STAGE}/cppunit" LDFLAGS="-ldl"
+    sh ./configure --enable-silent-rules LDFLAGS="-ldl"
     make && make install
     check_build
 fi
@@ -193,9 +190,9 @@ if [ "$INTERNAL_ZLIB" = "1" ]; then
     if [ "$USE_CCACHE" = "1" ]; then
         # Aliasing CC=ccache gcc breaks the gcc check in this configure script that
         # would've inserted the required -fPIC flag. So specify manually
-        CFLAGS="-O3 -fPIC" sh ./configure --prefix="${OEM_INSTALL_STAGE}/zlib"
+        CFLAGS="-O3 -fPIC" sh ./configure
     else
-        sh ./configure --prefix="${OEM_INSTALL_STAGE}/zlib"
+        sh ./configure
     fi
     make && make install
     check_build
@@ -204,18 +201,15 @@ if [ "$INTERNAL_LIBPNG" = "1" ]; then
     echo "Building libpng (internal)"
     cp -Rf "${SOURCE_DIR}/Oem/gd/lpng" "${OEM_WORK_DIR}/gd/lpng"
     cd "${OEM_WORK_DIR}/gd/lpng" || exit
-    # Need to ensure these directories exist first for our custom prefix to work
-    mkdir -p "${OEM_INSTALL_STAGE}/libpng"
-    mkdir -p "${OEM_INSTALL_STAGE}/libpng/usr/local"
     cp scripts/makefile.std makefile
     if [ $BUILD_CPU -eq 64 ]; then
         #Inject -fPIC to CFLAGS for 64-bit
         sed 's/^CFLAGS=/CFLAGS= -fPIC -m64 /g' makefile > makefile64
-        make -fmakefile64 DESTDIR="${OEM_INSTALL_STAGE}/libpng"
-        make -fmakefile64 DESTDIR="${OEM_INSTALL_STAGE}/libpng" install
+        make -fmakefile64
+        make -fmakefile64 install
         check_build
     else
-        make && make DESTDIR="${OEM_INSTALL_STAGE}/libpng" install
+        make && make install
         check_build
     fi
 fi
@@ -223,39 +217,35 @@ if [ "$INTERNAL_JPEG" = "1" ]; then
     echo "Building libjpeg (internal)"
     cp -Rf "${SOURCE_DIR}/Oem/gd/jpeg" "${OEM_WORK_DIR}/gd/jpeg"
     cd "${OEM_WORK_DIR}/gd/jpeg" || exit
-    # Need to ensure these directories exist first for our custom prefix to work
-    mkdir -p "${OEM_INSTALL_STAGE}/libjpeg/bin"
-    mkdir -p "${OEM_INSTALL_STAGE}/libjpeg/man/man1"
+    # This directory must exist in order for make install to work
+    mkdir -p /usr/local/man/man1
     # A jconfig.h that is not modifed by ./configure will trip up make, so nuke it first
     rm -f jconfig.h
     if [ $BUILD_CPU -eq 64 ]; then
-        sh ./configure --enable-static --disable-shared --prefix="${OEM_INSTALL_STAGE}/libjpeg"
+        sh ./configure --enable-static --disable-shared
         #--with-pic does nothing (probably ancient configure script), so do some sed trickery
         #to inject this flag. Know a better way? Enlighten us :)
         sed 's/^CFLAGS=/CFLAGS= -fPIC -m64 /g' Makefile > Makefile64
         make -fMakefile64
         check_build
-        make -fMakefile64 install
+        make -fMakefile64 install-lib
         check_build
     else
-        sh ./configure --enable-static --disable-shared --prefix="${OEM_INSTALL_STAGE}/libjpeg"
+        sh ./configure --enable-static --disable-shared
         make
         check_build
         make install
         check_build
     fi
-    # Make some symlinks so that PHP can work with this
-    ln -s "${OEM_WORK_DIR}/gd/jpeg" "${OEM_INSTALL_STAGE}/libjpeg/include"
-    ln -s "${OEM_WORK_DIR}/gd/jpeg/.libs" "${OEM_INSTALL_STAGE}/libjpeg/lib"
 fi
 if [ "$INTERNAL_FREETYPE" = "1" ]; then
     echo "Building freetype (internal)"
     cp -Rf "${SOURCE_DIR}/Oem/gd/freetype" "${OEM_WORK_DIR}/gd/freetype"
     cd "${OEM_WORK_DIR}/gd/freetype" || exit
     if [ $BUILD_CPU -eq 64 ]; then
-        sh ./configure --enable-static --disable-shared --with-pic --prefix="${OEM_INSTALL_STAGE}/freetype"
+        sh ./configure --enable-static --disable-shared --with-pic
     else
-    	sh ./configure --enable-static --disable-shared --prefix="${OEM_INSTALL_STAGE}/freetype"
+    	sh ./configure --enable-static --disable-shared
     fi
     make && make install
     check_build
@@ -284,15 +274,10 @@ if [ "$INTERNAL_GD" = "1" ]; then
     cp -Rf "${SOURCE_DIR}/Oem/gd/gd" "${OEM_WORK_DIR}/gd/gd"
     cd "${OEM_WORK_DIR}/gd/gd" || exit
     if [ $BUILD_CPU -eq 64 ]; then
-        echo "Running gd configure with: --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-jpeg=${PHP_JPEG_DIR} --with-png=${PHP_PNG_DIR} --with-freetype=${PHP_FREETYPE_DIR} --with-pic --prefix=${OEM_INSTALL_STAGE}/gd"
-        sh ./configure --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-jpeg="${PHP_JPEG_DIR}" --with-png="${PHP_PNG_DIR}" --with-freetype="${PHP_FREETYPE_DIR}" --with-pic --prefix="${OEM_INSTALL_STAGE}/gd"
+        sh ./configure --enable-static --disable-shared --without-fontconfig --with-jpeg=/usr/local --with-pic
     else
-        echo "Running gd configure with: --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-jpeg=${PHP_JPEG_DIR} --with-png=${PHP_PNG_DIR} --with-freetype=${PHP_FREETYPE_DIR} --prefix=${OEM_INSTALL_STAGE}/gd"
-        sh ./configure --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-jpeg="${PHP_JPEG_DIR}" --with-png="${PHP_PNG_DIR}" --with-freetype="${PHP_FREETYPE_DIR}" --prefix="${OEM_INSTALL_STAGE}/gd"
+        sh ./configure --enable-static --disable-shared --without-fontconfig --with-jpeg=/usr/local
     fi
-    #--with-png does not add the libpng include path to CPPFLAGS (???)
-    #So sed patch this path in
-    sed -i "s|^CPPFLAGS =|CPPFLAGS = -I$PHP_PNG_DIR/include/libpng |g" Makefile
     make && make install
     check_build
 fi

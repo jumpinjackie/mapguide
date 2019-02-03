@@ -6,6 +6,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
     ${ACE_INCLUDE_DIR}
     ${XERCESC_INCLUDE_DIR}
     ${FREETYPE_INCLUDE_DIRS}
+    ${FREETYPE_INCLUDE_DIRS}/freetype2
     ${DBXML_INCLUDE_DIR}
     ${FDO_INCLUDE_DIR}
     ${FDO_INCLUDE_DIR}/ExpressionEngine
@@ -79,6 +80,10 @@ target_link_libraries(mgserver
     MgStylization${MG_VERSION_SUFFIX}
     MgRenderers${MG_VERSION_SUFFIX}
 )
+
+if (NEED_LIBRT)
+    target_link_libraries(mgserver rt)
+endif (NEED_LIBRT)
 
 ########### BEGIN Development/Testing environment setup #############
 file(GLOB_RECURSE UNIT_TEST_FILES "${MG_UNIT_TEST_DATA_DIR}/*.*")
