@@ -284,10 +284,15 @@ if [ "$INTERNAL_GD" = "1" ]; then
     cp -Rf "${SOURCE_DIR}/Oem/gd/gd" "${OEM_WORK_DIR}/gd/gd"
     cd "${OEM_WORK_DIR}/gd/gd" || exit
     if [ $BUILD_CPU -eq 64 ]; then
+        echo "Running gd configure with: --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-jpeg=${PHP_JPEG_DIR} --with-png=${PHP_PNG_DIR} --with-freetype=${PHP_FREETYPE_DIR} --with-pic --prefix=${OEM_INSTALL_STAGE}/gd"
         sh ./configure --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-jpeg="${PHP_JPEG_DIR}" --with-png="${PHP_PNG_DIR}" --with-freetype="${PHP_FREETYPE_DIR}" --with-pic --prefix="${OEM_INSTALL_STAGE}/gd"
     else
+        echo "Running gd configure with: --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-jpeg=${PHP_JPEG_DIR} --with-png=${PHP_PNG_DIR} --with-freetype=${PHP_FREETYPE_DIR} --prefix=${OEM_INSTALL_STAGE}/gd"
         sh ./configure --enable-static --disable-shared --without-fontconfig --enable-silent-rules --with-jpeg="${PHP_JPEG_DIR}" --with-png="${PHP_PNG_DIR}" --with-freetype="${PHP_FREETYPE_DIR}" --prefix="${OEM_INSTALL_STAGE}/gd"
     fi
+    #--with-png does not add the libpng include path to CPPFLAGS (???)
+    #So sed patch this path in
+    sed -i "s|^CPPFLAGS =|CPPFLAGS = -I$PHP_PNG_DIR/include/libpng |g" Makefile
     make && make install
     check_build
 fi
