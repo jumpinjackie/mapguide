@@ -12,6 +12,7 @@ JGD2011V100.par
 .MRT
 compiler.
 cs-map.
+Australia\Gda94
 Usa\Geoid96
 Usa\Geoid99
 Usa\Geoid03
