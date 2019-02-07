@@ -181,6 +181,7 @@ if (CSMAP_NO_GRID)
         "${CSMAP_DICT_STAGING_DIR}/Dictionaries/*.nmk"
         "${CSMAP_DICT_STAGING_DIR}/Dictionaries/WW15MGH.GRD"
         # FIXME: Though this removes the files it still leaves the empty directories
+        "${CSMAP_DICT_STAGING_DIR}/Dictionaries/Australia/Gda94/*.*"
         "${CSMAP_DICT_STAGING_DIR}/Dictionaries/Usa/Geoid03/*.*"
         "${CSMAP_DICT_STAGING_DIR}/Dictionaries/Usa/Geoid96/*.*"
         "${CSMAP_DICT_STAGING_DIR}/Dictionaries/Usa/Geoid99/*.*"
