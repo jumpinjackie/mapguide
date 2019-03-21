@@ -1020,6 +1020,7 @@
     <ClInclude Include="HttpWmsGetCapabilities.h" />
     <ClInclude Include="HttpWmsGetFeatureInfo.h" />
     <ClInclude Include="HttpWmsGetMap.h" />
+    <ClInclude Include="LimitingReader.h" />
     <ClInclude Include="NameStringValueCollection.h" />
     <ClInclude Include="NameValueCollection.h" />
     <ClInclude Include="OgcDataAccessor.h" />

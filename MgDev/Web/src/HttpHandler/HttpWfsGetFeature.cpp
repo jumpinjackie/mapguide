@@ -291,6 +291,15 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                                 sSortCriteria  = sSortCriteria.substr(pos+1);
                             }
 
+                            // If global limit specified, it takes precedence
+                            MgConfiguration* cfg = MgConfiguration::GetInstance();
+                            INT32 limit = 0;
+                            cfg->GetIntValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::AgentGlobalGetWfsFeaturesLimit, limit, MgConfigProperties::DefaultAgentGlobalGetWfsFeaturesLimit);
+                            if (limit > 0)
+                            {
+                                numFeaturesToRetrieve = limit;
+                            }
+
                             // Call the C++ API
                             // NOTE: I updated the maxFeatures value from numFeaturesToRetrieve to numFeaturesToRetrieve-1
                             // Because the MgServerFdoFeatureReader in MapGuide server uses -1 to mark empty, while MgWfsFeatures

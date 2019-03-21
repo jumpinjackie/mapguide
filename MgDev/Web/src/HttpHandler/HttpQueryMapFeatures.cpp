@@ -136,6 +136,15 @@ void MgHttpQueryMapFeatures::Execute(MgHttpResponse& hResponse)
     // Call the HTML controller to process the request
     MgHtmlController controller(m_siteConn);
     Ptr<MgByteReader> featureDescriptionInfo;
+
+    // If global limit specified, it takes precedence
+    MgConfiguration* cfg = MgConfiguration::GetInstance();
+    INT32 limit = 0;
+    cfg->GetIntValue(MgConfigProperties::AgentPropertiesSection, MgConfigProperties::AgentGlobalMaxMapFeatureQueryLimit, limit, MgConfigProperties::DefaultAgentGlobalMaxMapFeatureQueryLimit);
+    if (limit > 0)
+    {
+        m_maxFeatures = limit;
+    }
     
     INT32 version = m_userInfo->GetApiVersion();
     if (version == MG_API_VERSION(1, 0, 0))

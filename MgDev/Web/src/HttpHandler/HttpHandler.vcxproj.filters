@@ -757,6 +757,9 @@
     <ClInclude Include="HttpDescribeRuntimeMap.h">
       <Filter>Mapping Service</Filter>
     </ClInclude>
+    <ClInclude Include="LimitingReader.h">
+      <Filter>Feature Service</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HttpHandler.rc" />

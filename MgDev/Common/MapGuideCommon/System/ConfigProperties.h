@@ -954,6 +954,15 @@ EXTERNAL_API:
     static const STRING AgentRequestLogFilename;                        /// value("RequestLogFilename")
     static const STRING DefaultAgentRequestLogFilename;                 /// value("Request.log")
 
+    /// Global limit for SELECTFEATURES
+    static const STRING AgentGlobalMaxFeatureQueryLimit;                /// value("GlobalMaxFeatureQueryLimit")
+    static const INT32 DefaultAgentGlobalMaxFeatureQueryLimit;          /// value(0)
+
+    /// Global limit for QUERYMAPFEATURES
+    static const STRING AgentGlobalMaxMapFeatureQueryLimit;             /// value("GlobalMaxMapFeatureQueryLimit")
+    static const INT32  DefaultAgentGlobalMaxMapFeatureQueryLimit;      /// value(0)
+    
+
     /// OGC PROPERTIES SECTION -------------------------------------------------------------------------------------------
 
     /// Ogc properties
@@ -972,6 +981,14 @@ EXTERNAL_API:
     /// Enable OGC CITE Test for WMS 
     static const STRING CITEWmsEnabled;                                 /// value("CITEWmsEnabled") 
     static const bool DefaultCITEWmsEnabled;                            /// value(false)
+
+    /// Global limit for GetWfsFeatures
+    static const STRING AgentGlobalGetWfsFeaturesLimit;                 /// value("GlobalGetWfsFeaturesLimit")
+    static const INT32  DefaultAgentGlobalGetWfsFeaturesLimit;          /// value(0)
+
+    /// Global limit for GetFeatureInfo
+    static const STRING AgentGlobalGetWmsFeatureInfoLimit;              /// value("GlobalGetWmsFeatureInfoLimit")
+    static const INT32  DefaultAgentGlobalGetWmsFeatureInfoLimit;       /// value(0)
 
     /// WEB APPLICATION PROPERTIES SECTION -------------------------------------------------------------------------------------------
 

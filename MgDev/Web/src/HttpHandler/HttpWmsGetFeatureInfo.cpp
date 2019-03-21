@@ -154,9 +154,9 @@ MgGeometry* MgHttpWmsGetFeatureInfo::GetSelectionGeometry(MgMap* map)
     Ptr<MgCoordinate> mcsLowerLeft = mcsExtent->GetLowerLeftCoordinate();
     Ptr<MgCoordinate> mcsUpperRight = mcsExtent->GetUpperRightCoordinate();
 
-	//When GetFeatureInfo for point or line geometry, simply using click point to query cannot get any matching.
-	//Expand selection geometry a little to be a linearRing so that can query point and line.
-	double margin = 2;
+    //When GetFeatureInfo for point or line geometry, simply using click point to query cannot get any matching.
+    //Expand selection geometry a little to be a linearRing so that can query point and line.
+    double margin = 2;
     // Convert the pixel coords to MCS coords
     double mcsMinX = mcsLowerLeft->GetX() + ((double)m_iCoord - margin) * mcsExtent->GetWidth() / map->GetDisplayWidth();
     double mcsMaxY = mcsUpperRight->GetY() -((double)m_jCoord - margin) * mcsExtent->GetHeight() / map->GetDisplayHeight();
@@ -228,6 +228,15 @@ void MgHttpWmsGetFeatureInfo::AcquireResponseData(MgOgcServer* ogcServer)
 
         // Get the selection geometry
         Ptr<MgGeometry> selectionGeometry = GetSelectionGeometry(map);
+
+        // If global limit specified, it takes precedence
+        MgConfiguration* cfg = MgConfiguration::GetInstance();
+        INT32 limit = 0;
+        cfg->GetIntValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::AgentGlobalGetWmsFeatureInfoLimit, limit, MgConfigProperties::DefaultAgentGlobalGetWmsFeatureInfoLimit);
+        if (limit > 0)
+        {
+            m_featureCount = limit;
+        }
 
         // Call the C++ API
         Ptr<MgBatchPropertyCollection> propertyCollection = service->QueryFeatureProperties(map, queryLayers, selectionGeometry,

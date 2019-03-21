@@ -18,6 +18,7 @@
 #include "HttpHandler.h"
 #include "HttpSelectFeatures.h"
 #include "ReaderByteSourceImpl.h"
+#include "LimitingReader.h"
 
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpSelectFeatures)
 
@@ -109,8 +110,21 @@ void MgHttpSelectFeatures::Execute(MgHttpResponse& hResponse)
     }
 
     Ptr<MgFeatureReader> featureReader = service->SelectFeatures(&resId, m_className, qryOptions);
+    MgConfiguration* cfg = MgConfiguration::GetInstance();
+    INT32 limit = 0;
+    cfg->GetIntValue(MgConfigProperties::AgentPropertiesSection, MgConfigProperties::AgentGlobalMaxFeatureQueryLimit, limit, MgConfigProperties::DefaultAgentGlobalMaxFeatureQueryLimit);
+
     //MgByteSource owns this and will clean it up when done
-    ByteSourceImpl* bsImpl = new MgReaderByteSourceImpl(featureReader, m_responseFormat);
+    ByteSourceImpl* bsImpl = NULL;
+    if (limit > 0)
+    {
+        Ptr<MgReader> limitReader = new MgLimitingReader(featureReader, limit);
+        bsImpl = new MgReaderByteSourceImpl(limitReader, m_responseFormat);
+    }
+    else
+    {
+        bsImpl = new MgReaderByteSourceImpl(featureReader, m_responseFormat);
+    }
 
     Ptr<MgByteSource> byteSource = new MgByteSource(bsImpl);
     byteSource->SetMimeType(m_responseFormat);
