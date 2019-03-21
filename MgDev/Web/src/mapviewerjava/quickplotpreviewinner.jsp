@@ -33,6 +33,7 @@ String sessionId;
 String locale;
 int targetType;
 int us;
+int scaleDenominator;
 
 Hashtable<String, String> annotations = new Hashtable<String, String>();
 %>
@@ -41,7 +42,7 @@ Hashtable<String, String> annotations = new Hashtable<String, String>();
     response.setContentType("text/html; charset=UTF-8");
     request.setCharacterEncoding("UTF-8");
     mapName = sessionId = locale = "";
-    targetType = us = 0;
+    targetType = us = scaleDenominator = 0;
 
     MgLocalizer.SetLocalizedFilesPath(getServletContext().getRealPath("/") + "localized/");
     GetRequestParameters(request);
@@ -79,6 +80,7 @@ void GetRequestParameters(HttpServletRequest request)
     mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
     targetType = GetIntParameter(request, "TARGETTYPE");
     us = GetIntParameter(request, "US");
+    scaleDenominator = GetIntParameter(request, "scale_denominator");
 
     // The parameters whose name matches this pattern will be treated as annotation
     String pattern = "^\\{field:.+\\}$";
@@ -93,6 +95,6 @@ void GetRequestParameters(HttpServletRequest request)
         }
      }
 
-    annotations.put("{scale}", "1 : " + GetParameter(request, "scale_denominator"));
+    annotations.put("{scale}", "1 : " + scaleDenominator);
 }
 %>
