@@ -94,8 +94,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\dbxml\db-4.8.26\\build_windows;..\..\..\..\Oem\dbxml\dbxml\include;..\..\..\..\Oem\dbxml\dbxml\src;..\..\..\..\Oem\DWFTK\develop\global\src;..\..\..\..\Oem\FDO\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;DWFCORE_STATIC;DWFTK_USE_DWFCORE_ZLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\Oem\gd\zlib;..\..\..\..\Oem\gd\zlib\contrib\minizip;..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\dbxml\db-4.8.26\\build_windows;..\..\..\..\Oem\dbxml\dbxml\include;..\..\..\..\Oem\dbxml\dbxml\src;..\..\..\..\Oem\FDO\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -104,9 +104,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;libdb48d.lib;libdbxml25d.lib;dwfcore_wt.1.7.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibd.lib;minizipd.lib;ACEd.lib;xerces-c_3mgD.lib;libdb48d.lib;libdbxml25d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgServerResourceServiced.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\..\Oem\dbxml\lib\$(Configuration);..\..\..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration)\vc10.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\zlib_minizip\win\Debug\Win32;..\..\..\..\Oem\gd\lpng\projects\vs\Debug\ZLib;..\..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\..\Oem\dbxml\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgServerResourceServiced.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -122,8 +122,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\dbxml\db-4.8.26\\build_windows;..\..\..\..\Oem\dbxml\dbxml\include;..\..\..\..\Oem\dbxml\dbxml\src;..\..\..\..\Oem\DWFTK\develop\global\src;..\..\..\..\Oem\FDO\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;DWFCORE_STATIC;DWFTK_USE_DWFCORE_ZLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\Oem\gd\zlib;..\..\..\..\Oem\gd\zlib\contrib\minizip;..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\dbxml\db-4.8.26\\build_windows;..\..\..\..\Oem\dbxml\dbxml\include;..\..\..\..\Oem\dbxml\dbxml\src;..\..\..\..\Oem\FDO\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -132,9 +132,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;libdb48d.lib;libdbxml25d.lib;dwfcore_wt.1.7.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibd.lib;minizipd.lib;ACEd.lib;xerces-c_3mgD.lib;libdb48d.lib;libdbxml25d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgServerResourceServiced.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\..\Oem\dbxml\lib64\$(Configuration);..\..\..\..\Oem\DWFTK\develop\global\lib\x64\static\$(Configuration)\vc10.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\zlib_minizip\win\Debug\x64;..\..\..\..\Oem\gd\lpng\projects\vs\Debug64\ZLib;..\..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\..\Oem\dbxml\lib64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgServerResourceServiced.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -150,8 +150,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\dbxml\db-4.8.26\\build_windows;..\..\..\..\Oem\dbxml\dbxml\include;..\..\..\..\Oem\dbxml\dbxml\src;..\..\..\..\Oem\DWFTK\develop\global\src;..\..\..\..\Oem\FDO\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;DWFCORE_STATIC;DWFTK_USE_DWFCORE_ZLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\Oem\gd\zlib;..\..\..\..\Oem\gd\zlib\contrib\minizip;..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\dbxml\db-4.8.26\\build_windows;..\..\..\..\Oem\dbxml\dbxml\include;..\..\..\..\Oem\dbxml\dbxml\src;..\..\..\..\Oem\FDO\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -159,9 +159,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;libdb48.lib;libdbxml25.lib;dwfcore_wt.1.7.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;minizip.lib;ACE.lib;xerces-c_3mg.lib;libdb48.lib;libdbxml25.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgServerResourceService.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\..\Oem\dbxml\lib\$(Configuration);..\..\..\..\Oem\DWFTK\develop\global\lib\static\$(Configuration)\vc10.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\zlib_minizip\win\Release\Win32;..\..\..\..\Oem\gd\lpng\projects\vs\LIB Release\ZLib;..\..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\..\Oem\dbxml\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgServerResourceService.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -179,8 +179,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\dbxml\db-4.8.26\\build_windows;..\..\..\..\Oem\dbxml\dbxml\include;..\..\..\..\Oem\dbxml\dbxml\src;..\..\..\..\Oem\DWFTK\develop\global\src;..\..\..\..\Oem\FDO\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;DWFCORE_STATIC;DWFTK_USE_DWFCORE_ZLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\Oem\gd\zlib;..\..\..\..\Oem\gd\zlib\contrib\minizip;..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\..\Oem\dbxml\db-4.8.26\\build_windows;..\..\..\..\Oem\dbxml\dbxml\include;..\..\..\..\Oem\dbxml\dbxml\src;..\..\..\..\Oem\FDO\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -188,9 +188,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;libdb48.lib;libdbxml25.lib;dwfcore_wt.1.7.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;minizip.lib;ACE.lib;xerces-c_3mg.lib;libdb48.lib;libdbxml25.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgServerResourceService.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\..\Oem\dbxml\lib64\$(Configuration);..\..\..\..\Oem\DWFTK\develop\global\lib\x64\static\$(Configuration)\vc10.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\zlib_minizip\win\Release\x64;..\..\..\..\Oem\gd\lpng\projects\vs\Release64\ZLib;..\..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\..\Oem\dbxml\lib64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgServerResourceService.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -417,12 +417,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="ApplicationResourceContentManager.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ByteSourceDwfInputStreamImpl.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -669,12 +663,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="ZipFileHandler.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="ZipFileReader.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -725,7 +713,6 @@
     <ClInclude Include="ApplicationRepository.h" />
     <ClInclude Include="ApplicationRepositoryManager.h" />
     <ClInclude Include="ApplicationResourceContentManager.h" />
-    <ClInclude Include="ByteSourceDwfInputStreamImpl.h" />
     <ClInclude Include="Database.h" />
     <ClInclude Include="DataBindingInfo.h" />
     <ClInclude Include="DbEnvironment.h" />
@@ -768,7 +755,6 @@
     <ClInclude Include="TagInfo.h" />
     <ClInclude Include="TagManager.h" />
     <ClInclude Include="XmlSchemaResolver.h" />
-    <ClInclude Include="ZipFileHandler.h" />
     <ClInclude Include="ZipFileReader.h" />
     <ClInclude Include="ZipFileWriter.h" />
   </ItemGroup>

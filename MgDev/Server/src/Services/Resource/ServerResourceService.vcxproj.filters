@@ -105,7 +105,6 @@
     <ClCompile Include="ApplicationRepository.cpp" />
     <ClCompile Include="ApplicationRepositoryManager.cpp" />
     <ClCompile Include="ApplicationResourceContentManager.cpp" />
-    <ClCompile Include="ByteSourceDwfInputStreamImpl.cpp" />
     <ClCompile Include="Database.cpp" />
     <ClCompile Include="DataBindingInfo.cpp" />
     <ClCompile Include="DbEnvironment.cpp" />
@@ -147,7 +146,6 @@
     <ClCompile Include="TagInfo.cpp" />
     <ClCompile Include="TagManager.cpp" />
     <ClCompile Include="XmlSchemaResolver.cpp" />
-    <ClCompile Include="ZipFileHandler.cpp" />
     <ClCompile Include="ZipFileReader.cpp" />
     <ClCompile Include="ZipFileWriter.cpp" />
     <ClCompile Include="OpEnumerateParentTileSetDefinitions.cpp">
@@ -254,7 +252,6 @@
     <ClInclude Include="ApplicationRepository.h" />
     <ClInclude Include="ApplicationRepositoryManager.h" />
     <ClInclude Include="ApplicationResourceContentManager.h" />
-    <ClInclude Include="ByteSourceDwfInputStreamImpl.h" />
     <ClInclude Include="Database.h" />
     <ClInclude Include="DataBindingInfo.h" />
     <ClInclude Include="DbEnvironment.h" />
@@ -297,7 +294,6 @@
     <ClInclude Include="TagInfo.h" />
     <ClInclude Include="TagManager.h" />
     <ClInclude Include="XmlSchemaResolver.h" />
-    <ClInclude Include="ZipFileHandler.h" />
     <ClInclude Include="ZipFileReader.h" />
     <ClInclude Include="ZipFileWriter.h" />
     <ClInclude Include="OpEnumerateParentTileSetDefinitions.h">

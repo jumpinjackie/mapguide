@@ -18,9 +18,9 @@
 #ifndef MGZIPFILEWRITER_H_
 #define MGZIPFILEWRITER_H_
 
-#include "ZipFileHandler.h"
+#include "zip.h"
 
-class MgZipFileWriter : public MgZipFileHandler
+class MgZipFileWriter
 {
 /// Constructors/Destructor
 
@@ -47,7 +47,7 @@ public:
 /// Data Members
 
 private:
-
+    zipFile m_zip;
 };
 
 /// Inline Methods

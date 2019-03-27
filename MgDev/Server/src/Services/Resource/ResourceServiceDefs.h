@@ -26,7 +26,6 @@
 #include <map>
 #include <vector>
 #include <dbxml/DbXml.hpp>
-#include <dwfcore/ZipFileDescriptor.h>
 #include "db_cxx.h"
 
 using namespace DbXml;
@@ -78,13 +77,7 @@ const int MG_DBXML_CURRENT_VERSION = 6;
         arguments.Add(message);                                               \
         mgException = new MgDbException(methodName, __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments); \
         (static_cast<MgThirdPartyException*>(mgException.p))->SetErrorCode(e.get_errno()); \
-    }                                                                         \
-    catch (DWFException& e)                                                   \
-    {                                                                         \
-        MgStringCollection arguments;                                         \
-        arguments.Add(STRING(e.message()));                                   \
-        mgException = new MgDwfException(methodName, __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments); \
-    }                                                                         \
+    }                                                                      \
     catch (const XMLException& e)                                             \
     {                                                                         \
         MgStringCollection arguments;                                         \

@@ -18,9 +18,9 @@
 #ifndef MGZIPFILEREADER_H_
 #define MGZIPFILEREADER_H_
 
-#include "ZipFileHandler.h"
+#include "unzip.h"
 
-class MgZipFileReader : public MgZipFileHandler
+class MgZipFileReader
 {
 /// Constructors/Destructor
 
@@ -46,7 +46,7 @@ public:
 /// Data Members
 
 private:
-
+    unzFile m_unzip;
 };
 
 /// Inline Methods

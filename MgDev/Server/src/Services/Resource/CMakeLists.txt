@@ -2,8 +2,9 @@ include_directories(${FDO_INCLUDE_DIR}
     ${FDO_INCLUDE_DIR}/ExpressionEngine
     ${ACE_INCLUDE_DIR}
     ${XERCESC_INCLUDE_DIR}
-    ${MG_OEM_DWF_INCLUDE_DIR}
     ${DBXML_INCLUDE_DIR}
+    ${MG_OEM_MINIZIP_INCLUDE_DIR}
+    ${ZLIB_INCLUDE_DIR}
     ${MG_COMMON_DIR}/Security
     ${MG_COMMON_DIR}/Foundation
     ${MG_COMMON_DIR}/Geometry
@@ -36,6 +37,8 @@ target_link_libraries(MgServerResourceService${MG_VERSION_SUFFIX}
     ${DBXML_LIBRARY}
     ${XQILLA_LIBRARY}
     ${XERCESC_LIBRARIES}
+    ${ZLIB_LIBRARY}
+    minizip
 )
 install(TARGETS MgServerResourceService${MG_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${MG_COMPONENT})
 install_symlink(${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libMgServerResourceService${MG_VERSION_SUFFIX}.so libMgServerResourceService.so ${MG_COMPONENT})

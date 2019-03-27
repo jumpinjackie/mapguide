@@ -17,15 +17,63 @@
 
 #include "ResourceServiceDefs.h"
 #include "ZipFileReader.h"
-#include "ByteSourceDwfInputStreamImpl.h"
+
+//Bulk of this code copied from miniunz.c reference implementation
+
+class MgByteSourceUnzipImpl : public ByteSourceImpl
+{
+public:
+    MgByteSourceUnzipImpl(unz_file_info currentFileInfo, unzFile unzip) 
+        : m_fi(currentFileInfo), m_unzip(unzip), m_read(0)
+    { 
+        int err = unzOpenCurrentFile(m_unzip);
+        if (err != UNZ_OK)
+        {
+            //throw;
+        }
+    }
+    virtual ~MgByteSourceUnzipImpl() 
+    { 
+        unzCloseCurrentFile(m_unzip);
+    }
+    INT64 GetLength() { return m_fi.uncompressed_size - m_read; }
+    bool IsRewindable() { return false;  }
+    void Rewind() { }
+    INT32 Read(BYTE_ARRAY_OUT buffer, INT32 length)
+    {
+        INT32 err = unzReadCurrentFile(m_unzip, buffer, length);
+        m_read += err;
+        return err;
+    }
+
+private:
+    unz_file_info m_fi;
+    unzFile m_unzip;
+    INT32 m_read;
+
+    // Unimplemented Methods
+
+    MgByteSourceUnzipImpl();
+    MgByteSourceUnzipImpl(const MgByteSourceUnzipImpl&);
+    MgByteSourceUnzipImpl& operator=(
+        const MgByteSourceUnzipImpl&);
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Constructs the object.
 ///
-MgZipFileReader::MgZipFileReader(CREFSTRING filePath) :
-    MgZipFileHandler(filePath, DWFZipFileDescriptor::eUnzip)
+MgZipFileReader::MgZipFileReader(CREFSTRING filePath) 
+    : m_unzip(NULL)
 {
+    std::string mbFilePath = MgUtil::WideCharToMultiByte(filePath);
+    m_unzip = unzOpen(mbFilePath.c_str());
+    if (!m_unzip)
+    {
+        MgStringCollection arguments;
+        arguments.Add(filePath);
+        throw new MgInvalidDwfPackageException(L"MgZipFileReader.MgZipFileReader", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -34,6 +82,16 @@ MgZipFileReader::MgZipFileReader(CREFSTRING filePath) :
 ///
 MgZipFileReader::~MgZipFileReader()
 {
+    if (m_unzip)
+    {
+        int r = unzClose(m_unzip);
+#ifdef _DEBUG
+        if (r != UNZ_OK)
+        {
+            throw new MgInvalidDwfPackageException(L"MgZipFileReader.~MgZipFileReader", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+#endif
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,20 +103,35 @@ MgByteSource* MgZipFileReader::ExtractArchive(CREFSTRING filePath)
     ACE_ASSERT(!filePath.empty());
     Ptr<MgByteSource> byteSource;
 
+    char* mbFilePath = MgUtil::WideCharToMultiByte(filePath.c_str());
+
     MG_RESOURCE_SERVICE_TRY()
 
-    // Note that the byteSource object owns the byteSourceImpl object whose
-    // destructor will de-allocate the inputStream object using the macro
-    // DWFCORE_FREE_OBJECT.
+    //Set pointer to location of specified file
+    if (unzLocateFile(m_unzip, mbFilePath, 0 /* Let platform decide case-sensitivity */) != UNZ_OK)
+    {
+        MgStringCollection arguments;
+        arguments.Add(filePath);
+        throw new MgInvalidDwfPackageException(L"MgZipFileReader.ExtractArchive", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
 
-    DWFString archivedFile(filePath.c_str());
-    DWFInputStream* inputStream = m_zipFileDescriptor->unzip(archivedFile);
+    int err = UNZ_OK;
+    unz_file_info file_info;
+    err = unzGetCurrentFileInfo(m_unzip, &file_info, mbFilePath, strlen(mbFilePath), NULL, 0, NULL, 0);
+    if (err != UNZ_OK)
+    {
+        MgStringCollection arguments;
+        arguments.Add(filePath);
+        throw new MgInvalidDwfPackageException(L"MgZipFileReader.ExtractArchive", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
 
-    MgByteSourceDwfInputStreamImpl* byteSourceImpl =
-        new MgByteSourceDwfInputStreamImpl(inputStream);
-    byteSource = new MgByteSource(byteSourceImpl);
+    MgByteSourceUnzipImpl* impl = new MgByteSourceUnzipImpl(file_info, m_unzip);
+    byteSource = new MgByteSource(impl);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgZipFileReader.ExtractArchive")
+    MG_RESOURCE_SERVICE_CATCH(L"MgZipFileReader.ExtractArchive")
 
+        delete[] mbFilePath;
+
+    MG_RESOURCE_SERVICE_THROW()
     return byteSource.Detach();
 }

@@ -84,6 +84,7 @@ set(MG_OEM_AGG_FREETYPE_DIR "${MG_OEM_AGG_DIR}/font_freetype")
 set(MG_OEM_AGG_SOURCE_DIR "${MG_OEM_AGG_DIR}/src")
 set(MG_OEM_HTTPD_SOURCE_DIR, "${MG_OEM_ROOT_DIR}/LinuxApt/httpd-2.4.18")
 
+set(MG_OEM_MINIZIP_INCLUDE_DIR "${MG_OEM_ROOT_DIR}/gd/zlib/contrib/minizip")
 set(MG_OEM_DWF_INCLUDE_DIR "${MG_OEM_ROOT_DIR}/DWFTK/develop/global/src")
 set(MG_COMMON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Common")
 set(MG_SERVER_COMMON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Server/src/Common")

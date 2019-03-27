@@ -89,6 +89,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF W3D Toolkit", "DWFTK\de
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IMake", "..\BuildTools\WebTools\IMake\IMake.vcxproj", "{B601F04C-0D42-4AFC-A092-B31185E2EA8C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minizip", "zlib_minizip\win\minizip.vcxproj", "{DB542A13-DE6E-3E82-BA87-7AE2885324B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -384,6 +386,14 @@ Global
 		{B601F04C-0D42-4AFC-A092-B31185E2EA8C}.Release|Win32.Build.0 = Release|Win32
 		{B601F04C-0D42-4AFC-A092-B31185E2EA8C}.Release|x64.ActiveCfg = Release|x64
 		{B601F04C-0D42-4AFC-A092-B31185E2EA8C}.Release|x64.Build.0 = Release|x64
+		{DB542A13-DE6E-3E82-BA87-7AE2885324B1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DB542A13-DE6E-3E82-BA87-7AE2885324B1}.Debug|Win32.Build.0 = Debug|Win32
+		{DB542A13-DE6E-3E82-BA87-7AE2885324B1}.Debug|x64.ActiveCfg = Debug|x64
+		{DB542A13-DE6E-3E82-BA87-7AE2885324B1}.Debug|x64.Build.0 = Debug|x64
+		{DB542A13-DE6E-3E82-BA87-7AE2885324B1}.Release|Win32.ActiveCfg = Release|Win32
+		{DB542A13-DE6E-3E82-BA87-7AE2885324B1}.Release|Win32.Build.0 = Release|Win32
+		{DB542A13-DE6E-3E82-BA87-7AE2885324B1}.Release|x64.ActiveCfg = Release|x64
+		{DB542A13-DE6E-3E82-BA87-7AE2885324B1}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

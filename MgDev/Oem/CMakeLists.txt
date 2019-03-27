@@ -23,5 +23,6 @@ install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/fusionMG/templates DESTINATION ${M
 #add_subdirectory(geos)
 add_subdirectory(DWFTK)
 add_subdirectory(CsMapLibrary)
+add_subdirectory(zlib_minizip)
 add_subdirectory(SWIGEx)
 add_subdirectory(LinuxApt)
