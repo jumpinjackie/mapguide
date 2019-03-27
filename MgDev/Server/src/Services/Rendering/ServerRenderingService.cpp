@@ -1022,7 +1022,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     auto_ptr<SE_Renderer> dr(CreateRenderer(drawWidth, drawHeight, bgcolor, false));
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, NULL, dr.get(), drawWidth, drawHeight, width, height, format, scale, b, false, bKeepSelection, true, NULL);
+    ret = RenderMapInternal(map, selection, NULL, dr.get(), drawWidth, drawHeight, width, height, format, scale, b, true, bKeepSelection, true, NULL);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 

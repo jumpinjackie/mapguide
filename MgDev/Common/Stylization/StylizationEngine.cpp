@@ -1052,6 +1052,19 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             {
                 double styleClipOffsetSU = GetClipOffset(sym, style, exec, mm2suX, mm2suY);
                 clipOffsetSU = rs_max(styleClipOffsetSU, clipOffsetSU);
+
+                // increase clip offset if there is text
+                size_t nPrimitives = style->symbol.size();
+                for (size_t primitiveIx = 0; primitiveIx < nPrimitives; ++primitiveIx)
+                {
+                    SE_Primitive* primitive = style->symbol[primitiveIx];
+                    SE_Text* textPri = dynamic_cast<SE_Text*>(primitive);
+                    if (textPri != NULL)
+                    {
+                        clipOffsetSU *= 5;
+                        break;
+                    }
+                }
             }
         }
     }
