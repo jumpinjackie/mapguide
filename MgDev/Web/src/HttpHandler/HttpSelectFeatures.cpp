@@ -127,6 +127,10 @@ void MgHttpSelectFeatures::Execute(MgHttpResponse& hResponse)
     }
 
     Ptr<MgFeatureReader> featureReader = service->SelectFeatures(&resId, m_className, qryOptions);
+    MgConfiguration* cfg = MgConfiguration::GetInstance();
+    INT32 limit = 0;
+    cfg->GetIntValue(MgConfigProperties::AgentPropertiesSection, MgConfigProperties::AgentGlobalMaxFeatureQueryLimit, limit, MgConfigProperties::DefaultAgentGlobalMaxFeatureQueryLimit);
+
     //MgByteSource owns this and will clean it up when done
     Ptr<MgTransform> xform;
     if (!m_transformTo.empty())
@@ -134,10 +138,14 @@ void MgHttpSelectFeatures::Execute(MgHttpResponse& hResponse)
         STRING schemaName;
         STRING className;
         MgUtil::ParseQualifiedClassName(m_className, schemaName, className);
-
         xform = MgHttpUtil::GetTransform(service, &resId, schemaName, className, m_transformTo);
     }
+
     ByteSourceImpl* bsImpl = new MgReaderByteSourceImpl(featureReader, m_responseFormat, m_bCleanJson, m_bEnablePrecision, m_precision, xform);
+    if (limit > 0)
+    {
+        static_cast<MgReaderByteSourceImpl*>(bsImpl)->SetMaxFeatures(limit);
+    }
 
     Ptr<MgByteSource> byteSource = new MgByteSource(bsImpl);
     byteSource->SetMimeType(m_responseFormat);

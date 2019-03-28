@@ -229,6 +229,15 @@ void MgHttpWmsGetFeatureInfo::AcquireResponseData(MgOgcServer* ogcServer)
         // Get the selection geometry
         Ptr<MgGeometry> selectionGeometry = GetSelectionGeometry(map);
 
+        // If global limit specified, it takes precedence
+        MgConfiguration* cfg = MgConfiguration::GetInstance();
+        INT32 limit = 0;
+        cfg->GetIntValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::AgentGlobalGetWmsFeatureInfoLimit, limit, MgConfigProperties::DefaultAgentGlobalGetWmsFeatureInfoLimit);
+        if (limit > 0)
+        {
+            m_featureCount = limit;
+        }
+
         bool bCaptureGeometry = true;
 
         // Call the C++ API

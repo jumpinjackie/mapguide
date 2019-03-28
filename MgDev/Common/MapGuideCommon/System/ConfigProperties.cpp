@@ -545,6 +545,14 @@ const STRING MgConfigProperties::AgentRequestLogEnabled                         
 const bool   MgConfigProperties::DefaultAgentRequestLogEnabled                              = false;
 const STRING MgConfigProperties::AgentRequestLogFilename                                    = L"RequestLogFilename";
 const STRING MgConfigProperties::DefaultAgentRequestLogFilename                             = L"Request.log";
+const STRING MgConfigProperties::AgentGlobalMaxFeatureQueryLimit                            = L"GlobalMaxFeatureQueryLimit";
+const INT32  MgConfigProperties::DefaultAgentGlobalMaxFeatureQueryLimit                     = 0;
+const STRING MgConfigProperties::AgentGlobalMaxMapFeatureQueryLimit                         = L"GlobalMaxMapFeatureQueryLimit";
+const INT32  MgConfigProperties::DefaultAgentGlobalMaxMapFeatureQueryLimit                  = 0;
+const STRING MgConfigProperties::AgentGlobalGetWfsFeaturesLimit                             = L"GlobalGetWfsFeaturesLimit";
+const INT32  MgConfigProperties::DefaultAgentGlobalGetWfsFeaturesLimit                      = 0;
+const STRING MgConfigProperties::AgentGlobalGetWmsFeatureInfoLimit                          = L"GlobalGetWmsFeatureInfoLimit";
+const INT32  MgConfigProperties::DefaultAgentGlobalGetWmsFeatureInfoLimit                   = 0;
 
 // ******************************************************************
 // OGC Properties
