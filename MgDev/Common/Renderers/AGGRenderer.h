@@ -152,7 +152,7 @@ public:
     RENDERERS_API void Save(const RS_String& filename, const RS_String& format);
     RENDERERS_API void Save(const RS_String& filename, const RS_String& format, int width, int height);
     RENDERERS_API RS_ByteData* Save(const RS_String& format, int width, int height,
-                                    RS_ColorVector* baseColorPalette = NULL);
+                                    RS_ColorVector* baseColorPalette = NULL, unsigned int* imagebuffer = NULL);
 
     RENDERERS_API void Combine(const RS_String& fileIn1, const RS_String& fileIn2, const RS_String& fileOut);
     RENDERERS_API void SetWorldToScreenTransform(SE_Matrix& xform);

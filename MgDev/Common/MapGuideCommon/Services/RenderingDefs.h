@@ -47,6 +47,8 @@ INTERNAL_API:
     static const int RenderMap7                 = 0x1111E913;
     static const int RenderTileUTFGrid          = 0x1111E914;
     static const int QueryFeatureProperties3    = 0x1111E915;
+    static const int RenderMetatile             = 0x1111E916;
+    static const int RenderTileFromMetaTile     = 0x1111E917;
 };
 /// \endcond
 

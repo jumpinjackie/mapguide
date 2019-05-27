@@ -218,8 +218,6 @@ MgByteReader* MgTileCacheDefault::GetTileForResource(MgResourceIdentifier* resou
     while (NULL == ret)
     {
         // Attempt use a cached & serialized MgMap object
-        Ptr<MgMemoryStreamHelper> cachedMap;
-        STRING mapString = resource->ToString();
         Ptr<MgMap> map;
 
         // Protect the serialized MgMap cache with a mutex.  Stream reading is not
@@ -264,42 +262,8 @@ MgByteReader* MgTileCacheDefault::GetTileForResource(MgResourceIdentifier* resou
             {
                 ACE_OS::fclose(lockFile);
             }
-
-            MapCache::const_iterator iter = sm_mapCache.find(mapString);
-            if (sm_mapCache.end() != iter)
-            {
-                cachedMap = SAFE_ADDREF((*iter).second);
-                cachedMap->Rewind();
-                Ptr<MgStream> stream = new MgStream(cachedMap);
-                map = new MgMap();
-                map->Deserialize(stream);
-            }
-            else
-            {
-                Ptr<MgSiteConnection> siteConn = new MgSiteConnection();
-                Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
-                siteConn->Open(userInfo);
-                map = new MgMap(siteConn);
-                map->Create(resourceService, resource, mapString, false /* Allow MgMap to be created from any tile provider if resource is tile set */);
-                cachedMap = new MgMemoryStreamHelper();
-                Ptr<MgStream> stream = new MgStream(cachedMap);
-                map->Serialize(stream);
-                if ((INT32)sm_mapCache.size() >= sm_mapCacheSize)
-                {
-                    ClearMapCache(L"");
-                }
-                sm_mapCache[mapString] = SAFE_ADDREF((MgMemoryStreamHelper*)cachedMap);
-            }
+            GetMapFromDefinition(resource, scaleIndex, map, false /* Allow MgMap to be created from any tile provider if resource is tile set */);
         }   // end of mutex scope
-
-        //Some tile providers (eg. XYZ) may not work with pre-defined scale lists, so the scale index doesn't
-        //resolve to some position in a finite scale list (that won't exist for XYZ), but rather it is part of 
-        //some formula used to determine the appropriate scale
-        if (map->GetFiniteDisplayScaleCount() > 0)
-        {
-            double scale = map->GetFiniteDisplayScaleAt(scaleIndex);
-            map->SetViewScale(scale);
-        }
 
         // Render the tile and cache it.
         ret = RenderAndCacheTile(tilePathname, map, scaleIndex, baseMapLayerGroupName, tileColumn, tileRow);
@@ -930,4 +894,51 @@ bool MgTileCacheDefault::IsTileCacheEmpty()
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
     return sm_mapCache.empty();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// helper to retrieve map
+///////////////////////////////////////////////////////////////////////////////
+void MgTileCacheDefault::GetMapFromDefinition(MgResourceIdentifier* mapDefinition, INT32 scaleIndex, Ptr<MgMap> &map, bool bStrictCreate)
+{
+    // Attempt use a cached & serialized MgMap object
+    Ptr<MgMemoryStreamHelper> cachedMap;
+    STRING mapString = mapDefinition->ToString();
+
+    MapCache::const_iterator iter = sm_mapCache.find(mapString);
+    if (sm_mapCache.end() != iter)
+    {
+        cachedMap = SAFE_ADDREF((*iter).second);
+        cachedMap->Rewind();
+        Ptr<MgStream> stream = new MgStream(cachedMap);
+        map = new MgMap();
+        map->Deserialize(stream);
+    }
+    else
+    {
+        // get the service from our helper method
+        Ptr<MgResourceService> resourceService = GetResourceServiceForMapDef(mapDefinition, L"MgTileCacheDefault.GetMapFromDefinition");
+        Ptr<MgSiteConnection> siteConn = new MgSiteConnection();
+        siteConn->Open(MgUserInformation::GetCurrentUserInfo());
+        map = new MgMap(siteConn);
+        map->Create(resourceService, mapDefinition, mapString, bStrictCreate);
+        cachedMap = new MgMemoryStreamHelper();
+        Ptr<MgStream> stream = new MgStream(cachedMap);
+        map->Serialize(stream);
+        if ((INT32)sm_mapCache.size() >= sm_mapCacheSize)
+        {
+            ClearMapCache(L"");
+        }
+        sm_mapCache[mapString] = SAFE_ADDREF((MgMemoryStreamHelper*)cachedMap);
+    }
+
+    //Some tile providers (eg. XYZ) may not work with pre-defined scale lists, so the scale index doesn't
+    //resolve to some position in a finite scale list (that won't exist for XYZ), but rather it is part of 
+    //some formula used to determine the appropriate scale
+    INT32 scaleCount = map->GetFiniteDisplayScaleCount();
+    if (scaleCount > 0 && scaleIndex > 0 && scaleIndex < scaleCount)
+    {
+        double scale = map->GetFiniteDisplayScaleAt(scaleIndex);
+        map->SetViewScale(scale);
+    }
 }

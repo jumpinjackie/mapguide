@@ -146,6 +146,59 @@ void MgOpRenderTileXYZ::Execute()
 
         EndExecution(byteReader);
     }
+    else if (8 == m_packet.m_NumArguments)
+    {
+        Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
+        STRING baseMapLayerGroupName;
+        m_stream->GetString(baseMapLayerGroupName);
+
+        INT32 x = 0;
+        m_stream->GetInt32(x);
+
+        INT32 y = 0;
+        m_stream->GetInt32(y);
+
+        INT32 z = 0;
+        m_stream->GetInt32(z);
+
+        INT32 tileDpi = 0;
+        m_stream->GetInt32(tileDpi);
+
+        STRING tileImageFormat;
+        m_stream->GetString(tileImageFormat);
+
+        double tileExtentOffset = 0.0;
+        m_stream->GetDouble(tileExtentOffset);
+
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(baseMapLayerGroupName.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(x);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(y);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(z);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileDpi);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(tileImageFormat.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(tileExtentOffset);
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        Ptr<MgByteReader> byteReader = m_service->RenderTileXYZ(map, baseMapLayerGroupName, x, y, z, tileDpi, tileImageFormat, tileExtentOffset);
+
+        EndExecution(byteReader);
+    }
     else
     {
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();

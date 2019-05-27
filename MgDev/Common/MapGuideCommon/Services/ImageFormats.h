@@ -53,6 +53,10 @@ PUBLISHED_API:
     /// \brief
     /// Raw format
     static const STRING Raw;    /// \if INTERNAL value("RAW") \endif
+
+    /// \brief
+    /// Meta format for rfc90 meta tiling
+    static const STRING Meta;   /// \if INTERNAL value("META") \endif
 };
 
 #endif

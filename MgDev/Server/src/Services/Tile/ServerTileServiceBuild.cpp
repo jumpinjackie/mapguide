@@ -18,6 +18,7 @@
 #ifdef _WIN32
 #include "Dll.cpp"
 #endif
+#include "MetatileLockUtil.cpp"
 #include "OpClearCache.cpp"
 #include "OpGetTile.cpp"
 #include "OpSetTile.cpp"

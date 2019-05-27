@@ -22,7 +22,16 @@
 class MG_SERVER_TILE_API MgTileCacheDefaultProvider : public MgTileCacheDefault
 {
 public:
-    MgTileCacheDefaultProvider(MgResourceIdentifier* tileSetId, CREFSTRING path, INT32 tileWidth, INT32 tileHeight, CREFSTRING format, bool bRenderOnly);
+    MgTileCacheDefaultProvider(MgResourceIdentifier* tileSetId, 
+                               CREFSTRING path,
+                               INT32 tileWidth,
+                               INT32 tileHeight,
+                               CREFSTRING format,
+                               bool bRenderOnly,
+                               double tileExtentOffset,
+                               CREFSTRING rendererName,
+                               INT32 metaTileFactor,
+                               INT32 metaTileLockMethod);
     virtual ~MgTileCacheDefaultProvider();
 
     virtual MgByteReader* GetTile(CREFSTRING baseMapLayerGroupName,
@@ -47,12 +56,28 @@ protected:
     virtual STRING GetBasePath();
 
 private:
+    // ---------------- Begin Metatile stuff --------------------- //
+    MgByteReader* GetMetatileForResource(MgResourceIdentifier* resource,
+                                         CREFSTRING baseMapLayerGroupName,
+                                         INT32 tileColumn,
+                                         INT32 tileRow,
+                                         INT32 scaleIndex);
+
+    // use a memory based locking scheme
+    static ACE_Recursive_Thread_Mutex sm_MetaTileMutex;
+
+    // ------------------- End Metatile stuff -------------------- //
+
     Ptr<MgResourceIdentifier> m_tilesetId;
     STRING m_path;
     INT32 m_tileWidth;
     INT32 m_tileHeight;
     STRING m_format;
     bool m_renderOnly;
+    double m_tileExtentOffset;
+    STRING m_rendererName;
+    INT32 m_metaTileFactor;
+    INT32 m_metaTileLockMethod;
 };
 
 #endif

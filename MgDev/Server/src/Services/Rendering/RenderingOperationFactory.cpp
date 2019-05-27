@@ -108,6 +108,28 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
                 L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         break;
+    case MgRenderingServiceOpId::RenderMetatile:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3, 3):
+            handler.reset(new MgOpRenderMetatile());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+    case MgRenderingServiceOpId::RenderTileFromMetaTile:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(3, 3):
+            handler.reset(new MgOpRenderTileFromMetatile());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
     case MgRenderingServiceOpId::RenderTileUTFGrid:
         switch (VERSION_NO_PHASE(operationVersion))
         {

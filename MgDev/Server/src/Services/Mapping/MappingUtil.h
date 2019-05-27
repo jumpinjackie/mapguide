@@ -38,6 +38,7 @@ class MgCoordinateSystem;
 class RSMgFeatureReader;
 class TransformCache;
 class SE_SymbolManager;
+class Stylizer;
 
 namespace MdfModel
 {

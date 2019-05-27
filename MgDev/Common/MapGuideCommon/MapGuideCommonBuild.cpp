@@ -96,6 +96,7 @@
 #include  "Services/MappingService.cpp"
 #include  "Services/MapPlot.cpp"
 #include  "Services/MapPlotCollection.cpp"
+#include  "Services/Metatile.cpp"
 #include  "Services/PackageStatusInformation.cpp"
 #include  "Services/PlotSpecification.cpp"
 #include  "Services/PrintLayout.cpp"

@@ -24,6 +24,10 @@ class TestTileService : public CppUnit::TestFixture
 {
     CPPUNIT_TEST_SUITE(TestTileService);
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
+    
+    CPPUNIT_TEST(TestCase_GetMetatileSingle);
+    CPPUNIT_TEST(TestCase_GetMetatileXYZSingle);
+
     CPPUNIT_TEST(TestCase_GetTileProviders);
     CPPUNIT_TEST(TestCase_MgMap_Inline);
     CPPUNIT_TEST(TestCase_MgMap_Linked);
@@ -32,12 +36,15 @@ class TestTileService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_MgMapFromXYZTileSetLoose);
     CPPUNIT_TEST(TestCase_MgMapFromTileSet);
     CPPUNIT_TEST(TestCase_GetTile);
+    
+
     CPPUNIT_TEST(TestCase_SetTile);
     CPPUNIT_TEST(TestCase_GetSetTile);
     CPPUNIT_TEST(TestCase_ClearCache);
     CPPUNIT_TEST(TestCase_GetTileLinked);
     CPPUNIT_TEST(TestCase_GetTileXYZ);
     CPPUNIT_TEST(TestCase_ClearCacheLinked);
+
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
 
@@ -65,10 +72,13 @@ public:
     void TestCase_GetTileLinked();
     void TestCase_ClearCacheLinked();
 
+    void TestCase_GetMetatileSingle();
+    void TestCase_GetMetatileXYZSingle();
+
 private:
     MgMap* CreateMap(CREFSTRING mapName = L"");
     MgMap* CreateMapLinked(CREFSTRING mapName = L"");
-    MgMap* CreateMapLinked2(CREFSTRING mapName = L"");
+    MgMap* CreateMapLinked2(CREFSTRING mapName = L"", CREFSTRING ovCsWkt = L"");
     INT32 Rand(INT32 n);
 
 private:

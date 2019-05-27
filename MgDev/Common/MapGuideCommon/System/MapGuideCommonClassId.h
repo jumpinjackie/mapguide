@@ -130,6 +130,7 @@
 #define MapGuide_RenderingService_RenderingService                  MAPGUIDE_RENDERINGSERVICE_ID+0
 #define MapGuide_RenderingService_FeatureInformation                MAPGUIDE_RENDERINGSERVICE_ID+1
 #define MapGuide_RenderingService_RenderingOptions                  MAPGUIDE_RENDERINGSERVICE_ID+2
+#define MapGuide_RenderingService_Metatile                          MAPGUIDE_RENDERINGSERVICE_ID+3
 
 // Resource Service
 #define MapGuide_ResourceService_ResourceService                    MAPGUIDE_RESOURCESERVICE_ID+0

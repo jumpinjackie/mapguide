@@ -139,6 +139,40 @@ MgByteReader* MgProxyRenderingService::RenderTile(
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+MgByteReader* MgProxyRenderingService::RenderTile(
+    MgMap* map,
+    CREFSTRING baseMapLayerGroupName,
+    INT32 tileColumn,
+    INT32 tileRow,
+    INT32 tileWidth,
+    INT32 tileHeight,
+    INT32 tileDpi,
+    CREFSTRING tileImageFormat,
+    double tileExtentOffset)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+        MgCommand::knObject,                            // Return type expected
+        MgRenderingServiceOpId::RenderTile2,            // Command Code
+        9,                                              // No of arguments
+        Rendering_Service,                              // Service Id
+        BUILD_VERSION(3, 3, 0),                         // Operation version
+        MgCommand::knObject, map,                       // Argument#1
+        MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
+        MgCommand::knInt32, tileColumn,                 // Argument#3
+        MgCommand::knInt32, tileRow,                    // Argument#4
+        MgCommand::knInt32, tileWidth,                  // Argument#5
+        MgCommand::knInt32, tileHeight,                 // Argument#6
+        MgCommand::knInt32, tileDpi,                    // Argument#7
+        MgCommand::knString, &tileImageFormat,          // Argument#8
+        MgCommand::knDouble, tileExtentOffset,          // Argument#9
+        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
 MgByteReader* MgProxyRenderingService::RenderTileXYZ(MgMap* map,
                                                      CREFSTRING baseMapLayerGroupName,
                                                      INT32 x,
@@ -187,6 +221,37 @@ MgByteReader* MgProxyRenderingService::RenderTileXYZ(MgMap* map,
                         MgCommand::knInt32, dpi,                        // Argument#6
                         MgCommand::knString, &tileImageFormat,          // Argument#7
                         MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
+MgByteReader* MgProxyRenderingService::RenderTileXYZ(MgMap* map,
+    CREFSTRING baseMapLayerGroupName,
+    INT32 x,
+    INT32 y,
+    INT32 z,
+    INT32 dpi,
+    CREFSTRING tileImageFormat,
+    double tileExtentOffset)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+        MgCommand::knObject,                            // Return type expected
+        MgRenderingServiceOpId::RenderTileXYZ2,         // Command Code
+        8,                                              // No of arguments
+        Rendering_Service,                              // Service Id
+        BUILD_VERSION(3, 3, 0),                         // Operation version
+        MgCommand::knObject, map,                       // Argument#1
+        MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
+        MgCommand::knInt32, x,                          // Argument#3
+        MgCommand::knInt32, y,                          // Argument#4
+        MgCommand::knInt32, z,                          // Argument#5
+        MgCommand::knInt32, dpi,                        // Argument#6
+        MgCommand::knString, &tileImageFormat,          // Argument#7
+        MgCommand::knDouble, tileExtentOffset,          // Argument#8
+        MgCommand::knNone);                             // End of arguments
 
     SetWarning(cmd.GetWarningObject());
 
@@ -1263,6 +1328,102 @@ MgByteReader* MgProxyRenderingService::RenderMap(
                         MgCommand::knInt8, (INT8)bKeepSelection,        // Argument#9
                         MgCommand::knObject, profileRenderMapResult,    // Argument#10
                         MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
+MgMetatile* MgProxyRenderingService::RenderMetatile(
+    MgMap* map,
+    CREFSTRING baseMapLayerGroupName,
+    INT32 tileColumn,
+    INT32 tileRow,
+    INT32 tileWidth,
+    INT32 tileHeight,
+    INT32 tileDpi,
+    CREFSTRING tileImageFormat,
+    double tileExtentOffset,
+    INT32 metaTilingFactor)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                      // Connection
+        MgCommand::knObject,                            // Return type expected
+        MgRenderingServiceOpId::RenderMetatile,         // Command Code
+        10,                                             // No of arguments
+        Rendering_Service,                              // Service Id
+        BUILD_VERSION(3, 3, 0),                         // Operation version
+        MgCommand::knObject, map,                       // Argument#1
+        MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
+        MgCommand::knInt32, tileColumn,                 // Argument#3
+        MgCommand::knInt32, tileRow,                    // Argument#4
+        MgCommand::knInt32, tileWidth,                  // Argument#5
+        MgCommand::knInt32, tileHeight,                 // Argument#6
+        MgCommand::knInt32, tileDpi,                    // Argument#7
+        MgCommand::knString, &tileImageFormat,          // Argument#8
+        MgCommand::knDouble, tileExtentOffset,          // Argument#9
+        MgCommand::knInt32, metaTilingFactor,           // Argument#10
+        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgMetatile*)cmd.GetReturnValue().val.m_obj;
+}
+
+MgMetatile* MgProxyRenderingService::RenderMetatileXYZ(
+    MgMap* map,
+    CREFSTRING baseMapLayerGroupName,
+    INT32 x,
+    INT32 y,
+    INT32 z,
+    INT32 dpi,
+    CREFSTRING tileImageFormat,
+    double tileExtentOffset,
+    INT32 metaTilingFactor)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                      // Connection
+        MgCommand::knObject,                            // Return type expected
+        MgRenderingServiceOpId::RenderTileXYZ2,         // Command Code
+        9,                                              // No of arguments
+        Rendering_Service,                              // Service Id
+        BUILD_VERSION(3, 3, 0),                         // Operation version
+        MgCommand::knObject, map,                       // Argument#1
+        MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
+        MgCommand::knInt32, x,                          // Argument#3
+        MgCommand::knInt32, y,                          // Argument#4
+        MgCommand::knInt32, z,                          // Argument#5
+        MgCommand::knInt32, dpi,                        // Argument#6
+        MgCommand::knString, &tileImageFormat,          // Argument#7
+        MgCommand::knDouble, tileExtentOffset,          // Argument#8
+        MgCommand::knInt32, metaTilingFactor,           // Argument#9
+        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgMetatile*)cmd.GetReturnValue().val.m_obj;
+}
+
+MgByteReader* MgProxyRenderingService::RenderTileFromMetaTile(
+    MgMap* map,
+    MgMetatile* metaTile,
+    CREFSTRING rendererName,
+    INT32 subTileX,
+    INT32 subTileY)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                      // Connection
+        MgCommand::knObject,                            // Return type expected
+        MgRenderingServiceOpId::RenderTileFromMetaTile, // Command Code
+        9,                                              // No of arguments
+        Rendering_Service,                              // Service Id
+        BUILD_VERSION(3, 3, 0),                         // Operation version
+        MgCommand::knObject, map,                       // Argument#1
+        MgCommand::knObject, metaTile,                  // Argument#2
+        MgCommand::knString, &rendererName,             // Argument#3
+        MgCommand::knInt32, subTileX,                   // Argument#4
+        MgCommand::knInt32, subTileY,                   // Argument#5
+        MgCommand::knNone);                             // End of arguments
 
     SetWarning(cmd.GetWarningObject());
 

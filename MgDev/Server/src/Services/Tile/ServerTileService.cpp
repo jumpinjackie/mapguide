@@ -26,12 +26,16 @@ IMPLEMENT_CREATE_SERVICE(MgServerTileService)
 MgServerTileService::MgServerTileService() : MgTileService()
 {
     MgTileCacheDefault::Initialize();
+
+    MgConfiguration* pConf = MgConfiguration::GetInstance();
+    pConf->GetStringValue(MgConfigProperties::GeneralPropertiesSection,
+        MgConfigProperties::GeneralPropertyRenderer,
+        m_rendererName,
+        MgConfigProperties::DefaultGeneralPropertyRenderer);
 }
 
 MgServerTileService::~MgServerTileService()
-{
-
-}
+{ }
 
 MgByteReader* MgServerTileService::GetTile(
     MgMap* map,
@@ -57,8 +61,8 @@ MgByteReader* MgServerTileService::GetTile(
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    Ptr<MgTileCacheDefault> cache = new MgTileCacheDefault(map);
-    ret = cache->GetTile(baseMapLayerGroupName, tileColumn, tileRow, scaleIndex);
+    MgTileCacheDefault cache(map);
+    ret = cache.GetTile(baseMapLayerGroupName, tileColumn, tileRow, scaleIndex);
 
     MG_CATCH_AND_THROW(L"MgServerTileService.GetTile")
 
@@ -93,8 +97,8 @@ void MgServerTileService::ClearCache(MgMap* map)
 
     CHECKARGUMENTNULL(map, L"MgServerTileService.ClearCache");
 
-    Ptr<MgTileCacheDefault> cache = new MgTileCacheDefault(map);
-    cache->Clear();
+    MgTileCacheDefault cache(map);
+    cache.Clear();
 
     MG_CATCH_AND_THROW(L"MgServerTileService.ClearCache")
 }
@@ -313,6 +317,22 @@ MgByteReader* MgServerTileService::GetTileProviders()
         xml.append("<DefaultValue></DefaultValue>\n");
         xml.append("</ConnectionProperty>\n");
 
+        //Property: TileExtentOffset
+        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
+        xml.append("<Name>");
+        std::string mbTileExtentOffset;
+        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_TILEEXTENTOFFSET, mbTileExtentOffset);
+        xml.append(mbTileExtentOffset);
+        xml.append("</Name>\n");
+        xml.append("<LocalizedName>");
+        std::string mbLocTileExtentOffset;
+        STRING wLocTileExtentOffset = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_TileExtentOffset_LocalizedName");
+        MgUtil::WideCharToMultiByte(wLocTileExtentOffset, mbLocTileExtentOffset);
+        xml.append(mbLocTileExtentOffset);
+        xml.append("</LocalizedName>\n");
+        xml.append("<DefaultValue></DefaultValue>\n");
+        xml.append("</ConnectionProperty>\n");
+
         xml.append("</ConnectionProperties>\n");
         xml.append("</TileProvider>\n");
     }
@@ -396,6 +416,23 @@ MgByteReader* MgServerTileService::GetTileProviders()
         xml.append("</LocalizedName>\n");
         xml.append("<DefaultValue>false</DefaultValue>\n");
         xml.append("</ConnectionProperty>\n");
+
+        //Property: TileExtentOffset
+        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
+        xml.append("<Name>");
+        std::string mbTileExtentOffset;
+        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_TILEEXTENTOFFSET, mbTileExtentOffset);
+        xml.append(mbTileExtentOffset);
+        xml.append("</Name>\n");
+        xml.append("<LocalizedName>");
+        std::string mbLocTileExtentOffset;
+        STRING wLocTileExtentOffset = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_TileExtentOffset_LocalizedName");
+        MgUtil::WideCharToMultiByte(wLocTileExtentOffset, mbLocTileExtentOffset);
+        xml.append(mbLocTileExtentOffset);
+        xml.append("</LocalizedName>\n");
+        xml.append("<DefaultValue></DefaultValue>\n");
+        xml.append("</ConnectionProperty>\n");
+
 
         xml.append("</ConnectionProperties>\n");
         xml.append("</TileProvider>\n");
@@ -503,9 +540,12 @@ MgTileCache* MgServerTileService::GetTileCache(MgResourceIdentifier* tileSetId, 
         MdfModel::NameStringPairCollection* parameters = tilesetParams->GetParameters();
         INT32 width = 300;
         INT32 height = 300;
+        double tileExtentOffset = MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
         STRING format = L"PNG";
         STRING path;
         bool bRenderOnly = false;
+        INT32 metaTileFactor = 0;
+        INT32 metaTileLockMethod = 0;
         for (INT32 i = 0; i < parameters->GetCount(); i++)
         {
             MdfModel::NameStringPair* pair = parameters->GetAt(i);
@@ -529,6 +569,22 @@ MgTileCache* MgServerTileService::GetTileCache(MgResourceIdentifier* tileSetId, 
             {
                 bRenderOnly = MgUtil::StringToBoolean(pair->GetValue());
             }
+            else if (pair->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_TILEEXTENTOFFSET)
+            {
+                tileExtentOffset = MgUtil::StringToDouble(pair->GetValue());
+                if (tileExtentOffset < 0.0)
+                {
+                    tileExtentOffset = MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
+                }
+            }
+            else if (pair->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_METATILEFACTOR)
+            {
+                metaTileFactor = MgUtil::StringToInt32(pair->GetValue());
+            }
+            else if (pair->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_METATILELOCKMETHOD)
+            {
+                metaTileLockMethod = MgUtil::StringToInt32(pair->GetValue());
+            }
         }
 
         //If we find the cache path substitution tag, replace it with the default path from the configuration
@@ -537,14 +593,17 @@ MgTileCache* MgServerTileService::GetTileCache(MgResourceIdentifier* tileSetId, 
             path = MgTileParameters::tileCachePath;
         }
 
-        cache = new MgTileCacheDefaultProvider(tileSetId, path, width, height, format, bRenderOnly);
+        cache = new MgTileCacheDefaultProvider(tileSetId, path, width, height, format, bRenderOnly, tileExtentOffset, m_rendererName, metaTileFactor, metaTileLockMethod);
     }
     else if (provider == MG_TILE_PROVIDER_XYZ)
     {
         MdfModel::NameStringPairCollection* parameters = tilesetParams->GetParameters();
         STRING format = L"PNG";
+        double tileExtentOffset = MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
         STRING path;
         bool bRenderOnly = false;
+        INT32 metaTileFactor = 0;
+        INT32 metaTileLockMethod = 0;
         for (INT32 i = 0; i < parameters->GetCount(); i++)
         {
             MdfModel::NameStringPair* pair = parameters->GetAt(i);
@@ -560,6 +619,22 @@ MgTileCache* MgServerTileService::GetTileCache(MgResourceIdentifier* tileSetId, 
             {
                 bRenderOnly = MgUtil::StringToBoolean(pair->GetValue());
             }
+            else if (pair->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_TILEEXTENTOFFSET)
+            {
+                tileExtentOffset = MgUtil::StringToDouble(pair->GetValue());
+                if (tileExtentOffset < 0.0)
+                {
+                    tileExtentOffset = MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
+                }
+            }
+            else if (pair->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_METATILEFACTOR)
+            {
+                metaTileFactor = MgUtil::StringToInt32(pair->GetValue());
+            }
+            else if (pair->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_METATILELOCKMETHOD)
+            {
+                metaTileLockMethod = MgUtil::StringToInt32(pair->GetValue());
+            }
         }
 
         //If we find the cache path substitution tag, replace it with the default path from the configuration
@@ -568,7 +643,7 @@ MgTileCache* MgServerTileService::GetTileCache(MgResourceIdentifier* tileSetId, 
             path = MgTileParameters::tileCachePath;
         }
 
-        cache = new MgTileCacheXYZProvider(tileSetId, path, format, bRenderOnly);
+        cache = new MgTileCacheXYZProvider(tileSetId, path, format, bRenderOnly, tileExtentOffset, m_rendererName, metaTileFactor, metaTileLockMethod);
     }
     else 
     {

@@ -83,6 +83,10 @@ PUBLISHED_API:
     /// \brief
     /// application/vnd.google-earth.kmz
     static const STRING Kmz;      ///\if INTERNAL value("application/vnd.google-earth.kmz") \endif
+
+    /// \brief
+    /// application/metatile
+    static const STRING Meta;      ///\if INTERNAL value("application/metatile") \endif
 };
 /// \}
 

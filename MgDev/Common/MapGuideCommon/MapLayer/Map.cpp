@@ -20,6 +20,12 @@
 #include "SAX2Parser.h"
 #include <map>
 
+/// rfc90 instead of a dependency on Common/Stylization/Bounds.h
+#define rs_max(a,b)     (((a) > (b)) ? (a) : (b))
+#define rs_min(a,b)     (((a) < (b)) ? (a) : (b))
+/// rfc90 instead of a dependency on Common/Stylization/StylizationDefs.h
+#define _METERS_PER_INCH 0.0254
+
 using namespace std;
 
 MG_IMPL_DYNCREATE(MgMap)
@@ -829,13 +835,13 @@ void MgMap::GetFiniteDisplayScalesFromTileSet(MdfModel::TileSetDefinition* tiles
     //to FDO-ize this tile provider concept.
 
     MdfModel::TileStoreParameters* storeParams = tileset->GetTileStoreParameters();
-    if (storeParams->GetTileProvider() == MG_TILE_PROVIDER_DEFAULT) //NOXLATE
+    if (storeParams->GetTileProvider() == MG_TILE_PROVIDER_DEFAULT)
     {
         MdfModel::NameStringPairCollection* parameters = storeParams->GetParameters();
         for (INT32 i = 0; i < parameters->GetCount(); i++)
         {
             MdfModel::NameStringPair* nsp = parameters->GetAt(i);
-            if (nsp->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_FINITESCALELIST) //NOXLATE
+            if (nsp->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_FINITESCALELIST)
             {
                 Ptr<MgStringCollection> values = MgStringCollection::ParseCollection(nsp->GetValue(), L","); //NOXLATE
                 for (INT32 i = 0; i < values->GetCount(); i++)
@@ -1572,6 +1578,32 @@ INT32 MgMap::GetWatermarkUsage()
 void MgMap::SetWatermarkUsage(INT32 watermarkUsage)
 {
     m_watermarkUsage = watermarkUsage;
+}
+
+/////////////////////////////////////////////////////////////////////
+// compute the tile coordinates from the x y index of the tiles and the meta tiling factor
+void MgMap::GetTileCoords(int metaTileFactor, int tileColumn, int tileRow,
+    int dpi, int tileWidth, int tileHeight,
+    double &tileMinX, double &tileMaxX, double &tileMinY, double & tileMaxY)
+{
+    Ptr<MgEnvelope> mapExtent = this->GetMapExtent();
+    Ptr<MgCoordinate> pt00 = mapExtent->GetLowerLeftCoordinate();
+    Ptr<MgCoordinate> pt11 = mapExtent->GetUpperRightCoordinate();
+    double mapMinX = rs_min(pt00->GetX(), pt11->GetX());
+    double mapMaxX = rs_max(pt00->GetX(), pt11->GetX());
+    double mapMinY = rs_min(pt00->GetY(), pt11->GetY());
+    double mapMaxY = rs_max(pt00->GetY(), pt11->GetY());
+
+    double scale = this->GetViewScale();
+    double metersPerUnit = this->GetMetersPerUnit();
+    double metersPerPixel = _METERS_PER_INCH / dpi;
+    double tileWidthMCS = (double)tileWidth  * metersPerPixel * scale / metersPerUnit;
+    double tileHeightMCS = (double)tileHeight * metersPerPixel * scale / metersPerUnit;
+
+    tileMinX = mapMinX + (double)(tileColumn)* tileWidthMCS;  // left edge
+    tileMaxX = mapMinX + (double)(tileColumn + metaTileFactor) * tileWidthMCS;  // right edge
+    tileMinY = mapMaxY - (double)(tileRow + metaTileFactor) * tileHeightMCS; // bottom edge
+    tileMaxY = mapMaxY - (double)(tileRow)* tileHeightMCS; // top edge
 }
 
 //////////////////////////////////////////////////////////////////

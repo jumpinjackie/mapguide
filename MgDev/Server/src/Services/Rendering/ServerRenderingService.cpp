@@ -45,11 +45,6 @@ static const INT32 FILTER_VISIBLE = 1;
 static const INT32 FILTER_SELECTABLE = 2;
 static const INT32 FILTER_HASTOOLTIPS = 4;
 
-inline bool hasColorMap (STRING format)
-{
-    return format == L"PNG8" || format == L"GIF";
-}
-
 IMPLEMENT_CREATE_SERVICE(MgServerRenderingService)
 
 
@@ -179,64 +174,19 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
 {
     Ptr<MgByteReader> ret;
 
+    // the label renderer needs to know the tile extent offset parameter
+    double tileExtentOffset = 0.0;
+    MgConfiguration* pConf = MgConfiguration::GetInstance();
+    pConf->GetDoubleValue(MgConfigProperties::RenderingServicePropertiesSection,
+        MgConfigProperties::RenderingServicePropertyTileExtentOffset,
+        tileExtentOffset,
+        MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset);
+    if (tileExtentOffset < 0.0)
+        tileExtentOffset = MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
+
     MG_TRY()
 
-    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderTile");
-    CHECKARGUMENTEMPTYSTRING(baseMapLayerGroupName, L"MgServerRenderingService.RenderTile");
-
-    // find the finite display scale closest to the requested map scale
-    double scale = map->GetViewScale();
-    INT32 scaleIndex = map->FindNearestFiniteDisplayScaleIndex(scale);
-
-    // if we don't find a nearest scale then something is wrong with the map
-    if (scaleIndex < 0)
-        throw new MgInvalidMapDefinitionException(L"MgServerRenderingService.RenderTile", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    // get the layer group associated with the name
-    Ptr<MgLayerGroupCollection> layerGroups = map->GetLayerGroups();
-    Ptr<MgLayerGroup> baseGroup = layerGroups->GetItem(baseMapLayerGroupName);
-    if (baseGroup == NULL)
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"2");
-        arguments.Add(baseMapLayerGroupName);
-
-        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderTile",
-            __LINE__, __WFILE__, &arguments, L"MgMapLayerGroupNameNotFound", NULL);
-    }
-
-    // get the scale at which to render the tile
-    scale = map->GetFiniteDisplayScaleAt(scaleIndex);
-
-    // ensure the tile DPI is set on the map
-    map->SetDisplayDpi(tileDpi);
-
-    // ------------------------------------------------------
-    // the upper left corner of tile (0,0) corresponds to the
-    // upper left corner of the map extent
-    // ------------------------------------------------------
-
-    Ptr<MgEnvelope> mapExtent = map->GetMapExtent();
-    Ptr<MgCoordinate> pt00 = mapExtent->GetLowerLeftCoordinate();
-    Ptr<MgCoordinate> pt11 = mapExtent->GetUpperRightCoordinate();
-    double mapMinX = rs_min(pt00->GetX(), pt11->GetX());
-    double mapMaxX = rs_max(pt00->GetX(), pt11->GetX());
-    double mapMinY = rs_min(pt00->GetY(), pt11->GetY());
-    double mapMaxY = rs_max(pt00->GetY(), pt11->GetY());
-
-    double metersPerUnit  = map->GetMetersPerUnit();
-    double metersPerPixel = METERS_PER_INCH / tileDpi;
-    double tileWidthMCS   = (double)tileWidth  * metersPerPixel * scale / metersPerUnit;
-    double tileHeightMCS  = (double)tileHeight * metersPerPixel * scale / metersPerUnit;
-
-    double tileMinX = mapMinX + (double)(tileColumn  ) * tileWidthMCS;  // left edge
-    double tileMaxX = mapMinX + (double)(tileColumn+1) * tileWidthMCS;  // right edge
-    double tileMinY = mapMaxY - (double)(tileRow   +1) * tileHeightMCS; // bottom edge
-    double tileMaxY = mapMaxY - (double)(tileRow     ) * tileHeightMCS; // top edge
-
-    // make the call to render the tile
-    ret = RenderTile(map, baseGroup, scaleIndex, tileWidth, tileHeight, scale,
-                     tileMinX, tileMaxX, tileMinY, tileMaxY, tileImageFormat);
+    ret = RenderTile(map, baseMapLayerGroupName, tileColumn, tileRow, tileWidth, tileHeight, tileDpi, tileImageFormat, tileExtentOffset);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTile")
 
@@ -312,122 +262,19 @@ MgByteReader* MgServerRenderingService::RenderTileXYZ(MgMap* map,
 {
     Ptr<MgByteReader> ret;
 
-    MG_TRY()
-
-    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderTileXYZ");
-    CHECKARGUMENTEMPTYSTRING(baseMapLayerGroupName, L"MgServerRenderingService.RenderTileXYZ");
-    
-    // get the layer group associated with the name
-    Ptr<MgLayerGroupCollection> layerGroups = map->GetLayerGroups();
-    Ptr<MgLayerGroup> baseGroup = layerGroups->GetItem(baseMapLayerGroupName);
-    if (baseGroup == NULL)
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"2");
-        arguments.Add(baseMapLayerGroupName);
-
-        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderTileXYZ",
-            __LINE__, __WFILE__, &arguments, L"MgMapLayerGroupNameNotFound", NULL);
-    }
-
-    //Set the dpi
-    map->SetDisplayDpi(dpi);
-
-    int width = XYZ_TILE_WIDTH;
-    int height = XYZ_TILE_HEIGHT;
-
-    // Inlining same logic from RenderTile() overload below as we want the same logic, but we want to pass scale
-    // instead of scale index
-    RS_Bounds extent;
-    ComputeXYZTileExtents(map, x, y, z, extent);
-
-    // use the map's background color, but always make it fully transparent
-    RS_Color bgColor;
-    StylizationUtil::ParseColor(map->GetBackgroundColor(), bgColor);
-    bgColor.alpha() = 0;
-
     // the label renderer needs to know the tile extent offset parameter
     double tileExtentOffset = 0.0;
     MgConfiguration* pConf = MgConfiguration::GetInstance();
     pConf->GetDoubleValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyTileExtentOffset,
-                          tileExtentOffset,
-                          MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset);
+        MgConfigProperties::RenderingServicePropertyTileExtentOffset,
+        tileExtentOffset,
+        MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset);
     if (tileExtentOffset < 0.0)
         tileExtentOffset = MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
-    
-    // Image scaling logic ripped verbatim from RenderMap() overload that takes MgEnvelope
-    //
-    // If we need to scale the image (because of request for non-square
-    // pixels) we will need to draw at one image size and then save at
-    // another scaled size.  Here we will compute the correct map scale
-    // and render size for a requested extent and image size.
-    double screenAR = (double)width / (double)height;
-    double mapAR = extent.width() / extent.height();
 
-    int drawWidth = width;
-    int drawHeight = height;
-    double scale = 0.0;
+    MG_TRY()
 
-    if (mapAR >= screenAR)
-    {
-        scale = extent.width() * map->GetMetersPerUnit() / METERS_PER_INCH * (double)dpi / (double)width;
-
-        // we based map scale on the image width, so adjust rendering
-        // height to match the map aspect ratio
-        drawHeight = (int)(width / mapAR);
-
-        // ignore small perturbations in order to avoid rescaling the
-        // end image in cases where the rescaling of width is less than
-        // a pixel or so
-        if (abs(drawHeight - height) <= 1)
-            drawHeight = height;
-    }
-    else
-    {
-        scale = extent.height() * map->GetMetersPerUnit() / METERS_PER_INCH * (double)dpi / (double)height;
-
-        // we based map scale on the image height, so adjust rendering
-        // height to match the map aspect ratio
-        drawWidth = (int)(height * mapAR);
-
-        // ignore small perturbations, in order to avoid rescaling the
-        // end image in cases where the rescaling of width is less than
-        // a pixel or so
-        if (abs(drawWidth - width) <= 1)
-            drawWidth = width;
-    }
-
-    //printf("XYZ(%d, %d, %d) -> [%f, %f] [%f, %f] at %f -- (w: %d, h: %d, mpu: %f)\n", x, y, z, mcsMinX, mcsMinY, mcsMaxX, mcsMaxY, scale, width, height, map->GetMetersPerUnit());
-
-    // sanity check - number of image pixels cannot exceed MAX_PIXELS
-    if (drawWidth * drawHeight > MAX_PIXELS)
-        throw new MgOutOfRangeException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
-
-    // initialize the renderer (set clipping to false so that we label
-    // the unclipped geometry)
-    auto_ptr<SE_Renderer> dr(CreateRenderer(drawWidth, drawHeight, bgColor, false, true, tileExtentOffset));
-
-    // create a temporary collection containing all the layers for the base group
-    Ptr<MgLayerCollection> layers = map->GetLayers();
-    Ptr<MgReadOnlyLayerCollection> roLayers = new MgReadOnlyLayerCollection();
-    for (int i=0; i<layers->GetCount(); i++)
-    {
-        Ptr<MgLayerBase> layer = layers->GetItem(i);
-        Ptr<MgLayerGroup> parentGroup = layer->GetGroup();
-        if (parentGroup == baseGroup)
-            roLayers->Add(layer);
-    }
-
-    // of course the group has to also be visible
-    bool groupVisible = baseGroup->GetVisible();
-    baseGroup->SetVisible(true);
-
-    // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, NULL, roLayers, dr.get(), drawWidth, drawHeight, width, height, tileImageFormat, scale, extent, true, true, false, NULL);
-
-    // restore the base group's visibility
-    baseGroup->SetVisible(groupVisible);
+    ret = RenderTileXYZ(map, baseMapLayerGroupName, x, y, z, dpi, tileImageFormat, tileExtentOffset);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTileXYZ")
 
@@ -489,47 +336,10 @@ MgByteReader* MgServerRenderingService::RenderTileUTFGrid(MgMap * map,
     if (tileExtentOffset < 0.0)
         tileExtentOffset = MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
 
-    // Image scaling logic ripped verbatim from RenderMap() overload that takes MgEnvelope
-    //
-    // If we need to scale the image (because of request for non-square
-    // pixels) we will need to draw at one image size and then save at
-    // another scaled size.  Here we will compute the correct map scale
-    // and render size for a requested extent and image size.
-    double screenAR = (double)width / (double)height;
-    double mapAR = extent.width() / extent.height();
-
-    int drawWidth = width;
-    int drawHeight = height;
+    INT32 drawWidth = width;
+    INT32 drawHeight = height;
     double scale = 0.0;
-
-    if (mapAR >= screenAR)
-    {
-        scale = extent.width() * map->GetMetersPerUnit() / METERS_PER_INCH * (double)dpi / (double)width;
-
-        // we based map scale on the image width, so adjust rendering
-        // height to match the map aspect ratio
-        drawHeight = (int)(width / mapAR);
-
-        // ignore small perturbations in order to avoid rescaling the
-        // end image in cases where the rescaling of width is less than
-        // a pixel or so
-        if (abs(drawHeight - height) <= 1)
-            drawHeight = height;
-    }
-    else
-    {
-        scale = extent.height() * map->GetMetersPerUnit() / METERS_PER_INCH * (double)dpi / (double)height;
-
-        // we based map scale on the image height, so adjust rendering
-        // height to match the map aspect ratio
-        drawWidth = (int)(height * mapAR);
-
-        // ignore small perturbations, in order to avoid rescaling the
-        // end image in cases where the rescaling of width is less than
-        // a pixel or so
-        if (abs(drawWidth - width) <= 1)
-            drawWidth = width;
-    }
+    ComputeScaledDimensions(extent, width, height, dpi, map->GetMetersPerUnit(), drawWidth, drawHeight, scale);
 
     //printf("XYZ(%d, %d, %d) -> [%f, %f] [%f, %f] at %f -- (w: %d, h: %d, mpu: %f)\n", x, y, z, mcsMinX, mcsMinY, mcsMaxX, mcsMaxY, scale, width, height, map->GetMetersPerUnit());
 
@@ -626,17 +436,18 @@ MgByteReader* MgServerRenderingService::RenderTileUTFGrid(MgMap * map,
 
 ///////////////////////////////////////////////////////////////////////////////
 /// render a map using all layers from the baseGroup
-MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
-                                                   MgLayerGroup* baseGroup,
-                                                   INT32 scaleIndex,
-                                                   INT32 width,
-                                                   INT32 height,
-                                                   double scale,
-                                                   double mcsMinX,
-                                                   double mcsMaxX,
-                                                   double mcsMinY,
-                                                   double mcsMaxY,
-                                                   CREFSTRING format)
+MgByteReader* MgServerRenderingService::RenderTileInternal(MgMap* map,
+                                                           MgLayerGroup* baseGroup,
+                                                           INT32 scaleIndex,
+                                                           INT32 width,
+                                                           INT32 height,
+                                                           double scale,
+                                                           double mcsMinX,
+                                                           double mcsMaxX,
+                                                           double mcsMinY,
+                                                           double mcsMaxY,
+                                                           CREFSTRING format,
+                                                           double tileExtentOffset)
 {
     Ptr<MgByteReader> ret;
 
@@ -652,19 +463,9 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
     StylizationUtil::ParseColor(map->GetBackgroundColor(), bgColor);
     bgColor.alpha() = 0;
 
-    // the label renderer needs to know the tile extent offset parameter
-    double tileExtentOffset = 0.0;
-    MgConfiguration* pConf = MgConfiguration::GetInstance();
-    pConf->GetDoubleValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyTileExtentOffset,
-                          tileExtentOffset,
-                          MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset);
-    if (tileExtentOffset < 0.0)
-        tileExtentOffset = MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
-
     // initialize the renderer (set clipping to false so that we label
     // the unclipped geometry)
-    auto_ptr<SE_Renderer> dr(CreateRenderer(width, height, bgColor, false, true, tileExtentOffset));
+    auto_ptr<SE_Renderer> dr(CreateRenderer(m_rendererName, width, height, bgColor, false, true, tileExtentOffset));
 
     // create a temporary collection containing all the layers for the base group
     Ptr<MgLayerCollection> layers = map->GetLayers();
@@ -691,7 +492,6 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
 
     return ret.Detach();
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bKeepSelection = true
@@ -788,7 +588,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     bgColor.alpha() = 0;
 
     // initialize the renderer
-    auto_ptr<SE_Renderer> dr(CreateRenderer(width, height, bgColor, true));
+    auto_ptr<SE_Renderer> dr(CreateRenderer(m_rendererName, width, height, bgColor, true));
 
     bool bIncludeDynamicLayers = ((options->GetBehavior() & MgRenderingOptions::RenderLayers) == MgRenderingOptions::RenderLayers);
     bool bIncludeBaseLayers = ((options->GetBehavior() & MgRenderingOptions::RenderBaseLayers) == MgRenderingOptions::RenderBaseLayers);
@@ -966,45 +766,10 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 
     RS_Bounds b(ll->GetX(), ll->GetY(), ur->GetX(), ur->GetY());
 
-    // If we need to scale the image (because of request for non-square
-    // pixels) we will need to draw at one image size and then save at
-    // another scaled size.  Here we will compute the correct map scale
-    // and render size for a requested extent and image size.
-    double screenAR = (double)width / (double)height;
-    double mapAR = b.width() / b.height();
-
-    int drawWidth = width;
-    int drawHeight = height;
+    INT32 drawWidth = width;
+    INT32 drawHeight = height;
     double scale = 0.0;
-
-    if (mapAR >= screenAR)
-    {
-        scale = b.width() * metersPerUnit / METERS_PER_INCH * (double)dpi / (double)width;
-
-        // we based map scale on the image width, so adjust rendering
-        // height to match the map aspect ratio
-        drawHeight = (int)(width / mapAR);
-
-        // ignore small perturbations in order to avoid rescaling the
-        // end image in cases where the rescaling of width is less than
-        // a pixel or so
-        if (abs(drawHeight - height) <= 1)
-            drawHeight = height;
-    }
-    else
-    {
-        scale = b.height() * metersPerUnit / METERS_PER_INCH * (double)dpi / (double)height;
-
-        // we based map scale on the image height, so adjust rendering
-        // height to match the map aspect ratio
-        drawWidth = (int)(height * mapAR);
-
-        // ignore small perturbations, in order to avoid rescaling the
-        // end image in cases where the rescaling of width is less than
-        // a pixel or so
-        if (abs(drawWidth - width) <= 1)
-            drawWidth = width;
-    }
+    ComputeScaledDimensions(b, width, height, dpi, metersPerUnit, drawWidth, drawHeight, scale);
 
     // sanity check - number of image pixels cannot exceed MAX_PIXELS
     if (drawWidth * drawHeight > MAX_PIXELS)
@@ -1019,7 +784,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     // initialize the renderer with the rendering canvas size - in this
     // case it is not necessarily the same size as the requested image
     // size due to support for non-square pixels
-    auto_ptr<SE_Renderer> dr(CreateRenderer(drawWidth, drawHeight, bgcolor, false));
+    auto_ptr<SE_Renderer> dr(CreateRenderer(m_rendererName, drawWidth, drawHeight, bgcolor, false));
 
     // call the internal helper API to do all the stylization overhead work
     ret = RenderMapInternal(map, selection, NULL, dr.get(), drawWidth, drawHeight, width, height, format, scale, b, true, bKeepSelection, true, NULL);
@@ -1158,7 +923,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                      backgroundColor->GetAlpha());
 
     // initialize the appropriate map renderer
-    auto_ptr<SE_Renderer> dr(CreateRenderer(width, height, bgcolor, bClip));
+    auto_ptr<SE_Renderer> dr(CreateRenderer(m_rendererName, width, height, bgcolor, bClip));
 
     if(NULL != pPRMResult)
     {
@@ -1263,7 +1028,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap* map,
                 point = point_buf;
 
                 RS_Color bgColor; // not used
-                impRenderer.reset(CreateRenderer(1, 1, bgColor, false));
+                impRenderer.reset(CreateRenderer(m_rendererName, 1, 1, bgColor, false));
             }
         }
     }
@@ -1524,7 +1289,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
     MG_THROW()  // to skip a faulty tile we need to rethrow the exception which could be thrown in StylizeLayers
 
-    Ptr<MgByteReader> ret = CreateImage(map, dr, saveWidth, saveHeight, format, pPRMResult);
+    Ptr<MgByteReader> ret = CreateImageFromRenderer(map, dr, saveWidth, saveHeight, format, m_rendererName, pPRMResult);
 
     return ret.Detach();
 }
@@ -1560,7 +1325,7 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
                      backgroundColor->GetAlpha());
 
     //initialize a renderer
-    auto_ptr<Renderer> dr(CreateRenderer(width, height, bgcolor, false, false, 0.0));
+    auto_ptr<Renderer> dr(CreateRenderer(m_rendererName, width, height, bgcolor, false, false, 0.0));
 
     RS_Bounds b(0,0,width,height);
 
@@ -2051,15 +1816,16 @@ void MgServerRenderingService::SetConnectionProperties(MgConnectionProperties*)
 
 
 ///////////////////////////////////////////////////////////////////////////////
-SE_Renderer* MgServerRenderingService::CreateRenderer(int width,
-                                                      int height,
+SE_Renderer* MgServerRenderingService::CreateRenderer(CREFSTRING rendererName,
+                                                      INT32 width,
+                                                      INT32 height,
                                                       RS_Color& bgColor,
                                                       bool requiresClipping,
                                                       bool localOverposting,
                                                       double tileExtentOffset)
 {
     SE_Renderer* renderer = NULL;
-    if (wcscmp(m_rendererName.c_str(), L"AGG") == 0)
+    if (wcscmp(rendererName.c_str(), L"AGG") == 0)
         renderer = new AGGRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
     else
         renderer = new GDRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
@@ -2100,7 +1866,7 @@ inline void MgServerRenderingService::RenderLayers(MgMap* map,
 
     MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
                                     layers, NULL, ds, dr, dstCs, expandExtents, false, scale,
-                                    false, hasColorMap(format), pPRLsResult);
+                                    false, HasColorMap(format), pPRLsResult);
 
     if(NULL != pPRMResult)
     {
@@ -2450,41 +2216,415 @@ inline void MgServerRenderingService::RenderWatermarks(MgMap* map,
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-inline MgByteReader* MgServerRenderingService::CreateImage(MgMap* map,
-                                                           Renderer* dr,
-                                                           INT32 saveWidth,
-                                                           INT32 saveHeight,
-                                                           CREFSTRING format,
-                                                           ProfileRenderMapResult* pPRMResult)
+MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
+                                                   CREFSTRING baseMapLayerGroupName,
+                                                   INT32 tileColumn,
+                                                   INT32 tileRow,
+                                                   INT32 tileWidth,
+                                                   INT32 tileHeight,
+                                                   INT32 tileDpi,
+                                                   CREFSTRING tileImageFormat,
+                                                   double tileExtentOffset)
 {
-    if(NULL != pPRMResult)
+    Ptr<MgByteReader> ret;
+
+    MG_TRY()
+
+    INT32 metaTilingFactor = 0;
+    Ptr<MgMetatile> metaTile = RenderMetatile(map, baseMapLayerGroupName, tileColumn, tileRow, tileWidth, tileHeight, tileDpi, tileImageFormat, tileExtentOffset, metaTilingFactor);
+
+    _ASSERT(metaTile->GetRequestedWidth() == tileWidth);
+    _ASSERT(metaTile->GetRequestedHeight() == tileHeight);
+    _ASSERT(metaTile->GetMetaTilingFactor() <= 1);
+
+    ret = metaTile->GetImage();
+
+    MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTile")
+
+    return ret.Detach();
+}
+
+MgByteReader* MgServerRenderingService::RenderTileXYZ(MgMap* map,
+                                                      CREFSTRING baseMapLayerGroupName,
+                                                      INT32 x,
+                                                      INT32 y,
+                                                      INT32 z,
+                                                      INT32 dpi,
+                                                      CREFSTRING tileImageFormat,
+                                                      double tileExtentOffset)
+{
+    Ptr<MgByteReader> ret;
+
+    MG_TRY()
+
+    INT32 metaTilingFactor = 0;
+    Ptr<MgMetatile> metaTile = RenderMetatileXYZ(map, baseMapLayerGroupName, x, y, z, dpi, tileImageFormat, tileExtentOffset, metaTilingFactor);
+
+    _ASSERT(metaTile->GetRequestedWidth() == XYZ_TILE_WIDTH);
+    _ASSERT(metaTile->GetRequestedHeight() == XYZ_TILE_HEIGHT);
+    _ASSERT(metaTile->GetMetaTilingFactor() <= 1);
+
+    ret = metaTile->GetImage();
+
+    MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTileXYZ")
+
+    return ret.Detach();
+}
+
+void MgServerRenderingService::ComputeScaledDimensions(RS_Bounds& extent, INT32 width, INT32 height, INT32 dpi,
+                                                       double metersPerUnit, INT32& drawWidth, INT32& drawHeight, 
+                                                       double& scale)
+{
+    // If we need to scale the image (because of request for non-square
+    // pixels) we will need to draw at one image size and then save at
+    // another scaled size.  Here we will compute the correct map scale
+    // and render size for a requested extent and image size.
+    double screenAR = (double)width / (double)height;
+    double mapAR = extent.width() / extent.height();
+
+    drawWidth = width;
+    drawHeight = height;
+    scale = 0.0;
+
+    if (mapAR >= screenAR)
+    {
+        scale = extent.width() * metersPerUnit / METERS_PER_INCH * (double)dpi / (double)width;
+
+        // we based map scale on the image width, so adjust rendering
+        // height to match the map aspect ratio
+        drawHeight = (int)(width / mapAR);
+
+        // ignore small perturbations in order to avoid rescaling the
+        // end image in cases where the rescaling of width is less than
+        // a pixel or so
+        if (abs(drawHeight - height) <= 1)
+            drawHeight = height;
+    }
+    else
+    {
+        scale = extent.height() * metersPerUnit / METERS_PER_INCH * (double)dpi / (double)height;
+
+        // we based map scale on the image height, so adjust rendering
+        // height to match the map aspect ratio
+        drawWidth = (int)(height * mapAR);
+
+        // ignore small perturbations, in order to avoid rescaling the
+        // end image in cases where the rescaling of width is less than
+        // a pixel or so
+        if (abs(drawWidth - width) <= 1)
+            drawWidth = width;
+    }
+}
+
+
+MgMetatile* MgServerRenderingService::RenderMetatile(MgMap* map,
+                                                     CREFSTRING baseMapLayerGroupName,
+                                                     INT32 tileColumn,
+                                                     INT32 tileRow,
+                                                     INT32 tileWidth,
+                                                     INT32 tileHeight,
+                                                     INT32 tileDpi,
+                                                     CREFSTRING tileImageFormat,
+                                                     double tileExtentOffset,
+                                                     INT32 metaTileFactor)
+{
+    Ptr<MgMetatile> ret;
+
+    MG_TRY()
+
+    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderMetatile");
+    CHECKARGUMENTEMPTYSTRING(baseMapLayerGroupName, L"MgServerRenderingService.RenderMetatile");
+
+    // find the finite display scale closest to the requested map scale
+    double scale = map->GetViewScale();
+    INT32 scaleIndex = map->FindNearestFiniteDisplayScaleIndex(scale);
+
+    // if we don't find a nearest scale then something is wrong with the map
+    if (scaleIndex < 0)
+        throw new MgInvalidMapDefinitionException(L"MgServerRenderingService.RenderMetatile", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    // get the layer group associated with the name
+    Ptr<MgLayerGroupCollection> layerGroups = map->GetLayerGroups();
+    Ptr<MgLayerGroup> baseGroup = layerGroups->GetItem(baseMapLayerGroupName);
+    if (baseGroup == NULL)
+    {
+        MgStringCollection arguments;
+        arguments.Add(L"2");
+        arguments.Add(baseMapLayerGroupName);
+
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMetatile",
+            __LINE__, __WFILE__, &arguments, L"MgMapLayerGroupNameNotFound", NULL);
+    }
+
+    // get the scale at which to render the tile
+    scale = map->GetFiniteDisplayScaleAt(scaleIndex);
+
+    // ensure the tile DPI is set on the map
+    map->SetDisplayDpi(tileDpi);
+
+    // ------------------------------------------------------
+    // the upper left corner of tile (0,0) corresponds to the
+    // upper left corner of the map extent
+    // ------------------------------------------------------
+
+    double tileMinX, tileMaxX, tileMinY, tileMaxY;
+    map->GetTileCoords(std::max(metaTileFactor, 1), tileColumn, tileRow, tileDpi, tileWidth, tileHeight, tileMinX, tileMaxX, tileMinY, tileMaxY);
+
+    // make the call to render the tile
+    INT32 tw = tileWidth * std::max(metaTileFactor, 1);
+    INT32 th = tileHeight * std::max(metaTileFactor, 1);
+    STRING tformat = (metaTileFactor > 1 ? MgImageFormats::Meta : tileImageFormat);
+    Ptr<MgByteReader> tile = RenderTileInternal(map, baseGroup, scaleIndex, tw, th,
+                                                scale, tileMinX, tileMaxX, tileMinY, tileMaxY, 
+                                                tformat, tileExtentOffset);
+
+    ret = new MgMetatile(tile, tw, th, tileWidth, tileHeight, tileImageFormat, metaTileFactor);
+
+    MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMetatile")
+
+    return ret.Detach();
+}
+
+MgMetatile* MgServerRenderingService::RenderMetatileXYZ(MgMap* map,
+                                                        CREFSTRING baseMapLayerGroupName,
+                                                        INT32 x,
+                                                        INT32 y,
+                                                        INT32 z,
+                                                        INT32 dpi,
+                                                        CREFSTRING tileImageFormat,
+                                                        double tileExtentOffset,
+                                                        INT32 metaTilingFactor)
+{
+    Ptr<MgMetatile> ret;
+
+    MG_TRY()
+
+    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderMetatileXYZ");
+    CHECKARGUMENTEMPTYSTRING(baseMapLayerGroupName, L"MgServerRenderingService.RenderMetatileXYZ");
+    
+    // get the layer group associated with the name
+    Ptr<MgLayerGroupCollection> layerGroups = map->GetLayerGroups();
+    Ptr<MgLayerGroup> baseGroup = layerGroups->GetItem(baseMapLayerGroupName);
+    if (baseGroup == NULL)
+    {
+        MgStringCollection arguments;
+        arguments.Add(L"2");
+        arguments.Add(baseMapLayerGroupName);
+
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMetatileXYZ",
+            __LINE__, __WFILE__, &arguments, L"MgMapLayerGroupNameNotFound", NULL);
+    }
+
+    //Set the dpi
+    map->SetDisplayDpi(dpi);
+
+    // Inlining same logic from RenderTile() overload below as we want the same logic, but we want to pass scale
+    // instead of scale index
+    RS_Bounds extent;
+    ComputeXYZTileExtents(map, x, y, z, extent);
+
+    // If meta-tiling, request bounds for:
+    //   (x, y, z) -> (x + (tm - 1), y + (tm - 1), z)
+    // And combine the resulting bounds
+    if (metaTilingFactor > 1)
+    {
+        RS_Bounds extent2;
+        INT32 endX = x + (metaTilingFactor - 1);
+        INT32 endY = y + (metaTilingFactor - 1);
+        ComputeXYZTileExtents(map, endX, endY, z, extent2);
+
+        extent.add_bounds(extent2);
+    }
+
+    // use the map's background color, but always make it fully transparent
+    RS_Color bgColor;
+    StylizationUtil::ParseColor(map->GetBackgroundColor(), bgColor);
+    bgColor.alpha() = 0;
+    
+    INT32 width = XYZ_TILE_WIDTH * std::max(metaTilingFactor, 1);
+    INT32 height = XYZ_TILE_HEIGHT * std::max(metaTilingFactor, 1);
+    INT32 drawWidth = width;
+    INT32 drawHeight = height;
+    double scale = 0.0;
+    ComputeScaledDimensions(extent, width, height, dpi, map->GetMetersPerUnit(), drawWidth, drawHeight, scale);
+
+    //printf("XYZ(%d, %d, %d) -> [%f, %f] [%f, %f] at %f -- (w: %d, h: %d, mpu: %f)\n", x, y, z, mcsMinX, mcsMinY, mcsMaxX, mcsMaxY, scale, width, height, map->GetMetersPerUnit());
+
+    // sanity check - number of image pixels cannot exceed MAX_PIXELS
+    if (drawWidth * drawHeight > MAX_PIXELS)
+        throw new MgOutOfRangeException(L"MgServerRenderingService.RenderMetatileXYZ", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
+
+    // initialize the renderer (set clipping to false so that we label
+    // the unclipped geometry)
+    auto_ptr<SE_Renderer> dr(CreateRenderer(m_rendererName, drawWidth, drawHeight, bgColor, false, true, tileExtentOffset));
+
+    // create a temporary collection containing all the layers for the base group
+    Ptr<MgLayerCollection> layers = map->GetLayers();
+    Ptr<MgReadOnlyLayerCollection> roLayers = new MgReadOnlyLayerCollection();
+    for (int i=0; i<layers->GetCount(); i++)
+    {
+        Ptr<MgLayerBase> layer = layers->GetItem(i);
+        Ptr<MgLayerGroup> parentGroup = layer->GetGroup();
+        if (parentGroup == baseGroup)
+            roLayers->Add(layer);
+    }
+
+    // of course the group has to also be visible
+    bool groupVisible = baseGroup->GetVisible();
+    baseGroup->SetVisible(true);
+
+    // call the internal helper API to do all the stylization overhead work
+    STRING format = (metaTilingFactor > 1) ? MgImageFormats::Meta : tileImageFormat;
+    Ptr<MgByteReader> tile;
+    if (metaTilingFactor > 1)
+        tile = RenderMapInternal(map, NULL, roLayers, dr.get(), drawWidth, drawHeight, drawWidth, drawHeight, format, scale, extent, true, true, false, NULL);
+    else
+        tile = RenderMapInternal(map, NULL, roLayers, dr.get(), drawWidth, drawHeight, width, height, format, scale, extent, true, true, false, NULL);
+    ret = new MgMetatile(tile, drawWidth, drawHeight, XYZ_TILE_WIDTH, XYZ_TILE_HEIGHT, tileImageFormat, metaTilingFactor);
+
+    // restore the base group's visibility
+    baseGroup->SetVisible(groupVisible);
+
+    MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMetatileXYZ")
+
+    return ret.Detach();
+}
+
+MgByteReader* MgServerRenderingService::RenderTileFromMetaTile(MgMap* map,
+    MgMetatile* metaTile,
+    CREFSTRING rendererName,
+    INT32 subTileX,
+    INT32 subTileY)
+{
+    Ptr<MgByteReader> ret;
+
+    MG_TRY()
+
+    CHECKARGUMENTNULL(map, L"MgServerRenderingService.RenderMetatileXYZ");
+
+    Ptr<MgByteReader> image = metaTile->GetImage();
+    INT32 metaTileFactor = metaTile->GetMetaTilingFactor();
+    INT32 origTileWidth = metaTile->GetRequestedWidth();
+    INT32 origTileHeight = metaTile->GetRequestedHeight();
+    STRING origTileFormat = metaTile->GetTileImageFormat();
+
+    MgByteSource* bs = image->GetByteSource();
+    // upcast to bytesource Impl to access bytearray member
+    ByteSourceMemoryImpl* source = dynamic_cast<ByteSourceMemoryImpl*>(bs->GetSourceImpl());
+    _ASSERT(source);
+    _ASSERT(bs->GetMimeType() == MgMimeType::Meta);
+    INT32 size = (INT32)source->GetLength();
+
+    // some checking: the complete meta tile of 32b pixels should be in the framebuffer handed over
+    //INT32 expectedSize = 4 * (metaTileFactor * origTileWidth)
+    //    * (metaTileFactor * origTileHeight);
+    //assert(size == expectedSize);
+    INT32 expectedSize = 4 * metaTile->GetWidth() * metaTile->GetHeight();
+    _ASSERT(size == expectedSize);
+
+    INT32 scaledTileWidth = origTileWidth;
+    INT32 scaledTileHeight = origTileHeight;
+
+    // For extent-driven tile rendering like XYZ, the raw image frame buffer of the tile may not actually 
+    // be square which means the meta-tile itself would not be square, so when we sub-divide we must make 
+    // sure to not sub-divide by the original width/height, but by its *proportially scaled* width/height, 
+    // which we then pass it down to AGGRenderer::Save() to write the buffer back up to the originally 
+    // requested size, scaling as appropriate.
+    if (metaTileFactor > 1)
+    {
+        scaledTileWidth = (INT32)(metaTile->GetWidth() / metaTileFactor);
+        scaledTileHeight = (INT32)(metaTile->GetHeight() / metaTileFactor);
+
+        // This may be the same or may be less, but it can't be more!
+        _ASSERT(scaledTileWidth <= origTileWidth);
+        _ASSERT(scaledTileHeight <= origTileHeight);
+    }
+
+    // use the map's background color, but always make it fully transparent
+    RS_Color bgColor;
+    StylizationUtil::ParseColor(map->GetBackgroundColor(), bgColor);
+    bgColor.alpha() = 0;
+    // Must create renderer under the scaled width/height and not original
+    auto_ptr<SE_Renderer> dr(CreateRenderer(rendererName, scaledTileWidth, scaledTileHeight, bgColor, true));
+    RS_ColorVector tileColorPalette;
+    if (rendererName == L"AGG" && HasColorMap(origTileFormat))
+    {
+        MgMappingUtil::ParseColorStrings(&tileColorPalette, map);
+    }
+
+    // now copy tile from meta framebuffer to new one...
+    // use unsigned int pointer arithmetic for pixels!
+    //MgByte* byteBuffer = source->Bytes();     // here we access the bytearray inside the bytesource
+    MgByte* byteBuffer = source->BytesNoAddRef();
+    assert(size == byteBuffer->GetLength());  // double check the buffer size
+
+    // get pointer to the framebuffer containing the metatile 
+    unsigned int *framebuf = (unsigned int*)byteBuffer->Bytes();
+
+    // allocate subtile buffer to copy new framebuf with changed dimensions
+    // place buffer in allocated MgByte auto_ptr object for destruction at end of scope
+    auto_ptr<MgByte> subTileBytes(new MgByte((unsigned char*)new unsigned int[scaledTileWidth * scaledTileHeight],
+        scaledTileWidth * scaledTileHeight * sizeof(int), MgByte::New));
+    // get the pointer to the internal target buffer
+    unsigned int* subTileBuf = (unsigned int*)subTileBytes->Bytes();
+    for (int y = 0; y < scaledTileHeight; y++)    // rows
+        for (int x = 0; x < scaledTileWidth; x++)    // columns innerloop
+        {  // this copies the 32bit pixels from the meta tile framebuffer to the subtile framebuffer
+            *(subTileBuf + x
+                + y * scaledTileWidth)                 // target address in subtile
+                = *(framebuf + (x + (subTileX * scaledTileWidth))   // X address in meta tile
+                    + (y + (subTileY * scaledTileHeight))  // Y address in meta tile
+                    * scaledTileWidth * metaTileFactor);  // use width of metaTile here
+        }
+    // then call the image renderer to convert the framebuffer bitmap into the desired image format
+    ret = CreateImageFromRenderer(map, dr.get(), origTileWidth, origTileHeight, origTileFormat, rendererName, NULL, subTileBuf);
+
+    MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTileFromMetaTile")
+
+    return ret.Detach();
+}
+
+bool MgServerRenderingService::HasColorMap(CREFSTRING format)
+{
+    return format == L"PNG8" || format == L"GIF";
+}
+
+MgByteReader* MgServerRenderingService::CreateImageFromRenderer(MgMap* map,
+    Renderer* dr,
+    INT32 saveWidth,
+    INT32 saveHeight,
+    CREFSTRING format,
+    CREFSTRING rendererName,
+    ProfileRenderMapResult* pPRMResult,
+    unsigned int* frameBuffer)
+{
+    if (NULL != pPRMResult)
     {
         // Set the start time of creating map image
         pPRMResult->SetCreateImageTime(MgTimerUtil::GetTime());
     }
 
-/*
-    //-------------------------------------------------------
-    // draw a border around the tile - used for debugging
-    RS_LineStroke ls;
-    ls.color() = RS_Color(128, 128, 128, 64);
+    /*
+        //-------------------------------------------------------
+        // draw a border around the tile - used for debugging
+        RS_LineStroke ls;
+        ls.color() = RS_Color(128, 128, 128, 64);
 
-    LineBuffer lb(5);
-    double mcsMinX = b.minx;
-    double mcsMaxX = b.maxx;
-    double mcsMinY = b.miny;
-    double mcsMaxY = b.maxy;
-    double incX = (mcsMaxX - mcsMinX) / saveWidth  / 10.0;
-    double incY = (mcsMaxY - mcsMinY) / saveHeight / 10.0;
-    lb.MoveTo(mcsMinX + incX, mcsMinY + incY);
-    lb.LineTo(mcsMaxX - incX, mcsMinY + incY);
-    lb.LineTo(mcsMaxX - incX, mcsMaxY - incY);
-    lb.LineTo(mcsMinX + incX, mcsMaxY - incY);
-    lb.LineTo(mcsMinX + incX, mcsMinY + incY);
-    dr->ProcessPolyline(&lb, ls);
-    //-------------------------------------------------------
-*/
+        LineBuffer lb(5);
+        double mcsMinX = b.minx;
+        double mcsMaxX = b.maxx;
+        double mcsMinY = b.miny;
+        double mcsMaxY = b.maxy;
+        double incX = (mcsMaxX - mcsMinX) / saveWidth  / 10.0;
+        double incY = (mcsMaxY - mcsMinY) / saveHeight / 10.0;
+        lb.MoveTo(mcsMinX + incX, mcsMinY + incY);
+        lb.LineTo(mcsMaxX - incX, mcsMinY + incY);
+        lb.LineTo(mcsMaxX - incX, mcsMaxY - incY);
+        lb.LineTo(mcsMinX + incX, mcsMaxY - incY);
+        lb.LineTo(mcsMinX + incX, mcsMinY + incY);
+        dr->ProcessPolyline(&lb, ls);
+        //-------------------------------------------------------
+    */
 
     // get a byte representation of the image
     auto_ptr<RS_ByteData> data;
@@ -2493,26 +2633,34 @@ inline MgByteReader* MgServerRenderingService::CreateImage(MgMap* map,
     try
     {
         // call the image renderer to create the image
-        if (wcscmp(m_rendererName.c_str(), L"AGG") == 0)
+        if (wcscmp(rendererName.c_str(), L"AGG") == 0)
         {
-            //-------------------------------------------------------
-            /// RFC60 code to correct colormaps by UV
-            //-------------------------------------------------------
-            // We examine the expressions collected from xml definitions of all layers.
-            // The map object has a list from all color entries found in the most recent
-            // layer stylization.
-            // * TODO - currently they are interpreted as ffffffff 32-bit RGBA string values
-            // * adding expresssions and other interpretations should be done in ParseColorStrings
-            // * the color Palette for the renderer is a vector<RS_Color>
-            if (hasColorMap(format))
-            {
-                RS_ColorVector tileColorPalette;
-                MgMappingUtil::ParseColorStrings(&tileColorPalette, map);
-//              printf("<<<<<<<<<<<<<<<<<<<<< MgServerRenderingService::ColorPalette->size(): %d\n", tileColorPalette.size());
-                data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, &tileColorPalette));
+            if (format == MgImageFormats::Meta)  // we dont use the colorPalette here for meta tiling
+            {                       // as this call only returns the framebuffer
+                data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, NULL, NULL));
+                // copy the framebuffer into the reader, RenderTileFromMetatile is taking it from there
             }
             else
-                data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, NULL));
+            {
+                //-------------------------------------------------------
+                /// RFC60 code to correct colormaps by UV
+                //-------------------------------------------------------
+                // We examine the expressions collected from xml definitions of all layers.
+                // The map object has a list from all color entries found in the most recent
+                // layer stylization.
+                // * TODO - currently they are interpreted as ffffffff 32-bit RGBA string values
+                // * adding expresssions and other interpretations should be done in ParseColorStrings
+                // * the color Palette for the renderer is a vector<RS_Color>
+                if (HasColorMap(format))
+                {
+                    RS_ColorVector tileColorPalette;
+                    MgMappingUtil::ParseColorStrings(&tileColorPalette, map);
+                    //              printf("<<<<<<<<<<<<<<<<<<<<< MgServerRenderingService::ColorPalette->size(): %d\n", tileColorPalette.size());
+                    data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, &tileColorPalette, frameBuffer));
+                }
+                else
+                    data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, NULL, frameBuffer));
+            }
         }
         else
             data.reset(((GDRenderer*)dr)->Save(format, saveWidth, saveHeight));
@@ -2536,18 +2684,20 @@ inline MgByteReader* MgServerRenderingService::CreateImage(MgMap* map,
             bs->SetMimeType(MgMimeType::Png);
         else if (format == MgImageFormats::Tiff)
             bs->SetMimeType(MgMimeType::Tiff);
+        else if (format == MgImageFormats::Meta)         // add a mimetype for our metatile
+            bs->SetMimeType(MgMimeType::Meta);
     }
     else
-        throw new MgNullReferenceException(L"MgServerRenderingService.CreateImage", __LINE__, __WFILE__, NULL, L"MgNoDataFromRenderer", NULL);
-    
-    if(NULL != pPRMResult)
+        throw new MgNullReferenceException(L"MgImageProcessor.CreateImageFromRenderer", __LINE__, __WFILE__, NULL, L"MgNoDataFromRenderer", NULL);
+
+    if (NULL != pPRMResult)
     {
         // Calculate the time spent on stylizing labels
         double createImageTime = MgTimerUtil::GetTime() - pPRMResult->GetCreateImageTime();
         pPRMResult->SetCreateImageTime(createImageTime);
 
         pPRMResult->SetImageFormat(format);
-        pPRMResult->SetRendererType(m_rendererName);
+        pPRMResult->SetRendererType(rendererName);
     }
 
     return bs->GetReader();

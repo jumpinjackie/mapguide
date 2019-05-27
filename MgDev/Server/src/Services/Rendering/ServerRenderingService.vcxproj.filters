@@ -42,6 +42,15 @@
     <ClCompile Include="OpRenderTileUTFGrid.cpp">
       <Filter>Ops</Filter>
     </ClCompile>
+    <ClCompile Include="OpRenderMetatile.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRenderMetatileXYZ.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRenderTileFromMetatile.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpQueryFeatureProperties.h">
@@ -78,6 +87,15 @@
       <Filter>Ops</Filter>
     </ClInclude>
     <ClInclude Include="OpRenderTileUTFGrid.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRenderMetatile.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRenderMetatileXYZ.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRenderTileFromMetatile.h">
       <Filter>Ops</Filter>
     </ClInclude>
   </ItemGroup>

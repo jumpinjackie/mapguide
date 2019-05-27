@@ -20,7 +20,10 @@
 
 #include "ServerRenderingDllExport.h"
 
+struct RS_Bounds;
+class RS_Color;
 class SE_Renderer;
+class Renderer;
 class FeatureInfoRenderer;
 class MgFeatureInformation;
 class Stylizer;
@@ -56,6 +59,16 @@ public:
                                      INT32 tileDpi,
                                      CREFSTRING tileImageFormat);
 
+    virtual MgByteReader* RenderTile(MgMap* map,
+                                     CREFSTRING baseMapLayerGroupName,
+                                     INT32 tileColumn,
+                                     INT32 tileRow,
+                                     INT32 tileWidth,
+                                     INT32 tileHeight,
+                                     INT32 tileDpi,
+                                     CREFSTRING tileImageFormat,
+                                     double tileExtentOffset);
+
     virtual MgByteReader* RenderTileXYZ(MgMap* map,
                                         CREFSTRING baseMapLayerGroupName,
                                         INT32 x,
@@ -69,6 +82,15 @@ public:
                                         INT32 z,
                                         INT32 dpi,
                                         CREFSTRING tileImageFormat);
+
+    virtual MgByteReader* RenderTileXYZ(MgMap* map,
+                                        CREFSTRING baseMapLayerGroupName,
+                                        INT32 x,
+                                        INT32 y,
+                                        INT32 z,
+                                        INT32 dpi,
+                                        CREFSTRING tileImageFormat,
+                                        double tileExtentOffset);
 
     virtual MgByteReader* RenderTileUTFGrid(MgMap* map,
                                             CREFSTRING baseMapLayerGroupName,
@@ -243,20 +265,58 @@ public:
                                         bool bIncludeFeatureBBOX,
                                         bool bIncludeGeometry);
 
+    virtual MgMetatile* RenderMetatile(MgMap* map,
+                                       CREFSTRING baseMapLayerGroupName,
+                                       INT32 tileColumn,
+                                       INT32 tileRow,
+                                       INT32 tileWidth,
+                                       INT32 tileHeight,
+                                       INT32 tileDpi,
+                                       CREFSTRING tileImageFormat,
+                                       double tileExtentOffset,
+                                       INT32 metaTilingFactor);
+
+    virtual MgMetatile* RenderMetatileXYZ(MgMap* map,
+                                          CREFSTRING baseMapLayerGroupName,
+                                          INT32 x,
+                                          INT32 y,
+                                          INT32 z,
+                                          INT32 dpi,
+                                          CREFSTRING tileImageFormat,
+                                          double tileExtentOffset,
+                                          INT32 metaTilingFactor);
+
+    virtual MgByteReader* RenderTileFromMetaTile(MgMap* map, MgMetatile* metaTile, CREFSTRING rendererName, INT32 subTileX, INT32 subTileY);
+
 private:
+    static bool HasColorMap(CREFSTRING format);
+
+    static MgByteReader* CreateImageFromRenderer(MgMap* map,
+                                                 Renderer* dr,
+                                                 INT32 saveWidth,
+                                                 INT32 saveHeight,
+                                                 CREFSTRING format,
+                                                 CREFSTRING rendererName,
+                                                 ProfileRenderMapResult* pPRMResult,
+                                                 unsigned int* frameBuffer = NULL);
+
+    static void ComputeScaledDimensions(RS_Bounds& extent, INT32 width, INT32 height, INT32 dpi,
+                                        double metersPerUnit, INT32& drawWidth, INT32& drawHeight, double& scale);
+
     static void ComputeXYZTileExtents(MgMap* map, INT32 x, INT32 y, INT32 z, RS_Bounds& extent);
     // used for tile generation
-    MgByteReader* RenderTile(MgMap* map,
-                             MgLayerGroup* baseGroup,
-                             INT32 scaleIndex,
-                             INT32 width,
-                             INT32 height,
-                             double scale,
-                             double mcsMinX,
-                             double mcsMaxX,
-                             double mcsMinY,
-                             double mcsMaxY,
-                             CREFSTRING format);
+    MgByteReader* RenderTileInternal(MgMap* map,
+                                     MgLayerGroup* baseGroup,
+                                     INT32 scaleIndex,
+                                     INT32 width,
+                                     INT32 height,
+                                     double scale,
+                                     double mcsMinX,
+                                     double mcsMaxX,
+                                     double mcsMinY,
+                                     double mcsMaxY,
+                                     CREFSTRING format,
+                                     double tileExtentOffset);
 
     // helper used by other methods
     MgByteReader* RenderMapInternal(MgMap* map,
@@ -300,12 +360,13 @@ private:
                          INT32 layerAttributeFilter,
                          FeatureInfoRenderer* selRenderer);
 
-    SE_Renderer* CreateRenderer(int width,
-                                int height,
-                                RS_Color& bgColor,
-                                bool requiresClipping,
-                                bool localOverposting = false,
-                                double tileExtentOffset = 0.0);
+    virtual SE_Renderer* CreateRenderer(CREFSTRING rendererName,
+                                        INT32 width,
+                                        INT32 height,
+                                        RS_Color& bgColor,
+                                        bool requiresClipping,
+                                        bool localOverposting = false,
+                                        double tileExtentOffset = 0.0);
 
     void RenderLayers(MgMap* map,
                       MgReadOnlyLayerCollection* layers,
@@ -337,13 +398,6 @@ private:
                           INT32 saveWidth,
                           INT32 saveHeight,
                           ProfileRenderMapResult* pPRMResult);
-
-    MgByteReader* CreateImage(MgMap* map,
-                              Renderer* dr,
-                              INT32 saveWidth,
-                              INT32 saveHeight,
-                              CREFSTRING format,
-                              ProfileRenderMapResult* pPRMResult);
 
     // member data
     Ptr<MgFeatureService> m_svcFeature;

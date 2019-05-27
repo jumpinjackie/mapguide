@@ -79,20 +79,23 @@ protected:
     void Set(MgByteReader* img, CREFSTRING path);
     MgByteReader* Get(CREFSTRING path);
 
+    void GetMapFromDefinition(MgResourceIdentifier* mapDefinition, INT32 scaleIndex, Ptr<MgMap> &map, bool bStrictCreate = true);
+
+    bool DetectTileLockFile(CREFSTRING lockPathname);
+
+    void GeneratePathNames(int scaleIndex,
+        CREFSTRING group, int tileColumn, int tileRow,
+        STRING& tilePathname, STRING& lockPathname, bool createFullPath);
+
+    STRING CreateFullPath(int scaleIndex, CREFSTRING group, int tileColumn, int tileRow);
+
 private:
     MgByteReader* GetTileForMap(CREFSTRING baseMapLayerGroupName,
                                 INT32 tileColumn,
                                 INT32 tileRow,
                                 INT32 scaleIndex);
 
-    void GeneratePathNames(int scaleIndex,
-        CREFSTRING group, int tileColumn, int tileRow,
-        STRING& tilePathname, STRING& lockPathname, bool createFullPath);
-
     STRING GetFullPath(int scaleIndex, CREFSTRING group, int tileColumn, int tileRow);
-    
-    STRING CreateFullPath(int scaleIndex, CREFSTRING group, int tileColumn, int tileRow);
-
     STRING GetScaleIndexFolder(int scaleIndex);
     STRING GetRowFolder(int tileRow);
     STRING GetColumnFolder(int tileColumn);
@@ -101,7 +104,6 @@ private:
     STRING GetTileIndexString(int tileIndex, int tilesPerFolder);
 
     MgResourceService* GetResourceServiceForMapDef(MgResourceIdentifier* mapDefinition, CREFSTRING funcName);
-    bool DetectTileLockFile(CREFSTRING lockPathname);
 
     Ptr<MgResourceIdentifier> m_resourceId;
     Ptr<MgMap> m_map;

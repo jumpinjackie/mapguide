@@ -78,6 +78,8 @@ public:
 private:
     MgTileCache* GetTileCache(MgResourceIdentifier* resource);
     MgTileCache* GetTileCache(MgResourceIdentifier* tileSetId, MdfModel::TileSetDefinition* tileset);
+
+    STRING m_rendererName;
 };
 
 #endif

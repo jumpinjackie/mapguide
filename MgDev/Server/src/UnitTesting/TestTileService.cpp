@@ -23,6 +23,7 @@
 #include "ServerSiteService.h"
 #include "../Common/Manager/FdoConnectionManager.h"
 #include "FoundationDefs.h"
+#include "ServerRenderingService.h"
 #define PATH_LEN 512
 
 // determines the number of requests to make, as a factor of the number of tiles
@@ -138,6 +139,21 @@ void TestTileService::TestStart()
         Ptr<MgByteReader> tsdrdr2 = tsdsrc2->GetReader();
         m_svcResource->SetResource(tilesetres2, tsdrdr2, NULL);
 
+        Ptr<MgResourceIdentifier> tilesetres3 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan_Metatiled.TileSetDefinition");
+        Ptr<MgByteSource> tsdsrc3 = new MgByteSource(L"../UnitTestFiles/UT_BaseMap_Metatiled.tsd", false);
+        Ptr<MgByteReader> tsdrdr3 = tsdsrc3->GetReader();
+        m_svcResource->SetResource(tilesetres3, tsdrdr3, NULL);
+
+        Ptr<MgResourceIdentifier> tilesetres4 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ_Metatiled.TileSetDefinition");
+        Ptr<MgByteSource> tsdsrc4 = new MgByteSource(L"../UnitTestFiles/UT_XYZ_Metatiled.tsd", false);
+        Ptr<MgByteReader> tsdrdr4 = tsdsrc4->GetReader();
+        m_svcResource->SetResource(tilesetres4, tsdrdr4, NULL);
+
+        Ptr<MgResourceIdentifier> tilesetres5 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan_OrigSize.TileSetDefinition");
+        Ptr<MgByteSource> tsdsrc5 = new MgByteSource(L"../UnitTestFiles/UT_BaseMap_OrigSize.tsd", false);
+        Ptr<MgByteReader> tsdrdr5 = tsdsrc5->GetReader();
+        m_svcResource->SetResource(tilesetres5, tsdrdr5, NULL);
+
         // publish the layer definitions
         Ptr<MgResourceIdentifier> ldfres1 = new MgResourceIdentifier(L"Library://UnitTests/Layers/RoadCenterLines.LayerDefinition");
         Ptr<MgByteSource> ldfsrc1 = new MgByteSource(L"../UnitTestFiles/UT_RoadCenterLines.ldf", false);
@@ -185,6 +201,7 @@ void TestTileService::TestStart()
 
         // set up temporary directory for tile images
         MgFileUtil::CreateDirectory(L"./temp_tiles", false);
+        MgFileUtil::CreateDirectory(L"../UnitTestFiles/TileCaches", false);
     }
     catch (MgException* e)
     {
@@ -221,6 +238,18 @@ void TestTileService::TestEnd()
 
         Ptr<MgResourceIdentifier> tilesetres1 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition");
         m_svcResource->DeleteResource(tilesetres1);
+
+        Ptr<MgResourceIdentifier> tilesetres2 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ.TileSetDefinition");
+        m_svcResource->DeleteResource(tilesetres2);
+
+        Ptr<MgResourceIdentifier> tilesetres3 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan_Metatiled.TileSetDefinition");
+        m_svcResource->DeleteResource(tilesetres3);
+
+        Ptr<MgResourceIdentifier> tilesetres4 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ_Metatiled.TileSetDefinition");
+        m_svcResource->DeleteResource(tilesetres4);
+
+        Ptr<MgResourceIdentifier> tilesetres5 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan_OrigSize.TileSetDefinition");
+        m_svcResource->DeleteResource(tilesetres5);
 
         // delete the layer definitions
         Ptr<MgResourceIdentifier> ldfres1 = new MgResourceIdentifier(L"Library://UnitTests/Layers/RoadCenterLines.LayerDefinition");
@@ -1720,6 +1749,157 @@ void TestTileService::TestCase_GetTileProviders()
     }
 }
 
+void TestTileService::TestCase_GetMetatileSingle()
+{
+    try
+    {
+        INT32 col = 28;
+        INT32 row = 29;
+        INT32 scale = 3;
+
+        Ptr<MgByteReader> tile;
+        Ptr<MgResourceIdentifier> tsId;
+
+        tsId = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan_OrigSize.TileSetDefinition");
+        m_svcTile->ClearCache(tsId);
+        tile = m_svcTile->GetTile(tsId, L"BaseLayers", col, row, scale);
+        tile->ToFile(L"../UnitTestFiles/GetMetatileSingle_Baseline.png");
+
+        INT32 metaTileFactor = 4;
+        //Render full 4x4 tiles to check we're generating the same file paths from metatile
+        for (INT32 x = col; x < col + metaTileFactor; x++)
+        {
+            for (INT32 y = row; y < row + metaTileFactor; y++)
+            {
+                tile = m_svcTile->GetTile(tsId, L"BaseLayers", x, y, scale);
+            }
+        }
+
+        Ptr<MgMap> map = CreateMapLinked(L"MetaTileBaseline");
+        map->SetViewScale(3125);
+        Ptr<MgRenderingService> renderSvc = dynamic_cast<MgRenderingService*>(m_siteConnection->CreateService(MgServiceType::RenderingService));
+        CPPUNIT_ASSERT(NULL != renderSvc);
+
+        MgFileUtil::CreateDirectory(L"../UnitTestFiles/GetMetatileSingle_Baseline");
+
+        Ptr<MgMetatile> metaTile = renderSvc->RenderMetatile(map, L"BaseLayers", col, row, MgTileParameters::tileWidth, MgTileParameters::tileHeight, MgTileParameters::tileDPI, MgImageFormats::Png, MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset, metaTileFactor);
+        Ptr<MgByteReader> mtContent = metaTile->GetImage();
+        INT64 metaTileLen = mtContent->GetLength();
+        for (INT32 x = 0; x < metaTile->GetMetaTilingFactor(); x++)
+        {
+            for (INT32 y = 0; y < metaTile->GetMetaTilingFactor(); y++)
+            {
+                Ptr<MgByteReader> img = renderSvc->RenderTileFromMetaTile(map, metaTile, L"AGG", x, y);
+                INT64 tileLen = img->GetLength();
+                STRING fileName = L"../UnitTestFiles/GetMetatileSingle_Baseline/";
+                STRING s;
+                MgUtil::Int32ToString(y, s);
+                fileName += s;
+                fileName += L"y_";
+                MgUtil::Int32ToString(x, s);
+                fileName += s;
+                fileName += L"x.png";
+                img->ToFile(fileName);
+            }
+        }
+
+        tsId = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan_Metatiled.TileSetDefinition");
+        m_svcTile->ClearCache(tsId);
+        tile = m_svcTile->GetTile(tsId, L"BaseLayers", col, row, scale);
+        tile->ToFile(L"../UnitTestFiles/GetMetatileSingle.png");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestTileService::TestCase_GetMetatileXYZSingle()
+{
+    try
+    {
+        INT32 x = 23892;
+        INT32 y = 16798;
+        INT32 z = 16;
+
+        Ptr<MgByteReader> tile;
+        Ptr<MgResourceIdentifier> tsId;
+
+        tsId = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ.TileSetDefinition");
+        m_svcTile->ClearCache(tsId);
+        tile = m_svcTile->GetTile(tsId, L"BaseLayers", x, y, z);
+        tile->ToFile(L"../UnitTestFiles/GetMetatileXYZSingle_Baseline.png");
+
+        INT32 metaTileFactor = 4;
+        //Render full 4x4 tiles to check we're generating the same file paths from metatile
+        for (INT32 x1 = x; x1 < x + metaTileFactor; x1++)
+        {
+            for (INT32 y1 = y; y1 < y + metaTileFactor; y1++)
+            {
+                tile = m_svcTile->GetTile(tsId, L"BaseLayers", x1, y1, z);
+            }
+        }
+
+        Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+        STRING ovCsvWkt = csFactory->ConvertCoordinateSystemCodeToWkt(L"LL84");
+
+        Ptr<MgMap> map = CreateMapLinked2(L"MetaTileBaseline", ovCsvWkt);
+        map->SetViewScale(3125);
+        Ptr<MgRenderingService> renderSvc = dynamic_cast<MgRenderingService*>(m_siteConnection->CreateService(MgServiceType::RenderingService));
+        CPPUNIT_ASSERT(NULL != renderSvc);
+
+        MgFileUtil::CreateDirectory(L"../UnitTestFiles/GetMetatileSingleXYZ_Baseline");
+
+        //NOTE: When rendering the XYZ tile we need to flip x/y
+        INT32 mtX = y;
+        INT32 mtY = x;
+
+        Ptr<MgMetatile> metaTile = renderSvc->RenderMetatileXYZ(map, L"BaseLayers", mtX, mtY, z, MgTileParameters::tileDPI, MgImageFormats::Png, MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset, metaTileFactor);
+        Ptr<MgByteReader> mtContent = metaTile->GetImage();
+        INT64 metaTileLen = mtContent->GetLength();
+        INT32 mtFactor = metaTile->GetMetaTilingFactor();
+        for (INT32 x1 = 0; x1 < mtFactor; x1++)
+        {
+            for (INT32 y1 = 0; y1 < mtFactor; y1++)
+            {
+                Ptr<MgByteReader> img = renderSvc->RenderTileFromMetaTile(map, metaTile, L"AGG", x1, y1);
+                INT64 tileLen = img->GetLength();
+                STRING fileName = L"../UnitTestFiles/GetMetatileSingleXYZ_Baseline/";
+                STRING s;
+                MgUtil::Int32ToString(y1 + y, s);
+                fileName += s;
+                fileName += L"y_";
+                MgUtil::Int32ToString(x1 + x, s);
+                fileName += s;
+                fileName += L"x.png";
+                img->ToFile(fileName);
+            }
+        }
+
+        tsId = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ_Metatiled.TileSetDefinition");
+        m_svcTile->ClearCache(tsId);
+        tile = m_svcTile->GetTile(tsId, L"BaseLayers", x, y, z);
+        tile->ToFile(L"../UnitTestFiles/GetMetatileXYZSingle.png");
+
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
 ////////////////////////////////////////////////////////////////
 /// Helpers
 ////////////////////////////////////////////////////////////////
@@ -1774,7 +1954,7 @@ MgMap* TestTileService::CreateMapLinked(CREFSTRING mapName)
     return map;
 }
 
-MgMap* TestTileService::CreateMapLinked2(CREFSTRING mapName)
+MgMap* TestTileService::CreateMapLinked2(CREFSTRING mapName, CREFSTRING ovCsWkt)
 {
     // set a default name if not supplied
     STRING name = (mapName.empty()) ? L"UnitTestBaseMapLinked" : mapName;
@@ -1809,6 +1989,12 @@ MgMap* TestTileService::CreateMapLinked2(CREFSTRING mapName)
             break;
         }
     }
+
+    if (!ovCsWkt.empty())
+    {
+        mdf->SetCoordinateSystem(ovCsWkt);
+    }
+
     // Fix up extents too
     mdf->SetExtents(tsd->GetExtents());
 

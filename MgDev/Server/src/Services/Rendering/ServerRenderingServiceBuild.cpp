@@ -23,6 +23,8 @@
 #include "OpRenderDynamicOverlay.cpp"
 #include "OpRenderMap.cpp"
 #include "OpRenderMapLegend.cpp"
+#include "OpRenderMetatile.cpp"
+#include "OpRenderTileFromMetatile.cpp"
 #include "OpRenderTile.cpp"
 #include "OpRenderTileXYZ.cpp"
 #include "OpRenderTileUTFGrid.cpp"

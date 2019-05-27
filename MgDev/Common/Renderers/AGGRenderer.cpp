@@ -65,6 +65,8 @@
 #include "SE_SymbolDefProxies.h"
 
 #include "RenderUtil.h"
+// simple define to avoid dependency cycles
+#define MgImageFormats_Meta L"META"
 
 using namespace DWFToolkit;
 using namespace DWFCore;
@@ -257,12 +259,30 @@ void AGGRenderer::Save(const RS_String& filename, const RS_String& format, int w
 
 //////////////////////////////////////////////////////////////////////////////
 // Return the rendered image passed in via the imagebuffer (m_rows) as
-// a bytestream in the given image format using the provided colorPalette
-// if given.
+// a bytestream in the given image format using the optional provided colorPalette.
+// In MetaTileing mode return the imagebuffer copied in a new  RS_ByteData object.
 RS_ByteData* AGGRenderer::Save(const RS_String& format, int width, int height,
-                               RS_ColorVector* baseColorPalette)
+                               RS_ColorVector* baseColorPalette, unsigned int* imagebuffer)
 {
-    return AGGImageIO::Save(format, m_rows, m_width, m_height, width, height, m_bgcolor, baseColorPalette);
+    if (format == MgImageFormats_Meta)
+    {
+        //        if (imagebuffer == NULL)  // this musnt happen
+        //            return NULL;
+
+        // TODO: For extent-based tiles like XYZ, it means our framebuffer represents a non-square
+        // tile, which technically means we're wasting allocated memory on pixels that aren't being 
+        // stored for such cases, but this being the first cut implementation, we're being extremely
+        // conservative here. If there is indeed wasted space. So be it.
+        int imagebufferByteSize = width * height * 4; // multiply 32 bit pixel by 4 bytes
+        return new RS_ByteData((unsigned char*)m_rows, imagebufferByteSize);
+    }
+    else 
+    {
+        if (imagebuffer)       // use imagebuffer from previous meta tiling pass
+            return AGGImageIO::Save(format, imagebuffer, m_width, m_height, width, height, m_bgcolor, baseColorPalette);
+        else
+            return AGGImageIO::Save(format, m_rows, m_width, m_height, width, height, m_bgcolor, baseColorPalette);
+    }
 }
 
 

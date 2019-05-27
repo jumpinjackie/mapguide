@@ -112,6 +112,16 @@ public:
     ///
     MgByte* Bytes();
 
+    ////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the pojnter the to internal MgByte object. The reference count
+    /// is not incremented
+    ///
+    /// \return
+    /// Internal MgByte
+    ///
+    MG_FOUNDATION_API MgByte* BytesNoAddRef();
+
 protected:
     Ptr<MgByte> m_data;
     INT32   m_pos;

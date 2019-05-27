@@ -715,6 +715,17 @@ INTERNAL_API:
 
     virtual void Create(MgResourceService* resourceService, MgResourceIdentifier* mapDefinition, CREFSTRING mapName, bool strict);
 
+    /// \brief
+    /// compute the coordinates of a tile, increase size by meta tiling Factor sm_useMetaTiles
+    ///
+    /// \param in metaTileFactor, tileColumn, tileRow, dpi, tileWidth, tileHeight,
+    /// \param out tileMinX,tileMinY. tileMaxX , tileMaxY
+    /// min,max corners of the tile
+    ///
+    virtual void GetTileCoords(int metaTileFactor, int tileColumn, int tileRow,
+        int dpi, int tileWidth, int tileHeight,
+        double &tileMinX, double &tileMaxX, double &tileMinY, double & tileMaxY);
+
 protected:
 
     //////////////////////////////////////////////////////////////////

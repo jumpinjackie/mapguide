@@ -30,3 +30,4 @@ const STRING MgImageFormats::Png    = L"PNG";
 const STRING MgImageFormats::Png8   = L"PNG8";
 const STRING MgImageFormats::Tiff   = L"TIF";
 const STRING MgImageFormats::Raw    = L"RAW";
+const STRING MgImageFormats::Meta   = L"META";

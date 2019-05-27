@@ -145,6 +145,7 @@ extern long GetTickCount();
 #include "Services/MapPlot.h"
 #include "Services/MapPlotCollection.h"
 #include "Services/MapPlotInstruction.h"
+#include "Services/Metatile.h"
 #include "Services/FeatureInformation.h"
 #include "Services/MappingDefs.h"
 #include "Services/MappingService.h"

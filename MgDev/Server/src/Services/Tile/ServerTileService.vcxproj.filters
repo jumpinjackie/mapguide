@@ -38,6 +38,7 @@
       <Filter>Ops</Filter>
     </ClCompile>
     <ClCompile Include="TileCacheXYZProvider.cpp" />
+    <ClCompile Include="MetatileLockUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpClearCache.h">
@@ -72,6 +73,7 @@
       <Filter>Ops</Filter>
     </ClInclude>
     <ClInclude Include="TileCacheXYZProvider.h" />
+    <ClInclude Include="MetatileLockUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ServerTileService.rc" />

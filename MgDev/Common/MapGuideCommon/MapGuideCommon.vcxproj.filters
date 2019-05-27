@@ -400,6 +400,9 @@
     <ClCompile Include="Exception\UnsupportedTileProviderException.cpp">
       <Filter>Exception</Filter>
     </ClCompile>
+    <ClCompile Include="Services\Metatile.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MapLayer\Layer.h">
@@ -780,6 +783,9 @@
     </ClInclude>
     <ClInclude Include="Exception\UnsupportedTileProviderException.h">
       <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Metatile.h">
+      <Filter>Services</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

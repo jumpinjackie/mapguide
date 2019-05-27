@@ -148,6 +148,65 @@ void MgOpRenderTile::Execute()
 
         EndExecution(byteReader);
     }
+    else if (9 == m_packet.m_NumArguments)
+    {
+        Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
+        STRING baseMapLayerGroupName;
+        m_stream->GetString(baseMapLayerGroupName);
+
+        INT32 tileCol = 0;
+        m_stream->GetInt32(tileCol);
+
+        INT32 tileRow = 0;
+        m_stream->GetInt32(tileRow);
+
+        INT32 tileWidth = 0;
+        m_stream->GetInt32(tileWidth);
+
+        INT32 tileHeight = 0;
+        m_stream->GetInt32(tileHeight);
+
+        INT32 tileDpi = 0;
+        m_stream->GetInt32(tileDpi);
+
+        STRING tileImageFormat;
+        m_stream->GetString(tileImageFormat);
+
+        double tileExtentOffset = 0.0;
+        m_stream->GetDouble(tileExtentOffset);
+
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(baseMapLayerGroupName.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileCol);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileRow);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileWidth);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileHeight);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileDpi);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(tileImageFormat.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(tileExtentOffset);
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        Ptr<MgByteReader> byteReader =
+            m_service->RenderTile(map, baseMapLayerGroupName, tileCol, tileRow, tileWidth, tileHeight, tileDpi, tileImageFormat, tileExtentOffset);
+
+        EndExecution(byteReader);
+    }
     else
     {
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();

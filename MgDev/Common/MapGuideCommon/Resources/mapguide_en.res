@@ -333,9 +333,6 @@ MgStringContainsReservedCharacters                    = The string cannot contai
 MgStringEmpty                                         = The string cannot be empty.
 MgStringTooLong                                       = The string is too long.
 MgTagFieldNotFound                                    = The tag contained no fields.
-MgUnableToLockTileFile                                = Unable to lock the tile file.
-MgUnableToOpenLockFile                                = Unable to open the tile lock file.
-MgUnableToOpenTileFile                                = Unable to open the tile file.
 MgUnsupportedService                                  = The site/resource services cannot be enabled/disabled.
 MgUserAndGroupNotEmpty                                = Both the user and group are not empty.
 MgUserAndRoleNotEmpty                                 = Both the user and role are not empty.
@@ -431,6 +428,16 @@ MgUserFullNameWmsUser                                 = WMS User
 # T I L E  S E R V I C E
 # *****************************************************************************
 [TileService]
+MgFoundBlockingLockFile                                = Found a lock file for the current tile.
+MgGetTileWithOutMapSpecified                           = Calling GetTile without a valid mapdefinition or baselayer name.
+MgPermissionDeniedForResource                          = No permission to access the resource service for the current mapDefinition.
+MgNoMapSpecified                                       = Clearcache has been called with an empty map reference.
+MgTooLargeMetaTilingFactor                             = The specified metatiling Factor is too big, change serverconfig.ini.
+MgUnableToLockMetaTileFile                             = Unable to lock the current metatile file.
+MgUnableToLockTileFile                                 = Unable to lock the tile file.
+MgUnableToOpenLockFile                                 = Unable to open the tile lock file.
+MgUnableToOpenTileFile                                 = Unable to open the tile file.
+MgWrongSizeOfMetaTile                                  = Metatile has wrong size.
 MgTileProvider_Default_DisplayName                     = Default Tile Provider
 MgTileProvider_Default_Description                     = Default tile access provided by MapGuide. Supports MapGuide-managed tile path or user-defined path
 MgTileProvider_XYZ_DisplayName                         = XYZ Tile Provider

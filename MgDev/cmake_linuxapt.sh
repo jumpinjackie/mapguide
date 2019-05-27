@@ -62,6 +62,7 @@ SOURCE_DIR=$(pwd)
 check_build()
 {
     error=$?
+    echo "Error code is currently: $error"
     if [ $error -ne 0 ]; then
         echo "$LIB_NAME: Error build failed ($error)................."
         # Return back to this dir before bailing

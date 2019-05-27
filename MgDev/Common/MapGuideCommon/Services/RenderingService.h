@@ -121,6 +121,61 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
+    /// Returns the specified base map tile for the given map.
+    ///
+    /// \remarks
+    /// This method only renders the given tile. No tile caching is performed
+    /// by this method. To render and cache the tile, use the 
+    /// \link MgTileService::GetTile GetTile \endlink method instead. However,
+    /// using that method will use default tile width/height/dpi/format specified
+    /// in your MapGuide Server configuration
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param baseMapLayerGroupName
+    /// Input
+    /// Specifies the name of the baseMapLayerGroup for which to render the tile.
+    /// \param tileColumn
+    /// Input
+    /// Specifies the column index of the tile to return.
+    /// \param tileRow
+    /// Input
+    /// Specifies the row index of the tile to return.
+    /// \param tileWidth
+    /// Input
+    /// Specifies the width of the tile to return.
+    /// \param tileHeight
+    /// Input
+    /// Specifies the height of the tile to return.
+    /// \param tileDpi
+    /// Input
+    /// Specifies the dpi the tile to return.
+    /// \param tileImageFormat
+    /// Input
+    /// Specifies the image format of the tile. See \link MgImageFormats \endlink
+    /// \param tileExtentOffset
+    /// Specifies the ratio by which the tile to be rendered should be "buffered out". The tile will be rendered at the specified width
+    /// multiplied by the given ration, which will be cropped back to the original requested size after rendering. This is to improve
+    /// label placement on rendered tiles by giving extra "breathing space" to label placement algorithms.
+    ///
+    /// \return
+    /// A byte reader containing the rendered tile image.
+    ///
+    /// \since 3.3
+    virtual MgByteReader* RenderTile(
+        MgMap* map,
+        CREFSTRING baseMapLayerGroupName,
+        INT32 tileColumn,
+        INT32 tileRow,
+        INT32 tileWidth,
+        INT32 tileHeight,
+        INT32 tileDpi,
+        CREFSTRING tileImageFormat,
+        double tileExtentOffset) = 0;
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
     /// Returns the specified map tile for the given map. Tile structure is
     /// based on the XYZ tiling scheme used by Google Maps, OpenStreetMap, and
     /// others
@@ -191,6 +246,51 @@ PUBLISHED_API:
         INT32 z,
         INT32 dpi,
         CREFSTRING tileImageFormat) = 0;
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the specified map tile for the given map. Tile structure is
+    /// based on the XYZ tiling scheme used by Google Maps, OpenStreetMap, and
+    /// others
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param baseMapLayerGroupName
+    /// Input
+    /// Specifies the name of the baseMapLayerGroup for which to render the tile.
+    /// \param x
+    /// Input
+    /// Specifies the row index of the tile to return.
+    /// \param y
+    /// Input
+    /// Specifies the column index of the tile to return.
+    /// \param z
+    /// Input
+    /// Specifies the zoom level of the tile to return.
+    /// \param dpi
+    /// Input
+    /// Specifies the dpi of the tile to return.
+    /// \param tileImageFormat
+    /// Input
+    /// Specifies the image format of the tile to return.
+    /// \param tileExtentOffset
+    /// Specifies the ratio by which the tile to be rendered should be "buffered out". The tile will be rendered at the specified width
+    /// multiplied by the given ration, which will be cropped back to the original requested size after rendering. This is to improve
+    /// label placement on rendered tiles by giving extra "breathing space" to label placement algorithms.
+    ///
+    /// \return
+    /// A byte reader containing the rendered tile image.
+    ///
+    virtual MgByteReader* RenderTileXYZ(
+        MgMap* map,
+        CREFSTRING baseMapLayerGroupName,
+        INT32 x,
+        INT32 y,
+        INT32 z,
+        INT32 dpi,
+        CREFSTRING tileImageFormat,
+        double tileExtentOffset) = 0;
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -1016,6 +1116,152 @@ INTERNAL_API:
         INT32 layerAttributeFilter,
         bool bIncludeFeatureBBOX,
         bool bIncludeGeometry) = 0;
+
+EXTERNAL_API:
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the specified base map tile for the given map.
+    ///
+    /// \remarks
+    /// This method only renders the given tile. No tile caching is performed
+    /// by this method. To render and cache the tile, use the 
+    /// \link MgTileService::GetTile GetTile \endlink method instead. However,
+    /// using that method will use default tile width/height/dpi/format specified
+    /// in your MapGuide Server configuration
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param baseMapLayerGroupName
+    /// Input
+    /// Specifies the name of the baseMapLayerGroup for which to render the tile.
+    /// \param tileColumn
+    /// Input
+    /// Specifies the column index of the tile to return.
+    /// \param tileRow
+    /// Input
+    /// Specifies the row index of the tile to return.
+    /// \param tileWidth
+    /// Input
+    /// Specifies the width of the tile to return.
+    /// \param tileHeight
+    /// Input
+    /// Specifies the height of the tile to return.
+    /// \param tileDpi
+    /// Input
+    /// Specifies the dpi the tile to return.
+    /// \param tileImageFormat
+    /// Input
+    /// Specifies the image format of the tile. See \link MgImageFormats \endlink
+    /// \param tileExtentOffset
+    /// Input
+    /// Specifies the ratio by which the tile to be rendered should be "buffered out". The tile will be rendered at the specified width
+    /// multiplied by the given ratio, which will be cropped back to the original requested size after rendering. This is to improve
+    /// label placement on rendered tiles by giving extra "breathing space" to label placement algorithms.
+    /// \param metaTilingFactor
+    /// Input
+    /// The meta-tiling factor. If less than or equal to 1, no meta-tiling is done and the returned meta-tile can be extracted
+    /// as the orignally requested tile image. If greater than 1, a tile that is m times bigger than the requested tile is rendered
+    /// (where m is the specified tiling factor) and the raw image frame buffer of this meta-tile is returned instead.
+    ///
+    /// \return
+    /// A meta-tile with sufficient information for the consumer to properly sub-divide this back into sub-tiles of the
+    /// originally requested size.
+    ///
+    /// \since 3.3
+    virtual MgMetatile* RenderMetatile(
+        MgMap* map,
+        CREFSTRING baseMapLayerGroupName,
+        INT32 tileColumn,
+        INT32 tileRow,
+        INT32 tileWidth,
+        INT32 tileHeight,
+        INT32 tileDpi,
+        CREFSTRING tileImageFormat,
+        double tileExtentOffset,
+        INT32 metaTilingFactor) = 0;
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the specified map tile for the given map. Tile structure is
+    /// based on the XYZ tiling scheme used by Google Maps, OpenStreetMap, and
+    /// others
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param baseMapLayerGroupName
+    /// Input
+    /// Specifies the name of the baseMapLayerGroup for which to render the tile.
+    /// \param x
+    /// Input
+    /// Specifies the row index of the tile to return.
+    /// \param y
+    /// Input
+    /// Specifies the column index of the tile to return.
+    /// \param z
+    /// Input
+    /// Specifies the zoom level of the tile to return.
+    /// \param dpi
+    /// Input
+    /// Specifies the dpi of the tile to return.
+    /// \param tileImageFormat
+    /// Input
+    /// Specifies the image format of the tile to return.
+    /// \param tileExtentOffset
+    /// Input
+    /// Specifies the ratio by which the tile to be rendered should be "buffered out". The tile will be rendered at the specified width
+    /// multiplied by the given ratio, which will be cropped back to the original requested size after rendering. This is to improve
+    /// label placement on rendered tiles by giving extra "breathing space" to label placement algorithms.
+    /// \param metaTilingFactor
+    /// Input
+    /// The meta-tiling factor. If less than or equal to 1, no meta-tiling is done and the returned meta-tile can be extracted
+    /// as the orignally requested tile image. If greater than 1, a tile that is m times bigger than the requested tile is rendered
+    /// (where m is the specified tiling factor) and the raw image frame buffer of this meta-tile is returned instead.
+    ///
+    /// \return
+    /// A meta-tile with sufficient information for the consumer to properly sub-divide this back into sub-tiles of the
+    /// originally requested size.
+    ///
+    /// \since 3.3
+    virtual MgMetatile* RenderMetatileXYZ(
+        MgMap* map,
+        CREFSTRING baseMapLayerGroupName,
+        INT32 x,
+        INT32 y,
+        INT32 z,
+        INT32 dpi,
+        CREFSTRING tileImageFormat,
+        double tileExtentOffset,
+        INT32 metaTilingFactor) = 0;
+
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the requested sub-tile from the given metatile
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param metaTile
+    /// Input
+    /// The meta-tile from which a subtile is being requested for
+    /// \param rendererName
+    /// Input
+    /// The name of the renderer to create for sub-tile slicing
+    /// \param subTileX
+    /// Input
+    /// The x sub-tile coordinate of the meta-tile to request
+    /// \param subTileY
+    /// Input
+    /// The y sub-tile coordinate of the meta-tile to request
+    ///
+    /// \return
+    /// The requested sub-tile
+    ///
+    /// \since 3.3
+    virtual MgByteReader* RenderTileFromMetaTile(MgMap* map, MgMetatile* metaTile, CREFSTRING rendererName, INT32 subTileX, INT32 subTileY) = 0;
 
 protected:
 

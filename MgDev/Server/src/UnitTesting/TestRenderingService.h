@@ -25,8 +25,16 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(TestRenderingService);
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
-    CPPUNIT_TEST(TestCase_RenderTileBaseline);
-
+    CPPUNIT_TEST(TestCase_RenderXYZMetatilePNG);
+    CPPUNIT_TEST(TestCase_RenderXYZMetatilePNG8);
+    CPPUNIT_TEST(TestCase_RenderXYZMetatileJPG);
+    CPPUNIT_TEST(TestCase_RenderXYZMetatileGIF);
+    
+    CPPUNIT_TEST(TestCase_RenderMetatilePNG);
+    CPPUNIT_TEST(TestCase_RenderMetatilePNG8);
+    CPPUNIT_TEST(TestCase_RenderMetatileJPG);
+    CPPUNIT_TEST(TestCase_RenderMetatileGIF);
+    
     CPPUNIT_TEST(TestCase_StylizationFunctionsPNG);
 
     CPPUNIT_TEST(TestCase_SymbologyPointsPNG);
@@ -145,7 +153,6 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderTileXYZ_JPG);
 
     CPPUNIT_TEST(TestCase_QueryFeatures);
-
     //CPPUNIT_TEST(TestCase_RendererPerformance);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
@@ -161,7 +168,8 @@ public:
     void TestEnd();
 
     void TestCase_QueryFeatures();
-    void TestCase_RenderTileBaseline();
+    void TestCase_RenderMetatile(CREFSTRING imageFormat, CREFSTRING extension);
+    void TestCase_RenderXYZMetatile(CREFSTRING imageFormat, CREFSTRING extension);
     void TestCase_RenderTile(CREFSTRING imageFormat, CREFSTRING extension);
     void TestCase_RenderTileXYZ(CREFSTRING imageFormat, CREFSTRING extension);
 
@@ -304,6 +312,16 @@ public:
     void TestCase_RenderTileXYZ_JPG() { TestCase_RenderTileXYZ(L"JPG", L"jpg"); }
 
     //void TestCase_RendererPerformance();
+
+    void TestCase_RenderMetatilePNG() { TestCase_RenderMetatile(L"PNG", L"png"); }
+    void TestCase_RenderMetatilePNG8() { TestCase_RenderMetatile(L"PNG8", L"png"); }
+    void TestCase_RenderMetatileJPG() { TestCase_RenderMetatile(L"JPG", L"jpg"); }
+    void TestCase_RenderMetatileGIF() { TestCase_RenderMetatile(L"GIF", L"gif"); }
+
+    void TestCase_RenderXYZMetatilePNG() { TestCase_RenderXYZMetatile(L"PNG", L"png"); }
+    void TestCase_RenderXYZMetatilePNG8() { TestCase_RenderXYZMetatile(L"PNG8", L"png"); }
+    void TestCase_RenderXYZMetatileJPG() { TestCase_RenderXYZMetatile(L"JPG", L"jpg"); }
+    void TestCase_RenderXYZMetatileGIF() { TestCase_RenderXYZMetatile(L"GIF", L"gif"); }
 
 private:
     MgMap* CreateTestMap();

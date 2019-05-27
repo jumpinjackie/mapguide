@@ -166,6 +166,9 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
         ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
         ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+        ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd \
+        ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd \
+        ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd \
         ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
         ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
         ..\..\bin\UnitTestFiles\UT_Parcels.fs \
@@ -443,6 +446,9 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
         ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
         ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+        ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd \
+        ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd \
+        ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd \
         ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
         ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
         ..\..\bin\UnitTestFiles\UT_Parcels.fs \
@@ -720,6 +726,9 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
           ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
           ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+          ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd \
+          ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd \
+          ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd \
           ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
           ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
           ..\..\bin\UnitTestFiles\UT_Parcels.fs \
@@ -997,6 +1006,9 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
           ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
           ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+          ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd \
+          ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd \
+          ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd \
           ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
           ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
           ..\..\bin\UnitTestFiles\UT_Parcels.fs \
@@ -1146,7 +1158,10 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
-    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                        del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                     del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd        del /F ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd       del /F ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd           del /F ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd
     if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
@@ -1292,6 +1307,9 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
     if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                     del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd        del /F ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd       del /F ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd           del /F ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd
     if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
@@ -1437,6 +1455,9 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
     if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                     del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd        del /F ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd       del /F ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd           del /F ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd
     if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
@@ -1580,6 +1601,9 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
     if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                     del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd        del /F ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd       del /F ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd           del /F ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd
     if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
@@ -1850,6 +1874,9 @@ debug(v100) : ..\..\bin\debug(v100)\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
         ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
         ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+        ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd \
+        ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd \
+        ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd \
         ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
         ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
         ..\..\bin\UnitTestFiles\UT_Parcels.fs \
@@ -2120,6 +2147,9 @@ debug(v100)64 : ..\..\bin\debug(v100)64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
         ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
         ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+        ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd \
+        ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd \
+        ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd \
         ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
         ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
         ..\..\bin\UnitTestFiles\UT_Parcels.fs \
@@ -2390,6 +2420,9 @@ release(v100) : ..\..\bin\release(v100)\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
           ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
           ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+          ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd \
+          ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd \
+          ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd \
           ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
           ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
           ..\..\bin\UnitTestFiles\UT_Parcels.fs \
@@ -2660,6 +2693,9 @@ release(v100)64 : ..\..\bin\release(v100)64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
           ..\..\bin\UnitTestFiles\UT_BaseMap.tsd \
           ..\..\bin\UnitTestFiles\UT_XYZ.tsd \
+          ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd \
+          ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd \
+          ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd \
           ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf \
           ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
           ..\..\bin\UnitTestFiles\UT_Parcels.fs \
@@ -2802,7 +2838,10 @@ cleandebug(v100):
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
-    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                        del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                     del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd        del /F ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd       del /F ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd           del /F ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd
     if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
@@ -2940,7 +2979,10 @@ cleandebug(v100)64:
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
-    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                        del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                     del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd        del /F ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd       del /F ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd           del /F ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd
     if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
@@ -3078,7 +3120,10 @@ cleanrelease(v100):
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
-    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                        del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                     del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd        del /F ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd       del /F ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd           del /F ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd
     if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
@@ -3214,7 +3259,10 @@ cleanrelease(v100)64:
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.tsd                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.tsd
-    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                        del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ.tsd                     del /F ..\..\bin\UnitTestFiles\UT_XYZ.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd        del /F ..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd       del /F ..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd
+    if EXIST ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd           del /F ..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd
     if EXIST ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf           del /F ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
@@ -3363,6 +3411,9 @@ cleanrelease(v100)64:
 "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.mdf" :
 "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.tsd" :
 "..\..\..\UnitTest\TestData\TileService\UT_XYZ.tsd" :
+"..\..\..\UnitTest\TestData\TileService\UT_BaseMap_OrigSize.tsd" :
+"..\..\..\UnitTest\TestData\TileService\UT_BaseMap_Metatiled.tsd" :
+"..\..\..\UnitTest\TestData\TileService\UT_XYZ_Metatiled.tsd" :
 "..\..\..\UnitTest\TestData\TileService\UT_LinkedTileSet.mdf" :
 "..\..\..\UnitTest\TestData\TileService\UT_StylizationFuncs.mdf" :
 "..\..\..\UnitTest\TestData\TileService\UT_Parcels.fs" :
@@ -3630,6 +3681,18 @@ cleanrelease(v100)64:
 ..\..\bin\UnitTestFiles\UT_XYZ.tsd : "..\..\..\UnitTest\TestData\TileService\UT_XYZ.tsd"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\TileService\UT_XYZ.tsd" xcopy /r /d /y "..\..\..\UnitTest\TestData\TileService\UT_XYZ.tsd" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_BaseMap_OrigSize.tsd : "..\..\..\UnitTest\TestData\TileService\UT_BaseMap_OrigSize.tsd"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\TileService\UT_BaseMap_OrigSize.tsd" xcopy /r /d /y "..\..\..\UnitTest\TestData\TileService\UT_BaseMap_OrigSize.tsd" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_BaseMap_Metatiled.tsd : "..\..\..\UnitTest\TestData\TileService\UT_BaseMap_Metatiled.tsd"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\TileService\UT_BaseMap_Metatiled.tsd" xcopy /r /d /y "..\..\..\UnitTest\TestData\TileService\UT_BaseMap_Metatiled.tsd" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_XYZ_Metatiled.tsd : "..\..\..\UnitTest\TestData\TileService\UT_XYZ_Metatiled.tsd"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\TileService\UT_XYZ_Metatiled.tsd" xcopy /r /d /y "..\..\..\UnitTest\TestData\TileService\UT_XYZ_Metatiled.tsd" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\UT_LinkedTileSet.mdf : "..\..\..\UnitTest\TestData\TileService\UT_LinkedTileSet.mdf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles

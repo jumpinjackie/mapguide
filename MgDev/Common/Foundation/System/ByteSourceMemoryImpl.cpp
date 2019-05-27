@@ -99,3 +99,8 @@ MgByte* ByteSourceMemoryImpl::Bytes()
 {
     return (SAFE_ADDREF((MgByte*)m_data));
 }
+
+MgByte* ByteSourceMemoryImpl::BytesNoAddRef()
+{
+    return (MgByte*)m_data;
+}

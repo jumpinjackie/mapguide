@@ -24,6 +24,8 @@
 //#include "GDRenderer.h"
 //#include "AGGRenderer.h"
 #include "FoundationDefs.h"
+#include "SE_Renderer.h"
+
 const STRING TEST_LOCALE = L"en";
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestRenderingService, "TestRenderingService");
@@ -1713,21 +1715,86 @@ void TestRenderingService::TestCase_SymbologyPolygons(CREFSTRING imageFormat, CR
     }
 }
 
-void TestRenderingService::TestCase_RenderTileBaseline()
+void TestRenderingService::TestCase_RenderMetatile(CREFSTRING imageFormat, CREFSTRING extension)
 {
     try
     {
         Ptr<MgMap> map = CreateTestTiledMap();
         map->SetViewScale(12500.0);
-        Ptr<MgByteReader> tile4_6 = m_svcRendering->RenderTile(map, L"BaseLayers", 4, 6);
-        Ptr<MgByteReader> tile4_7 = m_svcRendering->RenderTile(map, L"BaseLayers", 4, 7);
-        Ptr<MgByteReader> tile5_6 = m_svcRendering->RenderTile(map, L"BaseLayers", 5, 6);
-        Ptr<MgByteReader> tile5_7 = m_svcRendering->RenderTile(map, L"BaseLayers", 5, 7);
+        Ptr<MgByteReader> tile4_6_baseline = m_svcRendering->RenderTile(map, L"BaseLayers", 4, 6, MgTileParameters::tileWidth, MgTileParameters::tileHeight, MgTileParameters::tileDPI, imageFormat);
+        Ptr<MgByteReader> tile4_7_baseline = m_svcRendering->RenderTile(map, L"BaseLayers", 4, 7, MgTileParameters::tileWidth, MgTileParameters::tileHeight, MgTileParameters::tileDPI, imageFormat);
+        Ptr<MgByteReader> tile5_6_baseline = m_svcRendering->RenderTile(map, L"BaseLayers", 5, 6, MgTileParameters::tileWidth, MgTileParameters::tileHeight, MgTileParameters::tileDPI, imageFormat);
+        Ptr<MgByteReader> tile5_7_baseline = m_svcRendering->RenderTile(map, L"BaseLayers", 5, 7, MgTileParameters::tileWidth, MgTileParameters::tileHeight, MgTileParameters::tileDPI, imageFormat);
 
-        tile4_6->ToFile(L"../UnitTestFiles/RenderTile_4_6_Baseline.png");
-        tile4_7->ToFile(L"../UnitTestFiles/RenderTile_4_7_Baseline.png");
-        tile5_6->ToFile(L"../UnitTestFiles/RenderTile_5_6_Baseline.png");
-        tile5_7->ToFile(L"../UnitTestFiles/RenderTile_5_7_Baseline.png");
+        tile4_6_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTile_4_6_Baseline", imageFormat, extension));
+        tile4_7_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTile_4_7_Baseline", imageFormat, extension));
+        tile5_6_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTile_5_6_Baseline", imageFormat, extension));
+        tile5_7_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTile_5_7_Baseline", imageFormat, extension));
+
+        MgRenderingService* renderSvc = dynamic_cast<MgRenderingService*>(m_svcRendering.p);
+        CPPUNIT_ASSERT(NULL != renderSvc);
+
+        // Render a 2x2 metatile which should cover the same tiles as the baseline test.
+        INT32 metaTileFactor = 2;
+        Ptr<MgMetatile> metaTile = renderSvc->RenderMetatile(map, L"BaseLayers", 4, 6, MgTileParameters::tileWidth, MgTileParameters::tileHeight, MgTileParameters::tileDPI, imageFormat, MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset, metaTileFactor);
+        //metaTile->ToFile(L"../UnitTestFiles/RenderTile_Metatile@4_6.png");
+        //CPPUNIT_ASSERT(metaTile->IsRewindable());
+        //metaTile->Rewind();
+        STRING rendererName = L"AGG";
+        Ptr<MgByteReader> tile4_6 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 0, 0);
+        Ptr<MgByteReader> tile4_7 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 0, 1);
+        Ptr<MgByteReader> tile5_6 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 1, 0);
+        Ptr<MgByteReader> tile5_7 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 1, 1);
+
+
+        tile4_6->ToFile(GetPath(L"../UnitTestFiles/RenderTile_4_6_Metatiled", imageFormat, extension));
+        tile4_7->ToFile(GetPath(L"../UnitTestFiles/RenderTile_4_7_Metatiled", imageFormat, extension));
+        tile5_6->ToFile(GetPath(L"../UnitTestFiles/RenderTile_5_6_Metatiled", imageFormat, extension));
+        tile5_7->ToFile(GetPath(L"../UnitTestFiles/RenderTile_5_7_Metatiled", imageFormat, extension));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
+void TestRenderingService::TestCase_RenderXYZMetatile(CREFSTRING imageFormat, CREFSTRING extension)
+{
+    try
+    {
+        Ptr<MgMap> map = CreateTestTiledMap();
+        map->SetViewScale(12500.0);
+        Ptr<MgByteReader> tile_16798_23891_baseline = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16798, 23891, 16, MgTileParameters::tileDPI, imageFormat);
+        Ptr<MgByteReader> tile_16799_23891_baseline = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16799, 23891, 16, MgTileParameters::tileDPI, imageFormat);
+        Ptr<MgByteReader> tile_16798_23892_baseline = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16798, 23892, 16, MgTileParameters::tileDPI, imageFormat);
+        Ptr<MgByteReader> tile_16799_23892_baseline = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16799, 23892, 16, MgTileParameters::tileDPI, imageFormat);
+
+        tile_16798_23891_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16798_23891_16_Baseline", imageFormat, extension));
+        tile_16799_23891_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16799_23891_16_Baseline", imageFormat, extension));
+        tile_16798_23892_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16798_23892_16_Baseline", imageFormat, extension));
+        tile_16799_23892_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16799_23892_16_Baseline", imageFormat, extension));
+
+        MgRenderingService* renderSvc = dynamic_cast<MgRenderingService*>(m_svcRendering.p);
+        CPPUNIT_ASSERT(NULL != renderSvc);
+
+        // Render a 2x2 metatile which should cover the same tiles as the baseline test.
+        INT32 metaTileFactor = 2;
+        Ptr<MgMetatile> metaTile = renderSvc->RenderMetatileXYZ(map, L"BaseLayers", 16798, 23891, 16, MgTileParameters::tileDPI, imageFormat, MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset, metaTileFactor);
+        //metaTile->ToFile(L"../UnitTestFiles/RenderTileXYZ_Metatile@16798_23891_16.png");
+        //CPPUNIT_ASSERT(metaTile->IsRewindable());
+        //metaTile->Rewind();
+        STRING rendererName = L"AGG";
+        Ptr<MgByteReader> tile_16798_23891 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 0, 0);
+        Ptr<MgByteReader> tile_16799_23891 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 1, 0);
+        Ptr<MgByteReader> tile_16798_23892 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 0, 1);
+        Ptr<MgByteReader> tile_16799_23892 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 1, 1);
+
+        tile_16798_23891->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16798_23891_16_Metatiled", imageFormat, extension));
+        tile_16799_23891->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16799_23891_16_Metatiled", imageFormat, extension));
+        tile_16798_23892->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16798_23892_16_Metatiled", imageFormat, extension));
+        tile_16799_23892->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16799_23892_16_Metatiled", imageFormat, extension));
     }
     catch (MgException* e)
     {
