@@ -122,7 +122,7 @@ private:
     ///////////////////////////////////////////////////////
     /// Member data
 private:
-    std::auto_ptr<MgServerInteractiveCommand> m_command;
+    std::unique_ptr<MgServerInteractiveCommand> m_command;
     bool m_bTestMode;
     bool m_bTestFdo;
 

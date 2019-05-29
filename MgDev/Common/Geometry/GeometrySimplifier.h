@@ -60,6 +60,7 @@
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
+/// \since 4.0
 class MG_GEOMETRY_API MgGeometrySimplifier : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgGeometrySimplifier)

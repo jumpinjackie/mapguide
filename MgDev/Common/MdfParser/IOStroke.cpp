@@ -155,7 +155,7 @@ void IOStroke::Write(MdfStream& fd, Stroke* stroke, std::string name, Version* v
 
     // Property: Unit
     fd << tab.tab() << startStr(sUnit);
-    std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(stroke->GetUnit()));
+    std::unique_ptr<MdfString> str(LengthConverter::UnitToEnglish(stroke->GetUnit()));
     fd << EncodeString(*str);
     fd << endStr(sUnit) << std::endl;
 

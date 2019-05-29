@@ -345,10 +345,10 @@ private:
     Point2D                                 m_westSourthPoint;
 
     // Cache for Aspect values of this band.
-    mutable std::auto_ptr<Band>          m_spAspectBand;
+    mutable std::unique_ptr<Band>          m_spAspectBand;
 
     // Cache for Slope values of this band.
-    mutable std::auto_ptr<Band>          m_spSlopeBand;
+    mutable std::unique_ptr<Band>          m_spSlopeBand;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////

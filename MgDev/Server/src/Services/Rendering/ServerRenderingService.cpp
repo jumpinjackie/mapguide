@@ -396,7 +396,7 @@ MgByteReader* MgServerRenderingService::RenderTileUTFGrid(MgMap * map,
         sessionId = userInfo->GetMgSessionId();
 
     UTFGridContent content;
-    std::auto_ptr<UTFGridRenderer> dr(new UTFGridRenderer(&content));
+    std::unique_ptr<UTFGridRenderer> dr(new UTFGridRenderer(&content));
 
     RSMgSymbolManager mgr(m_svcResource);
     dr->SetSymbolManager(&mgr);

@@ -167,14 +167,14 @@ WT_Result agr_process_contourSet(WT_Contour_Set & contourSet, WT_File & file)
     int totalPts = contourSet.total_points();
 
     LineBuffer* dst_cntr = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)contourSet.points(), totalPts, true);
-    std::auto_ptr<LineBuffer> spDstLB(dst_cntr);
+    std::unique_ptr<LineBuffer> spDstLB(dst_cntr);
 
     if (dst_cntr)
     {
         //construct a line buffer with the transformed points and the original
         //contour information
         LineBuffer* lb = LineBufferPool::NewLineBuffer(rewriter->GetBufferPool(), totalPts);
-        std::auto_ptr<LineBuffer> spLB(lb);
+        std::unique_ptr<LineBuffer> spLB(lb);
         int index = 0;
         for (int i=0; i<numcntrs; i++)
         {
@@ -262,7 +262,7 @@ WT_Result agr_process_image(WT_Image & image, WT_File & file)
     endpts[3].m_y = bounds.m_max.m_y;
 
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, endpts, 4, false);
-    std::auto_ptr<LineBuffer> spDstLB(dstpts);
+    std::unique_ptr<LineBuffer> spDstLB(dstpts);
 
     unsigned int* src = NULL;
 
@@ -373,7 +373,7 @@ WT_Result agr_process_filledEllipse(WT_Filled_Ellipse & filledEllipse, WT_File &
     WT_Logical_Point center = filledEllipse.position();
 
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)&center, 1, false);
-    std::auto_ptr<LineBuffer> spDstLB(dstpts);
+    std::unique_ptr<LineBuffer> spDstLB(dstpts);
 
     if (!dstpts)
         return WT_Result::Success;
@@ -394,7 +394,7 @@ WT_Result agr_process_filledEllipse(WT_Filled_Ellipse & filledEllipse, WT_File &
     double startY = dstpts->y_coord(0) + ty*rcos + tx*rsin;
 
     LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetBufferPool(), 20);
-    std::auto_ptr<LineBuffer> spEllLB(ell);
+    std::unique_ptr<LineBuffer> spEllLB(ell);
 
     ell->SetDrawingScale(1.0);
     ell->MoveTo(startX, startY);
@@ -434,7 +434,7 @@ WT_Result agr_process_outlineEllipse(WT_Outline_Ellipse & outlineEllipse, WT_Fil
     WT_Logical_Point center = outlineEllipse.position();
 
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)&center, 1, false);
-    std::auto_ptr<LineBuffer> spDstLB(dstpts);
+    std::unique_ptr<LineBuffer> spDstLB(dstpts);
 
     if (!dstpts)
         return WT_Result::Success;
@@ -455,7 +455,7 @@ WT_Result agr_process_outlineEllipse(WT_Outline_Ellipse & outlineEllipse, WT_Fil
     double startY = dstpts->y_coord(0) + ty*rcos + tx*rsin;
 
     LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetBufferPool(), 20);
-    std::auto_ptr<LineBuffer> spEllLB(ell);
+    std::unique_ptr<LineBuffer> spEllLB(ell);
 
     ell->SetDrawingScale(1.0);
     ell->MoveTo(startX, startY);
@@ -499,7 +499,7 @@ WT_Result agr_process_polygon(WT_Polygon & polygon, WT_File & file)
 
     //do all necessary transformations
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, polygon.points(), polygon.count(), true);
-    std::auto_ptr<LineBuffer> spDstLB(dstpts);
+    std::unique_ptr<LineBuffer> spDstLB(dstpts);
 
     if (dstpts)
     {
@@ -540,7 +540,7 @@ WT_Result agr_process_polytriangle(WT_Polytriangle & polytriangle, WT_File & fil
         return WT_Result::Success;
 
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, srcpts, numPoints, true);
-    std::auto_ptr<LineBuffer> spDstLB(dstpts);
+    std::unique_ptr<LineBuffer> spDstLB(dstpts);
 
     if (dstpts)
     {
@@ -609,7 +609,7 @@ WT_Result agr_process_pngGroup4Image(WT_PNG_Group4_Image & pngGroup4Image, WT_Fi
     endpts[3].m_y = bounds.m_max.m_y;
 
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, endpts, 4, false);
-    std::auto_ptr<LineBuffer> spDstLB(dstpts);
+    std::unique_ptr<LineBuffer> spDstLB(dstpts);
 
     int width;
     int height;
@@ -678,7 +678,7 @@ WT_Result agr_process_polyline(WT_Polyline & polyline, WT_File & file)
 
     //do all necessary transformations and clipping
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, polyline.points(), polyline.count(), true);
-    std::auto_ptr<LineBuffer> spDstLB(dstpts);
+    std::unique_ptr<LineBuffer> spDstLB(dstpts);
 
     if (dstpts)
     {
@@ -720,7 +720,7 @@ WT_Result agr_process_text(WT_Text & text, WT_File & file)
     WT_Logical_Point pt = text.position();
 
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, &pt, 1, true);
-    std::auto_ptr<LineBuffer> spDstLB(dstpts);
+    std::unique_ptr<LineBuffer> spDstLB(dstpts);
 
     if (dstpts)
     {

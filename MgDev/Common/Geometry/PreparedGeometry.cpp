@@ -30,7 +30,7 @@ public:
     PreparedGeometryImpl() 
       : m_pg(NULL), 
         m_pm(new PrecisionModel()), 
-        m_geom(NULL)
+        m_geom(nullptr)
     {
         m_gf = GeometryFactory::create(m_pm.get(), 10);
     }
@@ -38,8 +38,8 @@ public:
     PreparedGeometryImpl() 
       : m_pg(NULL), 
         m_pm(new PrecisionModel()), 
-        m_gf(NULL),
-        m_geom(NULL)
+        m_gf(nullptr),
+        m_geom(nullptr)
     {
         m_gf.reset(new GeometryFactory(m_pm.get(), 10));
     }
@@ -69,13 +69,13 @@ public:
     const PreparedGeometry* m_pg;
 
 private:
-    std::auto_ptr<Geometry> m_geom;
-    std::auto_ptr<PrecisionModel> m_pm;
+    std::unique_ptr<Geometry> m_geom;
+    std::unique_ptr<PrecisionModel> m_pm;
 // GEOS 3.6.0 onwards changes the C++ API around GeometryFactory
 #if (GEOS_VERSION_MAJOR == 3) && (GEOS_VERSION_MINOR >= 6)
     GeometryFactory::unique_ptr m_gf;
 #else
-    std::auto_ptr<GeometryFactory> m_gf;
+    std::unique_ptr<GeometryFactory> m_gf;
 #endif
 };
 
@@ -108,43 +108,43 @@ MgPreparedGeometry::~MgPreparedGeometry()
 
 bool MgPreparedGeometry::Contains(MgGeometry * other)
 {
-    std::auto_ptr<Geometry> gOther(d_ptr->Convert(other));
+    std::unique_ptr<Geometry> gOther(d_ptr->Convert(other));
     return d_ptr->m_pg->contains(gOther.get());
 }
 
 bool MgPreparedGeometry::Crosses(MgGeometry * other)
 {
-    std::auto_ptr<Geometry> gOther(d_ptr->Convert(other));
+    std::unique_ptr<Geometry> gOther(d_ptr->Convert(other));
     return d_ptr->m_pg->crosses(gOther.get());
 }
 
 bool MgPreparedGeometry::Disjoint(MgGeometry * other)
 {
-    std::auto_ptr<Geometry> gOther(d_ptr->Convert(other));
+    std::unique_ptr<Geometry> gOther(d_ptr->Convert(other));
     return d_ptr->m_pg->disjoint(gOther.get());
 }
 
 bool MgPreparedGeometry::Intersects(MgGeometry * other)
 {
-    std::auto_ptr<Geometry> gOther(d_ptr->Convert(other));
+    std::unique_ptr<Geometry> gOther(d_ptr->Convert(other));
     return d_ptr->m_pg->intersects(gOther.get());
 }
 
 bool MgPreparedGeometry::Overlaps(MgGeometry * other)
 {
-    std::auto_ptr<Geometry> gOther(d_ptr->Convert(other));
+    std::unique_ptr<Geometry> gOther(d_ptr->Convert(other));
     return d_ptr->m_pg->overlaps(gOther.get());
 }
 
 bool MgPreparedGeometry::Touches(MgGeometry * other)
 {
-    std::auto_ptr<Geometry> gOther(d_ptr->Convert(other));
+    std::unique_ptr<Geometry> gOther(d_ptr->Convert(other));
     return d_ptr->m_pg->touches(gOther.get());
 }
 
 bool MgPreparedGeometry::Within(MgGeometry * other)
 {
-    std::auto_ptr<Geometry> gOther(d_ptr->Convert(other));
+    std::unique_ptr<Geometry> gOther(d_ptr->Convert(other));
     return d_ptr->m_pg->within(gOther.get());
 }
 

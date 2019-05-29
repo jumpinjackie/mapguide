@@ -18,6 +18,8 @@
 #ifndef _MGPREPAREDGEOMETRY_H_
 #define _MGPREPAREDGEOMETRY_H_
 
+#include <memory>
+
 class MgGeometry;
 
 ////////////////////////////////////////////////////////////////
@@ -284,7 +286,7 @@ INTERNAL_API:
 
 private:
     class PreparedGeometryImpl;
-    std::auto_ptr<PreparedGeometryImpl> d_ptr;
+    std::unique_ptr<PreparedGeometryImpl> d_ptr;
     MgPreparedGeometry(PreparedGeometryImpl* impl);
 
 protected:

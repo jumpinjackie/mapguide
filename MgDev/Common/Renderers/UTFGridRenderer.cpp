@@ -326,7 +326,7 @@ void UTFGridRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, b
     // transform to coordinates of temporary image where we
     // draw symbol before transfering to the map
     LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, 8);
-    std::auto_ptr<LineBuffer> spLB(lb);
+    std::unique_ptr<LineBuffer> spLB(lb);
 
     double tempx, tempy;
     for (int i = 0; i<npts; ++i)

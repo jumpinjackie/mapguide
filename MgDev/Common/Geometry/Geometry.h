@@ -750,7 +750,7 @@ PUBLISHED_API:
     /// virtual MgGeometry Prepare();
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \since 3.3
+    /// \since 4.0
     ///
     /// \return
     /// An MgPreparedGeometry representing the prepared version of this geometry
@@ -775,7 +775,7 @@ PUBLISHED_API:
     /// virtual MgGeometry Prepare();
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \since 3.3
+    /// \since 4.0
     ///
     /// \return
     /// A tesellated version of this geometry. If this geometry is not curve-based, the operation does nothing and this method returns itself.

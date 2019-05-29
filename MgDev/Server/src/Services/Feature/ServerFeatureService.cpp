@@ -280,7 +280,7 @@ MgByteReader* MgServerFeatureService::GetCapabilities(CREFSTRING providerName)
     Ptr<MgUserInformation> userInfo =  MgUserInformation::GetCurrentUserInfo();
     if (userInfo->GetApiVersion() != MG_API_VERSION(1,0,0) && 
         userInfo->GetApiVersion() != MG_API_VERSION(2,0,0) &&
-        userInfo->GetApiVersion() != MG_API_VERSION(3,3,0)) //This is 2.0.0 with optional clean JSON output
+        userInfo->GetApiVersion() != MG_API_VERSION(4,0,0)) //This is 2.0.0 with optional clean JSON output
     {
         throw new MgInvalidOperationVersionException(
             L"MgServerFeatureService.GetCapabilities", __LINE__, __WFILE__, NULL, L"", NULL);

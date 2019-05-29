@@ -156,7 +156,7 @@ MgByteReader* MgProxyRenderingService::RenderTile(
         MgRenderingServiceOpId::RenderTile2,            // Command Code
         9,                                              // No of arguments
         Rendering_Service,                              // Service Id
-        BUILD_VERSION(3, 3, 0),                         // Operation version
+        BUILD_VERSION(4,0,0),                         // Operation version
         MgCommand::knObject, map,                       // Argument#1
         MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
         MgCommand::knInt32, tileColumn,                 // Argument#3
@@ -242,7 +242,7 @@ MgByteReader* MgProxyRenderingService::RenderTileXYZ(MgMap* map,
         MgRenderingServiceOpId::RenderTileXYZ2,         // Command Code
         8,                                              // No of arguments
         Rendering_Service,                              // Service Id
-        BUILD_VERSION(3, 3, 0),                         // Operation version
+        BUILD_VERSION(4,0,0),                         // Operation version
         MgCommand::knObject, map,                       // Argument#1
         MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
         MgCommand::knInt32, x,                          // Argument#3
@@ -266,7 +266,7 @@ MgByteReader * MgProxyRenderingService::RenderTileUTFGrid(MgMap * map, CREFSTRIN
         MgRenderingServiceOpId::RenderTileUTFGrid,      // Command Code
         7,                                              // No of arguments
         Rendering_Service,                              // Service Id
-        BUILD_VERSION(3, 3, 0),                         // Operation version
+        BUILD_VERSION(4,0,0),                         // Operation version
         MgCommand::knObject, map,                       // Argument#1
         MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
         MgCommand::knInt32, x,                          // Argument#3
@@ -1181,7 +1181,7 @@ MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
         MgRenderingServiceOpId::QueryFeatureProperties3,// Command Code
         9,                                              // No of arguments
         Rendering_Service,                              // Service Id
-        BUILD_VERSION(3, 3, 0),                         // Operation version
+        BUILD_VERSION(4,0,0),                         // Operation version
         MgCommand::knObject, map,                       // Argument#1
         MgCommand::knObject, layerNames,                // Argument#2
         MgCommand::knObject, filterGeometry,            // Argument#3
@@ -1352,7 +1352,7 @@ MgMetatile* MgProxyRenderingService::RenderMetatile(
         MgRenderingServiceOpId::RenderMetatile,         // Command Code
         10,                                             // No of arguments
         Rendering_Service,                              // Service Id
-        BUILD_VERSION(3, 3, 0),                         // Operation version
+        BUILD_VERSION(4,0,0),                         // Operation version
         MgCommand::knObject, map,                       // Argument#1
         MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
         MgCommand::knInt32, tileColumn,                 // Argument#3
@@ -1387,7 +1387,7 @@ MgMetatile* MgProxyRenderingService::RenderMetatileXYZ(
         MgRenderingServiceOpId::RenderTileXYZ2,         // Command Code
         9,                                              // No of arguments
         Rendering_Service,                              // Service Id
-        BUILD_VERSION(3, 3, 0),                         // Operation version
+        BUILD_VERSION(4,0,0),                         // Operation version
         MgCommand::knObject, map,                       // Argument#1
         MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
         MgCommand::knInt32, x,                          // Argument#3
@@ -1417,7 +1417,7 @@ MgByteReader* MgProxyRenderingService::RenderTileFromMetaTile(
         MgRenderingServiceOpId::RenderTileFromMetaTile, // Command Code
         9,                                              // No of arguments
         Rendering_Service,                              // Service Id
-        BUILD_VERSION(3, 3, 0),                         // Operation version
+        BUILD_VERSION(4,0,0),                         // Operation version
         MgCommand::knObject, map,                       // Argument#1
         MgCommand::knObject, metaTile,                  // Argument#2
         MgCommand::knString, &rendererName,             // Argument#3

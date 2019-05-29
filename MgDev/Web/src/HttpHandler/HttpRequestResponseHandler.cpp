@@ -180,8 +180,8 @@ void MgHttpRequestResponseHandler::InitializeCommonParameters(MgHttpRequest *hRe
         m_userInfo->SetClientIp(clientIp);
     }
 
-    // Get clean json flag (CLEAN). Only recognize this flag for 3.3.0 and above
-    if (version >= MG_API_VERSION(3, 3, 0))
+    // Get clean json flag (CLEAN). Only recognize this flag for 4.0.0 and above
+    if (version >= MG_API_VERSION(4, 0, 0))
     {
         STRING cleanJson = hrParam->GetParameterValue(MgHttpResourceStrings::reqClean);
         if (cleanJson.length() > 0)
@@ -244,7 +244,7 @@ void MgHttpRequestResponseHandler::ValidateOperationVersion()
         version != MG_API_VERSION(1,2,0) &&
         version != MG_API_VERSION(2,0,0) &&
         version != MG_API_VERSION(2,2,0) &&
-        version != MG_API_VERSION(3,3,0))
+        version != MG_API_VERSION(4,0,0))
     {
         throw new MgInvalidOperationVersionException(
         L"MgHttpRequestResponseHandler.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);

@@ -392,7 +392,7 @@ PUBLISHED_API:
     /// \param dpi
     /// The display DPI to initially set for the map
     ///
-    /// \since 3.3
+    /// \since 4.0
     ///
     /// \return
     /// Returns nothing.

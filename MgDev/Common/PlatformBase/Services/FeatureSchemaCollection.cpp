@@ -203,7 +203,7 @@ void MgFeatureSchemaCollection::Deserialize(MgStream* stream)
 void MgFeatureSchemaCollection::ToSimpleXml(std::string & str)
 {
     str = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-    str.append("<FeatureSchemaCollection xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"FeatureSchemaCollection-3.3.0.xsd\">");
+    str.append("<FeatureSchemaCollection xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"FeatureSchemaCollection-4.0.0.xsd\">");
 
     INT32 fcount = GetCount();
     for (INT32 i = 0; i < fcount; i++)

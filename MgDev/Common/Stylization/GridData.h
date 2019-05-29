@@ -225,11 +225,11 @@ private:
     double                              m_dCoordSysUnitLength;
 
     // Cache for hillshade values for this band
-    mutable std::auto_ptr<Band>             m_spHillShadeBand;
-    mutable std::auto_ptr<MdfModel::HillShade> m_spMdfHillShade;
+    mutable std::unique_ptr<Band>             m_spHillShadeBand;
+    mutable std::unique_ptr<MdfModel::HillShade> m_spMdfHillShade;
 
     // Store the raw color band without hillshade effect if the color band includes effect.
-    std::auto_ptr<Band>              m_spNoHillShadeColorBand;
+    std::unique_ptr<Band>              m_spNoHillShadeColorBand;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////

@@ -2084,7 +2084,7 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidArgumentException
     ///
-    /// \since 3.3
+    /// \since 4.0
     virtual MgFeatureReader* GetWfsReader(MgResourceIdentifier* featureSourceId,
                                           CREFSTRING featureClass,
                                           MgStringCollection* requiredProperties,

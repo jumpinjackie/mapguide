@@ -76,7 +76,7 @@ MgPrintLayoutElementBase* MgPrintLayoutServiceBase::RealizePrintLayoutElement(
     if (parser.GetSucceeded())
     {
         // Attempt to get a pointer to the print layout element definition
-        std::auto_ptr<PrintLayoutElementDefinition> elementDef(parser.DetachPrintLayoutElementDefinition());
+        std::unique_ptr<PrintLayoutElementDefinition> elementDef(parser.DetachPrintLayoutElementDefinition());
         if (elementDef.get() != NULL)
         {
             STRING defType = elementDef->GetType();

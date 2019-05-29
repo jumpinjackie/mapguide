@@ -286,7 +286,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
     }
 
     // elevation settings - also invariant
-    std::auto_ptr<RS_ElevationSettings> spElevSettings;
+    std::unique_ptr<RS_ElevationSettings> spElevSettings;
     MdfModel::ElevationSettings* modelElevSettings = scaleRange->GetElevationSettings();
     if (modelElevSettings != NULL)
     {
@@ -330,7 +330,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
         if (!lb)
             continue;
 
-        std::auto_ptr<LineBuffer> spLB(lb);
+        std::unique_ptr<LineBuffer> spLB(lb);
 
         // tell line buffer the current drawing scale (used for arc tessellation)
         lb->SetDrawingScale(drawingScale);

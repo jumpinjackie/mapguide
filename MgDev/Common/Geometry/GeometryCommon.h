@@ -183,13 +183,6 @@
 // Represent NAN for double
 #define DoubleNan std::numeric_limits<double>::quiet_NaN()
 
-// Checks whether value is NAN or not
-#ifdef _WIN32
-#define IsDoubleNan(x)  _isnan(x)
-#else
-#define IsDoubleNan(x)  isnan(x)
-#endif
-
 #define GEOMETRY_SEP    " "
 #define POINT_SEPARATOR L", "
 

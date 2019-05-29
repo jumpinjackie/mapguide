@@ -111,7 +111,7 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
     case MgRenderingServiceOpId::RenderMetatile:
         switch (VERSION_NO_PHASE(operationVersion))
         {
-        case VERSION_SUPPORTED(3, 3):
+        case VERSION_SUPPORTED(4,0):
             handler.reset(new MgOpRenderMetatile());
             break;
         default:
@@ -122,7 +122,7 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
     case MgRenderingServiceOpId::RenderTileFromMetaTile:
         switch (VERSION_NO_PHASE(operationVersion))
         {
-        case VERSION_SUPPORTED(3, 3):
+        case VERSION_SUPPORTED(4,0):
             handler.reset(new MgOpRenderTileFromMetatile());
             break;
         default:
@@ -133,7 +133,7 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
     case MgRenderingServiceOpId::RenderTileUTFGrid:
         switch (VERSION_NO_PHASE(operationVersion))
         {
-        case VERSION_SUPPORTED(3, 3):
+        case VERSION_SUPPORTED(4,0):
             handler.reset(new MgOpRenderTileUTFGrid());
             break;
         default:
@@ -285,7 +285,7 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
     case MgRenderingServiceOpId::QueryFeatureProperties3:
         switch (VERSION_NO_PHASE(operationVersion))
         {
-        case VERSION_SUPPORTED(3, 3):
+        case VERSION_SUPPORTED(4,0):
             handler.reset(new MgOpQueryFeatureProperties());
             break;
         default:

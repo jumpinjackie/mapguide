@@ -454,7 +454,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
         return;
 
     LineBuffer* workbuffer = lb;
-    std::auto_ptr<LineBuffer> spLB;
+    std::unique_ptr<LineBuffer> spLB;
 
     if (s_bGeneralizeData)
     {
@@ -561,7 +561,7 @@ void AGGRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
         return;
 
     LineBuffer* workbuffer = lb;
-    std::auto_ptr<LineBuffer> spLB;
+    std::unique_ptr<LineBuffer> spLB;
 
     if (s_bGeneralizeData)
     {
@@ -967,7 +967,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                 // transform to coordinates of temporary image where we
                 // draw symbol before transfering to the map
                 LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, 8);
-                std::auto_ptr<LineBuffer> spLB(lb);
+                std::unique_ptr<LineBuffer> spLB(lb);
 
                 double tempx, tempy;
                 for (int i=0; i<npts; ++i)
@@ -1239,7 +1239,7 @@ LineBuffer* AGGRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, d
 
     // create the destination line buffer
     LineBuffer* destLB = LineBufferPool::NewLineBuffer(m_pPool, 8);
-    std::auto_ptr<LineBuffer> spDestLB(destLB);
+    std::unique_ptr<LineBuffer> spDestLB(destLB);
 
     // special code for Fenceline1 style
     int numCapSegs = 0;
@@ -1894,7 +1894,7 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
 void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 {
     LineBuffer* featGeom = ctx->geometry;
-    std::auto_ptr<LineBuffer> spLB;
+    std::unique_ptr<LineBuffer> spLB;
 
     if (s_bGeneralizeData)
     {
@@ -1927,7 +1927,7 @@ void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
     LineBuffer* featGeom = ctx->geometry;
-    std::auto_ptr<LineBuffer> spLB;
+    std::unique_ptr<LineBuffer> spLB;
 
     // can't apply an area style to point and linestring geometry types
     switch (featGeom->geom_type())
@@ -3064,7 +3064,7 @@ LineBuffer* AGGRenderer::ProcessW2DPoints(WT_File&          file,
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
 
     LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, numpts);
-    std::auto_ptr<LineBuffer> spLB(lb);
+    std::unique_ptr<LineBuffer> spLB(lb);
     lb->Reset();
 
     //

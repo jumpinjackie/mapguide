@@ -20,7 +20,7 @@
 #include "PolygonAdapter.h"
 #include "LineBuffer.h"
 #include "FeatureTypeStyleVisitor.h"
-
+#include <cmath>
 
 //////////////////////////////////////////////////////////////////////////////
 PolygonAdapter::PolygonAdapter(LineBufferPool* lbp) : GeometryAdapter(lbp)
@@ -134,7 +134,7 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
     //-------------------------------------------------------
 
     LineBuffer* lb = geometry;
-    std::auto_ptr<LineBuffer> spClipLB;
+    std::unique_ptr<LineBuffer> spClipLB;
 
     if (bClip)
     {
@@ -232,7 +232,7 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
         // multi should work for simple polygons too
         lb->Centroid(LineBuffer::ctArea, &cx, &cy, &dummy);
 
-        if (!_isnan(cx) && !_isnan(cy))
+        if (!std::isnan(cx) && !std::isnan(cy))
             AddLabel(cx, cy, 0.0, false, label, RS_OverpostType_AllFit, true, renderer, lb);
     }
 

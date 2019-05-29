@@ -107,8 +107,8 @@ bool MgGeosUtil::Contains(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g2(r.Read(wktGeom2));
 
     contains = g1->contains(g2.get());
 
@@ -131,8 +131,8 @@ bool MgGeosUtil::Intersects(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g2(r.Read(wktGeom2));
 
     intersects = g1->intersects(g2.get());
 
@@ -155,8 +155,8 @@ bool MgGeosUtil::Crosses(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g2(r.Read(wktGeom2));
 
     crosses = g1->crosses(g2.get());
 
@@ -179,8 +179,8 @@ bool MgGeosUtil::Disjoint(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g2(r.Read(wktGeom2));
 
     disjoint = g1->disjoint(g2.get());
 
@@ -203,8 +203,8 @@ bool MgGeosUtil::Equals(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g2(r.Read(wktGeom2));
 
     equals = g1->equals(g2.get());
 
@@ -227,8 +227,8 @@ bool MgGeosUtil::Overlaps(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g2(r.Read(wktGeom2));
 
     overlaps = g1->overlaps(g2.get());
 
@@ -251,8 +251,8 @@ bool MgGeosUtil::Touches(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g2(r.Read(wktGeom2));
 
     touches = g1->touches(g2.get());
 
@@ -275,8 +275,8 @@ bool MgGeosUtil::Within(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g2(r.Read(wktGeom2));
 
     within = g1->within(g2.get());
 
@@ -296,8 +296,8 @@ MgGeometry* MgGeosUtil::Boundary(MgGeometry* geom1)
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     STRING wktGeom1 = tGeom1->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g3(g1->getBoundary());
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g3(g1->getBoundary());
 
     WKTWriter writer;
     string bndWkt = writer.write(g3.get());
@@ -324,8 +324,8 @@ MgGeometry* MgGeosUtil::ConvexHull(MgGeometry* geom1)
     Ptr<MgGeometry> tGeom1 = MgSpatialUtility::TesselateCurve(geom1);
     STRING wktGeom1 = tGeom1->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g3(g1->convexHull());
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g3(g1->convexHull());
 
     WKTWriter writer;
     string convexHullWkt = writer.write(g3.get());
@@ -355,9 +355,9 @@ MgGeometry* MgGeosUtil::Difference(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
-    std::auto_ptr<Geometry> g3(g1->difference(g2.get()));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::unique_ptr<Geometry> g3(g1->difference(g2.get()));
 
     WKTWriter writer;
     string differenceWkt = writer.write(g3.get());
@@ -388,8 +388,8 @@ double MgGeosUtil::Distance(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g2(r.Read(wktGeom2));
 
     distance = g1->distance(g2.get());
 
@@ -412,9 +412,9 @@ MgGeometry* MgGeosUtil::Intersection(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
-    std::auto_ptr<Geometry> g3(g1->intersection(g2.get()));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::unique_ptr<Geometry> g3(g1->intersection(g2.get()));
 
     WKTWriter writer;
     string intersectionWkt = writer.write(g3.get());
@@ -444,9 +444,9 @@ MgGeometry* MgGeosUtil::SymetricDifference(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
-    std::auto_ptr<Geometry> g3(g1->symDifference(g2.get()));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::unique_ptr<Geometry> g3(g1->symDifference(g2.get()));
 
     WKTWriter writer;
     string symetricDifferenceWkt = writer.write(g3.get());
@@ -476,9 +476,9 @@ MgGeometry* MgGeosUtil::Union(MgGeometry* geom1, MgGeometry* geom2)
     STRING wktGeom1 = tGeom1->ToAwkt(true);
     STRING wktGeom2 = tGeom2->ToAwkt(true);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Geometry> g2(r.Read(wktGeom2));
-    std::auto_ptr<Geometry> g3(g1->Union(g2.get()));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g2(r.Read(wktGeom2));
+    std::unique_ptr<Geometry> g3(g1->Union(g2.get()));
 
     WKTWriter writer;
     string unionGeomWkt = writer.write(g3.get());
@@ -504,7 +504,7 @@ bool MgGeosUtil::IsValid(MgGeometricEntity* geom1)
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
     isValid = g1->isValid();
 
     MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.IsValid")
@@ -522,7 +522,7 @@ bool MgGeosUtil::IsSimple(MgGeometricEntity* geom1)
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
     isSimple = g1->isSimple();
 
     MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.IsSimple")
@@ -540,7 +540,7 @@ bool MgGeosUtil::IsEmpty(MgGeometricEntity* geom1)
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
     isEmpty = g1->isEmpty();
 
     MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.IsEmpty")
@@ -558,7 +558,7 @@ bool MgGeosUtil::IsClosed(MgGeometricEntity* geom1)
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
     //isClosed = g1->isClosed();
 
     MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.IsClosed")
@@ -576,7 +576,7 @@ double MgGeosUtil::Area(MgGeometricEntity* geom1)
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
     area = g1->getArea();
 
     MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Area")
@@ -594,7 +594,7 @@ double MgGeosUtil::Length(MgGeometricEntity* geom1)
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
     length = g1->getLength();
 
     MG_GEOMETRY_CATCH_AND_THROW(L"MgGeosUtil.Length")
@@ -612,8 +612,8 @@ MgPoint* MgGeosUtil::Centroid(MgGeometricEntity* geom1)
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Point> g2(g1->getCentroid());
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Point> g2(g1->getCentroid());
 
     double x = g2->getX();
     double y = g2->getY();
@@ -637,8 +637,8 @@ MgPoint*  MgGeosUtil::GetPointInRegion(MgGeometry* geom1)
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Point> g2(g1->getInteriorPoint());
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Point> g2(g1->getInteriorPoint());
 
     double x = g2->getX();
     double y = g2->getY();
@@ -662,8 +662,8 @@ MgPoint*  MgGeosUtil::GetPointInRing(MgGeometryComponent* geom1)
 
     STRING wktGeom1 = ToAwkt(geom1);
 
-    std::auto_ptr<Geometry> g1(r.Read(wktGeom1));
-    std::auto_ptr<Point> g2(g1->getInteriorPoint());
+    std::unique_ptr<Geometry> g1(r.Read(wktGeom1));
+    std::unique_ptr<Point> g2(g1->getInteriorPoint());
 
     double x = g2->getX();
     double y = g2->getY();

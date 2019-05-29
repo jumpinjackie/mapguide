@@ -162,7 +162,7 @@ PUBLISHED_API:
     /// \return
     /// A byte reader containing the rendered tile image.
     ///
-    /// \since 3.3
+    /// \since 4.0
     virtual MgByteReader* RenderTile(
         MgMap* map,
         CREFSTRING baseMapLayerGroupName,
@@ -282,6 +282,7 @@ PUBLISHED_API:
     /// \return
     /// A byte reader containing the rendered tile image.
     ///
+    /// \since 4.0
     virtual MgByteReader* RenderTileXYZ(
         MgMap* map,
         CREFSTRING baseMapLayerGroupName,
@@ -323,7 +324,7 @@ PUBLISHED_API:
     /// \return
     /// A byte reader containing the rendered tile image.
     ///
-    /// \since 3.3
+    /// \since 4.0
     virtual MgByteReader* RenderTileUTFGrid(
         MgMap* map,
         CREFSTRING baseMapLayerGroupName,
@@ -1106,6 +1107,7 @@ INTERNAL_API:
     /// An MgSelection instance identifying the features that meet the
     /// selection criteria. Returns null if no features are identified.
     ///
+    /// \since 4.0
     virtual MgBatchPropertyCollection* QueryFeatureProperties(
         MgMap* map,
         MgStringCollection* layerNames,
@@ -1169,7 +1171,7 @@ EXTERNAL_API:
     /// A meta-tile with sufficient information for the consumer to properly sub-divide this back into sub-tiles of the
     /// originally requested size.
     ///
-    /// \since 3.3
+    /// \since 4.0
     virtual MgMetatile* RenderMetatile(
         MgMap* map,
         CREFSTRING baseMapLayerGroupName,
@@ -1224,7 +1226,7 @@ EXTERNAL_API:
     /// A meta-tile with sufficient information for the consumer to properly sub-divide this back into sub-tiles of the
     /// originally requested size.
     ///
-    /// \since 3.3
+    /// \since 4.0
     virtual MgMetatile* RenderMetatileXYZ(
         MgMap* map,
         CREFSTRING baseMapLayerGroupName,
@@ -1260,7 +1262,7 @@ EXTERNAL_API:
     /// \return
     /// The requested sub-tile
     ///
-    /// \since 3.3
+    /// \since 4.0
     virtual MgByteReader* RenderTileFromMetaTile(MgMap* map, MgMetatile* metaTile, CREFSTRING rendererName, INT32 subTileX, INT32 subTileY) = 0;
 
 protected:

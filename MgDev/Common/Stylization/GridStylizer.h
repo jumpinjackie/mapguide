@@ -239,7 +239,7 @@ private:
     ReactorCollection                       m_reactors;
 
     // Status reporter
-    std::auto_ptr<GridApplyStatusReporter>  m_spReporter;
+    std::unique_ptr<GridApplyStatusReporter>  m_spReporter;
 
     // Prevent coping and assigning.
     GridStylizer(const GridStylizer &);

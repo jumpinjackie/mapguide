@@ -559,7 +559,7 @@ void DWFRenderer::StartFeature(RS_FeatureReader* feature,
 void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
 {
     LineBuffer* workbuffer = srclb->Optimize(m_drawingScale, m_pPool);
-    std::auto_ptr<LineBuffer> spLB(workbuffer);
+    std::unique_ptr<LineBuffer> spLB(workbuffer);
 
     if (workbuffer->point_count() == 0)
     {
@@ -714,7 +714,7 @@ void DWFRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
     }
 
     LineBuffer* workbuffer = srclb->Optimize(m_drawingScale, m_pPool);
-    std::auto_ptr<LineBuffer> spLB(workbuffer);
+    std::unique_ptr<LineBuffer> spLB(workbuffer);
 
     WritePolylines(workbuffer);
 
@@ -3458,7 +3458,7 @@ const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(WT_File&           file,
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
 
     LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, numpts);
-    std::auto_ptr<LineBuffer> spLB(lb);
+    std::unique_ptr<LineBuffer> spLB(lb);
     lb->Reset();
 
     //

@@ -140,7 +140,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             if (!lb)
                 continue;
 
-            std::auto_ptr<LineBuffer> spLB(lb);
+            std::unique_ptr<LineBuffer> spLB(lb);
 
             // tell line buffer the current drawing scale (used for arc tessellation)
             lb->SetDrawingScale(drawingScale);
@@ -275,7 +275,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     // the rendering is done.
     CompositeSymbolization symbols;
 
-    std::auto_ptr<SymbolInstance> instance(new SymbolInstance());
+    std::unique_ptr<SymbolInstance> instance(new SymbolInstance());
     instance->AdoptSymbolDefinition(watermark->GetContent());
     instance->SetUsageContext(SymbolInstance::ucPoint);
     symbols.GetSymbolCollection()->Adopt(instance.release());
@@ -462,7 +462,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
         //       pass.
         FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(se_renderer, NULL);
 
-        std::auto_ptr<LineBuffer> spLB;
+        std::unique_ptr<LineBuffer> spLB;
         size_t nPos = watermarkPosList.size();
         for (size_t posIx=0; posIx<nPos; posIx+=2)
         {
@@ -1071,7 +1071,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
     // prepare the geometry on which we will apply the styles
     LineBuffer* lb = geometry;
-    std::auto_ptr<LineBuffer> spClipLB;
+    std::unique_ptr<LineBuffer> spClipLB;
 
     if (bClip)
     {

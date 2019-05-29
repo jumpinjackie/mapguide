@@ -183,8 +183,8 @@ void MgMap::CreateFromMapDefinition(MgResourceService* resourceService, MgResour
     }
 
     // build the runtime map object from the parsed definition
-    std::auto_ptr<MdfModel::TileSetDefinition> tdef;
-    std::auto_ptr<MdfModel::MapDefinition> mdef(parser.DetachMapDefinition());
+    std::unique_ptr<MdfModel::TileSetDefinition> tdef;
+    std::unique_ptr<MdfModel::MapDefinition> mdef(parser.DetachMapDefinition());
     assert(mdef.get() != NULL);
 
     MgGeometryFactory gf;
@@ -619,7 +619,7 @@ void MgMap::CreateFromTileSet(MgResourceService* resourceService, MgResourceIden
     }
 
     // build the runtime map object from the parsed definition
-    std::auto_ptr<MdfModel::TileSetDefinition> tdef(parser.DetachTileSetDefinition());
+    std::unique_ptr<MdfModel::TileSetDefinition> tdef(parser.DetachTileSetDefinition());
     assert(tdef.get() != NULL);
 
     MgGeometryFactory gf;

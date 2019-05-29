@@ -87,10 +87,10 @@ public:
 
 private:
     // Theme information extracted from the rules.
-    std::auto_ptr<GridTheme>          m_spTheme;
+    std::unique_ptr<GridTheme>          m_spTheme;
 
     // Hash table generated from the theme info.
-    std::auto_ptr<GridThemeHashTable> m_spHashTable;
+    std::unique_ptr<GridThemeHashTable> m_spHashTable;
 
     // Then band to be themed.
     const Band *m_pThemeBand;

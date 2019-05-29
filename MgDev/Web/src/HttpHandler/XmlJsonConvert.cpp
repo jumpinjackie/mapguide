@@ -908,7 +908,7 @@ bool MgXmlJsonConvert::Initialize()
     s_elementPathTypeMap["/TileProviderList/TileProvider/ConnectionProperties/ConnectionProperty/@Required"] = XML_DATA_TYPE_BOOLEAN;
     s_elementPathTypeMap["/TileProviderList/TileProvider/ConnectionProperties/ConnectionProperty/@Protected"] = XML_DATA_TYPE_BOOLEAN;
     s_elementPathTypeMap["/TileProviderList/TileProvider/ConnectionProperties/ConnectionProperty/@Enumerable"] = XML_DATA_TYPE_BOOLEAN;
-    //FeatureSchemaCollection-3.3.0.xsd
+    //FeatureSchemaCollection-4.0.0.xsd
     s_elementPathTypeMap["/FeatureSchemaCollection/FeatureSchema/Classes/ClassDefinition/IsAbstract"] = XML_DATA_TYPE_BOOLEAN;
     s_elementPathTypeMap["/FeatureSchemaCollection/FeatureSchema/Classes/ClassDefinition/IsComputed"] = XML_DATA_TYPE_BOOLEAN;
     s_elementPathTypeMap["/FeatureSchemaCollection/FeatureSchema/Classes/ClassDefinition/Properties/Property/PropertyType"] = XML_DATA_TYPE_NUM_INT;
@@ -926,7 +926,7 @@ bool MgXmlJsonConvert::Initialize()
     s_elementPathTypeMap["/FeatureSchemaCollection/FeatureSchema/Classes/ClassDefinition/Properties/Property/HasMeasure"] = XML_DATA_TYPE_BOOLEAN;
     s_elementPathTypeMap["/FeatureSchemaCollection/FeatureSchema/Classes/ClassDefinition/Properties/Property/DefaultImageXSize"] = XML_DATA_TYPE_NUM_INT;
     s_elementPathTypeMap["/FeatureSchemaCollection/FeatureSchema/Classes/ClassDefinition/Properties/Property/DefaultImageYSize"] = XML_DATA_TYPE_NUM_INT;
-    //ClassDefinition-3.3.0.xsd
+    //ClassDefinition-4.0.0.xsd
     s_elementPathTypeMap["/ClassDefinition/IsAbstract"] = XML_DATA_TYPE_BOOLEAN;
     s_elementPathTypeMap["/ClassDefinition/IsComputed"] = XML_DATA_TYPE_BOOLEAN;
     s_elementPathTypeMap["/ClassDefinition/Properties/Property/PropertyType"] = XML_DATA_TYPE_NUM_INT;
@@ -944,9 +944,9 @@ bool MgXmlJsonConvert::Initialize()
     s_elementPathTypeMap["/ClassDefinition/Properties/Property/HasMeasure"] = XML_DATA_TYPE_BOOLEAN;
     s_elementPathTypeMap["/ClassDefinition/Properties/Property/DefaultImageXSize"] = XML_DATA_TYPE_NUM_INT;
     s_elementPathTypeMap["/ClassDefinition/Properties/Property/DefaultImageYSize"] = XML_DATA_TYPE_NUM_INT;
-    //UnitOfMeasure-3.3.0.xsd
+    //UnitOfMeasure-4.0.0.xsd
     s_elementPathTypeMap["/UnitOfMeasure/Value"] = XML_DATA_TYPE_NUM_DOUBLE;
-    //GeometryInfo-3.3.0.xsd
+    //GeometryInfo-4.0.0.xsd
     s_elementPathTypeMap["/GeometryInfo/Area"] = XML_DATA_TYPE_NUM_DOUBLE;
     s_elementPathTypeMap["/GeometryInfo/Dimension"] = XML_DATA_TYPE_NUM_INT;
     s_elementPathTypeMap["/GeometryInfo/Length"] = XML_DATA_TYPE_NUM_DOUBLE;
@@ -960,7 +960,7 @@ bool MgXmlJsonConvert::Initialize()
     s_elementPathTypeMap["/GeometryInfo/Envelope/UpperRight/Y"] = XML_DATA_TYPE_NUM_DOUBLE;
     s_elementPathTypeMap["/GeometryInfo/Centroid/X"] = XML_DATA_TYPE_NUM_DOUBLE;
     s_elementPathTypeMap["/GeometryInfo/Centroid/Y"] = XML_DATA_TYPE_NUM_DOUBLE;
-    //TransformedCoordinateCollection-3.3.0.xsd
+    //TransformedCoordinateCollection-4.0.0.xsd
     s_elementPathTypeMap["/TransformedCoordinateCollection/CoordinateSystem/EpsgCode"] = XML_DATA_TYPE_NUM_INT;
     s_elementPathTypeMap["/TransformedCoordinateCollection/TransformedCoordinate/X"] = XML_DATA_TYPE_NUM_DOUBLE;
     s_elementPathTypeMap["/TransformedCoordinateCollection/TransformedCoordinate/Y"] = XML_DATA_TYPE_NUM_DOUBLE;
@@ -1049,7 +1049,7 @@ bool MgXmlJsonConvert::Initialize()
     //BatchPropertyCollection-1.0.0.xsd
     s_multiElementPaths.insert("/BatchPropertyCollection/PropertyCollection");
     s_multiElementPaths.insert("/BatchPropertyCollection/PropertyCollection/Property");
-    //ClassDefinition-3.3.0.xsd
+    //ClassDefinition-4.0.0.xsd
     s_multiElementPaths.insert("/ClassDefinition/Properties/Property");
     s_multiElementPaths.insert("/ClassDefinition/Properties/Property/SpecificGeometryTypes/Type");
     //DataStoreList-1.0.0.xsd
@@ -1084,7 +1084,7 @@ bool MgXmlJsonConvert::Initialize()
     s_multiElementPaths.insert("/FeatureProviderRegistry/FeatureProvider");
     s_multiElementPaths.insert("/FeatureProviderRegistry/FeatureProvider/ConnectionProperties/ConnectionProperty");
     s_multiElementPaths.insert("/FeatureProviderRegistry/FeatureProvider/ConnectionProperties/ConnectionProperty/Value");
-    //FeatureSchemaCollection-3.3.0.xsd
+    //FeatureSchemaCollection-4.0.0.xsd
     s_multiElementPaths.insert("/FeatureSchemaCollection/FeatureSchema");
     s_multiElementPaths.insert("/FeatureSchemaCollection/FeatureSchema/Classes/ClassDefinition");
     s_multiElementPaths.insert("/FeatureSchemaCollection/FeatureSchema/Classes/ClassDefinition/Properties/Property");
@@ -1150,7 +1150,7 @@ bool MgXmlJsonConvert::Initialize()
     //UserList-1.0.0.xsd
     s_multiElementPaths.insert("/UserList/User");
     s_multiElementPaths.insert("/UserList/Group");
-    //TransformedCoordinateCollection-3.3.0.xsd
+    //TransformedCoordinateCollection-4.0.0.xsd
     s_multiElementPaths.insert("/TransformedCoordinateCollection/TransformedCoordinate");
     //Miscellaneous MapGuide response types that don't have a formal schema
     s_multiElementPaths.insert("/FeatureInformation/FeatureSet/Layer");

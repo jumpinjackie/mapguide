@@ -63,7 +63,7 @@ void MgHttpCsTransformCoordinates::Execute(MgHttpResponse& hResponse)
     Ptr<MgTransform> xform = factory->GetTransform(source, target);
     
     std::string xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-    xml += "<TransformedCoordinateCollection xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"TransformedCoordinateCollection-3.3.0.xsd\">";
+    xml += "<TransformedCoordinateCollection xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"TransformedCoordinateCollection-4.0.0.xsd\">";
 
     // Output information about the target coordinate system
 
@@ -146,7 +146,7 @@ void MgHttpCsTransformCoordinates::ValidateOperationVersion()
     MG_HTTP_HANDLER_TRY()
 
     INT32 version = m_userInfo->GetApiVersion();
-    if (version != MG_API_VERSION(3, 3, 0))
+    if (version != MG_API_VERSION(4, 0, 0))
     {
         throw new MgInvalidOperationVersionException(
             L"MgHttpCsTransformCoordinates.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);

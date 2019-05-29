@@ -33,8 +33,8 @@ MgGeometrySimplifier::MgGeometrySimplifier()
 MgGeometry* MgGeometrySimplifier::Simplify(MgGeometry* geom, double tolerance, INT32 algorithm)
 {
     Ptr<MgGeometry> simplified;
-    std::auto_ptr<Geometry> gInput;
-    std::auto_ptr<Geometry> gOutput;
+    std::unique_ptr<Geometry> gInput;
+    std::unique_ptr<Geometry> gOutput;
     MG_GEOMETRY_TRY()
 
     CHECKARGUMENTNULL(geom, L"MgGeometrySimplifier.Simplify");

@@ -17,7 +17,7 @@
 
 #include "stdafx.h"
 #include "SE_AreaPositioning.h"
-
+#include <cmath>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Initializes the area positioning class for iteration over the geometry.
@@ -57,7 +57,7 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
         geom->Centroid(LineBuffer::ctArea, &m_base_pt.x, &m_base_pt.y, &slope);
 
         // if we can't compute the centroid then just set the base point to the origin
-        if (_isnan(m_base_pt.x) || _isnan(m_base_pt.y))
+        if (std::isnan(m_base_pt.x) || std::isnan(m_base_pt.y))
         {
             m_base_pt.x = 0.0;
             m_base_pt.y = 0.0;

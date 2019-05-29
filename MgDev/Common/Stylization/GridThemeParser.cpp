@@ -57,7 +57,7 @@ GridTheme* GridThemeParser::ParseThemeColorRules(const MdfModel::RuleCollection 
     }
     for (++i; i < nCount; ++i)
     {
-        std::auto_ptr<GridTheme> pSingleTheme(ParseThemeColorRule(dynamic_cast<MdfModel::GridColorRule*>(pRules->GetAt(i))));
+        std::unique_ptr<GridTheme> pSingleTheme(ParseThemeColorRule(dynamic_cast<MdfModel::GridColorRule*>(pRules->GetAt(i))));
         if (pSingleTheme.get() == NULL)
         {
             // Wrong filter string, continue to next filter.

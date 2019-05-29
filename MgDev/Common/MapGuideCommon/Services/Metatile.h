@@ -24,7 +24,7 @@
 /// Defines a raw image frame buffer from the result of a meta-tile
 /// rendering operation
 ///
-/// \since 3.3
+/// \since 4.0
 class MG_MAPGUIDE_API MgMetatile : public MgSerializable
 {
     MG_DECL_DYNCREATE()

@@ -120,7 +120,7 @@ void MgHttpDescribeRuntimeMap::ValidateOperationVersion()
     INT32 version = m_userInfo->GetApiVersion();
     if (version != MG_API_VERSION(2,6,0) &&
         version != MG_API_VERSION(3,0,0) &&
-        version != MG_API_VERSION(3,3,0))
+        version != MG_API_VERSION(4,0,0))
     {
         throw new MgInvalidOperationVersionException(
         L"MgHttpDescribeRuntimeMap.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);

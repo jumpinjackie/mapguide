@@ -38,8 +38,8 @@ MgHttpGetClassDefinition::MgHttpGetClassDefinition(MgHttpRequest *hRequest)
     m_resId = params->GetParameterValue(MgHttpResourceStrings::reqFeatResourceId);
 
     m_bSimple = false;
-    // Get simple flag (SIMPLE). Only recognize this flag for 3.3.0 and above
-    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(3, 3, 0))
+    // Get simple flag (SIMPLE). Only recognize this flag for 4.0.0 and above
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(4, 0, 0))
     {
         STRING simple = params->GetParameterValue(MgHttpResourceStrings::reqFeatSimple);
         if (simple.length() > 0)

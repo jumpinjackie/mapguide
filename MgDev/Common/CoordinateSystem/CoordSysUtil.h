@@ -47,13 +47,6 @@ const double ZERO_VALUE = 1e-12; //-- value smaller than this is considered zero
 // Represent NAN for double
 #define DoubleNan std::numeric_limits<double>::quiet_NaN()
 
-// Checks whether value is NAN or not
-#ifdef _WIN32
-#define IsDoubleNan(x)  _isnan(x)
-#else
-#define IsDoubleNan(x)  isnan(x)
-#endif
-
 #ifndef _WIN32
 #define wmemcpy memcpy
 #endif

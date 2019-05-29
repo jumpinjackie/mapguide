@@ -23,7 +23,7 @@
 #include "RS_FontEngine.h"
 #include "RS_FeatureReader.h"
 #include "SE_SymbolDefProxies.h"
-
+#include <cmath>
 
 // Recomputes the bounds of an SE_RenderStyle that contains a text
 // whose alignment we have messed with.
@@ -141,7 +141,7 @@ void SE_PositioningAlgorithms::Default(SE_ApplyContext* applyCtx,
     }
 
     // don't add a label if we can't compute the centroid
-    if (_isnan(cx) || _isnan(cy))
+    if (std::isnan(cx) || std::isnan(cy))
         return;
 
     // need to convert centroid to screen units
@@ -206,7 +206,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     geometry->Centroid(LineBuffer::ctPoint, &cx, &cy, NULL);
 
     // don't add a label if we can't compute the centroid
-    if (_isnan(cx) || _isnan(cy))
+    if (std::isnan(cx) || std::isnan(cy))
         return;
 
     se_renderer->WorldToScreenPoint(cx, cy, cx, cy);

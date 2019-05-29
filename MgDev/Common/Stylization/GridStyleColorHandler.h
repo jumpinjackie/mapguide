@@ -138,7 +138,7 @@ private:
 
 private:
     // Handler for the GridColor
-    std::auto_ptr<GridColorHandler> m_spColorHandler;
+    std::unique_ptr<GridColorHandler> m_spColorHandler;
 
     // Sun vector
     Vector3D m_sun;
@@ -158,7 +158,7 @@ private:
     // Whether to apply hillshade.
     bool m_bDoHillShade;
     bool m_bCalcHillShade; // Calculate hillshade for later usage.
-    std::auto_ptr<Band>     m_spCacheHillShade;
+    std::unique_ptr<Band>     m_spCacheHillShade;
     const MdfModel::HillShade *m_pCalcMdfHillShade;
 
     // NoHillShade color band, means that color band

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
-  <xs:include schemaLocation="ClassDefinition-3.3.0.xsd"/>
+  <xs:include schemaLocation="ClassDefinition-4.0.0.xsd"/>
   <xs:element name="FeatureSchemaCollection" type="FeatureSchemaCollection">
     <xs:annotation>
       <xs:documentation>A FDO Feature Schema Definition.</xs:documentation>

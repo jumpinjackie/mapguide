@@ -17,6 +17,7 @@
 
 #include "Foundation.h"
 #include "MathUtility.h"
+#include <cmath>
 
 using namespace std;
 
@@ -35,11 +36,7 @@ double MgMathUtility::GetQuietNan()
 
 bool MgMathUtility::IsNan(double n)
 {
-#ifdef _WIN32
-    return _isnan(n);
-#else
-    return isnan(n);
-#endif
+    return std::isnan(n);
 }
 
 

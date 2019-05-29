@@ -37,7 +37,6 @@
 typedef unsigned long DWORD;
 #define _wcsnicmp wcsncasecmp
 #define _wcsicmp wcscasecmp
-#define _isnan isnan
 #define _finite finite
 
 #endif //_WIN32

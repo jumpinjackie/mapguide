@@ -590,7 +590,7 @@ MgIntCollection* MgLayer::GetGeometryTypeStyles(double scale)
     MG_TRY()
 
     Ptr<MgResourceService> resSvc = dynamic_cast<MgResourceService*>(GetMap()->GetService(MgServiceType::ResourceService));
-    std::auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resSvc, m_definition));
+    std::unique_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resSvc, m_definition));
     if (ldf.get() != NULL)
     {
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
@@ -651,7 +651,7 @@ INT32 MgLayer::GetThemeCategoryCount(double scale, INT32 geomType)
     INT32 ret = -1;
 
     Ptr<MgResourceService> resSvc = dynamic_cast<MgResourceService*>(GetMap()->GetService(MgServiceType::ResourceService));
-    std::auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resSvc, m_definition));
+    std::unique_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resSvc, m_definition));
     if (ldf.get() != NULL)
     {
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
@@ -713,7 +713,7 @@ INT32 MgLayer::GetCompositeThemeCategoryCount(double scale, INT32 compositeOffse
     INT32 ret = -1;
 
     Ptr<MgResourceService> resSvc = dynamic_cast<MgResourceService*>(GetMap()->GetService(MgServiceType::ResourceService));
-    std::auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resSvc, m_definition));
+    std::unique_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resSvc, m_definition));
     if (ldf.get() != NULL)
     {
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());

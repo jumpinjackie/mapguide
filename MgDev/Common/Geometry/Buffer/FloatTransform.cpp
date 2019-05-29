@@ -55,7 +55,7 @@ FloatTransform::FloatTransform(MgEnvelope* doubleExtents)
     if ( doubleExtent.Height() != 0.0)
         aspect = doubleExtent.Width() / doubleExtent.Height();
 
-    if ( IsDoubleNan( aspect ) )
+    if ( std::isnan( aspect ) )
         aspect = 1.0;
 
     if (aspect >= 1.0)

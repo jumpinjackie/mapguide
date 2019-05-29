@@ -480,7 +480,7 @@ WT_Result gdr_process_filledEllipse(WT_Filled_Ellipse & filledEllipse, WT_File &
 
             // use a line buffer to tessellate the arc
             LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetBufferPool(), 20);
-            std::auto_ptr<LineBuffer> spEllLB(ell);
+            std::unique_ptr<LineBuffer> spEllLB(ell);
 
             ell->SetDrawingScale(1.0);
             ell->MoveTo(startX, startY);
@@ -614,7 +614,7 @@ WT_Result gdr_process_outlineEllipse(WT_Outline_Ellipse & outlineEllipse, WT_Fil
 
             // use a line buffer to tessellate the arc
             LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetBufferPool(), 20);
-            std::auto_ptr<LineBuffer> spEllLB(ell);
+            std::unique_ptr<LineBuffer> spEllLB(ell);
 
             ell->SetDrawingScale(1.0);
             ell->MoveTo(startX, startY);

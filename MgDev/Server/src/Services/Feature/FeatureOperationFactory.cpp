@@ -161,7 +161,7 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
         case VERSION_SUPPORTED(2,0):
-        case VERSION_SUPPORTED(3,3): //This is 2.0 with optional clean JSON output
+        case VERSION_SUPPORTED(4,0): //This is 2.0 with optional clean JSON output
             handler.reset(new MgOpGetCapabilities());
             break;
         default:
@@ -583,7 +583,7 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
     case MgFeatureServiceOpId::GetWfsReader_Id:
         switch (VERSION_NO_PHASE(operationVersion))
         {
-        case VERSION_SUPPORTED(3, 3):
+        case VERSION_SUPPORTED(4,0):
             handler.reset(new MgOpGetWfsReader());
             break;
         default:

@@ -443,7 +443,7 @@ void MgPrintLayoutElementBase::PopulateFromResource(CREFSTRING elementXml)
     }
 
     // Populate the data.
-    std::auto_ptr<MdfModel::PrintLayoutElementDefinition> elementDef(parser.DetachPrintLayoutElementDefinition());
+    std::unique_ptr<MdfModel::PrintLayoutElementDefinition> elementDef(parser.DetachPrintLayoutElementDefinition());
     PopulateFromResource(elementDef.get());
 }
 

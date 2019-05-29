@@ -374,7 +374,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 
     // transform the feature geometry to rendering space
     LineBuffer* xfgeom = LineBufferPool::NewLineBuffer(m_pPool, featGeom->point_count());
-    std::auto_ptr<LineBuffer> spLB(xfgeom);
+    std::unique_ptr<LineBuffer> spLB(xfgeom);
     *xfgeom = *featGeom;
 
     int size = featGeom->point_count();
@@ -484,7 +484,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             {
                 // if the raster symbol is selected, then draw the mask selection polygon only
                 LineBuffer *lb = LineBufferPool::NewLineBuffer(m_pPool, 5);
-                std::auto_ptr<LineBuffer> spLB(lb);
+                std::unique_ptr<LineBuffer> spLB(lb);
 
                 lb->MoveTo(rp->bounds[3].x, rp->bounds[3].y);
                 for (int i = 0; i < 4; ++i)

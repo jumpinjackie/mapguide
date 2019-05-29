@@ -1258,7 +1258,7 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
             else if (format == L"JPG")  // MgImageFormats::Jpeg
                 data = (unsigned char*)gdImageJpegPtr(gdimg24, &size, 75);
 
-            std::auto_ptr<RS_ByteData> byteData;
+            std::unique_ptr<RS_ByteData> byteData;
             byteData.reset((NULL == data)? NULL : new RS_ByteData(data, size));
 
             gdFree(data);

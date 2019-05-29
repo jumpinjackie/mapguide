@@ -255,7 +255,7 @@ void MgPrintLayoutBase::PopulateFromResource(
     }
 
     // Populate the data.
-    std::auto_ptr<MdfModel::PrintLayoutDefinition> layoutDef(parser.DetachPrintLayoutDefinition());
+    std::unique_ptr<MdfModel::PrintLayoutDefinition> layoutDef(parser.DetachPrintLayoutDefinition());
     PopulateFromResource(printLayoutService, resourceService, layoutDef.get());
 }
 

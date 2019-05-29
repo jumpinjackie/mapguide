@@ -445,7 +445,7 @@ void GDRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
         return;
 
     LineBuffer* workbuffer = lb;
-    std::auto_ptr<LineBuffer> spLB;
+    std::unique_ptr<LineBuffer> spLB;
 
     if (s_bGeneralizeData)
     {
@@ -506,7 +506,7 @@ void GDRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
         return;
 
     LineBuffer* workbuffer = lb;
-    std::auto_ptr<LineBuffer> spLB;
+    std::unique_ptr<LineBuffer> spLB;
 
     if (s_bGeneralizeData)
     {
@@ -1340,7 +1340,7 @@ LineBuffer* GDRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, do
 
     // create the destination line buffer
     LineBuffer* destLB = LineBufferPool::NewLineBuffer(m_pPool, 8);
-    std::auto_ptr<LineBuffer> spDestLB(destLB);
+    std::unique_ptr<LineBuffer> spDestLB(destLB);
 
     // special code for Fenceline1 style
     int numCapSegs = 0;
@@ -1717,7 +1717,7 @@ const RS_Font* GDRenderer::FindFont(RS_FontDef& def)
 void GDRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 {
     LineBuffer* featGeom = ctx->geometry;
-    std::auto_ptr<LineBuffer> spLB;
+    std::unique_ptr<LineBuffer> spLB;
 
     if (s_bGeneralizeData)
     {
@@ -1749,7 +1749,7 @@ void GDRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 void GDRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
     LineBuffer* featGeom = ctx->geometry;
-    std::auto_ptr<LineBuffer> spLB;
+    std::unique_ptr<LineBuffer> spLB;
 
     // can't apply an area style to point and linestring geometry types
     switch (featGeom->geom_type())
@@ -2082,7 +2082,7 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
 
     LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, numpts);
-    std::auto_ptr<LineBuffer> spLB(lb);
+    std::unique_ptr<LineBuffer> spLB(lb);
     lb->Reset();
 
     //

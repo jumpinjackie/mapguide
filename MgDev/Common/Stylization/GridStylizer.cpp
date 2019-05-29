@@ -66,18 +66,18 @@ bool GridStylizer::ApplyStyles(
     if (NULL != pColorStyle)
     {
         // Add handler to deal with color style.
-        std::auto_ptr<GridStyleColorHandler> spHandler(new GridStyleColorHandler(fOpacity));
+        std::unique_ptr<GridStyleColorHandler> spHandler(new GridStyleColorHandler(fOpacity));
         if (spHandler->Initialize(pGrid, pColorStyle))
             styleHandlers.Adopt(spHandler.release());
     }
     if (NULL != pSurfaceStyle)
     {
         // Add handler to deal with surface style
-        std::auto_ptr<GridStyleSurfaceHandler> spHandler(new GridStyleSurfaceHandler());
+        std::unique_ptr<GridStyleSurfaceHandler> spHandler(new GridStyleSurfaceHandler());
         if (spHandler->Initialize(pGrid, pSurfaceStyle))
             styleHandlers.Adopt(spHandler.release());
         // Add handler to deal with the color on null pixels.
-        std::auto_ptr<GridStyleSurfaceColorHandler> spSurfaceColorHandler(new GridStyleSurfaceColorHandler());
+        std::unique_ptr<GridStyleSurfaceColorHandler> spSurfaceColorHandler(new GridStyleSurfaceColorHandler());
         if (spSurfaceColorHandler->Initialize(pGrid, pSurfaceStyle->GetDefaultColor()))
             styleHandlers.Adopt(spSurfaceColorHandler.release());
     }
@@ -101,11 +101,11 @@ bool GridStylizer::ApplyColorStyle(
     // default color.
     MdfModel::MdfOwnerCollection<GridStyleHandler> styleHandlers;
     // Add handler to deal with the color style.
-    std::auto_ptr<GridStyleColorHandler> spHandler(new GridStyleColorHandler());
+    std::unique_ptr<GridStyleColorHandler> spHandler(new GridStyleColorHandler());
     if (spHandler->Initialize(pGrid, pStyle))
         styleHandlers.Adopt(spHandler.release());
     // Add handler to deal with the color on null pixels.
-    std::auto_ptr<GridStyleSurfaceColorHandler> spSurfaceColorHandler(new GridStyleSurfaceColorHandler());
+    std::unique_ptr<GridStyleSurfaceColorHandler> spSurfaceColorHandler(new GridStyleSurfaceColorHandler());
     if (spSurfaceColorHandler->Initialize(pGrid, sDefaultColor))
         styleHandlers.Adopt(spSurfaceColorHandler.release());
     return VisitStyleHandlers(styleHandlers, pGrid->GetXCount(), pGrid->GetYCount());
@@ -120,11 +120,11 @@ bool GridStylizer::ApplySurfaceStyle(
     // default color.
     MdfModel::MdfOwnerCollection<GridStyleHandler> styleHandlers;
     // Add handler to deal with surface style
-    std::auto_ptr<GridStyleSurfaceHandler> spHandler(new GridStyleSurfaceHandler());
+    std::unique_ptr<GridStyleSurfaceHandler> spHandler(new GridStyleSurfaceHandler());
     if (spHandler->Initialize(pGrid, pStyle))
         styleHandlers.Adopt(spHandler.release());
     // Add handler to deal with the color on null pixels.
-    std::auto_ptr<GridStyleSurfaceColorHandler> spSurfaceColorHandler(new GridStyleSurfaceColorHandler());
+    std::unique_ptr<GridStyleSurfaceColorHandler> spSurfaceColorHandler(new GridStyleSurfaceColorHandler());
     if (spSurfaceColorHandler->Initialize(pGrid, pStyle->GetDefaultColor()))
         styleHandlers.Adopt(spSurfaceColorHandler.release());
     return VisitStyleHandlers(styleHandlers, pGrid->GetXCount(), pGrid->GetYCount());
@@ -147,7 +147,7 @@ bool GridStylizer::ApplyHillShade(Band* pColorBand, const MdfModel::HillShade* p
     {
         // Not cached, then we generate one
         assert(false);
-        std::auto_ptr<Band> spNewHSBand(new Band(Band::Double32, pGrid));
+        std::unique_ptr<Band> spNewHSBand(new Band(Band::Double32, pGrid));
         Band* pHillShadeBand = pGrid->GetBand(pHS->GetBand());
         if (NULL == pHillShadeBand)
             return false;

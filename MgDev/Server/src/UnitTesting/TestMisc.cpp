@@ -598,8 +598,8 @@ void TestMisc::TestCase_ApiVersionCheck()
     try
     {
         //Just making sure this macro behaves as we expect
-        CPPUNIT_ASSERT_MESSAGE("Expected 3.4.0 >= 3.3.0", MG_API_VERSION(3, 4, 0) >= MG_API_VERSION(3, 3, 0));
-        CPPUNIT_ASSERT_MESSAGE("Expected 3.3.0 >= 3.3.0", MG_API_VERSION(3, 3, 0) >= MG_API_VERSION(3, 3, 0));
+        CPPUNIT_ASSERT_MESSAGE("Expected 4.1.0 >= 4.0.0", MG_API_VERSION(4, 1, 0) >= MG_API_VERSION(4, 0, 0));
+        CPPUNIT_ASSERT_MESSAGE("Expected 4.0.0 >= 4.0.0", MG_API_VERSION(4, 0, 0) >= MG_API_VERSION(4, 0, 0));
     }
     catch (MgException* e)
     {

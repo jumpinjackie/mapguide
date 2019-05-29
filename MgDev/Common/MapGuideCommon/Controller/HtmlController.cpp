@@ -486,7 +486,7 @@ void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourc
             Ptr<MgStringCollection> propNames = new MgStringCollection();
             DisplayNameMap displayNameMap;
             //We need the property mappings of the source layer definition to compile our layer metadata
-            std::auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resourceService, layerId));
+            std::unique_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resourceService, layerId));
             if (ldf.get() != NULL)
             {
                 MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());

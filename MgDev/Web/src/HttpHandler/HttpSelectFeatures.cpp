@@ -55,8 +55,8 @@ MgHttpSelectFeatures::MgHttpSelectFeatures(MgHttpRequest *hRequest)
             m_bEnablePrecision = true;
         }
     }
-    // Get transform flag (TRANSFORMTO). Only recognize this flag for 3.3.0 and above
-    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(3, 3, 0))
+    // Get transform flag (TRANSFORMTO). Only recognize this flag for 4.0.0 and above
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(4, 0, 0))
     {
         m_transformTo = params->GetParameterValue(MgHttpResourceStrings::reqGeoTransformTo);
     }

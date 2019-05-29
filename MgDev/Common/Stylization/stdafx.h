@@ -33,6 +33,4 @@
 #define _wcsicmp  wcscasecmp
 #define _wcsnicmp wcsncasecmp
 
-#define _isnan    isnan
-
 #endif

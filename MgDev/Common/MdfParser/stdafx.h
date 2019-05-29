@@ -18,6 +18,8 @@
 #ifndef _STDAFX_H
 #define _STDAFX_H
 
+#include <memory>
+
 #ifdef _WIN32
 
 // Exclude rarely-used stuff from Windows headers.
@@ -36,8 +38,6 @@
 #define _ASSERT(x)
 #define _wcsnicmp wcsncasecmp
 #define _wcsicmp wcscasecmp
-
-#include <memory>
 
 #endif //_WIN32
 

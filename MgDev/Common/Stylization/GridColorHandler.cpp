@@ -52,7 +52,7 @@ GridColorHandler* GridColorHandler::Create(const MdfModel::RuleCollection *pRule
 
 GridColorBandHandler* GridColorHandler::CreateBandHandler(const MdfModel::RuleCollection *pRules, const GridData *pGrid)
 {
-    std::auto_ptr<GridColorBandHandler> spHandler(new GridColorBandHandler());
+    std::unique_ptr<GridColorBandHandler> spHandler(new GridColorBandHandler());
     if (!spHandler->Initialize(pRules, pGrid))
         spHandler.reset();
     return spHandler.release();
@@ -60,7 +60,7 @@ GridColorBandHandler* GridColorHandler::CreateBandHandler(const MdfModel::RuleCo
 
 GridColorBandsHandler* GridColorHandler::CreateBandsHandler(const MdfModel::RuleCollection *pRules, const GridData *pGrid)
 {
-    std::auto_ptr<GridColorBandsHandler> spHandler(new GridColorBandsHandler());
+    std::unique_ptr<GridColorBandsHandler> spHandler(new GridColorBandsHandler());
     if (!spHandler->Initialize(pRules, pGrid))
         spHandler.reset();
     return spHandler.release();
@@ -68,7 +68,7 @@ GridColorBandsHandler* GridColorHandler::CreateBandsHandler(const MdfModel::Rule
 
 GridColorThemeHandler* GridColorHandler::CreateThemeHandler(const MdfModel::RuleCollection *pRules, const GridData *pGrid)
 {
-    std::auto_ptr<GridColorThemeHandler> spHandler(new GridColorThemeHandler());
+    std::unique_ptr<GridColorThemeHandler> spHandler(new GridColorThemeHandler());
     if (!spHandler->Initialize(pRules, pGrid))
         spHandler.reset();
     return spHandler.release();
@@ -76,7 +76,7 @@ GridColorThemeHandler* GridColorHandler::CreateThemeHandler(const MdfModel::Rule
 
 GridColorNullHandler* GridColorHandler::CreateNullHandler(const MdfModel::RuleCollection *pRules, const GridData *pGrid)
 {
-    std::auto_ptr<GridColorNullHandler> spHandler(new GridColorNullHandler);
+    std::unique_ptr<GridColorNullHandler> spHandler(new GridColorNullHandler);
     if (!spHandler->Initialize(pRules, pGrid))
         spHandler.reset();
     return spHandler.release();

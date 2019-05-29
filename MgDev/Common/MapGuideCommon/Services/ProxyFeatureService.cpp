@@ -1486,7 +1486,7 @@ MgFeatureReader* MgProxyFeatureService::GetWfsReader(MgResourceIdentifier* featu
                        MgFeatureServiceOpId::GetWfsReader_Id,       // Command Code
                        6,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       BUILD_VERSION(3,3,0),                        // Operation version
+                       BUILD_VERSION(4,0,0),                        // Operation version
                        MgCommand::knObject, featureSourceId,        // Argument#1
                        MgCommand::knString, &featureClass,          // Argument#2
                        MgCommand::knObject, requiredProperties,     // Argument#3

@@ -1347,7 +1347,7 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
     // don't set any offset for new linebuffer, because it is already applied,
     // and MoveTo and LineTo would apply it again. Instead, set at end
     LineBuffer* ret = LineBufferPool::NewLineBuffer(lbp, m_cur_types, m_dimensionality, m_bIgnoreZ);
-    std::auto_ptr<LineBuffer> spLB(ret);
+    std::unique_ptr<LineBuffer> spLB(ret);
     ret->SetGeometryType(geom_type());
 
     // optimization
@@ -1467,7 +1467,7 @@ LineBuffer* LineBuffer::Clip(RS_Bounds& b, GeomOperationType clipType, LineBuffe
         || m_bounds.maxy < b.miny)
         return NULL;
 
-    std::auto_ptr<LineBuffer> spLB(LineBufferPool::NewLineBuffer(lbp, m_cur_types, m_dimensionality, m_bIgnoreZ));
+    std::unique_ptr<LineBuffer> spLB(LineBufferPool::NewLineBuffer(lbp, m_cur_types, m_dimensionality, m_bIgnoreZ));
 
     if (clipType == ctArea)
     {

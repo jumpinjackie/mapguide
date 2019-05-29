@@ -19,7 +19,6 @@
 #define MgMathUtility_H
 
 #include <limits>       // For quiet_NaN()
-#include <float.h>      // For _isnan()
 #ifdef _WIN32
 // For M_PI in math.h on Windows (doesn't seem to work though).
 #define _USE_MATH_DEFINES

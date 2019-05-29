@@ -689,29 +689,12 @@ void MgFeatureNumericFunctions::GetQuantileCategories(  VECTOR &values, int numC
 
 bool MgFeatureNumericFunctions::IsInf(double x)
 {
-    bool isInfinity = false;
-#ifdef _WIN32
-    int code = _fpclass(x);
-    if ((code == _FPCLASS_NINF) || (code == _FPCLASS_PINF))
-    {
-        isInfinity = true;
-    }
-#else
-    isInfinity = isinf(x);
-#endif
-
-    return isInfinity;
+    return std::isinf(x);
 }
 
 bool MgFeatureNumericFunctions::IsNan(double x)
 {
-    bool isNan = false;
-#ifdef _WIN32
-    isNan = _isnan(x);
-#else
-    isNan = isnan(x);
-#endif
-    return isNan;
+    return std::isnan(x);
 }
 
 // Calculate Standard Deviation for the values

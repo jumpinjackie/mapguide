@@ -20,7 +20,7 @@
 #include "PointAdapter.h"
 #include "LineBuffer.h"
 #include "FeatureTypeStyleVisitor.h"
-
+#include <cmath>
 
 //////////////////////////////////////////////////////////////////////////////
 PointAdapter::PointAdapter(LineBufferPool* lbp) : GeometryAdapter(lbp)
@@ -99,7 +99,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     //       of the FDO query.
 
     LineBuffer* lb = geometry;
-    std::auto_ptr<LineBuffer> spClipLB;
+    std::unique_ptr<LineBuffer> spClipLB;
 
     if (renderer->RequiresClipping())
     {
@@ -207,7 +207,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
         // multi should work for simple polygons also
         lb->Centroid(LineBuffer::ctPoint, &cx, &cy, &dummy);
 
-        if (!_isnan(cx) && !_isnan(cy))
+        if (!std::isnan(cx) && !std::isnan(cy))
         {
             // if there was no point symbol, the label is the symbol,
             // so we send without overposting and at the center point

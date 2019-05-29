@@ -77,7 +77,7 @@ MgGeometry* MgBuffer::CreateBuffer(MgGeometry* geometry, double offset, MgMeasur
 MgGeometryCollection* MgBuffer::CreateBuffer(MgGeometryCollection* geometries, double offset, bool merge)
 {
     //  check parameters
-    if ( geometries == NULL || IsDoubleNan( offset ) || fabs(offset) > DoubleMaxValue )
+    if ( geometries == NULL || std::isnan( offset ) || fabs(offset) > DoubleMaxValue )
         return NULL;
 
     Ptr<MgGeometryCollection> geomCol;

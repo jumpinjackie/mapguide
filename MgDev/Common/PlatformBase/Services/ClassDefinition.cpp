@@ -249,7 +249,7 @@ void MgClassDefinition::ToSimpleXml(string & str, bool includeProlog)
     if (includeProlog) 
     {
         xml = L"<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-        xml.append(L"<ClassDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"ClassDefinition-3.3.0.xsd\">");
+        xml.append(L"<ClassDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"ClassDefinition-4.0.0.xsd\">");
     }
     else 
     {

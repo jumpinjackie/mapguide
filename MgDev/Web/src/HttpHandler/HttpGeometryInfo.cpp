@@ -65,7 +65,7 @@ void MgHttpGeometryInfo::Execute(MgHttpResponse & hResponse)
 
     std::string mbXml;
     mbXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-    mbXml += "<GeometryInfo xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"GeometryInfo-3.3.0.xsd\">";
+    mbXml += "<GeometryInfo xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"GeometryInfo-4.0.0.xsd\">";
     mbXml += "<Area>";
     std::string sArea;
     MgUtil::DoubleToString(area, sArea);
@@ -151,7 +151,7 @@ void MgHttpGeometryInfo::ValidateOperationVersion()
 
     // There are multiple supported versions
     INT32 version = m_userInfo->GetApiVersion();
-    if (version != MG_API_VERSION(3, 3, 0))
+    if (version != MG_API_VERSION(4, 0, 0))
     {
         throw new MgInvalidOperationVersionException(
             L"MgHttpGeometryInfo.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);

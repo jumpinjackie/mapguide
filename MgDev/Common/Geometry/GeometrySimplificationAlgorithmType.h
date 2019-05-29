@@ -28,6 +28,7 @@
 /// the various simplification algorithms available for simplifying
 /// geometry instances
 ///
+/// \since 4.0
 class MgGeometrySimplificationAlgorithmType
 {
 PUBLISHED_API:

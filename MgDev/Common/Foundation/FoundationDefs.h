@@ -39,7 +39,6 @@
     #define _stricmp  strcasecmp
     #define _strnicmp strncasecmp
 
-    #define _isnan    isnan
     #define _finite   finite
 #endif
 

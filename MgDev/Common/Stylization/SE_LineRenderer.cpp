@@ -861,7 +861,7 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
                                     // use symbol bounds to quickly check whether we need to clip
                                     // TODO: use the primitive's bounds and not the symbol bounds
                                     LineBuffer* geomToDraw = &geom;
-                                    std::auto_ptr<LineBuffer> spLB;
+                                    std::unique_ptr<LineBuffer> spLB;
                                     if (sym_minx < startpos || sym_maxx > endpos)
                                     {
                                         // check if symbol is completely outside clip region
@@ -895,7 +895,7 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
                                     // use symbol bounds to quickly check whether we need to clip
                                     // TODO: use the primitive's bounds and not the symbol bounds
                                     LineBuffer* geomToDraw = &geom;
-                                    std::auto_ptr<LineBuffer> spLB;
+                                    std::unique_ptr<LineBuffer> spLB;
                                     if (sym_minx < startpos || sym_maxx > endpos)
                                     {
                                         // check if symbol is completely outside clip region
@@ -1644,7 +1644,7 @@ LineBuffer* SE_Renderer::ClipPolyline(LineBufferPool* lbp, LineBuffer& geometry,
         return NULL;
 
     LineBuffer* ret = LineBufferPool::NewLineBuffer(lbp, geometry.point_count(), FdoDimensionality_XY, true);
-    std::auto_ptr<LineBuffer> spRetLB(ret);
+    std::unique_ptr<LineBuffer> spRetLB(ret);
     ret->SetGeometryType(geometry.geom_type());
 
     // expand clip region a little so that we don't throw
@@ -1714,7 +1714,7 @@ LineBuffer* SE_Renderer::ClipPolygon(LineBufferPool* lbp, LineBuffer& geometry, 
         return NULL;
 
     LineBuffer* ret = LineBufferPool::NewLineBuffer(lbp, geometry.point_count(), FdoDimensionality_XY, true);
-    std::auto_ptr<LineBuffer> spRetLB(ret);
+    std::unique_ptr<LineBuffer> spRetLB(ret);
     ret->SetGeometryType(geometry.geom_type());
 
     // expand clip region a little so that we don't throw

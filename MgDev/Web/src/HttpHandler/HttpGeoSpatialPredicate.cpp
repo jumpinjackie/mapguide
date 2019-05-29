@@ -83,7 +83,7 @@ void MgHttpGeoSpatialPredicate::ValidateOperationVersion()
 
     // There are multiple supported versions
     INT32 version = m_userInfo->GetApiVersion();
-    if (version != MG_API_VERSION(3, 3, 0))
+    if (version != MG_API_VERSION(4, 0, 0))
     {
         throw new MgInvalidOperationVersionException(
             L"MgHttpGeoSpatialPredicate.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);

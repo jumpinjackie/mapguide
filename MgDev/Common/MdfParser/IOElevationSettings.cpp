@@ -146,7 +146,7 @@ void IOElevationSettings::Write(MdfStream& fd, ElevationSettings* elevationSetti
 
     // Property: Unit
     fd << tab.tab() << startStr(sUnit);
-    std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(elevationSettings->GetUnit()));
+    std::unique_ptr<MdfString> str(LengthConverter::UnitToEnglish(elevationSettings->GetUnit()));
     fd << EncodeString(*str);
     fd << endStr(sUnit) << std::endl;
 

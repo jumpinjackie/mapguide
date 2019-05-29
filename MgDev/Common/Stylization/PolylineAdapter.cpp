@@ -20,7 +20,7 @@
 #include "PolylineAdapter.h"
 #include "LineBuffer.h"
 #include "FeatureTypeStyleVisitor.h"
-
+#include <cmath>
 
 //////////////////////////////////////////////////////////////////////////////
 PolylineAdapter::PolylineAdapter(LineBufferPool* lbp) : GeometryAdapter(lbp)
@@ -186,7 +186,7 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
     //-------------------------------------------------------
 
     LineBuffer* lb = geometry;
-    std::auto_ptr<LineBuffer> spClipLB;
+    std::unique_ptr<LineBuffer> spClipLB;
 
     if (bClip)
     {
@@ -288,7 +288,7 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
         // multi should work for simple polylines too
         lb->Centroid(LineBuffer::ctLine, &cx, &cy, &slope_rad);
 
-        if (!_isnan(cx) && !_isnan(cy))
+        if (!std::isnan(cx) && !std::isnan(cy))
             AddLabel(cx, cy, slope_rad, true, label, RS_OverpostType_AllFit, true, renderer, label->GetSymbol()->IsAdvancedPlacement()? lb : NULL);
     }
 
