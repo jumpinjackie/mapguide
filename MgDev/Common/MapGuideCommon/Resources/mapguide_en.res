@@ -449,6 +449,10 @@ MgTileProvider_Common_Property_TileFormat_LocalizedName = Tile Format
 MgTileProvider_Common_Property_RenderOnly_LocalizedName = Render Tiles Only (do not cache)
 MgTileProvider_Common_Property_CoordinateSystem_LocalizedName = Coordinate System
 MgTileProvider_Common_Property_FiniteScaleList_LocalizedName = Finite Display Scale List
+MgTileProvider_Common_Property_TileExtentOffset_LocalizedName = Tile Extent Offset
+MgTileProvider_Common_Property_MetaTileFactor_LocalizedName = Meta-tiling factor
+MgTileProvider_Common_Property_MetaTileLockMethod_LocalizedName = Meta-tiling lock method
+
 
 # *****************************************************************************
 # S T Y L I Z A T I O N

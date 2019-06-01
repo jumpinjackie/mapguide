@@ -333,6 +333,38 @@ MgByteReader* MgServerTileService::GetTileProviders()
         xml.append("<DefaultValue></DefaultValue>\n");
         xml.append("</ConnectionProperty>\n");
 
+        //Property: MetaTileFactor
+        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
+        xml.append("<Name>");
+        std::string mbMetaTileFactor;
+        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_METATILEFACTOR, mbMetaTileFactor);
+        xml.append(mbMetaTileFactor);
+        xml.append("</Name>\n");
+        xml.append("<LocalizedName>");
+        std::string mbLocMetaTileFactor;
+        STRING wLocMetaTileFactor = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_MetaTileFactor_LocalizedName");
+        MgUtil::WideCharToMultiByte(wLocMetaTileFactor, mbLocMetaTileFactor);
+        xml.append(mbLocMetaTileFactor);
+        xml.append("</LocalizedName>\n");
+        xml.append("<DefaultValue></DefaultValue>\n");
+        xml.append("</ConnectionProperty>\n");
+
+        //Property: MetaTileLockMethod
+        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
+        xml.append("<Name>");
+        std::string mbMetaTileLockMethod;
+        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_METATILELOCKMETHOD, mbMetaTileLockMethod);
+        xml.append(mbMetaTileLockMethod);
+        xml.append("</Name>\n");
+        xml.append("<LocalizedName>");
+        std::string mbLocMetaTileLockMethod;
+        STRING wLocMetaTileLockMethod = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_MetaTileLockMethod_LocalizedName");
+        MgUtil::WideCharToMultiByte(wLocMetaTileLockMethod, mbLocMetaTileLockMethod);
+        xml.append(mbLocMetaTileLockMethod);
+        xml.append("</LocalizedName>\n");
+        xml.append("<DefaultValue></DefaultValue>\n");
+        xml.append("</ConnectionProperty>\n");
+
         xml.append("</ConnectionProperties>\n");
         xml.append("</TileProvider>\n");
     }
@@ -429,6 +461,38 @@ MgByteReader* MgServerTileService::GetTileProviders()
         STRING wLocTileExtentOffset = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_TileExtentOffset_LocalizedName");
         MgUtil::WideCharToMultiByte(wLocTileExtentOffset, mbLocTileExtentOffset);
         xml.append(mbLocTileExtentOffset);
+        xml.append("</LocalizedName>\n");
+        xml.append("<DefaultValue></DefaultValue>\n");
+        xml.append("</ConnectionProperty>\n");
+
+        //Property: MetaTileFactor
+        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
+        xml.append("<Name>");
+        std::string mbMetaTileFactor;
+        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_METATILEFACTOR, mbMetaTileFactor);
+        xml.append(mbMetaTileFactor);
+        xml.append("</Name>\n");
+        xml.append("<LocalizedName>");
+        std::string mbLocMetaTileFactor;
+        STRING wLocMetaTileFactor = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_MetaTileFactor_LocalizedName");
+        MgUtil::WideCharToMultiByte(wLocMetaTileFactor, mbLocMetaTileFactor);
+        xml.append(mbLocMetaTileFactor);
+        xml.append("</LocalizedName>\n");
+        xml.append("<DefaultValue></DefaultValue>\n");
+        xml.append("</ConnectionProperty>\n");
+
+        //Property: MetaTileLockMethod
+        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
+        xml.append("<Name>");
+        std::string mbMetaTileLockMethod;
+        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_METATILELOCKMETHOD, mbMetaTileLockMethod);
+        xml.append(mbMetaTileLockMethod);
+        xml.append("</Name>\n");
+        xml.append("<LocalizedName>");
+        std::string mbLocMetaTileLockMethod;
+        STRING wLocMetaTileLockMethod = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_MetaTileLockMethod_LocalizedName");
+        MgUtil::WideCharToMultiByte(wLocMetaTileLockMethod, mbLocMetaTileLockMethod);
+        xml.append(mbLocMetaTileLockMethod);
         xml.append("</LocalizedName>\n");
         xml.append("<DefaultValue></DefaultValue>\n");
         xml.append("</ConnectionProperty>\n");
