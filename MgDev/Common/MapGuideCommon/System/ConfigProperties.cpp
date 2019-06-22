@@ -170,8 +170,6 @@ const STRING MgConfigProperties::GeneralPropertyWmsDocumentPath                 
 const STRING MgConfigProperties::DefaultGeneralPropertyWmsDocumentPath                      = L"Wms/";
 const STRING MgConfigProperties::GeneralPropertyWorkerThreadPoolSize                        = L"WorkerThreadPoolSize"; // for internal use only
 const INT32  MgConfigProperties::DefaultGeneralPropertyWorkerThreadPoolSize                 = 1;
-const STRING MgConfigProperties::GeneralPropertyRenderer                                    = L"Renderer";
-const STRING MgConfigProperties::DefaultGeneralPropertyRenderer                             = L"GD";
 const STRING MgConfigProperties::GeneralPropertyFailoverRetryTime                           = L"FailoverRetryTime"; // for internal use only
 const INT32  MgConfigProperties::DefaultGeneralPropertyFailoverRetryTime                    = 60;
 const STRING MgConfigProperties::GeneralPropertyPreCacheMaps                                = L"PreCacheMaps";

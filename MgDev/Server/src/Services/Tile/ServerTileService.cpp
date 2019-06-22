@@ -26,12 +26,6 @@ IMPLEMENT_CREATE_SERVICE(MgServerTileService)
 MgServerTileService::MgServerTileService() : MgTileService()
 {
     MgTileCacheDefault::Initialize();
-
-    MgConfiguration* pConf = MgConfiguration::GetInstance();
-    pConf->GetStringValue(MgConfigProperties::GeneralPropertiesSection,
-        MgConfigProperties::GeneralPropertyRenderer,
-        m_rendererName,
-        MgConfigProperties::DefaultGeneralPropertyRenderer);
 }
 
 MgServerTileService::~MgServerTileService()
@@ -657,7 +651,7 @@ MgTileCache* MgServerTileService::GetTileCache(MgResourceIdentifier* tileSetId, 
             path = MgTileParameters::tileCachePath;
         }
 
-        cache = new MgTileCacheDefaultProvider(tileSetId, path, width, height, format, bRenderOnly, tileExtentOffset, m_rendererName, metaTileFactor, metaTileLockMethod);
+        cache = new MgTileCacheDefaultProvider(tileSetId, path, width, height, format, bRenderOnly, tileExtentOffset, metaTileFactor, metaTileLockMethod);
     }
     else if (provider == MG_TILE_PROVIDER_XYZ)
     {
@@ -707,7 +701,7 @@ MgTileCache* MgServerTileService::GetTileCache(MgResourceIdentifier* tileSetId, 
             path = MgTileParameters::tileCachePath;
         }
 
-        cache = new MgTileCacheXYZProvider(tileSetId, path, format, bRenderOnly, tileExtentOffset, m_rendererName, metaTileFactor, metaTileLockMethod);
+        cache = new MgTileCacheXYZProvider(tileSetId, path, format, bRenderOnly, tileExtentOffset, metaTileFactor, metaTileLockMethod);
     }
     else 
     {

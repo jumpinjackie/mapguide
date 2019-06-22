@@ -1249,9 +1249,6 @@ EXTERNAL_API:
     /// \param metaTile
     /// Input
     /// The meta-tile from which a subtile is being requested for
-    /// \param rendererName
-    /// Input
-    /// The name of the renderer to create for sub-tile slicing
     /// \param subTileX
     /// Input
     /// The x sub-tile coordinate of the meta-tile to request
@@ -1263,7 +1260,7 @@ EXTERNAL_API:
     /// The requested sub-tile
     ///
     /// \since 4.0
-    virtual MgByteReader* RenderTileFromMetaTile(MgMap* map, MgMetatile* metaTile, CREFSTRING rendererName, INT32 subTileX, INT32 subTileY) = 0;
+    virtual MgByteReader* RenderTileFromMetaTile(MgMap* map, MgMetatile* metaTile, INT32 subTileX, INT32 subTileY) = 0;
 
 protected:
 

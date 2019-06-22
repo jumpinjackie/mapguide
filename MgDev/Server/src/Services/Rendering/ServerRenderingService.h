@@ -22,7 +22,7 @@
 
 struct RS_Bounds;
 class RS_Color;
-class SE_Renderer;
+class AGGRenderer;
 class Renderer;
 class FeatureInfoRenderer;
 class MgFeatureInformation;
@@ -286,17 +286,16 @@ public:
                                           double tileExtentOffset,
                                           INT32 metaTilingFactor);
 
-    virtual MgByteReader* RenderTileFromMetaTile(MgMap* map, MgMetatile* metaTile, CREFSTRING rendererName, INT32 subTileX, INT32 subTileY);
+    virtual MgByteReader* RenderTileFromMetaTile(MgMap* map, MgMetatile* metaTile, INT32 subTileX, INT32 subTileY);
 
 private:
     static bool HasColorMap(CREFSTRING format);
 
     static MgByteReader* CreateImageFromRenderer(MgMap* map,
-                                                 Renderer* dr,
+                                                 AGGRenderer* dr,
                                                  INT32 saveWidth,
                                                  INT32 saveHeight,
                                                  CREFSTRING format,
-                                                 CREFSTRING rendererName,
                                                  ProfileRenderMapResult* pPRMResult,
                                                  unsigned int* frameBuffer = NULL);
 
@@ -322,7 +321,7 @@ private:
     MgByteReader* RenderMapInternal(MgMap* map,
                                     MgSelection* selection,
                                     MgReadOnlyLayerCollection* roLayers,
-                                    SE_Renderer* dr,
+                                    AGGRenderer* dr,
                                     INT32 drawWidth,
                                     INT32 drawHeight,
                                     INT32 saveWidth,
@@ -339,7 +338,7 @@ private:
     MgByteReader* RenderMapInternal(MgMap* map,
                                     MgSelection* selection,
                                     MgReadOnlyLayerCollection* roLayers,
-                                    SE_Renderer* dr,
+                                    AGGRenderer* dr,
                                     INT32 drawWidth,
                                     INT32 drawHeight,
                                     INT32 saveWidth,
@@ -360,8 +359,7 @@ private:
                          INT32 layerAttributeFilter,
                          FeatureInfoRenderer* selRenderer);
 
-    virtual SE_Renderer* CreateRenderer(CREFSTRING rendererName,
-                                        INT32 width,
+    virtual AGGRenderer* CreateRenderer(INT32 width,
                                         INT32 height,
                                         RS_Color& bgColor,
                                         bool requiresClipping,
@@ -404,9 +402,6 @@ private:
     Ptr<MgResourceService> m_svcResource;
     Ptr<MgDrawingService> m_svcDrawing;
     Ptr<MgCoordinateSystemFactory> m_pCSFactory;
-
-    // this will eventually be removed
-    STRING m_rendererName;
 
     INT32 m_rasterGridSize;
     INT32 m_minRasterGridSize;

@@ -29,7 +29,6 @@ public:
                                CREFSTRING format,
                                bool bRenderOnly,
                                double tileExtentOffset,
-                               CREFSTRING rendererName,
                                INT32 metaTileFactor,
                                INT32 metaTileLockMethod);
     virtual ~MgTileCacheDefaultProvider();
@@ -75,7 +74,6 @@ private:
     STRING m_format;
     bool m_renderOnly;
     double m_tileExtentOffset;
-    STRING m_rendererName;
     INT32 m_metaTileFactor;
     INT32 m_metaTileLockMethod;
 };

@@ -142,10 +142,6 @@ EXTERNAL_API:
     static const STRING GeneralPropertyWmsDocumentPath;                 /// value("WmsDocumentPath")
     static const STRING DefaultGeneralPropertyWmsDocumentPath;          /// value("Wms/")
 
-    /// Sets desired image renderer
-    static const STRING GeneralPropertyRenderer;                        /// value("Renderer")
-    static const STRING DefaultGeneralPropertyRenderer;                 /// value("GD")
-
     /// Sets the maps to precache
     static const STRING GeneralPropertyPreCacheMaps;                    /// value("PreCacheMaps")
     static const STRING DefaultGeneralPropertyPreCacheMaps;             /// value("")

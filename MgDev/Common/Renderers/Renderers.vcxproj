@@ -221,11 +221,7 @@
     <ClCompile Include="UTFGridContent.cpp" />
     <ClCompile Include="UTFGridRenderer.cpp" />
     <ClCompile Include="W2DRewriter.cpp" />
-    <ClCompile Include="complex_polygon_gd.cpp" />
-    <ClCompile Include="GDFillPatterns.cpp" />
-    <ClCompile Include="GDRenderer.cpp" />
     <ClCompile Include="GDUtils.cpp" />
-    <ClCompile Include="GDW2DRewriter.cpp" />
     <ClCompile Include="RS_ByteData.cpp" />
     <ClCompile Include="ObservationMesh.cpp" />
     <ClCompile Include="KmlContent.cpp" />
@@ -274,11 +270,7 @@
     <ClInclude Include="W2DRewriter.h" />
     <ClInclude Include="whip_fill_library.h" />
     <ClInclude Include="whip_hatch_library.h" />
-    <ClInclude Include="complex_polygon_gd.h" />
-    <ClInclude Include="GDFillPatterns.h" />
-    <ClInclude Include="GDRenderer.h" />
     <ClInclude Include="GDUtils.h" />
-    <ClInclude Include="GDW2DRewriter.h" />
     <ClInclude Include="RS_ByteData.h" />
     <ClInclude Include="ObservationMesh.h" />
     <ClInclude Include="KmlContent.h" />

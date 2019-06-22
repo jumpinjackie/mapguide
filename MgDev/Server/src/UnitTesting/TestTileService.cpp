@@ -1789,7 +1789,7 @@ void TestTileService::TestCase_GetMetatileSingle()
         {
             for (INT32 y = 0; y < metaTile->GetMetaTilingFactor(); y++)
             {
-                Ptr<MgByteReader> img = renderSvc->RenderTileFromMetaTile(map, metaTile, L"AGG", x, y);
+                Ptr<MgByteReader> img = renderSvc->RenderTileFromMetaTile(map, metaTile, x, y);
                 INT64 tileLen = img->GetLength();
                 STRING fileName = L"../UnitTestFiles/GetMetatileSingle_Baseline/";
                 STRING s;
@@ -1868,7 +1868,7 @@ void TestTileService::TestCase_GetMetatileXYZSingle()
         {
             for (INT32 y1 = 0; y1 < mtFactor; y1++)
             {
-                Ptr<MgByteReader> img = renderSvc->RenderTileFromMetaTile(map, metaTile, L"AGG", x1, y1);
+                Ptr<MgByteReader> img = renderSvc->RenderTileFromMetaTile(map, metaTile, x1, y1);
                 INT64 tileLen = img->GetLength();
                 STRING fileName = L"../UnitTestFiles/GetMetatileSingleXYZ_Baseline/";
                 STRING s;

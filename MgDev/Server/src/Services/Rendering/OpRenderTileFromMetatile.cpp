@@ -36,16 +36,13 @@ void MgOpRenderTileFromMetatile::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (5 == m_packet.m_NumArguments)
+    if (4 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         Ptr<MgResourceIdentifier> resource = map->GetResourceId();
         map->SetDelayedLoadResourceService(m_resourceService);
 
         Ptr<MgMetatile> metaTile = (MgMetatile*)m_stream->GetObject();
-
-        STRING rendererName;
-        m_stream->GetString(rendererName);
 
         INT32 subTileX = 0;
         m_stream->GetInt32(subTileX);
@@ -64,9 +61,7 @@ void MgOpRenderTileFromMetatile::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(metaTile->GetMetaTilingFactor());
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"]");
-        
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(rendererName.c_str());
+
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(subTileX);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
@@ -75,7 +70,7 @@ void MgOpRenderTileFromMetatile::Execute()
 
         Validate();
 
-        Ptr<MgByteReader> tile = m_service->RenderTileFromMetaTile(map, metaTile, rendererName, subTileX, subTileY);
+        Ptr<MgByteReader> tile = m_service->RenderTileFromMetaTile(map, metaTile, subTileX, subTileY);
 
         EndExecution(tile);
     }

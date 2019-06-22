@@ -28,7 +28,6 @@ MgTileCacheDefaultProvider::MgTileCacheDefaultProvider(MgResourceIdentifier* til
     CREFSTRING format,
     bool bRenderOnly,
     double tileExtentOffset,
-    CREFSTRING rendererName,
     INT32 metaTileFactor,
     INT32 metaTileLockMethod)
 {
@@ -39,7 +38,6 @@ MgTileCacheDefaultProvider::MgTileCacheDefaultProvider(MgResourceIdentifier* til
     m_format = format;
     m_renderOnly = bRenderOnly;
     m_tileExtentOffset = tileExtentOffset;
-    m_rendererName = rendererName;
     m_metaTileFactor = metaTileFactor;
     m_metaTileLockMethod = metaTileLockMethod;
 }
@@ -127,9 +125,6 @@ MgByteReader* MgTileCacheDefaultProvider::GetMetatileForResource(MgResourceIdent
     INT32 tileRow,
     INT32 scaleIndex)
 {
-    // Must have a renderer name set
-    _ASSERT(!m_rendererName.empty());
-
     Ptr<MgByteReader> returnedSubtile;
     FILE* lockFile = NULL;
     STRING tilePathname, lockPathname;
@@ -340,7 +335,7 @@ MgByteReader* MgTileCacheDefaultProvider::GetMetatileForResource(MgResourceIdent
             for (int x = 0; x < maxX; x++)    // columns
             {
                 // Collect the subtile from the metatile
-                Ptr<MgByteReader> img = svcRendering->RenderTileFromMetaTile(map, metaTile, m_rendererName, x, y);
+                Ptr<MgByteReader> img = svcRendering->RenderTileFromMetaTile(map, metaTile, x, y);
 #ifdef _DEBUG
                 INT32 tileLen = img->GetLength();
 #endif          

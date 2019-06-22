@@ -18,7 +18,6 @@
 #include "MapGuideCommon.h"
 #include "ServerRenderingService.h"
 #include "DefaultStylizer.h"
-#include "GDRenderer.h"
 #include "AGGRenderer.h"
 #include "UTFGridRenderer.h"
 #include "RSMgSymbolManager.h"
@@ -79,10 +78,6 @@ MgServerRenderingService::MgServerRenderingService() : MgRenderingService()
     assert(m_svcDrawing != NULL);
 
     MgConfiguration* pConf = MgConfiguration::GetInstance();
-    pConf->GetStringValue(MgConfigProperties::GeneralPropertiesSection,
-                          MgConfigProperties::GeneralPropertyRenderer,
-                          m_rendererName,
-                          MgConfigProperties::DefaultGeneralPropertyRenderer);
 
     pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
                           MgConfigProperties::RenderingServicePropertyRasterGridSize,
@@ -129,7 +124,6 @@ MgServerRenderingService::MgServerRenderingService() : MgRenderingService()
                           bGeneralizeData,
                           MgConfigProperties::DefaultRenderingServicePropertyGeneralizeData);
     AGGRenderer::s_bGeneralizeData = bGeneralizeData;
-    GDRenderer::s_bGeneralizeData = bGeneralizeData;
 }
 
 
@@ -465,7 +459,7 @@ MgByteReader* MgServerRenderingService::RenderTileInternal(MgMap* map,
 
     // initialize the renderer (set clipping to false so that we label
     // the unclipped geometry)
-    auto_ptr<SE_Renderer> dr(CreateRenderer(m_rendererName, width, height, bgColor, false, true, tileExtentOffset));
+    std::unique_ptr<AGGRenderer> dr(CreateRenderer(width, height, bgColor, false, true, tileExtentOffset));
 
     // create a temporary collection containing all the layers for the base group
     Ptr<MgLayerCollection> layers = map->GetLayers();
@@ -588,7 +582,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     bgColor.alpha() = 0;
 
     // initialize the renderer
-    auto_ptr<SE_Renderer> dr(CreateRenderer(m_rendererName, width, height, bgColor, true));
+    std::unique_ptr<AGGRenderer> dr(CreateRenderer(width, height, bgColor, true));
 
     bool bIncludeDynamicLayers = ((options->GetBehavior() & MgRenderingOptions::RenderLayers) == MgRenderingOptions::RenderLayers);
     bool bIncludeBaseLayers = ((options->GetBehavior() & MgRenderingOptions::RenderBaseLayers) == MgRenderingOptions::RenderBaseLayers);
@@ -784,7 +778,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     // initialize the renderer with the rendering canvas size - in this
     // case it is not necessarily the same size as the requested image
     // size due to support for non-square pixels
-    auto_ptr<SE_Renderer> dr(CreateRenderer(m_rendererName, drawWidth, drawHeight, bgcolor, false));
+    std::unique_ptr<AGGRenderer> dr(CreateRenderer(drawWidth, drawHeight, bgcolor, false));
 
     // call the internal helper API to do all the stylization overhead work
     ret = RenderMapInternal(map, selection, NULL, dr.get(), drawWidth, drawHeight, width, height, format, scale, b, true, bKeepSelection, true, NULL);
@@ -923,7 +917,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                      backgroundColor->GetAlpha());
 
     // initialize the appropriate map renderer
-    auto_ptr<SE_Renderer> dr(CreateRenderer(m_rendererName, width, height, bgcolor, bClip));
+    std::unique_ptr<AGGRenderer> dr(CreateRenderer(width, height, bgcolor, bClip));
 
     if(NULL != pPRMResult)
     {
@@ -994,7 +988,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap* map,
 
     double point_buf[2];
     double* point = NULL;
-    auto_ptr<SE_Renderer> impRenderer;
+    std::unique_ptr<AGGRenderer> impRenderer;
     if (geometry && maxFeatures == 1)
     {
         MgPolygon* polygon = dynamic_cast<MgPolygon*>(geometry);
@@ -1028,7 +1022,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap* map,
                 point = point_buf;
 
                 RS_Color bgColor; // not used
-                impRenderer.reset(CreateRenderer(m_rendererName, 1, 1, bgColor, false));
+                impRenderer.reset(CreateRenderer(1, 1, bgColor, false));
             }
         }
     }
@@ -1137,7 +1131,7 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties(MgMa
 MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           MgSelection* selection,
                                                           MgReadOnlyLayerCollection* roLayers,
-                                                          SE_Renderer* dr,
+                                                          AGGRenderer* dr,
                                                           INT32 drawWidth,
                                                           INT32 drawHeight,
                                                           INT32 saveWidth,
@@ -1168,7 +1162,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           MgSelection* selection,
                                                           MgReadOnlyLayerCollection* roLayers,
-                                                          SE_Renderer* dr,
+                                                          AGGRenderer* dr,
                                                           INT32 drawWidth,
                                                           INT32 drawHeight,
                                                           INT32 saveWidth,
@@ -1289,7 +1283,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
     MG_THROW()  // to skip a faulty tile we need to rethrow the exception which could be thrown in StylizeLayers
 
-    Ptr<MgByteReader> ret = CreateImageFromRenderer(map, dr, saveWidth, saveHeight, format, m_rendererName, pPRMResult);
+    Ptr<MgByteReader> ret = CreateImageFromRenderer(map, dr, saveWidth, saveHeight, format, pPRMResult);
 
     return ret.Detach();
 }
@@ -1325,7 +1319,7 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
                      backgroundColor->GetAlpha());
 
     //initialize a renderer
-    auto_ptr<Renderer> dr(CreateRenderer(m_rendererName, width, height, bgcolor, false, false, 0.0));
+    std::unique_ptr<AGGRenderer> dr(CreateRenderer(width, height, bgcolor, false, false, 0.0));
 
     RS_Bounds b(0,0,width,height);
 
@@ -1353,12 +1347,8 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
     dr->EndMap();
 
     // get a byte representation of the image
-    auto_ptr<RS_ByteData> data;
-
-    if (wcscmp(m_rendererName.c_str(), L"AGG") == 0)
-        data.reset(((AGGRenderer*)dr.get())->Save(format, width, height));
-    else
-        data.reset(((GDRenderer*)dr.get())->Save(format, width, height));
+    std::unique_ptr<RS_ByteData> data;
+    data.reset((dr.get())->Save(format, width, height));
 
     if (NULL != data.get())
     {
@@ -1556,7 +1546,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
         MdfModel::VectorLayerDefinition* vl = NULL;
         Ptr<MgResourceLayerDefinitionCacheItem> cacheItem;
-        auto_ptr<MdfModel::LayerDefinition> ldf;
+        std::unique_ptr<MdfModel::LayerDefinition> ldf;
         Ptr<MgResourceIdentifier> layerResId = layer->GetLayerDefinition();
         if (bOnlyVisibleLayers)
         {
@@ -1621,7 +1611,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
             }
 
             // Initialize the reader
-            auto_ptr<RSMgFeatureReader> rsrdr;
+            std::unique_ptr<RSMgFeatureReader> rsrdr;
 
             try
             {
@@ -1816,28 +1806,20 @@ void MgServerRenderingService::SetConnectionProperties(MgConnectionProperties*)
 
 
 ///////////////////////////////////////////////////////////////////////////////
-SE_Renderer* MgServerRenderingService::CreateRenderer(CREFSTRING rendererName,
-                                                      INT32 width,
+AGGRenderer* MgServerRenderingService::CreateRenderer(INT32 width,
                                                       INT32 height,
                                                       RS_Color& bgColor,
                                                       bool requiresClipping,
                                                       bool localOverposting,
                                                       double tileExtentOffset)
 {
-    SE_Renderer* renderer = NULL;
-    if (wcscmp(rendererName.c_str(), L"AGG") == 0)
-        renderer = new AGGRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
-    else
-        renderer = new GDRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
+    auto renderer = new AGGRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
 
-    if (renderer != NULL)
-    {
-        renderer->SetRasterGridSize(m_rasterGridSize);
-        renderer->SetMinRasterGridSize(m_minRasterGridSize);
-        renderer->SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatio);
-        renderer->SetMaxRasterImageWidth(m_maxRasterImageWidth);
-        renderer->SetMaxRasterImageHeight(m_maxRasterImageHeight);
-    }
+    renderer->SetRasterGridSize(m_rasterGridSize);
+    renderer->SetMinRasterGridSize(m_minRasterGridSize);
+    renderer->SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatio);
+    renderer->SetMaxRasterImageWidth(m_maxRasterImageWidth);
+    renderer->SetMaxRasterImageHeight(m_maxRasterImageHeight);
 
     return renderer;
 }
@@ -1982,13 +1964,13 @@ inline void MgServerRenderingService::RenderWatermarks(MgMap* map,
     // 3. Map's watermark usage is not 0, which means watermark usage is WMS and / or Viewer.
     WatermarkInstanceCollection watermarkInstances;   //Watermark list to render
     WatermarkInstanceCollection tempWatermarkInstances;    //Used to reverse list
-    auto_ptr<WatermarkInstance> tempInstance;
+    std::unique_ptr<WatermarkInstance> tempInstance;
 
     // Get watermark instance in map
     Ptr<MgResourceIdentifier> mapId = map->GetMapDefinition();
     if (mapId.p)
     {
-        auto_ptr<MapDefinition> mdef(MgMapBase::GetMapDefinition(m_svcResource, mapId));
+        std::unique_ptr<MapDefinition> mdef(MgMapBase::GetMapDefinition(m_svcResource, mapId));
         WatermarkInstanceCollection* mapWatermarks = mdef->GetWatermarks();
         for (int i=mapWatermarks->GetCount()-1; i>=0; i--)
             tempWatermarkInstances.Adopt(mapWatermarks->OrphanAt(i));
@@ -2021,7 +2003,7 @@ inline void MgServerRenderingService::RenderWatermarks(MgMap* map,
 
     // Get watermark instance in layer
     const int layerCount = layers->GetCount();
-    auto_ptr<LayerDefinition> ldf;
+    std::unique_ptr<LayerDefinition> ldf;
     for (int i=0; i<layerCount; ++i)
     {
         Ptr<MgLayerBase> mapLayer(layers->GetItem(i));
@@ -2456,7 +2438,7 @@ MgMetatile* MgServerRenderingService::RenderMetatileXYZ(MgMap* map,
 
     // initialize the renderer (set clipping to false so that we label
     // the unclipped geometry)
-    auto_ptr<SE_Renderer> dr(CreateRenderer(m_rendererName, drawWidth, drawHeight, bgColor, false, true, tileExtentOffset));
+    std::unique_ptr<AGGRenderer> dr(CreateRenderer(drawWidth, drawHeight, bgColor, false, true, tileExtentOffset));
 
     // create a temporary collection containing all the layers for the base group
     Ptr<MgLayerCollection> layers = map->GetLayers();
@@ -2492,7 +2474,6 @@ MgMetatile* MgServerRenderingService::RenderMetatileXYZ(MgMap* map,
 
 MgByteReader* MgServerRenderingService::RenderTileFromMetaTile(MgMap* map,
     MgMetatile* metaTile,
-    CREFSTRING rendererName,
     INT32 subTileX,
     INT32 subTileY)
 {
@@ -2545,9 +2526,9 @@ MgByteReader* MgServerRenderingService::RenderTileFromMetaTile(MgMap* map,
     StylizationUtil::ParseColor(map->GetBackgroundColor(), bgColor);
     bgColor.alpha() = 0;
     // Must create renderer under the scaled width/height and not original
-    auto_ptr<SE_Renderer> dr(CreateRenderer(rendererName, scaledTileWidth, scaledTileHeight, bgColor, true));
+    std::unique_ptr<AGGRenderer> dr(CreateRenderer(scaledTileWidth, scaledTileHeight, bgColor, true));
     RS_ColorVector tileColorPalette;
-    if (rendererName == L"AGG" && HasColorMap(origTileFormat))
+    if (HasColorMap(origTileFormat))
     {
         MgMappingUtil::ParseColorStrings(&tileColorPalette, map);
     }
@@ -2562,8 +2543,8 @@ MgByteReader* MgServerRenderingService::RenderTileFromMetaTile(MgMap* map,
     unsigned int *framebuf = (unsigned int*)byteBuffer->Bytes();
 
     // allocate subtile buffer to copy new framebuf with changed dimensions
-    // place buffer in allocated MgByte auto_ptr object for destruction at end of scope
-    auto_ptr<MgByte> subTileBytes(new MgByte((unsigned char*)new unsigned int[scaledTileWidth * scaledTileHeight],
+    // place buffer in allocated MgByte std::unique_ptr object for destruction at end of scope
+    std::unique_ptr<MgByte> subTileBytes(new MgByte((unsigned char*)new unsigned int[scaledTileWidth * scaledTileHeight],
         scaledTileWidth * scaledTileHeight * sizeof(int), MgByte::New));
     // get the pointer to the internal target buffer
     unsigned int* subTileBuf = (unsigned int*)subTileBytes->Bytes();
@@ -2577,7 +2558,7 @@ MgByteReader* MgServerRenderingService::RenderTileFromMetaTile(MgMap* map,
                     * scaledTileWidth * metaTileFactor);  // use width of metaTile here
         }
     // then call the image renderer to convert the framebuffer bitmap into the desired image format
-    ret = CreateImageFromRenderer(map, dr.get(), origTileWidth, origTileHeight, origTileFormat, rendererName, NULL, subTileBuf);
+    ret = CreateImageFromRenderer(map, dr.get(), origTileWidth, origTileHeight, origTileFormat, NULL, subTileBuf);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTileFromMetaTile")
 
@@ -2590,11 +2571,10 @@ bool MgServerRenderingService::HasColorMap(CREFSTRING format)
 }
 
 MgByteReader* MgServerRenderingService::CreateImageFromRenderer(MgMap* map,
-    Renderer* dr,
+    AGGRenderer* dr,
     INT32 saveWidth,
     INT32 saveHeight,
     CREFSTRING format,
-    CREFSTRING rendererName,
     ProfileRenderMapResult* pPRMResult,
     unsigned int* frameBuffer)
 {
@@ -2627,43 +2607,38 @@ MgByteReader* MgServerRenderingService::CreateImageFromRenderer(MgMap* map,
     */
 
     // get a byte representation of the image
-    auto_ptr<RS_ByteData> data;
+    std::unique_ptr<RS_ByteData> data;
     Ptr<MgByteSource> bs;
 
     try
     {
         // call the image renderer to create the image
-        if (wcscmp(rendererName.c_str(), L"AGG") == 0)
-        {
-            if (format == MgImageFormats::Meta)  // we dont use the colorPalette here for meta tiling
-            {                       // as this call only returns the framebuffer
-                data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, NULL, NULL));
-                // copy the framebuffer into the reader, RenderTileFromMetatile is taking it from there
-            }
-            else
-            {
-                //-------------------------------------------------------
-                /// RFC60 code to correct colormaps by UV
-                //-------------------------------------------------------
-                // We examine the expressions collected from xml definitions of all layers.
-                // The map object has a list from all color entries found in the most recent
-                // layer stylization.
-                // * TODO - currently they are interpreted as ffffffff 32-bit RGBA string values
-                // * adding expresssions and other interpretations should be done in ParseColorStrings
-                // * the color Palette for the renderer is a vector<RS_Color>
-                if (HasColorMap(format))
-                {
-                    RS_ColorVector tileColorPalette;
-                    MgMappingUtil::ParseColorStrings(&tileColorPalette, map);
-                    //              printf("<<<<<<<<<<<<<<<<<<<<< MgServerRenderingService::ColorPalette->size(): %d\n", tileColorPalette.size());
-                    data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, &tileColorPalette, frameBuffer));
-                }
-                else
-                    data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, NULL, frameBuffer));
-            }
+        if (format == MgImageFormats::Meta)  // we dont use the colorPalette here for meta tiling
+        {                       // as this call only returns the framebuffer
+            data.reset(dr->Save(format, saveWidth, saveHeight, NULL, NULL));
+            // copy the framebuffer into the reader, RenderTileFromMetatile is taking it from there
         }
         else
-            data.reset(((GDRenderer*)dr)->Save(format, saveWidth, saveHeight));
+        {
+            //-------------------------------------------------------
+            /// RFC60 code to correct colormaps by UV
+            //-------------------------------------------------------
+            // We examine the expressions collected from xml definitions of all layers.
+            // The map object has a list from all color entries found in the most recent
+            // layer stylization.
+            // * TODO - currently they are interpreted as ffffffff 32-bit RGBA string values
+            // * adding expresssions and other interpretations should be done in ParseColorStrings
+            // * the color Palette for the renderer is a vector<RS_Color>
+            if (HasColorMap(format))
+            {
+                RS_ColorVector tileColorPalette;
+                MgMappingUtil::ParseColorStrings(&tileColorPalette, map);
+                //              printf("<<<<<<<<<<<<<<<<<<<<< MgServerRenderingService::ColorPalette->size(): %d\n", tileColorPalette.size());
+                data.reset(dr->Save(format, saveWidth, saveHeight, &tileColorPalette, frameBuffer));
+            }
+            else
+                data.reset(dr->Save(format, saveWidth, saveHeight, NULL, frameBuffer));
+        }
     }
     catch (exception e)
     {
@@ -2697,7 +2672,7 @@ MgByteReader* MgServerRenderingService::CreateImageFromRenderer(MgMap* map,
         pPRMResult->SetCreateImageTime(createImageTime);
 
         pPRMResult->SetImageFormat(format);
-        pPRMResult->SetRendererType(rendererName);
+        pPRMResult->SetRendererType(L"AGG"); //NOXLATE
     }
 
     return bs->GetReader();

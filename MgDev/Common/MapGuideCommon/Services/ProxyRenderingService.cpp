@@ -1407,7 +1407,6 @@ MgMetatile* MgProxyRenderingService::RenderMetatileXYZ(
 MgByteReader* MgProxyRenderingService::RenderTileFromMetaTile(
     MgMap* map,
     MgMetatile* metaTile,
-    CREFSTRING rendererName,
     INT32 subTileX,
     INT32 subTileY)
 {
@@ -1415,14 +1414,13 @@ MgByteReader* MgProxyRenderingService::RenderTileFromMetaTile(
     cmd.ExecuteCommand(m_connProp,                      // Connection
         MgCommand::knObject,                            // Return type expected
         MgRenderingServiceOpId::RenderTileFromMetaTile, // Command Code
-        9,                                              // No of arguments
+        4,                                              // No of arguments
         Rendering_Service,                              // Service Id
-        BUILD_VERSION(4,0,0),                         // Operation version
+        BUILD_VERSION(4,0,0),                           // Operation version
         MgCommand::knObject, map,                       // Argument#1
         MgCommand::knObject, metaTile,                  // Argument#2
-        MgCommand::knString, &rendererName,             // Argument#3
-        MgCommand::knInt32, subTileX,                   // Argument#4
-        MgCommand::knInt32, subTileY,                   // Argument#5
+        MgCommand::knInt32, subTileX,                   // Argument#3
+        MgCommand::knInt32, subTileY,                   // Argument#4
         MgCommand::knNone);                             // End of arguments
 
     SetWarning(cmd.GetWarningObject());

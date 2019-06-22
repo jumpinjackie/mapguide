@@ -1740,11 +1740,10 @@ void TestRenderingService::TestCase_RenderMetatile(CREFSTRING imageFormat, CREFS
         //metaTile->ToFile(L"../UnitTestFiles/RenderTile_Metatile@4_6.png");
         //CPPUNIT_ASSERT(metaTile->IsRewindable());
         //metaTile->Rewind();
-        STRING rendererName = L"AGG";
-        Ptr<MgByteReader> tile4_6 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 0, 0);
-        Ptr<MgByteReader> tile4_7 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 0, 1);
-        Ptr<MgByteReader> tile5_6 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 1, 0);
-        Ptr<MgByteReader> tile5_7 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 1, 1);
+        Ptr<MgByteReader> tile4_6 = renderSvc->RenderTileFromMetaTile(map, metaTile, 0, 0);
+        Ptr<MgByteReader> tile4_7 = renderSvc->RenderTileFromMetaTile(map, metaTile, 0, 1);
+        Ptr<MgByteReader> tile5_6 = renderSvc->RenderTileFromMetaTile(map, metaTile, 1, 0);
+        Ptr<MgByteReader> tile5_7 = renderSvc->RenderTileFromMetaTile(map, metaTile, 1, 1);
 
 
         tile4_6->ToFile(GetPath(L"../UnitTestFiles/RenderTile_4_6_Metatiled", imageFormat, extension));
@@ -1785,11 +1784,10 @@ void TestRenderingService::TestCase_RenderXYZMetatile(CREFSTRING imageFormat, CR
         //metaTile->ToFile(L"../UnitTestFiles/RenderTileXYZ_Metatile@16798_23891_16.png");
         //CPPUNIT_ASSERT(metaTile->IsRewindable());
         //metaTile->Rewind();
-        STRING rendererName = L"AGG";
-        Ptr<MgByteReader> tile_16798_23891 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 0, 0);
-        Ptr<MgByteReader> tile_16799_23891 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 1, 0);
-        Ptr<MgByteReader> tile_16798_23892 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 0, 1);
-        Ptr<MgByteReader> tile_16799_23892 = renderSvc->RenderTileFromMetaTile(map, metaTile, rendererName, 1, 1);
+        Ptr<MgByteReader> tile_16798_23891 = renderSvc->RenderTileFromMetaTile(map, metaTile, 0, 0);
+        Ptr<MgByteReader> tile_16799_23891 = renderSvc->RenderTileFromMetaTile(map, metaTile, 1, 0);
+        Ptr<MgByteReader> tile_16798_23892 = renderSvc->RenderTileFromMetaTile(map, metaTile, 0, 1);
+        Ptr<MgByteReader> tile_16799_23892 = renderSvc->RenderTileFromMetaTile(map, metaTile, 1, 1);
 
         tile_16798_23891->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16798_23891_16_Metatiled", imageFormat, extension));
         tile_16799_23891->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16799_23891_16_Metatiled", imageFormat, extension));
