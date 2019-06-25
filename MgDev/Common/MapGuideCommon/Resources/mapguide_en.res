@@ -452,6 +452,7 @@ MgTileProvider_Common_Property_FiniteScaleList_LocalizedName = Finite Display Sc
 MgTileProvider_Common_Property_TileExtentOffset_LocalizedName = Tile Extent Offset
 MgTileProvider_Common_Property_MetaTileFactor_LocalizedName = Meta-tiling factor
 MgTileProvider_Common_Property_MetaTileLockMethod_LocalizedName = Meta-tiling lock method
+MgTileProvider_XYZ_Property_RetinaScale_LocalizedName = Scaling factor for Retina Tiles
 
 
 # *****************************************************************************

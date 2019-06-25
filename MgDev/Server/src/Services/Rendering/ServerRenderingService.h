@@ -90,7 +90,8 @@ public:
                                         INT32 z,
                                         INT32 dpi,
                                         CREFSTRING tileImageFormat,
-                                        double tileExtentOffset);
+                                        double tileExtentOffset,
+                                        INT32 retinaScale);
 
     virtual MgByteReader* RenderTileUTFGrid(MgMap* map,
                                             CREFSTRING baseMapLayerGroupName,
@@ -284,7 +285,8 @@ public:
                                           INT32 dpi,
                                           CREFSTRING tileImageFormat,
                                           double tileExtentOffset,
-                                          INT32 metaTilingFactor);
+                                          INT32 metaTilingFactor,
+                                          INT32 retinaScale);
 
     virtual MgByteReader* RenderTileFromMetaTile(MgMap* map, MgMetatile* metaTile, INT32 subTileX, INT32 subTileY);
 

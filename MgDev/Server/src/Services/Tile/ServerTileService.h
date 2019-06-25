@@ -76,6 +76,8 @@ public:
     void SetConnectionProperties(MgConnectionProperties* connProp);
 
 private:
+    void WriteCommonTileProviderProperties(std::string& xml);
+
     MgTileCache* GetTileCache(MgResourceIdentifier* resource);
     MgTileCache* GetTileCache(MgResourceIdentifier* tileSetId, MdfModel::TileSetDefinition* tileset);
 };

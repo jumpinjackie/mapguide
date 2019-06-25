@@ -26,7 +26,8 @@ MgTileCacheXYZProvider::MgTileCacheXYZProvider(MgResourceIdentifier* tileSetId,
                                                bool bRenderOnly,
                                                double tileExtentOffset,
                                                INT32 metaTileFactor,
-                                               INT32 metaTileLockMethod)
+                                               INT32 metaTileLockMethod,
+                                               INT32 retinaScale)
 {
     m_tilesetId = SAFE_ADDREF(tileSetId);
     m_path = path;
@@ -35,6 +36,7 @@ MgTileCacheXYZProvider::MgTileCacheXYZProvider(MgResourceIdentifier* tileSetId,
     m_tileExtentOffset = tileExtentOffset;
     m_metaTileFactor = metaTileFactor;
     m_metaTileLockMethod = metaTileLockMethod;
+    m_retinaScale = retinaScale;
 }
 
 MgTileCacheXYZProvider::~MgTileCacheXYZProvider()
@@ -42,15 +44,20 @@ MgTileCacheXYZProvider::~MgTileCacheXYZProvider()
 
 }
 
+bool MgTileCacheXYZProvider::IsTileImageFormat()
+{
+    return m_format == L"UTFGRID";
+}
+
 MgByteReader* MgTileCacheXYZProvider::GetTile(CREFSTRING baseMapLayerGroupName,
-                                                  INT32 tileColumn,
-                                                  INT32 tileRow,
-                                                  INT32 scaleIndex)
+                                              INT32 tileColumn,
+                                              INT32 tileRow,
+                                              INT32 scaleIndex)
 {
     Ptr<MgByteReader> ret;
     MG_TRY()
 
-        if (m_metaTileFactor > 1)
+        if (IsTileImageFormat() && m_metaTileFactor > 1)
             ret = GetMetatileForResource(m_tilesetId, baseMapLayerGroupName, tileColumn, tileRow, scaleIndex);
         else
             ret = GetTileForResource(m_tilesetId, baseMapLayerGroupName, tileColumn, tileRow, scaleIndex);
@@ -84,7 +91,7 @@ MgByteReader* MgTileCacheXYZProvider::RenderAndCacheTile(CREFSTRING tilePathname
         else //Assume it must be image-based at this point
         {
             // generate the tile
-            img = svcRendering->RenderTileXYZ(map, baseMapLayerGroupName, tileRow, tileColumn, scaleIndex, map->GetDisplayDpi(), m_format, m_tileExtentOffset);
+            img = svcRendering->RenderTileXYZ(map, baseMapLayerGroupName, tileRow, tileColumn, scaleIndex, map->GetDisplayDpi(), m_format, m_tileExtentOffset, m_retinaScale);
         }
         // cache the tile
         if (!m_renderOnly)
@@ -104,12 +111,12 @@ MgByteReader* MgTileCacheXYZProvider::RenderAndCacheTile(CREFSTRING tilePathname
 
 INT32 MgTileCacheXYZProvider::GetDefaultTileSizeX()
 {
-    return 256; //Always
+    return 256 * m_retinaScale;
 }
 
 INT32 MgTileCacheXYZProvider::GetDefaultTileSizeY()
 {
-    return 256; //Always
+    return 256 * m_retinaScale;
 }
 
 STRING MgTileCacheXYZProvider::GetTileFormat()
@@ -404,9 +411,8 @@ MgByteReader* MgTileCacheXYZProvider::GetMetatileForResource(MgResourceIdentifie
             serviceMan->RequestService(MgServiceType::RenderingService));
         _ASSERT(NULL != svcRendering);
 
-        //Ptr<MgByteReader> metaTileBitMap = GetTile(metaTileName, map, scaleIndex, baseMapLayerGroupName, metaTileColumn, metaTileRow);
         INT32 tileDpi = map->GetDisplayDpi();
-        Ptr<MgMetatile> metaTile = svcRendering->RenderMetatileXYZ(map, baseMapLayerGroupName, metaTileRow, metaTileColumn, scaleIndex, tileDpi, m_format, m_tileExtentOffset, m_metaTileFactor);
+        Ptr<MgMetatile> metaTile = svcRendering->RenderMetatileXYZ(map, baseMapLayerGroupName, metaTileRow, metaTileColumn, scaleIndex, tileDpi, m_format, m_tileExtentOffset, m_metaTileFactor, m_retinaScale);
 #ifdef _DEBUG
         Ptr<MgByteReader> mtContent = metaTile->GetImage();
         INT32 metaTileLen = mtContent->GetLength();

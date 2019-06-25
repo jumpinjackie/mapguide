@@ -276,3 +276,6 @@ QUICKPLOT_SCALE_LABEL   = Scale
 # Multiple Property Processing
 SERVERERROR             = Server Error
 ERRORSTACKTRACE         = Stack Trace
+
+# Unsupported tile set
+ERR_UNSUPPORTED_TILESET = Unsupported tile set provider: {0}

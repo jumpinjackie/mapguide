@@ -506,6 +506,70 @@ PUBLISHED_API:
     /// to a Tile Set
     MgResourceIdentifier* GetTileSetDefinition();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the provider name of the referenced tile set definition
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// string GetTileSetProvider();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// String GetTileSetProvider();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// string GetTileSetProvider();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \since 4.0
+    ///
+    /// \return
+    /// Returns the tile set provider name. Or an empty string if this map does not reference a tile set
+    STRING GetTileSetProvider();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the tile pixel ratio for retina tiles. This is only 
+    /// applicable for XYZ tiles.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// int GetTilePixelRatio();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// int GetTilePixelRatio();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// int GetTilePixelRatio();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \since 4.0
+    ///
+    /// \return
+    /// Returns the tile pixel ratio for retina tiles
+    INT32 GetTilePixelRatio();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the tile content format for the tile set definition
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// string GetTileFormat();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// String GetTileFormat();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// string GetTileFormat();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \since 4.0
+    ///
+    /// \return
+    /// Returns the tile content format
+    STRING GetTileFormat();
+
 INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
@@ -787,6 +851,9 @@ private:
     ColorStringList* m_colorPalette;
 
     INT32 m_watermarkUsage;
+    STRING m_tileSetProvider;
+    STRING m_tileFormat;
+    INT32 m_tilePixelRatio;
 };
 /// \}
 

@@ -24,6 +24,7 @@
 #include "OpRenderMap.cpp"
 #include "OpRenderMapLegend.cpp"
 #include "OpRenderMetatile.cpp"
+#include "OpRenderMetatileXYZ.cpp"
 #include "OpRenderTileFromMetatile.cpp"
 #include "OpRenderTile.cpp"
 #include "OpRenderTileXYZ.cpp"

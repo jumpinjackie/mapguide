@@ -49,6 +49,7 @@ INTERNAL_API:
     static const int QueryFeatureProperties3    = 0x1111E915;
     static const int RenderMetatile             = 0x1111E916;
     static const int RenderTileFromMetaTile     = 0x1111E917;
+    static const int RenderMetatileXYZ          = 0x1111E918;
 };
 /// \endcond
 

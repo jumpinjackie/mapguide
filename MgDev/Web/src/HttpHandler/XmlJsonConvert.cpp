@@ -827,6 +827,8 @@ bool MgXmlJsonConvert::Initialize()
     //RuntimeMap-3.0.0.xsd
     s_elementPathTypeMap["/RuntimeMap/TileWidth"] = XML_DATA_TYPE_NUM_INT;
     s_elementPathTypeMap["/RuntimeMap/TileHeight"] = XML_DATA_TYPE_NUM_INT;
+    //RuntimeMap-4.0.0.xsd
+    s_elementPathTypeMap["/RuntimeMap/TilePixelRatio"] = XML_DATA_TYPE_NUM_INT;
     //SiteInformation-1.0.0.xsd
     s_elementPathTypeMap["/SiteInformation/SiteServer/OperatingSystem/AvailablePhysicalMemory"] = XML_DATA_TYPE_NUM_INT;
     s_elementPathTypeMap["/SiteInformation/SiteServer/OperatingSystem/TotalPhysicalMemory"] = XML_DATA_TYPE_NUM_INT;

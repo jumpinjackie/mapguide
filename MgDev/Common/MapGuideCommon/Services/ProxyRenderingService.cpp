@@ -234,15 +234,16 @@ MgByteReader* MgProxyRenderingService::RenderTileXYZ(MgMap* map,
     INT32 z,
     INT32 dpi,
     CREFSTRING tileImageFormat,
-    double tileExtentOffset)
+    double tileExtentOffset,
+    INT32 retinaScale)
 {
     MgCommand cmd;
-    cmd.ExecuteCommand(m_connProp,                                      // Connection
+    cmd.ExecuteCommand(m_connProp,                      // Connection
         MgCommand::knObject,                            // Return type expected
         MgRenderingServiceOpId::RenderTileXYZ2,         // Command Code
-        8,                                              // No of arguments
+        9,                                              // No of arguments
         Rendering_Service,                              // Service Id
-        BUILD_VERSION(4,0,0),                         // Operation version
+        BUILD_VERSION(4,0,0),                           // Operation version
         MgCommand::knObject, map,                       // Argument#1
         MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
         MgCommand::knInt32, x,                          // Argument#3
@@ -251,6 +252,7 @@ MgByteReader* MgProxyRenderingService::RenderTileXYZ(MgMap* map,
         MgCommand::knInt32, dpi,                        // Argument#6
         MgCommand::knString, &tileImageFormat,          // Argument#7
         MgCommand::knDouble, tileExtentOffset,          // Argument#8
+        MgCommand::knInt32, retinaScale,                // Argument#9
         MgCommand::knNone);                             // End of arguments
 
     SetWarning(cmd.GetWarningObject());
@@ -1379,15 +1381,16 @@ MgMetatile* MgProxyRenderingService::RenderMetatileXYZ(
     INT32 dpi,
     CREFSTRING tileImageFormat,
     double tileExtentOffset,
-    INT32 metaTilingFactor)
+    INT32 metaTilingFactor,
+    INT32 retinaScale)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                      // Connection
         MgCommand::knObject,                            // Return type expected
-        MgRenderingServiceOpId::RenderTileXYZ2,         // Command Code
-        9,                                              // No of arguments
+        MgRenderingServiceOpId::RenderMetatileXYZ,      // Command Code
+        10,                                             // No of arguments
         Rendering_Service,                              // Service Id
-        BUILD_VERSION(4,0,0),                         // Operation version
+        BUILD_VERSION(4,0,0),                           // Operation version
         MgCommand::knObject, map,                       // Argument#1
         MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
         MgCommand::knInt32, x,                          // Argument#3
@@ -1397,6 +1400,7 @@ MgMetatile* MgProxyRenderingService::RenderMetatileXYZ(
         MgCommand::knString, &tileImageFormat,          // Argument#7
         MgCommand::knDouble, tileExtentOffset,          // Argument#8
         MgCommand::knInt32, metaTilingFactor,           // Argument#9
+        MgCommand::knInt32, retinaScale,                // Argument#10
         MgCommand::knNone);                             // End of arguments
 
     SetWarning(cmd.GetWarningObject());

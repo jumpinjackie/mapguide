@@ -75,6 +75,11 @@ int pointBufferSize;
     int tileSizeY = tileSrvc.GetDefaultTileSizeY();
     if (null != tileSetId)
     {
+        //Can't load map if it points to a non-default tile set provider
+        if (map.GetTileSetProvider() != "Default")
+        {
+            throw new RuntimeException(MessageFormat.format(MgLocalizer.GetString("ERR_UNSUPPORTED_TILESET", locale), new Object[] { map.GetTileSetProvider() }));
+        }
         //Overwrite the map definition with tile set id (this is for GETTILE requests) and
         //use size settings from that tile set
         mapDefinition = tileSetId.ToString();

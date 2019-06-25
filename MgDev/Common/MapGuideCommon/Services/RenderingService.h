@@ -278,6 +278,8 @@ PUBLISHED_API:
     /// Specifies the ratio by which the tile to be rendered should be "buffered out". The tile will be rendered at the specified width
     /// multiplied by the given ration, which will be cropped back to the original requested size after rendering. This is to improve
     /// label placement on rendered tiles by giving extra "breathing space" to label placement algorithms.
+    /// \param retinaScale
+    /// The scaling factor to apply for "retina" tiles
     ///
     /// \return
     /// A byte reader containing the rendered tile image.
@@ -291,7 +293,8 @@ PUBLISHED_API:
         INT32 z,
         INT32 dpi,
         CREFSTRING tileImageFormat,
-        double tileExtentOffset) = 0;
+        double tileExtentOffset,
+        INT32 retinaScale) = 0;
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -1221,6 +1224,9 @@ EXTERNAL_API:
     /// The meta-tiling factor. If less than or equal to 1, no meta-tiling is done and the returned meta-tile can be extracted
     /// as the orignally requested tile image. If greater than 1, a tile that is m times bigger than the requested tile is rendered
     /// (where m is the specified tiling factor) and the raw image frame buffer of this meta-tile is returned instead.
+    /// \param retinaScale
+    /// Input
+    /// The scaling factor to apply for "retina" tiles
     ///
     /// \return
     /// A meta-tile with sufficient information for the consumer to properly sub-divide this back into sub-tiles of the
@@ -1236,7 +1242,8 @@ EXTERNAL_API:
         INT32 dpi,
         CREFSTRING tileImageFormat,
         double tileExtentOffset,
-        INT32 metaTilingFactor) = 0;
+        INT32 metaTilingFactor,
+        INT32 retinaScale) = 0;
 
 
     /////////////////////////////////////////////////////////////////

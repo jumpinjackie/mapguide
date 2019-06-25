@@ -1,0 +1,441 @@
+<html>
+
+<head>
+    <title>Load any map example</title>
+    <link rel="stylesheet" href="../assets/ol.css" />
+    <style type="text/css">
+        #error {
+            color: red;
+        }
+
+        #wrap {
+            width: 900;
+        }
+
+        #wrap .map {
+            width: 650;
+            height: 500;
+            float: right;
+        }
+
+        #wrap .layers {
+            width: 250;
+            height: 500;
+            overflow: auto;
+            display: block-inline;
+            float: left;
+        }
+
+        #wrap .rootList {
+            list-style-type: none;
+            margin-left: -20px;
+        }
+
+        #wrap .rootList li {
+            list-style-type: none;
+        }
+
+        #main {
+            margin-top: 50px;
+            padding-top: 20px;
+        }
+    </style>
+    <script type="text/javascript" src="../assets/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="../assets/ol-debug.js"></script>
+    <script type="text/javascript" src="../assets/legend_ol.js"></script>
+    <script type="text/javascript">
+
+        //This sample is assumed to be hosted at http://servername/mapguide/ol2samples/hybrid/index.html
+        var mapAgentUrl = "../../mapagent/mapagent.fcgi";
+
+        //Various features you can include in the CREATERUNTIMEMAP response.
+        var REQ_NONE = 0;                   //Nothing. This the default.
+        var REQ_LAYER_STRUCTURE = 1;        //Information about layers and groups (required for the mask values below to have any effect)
+        var REQ_LAYER_ICONS = 2;            //Icons for each layer (has no effect if REQ_LAYER_STRUCTURE is not in the bitmask)
+        var REQ_LAYER_FEATURE_SOURCE = 4;   //Feature Source information for each layer (has no effect if REQ_LAYER_STRUCTURE is not in the bitmask)
+
+        var selectedMapDef = null;
+        var sessionId = null;
+        var availableMaps = [];
+
+        function createSession(username, password) {
+            return $.ajax({
+                url: mapAgentUrl,
+                method: "POST",
+                data: {
+                    "OPERATION": "CREATESESSION",
+                    "VERSION": "4.0.0",
+                    "USERNAME": username,
+                    "PASSWORD": password,
+                    "CLEAN": "1"
+                }
+            });
+        }
+
+        function listResources(session, type) {
+            return $.ajax({
+                url: mapAgentUrl,
+                method: "GET",
+                data: {
+                    "OPERATION": "ENUMERATERESOURCES",
+                    "VERSION": "4.0.0",
+                    "RESOURCEID": "Library://",
+                    "SESSION": session,
+                    "TYPE": type,
+                    "DEPTH": "-1",
+                    "COMPUTECHILDREN": "0",
+                    "FORMAT": "application/json",
+                    "CLEAN": "1"
+                }
+            });
+        }
+
+        var TILE_IMAGE_FORMATS = [
+            "PNG",
+            "PNG8",
+            "GIF",
+            "JPG"
+        ];
+        var activeMap = null;
+
+        function createMap(mapDef, session, reqFeatures) {
+            $("#wrap").html("<strong>Loading: " + mapDef + "</strong>");
+            $.getJSON(mapAgentUrl, {
+                "OPERATION": "CREATERUNTIMEMAP",
+                "VERSION": "4.0.0",
+                "MAPDEFINITION": mapDef,
+                "SESSION": session,
+                "REQUESTEDFEATURES": reqFeatures,
+                //Optional parameters you can specify and/or experiment with
+                //"ICONFORMAT": "GIF",    //Uncomment to override desired image format (default: PNG)
+                //"ICONWIDTH": 32,         //Uncomment to override desired icon width (default: 16)
+                //"ICONHEIGHT": 32,        //Uncomment to override desired icon height (default: 16)
+                //"ICONSPERSCALERANGE": 3, //Uncomment to observe theme compression for themes exceeding this number of rules (default: 25)
+                //"TARGETMAPNAME": "MyRuntimeMapForOpenLayers", //Uncomment if you require a specific map name be given (default: inferred from Map Definition)
+                "FORMAT": "application/json",
+                // This will give "clean" json responses that are more in line with their respective XML model
+                "CLEAN": "1"
+            }, function (data, textStatus, jqXHR) {
+                if (activeMap) {
+                    activeMap.destroy();
+                }
+                if (TILE_IMAGE_FORMATS.indexOf(data.RuntimeMap.TileFormat) >= 0) {
+                    activeMap = new MapViewModel("#wrap", data, jqXHR.responseText.length);
+                    $("#error").html("");
+                } else {
+                    $("#error").html("This map links to a non-image tile set. Cannot load it");
+                }
+            }).error(function (jqXHR, textStatus, errorThrown) {
+                $("#error").html(jqXHR.responseText);
+            });
+        }
+
+        /**
+         * A helper view model class to encapsulate all map-related
+         * view state
+         */
+        function MapViewModel(el, rtMapInfo, size) {
+            var _this = this;
+            _this.$el = $(el);
+            _this.iconMimeType = null;
+            _this.map = null; //The ol.map
+            _this.view = null; //The ol.view
+            _this.layers = [];
+            _this.finiteScales = [];
+            _this.groupLayers = [];
+            _this.destroy = function () {
+                $("#scale").text("");
+                $("#mapName").text("");
+                $("#jsonSize").text("");
+                $("#iconFormat").text("");
+                _this.map = null;
+                _this.view = null;
+            };
+            _this.updateScale = function (scale) {
+                $("#scale").text(scale);
+            };
+            _this.$el.html("<div class='layers'><div class='legend'><strong>Base Layer Groups</strong><ul class='rootList'></ul></div></div><div class='map'></div>");
+            $("#mapName").text(rtMapInfo.RuntimeMap.Name);
+            $("#jsonSize").text(size);
+            if (rtMapInfo.RuntimeMap.IconMimeType) {
+                _this.iconMimeType = rtMapInfo.RuntimeMap.IconMimeType;
+                $("#iconFormat").html(_this.iconMimeType);
+            }
+            var extent = [
+                rtMapInfo.RuntimeMap.Extents.LowerLeftCoordinate.X,
+                rtMapInfo.RuntimeMap.Extents.LowerLeftCoordinate.Y,
+                rtMapInfo.RuntimeMap.Extents.UpperRightCoordinate.X,
+                rtMapInfo.RuntimeMap.Extents.UpperRightCoordinate.Y
+            ];
+            if (rtMapInfo.RuntimeMap.FiniteDisplayScale) {
+                for (var i = rtMapInfo.RuntimeMap.FiniteDisplayScale.length - 1; i >= 0; i--) {
+                    _this.finiteScales.push(rtMapInfo.RuntimeMap.FiniteDisplayScale[i]);
+                }
+            }
+
+            //If a tile set definition is defined it takes precedence over the map definition, this enables
+            //this example to work with older releases of MapGuide where no such resource type exists.
+            var resourceId = rtMapInfo.RuntimeMap.TileSetDefinition || rtMapInfo.RuntimeMap.MapDefinition;
+            var tileWidth = rtMapInfo.RuntimeMap.TileWidth;
+            var tileHeight = rtMapInfo.RuntimeMap.TileHeight;
+            var metersPerUnit = rtMapInfo.RuntimeMap.CoordinateSystem.MetersPerUnit;
+            var dpi = rtMapInfo.RuntimeMap.DisplayDpi;
+            var projection = null;
+            if (rtMapInfo.RuntimeMap.CoordinateSystem.EpsgCode.length > 0) {
+                projection = "EPSG:" + rtMapInfo.RuntimeMap.CoordinateSystem.EpsgCode;
+            }
+            var zOrigin = _this.finiteScales.length - 1;
+            var resolutions = new Array(_this.finiteScales.length);
+            if (rtMapInfo.RuntimeMap.TileSetProvider == "XYZ") {
+                var retinaScale = 1;
+                if (typeof(rtMapInfo.RuntimeMap.TilePixelRatio) != 'undefined') {
+                    retinaScale = rtMapInfo.RuntimeMap.TilePixelRatio;
+                }
+                $("scale-el").hide(); //Not applicable for XYZ
+                for (var i = 0; i < rtMapInfo.RuntimeMap.Group.length; i++) {
+                    var group = rtMapInfo.RuntimeMap.Group[i];
+                    if (group.Type != 2 && group.Type != 3) { //BaseMap or LinkedTileSet
+                        continue;
+                    }
+                    _this.groupLayers.push(
+                        new ol.layer.Tile({
+                            name: group.Name,
+                            source: new ol.source.XYZ({
+                                attributions: [
+                                    new ol.Attribution({
+                                        html: '<img src="../../localized/PoweredBy_en.gif" title="Powered by MapGuide" />'
+                                    })
+                                ],
+                                url: getTileUrlTemplate(resourceId, group.Name, true),
+                                tilePixelRatio: retinaScale
+                            })
+                        })
+                    );
+                }
+            } else {
+                $("scale-el").show();
+                var inPerUnit = 39.37 * metersPerUnit;
+                for (var i = 0; i < _this.finiteScales.length; ++i) {
+                    resolutions[i] = _this.finiteScales[i] / inPerUnit / dpi;
+                }
+                var mgTileGrid = new ol.tilegrid.TileGrid({
+                    origin: ol.extent.getTopLeft(extent),
+                    resolutions: resolutions,
+                    tileSize: [tileWidth, tileHeight]
+                });
+                for (var i = 0; i < rtMapInfo.RuntimeMap.Group.length; i++) {
+                    var group = rtMapInfo.RuntimeMap.Group[i];
+                    if (group.Type != 2 && group.Type != 3) { //BaseMap or LinkedTileSet
+                        continue;
+                    }
+                    _this.groupLayers.push(
+                        new ol.layer.Tile({
+                            name: group.Name,
+                            source: new ol.source.TileImage({
+                                tileGrid: mgTileGrid,
+                                projection: projection,
+                                tileUrlFunction: getTileUrlFunctionForGroup(resourceId, group.Name, zOrigin),
+                                wrapX: false
+                            })
+                        })
+                    );
+                }
+            }
+            /*
+            if (groupLayers.length > 0) {
+                groupLayers.push( 
+                    new ol.layer.Tile({
+                        source: new ol.source.TileDebug({
+                            tileGrid: tileGrid,
+                            projection: projection,
+                            tileUrlFunction: function(tileCoord) {
+                                return urlTemplate.replace('{z}', (zOrigin - tileCoord[0]).toString())
+                                    .replace('{x}', tileCoord[1].toString())
+                                    .replace('{y}', (-tileCoord[2] - 1).toString());
+                            },
+                            wrapX: false
+                        })
+                    })
+                );
+            }
+            */
+
+            var overlay = new ol.layer.Image({
+                name: "MapGuide Dynamic Overlay",
+                extent: extent,
+                source: new ol.source.ImageMapGuide({
+                    projection: projection,
+                    url: mapAgentUrl,
+                    useOverlay: true,
+                    metersPerUnit: metersPerUnit,
+                    params: {
+                        MAPNAME: rtMapInfo.RuntimeMap.Name,
+                        FORMAT: 'PNG',
+                        SESSION: rtMapInfo.RuntimeMap.SessionId,
+                        BEHAVIOR: 2
+                    },
+                    ratio: 2
+                })
+            });
+
+            // Add an OSM base layer for real-world context if EPSG:3857
+            if (projection == "EPSG:3857") {
+                _this.layers.push(new ol.layer.Tile({
+                    source: new ol.source.OSM({
+                        attributions: [
+                            new ol.Attribution({
+                                html: 'Tiles &copy; <a href="http://www.openstreetmap.org/">' +
+                                    'OpenStreetMap</a>'
+                            }),
+                            ol.source.OSM.ATTRIBUTION
+                        ],
+                        url: 'http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    })
+                }));
+            }
+
+            for (var i = _this.groupLayers.length - 1; i >= 0; i--) {
+                _this.layers.push(_this.groupLayers[i]);
+            }
+            _this.layers.push(overlay);
+            /*
+            console.log("Draw Order:");
+            for (var i = 0; i < layers.length; i++) {
+                console.log(" " + layers[i].get("name"));
+            }
+            */
+            if (resolutions.length == 0) {
+                if (rtMapInfo.RuntimeMap.TileSetProvider == "XYZ") {
+                    var center = ol.extent.getCenter(extent);
+                    _this.view = new ol.View({
+                        center: ol.proj.transform(center, 'EPSG:4326', 'EPSG:3857'),
+                        minZoom: 10,
+                        maxZoom: 19,
+                        zoom: 12
+                    });
+                } else {
+                    _this.view = new ol.View({
+                        projection: projection
+                    });
+                }
+            } else {
+                _this.view = new ol.View({
+                    projection: projection,
+                    resolutions: resolutions
+                });
+            }
+            _this.map = new ol.Map({
+                target: $(".map", _this.$el)[0],
+                layers: _this.layers,
+                view: _this.view
+            });
+            _this.view.fit(extent, _this.map.getSize());
+            _this.view.on("change:resolution", function (e) {
+                _this.updateScale(_this.view.getResolution() * dpi * inPerUnit);
+            });
+            _this.updateScale(_this.view.getResolution() * dpi * inPerUnit);
+
+            var mgTiledLayers = {};
+            for (var i = 0; i < _this.groupLayers.length; i++) {
+                var grp = _this.groupLayers[i];
+                mgTiledLayers[grp.get("name")] = grp;
+            }
+            _this.legend = new Legend({
+                legendSelector: el + " .rootList",
+                stdIconRoot: "../../stdicons",
+                runtimeMap: rtMapInfo,
+                map: _this.map,
+                mgLayerOL: overlay,
+                mgTiledLayers: mgTiledLayers
+            });
+            _this.legend.update();
+        }
+
+        function getTileUrlTemplate(resourceId, groupName, isXYZ) {
+            var urlTemplate = mapAgentUrl
+                + "?OPERATION=GETTILEIMAGE"
+                + "&VERSION=1.2.0"
+                + "&USERNAME=Anonymous"
+                + "&MAPDEFINITION=" + resourceId
+                + "&BASEMAPLAYERGROUPNAME=" + groupName;
+            if (isXYZ) {
+                urlTemplate += "&TILEROW={x}&TILECOL={y}";
+            } else {
+                urlTemplate += "&TILEROW={y}&TILECOL={x}";
+            }
+            urlTemplate += "&SCALEINDEX={z}";
+            return urlTemplate;
+        }
+
+        function getTileUrlFunctionForGroup(resourceId, groupName, zOrigin) {
+            var urlTemplate = getTileUrlTemplate(resourceId, groupName, false);
+            return function (tileCoord) {
+                return urlTemplate
+                    .replace('{z}', (zOrigin - tileCoord[0]).toString())
+                    .replace('{x}', tileCoord[1].toString())
+                    .replace('{y}', (-tileCoord[2] - 1).toString());
+            };
+        }
+
+        $(document).ready(function () {
+            createSession("Anonymous", "").then(function (sid) {
+                sessionId = sid;
+                return listResources(sessionId, "MapDefinition");
+            }).then(function (list) {
+                for (var i = 0; i < list.ResourceList.ResourceDocument.length; i++) {
+                    var doc = list.ResourceList.ResourceDocument[i];
+                    availableMaps.push(doc.ResourceId);
+                }
+                return listResources(sessionId, "TileSetDefinition");
+            }).then(function (list) {
+                for (var i = 0; i < list.ResourceList.ResourceDocument.length; i++) {
+                    var doc = list.ResourceList.ResourceDocument[i];
+                    availableMaps.push(doc.ResourceId);
+                }
+                var html = "<select class='map-picker'>";
+                html += "<option>(Select a map/tileset)</option>";
+                for (var i = 0; i < availableMaps.length; i++) {
+                    html += "<option>" + availableMaps[i] + "</option>";
+                }
+                html += "</select>";
+                html += "<button type='button' class='load-map'>Load Map</button>";
+                $("#picker").html(html);
+                $("button.load-map").attr("disabled", (selectedMapDef && selectedMapDef != "") ? null : "disabled");
+                $("button.load-map").on("click", function (e) {
+                    //Have a play with the bitmask values to see the differences in JSON payload size
+                    //and to see how our legend control gracefully handles such situations
+                    createMap(selectedMapDef, sessionId, REQ_LAYER_STRUCTURE | REQ_LAYER_FEATURE_SOURCE | REQ_LAYER_ICONS)
+                });
+                $("select.map-picker").on("change", function (e) {
+                    selectedMapDef = this.value;
+                    $("button.load-map").attr("disabled", (selectedMapDef && selectedMapDef != "") ? null : "disabled");
+                });
+            })
+        });
+    </script>
+</head>
+
+<body>
+    <div id="main">
+        <div class="container">
+            <div id="picker">
+
+            </div>
+            <div id="error">
+            </div>
+            <div id="wrap">
+
+            </div>
+            <div class="clearfix"></div>
+            <div class="alert alert-info">
+                <p id="scale-el">Scale: 1:<span id="scale"></span></p>
+                <p>JSON payload for CREATERUNTIMEMAP is: <span id="jsonSize"></span> characters</p>
+                <p>Icon format is: <span id="iconFormat"></span></p>
+                <p id="mapName"></p>
+                <p id="mgSession"></p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

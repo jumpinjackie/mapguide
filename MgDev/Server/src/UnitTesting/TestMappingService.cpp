@@ -202,10 +202,20 @@ void TestMappingService::TestStart()
         Ptr<MgByteReader> mdfrdr2 = mdfsrc2->GetReader();
         m_svcResource->SetResource(mapres2, mdfrdr2, NULL);
 
+        Ptr<MgResourceIdentifier> mapres3 = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinkedTileSetXYZ.MapDefinition");
+        Ptr<MgByteSource> mdfsrc3 = new MgByteSource(L"../UnitTestFiles/UT_LinkedTileSetXYZ.mdf", false);
+        Ptr<MgByteReader> mdfrdr3 = mdfsrc3->GetReader();
+        m_svcResource->SetResource(mapres3, mdfrdr3, NULL);
+
         Ptr<MgResourceIdentifier> tilesetres1 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition");
         Ptr<MgByteSource> tsdsrc1 = new MgByteSource(L"../UnitTestFiles/UT_BaseMap.tsd", false);
         Ptr<MgByteReader> tsdrdr1 = tsdsrc1->GetReader();
         m_svcResource->SetResource(tilesetres1, tsdrdr1, NULL);
+
+        Ptr<MgResourceIdentifier> tilesetres2 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ.TileSetDefinition");
+        Ptr<MgByteSource> tsdsrc2 = new MgByteSource(L"../UnitTestFiles/UT_XYZ.tsd", false);
+        Ptr<MgByteReader> tsdrdr2 = tsdsrc2->GetReader();
+        m_svcResource->SetResource(tilesetres2, tsdrdr2, NULL);
 
         Ptr<MgByteSource> bsPackage = new MgByteSource(L"../UnitTestFiles/PlotHole.mgp", false);
         Ptr<MgByteReader> pkgReader = bsPackage->GetReader();
@@ -286,8 +296,14 @@ void TestMappingService::TestEnd()
         Ptr<MgResourceIdentifier> mapres2 = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinkedTileSet.MapDefinition");
         m_svcResource->DeleteResource(mapres2);
 
+        Ptr<MgResourceIdentifier> mapres3 = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinkedTileSetXYZ.MapDefinition");
+        m_svcResource->DeleteResource(mapres3);
+
         Ptr<MgResourceIdentifier> tilesetres1 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/Sheboygan.TileSetDefinition");
         m_svcResource->DeleteResource(tilesetres1);
+
+        Ptr<MgResourceIdentifier> tilesetres2 = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ.TileSetDefinition");
+        m_svcResource->DeleteResource(tilesetres2);
 
         Ptr<MgResourceIdentifier> plotHoleFolder = new MgResourceIdentifier(L"Library://UnitTests/PlotHole/");
         m_svcResource->DeleteResource(plotHoleFolder);
@@ -314,91 +330,121 @@ void TestMappingService::TestEnd()
     ACE_DEBUG((LM_INFO, ACE_TEXT("\nMapping Service tests completed.\n\n")));
 }
 
-void TestMappingService::TestCase_CreateRuntimeMap()
+void TestMappingService::TestCase_CreateRuntimeMap(INT32 major, INT32 minor, INT32 rev)
 {
     try
     {
+        STRING suffix = L"_";
+        STRING s;
+        MgUtil::Int32ToString(major, s);
+        suffix += s;
+        suffix += L"_";
+        MgUtil::Int32ToString(minor, s);
+        suffix += s;
+        suffix += L"_";
+        MgUtil::Int32ToString(rev, s);
+        suffix += s;
+        auto schemaVersion = MG_API_VERSION(major, minor, rev);
+
         //make a runtime map
         Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
+        Ptr<MgResourceIdentifier> mdfLinkedRes = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinkedTileSet.MapDefinition");
+        Ptr<MgResourceIdentifier> mdfLinkedXYZRes = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinkedTileSetXYZ.MapDefinition");
         STRING format = MgImageFormats::Png;
         //call the API
-        Ptr<MgByteReader> rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan1", m_session, format, 16, 16, 0, 25);
+        Ptr<MgByteReader> rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan1", m_session, format, 16, 16, 0, 25, schemaVersion);
         Ptr<MgByteSink> sink = new MgByteSink(rtMap);
         sink->ToFile(L"../UnitTestFiles/RuntimeMapBarebones.xml");
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan2", m_session, format, 16, 16, 1, 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan2", m_session, format, 16, 16, 1, 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroups.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroups" + suffix + L".xml");
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan3", m_session, format, 16, 16, (1 | 2), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan3", m_session, format, 16, 16, (1 | 2), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsPNG16x16.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsPNG16x16" + suffix + L".xml");
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan4", m_session, format, 16, 16, (1 | 2 | 4), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan4", m_session, format, 16, 16, (1 | 2 | 4), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourcePNG16x16.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourcePNG16x16" + suffix + L".xml");
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan5", m_session, format, 32, 32, (1 | 2), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan5", m_session, format, 32, 32, (1 | 2), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsPNG32x32.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsPNG32x32" + suffix + L".xml");
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan6", m_session, format, 32, 32, (1 | 2 | 4), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan6", m_session, format, 32, 32, (1 | 2 | 4), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourcePNG32x32.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourcePNG32x32" + suffix + L".xml");
 
         format = MgImageFormats::Gif;
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan3", m_session, format, 16, 16, (1 | 2), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan3", m_session, format, 16, 16, (1 | 2), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsGIF16x16.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsGIF16x16" + suffix + L".xml");
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan4", m_session, format, 16, 16, (1 | 2 | 4), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan4", m_session, format, 16, 16, (1 | 2 | 4), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourceGIF16x16.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourceGIF16x16" + suffix + L".xml");
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan5", m_session, format, 32, 32, (1 | 2), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan5", m_session, format, 32, 32, (1 | 2), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsGIF32x32.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsGIF32x32" + suffix + L".xml");
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan6", m_session, format, 32, 32, (1 | 2 | 4), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan6", m_session, format, 32, 32, (1 | 2 | 4), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourceGIF32x32.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourceGIF32x32" + suffix + L".xml");
 
         format = MgImageFormats::Jpeg;
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan3", m_session, format, 16, 16, (1 | 2), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan3", m_session, format, 16, 16, (1 | 2), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsJPEG16x16.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsJPEG16x16" + suffix + L".xml");
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan4", m_session, format, 16, 16, (1 | 2 | 4), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan4", m_session, format, 16, 16, (1 | 2 | 4), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourceJPEG16x16.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourceJPEG16x16" + suffix + L".xml");
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan5", m_session, format, 32, 32, (1 | 2), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan5", m_session, format, 32, 32, (1 | 2), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsJPEG32x32.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsJPEG32x32" + suffix + L".xml");
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan6", m_session, format, 32, 32, (1 | 2 | 4), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan6", m_session, format, 32, 32, (1 | 2 | 4), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourceJPEG32x32.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourceJPEG32x32" + suffix + L".xml");
 
         format = MgImageFormats::Png8;
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan3", m_session, format, 16, 16, (1 | 2), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan3", m_session, format, 16, 16, (1 | 2), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsPNG816x16.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsPNG816x16" + suffix + L".xml");
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan4", m_session, format, 16, 16, (1 | 2 | 4), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan4", m_session, format, 16, 16, (1 | 2 | 4), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourcePNG816x16.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourcePNG816x16" + suffix + L".xml");
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan5", m_session, format, 32, 32, (1 | 2), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan5", m_session, format, 32, 32, (1 | 2), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsPNG832x32.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsPNG832x32" + suffix + L".xml");
 
-        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan6", m_session, format, 32, 32, (1 | 2 | 4), 25);
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan6", m_session, format, 32, 32, (1 | 2 | 4), 25, schemaVersion);
         sink = new MgByteSink(rtMap);
-        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourcePNG832x32.xml");
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourcePNG832x32" + suffix + L".xml");
+
+        if (schemaVersion >= MG_API_VERSION(4, 0, 0))
+        {
+            Ptr<MgResourceIdentifier> tsdRes = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ.TileSetDefinition");
+            rtMap = m_svcMapping->CreateRuntimeMap(tsdRes, L"UnitTestSheboygan7", m_session, format, 32, 32, (1 | 2 | 4), 25, schemaVersion);
+            sink = new MgByteSink(rtMap);
+            sink->ToFile(L"../UnitTestFiles/RuntimeMapFromTileSetLayersAndGroupsWithIconsAndFeatureSourcePNG832x32" + suffix + L".xml");
+
+            rtMap = m_svcMapping->CreateRuntimeMap(mdfLinkedRes, L"UnitTestSheboygan8", m_session, format, 32, 32, (1 | 2 | 4), 25, schemaVersion);
+            sink = new MgByteSink(rtMap);
+            sink->ToFile(L"../UnitTestFiles/RuntimeMapFromLinkedTileSetLayersAndGroupsWithIconsAndFeatureSourcePNG832x32" + suffix + L".xml");
+
+            rtMap = m_svcMapping->CreateRuntimeMap(mdfLinkedXYZRes, L"UnitTestSheboygan9", m_session, format, 32, 32, (1 | 2 | 4), 25, schemaVersion);
+            sink = new MgByteSink(rtMap);
+            sink->ToFile(L"../UnitTestFiles/RuntimeMapFromLinkedXYZTileSetLayersAndGroupsWithIconsAndFeatureSourcePNG832x32" + suffix + L".xml");
+        }
     }
     catch(MgException* e)
     {

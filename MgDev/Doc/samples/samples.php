@@ -123,6 +123,8 @@ $hasNothing = !$hasDotNet && !$hasPhp && !$hasJava;
                 </ul>
                 <p class="sample-header">MapGuide with <a href="http://www.openlayers.org">OpenLayers</a></p>
                 <ul>
+                    <li><a href="ol2samples/hybrid/index.html">Open any map or tile set</a></li>
+                    <li><a href="ol2samples/xyz/index_ol.html">Sheboygan map as XYZ layer</a></li>
                     <li><a href="ol2samples/utfgrid/index.html">Sheboygan map as XYZ layer with UTFGrid interaction tiles</a></li>
                 </ul>
                 <? } ?>

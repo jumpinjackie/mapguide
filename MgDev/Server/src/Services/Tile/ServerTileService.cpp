@@ -147,6 +147,93 @@ INT32 MgServerTileService::GetDefaultTileSizeY(MgResourceIdentifier* tileSet)
     return ret;
 }
 
+void MgServerTileService::WriteCommonTileProviderProperties(std::string& xml)
+{
+    //Property: TilePath
+    xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
+    xml.append("<Name>");
+    std::string mbTilePath;
+    MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_TILEPATH, mbTilePath);
+    xml.append(mbTilePath);
+    xml.append("</Name>\n");
+    xml.append("<LocalizedName>");
+    std::string mbLocName;
+    STRING wLocName = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_TilePath_LocalizedName");
+    MgUtil::WideCharToMultiByte(wLocName, mbLocName);
+    xml.append(mbLocName);
+    xml.append("</LocalizedName>\n");
+    xml.append("<DefaultValue>");
+    std::string mbDefaultTag;
+    MgUtil::WideCharToMultiByte(MgResourceTag::TileCachePath, mbDefaultTag);
+    xml.append(mbDefaultTag);
+    xml.append("</DefaultValue>\n");
+    xml.append("</ConnectionProperty>\n");
+
+    //Property: RenderOnly
+    xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"false\">\n");
+    xml.append("<Name>");
+    std::string mbRenderOnly;
+    MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_RENDERONLY, mbRenderOnly);
+    xml.append(mbRenderOnly);
+    xml.append("</Name>\n");
+    xml.append("<LocalizedName>");
+    std::string mbLocRenderOnly;
+    STRING wLocRenderOnly = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_RenderOnly_LocalizedName");
+    MgUtil::WideCharToMultiByte(wLocRenderOnly, mbLocRenderOnly);
+    xml.append(mbLocRenderOnly);
+    xml.append("</LocalizedName>\n");
+    xml.append("<DefaultValue>false</DefaultValue>\n");
+    xml.append("</ConnectionProperty>\n");
+
+    //Property: TileExtentOffset
+    xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
+    xml.append("<Name>");
+    std::string mbTileExtentOffset;
+    MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_TILEEXTENTOFFSET, mbTileExtentOffset);
+    xml.append(mbTileExtentOffset);
+    xml.append("</Name>\n");
+    xml.append("<LocalizedName>");
+    std::string mbLocTileExtentOffset;
+    STRING wLocTileExtentOffset = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_TileExtentOffset_LocalizedName");
+    MgUtil::WideCharToMultiByte(wLocTileExtentOffset, mbLocTileExtentOffset);
+    xml.append(mbLocTileExtentOffset);
+    xml.append("</LocalizedName>\n");
+    xml.append("<DefaultValue></DefaultValue>\n");
+    xml.append("</ConnectionProperty>\n");
+
+    //Property: MetaTileFactor
+    xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
+    xml.append("<Name>");
+    std::string mbMetaTileFactor;
+    MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_METATILEFACTOR, mbMetaTileFactor);
+    xml.append(mbMetaTileFactor);
+    xml.append("</Name>\n");
+    xml.append("<LocalizedName>");
+    std::string mbLocMetaTileFactor;
+    STRING wLocMetaTileFactor = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_MetaTileFactor_LocalizedName");
+    MgUtil::WideCharToMultiByte(wLocMetaTileFactor, mbLocMetaTileFactor);
+    xml.append(mbLocMetaTileFactor);
+    xml.append("</LocalizedName>\n");
+    xml.append("<DefaultValue></DefaultValue>\n");
+    xml.append("</ConnectionProperty>\n");
+
+    //Property: MetaTileLockMethod
+    xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
+    xml.append("<Name>");
+    std::string mbMetaTileLockMethod;
+    MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_METATILELOCKMETHOD, mbMetaTileLockMethod);
+    xml.append(mbMetaTileLockMethod);
+    xml.append("</Name>\n");
+    xml.append("<LocalizedName>");
+    std::string mbLocMetaTileLockMethod;
+    STRING wLocMetaTileLockMethod = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_MetaTileLockMethod_LocalizedName");
+    MgUtil::WideCharToMultiByte(wLocMetaTileLockMethod, mbLocMetaTileLockMethod);
+    xml.append(mbLocMetaTileLockMethod);
+    xml.append("</LocalizedName>\n");
+    xml.append("<DefaultValue></DefaultValue>\n");
+    xml.append("</ConnectionProperty>\n");
+}
+
 MgByteReader* MgServerTileService::GetTileProviders()
 {
     Ptr<MgByteReader> ret;
@@ -180,27 +267,7 @@ MgByteReader* MgServerTileService::GetTileProviders()
         xml.append(mbDescription);
         xml.append("</Description>\n");
         xml.append("<ConnectionProperties>\n");
-    
-        //Property: TilePath
-        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
-        xml.append("<Name>");
-        std::string mbTilePath;
-        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_TILEPATH, mbTilePath);
-        xml.append(mbTilePath);
-        xml.append("</Name>\n");
-        xml.append("<LocalizedName>");
-        std::string mbLocName;
-        STRING wLocName = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_TilePath_LocalizedName");
-        MgUtil::WideCharToMultiByte(wLocName, mbLocName);
-        xml.append(mbLocName);
-        xml.append("</LocalizedName>\n");
-        xml.append("<DefaultValue>");
-        std::string mbDefaultTag;
-        MgUtil::WideCharToMultiByte(MgResourceTag::TileCachePath, mbDefaultTag);
-        xml.append(mbDefaultTag);
-        xml.append("</DefaultValue>\n");
-        xml.append("</ConnectionProperty>\n");
-    
+
         //Property: TileWidth
         xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
         xml.append("<Name>");
@@ -263,22 +330,6 @@ MgByteReader* MgServerTileService::GetTileProviders()
 
         xml.append("</ConnectionProperty>\n");
 
-        //Property: RenderOnly
-        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"false\">\n");
-        xml.append("<Name>");
-        std::string mbRenderOnly;
-        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_RENDERONLY, mbRenderOnly);
-        xml.append(mbRenderOnly);
-        xml.append("</Name>\n");
-        xml.append("<LocalizedName>");
-        std::string mbLocRenderOnly;
-        STRING wLocRenderOnly = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_RenderOnly_LocalizedName");
-        MgUtil::WideCharToMultiByte(wLocRenderOnly, mbLocRenderOnly);
-        xml.append(mbLocRenderOnly);
-        xml.append("</LocalizedName>\n");
-        xml.append("<DefaultValue>false</DefaultValue>\n");
-        xml.append("</ConnectionProperty>\n");
-
         //Property: CoordinateSystem
         xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
         xml.append("<Name>");
@@ -311,53 +362,7 @@ MgByteReader* MgServerTileService::GetTileProviders()
         xml.append("<DefaultValue></DefaultValue>\n");
         xml.append("</ConnectionProperty>\n");
 
-        //Property: TileExtentOffset
-        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
-        xml.append("<Name>");
-        std::string mbTileExtentOffset;
-        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_TILEEXTENTOFFSET, mbTileExtentOffset);
-        xml.append(mbTileExtentOffset);
-        xml.append("</Name>\n");
-        xml.append("<LocalizedName>");
-        std::string mbLocTileExtentOffset;
-        STRING wLocTileExtentOffset = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_TileExtentOffset_LocalizedName");
-        MgUtil::WideCharToMultiByte(wLocTileExtentOffset, mbLocTileExtentOffset);
-        xml.append(mbLocTileExtentOffset);
-        xml.append("</LocalizedName>\n");
-        xml.append("<DefaultValue></DefaultValue>\n");
-        xml.append("</ConnectionProperty>\n");
-
-        //Property: MetaTileFactor
-        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
-        xml.append("<Name>");
-        std::string mbMetaTileFactor;
-        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_METATILEFACTOR, mbMetaTileFactor);
-        xml.append(mbMetaTileFactor);
-        xml.append("</Name>\n");
-        xml.append("<LocalizedName>");
-        std::string mbLocMetaTileFactor;
-        STRING wLocMetaTileFactor = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_MetaTileFactor_LocalizedName");
-        MgUtil::WideCharToMultiByte(wLocMetaTileFactor, mbLocMetaTileFactor);
-        xml.append(mbLocMetaTileFactor);
-        xml.append("</LocalizedName>\n");
-        xml.append("<DefaultValue></DefaultValue>\n");
-        xml.append("</ConnectionProperty>\n");
-
-        //Property: MetaTileLockMethod
-        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
-        xml.append("<Name>");
-        std::string mbMetaTileLockMethod;
-        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_METATILELOCKMETHOD, mbMetaTileLockMethod);
-        xml.append(mbMetaTileLockMethod);
-        xml.append("</Name>\n");
-        xml.append("<LocalizedName>");
-        std::string mbLocMetaTileLockMethod;
-        STRING wLocMetaTileLockMethod = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_MetaTileLockMethod_LocalizedName");
-        MgUtil::WideCharToMultiByte(wLocMetaTileLockMethod, mbLocMetaTileLockMethod);
-        xml.append(mbLocMetaTileLockMethod);
-        xml.append("</LocalizedName>\n");
-        xml.append("<DefaultValue></DefaultValue>\n");
-        xml.append("</ConnectionProperty>\n");
+        WriteCommonTileProviderProperties(xml);
 
         xml.append("</ConnectionProperties>\n");
         xml.append("</TileProvider>\n");
@@ -384,26 +389,6 @@ MgByteReader* MgServerTileService::GetTileProviders()
         xml.append(mbDescription);
         xml.append("</Description>\n");
         xml.append("<ConnectionProperties>\n");
-    
-        //Property: TilePath
-        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
-        xml.append("<Name>");
-        std::string mbTilePath;
-        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_TILEPATH, mbTilePath);
-        xml.append(mbTilePath);
-        xml.append("</Name>\n");
-        xml.append("<LocalizedName>");
-        std::string mbLocName;
-        STRING wLocName = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_TilePath_LocalizedName");
-        MgUtil::WideCharToMultiByte(wLocName, mbLocName);
-        xml.append(mbLocName);
-        xml.append("</LocalizedName>\n");
-        xml.append("<DefaultValue>");
-        std::string mbDefaultTag;
-        MgUtil::WideCharToMultiByte(MgResourceTag::TileCachePath, mbDefaultTag);
-        xml.append(mbDefaultTag);
-        xml.append("</DefaultValue>\n");
-        xml.append("</ConnectionProperty>\n");
 
         //Property: TileFormat
         xml.append("<ConnectionProperty Enumerable=\"true\" Protected=\"false\" Required=\"true\">\n");
@@ -427,70 +412,23 @@ MgByteReader* MgServerTileService::GetTileProviders()
         xml.append("<Value>UTFGRID</Value>");
         xml.append("</ConnectionProperty>\n");
 
-        //Property: RenderOnly
-        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"false\">\n");
-        xml.append("<Name>");
-        std::string mbRenderOnly;
-        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_RENDERONLY, mbRenderOnly);
-        xml.append(mbRenderOnly);
-        xml.append("</Name>\n");
-        xml.append("<LocalizedName>");
-        std::string mbLocRenderOnly;
-        STRING wLocRenderOnly = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_RenderOnly_LocalizedName");
-        MgUtil::WideCharToMultiByte(wLocRenderOnly, mbLocRenderOnly);
-        xml.append(mbLocRenderOnly);
-        xml.append("</LocalizedName>\n");
-        xml.append("<DefaultValue>false</DefaultValue>\n");
-        xml.append("</ConnectionProperty>\n");
-
-        //Property: TileExtentOffset
+        //Property: RetinaScale
         xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
         xml.append("<Name>");
-        std::string mbTileExtentOffset;
-        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_TILEEXTENTOFFSET, mbTileExtentOffset);
-        xml.append(mbTileExtentOffset);
+        std::string mbRetinaScale;
+        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_XYZ_PARAM_RETINASCALE, mbRetinaScale);
+        xml.append(mbRetinaScale);
         xml.append("</Name>\n");
         xml.append("<LocalizedName>");
-        std::string mbLocTileExtentOffset;
-        STRING wLocTileExtentOffset = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_TileExtentOffset_LocalizedName");
-        MgUtil::WideCharToMultiByte(wLocTileExtentOffset, mbLocTileExtentOffset);
-        xml.append(mbLocTileExtentOffset);
+        std::string mbLocRetinaScale;
+        STRING wLocRetinaScale = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_XYZ_Property_RetinaScale_LocalizedName");
+        MgUtil::WideCharToMultiByte(wLocRetinaScale, mbLocRetinaScale);
+        xml.append(mbLocRetinaScale);
         xml.append("</LocalizedName>\n");
         xml.append("<DefaultValue></DefaultValue>\n");
         xml.append("</ConnectionProperty>\n");
 
-        //Property: MetaTileFactor
-        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
-        xml.append("<Name>");
-        std::string mbMetaTileFactor;
-        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_METATILEFACTOR, mbMetaTileFactor);
-        xml.append(mbMetaTileFactor);
-        xml.append("</Name>\n");
-        xml.append("<LocalizedName>");
-        std::string mbLocMetaTileFactor;
-        STRING wLocMetaTileFactor = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_MetaTileFactor_LocalizedName");
-        MgUtil::WideCharToMultiByte(wLocMetaTileFactor, mbLocMetaTileFactor);
-        xml.append(mbLocMetaTileFactor);
-        xml.append("</LocalizedName>\n");
-        xml.append("<DefaultValue></DefaultValue>\n");
-        xml.append("</ConnectionProperty>\n");
-
-        //Property: MetaTileLockMethod
-        xml.append("<ConnectionProperty Enumerable=\"false\" Protected=\"false\" Required=\"true\">\n");
-        xml.append("<Name>");
-        std::string mbMetaTileLockMethod;
-        MgUtil::WideCharToMultiByte(MG_TILE_PROVIDER_COMMON_PARAM_METATILELOCKMETHOD, mbMetaTileLockMethod);
-        xml.append(mbMetaTileLockMethod);
-        xml.append("</Name>\n");
-        xml.append("<LocalizedName>");
-        std::string mbLocMetaTileLockMethod;
-        STRING wLocMetaTileLockMethod = MgUtil::GetResourceMessage(MgResources::TileService, L"MgTileProvider_Common_Property_MetaTileLockMethod_LocalizedName");
-        MgUtil::WideCharToMultiByte(wLocMetaTileLockMethod, mbLocMetaTileLockMethod);
-        xml.append(mbLocMetaTileLockMethod);
-        xml.append("</LocalizedName>\n");
-        xml.append("<DefaultValue></DefaultValue>\n");
-        xml.append("</ConnectionProperty>\n");
-
+        WriteCommonTileProviderProperties(xml);
 
         xml.append("</ConnectionProperties>\n");
         xml.append("</TileProvider>\n");
@@ -662,6 +600,7 @@ MgTileCache* MgServerTileService::GetTileCache(MgResourceIdentifier* tileSetId, 
         bool bRenderOnly = false;
         INT32 metaTileFactor = 0;
         INT32 metaTileLockMethod = 0;
+        INT32 retinaScale = 1;
         for (INT32 i = 0; i < parameters->GetCount(); i++)
         {
             MdfModel::NameStringPair* pair = parameters->GetAt(i);
@@ -693,6 +632,10 @@ MgTileCache* MgServerTileService::GetTileCache(MgResourceIdentifier* tileSetId, 
             {
                 metaTileLockMethod = MgUtil::StringToInt32(pair->GetValue());
             }
+            else if (pair->GetName() == MG_TILE_PROVIDER_XYZ_PARAM_RETINASCALE)
+            {
+                retinaScale = MgUtil::StringToInt32(pair->GetValue());
+            }
         }
 
         //If we find the cache path substitution tag, replace it with the default path from the configuration
@@ -701,7 +644,7 @@ MgTileCache* MgServerTileService::GetTileCache(MgResourceIdentifier* tileSetId, 
             path = MgTileParameters::tileCachePath;
         }
 
-        cache = new MgTileCacheXYZProvider(tileSetId, path, format, bRenderOnly, tileExtentOffset, metaTileFactor, metaTileLockMethod);
+        cache = new MgTileCacheXYZProvider(tileSetId, path, format, bRenderOnly, tileExtentOffset, metaTileFactor, metaTileLockMethod, retinaScale);
     }
     else 
     {

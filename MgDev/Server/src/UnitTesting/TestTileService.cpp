@@ -1860,7 +1860,7 @@ void TestTileService::TestCase_GetMetatileXYZSingle()
         INT32 mtX = y;
         INT32 mtY = x;
 
-        Ptr<MgMetatile> metaTile = renderSvc->RenderMetatileXYZ(map, L"BaseLayers", mtX, mtY, z, MgTileParameters::tileDPI, MgImageFormats::Png, MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset, metaTileFactor);
+        Ptr<MgMetatile> metaTile = renderSvc->RenderMetatileXYZ(map, L"BaseLayers", mtX, mtY, z, MgTileParameters::tileDPI, MgImageFormats::Png, MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset, metaTileFactor, 1 /* retinaScale */);
         Ptr<MgByteReader> mtContent = metaTile->GetImage();
         INT64 metaTileLen = mtContent->GetLength();
         INT32 mtFactor = metaTile->GetMetaTilingFactor();

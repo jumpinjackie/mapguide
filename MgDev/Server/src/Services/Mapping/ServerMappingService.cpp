@@ -1249,8 +1249,11 @@ MgByteReader* MgServerMappingService::DescribeRuntimeMap(MgMap* map,
     std::string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";  // NOXLATE
     if (schemaVersion == MG_API_VERSION(2, 6, 0))
         xml.append("<RuntimeMap xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"RuntimeMap-2.6.0.xsd\">\n");
-    else
+    else if (schemaVersion == MG_API_VERSION(3, 0, 0))
         xml.append("<RuntimeMap xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"RuntimeMap-3.0.0.xsd\" version=\"3.0.0\">\n");
+    else
+        xml.append("<RuntimeMap xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"RuntimeMap-4.0.0.xsd\" version=\"4.0.0\">\n");
+
     // ------------------------------ Site Version ----------------------------------//
     xml.append("<SiteVersion>");
     MgServerManager* serverMgr = MgServerManager::GetInstance();
@@ -1265,11 +1268,24 @@ MgByteReader* MgServerMappingService::DescribeRuntimeMap(MgMap* map,
     xml.append(MgUtil::WideCharToMultiByte(targetMapName));
     xml.append("</Name>\n");
     // ------------------------------ Map Definition ID --------------------------------- //
-    xml.append("<MapDefinition>");
-    xml.append(MgUtil::WideCharToMultiByte(mapDefinition->ToString()));
-    xml.append("</MapDefinition>\n");
-    //Write tile set definition if requesting a v3.0.0 response
-    if (NULL != (MgResourceIdentifier*)tileSetDefinition && schemaVersion == MG_API_VERSION(3, 0, 0))
+    if (schemaVersion >= MG_API_VERSION(4, 0, 0))
+    {
+        //Map Definition may be null under this version
+        if (NULL != mapDefinition.p)
+        {
+            xml.append("<MapDefinition>");
+            xml.append(MgUtil::WideCharToMultiByte(mapDefinition->ToString()));
+            xml.append("</MapDefinition>\n");
+        }
+    }
+    else
+    {
+        xml.append("<MapDefinition>");
+        xml.append(MgUtil::WideCharToMultiByte(mapDefinition->ToString()));
+        xml.append("</MapDefinition>\n");
+    }
+    //Write tile set definition if requesting a v3.0.0 response or higher
+    if (NULL != (MgResourceIdentifier*)tileSetDefinition && schemaVersion >= MG_API_VERSION(3, 0, 0))
     {
         if (m_svcTile == NULL)
             InitializeTileService();
@@ -1283,6 +1299,23 @@ MgByteReader* MgServerMappingService::DescribeRuntimeMap(MgMap* map,
         xml.append("<TileSetDefinition>");
         xml.append(MgUtil::WideCharToMultiByte(tileSetDefinition->ToString()));
         xml.append("</TileSetDefinition>\n");
+        // ------------------------------ Tile Set Provider --------------------------------- //
+        if (schemaVersion == MG_API_VERSION(4, 0, 0))
+        {
+            xml.append("<TileSetProvider>");
+            xml.append(MgUtil::WideCharToMultiByte(map->GetTileSetProvider()));
+            xml.append("</TileSetProvider>\n");
+
+            xml.append("<TileFormat>");
+            xml.append(MgUtil::WideCharToMultiByte(map->GetTileFormat()));
+            xml.append("</TileFormat>\n");
+
+            xml.append("<TilePixelRatio>");
+            std::string sPR;
+            MgUtil::Int32ToString(map->GetTilePixelRatio(), sPR);
+            xml.append(sPR);
+            xml.append("</TilePixelRatio>");
+        }
         // ------------------------------ Tile Width ---------------------------------- //
         xml.append("<TileWidth>");
         xml.append(sWidth);

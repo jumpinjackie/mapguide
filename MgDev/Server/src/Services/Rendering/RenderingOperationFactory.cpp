@@ -101,6 +101,7 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(3,0):
+        case VERSION_SUPPORTED(4,0):
             handler.reset(new MgOpRenderTileXYZ());
             break;
         default:
@@ -113,6 +114,17 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(4,0):
             handler.reset(new MgOpRenderMetatile());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+    case MgRenderingServiceOpId::RenderMetatileXYZ:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(4,0):
+            handler.reset(new MgOpRenderMetatileXYZ());
             break;
         default:
             throw new MgInvalidOperationVersionException(

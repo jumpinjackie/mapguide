@@ -146,7 +146,7 @@ void MgOpRenderTileXYZ::Execute()
 
         EndExecution(byteReader);
     }
-    else if (8 == m_packet.m_NumArguments)
+    else if (9 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         Ptr<MgResourceIdentifier> resource = map->GetResourceId();
@@ -173,6 +173,9 @@ void MgOpRenderTileXYZ::Execute()
         double tileExtentOffset = 0.0;
         m_stream->GetDouble(tileExtentOffset);
 
+        INT32 retinaScale = 1;
+        m_stream->GetInt32(retinaScale);
+
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -191,11 +194,13 @@ void MgOpRenderTileXYZ::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(tileImageFormat.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(tileExtentOffset);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(retinaScale);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
-        Ptr<MgByteReader> byteReader = m_service->RenderTileXYZ(map, baseMapLayerGroupName, x, y, z, tileDpi, tileImageFormat, tileExtentOffset);
+        Ptr<MgByteReader> byteReader = m_service->RenderTileXYZ(map, baseMapLayerGroupName, x, y, z, tileDpi, tileImageFormat, tileExtentOffset, retinaScale);
 
         EndExecution(byteReader);
     }

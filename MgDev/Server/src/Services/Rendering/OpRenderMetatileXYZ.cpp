@@ -38,7 +38,7 @@ void MgOpRenderMetatileXYZ::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (8 == m_packet.m_NumArguments)
+    if (10 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         Ptr<MgResourceIdentifier> resource = map->GetResourceId();
@@ -68,6 +68,9 @@ void MgOpRenderMetatileXYZ::Execute()
         INT32 metaTilingFactor = 0;
         m_stream->GetInt32(metaTilingFactor);
 
+        INT32 retinaScale = 1;
+        m_stream->GetInt32(retinaScale);
+
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -88,11 +91,13 @@ void MgOpRenderMetatileXYZ::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(tileExtentOffset);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(metaTilingFactor);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(retinaScale);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
-        Ptr<MgMetatile> metaTile = m_service->RenderMetatileXYZ(map, baseMapLayerGroupName, x, y, z, tileDpi, tileImageFormat, tileExtentOffset, metaTilingFactor);
+        Ptr<MgMetatile> metaTile = m_service->RenderMetatileXYZ(map, baseMapLayerGroupName, x, y, z, tileDpi, tileImageFormat, tileExtentOffset, metaTilingFactor, retinaScale);
 
         EndExecution(metaTile);
     }

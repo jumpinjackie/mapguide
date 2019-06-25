@@ -39,7 +39,9 @@ class TestMappingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_GetLegendImageCompositeConvenience);
     CPPUNIT_TEST(TestCase_GetLegendImageCompositeThemedConvenience);
     CPPUNIT_TEST(TestCase_GetLegendImagePointStyleWithConstRotationsConvenience);
-    CPPUNIT_TEST(TestCase_CreateRuntimeMap);
+    CPPUNIT_TEST(TestCase_CreateRuntimeMap260);
+    CPPUNIT_TEST(TestCase_CreateRuntimeMap300);
+    CPPUNIT_TEST(TestCase_CreateRuntimeMap400);
     CPPUNIT_TEST(TestCase_DescribeRuntimeMap);
     CPPUNIT_TEST(TestCase_CreateAndDescribeLinkedRuntimeMap);
     //CPPUNIT_TEST(TestCase_QueryFeaturesImageMap);
@@ -57,7 +59,10 @@ public:
     void TestStart();
     void TestEnd();
 
-    void TestCase_CreateRuntimeMap();
+    void TestCase_CreateRuntimeMap(INT32 major, INT32 minor, INT32 rev);
+    void TestCase_CreateRuntimeMap260() { TestCase_CreateRuntimeMap(2, 6, 0); }
+    void TestCase_CreateRuntimeMap300() { TestCase_CreateRuntimeMap(3, 0, 0); }
+    void TestCase_CreateRuntimeMap400() { TestCase_CreateRuntimeMap(4, 0, 0); }
     void TestCase_DescribeRuntimeMap();
     void TestCase_SaveMap();
     void TestCase_GetPlot();

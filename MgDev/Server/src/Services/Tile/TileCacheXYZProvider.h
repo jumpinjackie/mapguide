@@ -28,7 +28,9 @@ public:
                            bool bRenderOnly,
                            double tileExtentOffset,
                            INT32 metaTileFactor,
-                           INT32 metaTileLockMethod);
+                           INT32 metaTileLockMethod,
+                           INT32 retinaScale);
+
     virtual ~MgTileCacheXYZProvider();
 
     virtual MgByteReader* GetTile(CREFSTRING baseMapLayerGroupName,
@@ -59,6 +61,8 @@ protected:
     virtual STRING GetTileFileExtension();
 
 private:
+    bool IsTileImageFormat();
+
     // ---------------- Begin Metatile stuff --------------------- //
     MgByteReader* GetMetatileForResource(MgResourceIdentifier* resource,
         CREFSTRING baseMapLayerGroupName,
@@ -78,6 +82,7 @@ private:
     double m_tileExtentOffset;
     INT32 m_metaTileFactor;
     INT32 m_metaTileLockMethod;
+    INT32 m_retinaScale;
 };
 
 #endif

@@ -1759,28 +1759,37 @@ void TestRenderingService::TestCase_RenderMetatile(CREFSTRING imageFormat, CREFS
     }
 }
 
-void TestRenderingService::TestCase_RenderXYZMetatile(CREFSTRING imageFormat, CREFSTRING extension)
+void TestRenderingService::TestCase_RenderXYZMetatile(CREFSTRING imageFormat, CREFSTRING extension, INT32 retinaScale)
 {
     try
     {
+        STRING retinaSuffix = L"";
+        if (retinaScale > 1)
+        {
+            retinaSuffix = L"@";
+            STRING sRetina;
+            MgUtil::Int32ToString(retinaScale, sRetina);
+            retinaSuffix += sRetina;
+        }
+
         Ptr<MgMap> map = CreateTestTiledMap();
         map->SetViewScale(12500.0);
-        Ptr<MgByteReader> tile_16798_23891_baseline = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16798, 23891, 16, MgTileParameters::tileDPI, imageFormat);
-        Ptr<MgByteReader> tile_16799_23891_baseline = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16799, 23891, 16, MgTileParameters::tileDPI, imageFormat);
-        Ptr<MgByteReader> tile_16798_23892_baseline = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16798, 23892, 16, MgTileParameters::tileDPI, imageFormat);
-        Ptr<MgByteReader> tile_16799_23892_baseline = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16799, 23892, 16, MgTileParameters::tileDPI, imageFormat);
+        Ptr<MgByteReader> tile_16798_23891_baseline = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16798, 23891, 16, MgTileParameters::tileDPI, imageFormat, MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset, retinaScale);
+        Ptr<MgByteReader> tile_16799_23891_baseline = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16799, 23891, 16, MgTileParameters::tileDPI, imageFormat, MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset, retinaScale);
+        Ptr<MgByteReader> tile_16798_23892_baseline = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16798, 23892, 16, MgTileParameters::tileDPI, imageFormat, MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset, retinaScale);
+        Ptr<MgByteReader> tile_16799_23892_baseline = m_svcRendering->RenderTileXYZ(map, L"BaseLayers", 16799, 23892, 16, MgTileParameters::tileDPI, imageFormat, MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset, retinaScale);
 
-        tile_16798_23891_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16798_23891_16_Baseline", imageFormat, extension));
-        tile_16799_23891_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16799_23891_16_Baseline", imageFormat, extension));
-        tile_16798_23892_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16798_23892_16_Baseline", imageFormat, extension));
-        tile_16799_23892_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16799_23892_16_Baseline", imageFormat, extension));
+        tile_16798_23891_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16798_23891_16_Baseline" + retinaSuffix, imageFormat, extension));
+        tile_16799_23891_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16799_23891_16_Baseline" + retinaSuffix, imageFormat, extension));
+        tile_16798_23892_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16798_23892_16_Baseline" + retinaSuffix, imageFormat, extension));
+        tile_16799_23892_baseline->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16799_23892_16_Baseline" + retinaSuffix, imageFormat, extension));
 
         MgRenderingService* renderSvc = dynamic_cast<MgRenderingService*>(m_svcRendering.p);
         CPPUNIT_ASSERT(NULL != renderSvc);
 
         // Render a 2x2 metatile which should cover the same tiles as the baseline test.
         INT32 metaTileFactor = 2;
-        Ptr<MgMetatile> metaTile = renderSvc->RenderMetatileXYZ(map, L"BaseLayers", 16798, 23891, 16, MgTileParameters::tileDPI, imageFormat, MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset, metaTileFactor);
+        Ptr<MgMetatile> metaTile = renderSvc->RenderMetatileXYZ(map, L"BaseLayers", 16798, 23891, 16, MgTileParameters::tileDPI, imageFormat, MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset, metaTileFactor, retinaScale);
         //metaTile->ToFile(L"../UnitTestFiles/RenderTileXYZ_Metatile@16798_23891_16.png");
         //CPPUNIT_ASSERT(metaTile->IsRewindable());
         //metaTile->Rewind();
@@ -1789,10 +1798,10 @@ void TestRenderingService::TestCase_RenderXYZMetatile(CREFSTRING imageFormat, CR
         Ptr<MgByteReader> tile_16798_23892 = renderSvc->RenderTileFromMetaTile(map, metaTile, 0, 1);
         Ptr<MgByteReader> tile_16799_23892 = renderSvc->RenderTileFromMetaTile(map, metaTile, 1, 1);
 
-        tile_16798_23891->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16798_23891_16_Metatiled", imageFormat, extension));
-        tile_16799_23891->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16799_23891_16_Metatiled", imageFormat, extension));
-        tile_16798_23892->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16798_23892_16_Metatiled", imageFormat, extension));
-        tile_16799_23892->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16799_23892_16_Metatiled", imageFormat, extension));
+        tile_16798_23891->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16798_23891_16_Metatiled" + retinaSuffix, imageFormat, extension));
+        tile_16799_23891->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16799_23891_16_Metatiled" + retinaSuffix, imageFormat, extension));
+        tile_16798_23892->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16798_23892_16_Metatiled" + retinaSuffix, imageFormat, extension));
+        tile_16799_23892->ToFile(GetPath(L"../UnitTestFiles/RenderTileXYZ_16799_23892_16_Metatiled" + retinaSuffix, imageFormat, extension));
     }
     catch (MgException* e)
     {

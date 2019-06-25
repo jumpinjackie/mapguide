@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<TileSetDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="TileSetDefinition-3.0.0.xsd">
+<TileSetDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="TileSetDefinition-3.0.0.xsd">
   <TileStoreParameters>
     <TileProvider>XYZ</TileProvider>
     <Parameter>
@@ -9,6 +9,10 @@
     <Parameter>
       <Name>TileFormat</Name>
       <Value>PNG</Value>
+    </Parameter>
+    <Parameter>
+      <Name>RetinaScale</Name>
+      <Value>2</Value>
     </Parameter>
   </TileStoreParameters>
   <Extents>

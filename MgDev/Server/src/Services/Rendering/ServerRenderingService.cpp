@@ -268,7 +268,7 @@ MgByteReader* MgServerRenderingService::RenderTileXYZ(MgMap* map,
 
     MG_TRY()
 
-    ret = RenderTileXYZ(map, baseMapLayerGroupName, x, y, z, dpi, tileImageFormat, tileExtentOffset);
+    ret = RenderTileXYZ(map, baseMapLayerGroupName, x, y, z, dpi, tileImageFormat, tileExtentOffset, 1 /* retinaScale */);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTileXYZ")
 
@@ -2233,17 +2233,18 @@ MgByteReader* MgServerRenderingService::RenderTileXYZ(MgMap* map,
                                                       INT32 z,
                                                       INT32 dpi,
                                                       CREFSTRING tileImageFormat,
-                                                      double tileExtentOffset)
+                                                      double tileExtentOffset,
+                                                      INT32 retinaScale)
 {
     Ptr<MgByteReader> ret;
 
     MG_TRY()
 
     INT32 metaTilingFactor = 0;
-    Ptr<MgMetatile> metaTile = RenderMetatileXYZ(map, baseMapLayerGroupName, x, y, z, dpi, tileImageFormat, tileExtentOffset, metaTilingFactor);
+    Ptr<MgMetatile> metaTile = RenderMetatileXYZ(map, baseMapLayerGroupName, x, y, z, dpi, tileImageFormat, tileExtentOffset, metaTilingFactor, retinaScale);
 
-    _ASSERT(metaTile->GetRequestedWidth() == XYZ_TILE_WIDTH);
-    _ASSERT(metaTile->GetRequestedHeight() == XYZ_TILE_HEIGHT);
+    _ASSERT(metaTile->GetRequestedWidth() == (XYZ_TILE_WIDTH * std::max(retinaScale, 1)));
+    _ASSERT(metaTile->GetRequestedHeight() == (XYZ_TILE_HEIGHT * std::max(retinaScale, 1)));
     _ASSERT(metaTile->GetMetaTilingFactor() <= 1);
 
     ret = metaTile->GetImage();
@@ -2375,7 +2376,8 @@ MgMetatile* MgServerRenderingService::RenderMetatileXYZ(MgMap* map,
                                                         INT32 dpi,
                                                         CREFSTRING tileImageFormat,
                                                         double tileExtentOffset,
-                                                        INT32 metaTilingFactor)
+                                                        INT32 metaTilingFactor,
+                                                        INT32 retinaScale)
 {
     Ptr<MgMetatile> ret;
 
@@ -2423,8 +2425,11 @@ MgMetatile* MgServerRenderingService::RenderMetatileXYZ(MgMap* map,
     StylizationUtil::ParseColor(map->GetBackgroundColor(), bgColor);
     bgColor.alpha() = 0;
     
-    INT32 width = XYZ_TILE_WIDTH * std::max(metaTilingFactor, 1);
-    INT32 height = XYZ_TILE_HEIGHT * std::max(metaTilingFactor, 1);
+    INT32 xyzWidth = (XYZ_TILE_WIDTH * std::max(1, retinaScale));
+    INT32 xyzHeight = (XYZ_TILE_HEIGHT * std::max(1, retinaScale));
+
+    INT32 width = xyzWidth * std::max(metaTilingFactor, 1);
+    INT32 height = xyzHeight * std::max(metaTilingFactor, 1);
     INT32 drawWidth = width;
     INT32 drawHeight = height;
     double scale = 0.0;
@@ -2462,7 +2467,7 @@ MgMetatile* MgServerRenderingService::RenderMetatileXYZ(MgMap* map,
         tile = RenderMapInternal(map, NULL, roLayers, dr.get(), drawWidth, drawHeight, drawWidth, drawHeight, format, scale, extent, true, true, false, NULL);
     else
         tile = RenderMapInternal(map, NULL, roLayers, dr.get(), drawWidth, drawHeight, width, height, format, scale, extent, true, true, false, NULL);
-    ret = new MgMetatile(tile, drawWidth, drawHeight, XYZ_TILE_WIDTH, XYZ_TILE_HEIGHT, tileImageFormat, metaTilingFactor);
+    ret = new MgMetatile(tile, drawWidth, drawHeight, xyzWidth, xyzHeight, tileImageFormat, metaTilingFactor);
 
     // restore the base group's visibility
     baseGroup->SetVisible(groupVisible);

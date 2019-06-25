@@ -68,6 +68,11 @@ try
     $tileSizeY = $tileSrvc->GetDefaultTileSizeY();
     if (NULL != $tileSetId)
     {
+        //Can't load map if it points to a non-default tile set provider
+        if ($map->GetTileSetProvider() != "Default")
+        {
+            throw new Exception(FormatMessage("ERR_UNSUPPORTED_TILESET", $locale, array($map->GetTileSetProvider())));
+        }
         //Overwrite the map definition with tile set id (this is for GETTILE requests) and
         //use size settings from that tile set
         $mapDefinition = $tileSetId->ToString();
@@ -150,6 +155,11 @@ try
 catch(MgException $e)
 {
     $errorMsg = EscapeForHtml($e->GetDetails());
+    echo $errorMsg;
+}
+catch(Exception $e)
+{
+    $errorMsg = EscapeForHtml($e->getMessage());
     echo $errorMsg;
 }
 

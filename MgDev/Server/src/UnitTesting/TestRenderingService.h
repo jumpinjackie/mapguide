@@ -29,6 +29,16 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderXYZMetatilePNG8);
     CPPUNIT_TEST(TestCase_RenderXYZMetatileJPG);
     CPPUNIT_TEST(TestCase_RenderXYZMetatileGIF);
+
+    CPPUNIT_TEST(TestCase_RenderXYZMetatilePNG_2x);
+    CPPUNIT_TEST(TestCase_RenderXYZMetatilePNG8_2x);
+    CPPUNIT_TEST(TestCase_RenderXYZMetatileJPG_2x);
+    CPPUNIT_TEST(TestCase_RenderXYZMetatileGIF_2x);
+
+    CPPUNIT_TEST(TestCase_RenderXYZMetatilePNG_4x);
+    CPPUNIT_TEST(TestCase_RenderXYZMetatilePNG8_4x);
+    CPPUNIT_TEST(TestCase_RenderXYZMetatileJPG_4x);
+    CPPUNIT_TEST(TestCase_RenderXYZMetatileGIF_4x);
     
     CPPUNIT_TEST(TestCase_RenderMetatilePNG);
     CPPUNIT_TEST(TestCase_RenderMetatilePNG8);
@@ -169,7 +179,7 @@ public:
 
     void TestCase_QueryFeatures();
     void TestCase_RenderMetatile(CREFSTRING imageFormat, CREFSTRING extension);
-    void TestCase_RenderXYZMetatile(CREFSTRING imageFormat, CREFSTRING extension);
+    void TestCase_RenderXYZMetatile(CREFSTRING imageFormat, CREFSTRING extension, INT32 retinaScale);
     void TestCase_RenderTile(CREFSTRING imageFormat, CREFSTRING extension);
     void TestCase_RenderTileXYZ(CREFSTRING imageFormat, CREFSTRING extension);
 
@@ -318,10 +328,20 @@ public:
     void TestCase_RenderMetatileJPG() { TestCase_RenderMetatile(L"JPG", L"jpg"); }
     void TestCase_RenderMetatileGIF() { TestCase_RenderMetatile(L"GIF", L"gif"); }
 
-    void TestCase_RenderXYZMetatilePNG() { TestCase_RenderXYZMetatile(L"PNG", L"png"); }
-    void TestCase_RenderXYZMetatilePNG8() { TestCase_RenderXYZMetatile(L"PNG8", L"png"); }
-    void TestCase_RenderXYZMetatileJPG() { TestCase_RenderXYZMetatile(L"JPG", L"jpg"); }
-    void TestCase_RenderXYZMetatileGIF() { TestCase_RenderXYZMetatile(L"GIF", L"gif"); }
+    void TestCase_RenderXYZMetatilePNG() { TestCase_RenderXYZMetatile(L"PNG", L"png", 1); }
+    void TestCase_RenderXYZMetatilePNG8() { TestCase_RenderXYZMetatile(L"PNG8", L"png", 1); }
+    void TestCase_RenderXYZMetatileJPG() { TestCase_RenderXYZMetatile(L"JPG", L"jpg", 1); }
+    void TestCase_RenderXYZMetatileGIF() { TestCase_RenderXYZMetatile(L"GIF", L"gif", 1); }
+
+    void TestCase_RenderXYZMetatilePNG_2x() { TestCase_RenderXYZMetatile(L"PNG", L"png", 2); }
+    void TestCase_RenderXYZMetatilePNG8_2x() { TestCase_RenderXYZMetatile(L"PNG8", L"png", 2); }
+    void TestCase_RenderXYZMetatileJPG_2x() { TestCase_RenderXYZMetatile(L"JPG", L"jpg", 2); }
+    void TestCase_RenderXYZMetatileGIF_2x() { TestCase_RenderXYZMetatile(L"GIF", L"gif", 2); }
+
+    void TestCase_RenderXYZMetatilePNG_4x() { TestCase_RenderXYZMetatile(L"PNG", L"png", 4); }
+    void TestCase_RenderXYZMetatilePNG8_4x() { TestCase_RenderXYZMetatile(L"PNG8", L"png", 4); }
+    void TestCase_RenderXYZMetatileJPG_4x() { TestCase_RenderXYZMetatile(L"JPG", L"jpg", 4); }
+    void TestCase_RenderXYZMetatileGIF_4x() { TestCase_RenderXYZMetatile(L"GIF", L"gif", 4); }
 
 private:
     MgMap* CreateTestMap();

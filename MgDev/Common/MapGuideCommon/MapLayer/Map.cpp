@@ -43,7 +43,8 @@ MgMap::MgMap()
     m_unpackedLayersGroups(false),
     m_colorPalette(NULL),        // lazy instantiation
     m_watermarkUsage(Viewer),
-    m_tileSetId((MgResourceIdentifier*)NULL)
+    m_tileSetId((MgResourceIdentifier*)NULL),
+    m_tilePixelRatio(1)
 {
 }
 
@@ -57,7 +58,8 @@ MgMap::MgMap(MgSiteConnection* siteConnection)
     m_unpackedLayersGroups(false),
     m_colorPalette(NULL),        // lazy instantiation
     m_watermarkUsage(Viewer),
-    m_tileSetId((MgResourceIdentifier*)NULL)
+    m_tileSetId((MgResourceIdentifier*)NULL),
+    m_tilePixelRatio(1)
 {
     CHECKARGUMENTNULL(siteConnection, L"MgMap.MgMap");
 
@@ -215,6 +217,22 @@ void MgMap::CreateFromMapDefinition(MgResourceService* resourceService, MgResour
         assert(tdef.get() != NULL);
 
         m_srs = GetCoordinateSystemFromTileSet(tdef.get(), true);
+
+        auto tsp = tdef->GetTileStoreParameters();
+        m_tileSetProvider = tsp->GetTileProvider();
+        auto parameters = tsp->GetParameters();
+        for (auto i = 0; i < parameters->GetCount(); i++)
+        {
+            auto nvp = parameters->GetAt(i);
+            if (nvp->GetName() == MG_TILE_PROVIDER_XYZ_PARAM_RETINASCALE)
+            {
+                m_tilePixelRatio = MgUtil::StringToInt32(nvp->GetValue());
+            }
+            else if (nvp->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_TILEFORMAT)
+            {
+                m_tileFormat = nvp->GetValue();
+            }
+        }
 
         //If tile CS is not the same as map def CS, then the bounds of the map def need to be transformed
         if (m_srs != mdef->GetCoordinateSystem())
@@ -622,6 +640,22 @@ void MgMap::CreateFromTileSet(MgResourceService* resourceService, MgResourceIden
     std::unique_ptr<MdfModel::TileSetDefinition> tdef(parser.DetachTileSetDefinition());
     assert(tdef.get() != NULL);
 
+    auto tsp = tdef->GetTileStoreParameters();
+    m_tileSetProvider = tsp->GetTileProvider();
+    auto parameters = tsp->GetParameters();
+    for (auto i = 0; i < parameters->GetCount(); i++)
+    {
+        auto nvp = parameters->GetAt(i);
+        if (nvp->GetName() == MG_TILE_PROVIDER_XYZ_PARAM_RETINASCALE)
+        {
+            m_tilePixelRatio = MgUtil::StringToInt32(nvp->GetValue());
+        }
+        else if (nvp->GetName() == MG_TILE_PROVIDER_COMMON_PARAM_TILEFORMAT)
+        {
+            m_tileFormat = nvp->GetValue();
+        }
+    }
+
     MgGeometryFactory gf;
 
     const Box2D& extent = tdef->GetExtents();
@@ -851,12 +885,6 @@ void MgMap::GetFiniteDisplayScalesFromTileSet(MdfModel::TileSetDefinition* tiles
                 }
             }
         }
-    }
-    else if (strict)
-    {
-        MgStringCollection args;
-        args.Add(storeParams->GetTileProvider());
-        throw new MgUnsupportedTileProviderException(L"MgMap.GetFiniteDisplayScalesFromTileSet", __LINE__, __WFILE__, &args, L"", NULL);
     }
 }
 
@@ -1304,6 +1332,15 @@ void MgMap::Serialize(MgStream* stream)
     //tile set definition
     stream->WriteObject(m_tileSetId);
 
+    //tile set provider
+    stream->WriteString(m_tileSetProvider);
+
+    //tile format
+    stream->WriteString(m_tileFormat);
+
+    //tile pixel ratio
+    stream->WriteInt32(m_tilePixelRatio);
+
     // Serialize Layers and Groups as a blob.
     if (m_inSave)
     {
@@ -1427,6 +1464,15 @@ void MgMap::Deserialize(MgStream* stream)
 
     //tile set definition
     m_tileSetId = (MgResourceIdentifier*)stream->GetObject();
+
+    //tile set provider
+    stream->GetString(m_tileSetProvider);
+
+    //tile format
+    stream->GetString(m_tileFormat);
+
+    //tile pixel ratio
+    stream->GetInt32(m_tilePixelRatio);
 
     //blob for layers and groups
     INT32 nBytes = 0;
@@ -1612,4 +1658,19 @@ void MgMap::GetTileCoords(int metaTileFactor, int tileColumn, int tileRow,
 MgResourceIdentifier* MgMap::GetTileSetDefinition()
 {
     return SAFE_ADDREF((MgResourceIdentifier*)m_tileSetId);
+}
+
+STRING MgMap::GetTileSetProvider()
+{
+    return m_tileSetProvider;
+}
+
+STRING MgMap::GetTileFormat()
+{
+    return m_tileFormat;
+}
+
+INT32 MgMap::GetTilePixelRatio()
+{
+    return m_tilePixelRatio;
 }
