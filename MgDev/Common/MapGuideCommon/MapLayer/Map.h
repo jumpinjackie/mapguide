@@ -777,8 +777,6 @@ INTERNAL_API:
     ///
     virtual void SetWatermarkUsage(INT32 watermarkUsage);
 
-    virtual void Create(MgResourceService* resourceService, MgResourceIdentifier* mapDefinition, CREFSTRING mapName, bool strict);
-
     /// \brief
     /// compute the coordinates of a tile, increase size by meta tiling Factor sm_useMetaTiles
     ///
@@ -833,10 +831,10 @@ CLASS_ID:
 
 private:
     void CreateFromMapDefinition(MgResourceService* resourceService, MgResourceIdentifier* resource, CREFSTRING mapName);
-    void CreateFromTileSet(MgResourceService* resourceService, MgResourceIdentifier* resource, CREFSTRING mapName, bool strict);
+    void CreateFromTileSet(MgResourceService* resourceService, MgResourceIdentifier* resource, CREFSTRING mapName);
 
-    STRING GetCoordinateSystemFromTileSet(MdfModel::TileSetDefinition* tileset, bool strict);
-    void GetFiniteDisplayScalesFromTileSet(MdfModel::TileSetDefinition* tileset, FINITESCALES& scales, bool strict);
+    STRING GetCoordinateSystemFromTileSet(MdfModel::TileSetDefinition* tileset);
+    void GetFiniteDisplayScalesFromTileSet(MdfModel::TileSetDefinition* tileset, FINITESCALES& scales);
 
     // Version for serialization
     static const int m_serializeVersion = (4<<16) + 0;

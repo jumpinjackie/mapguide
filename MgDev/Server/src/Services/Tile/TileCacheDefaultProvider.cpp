@@ -301,7 +301,7 @@ MgByteReader* MgTileCacheDefaultProvider::GetMetatileForResource(MgResourceIdent
                 }
             }
             //=========================================================================
-            GetMapFromDefinition(resource, scaleIndex, map, false);
+            GetMapFromDefinition(resource, scaleIndex, map);
         }   // end of mutex scope
 
         // Render the larger meta tile but do not cache it yet! (m_metaTileFactor [prohibits caching in GetTile)

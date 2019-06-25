@@ -6360,19 +6360,19 @@ void TestCoordinateSystem::TestCase_EPSG()
         CPPUNIT_ASSERT(factory);
 
         ogcWkt = factory->ConvertCoordinateSystemCodeToWkt(L"EPSG:4326");
-        CPPUNIT_ASSERT(ogcWkt == EPSG_4326_Wkt);
+        CPPUNIT_ASSERT_MESSAGE(MgUtil::WideCharToMultiByte(ogcWkt), ogcWkt == EPSG_4326_Wkt);
 
         ogcWkt = factory->ConvertCoordinateSystemCodeToWkt(L"ePsG:4326");
-        CPPUNIT_ASSERT(ogcWkt == EPSG_4326_Wkt);
+        CPPUNIT_ASSERT_MESSAGE(MgUtil::WideCharToMultiByte(ogcWkt), ogcWkt == EPSG_4326_Wkt);
 
         CPPUNIT_ASSERT_THROW_MG(ogcWkt = factory->ConvertCoordinateSystemCodeToWkt(L"test:4000"), MgCoordinateSystemLoadFailedException*);
 
         ogcWkt = factory->ConvertEpsgCodeToWkt(4326);
-        CPPUNIT_ASSERT(ogcWkt == EPSG_4326_Wkt);
+        CPPUNIT_ASSERT_MESSAGE(MgUtil::WideCharToMultiByte(ogcWkt), ogcWkt == EPSG_4326_Wkt);
 
         ogcWkt = factory->ConvertEpsgCodeToWkt(0);
         // TODO: This should be throwing an exception because the conversion failed.
-        CPPUNIT_ASSERT(ogcWkt == L"");
+        CPPUNIT_ASSERT_MESSAGE(MgUtil::WideCharToMultiByte(ogcWkt), ogcWkt == L"");
 
         INT32 epsg = factory->ConvertWktToEpsgCode(EPSG_4326_Wkt);
         CPPUNIT_ASSERT(epsg == 4326);

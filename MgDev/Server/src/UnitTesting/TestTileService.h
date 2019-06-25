@@ -32,7 +32,6 @@ class TestTileService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_MgMap_Inline);
     CPPUNIT_TEST(TestCase_MgMap_Linked);
     CPPUNIT_TEST(TestCase_MgMap_LinkedSameCS);
-    CPPUNIT_TEST(TestCase_MgMapFromXYZTileSetStrict);
     CPPUNIT_TEST(TestCase_MgMapFromXYZTileSetLoose);
     CPPUNIT_TEST(TestCase_MgMapFromTileSet);
     CPPUNIT_TEST(TestCase_GetTile);
@@ -61,7 +60,6 @@ public:
     void TestCase_MgMap_Inline();
     void TestCase_MgMap_Linked();
     void TestCase_MgMap_LinkedSameCS();
-    void TestCase_MgMapFromXYZTileSetStrict();
     void TestCase_MgMapFromXYZTileSetLoose();
     void TestCase_MgMapFromTileSet();
     void TestCase_GetTile();

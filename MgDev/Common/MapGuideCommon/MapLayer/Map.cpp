@@ -111,17 +111,12 @@ MgService* MgMap::GetService(INT32 serviceType)
 //
 void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* resource, CREFSTRING mapName)
 {
-    Create(resourceService, resource, mapName, true);
-}
-
-void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* resource, CREFSTRING mapName, bool strict)
-{
     MG_TRY()
 
     if (resource->GetResourceType() == MgResourceType::MapDefinition)
         CreateFromMapDefinition(resourceService, resource, mapName);
     else if (resource->GetResourceType() == MgResourceType::TileSetDefinition)
-        CreateFromTileSet(resourceService, resource, mapName, strict);
+        CreateFromTileSet(resourceService, resource, mapName);
     else
         throw new MgInvalidResourceTypeException(L"MgMap.Create", __LINE__, __WFILE__, NULL, L"", NULL);
 
@@ -216,7 +211,7 @@ void MgMap::CreateFromMapDefinition(MgResourceService* resourceService, MgResour
         tdef.reset(parser.DetachTileSetDefinition());
         assert(tdef.get() != NULL);
 
-        m_srs = GetCoordinateSystemFromTileSet(tdef.get(), true);
+        m_srs = GetCoordinateSystemFromTileSet(tdef.get());
 
         auto tsp = tdef->GetTileStoreParameters();
         m_tileSetProvider = tsp->GetTileProvider();
@@ -546,7 +541,7 @@ void MgMap::CreateFromMapDefinition(MgResourceService* resourceService, MgResour
     if (NULL != tdef.get())
     {
         FINITESCALES fScales;
-        GetFiniteDisplayScalesFromTileSet(tdef.get(), fScales, true);
+        GetFiniteDisplayScalesFromTileSet(tdef.get(), fScales);
         for (FINITESCALES::iterator it = fScales.begin(); it != fScales.end(); it++)
         {
             double scale = *it;
@@ -601,7 +596,7 @@ void MgMap::CreateFromMapDefinition(MgResourceService* resourceService, MgResour
     MG_CATCH_AND_THROW(L"MgMap.CreateFromMapDefinition")
 }
 
-void MgMap::CreateFromTileSet(MgResourceService* resourceService, MgResourceIdentifier* tileSetDefId, CREFSTRING mapName, bool strict)
+void MgMap::CreateFromTileSet(MgResourceService* resourceService, MgResourceIdentifier* tileSetDefId, CREFSTRING mapName)
 {
     MG_TRY()
 
@@ -668,7 +663,7 @@ void MgMap::CreateFromTileSet(MgResourceService* resourceService, MgResourceIden
     Ptr<MgCoordinate> coordCenter = gf.CreateCoordinateXY(extent.GetMinX() + (extent.GetMaxX() - extent.GetMinX()) / 2,
                                                           extent.GetMinY() + (extent.GetMaxY() - extent.GetMinY()) / 2);
     m_center = gf.CreatePoint(coordCenter);
-    m_srs = GetCoordinateSystemFromTileSet(tdef.get(), strict);
+    m_srs = GetCoordinateSystemFromTileSet(tdef.get());
 
     //Calculate the meter per unit for the given coordinate system
     m_metersPerUnit = 1.0; // assume a default value
@@ -794,7 +789,7 @@ void MgMap::CreateFromTileSet(MgResourceService* resourceService, MgResourceIden
     // build the sorted list of finite display scales
     SORTEDSCALES sortedScales;
     FINITESCALES displayScales;
-    GetFiniteDisplayScalesFromTileSet(tdef.get(), displayScales, strict);
+    GetFiniteDisplayScalesFromTileSet(tdef.get(), displayScales);
     if (displayScales.size() > 0)
     {
         for (FINITESCALES::iterator it = displayScales.begin(); it != displayScales.end(); it++)
@@ -827,7 +822,7 @@ void MgMap::CreateFromTileSet(MgResourceService* resourceService, MgResourceIden
     MG_CATCH_AND_THROW(L"MgMap.CreateFromTileSet")
 }
 
-STRING MgMap::GetCoordinateSystemFromTileSet(MdfModel::TileSetDefinition* tileset, bool strict)
+STRING MgMap::GetCoordinateSystemFromTileSet(MdfModel::TileSetDefinition* tileset)
 {
     //Yes, this is hard-coded against specific providers. Revisit if we do want
     //to FDO-ize this tile provider concept.
@@ -851,19 +846,10 @@ STRING MgMap::GetCoordinateSystemFromTileSet(MdfModel::TileSetDefinition* tilese
         Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
         return csFactory->ConvertCoordinateSystemCodeToWkt(L"WGS84.PseudoMercator"); //NOXLATE
     }
-    if (strict)
-    {
-        MgStringCollection args;
-        args.Add(storeParams->GetTileProvider());
-        throw new MgUnsupportedTileProviderException(L"MgMap.GetCoordinateSystemFromTileSet", __LINE__, __WFILE__, &args, L"", NULL);
-    }
-    else
-    {
-        return L"";
-    }
+    return L"";
 }
 
-void MgMap::GetFiniteDisplayScalesFromTileSet(MdfModel::TileSetDefinition* tileset, FINITESCALES& scales, bool strict)
+void MgMap::GetFiniteDisplayScalesFromTileSet(MdfModel::TileSetDefinition* tileset, FINITESCALES& scales)
 {
     //Yes, this is hard-coded against specific providers. Revisit if we do want
     //to FDO-ize this tile provider concept.

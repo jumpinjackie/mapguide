@@ -262,7 +262,7 @@ MgByteReader* MgTileCacheDefault::GetTileForResource(MgResourceIdentifier* resou
             {
                 ACE_OS::fclose(lockFile);
             }
-            GetMapFromDefinition(resource, scaleIndex, map, false /* Allow MgMap to be created from any tile provider if resource is tile set */);
+            GetMapFromDefinition(resource, scaleIndex, map);
         }   // end of mutex scope
 
         // Render the tile and cache it.
@@ -899,7 +899,7 @@ bool MgTileCacheDefault::IsTileCacheEmpty()
 ///////////////////////////////////////////////////////////////////////////////
 /// helper to retrieve map
 ///////////////////////////////////////////////////////////////////////////////
-void MgTileCacheDefault::GetMapFromDefinition(MgResourceIdentifier* mapDefinition, INT32 scaleIndex, Ptr<MgMap> &map, bool bStrictCreate)
+void MgTileCacheDefault::GetMapFromDefinition(MgResourceIdentifier* mapDefinition, INT32 scaleIndex, Ptr<MgMap> &map)
 {
     // Attempt use a cached & serialized MgMap object
     Ptr<MgMemoryStreamHelper> cachedMap;
@@ -921,7 +921,7 @@ void MgTileCacheDefault::GetMapFromDefinition(MgResourceIdentifier* mapDefinitio
         Ptr<MgSiteConnection> siteConn = new MgSiteConnection();
         siteConn->Open(MgUserInformation::GetCurrentUserInfo());
         map = new MgMap(siteConn);
-        map->Create(resourceService, mapDefinition, mapString, bStrictCreate);
+        map->Create(resourceService, mapDefinition, mapString);
         cachedMap = new MgMemoryStreamHelper();
         Ptr<MgStream> stream = new MgStream(cachedMap);
         map->Serialize(stream);

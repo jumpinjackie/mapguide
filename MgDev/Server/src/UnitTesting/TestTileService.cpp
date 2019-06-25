@@ -1591,30 +1591,6 @@ void TestTileService::TestCase_MgMap_LinkedSameCS()
     }
 }
 
-void TestTileService::TestCase_MgMapFromXYZTileSetStrict()
-{
-    try
-    {
-        // make a runtime map
-        Ptr<MgResourceIdentifier> tsdres = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ.TileSetDefinition");
-        MgMap* map = new MgMap(m_siteConnection);
-        map->Create(tsdres, L"XYZTileSet");
-
-        CPPUNIT_FAIL("MgUnsupportedTileProviderException should've been thrown");
-    }
-    catch (MgException* e)
-    {
-        bool isCorrectException = e->IsOfClass(MapGuide_Exception_MgUnsupportedTileProviderException);
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_ASSERT_MESSAGE(MG_WCHAR_TO_CHAR(message), isCorrectException);
-    }
-    catch (...)
-    {
-        throw;
-    }
-}
-
 void TestTileService::TestCase_MgMapFromXYZTileSetLoose()
 {
     try
@@ -1622,7 +1598,7 @@ void TestTileService::TestCase_MgMapFromXYZTileSetLoose()
         // make a runtime map
         Ptr<MgResourceIdentifier> tsdres = new MgResourceIdentifier(L"Library://UnitTests/TileSets/XYZ.TileSetDefinition");
         MgMap* map = new MgMap(m_siteConnection);
-        map->Create(m_svcResource, tsdres, L"XYZTileSet", false);
+        map->Create(m_svcResource, tsdres, L"XYZTileSet");
 
         CPPUNIT_ASSERT(0 == map->GetFiniteDisplayScaleCount());
     }

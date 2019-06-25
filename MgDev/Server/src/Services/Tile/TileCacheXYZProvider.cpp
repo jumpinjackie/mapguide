@@ -395,7 +395,7 @@ MgByteReader* MgTileCacheXYZProvider::GetMetatileForResource(MgResourceIdentifie
                 }
             }
             //=========================================================================
-            GetMapFromDefinition(resource, -1 /* Don't set view scale from index for XYZ*/, map, false);
+            GetMapFromDefinition(resource, -1 /* Don't set view scale from index for XYZ*/, map);
         }   // end of mutex scope
 
         // Render the larger meta tile but do not cache it yet! (m_metaTileFactor [prohibits caching in GetTile)

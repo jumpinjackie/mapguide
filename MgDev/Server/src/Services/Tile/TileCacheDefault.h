@@ -79,7 +79,7 @@ protected:
     void Set(MgByteReader* img, CREFSTRING path);
     MgByteReader* Get(CREFSTRING path);
 
-    void GetMapFromDefinition(MgResourceIdentifier* mapDefinition, INT32 scaleIndex, Ptr<MgMap> &map, bool bStrictCreate = true);
+    void GetMapFromDefinition(MgResourceIdentifier* mapDefinition, INT32 scaleIndex, Ptr<MgMap> &map);
 
     bool DetectTileLockFile(CREFSTRING lockPathname);
 
