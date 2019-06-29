@@ -126,6 +126,7 @@ $hasNothing = !$hasDotNet && !$hasPhp && !$hasJava;
                     <li><a href="ol2samples/hybrid/index.html">Open any map or tile set</a></li>
                     <li><a href="ol2samples/xyz/index_ol.html">Sheboygan map as XYZ layer</a></li>
                     <li><a href="ol2samples/utfgrid/index.html">Sheboygan map as XYZ layer with UTFGrid interaction tiles</a></li>
+                    <li><a href="ol2samples/wms/index.html">Sheboygan map as WMS layers</a></li>
                 </ul>
                 <? } ?>
             <? } ?>

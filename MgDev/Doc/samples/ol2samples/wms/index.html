@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <title>Sheboygan WMS</title>
+        <link rel="stylesheet" href="../assets/ol.css" />
+        <style type="text/css">
+            #error { color: red; }
+            #wrap { width: 900; }
+            #map { width: 400; height: 300; float: left; border: 1px solid black; }
+            #main { margin-top: 50px; padding-top: 20px; }
+        </style>
+        <script type="text/javascript" src="../assets/ol-debug.js"></script>
+        <script type="text/javascript" src="../assets/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript">
+
+        //This sample is assumed to be hosted at http://servername/mapguide/ol2samples/xyz/index_ol.html
+        var mapAgentUrl = "../../mapagent/mapagent.fcgi";
+
+        $(document).ready(function() {
+            //NOTE: Your map definition can be in any coordinate system as long as it it transformable to LL84
+            //
+            //But the ol3 tile layer must remain as EPSG:3857
+
+            var map = new ol.Map({
+              layers: [
+                new ol.layer.Tile({
+                  source: new ol.source.OSM({
+                    attributions: [
+                      new ol.Attribution({
+                        html: 'Tiles &copy; <a href="http://www.openstreetmap.org/">' +
+                            'OpenStreetMap</a>'
+                      }),
+                      ol.source.OSM.ATTRIBUTION
+                    ],
+                    url: 'http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                  })
+                }),
+                new ol.layer.Image({
+                    source: new ol.source.ImageWMS({
+                        url: mapAgentUrl + "?REQUEST=GETMAP&SERVICE=WMS&VERSION=1.3.0",
+                        projection: "EPSG:4326",
+                        params: {
+                            "FORMAT": "image/png",
+                            "LAYERS": "Samples/Sheboygan/Layers/Parcels,Samples/Sheboygan/Layers/Hydrography,Samples/Sheboygan/Layers/Districts,Samples/Sheboygan/Layers/Roads",
+                            "TRANSPARENT": "TRUE"
+                        }
+                    })
+                })
+              ],
+              renderer: 'canvas',
+              target: document.getElementById('map'),
+              view: new ol.View({
+                center: ol.proj.transform([-87.7302542509315, 43.744459064634], 'EPSG:4326', 'EPSG:3857'),
+                minZoom: 10,
+                maxZoom: 19,
+                zoom: 12
+              })
+            });
+        });
+
+        </script>
+    </head>
+    <body>
+        <div id="main">
+            <div class="container">
+                <div class="alert alert-info">
+                    <p>This example demonstrates a Map Definition being consumed as a <strong>XYZ layer</strong> via the MapGuide REST API with <a href="http://openlayers.org/">OpenLayers 3</a>.</p>
+                    <p>An OpenStreetMap layer is included as a backdrop for context</p>
+                    <strong>For maximum visual fidelity, your Map Definition should be in WGS84.PseudoMercator</strong>
+                    <p>Sample not loading? <a href="../data/load.php">Check that the required resources have been loaded</a></p>
+                </div>
+                <div id="error">
+                </div>
+                <div id="wrap">
+                    <div id="map">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
