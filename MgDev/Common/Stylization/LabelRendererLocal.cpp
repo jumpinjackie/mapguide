@@ -20,6 +20,11 @@
 #include "SE_Renderer.h"
 
 //#define DEBUG_LABELS
+//#define DEBUG_LABEL_CALLS
+
+#ifdef DEBUG_LABEL_CALLS
+#include <iostream>
+#endif
 
 extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
 
@@ -904,6 +909,14 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LabelInfoLocal& info)
         SE_LineStroke lineStroke(color, 0.0);
 //      SE_LineStroke lineStroke(info.m_tdef.textcolor().argb(), 0.0);
         m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
+#ifdef DEBUG_LABEL_CALLS
+        std::wcout << L"LabelRendererLocal::ComputeSimpleLabelBounds ["
+                   << L"(" << pts[0].x << L"," << pts[0].y << L"),"
+                   << L"(" << pts[1].x << L"," << pts[1].y << L"),"
+                   << L"(" << pts[2].x << L"," << pts[2].y << L"),"
+                   << L"(" << pts[3].x << L"," << pts[3].y << L")"
+                   << L"] - (" << info.m_text << L")" << std::endl;
+#endif
     }
 #endif
 
@@ -1006,6 +1019,14 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
             SE_LineStroke lineStroke(color, 0.0);
 //          SE_LineStroke lineStroke(info.m_tdef.textcolor().argb(), 0.0);
             m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
+#ifdef DEBUG_LABEL_CALLS
+            std::wcout << L"LabelRendererLocal::ComputePathLabelBounds ["
+                       << L"(" << pts[0].x << L"," << pts[0].y << L"),"
+                       << L"(" << pts[1].x << L"," << pts[1].y << L"),"
+                       << L"(" << pts[2].x << L"," << pts[2].y << L"),"
+                       << L"(" << pts[3].x << L"," << pts[3].y << L")"
+                       << L"] - (" << info.m_text << L")" << std::endl;
+#endif
 #endif
         }
 
@@ -1073,6 +1094,14 @@ bool LabelRendererLocal::ComputeSELabelBounds(LabelInfoLocal& info)
     SE_LineStroke lineStroke(color, 0.0);
 //  SE_LineStroke lineStroke(info.m_tdef.textcolor().argb(), 0.0);
     m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
+#ifdef DEBUG_LABEL_CALLS
+    std::wcout << L"LabelRenderer::ComputeSELabelBounds ["
+               << L"(" << info.m_rotated_points[0].x << L"," << info.m_rotated_points[0].y << L"),"
+               << L"(" << info.m_rotated_points[1].x << L"," << info.m_rotated_points[1].y << L"),"
+               << L"(" << info.m_rotated_points[2].x << L"," << info.m_rotated_points[2].y << L"),"
+               << L"(" << info.m_rotated_points[3].x << L"," << info.m_rotated_points[3].y << L")"
+               << L"] - (" << info.m_text << L")" << std::endl;
+#endif
 #endif
 
     return true;
@@ -1189,6 +1218,14 @@ void LabelRendererLocal::AddExclusionRegion(SimpleOverpost* pMgr, RS_F_Point* pt
     lb.Close();
     SE_LineStroke lineStroke(0xffff0000, 3.0);
     m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
+#ifdef DEBUG_LABEL_CALLS
+    std::wcout << L"LabelRendererLocal::AddExclusionRegion [" 
+               << L"(" << pts[0].x << L"," << pts[0].y << L"),"
+               << L"(" << pts[1].x << L"," << pts[1].y << L"),"
+               << L"(" << pts[2].x << L"," << pts[2].y << L"),"
+               << L"(" << pts[3].x << L"," << pts[3].y << L")"
+               << L"]" << std::endl;
+#endif
 #endif
 
     RS_F_Point* tmp = (RS_F_Point*)alloca(npts * sizeof(RS_F_Point));

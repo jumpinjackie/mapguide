@@ -20,6 +20,11 @@
 #include "SE_Renderer.h"
 
 //#define DEBUG_LABELS
+//#define DEBUG_LABEL_CALLS
+
+#ifdef DEBUG_LABEL_CALLS
+#include <iostream>
+#endif
 
 extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
 
@@ -337,6 +342,14 @@ void LabelRenderer::AddExclusionRegion(RS_F_Point* pts, int npts)
     lb.Close();
     SE_LineStroke lineStroke(0xffff0000, 3.0);
     m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
+#ifdef DEBUG_LABEL_CALLS
+    std::wcout << L"LabelRenderer::AddExclusionRegion ["
+               << L"(" << pts[0].x << L"," << pts[0].y << L"),"
+               << L"(" << pts[1].x << L"," << pts[1].y << L"),"
+               << L"(" << pts[2].x << L"," << pts[2].y << L"),"
+               << L"(" << pts[3].x << L"," << pts[3].y << L")"
+               << L"]" << std::endl;
+#endif
 #endif
 
     RS_F_Point* tmp = (RS_F_Point*)alloca(npts * sizeof(RS_F_Point));
@@ -406,6 +419,14 @@ bool LabelRenderer::DrawSimpleLabel(LabelInfo& info, bool render, bool exclude, 
         lb.Close();
         SE_LineStroke lineStroke(info.m_tdef.textcolor().argb(), 0.0);
         m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
+#ifdef DEBUG_LABEL_CALLS
+        std::wcout << L"LabelRenderer::DrawSimpleLabel ["
+                   << L"(" << pts[0].x << L"," << pts[0].y << L"),"
+                   << L"(" << pts[1].x << L"," << pts[1].y << L"),"
+                   << L"(" << pts[2].x << L"," << pts[2].y << L"),"
+                   << L"(" << pts[3].x << L"," << pts[3].y << L")"
+                   << L"] - (" << info.m_text << L")" << std::endl;
+#endif
     }
 #endif
 
@@ -490,6 +511,14 @@ bool LabelRenderer::DrawSELabel(LabelInfo& info, bool render, bool exclude, bool
         lb.Close();
         SE_LineStroke lineStroke(0xff000000, 0.0);
         m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
+#ifdef DEBUG_LABEL_CALLS
+        std::wcout << L"LabelRenderer::DrawSELabel ["
+                   << L"(" << fpts[0].x << L"," << fpts[0].y << L"),"
+                   << L"(" << fpts[1].x << L"," << fpts[1].y << L"),"
+                   << L"(" << fpts[2].x << L"," << fpts[2].y << L"),"
+                   << L"(" << fpts[3].x << L"," << fpts[3].y << L")"
+                   << L"] - (" << info.m_text << L")" << std::endl;
+#endif
 #endif
     }
 
@@ -576,6 +605,14 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
             lb.Close();
             SE_LineStroke lineStroke(info.m_tdef.textcolor().argb(), 0.0);
             m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
+#ifdef DEBUG_LABEL_CALLS
+            std::wcout << L"LabelRenderer::DrawPathLabel ["
+                       << L"(" << pts[0].x << L"," << pts[0].y << L"),"
+                       << L"(" << pts[1].x << L"," << pts[1].y << L"),"
+                       << L"(" << pts[2].x << L"," << pts[2].y << L"),"
+                       << L"(" << pts[3].x << L"," << pts[3].y << L")"
+                       << L"] - (" << info.m_text << L")" << std::endl;
+#endif
 #endif
         }
 
