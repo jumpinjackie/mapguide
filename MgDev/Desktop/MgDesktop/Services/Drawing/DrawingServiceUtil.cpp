@@ -283,7 +283,7 @@ DWFPackageReader* MgdDrawingServiceUtil::OpenDrawingResource(
     bool& bOpenTempFile, REFSTRING tempFileName)
 {
     Ptr<MgByteReader> byteReader;
-    auto_ptr<DWFPackageReader> reader;
+    std::unique_ptr<DWFPackageReader> reader;
 
     MG_SERVER_DRAWING_SERVICE_TRY()
 

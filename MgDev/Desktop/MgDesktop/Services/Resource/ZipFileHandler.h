@@ -27,7 +27,7 @@ public:
 
 protected:
 
-    auto_ptr<DWFZipFileDescriptor> m_zipFileDescriptor;
+    std::unique_ptr<DWFZipFileDescriptor> m_zipFileDescriptor;
 };
 
 /// Inline Methods

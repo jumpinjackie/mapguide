@@ -65,7 +65,7 @@ MgFeatureReader* MgdSelection::GetSelectedFeatures(MgLayerBase* layer, CREFSTRIN
     Ptr<MgResourceIdentifier> layerid = layer->GetLayerDefinition();
     Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
         m_map->GetService(MgServiceType::ResourceService));
-    auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resourceService, layerid));
+    std::unique_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resourceService, layerid));
     Ptr<MgStringCollection> propertyNames = new MgStringCollection();
     if(ldf.get() != NULL)
     {

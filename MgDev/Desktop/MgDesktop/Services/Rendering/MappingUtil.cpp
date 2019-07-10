@@ -366,7 +366,7 @@ void MgdMappingUtil::StylizeLayers(MgResourceService* svcResource,
     // Get the layers' resource content in a single request by adding them to a collection
     for (int i = layers->GetCount()-1; i >= 0; i--)
     {
-        auto_ptr<MdfModel::LayerDefinition> ldf;
+        std::unique_ptr<MdfModel::LayerDefinition> ldf;
         RSMgdFeatureReader* rsReader = NULL;
 
         Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
@@ -1207,7 +1207,7 @@ MgByteReader* MgdMappingUtil::DrawFTS(MgResourceService* svcResource,
     // TODO: use user-specified format
     RS_String format = L"PNG";
 
-    auto_ptr<RS_ByteData> data;
+    std::unique_ptr<RS_ByteData> data;
     data.reset(er.Save(format, imgWidth, imgHeight));
 
     if (NULL != data.get())

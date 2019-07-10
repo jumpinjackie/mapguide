@@ -31,7 +31,7 @@ protected:
 
 private:
 
-    auto_ptr<MdfModel::FeatureSource> m_featureSource;
+    std::unique_ptr<MdfModel::FeatureSource> m_featureSource;
 };
 
 /// Inline Methods

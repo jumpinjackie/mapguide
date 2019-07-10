@@ -3,7 +3,6 @@
 
 class MgdMap;
 class MgdFeatureInformation;
-class SE_Renderer;
 class MgdRenderingOptions;
 class MgdFeatureInfoRenderer;
 class MgdDrawingService;
@@ -11,6 +10,7 @@ struct RS_Bounds;
 class RS_Color;
 class Stylizer;
 class Renderer;
+class AGGRenderer;
 
 namespace MdfModel
 {
@@ -431,7 +431,7 @@ private:
     MgByteReader* RenderMapInternal(MgdMap* map,
                                     MgdSelection* selection,
                                     MgReadOnlyLayerCollection* roLayers,
-                                    SE_Renderer* dr,
+                                    AGGRenderer* dr,
                                     INT32 drawWidth,
                                     INT32 drawHeight,
                                     INT32 saveWidth,
@@ -447,7 +447,7 @@ private:
     MgByteReader* RenderMapInternal(MgdMap* map,
                                     MgdSelection* selection,
                                     MgReadOnlyLayerCollection* roLayers,
-                                    SE_Renderer* dr,
+                                    AGGRenderer* dr,
                                     INT32 drawWidth,
                                     INT32 drawHeight,
                                     INT32 saveWidth,
@@ -468,7 +468,7 @@ private:
                             INT32 layerAttributeFilter,
                             MgdFeatureInfoRenderer* selRenderer);
 
-    SE_Renderer* CreateRenderer(int width,
+    AGGRenderer* CreateRenderer(int width,
                                 int height,
                                 RS_Color& bgColor,
                                 bool requiresClipping,
@@ -507,7 +507,7 @@ private:
                           MdfModel::ProfileRenderMapResult* pPRMResult);
 
     MgByteReader* CreateImage(MgdMap* map,
-                              Renderer* dr,
+                              AGGRenderer* dr,
                               INT32 saveWidth,
                               INT32 saveHeight,
                               CREFSTRING format,
@@ -518,9 +518,6 @@ private:
     Ptr<MgResourceService> m_svcResource;
     Ptr<MgdDrawingService> m_svcDrawing;
     Ptr<MgCoordinateSystemFactory> m_pCSFactory;
-
-    // this will eventually be removed
-    STRING m_rendererName;
 
     INT32 m_rasterGridSize;
     INT32 m_minRasterGridSize;

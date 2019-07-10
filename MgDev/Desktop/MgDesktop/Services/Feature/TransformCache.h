@@ -34,7 +34,7 @@ public:
 private:
     static ACE_Recursive_Thread_Mutex sm_mutex;
 
-    auto_ptr<MgdCSTrans> m_xform;
+    std::unique_ptr<MgdCSTrans> m_xform;
     Ptr<MgCoordinateSystem> m_coordSys;
     Ptr<MgCoordinateSystemTransform> m_transform;
     Ptr<MgEnvelope> m_envelope;

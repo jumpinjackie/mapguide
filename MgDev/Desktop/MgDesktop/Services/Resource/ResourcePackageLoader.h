@@ -55,7 +55,7 @@ private:
 
 private:
 
-    auto_ptr<MgdZipFileReader> m_zipFileReader;
+    std::unique_ptr<MgdZipFileReader> m_zipFileReader;
     MgdResourcePackageManifestParser m_manifestParser;
 };
 

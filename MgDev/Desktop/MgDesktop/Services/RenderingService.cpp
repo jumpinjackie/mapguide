@@ -1,7 +1,6 @@
 #include "RenderingService.h"
 #include "System/ConfigProperties.h"
 #include "AGGRenderer.h"
-#include "GDRenderer.h"
 #include "ImageFormats.h"
 #include "SymbolInstance.h"
 #include "Rendering/RSMgFeatureReader.h"
@@ -54,10 +53,6 @@ MgdRenderingService::MgdRenderingService() : MgService()
     assert(m_svcDrawing != NULL);
 
     MgConfiguration* pConf = MgConfiguration::GetInstance();
-    pConf->GetStringValue(MgdConfigProperties::GeneralPropertiesSection,
-                          MgdConfigProperties::GeneralPropertyRenderer,
-                          m_rendererName,
-                          MgdConfigProperties::DefaultGeneralPropertyRenderer);
 
     pConf->GetIntValue(MgdConfigProperties::RenderingServicePropertiesSection,
                           MgdConfigProperties::RenderingServicePropertyRasterGridSize,
@@ -104,7 +99,6 @@ MgdRenderingService::MgdRenderingService() : MgService()
                           bGeneralizeData,
                           MgdConfigProperties::DefaultRenderingServicePropertyGeneralizeData);
     AGGRenderer::s_bGeneralizeData = bGeneralizeData;
-    GDRenderer::s_bGeneralizeData = bGeneralizeData;
 }
 
 
@@ -219,16 +213,16 @@ MgByteReader* MgdRenderingService::RenderTile(MgdMap* map, CREFSTRING baseMapLay
 ///////////////////////////////////////////////////////////////////////////////
 /// render a map using all layers from the baseGroup
 MgByteReader* MgdRenderingService::RenderTile(MgdMap* map,
-                                                   MgLayerGroup* baseGroup,
-                                                   INT32 scaleIndex,
-                                                   INT32 width,
-                                                   INT32 height,
-                                                   double scale,
-                                                   double mcsMinX,
-                                                   double mcsMaxX,
-                                                   double mcsMinY,
-                                                   double mcsMaxY,
-                                                   CREFSTRING format)
+                                              MgLayerGroup* baseGroup,
+                                              INT32 scaleIndex,
+                                              INT32 width,
+                                              INT32 height,
+                                              double scale,
+                                              double mcsMinX,
+                                              double mcsMaxX,
+                                              double mcsMinY,
+                                              double mcsMaxY,
+                                              CREFSTRING format)
 {
     Ptr<MgByteReader> ret;
 
@@ -257,7 +251,7 @@ MgByteReader* MgdRenderingService::RenderTile(MgdMap* map,
 
     // initialize the renderer (set clipping to false so that we label
     // the unclipped geometry)
-    auto_ptr<SE_Renderer> dr(CreateRenderer(width, height, bgColor, false, true, tileExtentOffset));
+    std::unique_ptr<AGGRenderer> dr(CreateRenderer(width, height, bgColor, false, true, tileExtentOffset));
 
     // create a temporary collection containing all the layers for the base group
     Ptr<MgLayerCollection> layers = map->GetLayers();
@@ -437,9 +431,9 @@ MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelectio
 // Non-published RenderDynamicOverlay API with profile result parameter
 // pPRMResult - a pointer points to Profile Render Map Result.
 MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map,
-                                                       MgdSelection* selection,
-                                                       MgdRenderingOptions* options,
-                                                       ProfileRenderMapResult* pPRMResult)
+                                                        MgdSelection* selection,
+                                                        MgdRenderingOptions* options,
+                                                        ProfileRenderMapResult* pPRMResult)
 {
     Ptr<MgByteReader> ret;
 
@@ -528,14 +522,13 @@ MgdFeatureInformation* MgdRenderingService::QueryFeatures(MgdMap* map,
     return ret.Detach();
 }
 
-MgdFeatureInformation* MgdRenderingService::QueryFeatures(
-    MgdMap* map,
-    MgStringCollection* layerNames,
-    MgGeometry* filterGeometry,
-    INT32 selectionVariant,
-    CREFSTRING featureFilter,
-    INT32 maxFeatures,
-    INT32 layerAttributeFilter)
+MgdFeatureInformation* MgdRenderingService::QueryFeatures(MgdMap* map,
+                                                          MgStringCollection* layerNames,
+                                                          MgGeometry* filterGeometry,
+                                                          INT32 selectionVariant,
+                                                          CREFSTRING featureFilter,
+                                                          INT32 maxFeatures,
+                                                          INT32 layerAttributeFilter)
 {
     Ptr<MgdFeatureInformation> ret;
     MG_LOG_OPERATION_MESSAGE(L"QueryFeatures");
@@ -602,7 +595,7 @@ MgdFeatureInformation* MgdRenderingService::QueryFeaturesInternal(MgdMap* map,
 
     double point_buf[2];
     double* point = NULL;
-    auto_ptr<SE_Renderer> impRenderer;
+    std::unique_ptr<SE_Renderer> impRenderer;
     if (geometry && maxFeatures == 1)
     {
         MgPolygon* polygon = dynamic_cast<MgPolygon*>(geometry);
@@ -668,9 +661,9 @@ MgdFeatureInformation* MgdRenderingService::QueryFeaturesInternal(MgdMap* map,
 }
 
 MgByteReader* MgdRenderingService::RenderDynamicOverlayInternal(MgdMap* map,
-                                                               MgdSelection* selection,
-                                                               MgdRenderingOptions* options,
-                                                               ProfileRenderMapResult* pPRMResult)
+                                                                MgdSelection* selection,
+                                                                MgdRenderingOptions* options,
+                                                                ProfileRenderMapResult* pPRMResult)
 {
     Ptr<MgByteReader> ret;
 
@@ -723,7 +716,7 @@ MgByteReader* MgdRenderingService::RenderDynamicOverlayInternal(MgdMap* map,
     bgColor.alpha() = 0;
 
     // initialize the renderer
-    auto_ptr<SE_Renderer> dr(CreateRenderer(width, height, bgColor, true));
+    std::unique_ptr<AGGRenderer> dr(CreateRenderer(width, height, bgColor, true));
 
     bool bIncludeDynamicLayers = ((options->GetBehavior() & MgdRenderingOptions::RenderLayers) == MgdRenderingOptions::RenderLayers);
     bool bIncludeBaseLayers = ((options->GetBehavior() & MgdRenderingOptions::RenderBaseLayers) == MgdRenderingOptions::RenderBaseLayers);
@@ -778,8 +771,8 @@ MgByteReader* MgdRenderingService::RenderDynamicOverlayInternal(MgdMap* map,
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bKeepSelection = true
 MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
-                                            MgdSelection* selection,
-                                            CREFSTRING format)
+                                             MgdSelection* selection,
+                                             CREFSTRING format)
 {
     Ptr<MgByteReader> ret;
     MG_LOG_OPERATION_MESSAGE(L"RenderMap");
@@ -824,9 +817,9 @@ MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bClip = false
 MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
-                                            MgdSelection* selection,
-                                            CREFSTRING format,
-                                            bool bKeepSelection)
+                                             MgdSelection* selection,
+                                             CREFSTRING format,
+                                             bool bKeepSelection)
 {
     Ptr<MgByteReader> ret;
     MG_LOG_OPERATION_MESSAGE(L"RenderMap");
@@ -875,10 +868,10 @@ MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
 // color and display sizes as default arguments to call the real rendermap method
 // default arg (bKeepSelection = true, bClip = false)
 MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
-                                            MgdSelection* selection,
-                                            CREFSTRING format,
-                                            bool bKeepSelection,
-                                            bool bClip)
+                                             MgdSelection* selection,
+                                             CREFSTRING format,
+                                             bool bKeepSelection,
+                                             bool bClip)
 {
     Ptr<MgByteReader> ret;
     MG_LOG_OPERATION_MESSAGE(L"RenderMap");
@@ -957,12 +950,12 @@ MgByteReader* MgdRenderingService::RenderMapPublished(MgdMap* map,
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bKeepSelection = true
 MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
-                                                  MgdSelection* selection,
-                                                  MgEnvelope* extents,
-                                                  INT32 width,
-                                                  INT32 height,
-                                                  MgColor* backgroundColor,
-                                                  CREFSTRING format)
+                                             MgdSelection* selection,
+                                             MgEnvelope* extents,
+                                             INT32 width,
+                                             INT32 height,
+                                             MgColor* backgroundColor,
+                                             CREFSTRING format)
 {
     // Call updated RenderMap API
     return RenderMap(map, selection, extents, width, height, backgroundColor, format, true);
@@ -973,13 +966,13 @@ MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
 // render the provided extent of the map and align aspect ratios to the provided window
 // default arg bKeepSelection = true
 MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
-                                                  MgdSelection* selection,
-                                                  MgEnvelope* extents,
-                                                  INT32 width,
-                                                  INT32 height,
-                                                  MgColor* backgroundColor,
-                                                  CREFSTRING format,
-                                                  bool bKeepSelection)
+                                             MgdSelection* selection,
+                                             MgEnvelope* extents,
+                                             INT32 width,
+                                             INT32 height,
+                                             MgColor* backgroundColor,
+                                             CREFSTRING format,
+                                             bool bKeepSelection)
 {
     Ptr<MgByteReader> ret;
 
@@ -1065,7 +1058,7 @@ MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
     // initialize the renderer with the rendering canvas size - in this
     // case it is not necessarily the same size as the requested image
     // size due to support for non-square pixels
-    auto_ptr<SE_Renderer> dr(CreateRenderer(drawWidth, drawHeight, bgcolor, false));
+    std::unique_ptr<AGGRenderer> dr(CreateRenderer(drawWidth, drawHeight, bgcolor, false));
 
     // call the internal helper API to do all the stylization overhead work
     ret = RenderMapInternal(map, selection, NULL, dr.get(), drawWidth, drawHeight, width, height, format, scale, b, false, bKeepSelection, true);
@@ -1079,13 +1072,13 @@ MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
 ///////////////////////////////////////////////////////////////////////////////
 // default argument bKeepSelection = true
 MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
-                                                  MgdSelection* selection,
-                                                  MgCoordinate* center,
-                                                  double scale,
-                                                  INT32 width,
-                                                  INT32 height,
-                                                  MgColor* backgroundColor,
-                                                  CREFSTRING format)
+                                             MgdSelection* selection,
+                                             MgCoordinate* center,
+                                             double scale,
+                                             INT32 width,
+                                             INT32 height,
+                                             MgColor* backgroundColor,
+                                             CREFSTRING format)
 {
     // Call updated RenderMap API
     return RenderMap(map, selection, center, scale, width, height, backgroundColor, format, true);
@@ -1095,14 +1088,14 @@ MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
 ///////////////////////////////////////////////////////////////////////////////
 // default arguments bClip = false  pProfileRenderMapResult = NULL
 MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
-                                                  MgdSelection* selection,
-                                                  MgCoordinate* center,
-                                                  double scale,
-                                                  INT32 width,
-                                                  INT32 height,
-                                                  MgColor* backgroundColor,
-                                                  CREFSTRING format,
-                                                  bool bKeepSelection)
+                                             MgdSelection* selection,
+                                             MgCoordinate* center,
+                                             double scale,
+                                             INT32 width,
+                                             INT32 height,
+                                             MgColor* backgroundColor,
+                                             CREFSTRING format,
+                                             bool bKeepSelection)
 {
     return RenderMap(map, selection, center, scale, width, height, backgroundColor, format, bKeepSelection, false);
 }
@@ -1110,15 +1103,15 @@ MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
 ///////////////////////////////////////////////////////////////////////////////
 // default arguments bClip = false
 MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
-                                                  MgdSelection* selection,
-                                                  MgCoordinate* center,
-                                                  double scale,
-                                                  INT32 width,
-                                                  INT32 height,
-                                                  MgColor* backgroundColor,
-                                                  CREFSTRING format,
-                                                  bool bKeepSelection,
-                                                  ProfileRenderMapResult* pPRMResult)
+                                             MgdSelection* selection,
+                                             MgCoordinate* center,
+                                             double scale,
+                                             INT32 width,
+                                             INT32 height,
+                                             MgColor* backgroundColor,
+                                             CREFSTRING format,
+                                             bool bKeepSelection,
+                                             ProfileRenderMapResult* pPRMResult)
 {
     return RenderMap(map, selection, center, scale, width, height, backgroundColor, format, bKeepSelection, false, pPRMResult);
 }
@@ -1128,16 +1121,16 @@ MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
 // default args bKeepSelection = true, bClip = false, backgroundColor = map->backgroundColor,
 // width = map->getDisplayWidth, height = map->getDisplayHeight
 MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
-                                                  MgdSelection* selection,
-                                                  MgCoordinate* center,
-                                                  double scale,
-                                                  INT32 width,
-                                                  INT32 height,
-                                                  MgColor* backgroundColor,
-                                                  CREFSTRING format,
-                                                  bool bKeepSelection,
-                                                  bool bClip,
-                                                  ProfileRenderMapResult* pPRMResult)
+                                             MgdSelection* selection,
+                                             MgCoordinate* center,
+                                             double scale,
+                                             INT32 width,
+                                             INT32 height,
+                                             MgColor* backgroundColor,
+                                             CREFSTRING format,
+                                             bool bKeepSelection,
+                                             bool bClip,
+                                             ProfileRenderMapResult* pPRMResult)
 {
     Ptr<MgByteReader> ret;
 
@@ -1186,7 +1179,7 @@ MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
                      backgroundColor->GetAlpha());
 
     // initialize the appropriate map renderer
-    auto_ptr<SE_Renderer> dr(CreateRenderer(width, height, bgcolor, bClip));
+    std::unique_ptr<AGGRenderer> dr(CreateRenderer(width, height, bgcolor, bClip));
 
     if(NULL != pPRMResult)
     {
@@ -1226,20 +1219,20 @@ MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
 // pack options into object and forward call (select Selection AND Layers)
 // maybe keepSelection called by RenderTile
 MgByteReader* MgdRenderingService::RenderMapInternal(MgdMap* map,
-                                                          MgdSelection* selection,
-                                                          MgReadOnlyLayerCollection* roLayers,
-                                                          SE_Renderer* dr,
-                                                          INT32 drawWidth,
-                                                          INT32 drawHeight,
-                                                          INT32 saveWidth,
-                                                          INT32 saveHeight,
-                                                          CREFSTRING format,
-                                                          double scale,
-                                                          RS_Bounds& b,
-                                                          bool expandExtents,
-                                                          bool bKeepSelection,
-                                                          bool renderWatermark,
-                                                          ProfileRenderMapResult* pPRMResult)
+                                                     MgdSelection* selection,
+                                                     MgReadOnlyLayerCollection* roLayers,
+                                                     AGGRenderer* dr,
+                                                     INT32 drawWidth,
+                                                     INT32 drawHeight,
+                                                     INT32 saveWidth,
+                                                     INT32 saveHeight,
+                                                     CREFSTRING format,
+                                                     double scale,
+                                                     RS_Bounds& b,
+                                                     bool expandExtents,
+                                                     bool bKeepSelection,
+                                                     bool renderWatermark,
+                                                     ProfileRenderMapResult* pPRMResult)
 {
     MgdRenderingOptions options(format, MgdRenderingOptions::RenderSelection |
         MgdRenderingOptions::RenderLayers | (bKeepSelection? MgdRenderingOptions::KeepSelection : 0), NULL);
@@ -1255,19 +1248,19 @@ MgByteReader* MgdRenderingService::RenderMapInternal(MgdMap* map,
 // render map using provided options object from before
 // this is called for tiles and for dynamic overlays
 MgByteReader* MgdRenderingService::RenderMapInternal(MgdMap* map,
-                                                          MgdSelection* selection,
-                                                          MgReadOnlyLayerCollection* roLayers,
-                                                          SE_Renderer* dr,
-                                                          INT32 drawWidth,
-                                                          INT32 drawHeight,
-                                                          INT32 saveWidth,
-                                                          INT32 saveHeight,
-                                                          double scale,
-                                                          RS_Bounds& b,
-                                                          bool expandExtents,
-                                                          MgdRenderingOptions* options,
-                                                          bool renderWatermark,
-                                                          ProfileRenderMapResult* pPRMResult)
+                                                     MgdSelection* selection,
+                                                     MgReadOnlyLayerCollection* roLayers,
+                                                     AGGRenderer* dr,
+                                                     INT32 drawWidth,
+                                                     INT32 drawHeight,
+                                                     INT32 saveWidth,
+                                                     INT32 saveHeight,
+                                                     double scale,
+                                                     RS_Bounds& b,
+                                                     bool expandExtents,
+                                                     MgdRenderingOptions* options,
+                                                     bool renderWatermark,
+                                                     ProfileRenderMapResult* pPRMResult)
 {
     // set the map scale to the requested scale
     map->SetViewScale(scale);
@@ -1383,10 +1376,10 @@ MgByteReader* MgdRenderingService::RenderMapInternal(MgdMap* map,
 
 ///////////////////////////////////////////////////////////////////////////////
 MgByteReader* MgdRenderingService::RenderMapLegend(MgdMap* map,
-                                                  INT32 width,
-                                                  INT32 height,
-                                                  MgColor* backgroundColor,
-                                                  CREFSTRING format)
+                                                   INT32 width,
+                                                   INT32 height,
+                                                   MgColor* backgroundColor,
+                                                   CREFSTRING format)
 {
     Ptr<MgByteReader> ret;
     MG_LOG_OPERATION_MESSAGE(L"RenderMapLegend");
@@ -1429,7 +1422,7 @@ MgByteReader* MgdRenderingService::RenderMapLegend(MgdMap* map,
                      backgroundColor->GetAlpha());
 
     //initialize a renderer
-    auto_ptr<Renderer> dr(CreateRenderer(width, height, bgcolor, false, false, 0.0));
+    std::unique_ptr<AGGRenderer> dr(CreateRenderer(width, height, bgcolor, false, false, 0.0));
 
     RS_Bounds b(0,0,width,height);
 
@@ -1457,12 +1450,7 @@ MgByteReader* MgdRenderingService::RenderMapLegend(MgdMap* map,
     dr->EndMap();
 
     // get a byte representation of the image
-    auto_ptr<RS_ByteData> data;
-
-    if (wcscmp(m_rendererName.c_str(), L"AGG") == 0)
-        data.reset(((AGGRenderer*)dr.get())->Save(format, width, height));
-    else
-        data.reset(((GDRenderer*)dr.get())->Save(format, width, height));
+    std::unique_ptr<RS_ByteData> data(dr->Save(format, width, height));
 
     if (NULL != data.get())
     {
@@ -1502,41 +1490,34 @@ MgByteReader* MgdRenderingService::RenderMapLegend(MgdMap* map,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-SE_Renderer* MgdRenderingService::CreateRenderer(int width,
-                                                      int height,
-                                                      RS_Color& bgColor,
-                                                      bool requiresClipping,
-                                                      bool localOverposting,
-                                                      double tileExtentOffset)
+AGGRenderer* MgdRenderingService::CreateRenderer(int width,
+                                                 int height,
+                                                 RS_Color& bgColor,
+                                                 bool requiresClipping,
+                                                 bool localOverposting,
+                                                 double tileExtentOffset)
 {
-    SE_Renderer* renderer = NULL;
-    if (wcscmp(m_rendererName.c_str(), L"AGG") == 0)
-        renderer = new AGGRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
-    else
-        renderer = new GDRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
+    auto renderer = new AGGRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
 
-    if (renderer != NULL)
-    {
-        renderer->SetRasterGridSize(m_rasterGridSize);
-        renderer->SetMinRasterGridSize(m_minRasterGridSize);
-        renderer->SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatio);
-        renderer->SetMaxRasterImageWidth(m_maxRasterImageWidth);
-        renderer->SetMaxRasterImageHeight(m_maxRasterImageHeight);
-    }
+    renderer->SetRasterGridSize(m_rasterGridSize);
+    renderer->SetMinRasterGridSize(m_minRasterGridSize);
+    renderer->SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatio);
+    renderer->SetMaxRasterImageWidth(m_maxRasterImageWidth);
+    renderer->SetMaxRasterImageHeight(m_maxRasterImageHeight);
 
     return renderer;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 inline void MgdRenderingService::RenderLayers(MgdMap* map,
-                                                   MgReadOnlyLayerCollection* layers,
-                                                   Stylizer* ds,
-                                                   Renderer* dr,
-                                                   MgCoordinateSystem* dstCs,
-                                                   bool expandExtents,
-                                                   double scale,
-                                                   CREFSTRING format,
-                                                   ProfileRenderMapResult* pPRMResult)
+                                              MgReadOnlyLayerCollection* layers,
+                                              Stylizer* ds,
+                                              Renderer* dr,
+                                              MgCoordinateSystem* dstCs,
+                                              bool expandExtents,
+                                              double scale,
+                                              CREFSTRING format,
+                                              ProfileRenderMapResult* pPRMResult)
 {
     ProfileRenderLayersResult* pPRLsResult = NULL; // pointer points to Profile Render Layers Result
 
@@ -1565,15 +1546,15 @@ inline void MgdRenderingService::RenderLayers(MgdMap* map,
 
 ///////////////////////////////////////////////////////////////////////////////
 inline void MgdRenderingService::RenderSelection(MgdMap* map,
-                                                      MgdSelection* selection,
-                                                      MgReadOnlyLayerCollection* layers,
-                                                      MgdRenderingOptions* options,
-                                                      Stylizer* ds,
-                                                      Renderer* dr,
-                                                      MgCoordinateSystem* dstCs,
-                                                      double scale,
-                                                      INT32 behavior,
-                                                      ProfileRenderMapResult* pPRMResult)
+                                                 MgdSelection* selection,
+                                                 MgReadOnlyLayerCollection* layers,
+                                                 MgdRenderingOptions* options,
+                                                 Stylizer* ds,
+                                                 Renderer* dr,
+                                                 MgCoordinateSystem* dstCs,
+                                                 double scale,
+                                                 INT32 behavior,
+                                                 ProfileRenderMapResult* pPRMResult)
 {
     SE_Renderer* renderer = dynamic_cast<SE_Renderer*>(dr);
 
@@ -1667,13 +1648,13 @@ inline void MgdRenderingService::RenderWatermarks(MgdMap* map,
     // 3. Map's watermark usage is not 0, which means watermark usage is WMS and / or Viewer.
     WatermarkInstanceCollection watermarkInstances;   //Watermark list to render
     WatermarkInstanceCollection tempWatermarkInstances;    //Used to reverse list
-    auto_ptr<WatermarkInstance> tempInstance;
+    std::unique_ptr<WatermarkInstance> tempInstance;
 
     // Get watermark instance in map
     Ptr<MgResourceIdentifier> mapId = map->GetMapDefinition();
     if (mapId.p)
     {
-        auto_ptr<MapDefinition> mdef(MgMapBase::GetMapDefinition(m_svcResource, mapId));
+        std::unique_ptr<MapDefinition> mdef(MgMapBase::GetMapDefinition(m_svcResource, mapId));
         WatermarkInstanceCollection* mapWatermarks = mdef->GetWatermarks();
         for (int i=mapWatermarks->GetCount()-1; i>=0; i--)
             tempWatermarkInstances.Adopt(mapWatermarks->OrphanAt(i));
@@ -1706,7 +1687,7 @@ inline void MgdRenderingService::RenderWatermarks(MgdMap* map,
 
     // Get watermark instance in layer
     const int layerCount = layers->GetCount();
-    auto_ptr<LayerDefinition> ldf;
+    std::unique_ptr<LayerDefinition> ldf;
     for (int i=0; i<layerCount; ++i)
     {
         Ptr<MgLayerBase> mapLayer(layers->GetItem(i));
@@ -1904,11 +1885,11 @@ inline void MgdRenderingService::RenderWatermarks(MgdMap* map,
 
 ////////////////////////////////////////////////////////////////////////////////
 inline MgByteReader* MgdRenderingService::CreateImage(MgdMap* map,
-                                                           Renderer* dr,
-                                                           INT32 saveWidth,
-                                                           INT32 saveHeight,
-                                                           CREFSTRING format,
-                                                           ProfileRenderMapResult* pPRMResult)
+                                                      AGGRenderer* dr,
+                                                      INT32 saveWidth,
+                                                      INT32 saveHeight,
+                                                      CREFSTRING format,
+                                                      ProfileRenderMapResult* pPRMResult)
 {
     if(NULL != pPRMResult)
     {
@@ -1939,35 +1920,30 @@ inline MgByteReader* MgdRenderingService::CreateImage(MgdMap* map,
 */
 
     // get a byte representation of the image
-    auto_ptr<RS_ByteData> data;
+    std::unique_ptr<RS_ByteData> data;
     Ptr<MgByteSource> bs;
 
     try
     {
         // call the image renderer to create the image
-        if (wcscmp(m_rendererName.c_str(), L"AGG") == 0)
+        //-------------------------------------------------------
+        /// RFC60 code to correct colormaps by UV
+        //-------------------------------------------------------
+        // We examine the expressions collected from xml definitions of all layers.
+        // The map object has a list from all color entries found in the most recent
+        // layer stylization.
+        // * TODO - currently they are interpreted as ffffffff 32-bit RGBA string values
+        // * adding expresssions and other interpretations should be done in ParseColorStrings
+        // * the color Palette for the renderer is a vector<RS_Color>
+        if (hasColorMap(format))
         {
-            //-------------------------------------------------------
-            /// RFC60 code to correct colormaps by UV
-            //-------------------------------------------------------
-            // We examine the expressions collected from xml definitions of all layers.
-            // The map object has a list from all color entries found in the most recent
-            // layer stylization.
-            // * TODO - currently they are interpreted as ffffffff 32-bit RGBA string values
-            // * adding expresssions and other interpretations should be done in ParseColorStrings
-            // * the color Palette for the renderer is a vector<RS_Color>
-            if (hasColorMap(format))
-            {
-                RS_ColorVector tileColorPalette;
-                MgdMappingUtil::ParseColorStrings(&tileColorPalette, map);
-//              printf("<<<<<<<<<<<<<<<<<<<<< MgdRenderingService::ColorPalette->size(): %d\n", tileColorPalette.size());
-                data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, &tileColorPalette));
-            }
-            else
-                data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, NULL));
+            RS_ColorVector tileColorPalette;
+            MgdMappingUtil::ParseColorStrings(&tileColorPalette, map);
+            //              printf("<<<<<<<<<<<<<<<<<<<<< MgdRenderingService::ColorPalette->size(): %d\n", tileColorPalette.size());
+            data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, &tileColorPalette));
         }
         else
-            data.reset(((GDRenderer*)dr)->Save(format, saveWidth, saveHeight));
+            data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, NULL));
     }
     catch (exception e)
     {
@@ -1999,7 +1975,7 @@ inline MgByteReader* MgdRenderingService::CreateImage(MgdMap* map,
         pPRMResult->SetCreateImageTime(createImageTime);
 
         pPRMResult->SetImageFormat(format);
-        pPRMResult->SetRendererType(m_rendererName);
+        pPRMResult->SetRendererType(L"AGG");
     }
 
     return bs->GetReader();
@@ -2141,7 +2117,7 @@ void MgdRenderingService::RenderForSelection(MgdMap* map,
 
         //get the MDF layer definition
         Ptr<MgResourceIdentifier> layerResId = layer->GetLayerDefinition();
-        auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(m_svcResource, layerResId));
+        std::unique_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(m_svcResource, layerResId));
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
 
         //we can only do geometric query selection for vector layers
@@ -2198,7 +2174,7 @@ void MgdRenderingService::RenderForSelection(MgdMap* map,
             }
 
             // Initialize the reader
-            auto_ptr<RSMgdFeatureReader> rsrdr;
+            std::unique_ptr<RSMgdFeatureReader> rsrdr;
 
             try
             {

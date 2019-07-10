@@ -272,7 +272,7 @@ void MgdResourceService::ApplyResourcePackage(MgByteReader* packageStream)
 void MgdResourceService::LoadResourcePackage(CREFSTRING packagePathname)
 {
     ACE_ASSERT(!packagePathname.empty());
-    auto_ptr<MgdResourcePackageLoader> packageLoader;
+    std::unique_ptr<MgdResourcePackageLoader> packageLoader;
 
     MG_RESOURCE_SERVICE_TRY()
 

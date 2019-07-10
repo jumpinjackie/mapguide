@@ -184,7 +184,7 @@ void MgdMap::Create(MgResourceService* resourceService, MgResourceIdentifier* ma
     }
 
     // build the runtime map object from the parsed definition
-    std::auto_ptr<MdfModel::MapDefinition> mdef(parser.DetachMapDefinition());
+    std::unique_ptr<MdfModel::MapDefinition> mdef(parser.DetachMapDefinition());
     assert(mdef.get() != NULL);
 
     MgGeometryFactory gf;

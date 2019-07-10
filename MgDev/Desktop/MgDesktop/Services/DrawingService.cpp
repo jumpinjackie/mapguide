@@ -114,7 +114,7 @@ MgByteReader* MgdDrawingService::DescribeDrawing(MgResourceIdentifier* resource)
     }
     else
     {
-        auto_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
+        std::unique_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
         // Obtain the manifest from the DWF.
         DWFInputStream* pStream = reader->extract(MANIFEST_XML.c_str(), false);
@@ -235,7 +235,7 @@ MgByteReader* MgdDrawingService::GetSection(MgResourceIdentifier* resource, CREF
     }
     else
     {
-        auto_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
+        std::unique_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
         // Check if the section exists in the manifest (and get the mime type from the manifest)
         DWFManifest& manifest = reader->getManifest();
@@ -363,7 +363,7 @@ MgByteReader* MgdDrawingService::GetSectionResource(MgResourceIdentifier* resour
     }
     else
     {
-        auto_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
+        std::unique_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
         // Parse the section name from the resourceName
         STRING::size_type index = resourceName.rfind(RESOURCENAME_SEPARATOR);
@@ -518,7 +518,7 @@ MgStringCollection* MgdDrawingService::EnumerateLayers(MgResourceIdentifier* res
     }
     else
     {
-        auto_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
+        std::unique_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
         // Check if the section exists in the manifest
         DWFManifest& manifest = reader->getManifest();
@@ -708,7 +708,7 @@ MgByteReader* MgdDrawingService::GetLayer( MgResourceIdentifier* resource, CREFS
     }
     else
     {
-        auto_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
+        std::unique_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
         // Check if the section exists in the manifest
         DWFManifest& manifest = reader->getManifest();
@@ -1013,7 +1013,7 @@ MgByteReader* MgdDrawingService::EnumerateSections(MgResourceIdentifier* resourc
     }
     else
     {
-        auto_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
+        std::unique_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
         // Get the ePlot sections in the DWF
         DWFManifest& manifest = reader->getManifest();
@@ -1168,7 +1168,7 @@ MgByteReader* MgdDrawingService::EnumerateSectionResources(MgResourceIdentifier*
     }
     else
     {
-        auto_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
+        std::unique_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
         // Check if the section exists in the manifest
         DWFManifest& manifest = reader->getManifest();

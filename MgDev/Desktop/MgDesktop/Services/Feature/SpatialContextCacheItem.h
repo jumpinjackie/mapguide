@@ -34,7 +34,7 @@ public:
 
 private:
 
-    auto_ptr<MgSpatialContextInfo> m_spatialContextInfo;
+    std::unique_ptr<MgSpatialContextInfo> m_spatialContextInfo;
 };
 
 /// Inline Methods

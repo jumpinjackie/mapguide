@@ -35,7 +35,7 @@ public:
 
 protected:
 
-    auto_ptr<MgXmlUtil> m_xmlUtil;
+    std::unique_ptr<MgXmlUtil> m_xmlUtil;
     STRING m_description;
 };
 

@@ -392,7 +392,7 @@ MgdFeatureSourceCacheItem* MgdFeatureServiceCache::GetFeatureSource(MgResourceId
 
         // Detach the feature source from the parser.
         // It's now the caller's responsibility to delete it.
-        auto_ptr<MdfModel::FeatureSource> featureSource;
+        std::unique_ptr<MdfModel::FeatureSource> featureSource;
         featureSource.reset(parser.DetachFeatureSource());
 
         if (NULL == featureSource.get())
@@ -440,7 +440,7 @@ MgdSpatialContextCacheItem* MgdFeatureServiceCache::GetSpatialContextInfo(MgReso
             featureSource->GetSupplementalSpatialContextInfo();
         CHECKNULL(spatialContexts, L"MgCacheManager.GetSpatialContextCacheItem");
 
-        auto_ptr<MgSpatialContextInfo> spatialContextInfo;
+        std::unique_ptr<MgSpatialContextInfo> spatialContextInfo;
         spatialContextInfo.reset(new MgSpatialContextInfo());
 
         for (int i = 0; i < spatialContexts->GetCount(); ++i)

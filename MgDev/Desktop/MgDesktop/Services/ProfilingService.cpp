@@ -26,7 +26,7 @@ MgByteReader* MgdProfilingService::ProfileRenderDynamicOverlay(
     if (NULL == map)
         throw new MgNullArgumentException(L"MgdProfilingService::ProfileRenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"", NULL);
 
-    auto_ptr<ProfileRenderMapResult> pPRMResult; // a pointer points to Profile Render Map Result
+    std::unique_ptr<ProfileRenderMapResult> pPRMResult; // a pointer points to Profile Render Map Result
     pPRMResult.reset(new ProfileRenderMapResult());
 
     // Start to profile the ProfileRenderDynamicOverlay process
@@ -39,7 +39,7 @@ MgByteReader* MgdProfilingService::ProfileRenderDynamicOverlay(
 
     // Serialize the ProfileRenderMapResult to xml
     MdfParser::SAX2Parser parser;
-    auto_ptr<Version> version;
+    std::unique_ptr<Version> version;
     version.reset(new Version(2,4,0));
     string content = parser.SerializeToXML(pPRMResult.get(),version.get());
     ret = new MgByteReader(MgUtil::MultiByteToWideChar(content), MgMimeType::Xml);
@@ -68,7 +68,7 @@ MgByteReader* MgdProfilingService::ProfileRenderMap(
     if (NULL == map)
         throw new MgNullArgumentException(L"MgdProfilingService::ProfileRenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
 
-    auto_ptr<ProfileRenderMapResult> pPRMResult; // a pointer points to Profile Render Map Result
+    std::unique_ptr<ProfileRenderMapResult> pPRMResult; // a pointer points to Profile Render Map Result
     pPRMResult.reset(new ProfileRenderMapResult());
 
     // Start to profile the ProfileRenderMap process
@@ -81,7 +81,7 @@ MgByteReader* MgdProfilingService::ProfileRenderMap(
 
     // Serialize the ProfileRenderMapResult to xml
     MdfParser::SAX2Parser parser;
-    auto_ptr<Version> version;
+    std::unique_ptr<Version> version;
     version.reset(new Version(2,4,0));
     string content = parser.SerializeToXML(pPRMResult.get(),version.get());
     ret = new MgByteReader(MgUtil::MultiByteToWideChar(content), MgMimeType::Xml);
