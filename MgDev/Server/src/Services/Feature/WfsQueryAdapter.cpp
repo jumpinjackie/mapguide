@@ -214,3 +214,28 @@ MgFeatureReader* MgWfsQueryAdapter::GetWfsReader()
     MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(m_fs, L"MgWfsQueryAdapter.GetWfsReader")
     return fr.Detach();
 }
+
+INT32 MgWfsQueryAdapter::GetTotal(INT32 maxFeatures)
+{
+    INT32 total = 0;
+
+    MG_FEATURE_SERVICE_TRY()
+    // TODO: can FeatureName be an extension name rather than a FeatureClass?
+    Ptr<MgFeatureReader> fr = m_featSvc->SelectFeatures(m_fs, m_className, m_options);
+
+    // You may think: Why are we raw spinning this reader? We have select aggregates (with COUNT()) 
+    // and other performant shortcuts available, but the real stickler is the maxFeatures parameter
+    // passed in. WFS queries allow for this to be passed in and if we get one, we must respect
+    // the value. None of our performant shortcuts allow us to apply an upper limit on it. So given
+    // these constraints, raw spinning the feature reader is the only viable option.
+    while (fr->ReadNext())
+    {
+        total++;
+        //Break loop if we hit max features
+        if (maxFeatures > 0 && total >= maxFeatures)
+            break;
+    }
+
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(m_fs, L"MgWfsQueryAdapter.GetWfsReader")
+    return total;
+}

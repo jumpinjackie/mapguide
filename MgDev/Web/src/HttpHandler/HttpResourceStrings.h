@@ -237,6 +237,7 @@ public:
     static const STRING reqWfsBbox;
     static const STRING reqWfsOutputFormat;
     static const STRING reqWfsSortBy;
+    static const STRING reqWfsResultType;
 
     // PREDEFINED WEB APPLICATION REQUEST PARAMETERS
     static const STRING reqFormat;

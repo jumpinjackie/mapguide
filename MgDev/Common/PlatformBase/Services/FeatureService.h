@@ -2046,13 +2046,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgFeatureReader GetWfsReader(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat, string sortCriteria);
+    /// virtual MgFeatureReader GetWfsReader(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, string sortCriteria);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgFeatureReader GetWfsReader(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat, string sortCriteria);
+    /// virtual MgFeatureReader GetWfsReader(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, string sortCriteria);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgFeatureReader GetWfsReader(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat, string sortCriteria);
+    /// virtual MgFeatureReader GetWfsReader(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, string sortCriteria);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param featureSourceId (MgResourceIdentifier)
@@ -2121,6 +2121,49 @@ PUBLISHED_API:
     virtual MgByteReader* GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString) = 0;
 
 INTERNAL_API:
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Retrieves the total feature count for the given WFS query
+    ///
+    /// \note1
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int GetWfsFeatureTotal(MgResourceIdentifier featureSourceId, string featureClass, string filter, int maxFeatures);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int GetWfsFeatureTotal(MgResourceIdentifier featureSourceId, string featureClass, string filter, int maxFeatures);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int GetWfsFeatureTotal(MgResourceIdentifier featureSourceId, string featureClass, string filter, int maxFeatures);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param featureSourceId (MgResourceIdentifier)
+    /// The resource identifier defining the
+    /// location of the feature source in
+    /// the repository.
+    /// \param featureClass (String/string)
+    /// The feature class containing the features to retrieve.
+    /// \param filter (String/string)
+    /// An XML string containing the definition for an OGC filter
+    /// \param maxFeatures (int)
+    /// If greater than 0 and less than the real computed total, this will be the value returned
+    ///
+    /// \remarks
+    /// This method is primarily used to service the WFS GetFeatures operation in resultType=hits mode
+    /// where a total is desired over requesting the whole set of feature data
+    ///
+    /// \return
+    /// Returns an MgByteReader containing the requested feature information.
+    ///
+    /// \exception MgInvalidArgumentException
+    ///
+    /// \since 4.0
+    virtual INT32 GetWfsFeatureTotal(MgResourceIdentifier* featureSourceId,
+        CREFSTRING featureClass,
+        CREFSTRING filter,
+        INT32 maxFeatures) = 0;
 
     //////////////////////////////////////////////////////////////////
     /// \brief

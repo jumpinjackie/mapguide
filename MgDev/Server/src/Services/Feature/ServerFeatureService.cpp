@@ -2067,6 +2067,28 @@ MgFeatureReader* MgServerFeatureService::GetWfsReader(MgResourceIdentifier* fs,
 }
 
 
+INT32 MgServerFeatureService::GetWfsFeatureTotal(MgResourceIdentifier* fs,
+                                                 CREFSTRING featureClass,
+                                                 CREFSTRING wfsFilter,
+                                                 INT32 maxFeatures)
+{
+    INT32 total = -1;
+
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetWfsFeatureTotal()");
+
+    Ptr<MgFeatureReader> mgfReader;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    MgWfsQueryAdapter wfsQuery(this);
+    wfsQuery.SetOptions(fs, featureClass, NULL, L"", wfsFilter, L"");
+    total = wfsQuery.GetTotal(maxFeatures);
+
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(fs, L"MgServerFeatureService.GetWfsFeatureTotal")
+
+    return total;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Retrieves feature information based on the supplied criteria with specified format.

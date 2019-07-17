@@ -37,6 +37,7 @@ public:
     MgCoordinateSystem* GetMapCs();
     MgCoordinateSystemTransform* GetTransform();
     MgClassDefinition* GetClassDefinition();
+    INT32 GetTotal(INT32 maxFeatures);
 
 private:
     Ptr<MgClassDefinition> m_classDef;

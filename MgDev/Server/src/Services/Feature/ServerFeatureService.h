@@ -952,6 +952,11 @@ public:
                                   CREFSTRING filter,
                                   CREFSTRING sortCriteria);
 
+    INT32 GetWfsFeatureTotal(MgResourceIdentifier* featureSourceId,
+                             CREFSTRING featureClass,
+                             CREFSTRING filter,
+                             INT32 maxFeatures);
+
     ////////////////////////////////////////////////////////////////////////////////
     /// <summary>
     /// This method enumerates all the providers and if they are FDO enabled for

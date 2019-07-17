@@ -1505,6 +1505,28 @@ MgFeatureReader* MgProxyFeatureService::GetWfsReader(MgResourceIdentifier* featu
     return SAFE_ADDREF((MgProxyFeatureReader*)featReader);
 }
 
+INT32 MgProxyFeatureService::GetWfsFeatureTotal(MgResourceIdentifier* featureSourceId,
+                                                CREFSTRING featureClass,
+                                                CREFSTRING filter,
+                                                INT32 maxFeatures)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                   // Connection
+        MgCommand::knInt32,                          // Return type expected
+        MgFeatureServiceOpId::GetWfsFeatureTotal_Id, // Command Code
+        4,                                           // No of arguments
+        Feature_Service,                             // Service Id
+        BUILD_VERSION(4, 0, 0),                      // Operation version
+        MgCommand::knObject, featureSourceId,        // Argument#1
+        MgCommand::knString, &featureClass,          // Argument#2
+        MgCommand::knString, &filter,                // Argument#3
+        MgCommand::knInt32, maxFeatures,             // Argument#4
+        MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+    return cmd.GetReturnValue().val.m_i32;
+}
+
 //////////////////////////////////////////////////////////////////
 MgBatchPropertyCollection* MgProxyFeatureService::GetFeatures(CREFSTRING featureReader)
 {

@@ -68,6 +68,14 @@ public:
     ~WfsGetFeatureParams();
 
     /// <summary>
+    /// Gets whether the query is only asking for hits (ie. A total feature count)
+    /// </summary>
+    /// <returns>
+    /// True if the query is asking for hits. False otherwise
+    /// </returns>
+    bool IsHitMode();
+
+    /// <summary>
     /// Retrieves the filter strings for the request
     /// </summary>
     /// <returns>
@@ -183,6 +191,7 @@ private:
     STRING m_outputFormat;
     STRING m_version;
     STRING m_sortCriteria;
+    bool m_hitMode;
 };
 
 #endif  // _FS_WFS_GET_FEATURE_PARAMS_H

@@ -51,6 +51,7 @@ const char* MapAgentStrings::StatusOkHeader = "Status: 200 OK\r\n";
 const char* MapAgentStrings::TextPlain = "text/plain";
 const char* MapAgentStrings::TextHtml = "text/html";
 const char* MapAgentStrings::TextXml = "text/xml";
+const char* MapAgentStrings::ApplicationXml = "application/xml";
 const char* MapAgentStrings::PostBoundary = "boundary=";
 const char* MapAgentStrings::PostName = "name=\"";
 const char* MapAgentStrings::PostContent = "Content-Type: ";
@@ -71,3 +72,9 @@ const wchar_t* MapAgentStrings::ProductName = L"MapGuide";
 
 // used to indicate the creation of temporary files as part of a request
 const wchar_t* MapAgentStrings::TempfileKey = L"tempfile";
+
+bool MapAgentStrings::IsXmlMimeType(const std::string& content)
+{
+    return content.find(MapAgentStrings::TextXml) != content.npos
+        || content.find(MapAgentStrings::ApplicationXml) != content.npos;
+}

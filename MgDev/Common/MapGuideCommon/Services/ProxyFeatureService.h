@@ -1563,6 +1563,49 @@ INTERNAL_API:
                                   CREFSTRING filter,
                                   CREFSTRING sortCriteria);
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Retrieves the total feature count for the given WFS query
+    ///
+    /// \note1
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int GetWfsFeatureTotal(MgResourceIdentifier featureSourceId, string featureClass, string filter, int maxFeatures);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int GetWfsFeatureTotal(MgResourceIdentifier featureSourceId, string featureClass, string filter, int maxFeatures);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int GetWfsFeatureTotal(MgResourceIdentifier featureSourceId, string featureClass, string filter, int maxFeatures);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param featureSourceId (MgResourceIdentifier)
+    /// The resource identifier defining the
+    /// location of the feature source in
+    /// the repository.
+    /// \param featureClass (String/string)
+    /// The feature class containing the features to retrieve.
+    /// \param filter (String/string)
+    /// An XML string containing the definition for an OGC filter
+    /// \param maxFeatures (int)
+    /// If greater than 0 and less than the real computed total, this will be the value returned
+    ///
+    /// \remarks
+    /// This method is primarily used to service the WFS GetFeatures operation in resultType=hits mode
+    /// where a total is desired over requesting the whole set of feature data
+    ///
+    /// \return
+    /// Returns an MgByteReader containing the requested feature information.
+    ///
+    /// \exception MgInvalidArgumentException
+    ///
+    /// \since 4.0
+    INT32 GetWfsFeatureTotal(MgResourceIdentifier* featureSourceId,
+                             CREFSTRING featureClass,
+                             CREFSTRING filter,
+                             INT32 maxFeatures);
+
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// This method enumerates all the providers and if they are FDO enabled for

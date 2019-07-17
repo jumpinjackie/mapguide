@@ -158,7 +158,7 @@ void ApachePostParser::Parse(MgHttpRequestParam* params)
     // The check for text/xml is not always sufficient.  CarbonTools, for example,
     // fails to set Content-Type: text/xml and just sends Content-Type: utf-8.
     // A better check might be looking into the buffer to find "<?xml" at the beginning.
-    else if (content.find(MapAgentStrings::TextXml) != content.npos || MapAgentCommon::IsXmlPi((char *)m_pBuffer))
+    else if (MapAgentStrings::IsXmlMimeType(content) || MapAgentCommon::IsXmlPi((char *)m_pBuffer))
     {
         m_pBuffer[totalBytes] = '\0';
         params->SetXmlPostData((char *)m_pBuffer);

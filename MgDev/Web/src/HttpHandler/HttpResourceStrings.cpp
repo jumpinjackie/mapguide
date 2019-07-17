@@ -326,6 +326,7 @@ const STRING MgHttpResourceStrings::reqWfsFilter = L"FILTER";
 const STRING MgHttpResourceStrings::reqWfsBbox = L"BBOX";
 const STRING MgHttpResourceStrings::reqWfsOutputFormat = L"OUTPUTFORMAT";
 const STRING MgHttpResourceStrings::reqWfsSortBy = L"SORTBY";
+const STRING MgHttpResourceStrings::reqWfsResultType = L"RESULTTYPE";
 
 // Web Application Parameters
 const STRING MgHttpResourceStrings::reqFormat = L"FORMAT";

@@ -205,6 +205,9 @@
       <Filter>Ops</Filter>
     </ClCompile>
     <ClCompile Include="WfsQueryAdapter.cpp" />
+    <ClCompile Include="OpGetWfsFeatureTotal.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FeatureOperation.h">
@@ -419,6 +422,9 @@
       <Filter>Ops</Filter>
     </ClInclude>
     <ClInclude Include="WfsQueryAdapter.h" />
+    <ClInclude Include="OpGetWfsFeatureTotal.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ServerFeatureService.rc" />

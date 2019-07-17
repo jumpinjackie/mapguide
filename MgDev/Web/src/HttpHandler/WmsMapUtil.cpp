@@ -219,7 +219,7 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
 
                         STRING qualifiedName = mgLayer->GetFeatureClassName();
 
-                        int pos = qualifiedName.find(L":");
+                        auto pos = qualifiedName.find(L":");
                         STRING schemaName = qualifiedName.substr(0,pos);
                         STRING className = qualifiedName.substr(pos+1,qualifiedName.length()-pos-1);
 
@@ -527,11 +527,11 @@ MgStringCollection* MgWmsMapUtil::GetWMSlayerBoundingbox(STRING sSrs, STRING lay
     // Looking for all <Bounds> elements from layerBounds
     // Example: <Bounds SRS="EPSG:4326" west="-87.74" south="43.68" east="-87.69" north="43.815"/>
     Ptr<MgStringCollection> bounds = new MgStringCollection();
-    int pos = 0;
+    size_t pos = 0;
     while((pos = layerBounds.find(L"<Bounds",pos)) != STRING::npos)
     {
         pos += 7; // pos+7 to the first character after <Bounds
-        int endPos = layerBounds.find(L"/>",pos); 
+        auto endPos = layerBounds.find(L"/>",pos); 
         bounds->Add(layerBounds.substr(pos,endPos-pos));
     }
 
@@ -541,8 +541,8 @@ MgStringCollection* MgWmsMapUtil::GetWMSlayerBoundingbox(STRING sSrs, STRING lay
         STRING bound = bounds->GetItem(i);
 
         //Find SRS value from Bounds element 
-        int startPos = bound.find(L"SRS=\"");
-        int endPos = bound.find(L"\"",startPos+5); // pos+5 to the first character after SRS="
+        auto startPos = bound.find(L"SRS=\"");
+        auto endPos = bound.find(L"\"",startPos+5); // pos+5 to the first character after SRS="
         STRING srs = bound.substr(startPos+5,endPos-startPos-5);
 
         if(MgUtil::ToUpper(srs) == MgUtil::ToUpper(sSrs))

@@ -85,6 +85,7 @@ INTERNAL_API:
     static const int SelectFeaturesWithTransform = 0x1111ED35;
 
     static const int GetWfsReader_Id = 0x1111ED36;
+    static const int GetWfsFeatureTotal_Id = 0x1111ED37;
 };
 /// \endcond
 

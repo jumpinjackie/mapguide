@@ -140,9 +140,9 @@ void IsapiPostParser::Parse(MgHttpRequestParam* params)
             // url-encoded, since the question mark in <?xml...?>
             // should itself be url-encoded: <%3Fxml... )
             if (MapAgentCommon::IsXmlPi((char *)m_pBuffer))
-	            params->SetXmlPostData((char *)m_pBuffer);
+                params->SetXmlPostData((char *)m_pBuffer);
             else
-	            MapAgentGetParser::Parse((char *)m_pBuffer, params);
+                MapAgentGetParser::Parse((char *)m_pBuffer, params);
         }
     }
     else if (content.find(MapAgentStrings::MultiPartForm) != content.npos)
@@ -185,7 +185,7 @@ void IsapiPostParser::Parse(MgHttpRequestParam* params)
     // The check for text/xml is not always sufficient.  CarbonTools, for example,
     // fails to set Content-Type: text/xml and just sends Content-Type: utf-8.
     // A better check might be looking into the buffer to find "<?xml" at the beginning.
-    else if (content.find(MapAgentStrings::TextXml) != content.npos || MapAgentCommon::IsXmlPi((char *)m_pBuffer))
+    else if (MapAgentStrings::IsXmlMimeType(content) || MapAgentCommon::IsXmlPi((char *)m_pBuffer))
     {
         m_pBuffer[dwTotalBytes] = '\0';
         params->SetXmlPostData((char *)m_pBuffer);

@@ -37,6 +37,7 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer/*MgHttpRequestP
 ,   m_filterStrings(new MgStringCollection())
 ,   m_featureTypeList(new MgStringCollection())
 ,   m_pNamespaces(new MgXmlNamespaceManager())
+,   m_hitMode(false)
 {
 
     // Get the required properties
@@ -105,6 +106,12 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer/*MgHttpRequestP
     // Get the sortby property name
     m_sortCriteria = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsSortBy);
 
+    // Try to set hit mode flag (only if WFS version != 1.0.0 as it was only introduced from 1.1.0 onwards)
+    if (m_version != L"1.0.0")
+    {
+        STRING resultType = GetRequestParameter(oServer, MgHttpResourceStrings::reqWfsResultType);
+        m_hitMode = (resultType == L"hits");
+    }
 }
 
 WfsGetFeatureParams::~WfsGetFeatureParams()
@@ -134,6 +141,7 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer,CREFSTRING xmlR
 ,   m_filterStrings(new MgStringCollection())
 ,   m_featureTypeList(new MgStringCollection())
 ,   m_pNamespaces(new MgXmlNamespaceManager())
+,   m_hitMode(false)
 {
     MgXmlParser parser(xmlRequestString.c_str());
     MgXmlNamespaceManager oNamespaces;
@@ -179,6 +187,15 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer,CREFSTRING xmlR
             if(pBegin->GetAttribute(_("outputFormat"), sOutputFormat) && sOutputFormat.length() > 0)
                 m_outputFormat = oServer.ProcessArgumentAs(_("OutputFormat"),sOutputFormat.c_str());
 
+            // Try to set hit mode flag (only if WFS version != 1.0.0 as it was only introduced from 1.1.0 onwards)
+            if (m_version != L"1.0.0")
+            {
+                STRING sResultType;
+                if (pBegin->GetAttribute(_("resultType"), sResultType) && sResultType.length() > 0)
+                {
+                    m_hitMode = (sResultType == L"hits");
+                }
+            }
 
             // We want to hang onto the namespaces that are
             // defined in the GetFeature request, since that will
@@ -608,4 +625,9 @@ void WfsGetFeatureParams::FixupMissingWfsNamespaceForGetFeature(MgXmlSynchronize
         }
     }
     // --------------------------------------------------------
+}
+
+bool WfsGetFeatureParams::IsHitMode()
+{
+    return m_hitMode;
 }

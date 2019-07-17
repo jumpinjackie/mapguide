@@ -86,6 +86,7 @@
 #include "OpGetIdentityProperties.cpp"
 #include "OpDescribeWfsFeatureType.cpp"
 #include "OpGetWfsFeature.cpp"
+#include "OpGetWfsFeatureTotal.cpp"
 #include "OpGetWfsReader.cpp"
 #include "FilterUtil.cpp"
 #include "WfsQueryAdapter.cpp"

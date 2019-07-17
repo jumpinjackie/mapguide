@@ -59,6 +59,7 @@
 #include "OpDescribeWfsFeatureType.h"
 #include "OpGetWfsFeature.h"
 #include "OpGetWfsReader.h"
+#include "OpGetWfsFeatureTotal.h"
 #include "OpEnumerateDataStores.h"
 #include "OpGetSchemaMapping.h"
 #include "OpGetFdoCacheInfo.h"
@@ -585,6 +586,18 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(4,0):
             handler.reset(new MgOpGetWfsReader());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgFeatureServiceOpId::GetWfsFeatureTotal_Id:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(4, 0):
+            handler.reset(new MgOpGetWfsFeatureTotal());
             break;
         default:
             throw new MgInvalidOperationVersionException(

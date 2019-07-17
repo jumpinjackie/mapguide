@@ -18,6 +18,8 @@
 #ifndef MAPAGENT_STRINGS_H
 #define MAPAGENT_STRINGS_H
 
+#include <string>
+
 class MapAgentStrings
 {
 public:
@@ -54,6 +56,7 @@ public:
     const static char* TextPlain;
     const static char* TextHtml;
     const static char* TextXml;
+    const static char* ApplicationXml;
     const static char* PostBoundary;
     const static char* PostName;
     const static char* PostContent;
@@ -71,5 +74,7 @@ public:
     const static wchar_t* FailedAuth2;
     const static wchar_t* ProductName;
     const static wchar_t* TempfileKey;
+
+    static bool IsXmlMimeType(const std::string& mimeType);
 };
 #endif
