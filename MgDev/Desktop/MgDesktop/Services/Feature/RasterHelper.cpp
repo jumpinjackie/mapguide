@@ -252,3 +252,8 @@ MgFeatureReader *MgdRasterHelper::GetWfsReader(MgResourceIdentifier *, CREFSTRIN
 {
     NOT_IMPLEMENTED(L"MgdRasterHelper::DeleteFeatures");
 }
+
+INT32 MgdRasterHelper::GetWfsFeatureTotal(MgResourceIdentifier *, CREFSTRING, CREFSTRING, INT32)
+{
+    NOT_IMPLEMENTED(L"MgdRasterHelper::GetWfsFeatureTotal");
+}

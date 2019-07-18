@@ -198,6 +198,8 @@ PUBLISHED_API:
 
     MgFeatureReader *GetWfsReader(MgResourceIdentifier *, CREFSTRING, MgStringCollection *, CREFSTRING, CREFSTRING, CREFSTRING);
 
+    virtual INT32 GetWfsFeatureTotal(MgResourceIdentifier *, CREFSTRING, CREFSTRING, INT32);
+
 EXTERNAL_API:
     void PurgeCache(MgResourceIdentifier* resource);
 

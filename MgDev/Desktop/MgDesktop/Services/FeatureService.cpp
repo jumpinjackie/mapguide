@@ -2423,3 +2423,8 @@ MgFeatureReader *MgdFeatureService::GetWfsReader(MgResourceIdentifier *, CREFSTR
 {
     NOT_IMPLEMENTED(L"MgdFeatureService::GetWfsReader");
 }
+
+INT32 MgdFeatureService::GetWfsFeatureTotal(MgResourceIdentifier *, CREFSTRING, CREFSTRING, INT32)
+{
+    NOT_IMPLEMENTED(L"MgdFeatureService::GetWfsFeatureTotal");
+}
