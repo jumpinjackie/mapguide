@@ -48,8 +48,8 @@
         <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
         <Property Id="APACHE_VERSION" Secure="yes" Value="2.4.37" />
         <Property Id="PHP_VERSION" Secure="yes" Value="5.6.40" />
-        <Property Id="MG_VERSION_MAJOR_MINOR" Secure="yes" Value="3.3" />
-        <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuide33AppPool">
+        <Property Id="MG_VERSION_MAJOR_MINOR" Secure="yes" Value="4.0" />
+        <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuide40AppPool">
             <RegistrySearch
             Id="MgAppPoolNameRs"
             Type="raw"
@@ -63,13 +63,13 @@
         <Property Id="MG_CLIENT_PORT" Secure="yes" Value="2811" />
         <Property Id="MG_SITE_PORT" Secure="yes" Value="2812" />
         <!-- Used by FdoRegUtil.exe -->
-        <Property Id="FDO_VERSION_SMALL" Secure="yes" Value="4.1" />
-        <Property Id="FDO_VERSION" Secure="yes" Value="4.1.0.0" />
+        <Property Id="FDO_VERSION_SMALL" Secure="yes" Value="4.2" />
+        <Property Id="FDO_VERSION" Secure="yes" Value="4.2.0.0" />
         <!-- IIS vars -->
         <Property Id="ASPNETVERSION" Value="v4.0" />
         <!-- Don't try to use MG_VERSION_MAJOR_MINOR here. I tried. Just accept it and hardcode the number -->
-        <Property Id="PHP_FCGI_HANDLER_NAME" Value="MapGuide_3.3_PHP_via_FastCGI" />
-        <Property Id="MAPAGENT_ISAPI_NAME" Value="MapGuide 3.3 MapAgent ISAPI handler" />
+        <Property Id="PHP_FCGI_HANDLER_NAME" Value="MapGuide_4.0_PHP_via_FastCGI" />
+        <Property Id="MAPAGENT_ISAPI_NAME" Value="MapGuide 4.0 MapAgent ISAPI handler" />
 
         <!-- 
         These are currently static, though there is opportunity in the future for these
