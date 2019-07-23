@@ -119,9 +119,11 @@ if [ ! -d "$LINUXAPT_WORK_DIR" ]; then
     echo "Created LinuxApt working dir at: $LINUXAPT_WORK_DIR"
 fi
 
-PHP_VER=5.6.33
-HTTPD_VER=2.4.29
-TC_VER=1.2.42
+PHP_VER=5.6.40
+HTTPD_VER=2.4.37
+TC_VER=1.2.46
+APR_VER=1.6.5
+APR_UTIL_VER=1.6.1
 
 HTTPD_PORT=8008
 TOMCAT_PORT=8009
@@ -158,9 +160,19 @@ echo "Has Tomcat Connector: ${HAS_TOMCAT_CONNECTOR}"
 
 if test $HAS_HTTPD -eq 0; then
     cd "$SOURCE_DIR/Oem/LinuxApt" || exit
-    echo "Extracting HTTPD tarballs"
+    echo "Extracting httpd tarballs"
     tar -jxf httpd-${HTTPD_VER}.tar.bz2 -C "${LA_WORKDIR}"
-    tar -jxf httpd-${HTTPD_VER}-deps.tar.bz2 -C "${LA_WORKDIR}"
+    #tar -jxf httpd-${HTTPD_VER}-deps.tar.bz2 -C "${LA_WORKDIR}"
+    if [ ! -d "${LA_WORKDIR}/httpd-$HTTPD_VER/srclib/apr" ]; then
+        echo "Extracting apr tarball"
+        tar -jxf apr-$APR_VER.tar.bz2 -C "${LA_WORKDIR}"
+        mv "${LA_WORKDIR}/apr-$APR_VER" "${LA_WORKDIR}/httpd-$HTTPD_VER/srclib/apr"
+    fi
+    if [ ! -d "${LA_WORKDIR}/httpd-$HTTPD_VER/srclib/aprutil" ]; then
+        echo "Extracting apr-util tarball"
+        tar -jxf apr-util-$APR_UTIL_VER.tar.bz2 -C "${LA_WORKDIR}"
+        mv "${LA_WORKDIR}/apr-util-$APR_UTIL_VER" "${LA_WORKDIR}/httpd-$HTTPD_VER/srclib/apr-util"
+    fi
     cd "${HTTPD_WORKDIR}" || exit
     echo "Configuring HTTPD"
     ./configure --prefix="${MG_INSTALL_WEB_PREFIX}/apache2" --enable-mods-shared-all --with-included-apr --with-port=${HTTPD_PORT} 2>&1 | tee "$LINUXAPT_WORK_DIR/configure_httpd_fake.log"

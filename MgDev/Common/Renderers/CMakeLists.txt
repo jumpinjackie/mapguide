@@ -33,10 +33,7 @@ set (MgRenderers_SRCS
     ${MG_OEM_AGG_SOURCE_DIR}/agg_trans_affine.cpp
     ${MG_OEM_AGG_SOURCE_DIR}/agg_vcgen_contour.cpp
     ${MG_OEM_AGG_SOURCE_DIR}/agg_vcgen_stroke.cpp
-    GDFillPatterns.cpp
-    GDRenderer.cpp
     GDUtils.cpp
-    GDW2DRewriter.cpp
     KmlContent.cpp
     KmlLineStyle.cpp
     KmlPolyStyle.cpp
@@ -50,7 +47,6 @@ set (MgRenderers_SRCS
     UTFGridRenderer.cpp
     UTFGridContent.cpp
     W2DRewriter.cpp
-    complex_polygon_gd.cpp
 )
 
 add_definitions(-DDWFTK_BUILD_EXPAT)
