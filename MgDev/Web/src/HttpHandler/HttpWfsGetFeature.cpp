@@ -303,6 +303,8 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                             // Is this hit mode? If so, just request the raw total
                             if (m_getFeatureParams->IsHitMode())
                             {
+                                Ptr<MgDateTime> timestamp = new MgDateTime();
+                                std::string mbTs = MgUtil::WideCharToMultiByte(timestamp->ToXmlString());
                                 INT32 total = featureService->GetWfsFeatureTotal(featureSourceId, ((sSchemaHash.size() == 0) ? sClass : sSchemaHash + _(":") + sClass), filter, numFeaturesToRetrieve);
                                 std::string sTotal;
                                 MgUtil::Int32ToString(total, sTotal);
@@ -311,7 +313,9 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                                     std::string json = "{";
                                     json += "\"numberOfFeatures\": ";
                                     json += sTotal;
-                                    json += "}"; 
+                                    json += ", \"timeStamp\": \"";
+                                    json += mbTs;
+                                    json += "\"}"; 
                                     Ptr<MgByteSource> bs = new MgByteSource((BYTE_ARRAY_IN)json.data(), (INT32)json.length());
                                     bs->SetMimeType(MgMimeType::Json);
                                     resultReader = bs->GetReader();
@@ -329,6 +333,8 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                                     xml += "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/gml http://schemas.opengis.net/gml/3.1.1/base/feature.xsd http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\"";
                                     xml += " numberOfFeatures=\"";
                                     xml += sTotal;
+                                    xml += "\" timeStamp=\"";
+                                    xml += mbTs;
                                     xml += "\" />";
                                     Ptr<MgByteSource> bs = new MgByteSource((BYTE_ARRAY_IN)xml.data(), (INT32)xml.length());
                                     bs->SetMimeType(MgMimeType::Xml);
