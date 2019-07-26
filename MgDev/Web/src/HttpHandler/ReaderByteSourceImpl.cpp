@@ -166,7 +166,7 @@ INT32 MgReaderByteSourceImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
         }
     }
 
-    auto maxIndex = m_buf.length() - 1;
+    INT32 maxIndex = (INT32)m_buf.length() - 1;
     //We have an internal buffer. Clear this out first
     if (m_bufOffset < maxIndex)
     {
