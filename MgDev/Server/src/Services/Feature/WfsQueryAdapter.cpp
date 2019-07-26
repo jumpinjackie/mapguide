@@ -187,6 +187,9 @@ bool MgWfsQueryAdapter::SetOptions(MgResourceIdentifier* fs,
 
         options->SetOrderingFilter(orderByProperties, orderOption);
     }
+
+    m_options = SAFE_ADDREF(options.p);
+
     return true;
 }
 

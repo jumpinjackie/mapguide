@@ -303,7 +303,7 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                             // Is this hit mode? If so, just request the raw total
                             if (m_getFeatureParams->IsHitMode())
                             {
-                                INT32 total = featureService->GetWfsFeatureTotal(featureSourceId, ((sSchemaHash.size() == 0) ? sClass : sSchemaHash + _(":") + sClass), sSortCriteria, numFeaturesToRetrieve);
+                                INT32 total = featureService->GetWfsFeatureTotal(featureSourceId, ((sSchemaHash.size() == 0) ? sClass : sSchemaHash + _(":") + sClass), filter, numFeaturesToRetrieve);
                                 std::string sTotal;
                                 MgUtil::Int32ToString(total, sTotal);
                                 if (sOutputFormat == MgMimeType::Json)
