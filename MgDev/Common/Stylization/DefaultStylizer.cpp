@@ -60,14 +60,15 @@ SE_SymbolManager* DefaultStylizer::GetSymbolManager()
 
 
 //////////////////////////////////////////////////////////////////////////////
-void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
-                                         Renderer*                        renderer,
-                                         RS_FeatureReader*                features,
-                                         CSysTransformer*                 xformer,
-                                         double                           mapScale,
-                                         CancelStylization                cancel,
-                                         void*                            userData)
+int DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
+                                        Renderer*                        renderer,
+                                        RS_FeatureReader*                features,
+                                        CSysTransformer*                 xformer,
+                                        double                           mapScale,
+                                        CancelStylization                cancel,
+                                        void*                            userData)
 {
+    int total = 0;
     // look through the scale ranges to find a valid one
     // the first one that contains the given scale will be used
     MdfModel::VectorScaleRangeCollection* scaleRanges = layer->GetScaleRanges();
@@ -75,7 +76,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
 
     // no range -- do not stylize
     if (NULL == scaleRange)
-        return;
+        return 0;
 
     // we have a valid scale range... we can now go over the
     // features and apply the feature styles in that range
@@ -101,7 +102,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
     // composite type styles are handled by the new style engine
     if (foundComposite)
     {
-        m_styleEngine->StylizeVectorLayer(layer, scaleRange, (SE_Renderer*)renderer, features, xformer, cancel, userData);
+        total = m_styleEngine->StylizeVectorLayer(layer, scaleRange, (SE_Renderer*)renderer, features, xformer, cancel, userData);
     }
     else
     {
@@ -222,12 +223,16 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
         #ifdef _DEBUG
         printf("  DefaultStylizer::StylizeVectorLayer() Layer: %S  Features: %d\n", layer->GetFeatureName().c_str(), nFeatures);
         #endif
+
+        total = nFeatures;
     }
 
     // need to get rid of these since they cache per layer theming
     // information which may conflict with the next layer
     ClearAdapters();
     m_styleEngine->ClearCache();
+
+    return total;
 }
 
 

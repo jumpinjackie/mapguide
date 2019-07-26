@@ -45,13 +45,13 @@ public:
     /// Stylizes a feature/vector (FDO-based) layer.
     /// The supplied map scale is used only for stylization.
     ///</summary>
-    virtual void StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
-                                    Renderer*                        renderer,
-                                    RS_FeatureReader*                features,
-                                    CSysTransformer*                 xformer,
-                                    double                           mapScale,
-                                    CancelStylization                cancel,
-                                    void*                            userData) = 0;
+    virtual int StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
+                                   Renderer*                        renderer,
+                                   RS_FeatureReader*                features,
+                                   CSysTransformer*                 xformer,
+                                   double                           mapScale,
+                                   CancelStylization                cancel,
+                                   void*                            userData) = 0;
 
     ///<summary>
     /// Stylizes a grid/raster layer.

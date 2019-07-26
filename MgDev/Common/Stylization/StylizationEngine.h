@@ -61,13 +61,13 @@ public:
     ~StylizationEngine();
 
     // Stylizes the supplied layer using all composite type styles in the given scale.
-    void StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
-                            MdfModel::VectorScaleRange*      range,
-                            SE_Renderer*                     se_renderer,
-                            RS_FeatureReader*                reader,
-                            CSysTransformer*                 xformer,
-                            CancelStylization                cancel,
-                            void*                            userData);
+    int StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
+                           MdfModel::VectorScaleRange*      range,
+                           SE_Renderer*                     se_renderer,
+                           RS_FeatureReader*                reader,
+                           CSysTransformer*                 xformer,
+                           CancelStylization                cancel,
+                           void*                            userData);
 
     //Stylize the supplied watermark
     void StylizeWatermark(SE_Renderer* se_renderer,

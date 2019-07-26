@@ -37,13 +37,13 @@ public:
 
     STYLIZATION_API SE_SymbolManager* GetSymbolManager();
 
-    STYLIZATION_API virtual void StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
-                                                    Renderer*                        renderer,
-                                                    RS_FeatureReader*                features,
-                                                    CSysTransformer*                 xformer,
-                                                    double                           mapScale,
-                                                    CancelStylization                cancel,
-                                                    void*                            userData);
+    STYLIZATION_API virtual int StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
+                                                   Renderer*                        renderer,
+                                                   RS_FeatureReader*                features,
+                                                   CSysTransformer*                 xformer,
+                                                   double                           mapScale,
+                                                   CancelStylization                cancel,
+                                                   void*                            userData);
 
     STYLIZATION_API virtual void StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
                                                   Renderer*                      renderer,

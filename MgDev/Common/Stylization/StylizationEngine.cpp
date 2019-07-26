@@ -55,16 +55,16 @@ StylizationEngine::~StylizationEngine()
 
 // TODO: Stylize one CompoundSymbol feature and label per run; investigate caching
 //       possibilities to avoid filter execution on subsequent passes
-void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
-                                           MdfModel::VectorScaleRange*      range,
-                                           SE_Renderer*                     se_renderer,
-                                           RS_FeatureReader*                reader,
-                                           CSysTransformer*                 xformer,
-                                           CancelStylization                cancel,
-                                           void*                            userData)
+int StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
+                                          MdfModel::VectorScaleRange*      range,
+                                          SE_Renderer*                     se_renderer,
+                                          RS_FeatureReader*                reader,
+                                          CSysTransformer*                 xformer,
+                                          CancelStylization                cancel,
+                                          void*                            userData)
 {
     if (reader == NULL)
-        return;
+        return 0;
 
     m_serenderer = se_renderer;
     m_reader = reader;
@@ -72,7 +72,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     // get the geometry column name
     const wchar_t* gpName = reader->GetGeomPropName();
     if (NULL == gpName)
-        return;
+        return 0;
 
     double drawingScale = m_serenderer->GetDrawingScale();
 
@@ -97,7 +97,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     size_t numTypeStyles = compTypeStyles.size();
     _ASSERT(numTypeStyles > 0);
     if (numTypeStyles == 0)
-        return;
+        return 0;
 
     // ignore Z values if the renderer doesn't need them
     bool ignoreZ = !se_renderer->SupportsZ();
@@ -107,10 +107,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     int symbolRenderingPass = 0;
     int nextInstanceRenderingPass = -1;
     int nextSymbolRenderingPass = -1;
-
-    #ifdef _DEBUG
     int nFeatures = 0;
-    #endif
 
     // main loop over feature data
     int numPasses = 0;
@@ -201,6 +198,8 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     #ifdef _DEBUG
     printf("  StylizationEngine::StylizeVectorLayer() Layer: %S  Features: %d\n", layer->GetFeatureName().c_str(), nFeatures);
     #endif
+
+    return nFeatures;
 }
 
 
