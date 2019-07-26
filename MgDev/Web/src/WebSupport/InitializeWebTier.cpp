@@ -122,6 +122,16 @@ void MgUninitializeWebTierInternal()
     // Close all open connections before we drop ACE
     MgServerConnectionPool::CloseConnections();
 
+    // Stop the server check thread before dropping ACE
+    MgSiteManager* siteManager = MgSiteManager::GetInstance();
+    if (siteManager)
+    {
+        siteManager->StopCheckServersThread();
+        //Give some breathing space to let the check thread complete. If idle it will
+        //sleep for 1 second, so sleeping here for 2 seconds should be enough.
+        ACE_OS::sleep(2);
+    }
+
     // Uninitialize ACE
     ACE::fini();
 
