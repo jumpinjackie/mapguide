@@ -5,6 +5,11 @@ OEM_WORK_DIR=~/mapguide_oem_build
 USE_NINJA=0
 USE_ASAN=OFF
 USE_LD_GOLD=OFF
+MG_VERSION_MAJOR=4
+MG_VERSION_MINOR=0
+MG_VERSION_RELEASE=0
+MG_REV=0
+
 while [ $# -gt 0 ]; do    # Until you run out of parameters...
     case "$1" in
         --cmake-build-dir)
@@ -13,6 +18,22 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
             ;;
         --oem-working-dir)
             OEM_WORK_DIR="$2"
+            shift
+            ;;
+        --mg-ver-major)
+            MG_VERSION_MAJOR=$2
+            shift
+            ;;
+        --mg-ver-minor)
+            MG_VERSION_MINOR=$2
+            shift
+            ;;
+        --mg-ver-rel)
+            MG_VERSION_RELEASE=$2
+            shift
+            ;;
+        --mg-ver-rev)
+            MG_REV=$2
             shift
             ;;
         --ninja)
