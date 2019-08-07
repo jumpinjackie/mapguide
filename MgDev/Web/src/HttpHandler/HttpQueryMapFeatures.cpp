@@ -153,7 +153,9 @@ void MgHttpQueryMapFeatures::Execute(MgHttpResponse& hResponse)
     }
     else if (version >= MG_API_VERSION(2, 6, 0))
     {
-        featureDescriptionInfo = controller.QueryMapFeatures(m_mapName, layerNames, filterGeometry, selectionVariant, m_featureFilter, m_maxFeatures, m_persist, m_layerAttributeFilter, m_requestData, m_selectionColor, m_selectionFormat);
+        //We only render selection keys alongside attributes for v4.0.0 and higher requests
+        bool bIncludeSelectionKey = version >= MG_API_VERSION(4, 0, 0);
+        featureDescriptionInfo = controller.QueryMapFeatures(m_mapName, layerNames, filterGeometry, selectionVariant, m_featureFilter, m_maxFeatures, m_persist, m_layerAttributeFilter, m_requestData, m_selectionColor, m_selectionFormat, bIncludeSelectionKey);
     }
     //Convert to alternate response format, if necessary
     ProcessFormatConversion(featureDescriptionInfo);

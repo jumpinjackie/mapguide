@@ -248,7 +248,8 @@ MgByteReader* MgHtmlController::QueryMapFeatures(
     INT32 layerAttributeFilter,
     INT32 requestData,
     CREFSTRING selectionColor,
-    CREFSTRING selectionFormat)
+    CREFSTRING selectionFormat,
+    bool bIncludeSelectionKey)
 {
     Ptr<MgByteReader> result;
     Ptr<MgFeatureInformation> featureInfo;
@@ -310,7 +311,7 @@ MgByteReader* MgHtmlController::QueryMapFeatures(
         inlineSelectionImg = service->RenderDynamicOverlay(map, newSelection, renderOpts);
     }
 
-    result = CollectQueryMapFeaturesResult(resourceService, featureService, map, requestData, featureInfo, newSelection, inlineSelectionImg);
+    result = CollectQueryMapFeaturesResult(resourceService, featureService, map, requestData, featureInfo, newSelection, inlineSelectionImg, bIncludeSelectionKey);
 
     // Return XML
     return result.Detach();
@@ -322,7 +323,8 @@ MgByteReader* MgHtmlController::CollectQueryMapFeaturesResult(MgResourceService*
                                                               INT32 requestData,
                                                               MgFeatureInformation* featInfo,
                                                               MgSelection* selectionSet,
-                                                              MgByteReader* inlineSelection)
+                                                              MgByteReader* inlineSelection,
+                                                              bool bIncludeSelectionKey)
 {
     STRING xml;
     STRING tooltip;
@@ -390,7 +392,7 @@ MgByteReader* MgHtmlController::CollectQueryMapFeaturesResult(MgResourceService*
     if ((requestData & REQUEST_ATTRIBUTES) == REQUEST_ATTRIBUTES)
     {
         xml.append(L"<SelectedFeatures>\n");
-        WriteSelectedFeatureAttributes(resourceService, featureService, map, selectionSet, xml);
+        WriteSelectedFeatureAttributes(resourceService, featureService, map, selectionSet, bIncludeSelectionKey, xml);
         xml.append(L"</SelectedFeatures>\n");
     }
     else
@@ -443,12 +445,13 @@ void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourc
                                                       MgFeatureService* featureService,
                                                       MgMapBase* map,
                                                       MgSelection* selectionSet,
+                                                      bool bIncludeSelectionKey,
                                                       REFSTRING xmlOut)
 {
     MgAgfReaderWriter agfRw;
     MgWktReaderWriter wktRw;
     MgCoordinateSystemFactory csFactory;
-
+    MgMemoryStreamHelper streamHelper;
     Ptr<MgReadOnlyLayerCollection> selLayers = selectionSet->GetLayers();
     if (NULL != selLayers.p)
     {
@@ -462,6 +465,7 @@ void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourc
         //                         are used for property names for each feature. This element provides a reverse lookup table to ascertain the FDO system 
         //                         property name for each attribute for client applications that require such information
         //     [0...n] <Feature> - Each selected feature in the layer
+        //       [0...1] <SelectionKey> - Selection key for this feature [only if requested]
         //       [1] <Bounds> - The feature's bounding box [minx miny maxx maxy]
         //       [0...n] <Property> - Property value for current feature
 
@@ -537,9 +541,17 @@ void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourc
                 propNames->Add(selLayer->GetFeatureGeometryName()); //Don't forget geometry
             xmlOut.append(L"</LayerMetadata>\n");
             Ptr<MgReader> reader = selectionSet->GetSelectedFeatures(selLayer, selLayer->GetFeatureClassName(), propNames);
-            while(reader->ReadNext())
+            while (reader->ReadNext())
             {
                 xmlOut.append(L"<Feature>\n");
+                if (bIncludeSelectionKey)
+                {
+                    STRING selKey = EncodeKey(&streamHelper, reader, selLayer);
+                    xmlOut.append(L"<SelectionKey>\n");
+                    xmlOut.append(selKey);
+                    xmlOut.append(L"</SelectionKey>\n");
+                }
+
                 STRING geomPropName = selLayer->GetFeatureGeometryName();
                 if (!reader->IsNull(geomPropName))
                 {
@@ -728,6 +740,67 @@ void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourc
             xmlOut.append(L"</SelectedLayer>");
         }
     }
+}
+
+STRING MgHtmlController::EncodeKey(MgMemoryStreamHelper* stream, MgReader* feature, MgLayerBase* layer)
+{
+    //This is effectively a carbon-copy impl of MgSelectionBase::AddFeatureIds()
+
+    stream->Clear();
+
+    Ptr<MgClassDefinition> classDef = layer->GetClassDefinition();
+    Ptr<MgPropertyDefinitionCollection> props = classDef->GetProperties();
+    MgLayerBase::IdPropertyList propList = layer->GetIdPropertyList();
+    MgLayerBase::IdPropertyList::iterator idIter;
+    for (idIter = propList.begin(); idIter != propList.end(); ++idIter)
+    {
+        switch (idIter->type)
+        {
+        case MgPropertyType::Int16:
+        {
+            stream->WriteUINT16((UINT16)feature->GetInt16(idIter->name));
+        }
+        break;
+        case MgPropertyType::Int32:
+        {
+            stream->WriteUINT32((UINT32)feature->GetInt32(idIter->name));
+        }
+        break;
+        case MgPropertyType::Int64:
+        {
+            stream->WriteINT64(feature->GetInt64(idIter->name));
+        }
+        break;
+        case MgPropertyType::String:
+        {
+            stream->WriteNullTermString(feature->GetString(idIter->name));
+        }
+        break;
+        case MgPropertyType::Double:
+        {
+            stream->WriteDouble(feature->GetDouble(idIter->name));
+        }
+        break;
+        case MgPropertyType::Single:
+        {
+            stream->WriteSingle(feature->GetSingle(idIter->name));
+        }
+        break;
+        case MgPropertyType::DateTime:
+        {
+            Ptr<MgDateTime> dateTime = feature->GetDateTime(idIter->name);
+            Ptr<MgStream> tempStream = new MgStream(stream);
+            dateTime->Serialize(tempStream);
+        }
+        break;
+        default:
+            break;
+        }
+    }
+
+    STRING b64;
+    UnicodeString::MultiByteToWideChar(stream->ToBase64().c_str(), b64);
+    return b64;
 }
 
 //////////////////////////////////////////////////////////////////

@@ -205,7 +205,8 @@ INTERNAL_API:
         INT32 layerAttributeFilter,
         INT32 requestData,
         CREFSTRING selectionColor,
-        CREFSTRING selectionFormat);
+        CREFSTRING selectionFormat,
+        bool bIncludeSelectionKey);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -311,7 +312,8 @@ protected:
                                                         INT32 requestData, 
                                                         MgFeatureInformation* featInfo,
                                                         MgSelection* selectionSet, 
-                                                        MgByteReader* inlineSelection);
+                                                        MgByteReader* inlineSelection,
+                                                        bool bIncludeSelectionKey);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -326,10 +328,13 @@ protected:
     }
 
 private:
+    static STRING EncodeKey(MgMemoryStreamHelper* stream, MgReader* feature, MgLayerBase* layer);
+
     static void WriteSelectedFeatureAttributes(MgResourceService* resourceService,
                                                MgFeatureService* featureService,
                                                MgMapBase* map,
                                                MgSelection* selectionSet,
+                                               bool bIncludeSelectionKey,
                                                REFSTRING xmlOut);
 
     static MgCoordinateSystemTransform* GetLayerToMapTransform(MgLayerBase* layer, 
