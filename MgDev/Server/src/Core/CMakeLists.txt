@@ -110,7 +110,7 @@ file(COPY ${MG_COMMON_DIR}/Schema DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 install(TARGETS mgserver DESTINATION ${MG_SERVER_BIN_DIR} COMPONENT ${MG_COMPONENT})
 if (UNIX)
     file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/mapguidectl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-    execute_process(COMMAND sed -i "s#/usr/local/mapguideopensource/server#${MG_INSTALL_SERVER_PREFIX}#g" ${CMAKE_CURRENT_BINARY_DIR}/mapguidectl)
+    execute_process(COMMAND sed -i "s#/usr/local/mapguideopensource/server#${MG_INSTALL_SERVER_PREFIX_ABS}#g" ${CMAKE_CURRENT_BINARY_DIR}/mapguidectl)
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/mapguidectl DESTINATION ${MG_SERVER_BIN_DIR} COMPONENT ${MG_COMPONENT})
 endif (UNIX)
 
