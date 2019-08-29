@@ -539,6 +539,21 @@ void MgHtmlController::WriteSelectedFeatureAttributes(MgResourceService* resourc
             }
             if (!propNames->Contains(selLayer->GetFeatureGeometryName()))
                 propNames->Add(selLayer->GetFeatureGeometryName()); //Don't forget geometry
+
+            if (bIncludeSelectionKey)
+            {
+                //Need to make sure identity properties are part of the explicit property list
+                MgLayerBase::IdPropertyList propList = selLayer->GetIdPropertyList();
+                MgLayerBase::IdPropertyList::iterator idIter;
+                for (idIter = propList.begin(); idIter != propList.end(); ++idIter)
+                {
+                    if (!propNames->Contains(idIter->name))
+                    {
+                        propNames->Add(idIter->name);
+                    }
+                }
+            }
+
             xmlOut.append(L"</LayerMetadata>\n");
             Ptr<MgReader> reader = selectionSet->GetSelectedFeatures(selLayer, selLayer->GetFeatureClassName(), propNames);
             while (reader->ReadNext())
