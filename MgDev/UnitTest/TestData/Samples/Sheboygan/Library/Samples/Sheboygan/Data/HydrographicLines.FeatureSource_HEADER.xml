@@ -3,28 +3,28 @@
   <General>
     <IconName>FeatureSourceSdf</IconName>
   </General>
-  <Security xsi:noNamespaceSchemaLocation="ResourceSecurity-1.0.0.xsd">
+  <Security>
     <Inherited>true</Inherited>
   </Security>
   <Metadata>
     <Simple>
-      <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
+      <Property>
         <Name>_Bounds</Name>
         <Value>&lt;Bounds SRS="EPSG:4326" west="-87.74" south="43.68" east="-87.69" north="43.815"/></Value>
       </Property>
-      <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
+      <Property>
         <Name>_Abstract</Name>
         <Value>Hydrographic Lines</Value>
       </Property>
-      <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
+      <Property>
         <Name>_Keywords</Name>
         <Value>Hydrography</Value>
       </Property>
-      <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
+      <Property>
         <Name>_Title</Name>
         <Value>Hydrographic Lines</Value>
       </Property>
-      <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
+      <Property>
         <Name>_IsPublished</Name>
         <Value>1</Value>
       </Property>
