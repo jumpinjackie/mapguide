@@ -64,7 +64,7 @@ INT32 MgSetPwdCommand::Execute()
     }
     catch (MgException* e)
     {
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("Unable to load the specified package.\n")));
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("Unable to set the password for the specified user.\n")));
         ACE_DEBUG((LM_ERROR, ACE_TEXT("%W\n"), e->GetStackTrace(m_locale).c_str()));
         SAFE_RELEASE(e);
 
@@ -72,7 +72,7 @@ INT32 MgSetPwdCommand::Execute()
     }
     catch (...)
     {
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("Unable to load the specified package.\n")));
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("Unable to set the password for the specified user.\n")));
 
         nResult = -1;
     }
