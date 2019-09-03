@@ -1,0 +1,3 @@
+[submodule "MgDev/Oem/fusion"]
+	path = MgDev/Oem/fusion
+	url = https://github.com/jumpinjackie/fusion
