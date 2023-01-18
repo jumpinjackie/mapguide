@@ -1,3 +1,5 @@
+# IMPORTANT: This is not the official MapGuide repository! The official MapGuide source repository is still hosted on OSGeo at https://svn.osgeo.org/mapguide/trunk/MgDev/
+
 MapGuide Open Source
 ====================
 
